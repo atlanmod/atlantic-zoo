@@ -1,0 +1,647 @@
+package mlhim2 {
+
+	class Action extends CareEntry {
+		reference time[0-1] container : DvTemporal;
+		reference description container : ItemStructure;
+		reference ismTransition[0-1] container : DvCodedString;
+		reference instructionDetails[0-1] container : DvCodedString;
+	}
+
+	class Activity extends Locatable {
+		reference description container : ItemStructure;
+		reference timing container : DvParsable;
+		reference actions[1-*] ordered container : DvToken;
+	}
+
+	class AdminEntry extends Entry {
+		reference data container : ItemStructure;
+	}
+
+	class ASKR extends UNK {
+		
+	}
+
+	class ASKU extends UNK {
+		
+	}
+
+	class Attestation extends Locatable {
+		reference attestedView[0-1] container : DvMedia;
+		reference proof container : DvParsable;
+		reference reason container : DvCodedString;
+		reference commiter container : PartyProxy;
+		reference timeCommited container : DvTemporal;
+		reference isPending container : DvBoolean;
+	}
+
+	abstract class CareEntry extends Entry {
+		reference protocol[0-1] container : ItemStructure;
+		reference guidelineId[0-1] container : ObjectRef;
+	}
+
+	class CCD {
+		reference definition container : Locatable;
+		reference metaData[1-*] ordered container : MetaDataSet;
+		reference ontology container : Ontology;
+	}
+
+	class Cluster extends Item {
+		reference items[1-*] ordered container : Item;
+	}
+
+	class Composition extends Locatable {
+		reference attestation container : Attestation;
+		reference links[*] ordered container : Link;
+		reference original[0-1] container : DvToken;
+		reference predecessor[0-1] container : DvToken;
+		reference created container : DvTemporal;
+		reference composer container : PartyProxy;
+		reference territory[0-1] container : Location;
+		reference category[0-1] container : DvCodedString;
+		reference language container : DvLanguage;
+		reference context container : EventContext;
+		reference content container : Locatable;
+	}
+
+	abstract class ContentItem extends Locatable {
+		reference links[*] ordered container : Link;
+		reference attestation[0-1] container : Attestation;
+	}
+
+	abstract class DataStructure extends Locatable {
+		
+	}
+
+	class DER extends INV {
+		
+	}
+
+	class Device extends Party {
+		reference details container : ItemStructure;
+	}
+
+	abstract class DvAny {
+		attribute validTimeBegin[0-1] : DateTime;
+		attribute validTimeEnd[0-1] : DateTime;
+		reference ev[0-1] container : ExceptionalValue;
+	}
+
+	class DvBoolean extends DvAny {
+		attribute dv[0-1] : Boolean;
+	}
+
+	class DvByte extends DvNumeric {
+		attribute dv[0-1] : Byte;
+	}
+
+	abstract class DvChar extends DvAny {
+		
+	}
+
+	class DvCodedString extends DvString {
+		attribute codeString[0-1] : NormalizedString;
+		attribute terminologyName[0-1] : NormalizedString;
+		attribute terminologyAbbrev[0-1] : NormalizedString;
+	}
+
+	class DvCount extends DvQuantified {
+		attribute count : Integer;
+	}
+
+	class DvDate extends DvTemporal {
+		attribute dv[0-1] : Date;
+	}
+
+	datatype Date;
+	
+
+	class DvDateTime extends DvTemporal {
+		attribute dv[0-1] : DateTime;
+	}
+
+	class DvDecimal extends DvNumeric {
+		attribute dv[0-1] : Decimal;
+	}
+
+	class DvDuration extends DvTemporal {
+		attribute dv[0-1] : Duration;
+	}
+
+	abstract class DvEncapsulated extends DvAny {
+		attribute size : Decimal;
+		attribute charset[0-1] : NormalizedString;
+		attribute language[0-1] : Language;
+	}
+
+	class DvIdentifier extends DvString {
+		attribute issuer[0-1] : NormalizedString;
+		attribute assigner[0-1] : NormalizedString;
+		attribute name[0-1] : NormalizedString;
+	}
+
+	class DvInt extends DvNumeric {
+		attribute dv[0-1] : Int;
+	}
+
+	datatype Int;
+	
+	class DvInteger extends DvNumeric {
+		attribute dv[0-1] : Integer;
+	}
+
+	class DvInterval extends DvAny {
+		reference lower[0-1] container : DvOrdered;
+		reference upper[0-1] container : DvOrdered;
+		attribute lowerIncluded : Boolean;
+		attribute upperIncluded : Boolean;
+		attribute lowerUnbounded : Boolean;
+		attribute upperUnbounded : Boolean;
+	}
+
+	class DvLanguage extends DvChar {
+		attribute dv[0-1] : Language;
+	}
+
+	datatype Long;
+
+	class DvLong extends DvNumeric {
+		attribute dv[0-1] : Long;
+	}
+
+	abstract class DvMedia extends DvEncapsulated {
+		attribute mimeType : NormalizedString;
+		attribute compressionType[0-1] : NormalizedString;
+		attribute hashResult[0-1] : NormalizedString;
+		attribute hashFunction[0-1] : NormalizedString;
+		attribute uri[0-1] : AnyURI;
+		attribute altText[0-1] : NormalizedString;
+	}
+	
+	datatype AnyURI;
+
+	datatype Object;
+	
+	datatype Base64Binary;
+	
+	class DvMediaApp extends DvMedia {
+		reference dv[0-1] container : Object;
+	}
+
+	class DvMediaAudio extends DvMedia {
+		attribute dv[0-1] : Base64Binary;
+	}
+
+	class DvMediaImage extends DvMedia {
+		attribute dv[0-1] : Base64Binary;
+	}
+
+	class DvMediaModel extends DvMedia {
+		attribute dv[0-1] : Base64Binary;
+	}
+
+	class DvMediaMsg extends DvMedia {
+		attribute dv[0-1] : Base64Binary;
+	}
+
+	class DvMediaMultipart extends DvMedia {
+		reference dv[0-1] container : Object;
+	}
+
+	datatype String;
+
+	class DvMediaText extends DvMedia {
+		attribute dv[0-1] : String;
+	}
+
+	class DvMediaVideo extends DvMedia {
+		attribute dv[0-1] : Base64Binary;
+	}
+
+	datatype NegativeInteger;
+	
+	datatype NonNegativeInteger;
+	
+	datatype NonPositiveInteger;
+
+	class DvNegativeInteger extends DvNumeric {
+		attribute dv[0-1] : NegativeInteger;
+	}
+
+	class DvNonNegativeInteger extends DvNumeric {
+		attribute dv[0-1] : NonNegativeInteger;
+	}
+
+	class DvNonPositiveInteger extends DvNumeric {
+		attribute dv[0-1] : NonPositiveInteger;
+	}
+
+	datatype Token;
+
+	class DvNormalizedString extends DvChar {
+		attribute uuid : Token;
+		attribute language[0-1] : Language;
+		attribute dv[0-1] : NormalizedString;
+	}
+
+	abstract class DvNumeric extends DvAny {
+		
+	}
+
+	abstract class DvOrdered extends DvAny {
+		reference normalRange[0-1] container : DvInterval;
+		reference otherReferenceRanges[*] ordered container : ReferenceRange;
+		attribute normalStatus[0-1] : String;
+	}
+
+	class DvOrdinal extends DvOrdered {
+		attribute dv[0-1] : Integer;
+		attribute symbol[0-1] : String;
+	}
+
+	class DvParagraph extends DvAny {
+		reference items[*] ordered container : DvString;
+	}
+
+	class DvParsable extends DvEncapsulated {
+		attribute dv[0-1] : NormalizedString;
+		attribute formalism[0-1] : NormalizedString;
+	}
+
+	datatype PositiveInteger;
+
+	class DvPositiveInteger extends DvNumeric {
+		attribute dv[0-1] : PositiveInteger;
+	}
+
+	class DvProportion extends DvRatio {
+		attribute proportionType[0-1] : NormalizedString;
+	}
+
+	abstract class DvQuantified extends DvOrdered {
+		attribute magnitude[0-1] : Decimal;
+		attribute magnitudeStatus[0-1] : String;
+		attribute error : Int;
+		attribute accuracy : Decimal;
+	}
+
+	class DvQuantity extends DvQuantified {
+		attribute units : NormalizedString;
+	}
+
+	class DvRate extends DvRatio {
+		attribute rateType[0-1] : NormalizedString;
+	}
+
+	abstract class DvRatio extends DvQuantified {
+		attribute numerator : Decimal;
+		attribute denominator : Decimal;
+	}
+
+	datatype Short;
+
+	class DvShort extends DvNumeric {
+		attribute dv[0-1] : Short;
+	}
+
+	class DvString extends DvChar {
+		attribute uuid : Token;
+		attribute language[0-1] : Language;
+		attribute dv[0-1] : String;
+	}
+
+	abstract class DvTemporal {
+		
+	}
+
+	datatype Time;
+
+	class DvTime extends DvTemporal {
+		attribute dv[0-1] : Time;
+	}
+
+	class DvToken extends DvChar {
+		attribute dv[0-1] : Token;
+	}
+
+	datatype UnsignedByte;
+	datatype UnsignedInt;
+	datatype UnsignedLong;
+	datatype UnsignedShort;
+	
+	class DvUnsignedByte extends DvNumeric {
+		attribute dv[0-1] : UnsignedByte;
+	}
+
+	class DvUnsignedInt extends DvNumeric {
+		attribute dv[0-1] : UnsignedInt;
+	}
+
+	class DvUnsignedLong extends DvNumeric {
+		attribute dv[0-1] : UnsignedLong;
+	}
+
+	class DvUnsignedShort extends DvNumeric {
+		attribute dv[0-1] : UnsignedShort;
+	}
+
+	class DvURI extends DvAny {
+		attribute dv[0-1] : AnyURI;
+	}
+
+	class Element extends Item {
+		reference dv container : DvAny;
+	}
+
+	class EntityRef extends ObjectRef {
+		
+	}
+
+	abstract class Entry extends ContentItem {
+		reference language container : DvLanguage;
+		reference encoding[0-1] container : DvCodedString;
+		reference subject[0-1] container : PartyProxy;
+		reference provider[0-1] container : PartyProxy;
+		reference otherParticipations[*] ordered container : Participation;
+		reference workflowId[0-1] container : ObjectRef;
+	}
+
+	class Evaluation extends CareEntry {
+		reference data container : ItemStructure;
+	}
+
+	abstract class Event extends Locatable {
+		reference time container : DvTemporal;
+		reference data container : DvAny;
+		reference state[0-1] container : ItemStructure;
+	}
+
+	class EventContext extends Locatable {
+		reference healthcareFacility[0-1] container : Organization;
+		reference startTime container : DvTemporal;
+		reference endTime[0-1] container : DvTemporal;
+		reference participation[0-1] container : Participation;
+		reference location[0-1] container : Location;
+		reference setting[0-1] container : DvCodedString;
+	}
+
+	abstract class ExceptionalValue {
+		attribute evName : String;
+		attribute evMeaning : String;
+	}
+
+	class FeederAudit {
+		reference originatingSystemAudit container : FeederAuditDetails;
+		reference originatingSystemItemIds[1-*] ordered container : DvIdentifier;
+		reference feederSystemAudit container : FeederAuditDetails;
+		reference feederSystemIds[1-*] ordered container : DvIdentifier;
+		reference originalContent container : DvEncapsulated;
+	}
+
+	class FeederAuditDetails {
+		reference systemId container : DvIdentifier;
+		reference versionId[0-1] container : DvNormalizedString;
+		reference provider[0-1] container : PartyIdentified;
+		reference location[0-1] container : Location;
+		reference time[0-1] container : DvTemporal;
+		reference subject[*] ordered container : PartyProxy;
+	}
+
+	class Folder extends Locatable {
+		reference items[*] ordered container : Composition;
+	}
+
+	class Group extends Party {
+		reference members[*] ordered container : Party;
+	}
+
+	class History extends DataStructure {
+		reference origin container : DvTemporal;
+		reference events[1-*] ordered container : Event;
+		reference period[0-1] container : DvDuration;
+		reference duration[0-1] container : DvDuration;
+		reference summary[0-1] container : ItemStructure;
+	}
+
+	class Instruction extends CareEntry {
+		reference expiryTime[0-1] container : DvTemporal;
+		reference narrative container : DvString;
+		reference wfDefinition[0-1] container : DvParsable;
+		reference activities[1-*] ordered container : Activity;
+	}
+
+	class IntervalEvent extends Event {
+		reference width container : DvDuration;
+		reference mathFunction container : DvCodedString;
+		reference sampleCount[0-1] container : DvCount;
+	}
+
+	class INV extends NI {
+		
+	}
+
+	abstract class Item extends Locatable {
+		
+	}
+
+	class ItemList extends ItemStructure {
+		reference items[*] ordered container : Item;
+	}
+
+	class ItemSingle extends ItemStructure {
+		reference item container : Item;
+	}
+
+	abstract class ItemStructure extends DataStructure {
+		
+	}
+
+	class ItemTable extends ItemStructure {
+		reference rows[1-*] ordered container : Cluster;
+	}
+
+	class ItemTree extends ItemStructure {
+		reference items[1-*] ordered container : Item;
+	}
+
+	class Link {
+		reference relation container : Relationship;
+		reference target container : DvToken;
+	}
+
+	abstract class Locatable {
+		reference feederAudit[0-1] container : FeederAudit;
+		reference name container : DvNormalizedString;
+		reference uuid container : DvToken;
+		reference parent[0-1] container : DvToken;
+	}
+
+	class Location extends Locatable {
+		reference details container : ItemStructure;
+		reference description container : DvString;
+		reference isPrimary container : DvBoolean;
+	}
+
+	class MetaDataEntry {
+		attribute title : String;
+		attribute contents : String;
+	}
+
+	class MetaDataSet {
+		attribute name : String;
+		reference entries[1-*] ordered container : MetaDataEntry;
+	}
+
+	class MSK extends NI {
+		
+	}
+
+	class NA extends NI {
+		
+	}
+
+	class NASK extends UNK {
+		
+	}
+
+	class NAV extends ASKU {
+		
+	}
+
+	class NI extends ExceptionalValue {
+		
+	}
+
+	class NINF extends OTH {
+		
+	}
+
+	class NonHuman extends Party {
+		reference details container : ItemStructure;
+	}
+
+	class ObjectRef {
+		attribute uuid : Token;
+		attribute namespace : NormalizedString;
+		attribute objType : NormalizedString;
+	}
+
+	class Observation extends CareEntry {
+		reference data container : History;
+		reference state[0-1] container : History;
+	}
+
+	class Ontology {
+		attribute names[*] ordered : String;
+		attribute internalVocabularies[*] ordered : String;
+		attribute lookupTables[*] ordered : String;
+		attribute terminologies[*] ordered : String;
+		reference generalEntries[*] ordered container : OntologyEntry;
+	}
+
+	class OntologyEntry {
+		attribute contents[1-*] ordered : String;
+	}
+
+	class Organization extends Party {
+		reference details container : ItemStructure;
+	}
+
+	class OTH extends INV {
+		
+	}
+
+	class Participation {
+		reference performer[0-1] container : PartyProxy;
+		reference function container : DvCodedString;
+		reference mode container : DvCodedString;
+		reference time container : DvTemporal;
+	}
+
+	abstract class Party extends Locatable {
+		reference validTimeBegin[0-1] container : DvDateTime;
+		reference validTimeEnd[0-1] container : DvDateTime;
+		reference ev[0-1] container : ExceptionalValue;
+		reference identifiers[*] ordered container : DvIdentifier;
+		reference roles[*] ordered container : Role;
+		reference relationships[*] ordered container : Relationship;
+		reference locations[*] ordered container : Location;
+	}
+
+	class PartyIdentified extends PartyProxy {
+		reference name[0-1] container : DvString;
+		reference identifiers[1-*] ordered container : DvIdentifier;
+	}
+
+	abstract class PartyProxy extends DvAny {
+		reference externalRef[0-1] container : EntityRef;
+	}
+
+	class PartyRelated extends PartyIdentified {
+		reference relationship container : Relationship;
+	}
+
+	class PartySelf extends PartyProxy {
+		
+	}
+
+	class Person extends Party {
+		reference details container : ItemStructure;
+	}
+
+	class PINF extends OTH {
+		
+	}
+
+	class PointEvent extends Event {
+		
+	}
+
+	class QS extends UNK {
+		
+	}
+
+	class ReferenceRange extends DvAny {
+		reference definition container : DvString;
+		reference dataRange container : DvInterval;
+	}
+
+	class Relationship extends Locatable {
+		reference targets[1-*] ordered container : DvToken;
+	}
+
+	class Role extends Locatable {
+		reference details container : ItemStructure;
+		reference description container : DvString;
+		reference isPrimary container : DvBoolean;
+	}
+
+	class Section extends ContentItem {
+		reference items[*] ordered container : ContentItem;
+	}
+
+	class Slot extends Item {
+		reference ccd container : DvToken;
+		reference allowedCcds[1-*] ordered container : DvToken;
+	}
+
+	class TRC extends UNK {
+		
+	}
+
+	class UNC extends INV {
+		
+	}
+
+	class UNK extends NI {
+		
+	}
+	
+	datatype DateTime;
+	datatype Boolean;
+	datatype NormalizedString;
+	datatype Byte;
+	datatype Integer;
+	datatype Decimal;
+	datatype Duration;
+	datatype Language;
+}

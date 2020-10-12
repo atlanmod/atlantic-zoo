@@ -1,0 +1,170 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_SimpleSBVR"{
+labelloc=t
+color=black
+label=SimpleSBVR
+ node[shape=record];
+Root[label="{Root| | }"]
+ Root->Element[arrowhead=vee,arrowtail=diamond,headlabel="elements[*]",group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Element[label="{Element|objectName : String| }"]
+;
+ node[shape=record];
+Representation[label="{Representation| | }"]
+ Representation->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Designation[label="{Designation| | }"]
+ Designation->Text[arrowhead=vee,arrowtail=none,headlabel="text",group=Text,minlen=2,constraint=false,]
+ Designation->Representation[arrowhead=onormal,group=Representation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Text[label="{Text|value : String| }"]
+ Text->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Meaning[label="{Meaning| | }"]
+ Meaning->Representation[arrowhead=none,arrowtail=none,headlabel="representations[*]",taillabel="meaning",group=Representation,minlen=2,constraint=false,]
+ Meaning->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Concept[label="{Concept| | }"]
+ Concept->Meaning[arrowhead=onormal,group=Meaning,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NounConcept[label="{NounConcept| | }"]
+ NounConcept->Concept[arrowhead=onormal,group=Concept,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ObjectType[label="{ObjectType| | }"]
+ ObjectType->ObjectType[arrowhead=none,arrowtail=none,headlabel="generalizes[*]",taillabel="specializes",group=ObjectType,minlen=2,constraint=false,]
+ ObjectType->NounConcept[arrowhead=onormal,group=NounConcept,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IndividualConcept[label="{IndividualConcept| | }"]
+ IndividualConcept->ObjectType[arrowhead=vee,arrowtail=none,headlabel="instanceOf[0-1]",group=ObjectType,minlen=2,constraint=false,]
+ IndividualConcept->NounConcept[arrowhead=onormal,group=NounConcept,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataType[label="{DataType| | }"]
+ DataType->NounConcept[arrowhead=onormal,group=NounConcept,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NonEmptyString[label="{NonEmptyString|value : String| }"]
+ NonEmptyString->DataType[arrowhead=onormal,group=DataType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NonNegativeInteger[label="{NonNegativeInteger|value : Integer| }"]
+ NonNegativeInteger->DataType[arrowhead=onormal,group=DataType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FactType[label="{FactType| | }"]
+ FactType->Concept[arrowhead=onormal,group=Concept,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BinaryFactType[label="{BinaryFactType| | }"]
+ BinaryFactType->FactTypeRole[arrowhead=vee,arrowtail=none,headlabel="role1",group=FactTypeRole,minlen=2,constraint=false,]
+ BinaryFactType->FactTypeRole[arrowhead=vee,arrowtail=none,headlabel="role2",group=FactTypeRole,minlen=2,constraint=false,]
+ BinaryFactType->FactType[arrowhead=onormal,group=FactType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IsPropertyOfFactType[label="{IsPropertyOfFactType| | }"]
+ IsPropertyOfFactType->BinaryFactType[arrowhead=onormal,group=BinaryFactType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AssociativeFactType[label="{AssociativeFactType| | }"]
+ AssociativeFactType->BinaryFactType[arrowhead=onormal,group=BinaryFactType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CategorizationFactType[label="{CategorizationFactType| | }"]
+ CategorizationFactType->BinaryFactType[arrowhead=onormal,group=BinaryFactType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ObjectificationFactType[label="{ObjectificationFactType| | }"]
+ ObjectificationFactType->BinaryFactType[arrowhead=onormal,group=BinaryFactType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Role[label="{Role| | }"]
+ Role->NounConcept[arrowhead=vee,arrowtail=none,headlabel="nounConcept",group=NounConcept,minlen=2,constraint=false,]
+ Role->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FactTypeRole[label="{FactTypeRole| | }"]
+ FactTypeRole->Role[arrowhead=onormal,group=Role,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LogicalFormulation[label="{LogicalFormulation| | }"]
+ LogicalFormulation->Meaning[arrowhead=onormal,group=Meaning,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AtomicFormulation[label="{AtomicFormulation| | }"]
+ AtomicFormulation->FactType[arrowhead=vee,arrowtail=none,headlabel="isBasedOn",group=FactType,minlen=2,constraint=false,]
+ AtomicFormulation->LogicalFormulation[arrowhead=onormal,group=LogicalFormulation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BinaryAtomicFormulation[label="{BinaryAtomicFormulation| | }"]
+ BinaryAtomicFormulation->RoleBinding[arrowhead=vee,arrowtail=none,headlabel="roleBinding1",group=RoleBinding,minlen=2,constraint=false,]
+ BinaryAtomicFormulation->RoleBinding[arrowhead=vee,arrowtail=none,headlabel="roleBinding2",group=RoleBinding,minlen=2,constraint=false,]
+ BinaryAtomicFormulation->AtomicFormulation[arrowhead=onormal,group=AtomicFormulation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NecessityFormulation[label="{NecessityFormulation| | }"]
+ NecessityFormulation->LogicalFormulation[arrowhead=onormal,group=LogicalFormulation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Quantification[label="{Quantification| | }"]
+ Quantification->Variable[arrowhead=vee,arrowtail=none,headlabel="introducedVariable",group=Variable,minlen=2,constraint=false,]
+ Quantification->LogicalFormulation[arrowhead=vee,arrowtail=none,headlabel="scopesOver",group=LogicalFormulation,minlen=2,constraint=false,]
+ Quantification->LogicalFormulation[arrowhead=onormal,group=LogicalFormulation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UniversalQuantification[label="{UniversalQuantification| | }"]
+ UniversalQuantification->Quantification[arrowhead=onormal,group=Quantification,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AtLeastNQuantification[label="{AtLeastNQuantification| | }"]
+ AtLeastNQuantification->NonNegativeInteger[arrowhead=vee,arrowtail=none,headlabel="minCardinality",group=NonNegativeInteger,minlen=2,constraint=false,]
+ AtLeastNQuantification->Quantification[arrowhead=onormal,group=Quantification,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExactlyNQuantification[label="{ExactlyNQuantification| | }"]
+ ExactlyNQuantification->NonNegativeInteger[arrowhead=vee,arrowtail=none,headlabel="cardinality",group=NonNegativeInteger,minlen=2,constraint=false,]
+ ExactlyNQuantification->Quantification[arrowhead=onormal,group=Quantification,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AtMostNQuantification[label="{AtMostNQuantification| | }"]
+ AtMostNQuantification->NonNegativeInteger[arrowhead=vee,arrowtail=none,headlabel="maxCardinality",group=NonNegativeInteger,minlen=2,constraint=false,]
+ AtMostNQuantification->Quantification[arrowhead=onormal,group=Quantification,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BindableTarget[label="{BindableTarget| | }"]
+ BindableTarget->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Variable[label="{Variable| | }"]
+ Variable->ObjectType[arrowhead=vee,arrowtail=none,headlabel="rangesOver",group=ObjectType,minlen=2,constraint=false,]
+ Variable->BindableTarget[arrowhead=onormal,group=BindableTarget,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RoleBinding[label="{RoleBinding| | }"]
+ RoleBinding->AtomicFormulation[arrowhead=vee,arrowtail=none,headlabel="occursIn",group=AtomicFormulation,minlen=2,constraint=false,]
+ RoleBinding->FactType[arrowhead=vee,arrowtail=none,headlabel="isOf",group=FactType,minlen=2,constraint=false,]
+ RoleBinding->BindableTarget[arrowhead=vee,arrowtail=none,headlabel="bindsTo",group=BindableTarget,minlen=2,constraint=false,]
+ RoleBinding->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

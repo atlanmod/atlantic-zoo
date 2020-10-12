@@ -1,0 +1,273 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_Perceptory"{
+labelloc=t
+color=black
+label=Perceptory
+ node[shape=record];
+Process[label="{/Process/| | }"]
+;
+ node[shape=record];
+StopProcess[label="{StopProcess| | }"]
+ StopProcess->Process[arrowhead=onormal,group=Process,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SkipProcess[label="{SkipProcess| | }"]
+ SkipProcess->Process[arrowhead=onormal,group=Process,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Action[label="{/Action/| | }"]
+ Action->Process[arrowhead=onormal,group=Process,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Construction[label="{Construction| | }"]
+ Construction->Process[arrowhead=onormal,group=Process,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Instance[label="{Instance|name : String| }"]
+ Instance->Process[arrowhead=onormal,group=Process,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Assignment[label="{Assignment| | }"]
+ Assignment->Variable[arrowhead=vee,arrowtail=diamond,headlabel="variable",group=Variable,minlen=2,constraint=true,]
+ Assignment->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expression",group=Expression,minlen=2,constraint=true,]
+ Assignment->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Input[label="{Input| | }"]
+ Input->Channel[arrowhead=vee,arrowtail=diamond,headlabel="channel",group=Channel,minlen=2,constraint=true,]
+ Input->Variable[arrowhead=vee,arrowtail=diamond,headlabel="variable",group=Variable,minlen=2,constraint=true,]
+ Input->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Output[label="{Output| | }"]
+ Output->Channel[arrowhead=vee,arrowtail=diamond,headlabel="channel",group=Channel,minlen=2,constraint=true,]
+ Output->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expression",group=Expression,minlen=2,constraint=true,]
+ Output->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Sequence[label="{/Sequence/| | }"]
+ Sequence->Process[arrowhead=vee,arrowtail=diamond,headlabel="process",group=Process,minlen=2,constraint=true,]
+ Sequence->Construction[arrowhead=onormal,group=Construction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NormalSequence[label="{NormalSequence| | }"]
+ NormalSequence->Sequence[arrowhead=onormal,group=Sequence,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReplicatorSequence[label="{ReplicatorSequence| | }"]
+ ReplicatorSequence->Replicator[arrowhead=vee,arrowtail=diamond,headlabel="replicator",group=Replicator,minlen=2,constraint=true,]
+ ReplicatorSequence->Sequence[arrowhead=onormal,group=Sequence,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Conditional[label="{/Conditional/| | }"]
+ Conditional->Choice[arrowhead=vee,arrowtail=diamond,headlabel="choice",group=Choice,minlen=2,constraint=true,]
+ Conditional->Construction[arrowhead=onormal,group=Construction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NormalConditional[label="{NormalConditional| | }"]
+ NormalConditional->Conditional[arrowhead=onormal,group=Conditional,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReplicatorConditional[label="{ReplicatorConditional| | }"]
+ ReplicatorConditional->Replicator[arrowhead=vee,arrowtail=diamond,headlabel="replicator",group=Replicator,minlen=2,constraint=true,]
+ ReplicatorConditional->Conditional[arrowhead=onormal,group=Conditional,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Loop[label="{Loop| | }"]
+ Loop->BooleanRef[arrowhead=vee,arrowtail=diamond,headlabel="boolean",group=BooleanRef,minlen=2,constraint=true,]
+ Loop->Process[arrowhead=vee,arrowtail=diamond,headlabel="process",group=Process,minlen=2,constraint=true,]
+ Loop->Construction[arrowhead=onormal,group=Construction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parallel[label="{/Parallel/| | }"]
+ Parallel->Process[arrowhead=vee,arrowtail=diamond,headlabel="process",group=Process,minlen=2,constraint=true,]
+ Parallel->Construction[arrowhead=onormal,group=Construction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NormalParallel[label="{NormalParallel| | }"]
+ NormalParallel->Parallel[arrowhead=onormal,group=Parallel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReplicatorParallel[label="{ReplicatorParallel| | }"]
+ ReplicatorParallel->Replicator[arrowhead=vee,arrowtail=diamond,headlabel="replicator",group=Replicator,minlen=2,constraint=true,]
+ ReplicatorParallel->Parallel[arrowhead=onormal,group=Parallel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Alternation[label="{Alternation| | }"]
+ Alternation->Alternative[arrowhead=vee,arrowtail=diamond,headlabel="alternative",group=Alternative,minlen=2,constraint=true,]
+ Alternation->Construction[arrowhead=onormal,group=Construction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NormalAlternation[label="{NormalAlternation| | }"]
+ NormalAlternation->Parallel[arrowhead=onormal,group=Parallel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReplicatorAlternation[label="{ReplicatorAlternation| | }"]
+ ReplicatorAlternation->Replicator[arrowhead=vee,arrowtail=diamond,headlabel="replicator",group=Replicator,minlen=2,constraint=true,]
+ ReplicatorAlternation->Parallel[arrowhead=onormal,group=Parallel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Choice[label="{Choice| | }"]
+ Choice->BooleanRef[arrowhead=vee,arrowtail=diamond,headlabel="boolean",group=BooleanRef,minlen=2,constraint=true,]
+ Choice->Process[arrowhead=vee,arrowtail=diamond,headlabel="process",group=Process,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BooleanRef[label="{BooleanRef| | }"]
+ BooleanRef->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expression",group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Alternative[label="{Alternative| | }"]
+ Alternative->Guard[arrowhead=vee,arrowtail=diamond,headlabel="guard",group=Guard,minlen=2,constraint=true,]
+ Alternative->Process[arrowhead=vee,arrowtail=diamond,headlabel="process",group=Process,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Guard[label="{/Guard/| | }"]
+ Guard->Input[arrowhead=vee,arrowtail=diamond,headlabel="input",group=Input,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InputGuard[label="{InputGuard| | }"]
+ InputGuard->Guard[arrowhead=onormal,group=Guard,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BooleanGuard[label="{BooleanGuard| | }"]
+ BooleanGuard->BooleanRef[arrowhead=vee,arrowtail=diamond,headlabel="boolean",group=BooleanRef,minlen=2,constraint=true,]
+ BooleanGuard->Guard[arrowhead=onormal,group=Guard,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Replicator[label="{Replicator|name : String| }"]
+ Replicator->Base[arrowhead=vee,arrowtail=diamond,headlabel="base",group=Base,minlen=2,constraint=true,]
+ Replicator->Count[arrowhead=vee,arrowtail=diamond,headlabel="count",group=Count,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Base[label="{Base| | }"]
+ Base->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expression",group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Count[label="{Count| | }"]
+ Count->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expression",group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Type[label="{Type| | }"]
+ Type->PrimitiveType[arrowhead=vee,arrowtail=diamond,headlabel="primitiveType",group=PrimitiveType,minlen=2,constraint=true,]
+ Type->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expression[0-1]",group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PrimitiveType[label="{PrimitiveType|isInt : Boolean\nisChan : Boolean| }"]
+;
+ node[shape=record];
+Literal[label="{Literal|integer : Integer| }"]
+;
+ node[shape=record];
+Element[label="{Element|name : String| }"]
+ Element->Subscript[arrowhead=vee,arrowtail=diamond,headlabel="subscript[0-1]",group=Subscript,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Subscript[label="{Subscript| | }"]
+ Subscript->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expression",group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Variable[label="{Variable| | }"]
+ Variable->Element[arrowhead=vee,arrowtail=diamond,headlabel="element",group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Channel[label="{Channel| | }"]
+ Channel->Element[arrowhead=vee,arrowtail=diamond,headlabel="element",group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Operand[label="{/Operand/| | }"]
+;
+ node[shape=record];
+VariableOPerand[label="{VariableOPerand| | }"]
+ VariableOPerand->Variable[arrowhead=onormal,group=Variable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LiteralOperand[label="{LiteralOperand| | }"]
+ LiteralOperand->Literal[arrowhead=onormal,group=Literal,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExpressionOperand[label="{ExpressionOperand| | }"]
+ ExpressionOperand->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Expression[label="{/Expression/| | }"]
+ Expression->Operand[arrowhead=vee,arrowtail=diamond,headlabel="operand",group=Operand,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MonadicExpression[label="{MonadicExpression| | }"]
+ MonadicExpression->MonadicOperator[arrowhead=vee,arrowtail=diamond,headlabel="monadicOperator",group=MonadicOperator,minlen=2,constraint=true,]
+ MonadicExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DyadicExpression[label="{DyadicExpression| | }"]
+ DyadicExpression->Operand[arrowhead=vee,arrowtail=diamond,headlabel="operandRight",group=Operand,minlen=2,constraint=true,]
+ DyadicExpression->DyadicOperator[arrowhead=vee,arrowtail=diamond,headlabel="dyadicOperator",group=DyadicOperator,minlen=2,constraint=true,]
+ DyadicExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleExpression[label="{SimpleExpression| | }"]
+ SimpleExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Specification[label="{/Specification/| | }"]
+ Specification->Process[arrowhead=onormal,group=Process,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Declaration[label="{/Declaration/| | }"]
+ Declaration->Specification[arrowhead=onormal,group=Specification,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TypeDeclaration[label="{TypeDeclaration| | }"]
+ TypeDeclaration->Type[arrowhead=vee,arrowtail=diamond,headlabel="type",group=Type,minlen=2,constraint=true,]
+ TypeDeclaration->Declaration[arrowhead=onormal,group=Declaration,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IntDeclaration[label="{IntDeclaration|name : String| }"]
+ IntDeclaration->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expression",group=Expression,minlen=2,constraint=true,]
+ IntDeclaration->Declaration[arrowhead=onormal,group=Declaration,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ValDeclaration[label="{ValDeclaration|name : String| }"]
+ ValDeclaration->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expression",group=Expression,minlen=2,constraint=true,]
+ ValDeclaration->Declaration[arrowhead=onormal,group=Declaration,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Definition[label="{Definition|name : String| }"]
+ Definition->ProcedureBody[arrowhead=vee,arrowtail=diamond,headlabel="procedureBody",group=ProcedureBody,minlen=2,constraint=true,]
+ Definition->Specification[arrowhead=onormal,group=Specification,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Formal[label="{Formal|name : String| }"]
+ Formal->PrimitiveType[arrowhead=vee,arrowtail=diamond,headlabel="primitiveType",group=PrimitiveType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ProcedureBody[label="{ProcedureBody|name : String| }"]
+ ProcedureBody->Process[arrowhead=vee,arrowtail=diamond,headlabel="process",group=Process,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Actual[label="{Actual| | }"]
+ Actual->Element[arrowhead=vee,arrowtail=diamond,headlabel="element",group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MonadicOperator[label="{MonadicOperator|minus : Boolean\nnot : Boolean| }"]
+;
+ node[shape=record];
+DyadicOperator[label="{DyadicOperator|plus : Boolean\nminus : Boolean\nstar : Boolean\nslash : Boolean\nor : Boolean\ninverseSlash : Boolean\nand : Boolean\neq : Boolean\nne : Boolean\nlt : Boolean\ngt : Boolean\nle : Boolean\nge : Boolean| }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

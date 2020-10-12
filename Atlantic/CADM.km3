@@ -1,0 +1,245 @@
+-- @name		CADM (C4ISR Architecture Data Model)
+-- @version		1.0
+-- @domains		Architecture Description, SoS (System of System), View, Viewpoint
+-- @authors		Albin Jossic (albin.jossic <at> gmail.com), ATLAS team (Nantes, France)
+-- @date		2006/06/06
+-- @description CADM (C4ISR Architecture Data Moodel) metamodel is an overview of the key entities and relationships for the C4ISR Core.
+-- @see 		http://www.afcea.org/education/courses/archfwk2.pdf
+-- @see 		http://www.government.popkin.com/frameworks/c4isr.htm
+-- @see 		http://www.c4isrjournal.com/
+-- @see 		DoDAF official site http://www.defenselink.mil/nii/global_Info_grid.html
+
+-- @comments C4ISR (Command, Control, Communications, Computers, Intelligence, Surveillance, and Reconnaissance)
+
+--@begin package C4ISR Architecture Data Model
+package CADM {
+	
+	--@begin class Element
+	--@comments this class is not a part of CADM
+	class Element {
+		attribute name : String;
+		attribute content : String;
+	}	
+	--@end class Element
+	
+	--@begin class Architecture
+	class Architecture extends Element {
+		reference isAssociatedWith[0-*] container : Architecture;
+		reference missions[0-*] container : Mission oppositeOf isCitedBy;
+		reference isFocusOf[0-*] : FunctionalArea;
+		reference uses[0-*] : Organization;
+	}
+	--@end class Architecture
+	
+	--@begin class Organization
+	--@comments DoDAF standard entity
+	class Organization extends Element {
+		reference isAssociatedWith[0-*] : Organization;		
+		reference softwareItems[0-*] container : SoftwareItem oppositeOf isSourceFor;
+		reference owns[0-*] : InformationAsset;
+		reference includes[0-*] : Node;
+		reference performsTo[0-*] : Capability;
+		reference hasRequirement[0-*] : Requirement;
+		reference hasMissionArea[0-*] : MissionArea;
+		reference associatedSystems[0-*] : System;
+		reference isProponentOf[0-*] : FunctionalArea;
+	}
+	--@end class Organization
+	
+	--@begin class Guidance
+	--@comments DoDAF standard entity
+	class Guidance extends Element {
+		reference isAssocitatedWith[0-*] container : Guidance;
+		reference isImplementedBy[0-*] : Architecture;
+		reference isSpecifiedIn[0-*] : Document;
+		reference providesAuthorityFor[0-*] : InformationAsset;
+		reference defines[0-*] : MissionArea;
+	}
+	--@end class Guidance
+	
+	--@begin class Document
+	--@comments DoDAF standard entity
+	class Document extends Element {
+		reference isAssociatedWith[0-*] container : Document;
+		reference describesArchitecture : Architecture;
+		reference describesSystem[0-*] : System;
+		reference isSpecifiedUsing[0-*] : Agreement;
+		reference cites[0-*] : InformationAsset;
+	}
+	--@end class Document
+	
+	--@begin class Action
+	--@comments DoDAF standard entity
+	class Action extends Element {
+		reference mayBeA container : Task;
+		reference isAssociatedWith[0-*] container : Action;
+		reference involvedIn[0-*] : ActivityModel;
+	}
+	--@end class Action
+	
+	--@begin class Agreement
+	--@comments DoDAF standard entity
+	class Agreement extends Element {
+		reference isAssociatedWith[0-*] container : Agreement;
+		reference isCitedBy[0-*] : Agreement;
+		reference appliesTo[0-*] : InformationAsset;
+		reference implements[0-*] : Guidance;		
+	}
+	--@end class Agreement
+	
+	--@begin class Standard
+	class Standard extends Agreement {}
+	--@end class Standard
+	
+	--@begin class Task
+	--@comments DoDAF standard entity
+	class Task extends Element {
+		reference isAssociatedWith[0-*] container : Task;
+		reference isPerformedBy[0-*] : Node;
+		reference isPerformedUsing[0-*] : System;
+		reference specifies[0-*] : Requirement;		
+	}
+	--@end class Task
+	
+	--@begin class InformationAsset
+	--@comments DoDAF standard entity
+	class InformationAsset extends Element {
+		reference isAssociatedWith[0-*] container : InformationAsset;
+	}
+	--@end class InformationAsset
+	
+	--@begin class ConceptualDataModel
+	--@comments DoDAF standard entity
+	class ConceptualDataModel extends InformationAsset {}
+	--@end class ConceptualDataModel
+	
+	--@begin class ActivityModel
+	--@comments DoDAF standard entity
+	class ActivityModel extends InformationAsset {}
+	--@end class ActivityModel
+	
+	--@begin class Node
+	class Node {
+		reference isAssociatedWith [0-*] : Node;
+		reference describes[0-*] : Architecture;
+		reference hasServicesProvidedBy[0-*] : Facility;
+		reference involvedIn[0-*] : ActivityModel;
+		reference uses[0-*] : InformationAsset;
+		reference involves[0-*] : InfoExchRequirement;
+		reference isParticipedInBy[0-*] : Network;
+		reference supports[0-*] : System;
+	}
+	--@end class Node
+	
+	--@begin class Network
+	class Network extends Element {
+		reference isAssociatedWith[0-*] container : Network;
+		reference isDescribedIn[0-*] : Document;
+		reference compliesWith[0-*] : Standard;
+		reference has[0-*] : Organization;
+		reference performsTo[0-*] : Capability;
+	}
+	--@end class Network
+	
+	--@begin class Requirement
+	class Requirement extends Guidance {
+		reference mayBeSatifiedBy[0-*] : Architecture;
+		reference isSpecifiedUsing[0-*] : InformationAsset;
+		reference specifiesNeedFor[0-*] : MaterielItem ;
+		reference cites[0-*] : MissionArea;
+	}
+	--@end class Requirement
+	
+	--@begin class InfoExchRequirement
+	class InfoExchRequirement extends Requirement {
+		reference isCitedIn[0-*] : Document;
+		reference isSpecifiedInInfos[0-*] : InformationAsset;
+	}
+	--@end class InfoExchRequirement
+	
+	--@begin class ExchangeNeedLineReq
+	class ExchangeNeedLineReq extends Requirement {}
+	--@end class ExchangeNeedLineReq
+	
+	--@begin class MissionArea
+	--@comments DoDAF standard entity
+	class MissionArea extends Element {
+		reference supports[0-*] : Task;
+	}
+	--@end class MissionArea
+	
+	--@begin class System
+	class System extends Element {
+		reference isAssociatedWith[0-*] : System;
+		reference citedIn[0-*] : Architecture;
+		reference compliesWith[0-*] : Standard;
+		reference isDescribedBy[0-*] : InformationAsset;
+		reference uses[0-*] : MaterielItem;
+		reference operatesUsing[0-*] : Network;
+		reference performsTo[0-*] : Capability;
+		reference associatedOrganization[0-*] : Organization;
+		reference appliesTo[0-*] : Requirement;
+	}
+	--@end class System
+	
+	--@begin class Mission
+	--@comments DoDAF standard entity
+	class Mission extends Element {
+		reference isCitedBy : Architecture oppositeOf missions;
+		reference requires[0-*] : Task;
+		reference isAssigned[0-*] : Organization;
+		reference mayCite[0-*] : FunctionalArea;
+	}
+	--@end class Mission
+	
+	--@begin class FunctionalArea
+	--@comments DoDAF standard entity
+	class FunctionalArea extends Element {
+		reference isPartOf[0-*] : FunctionalArea;
+		reference supports[0-*] : System;	
+		reference cites[0-*] : MissionArea;	
+	}
+	--@end class FunctionalArea
+	
+	--@begin class Capability
+	--@comments DoDAF standard entity
+	class Capability extends Element {
+		reference specifiesRequired[0-*] : Requirement;
+	}
+	--@end class Capability
+	
+	--@begin class MaterielItem
+	--@comments DoDAF standard entity
+	class MaterielItem extends Element {
+		reference establishedAs[0-*] container : MaterielItem;
+		reference conformsTo[0-*] : Standard;
+		reference performsTo[0-*] : Capability;
+	}
+	--@end class MaterielItem
+	
+	--@begin class EquipementType
+	--@comments DoDAF standard entity
+	class EquipmentType extends MaterielItem {}
+	--@end class EquipementType
+	
+	--@begin class SoftwareItem
+	class SoftwareItem extends MaterielItem {
+		reference uses[0-*] : EquipmentType;
+		reference isSourceFor : Organization oppositeOf softwareItems;
+	}
+	--@end class SoftwareItem
+	
+	--@begin class Facility
+	--@comments DoDAF standard entity
+	class Facility extends Element {}
+	--@end class Facility
+	
+}
+--@end package C4ISR Architecture Data Model
+
+
+--@begin package PrimitiveTypes
+package PrimitiveTypes {
+	datatype String;
+}
+--@end package PrimitiveTypes

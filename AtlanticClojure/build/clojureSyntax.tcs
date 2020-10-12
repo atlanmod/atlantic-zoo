@@ -1,0 +1,363 @@
+-- @name		clojureSyntax
+-- @version		1.0
+-- @authors		Guillaume
+-- @date		2010/02/24
+-- @description	${description}
+
+-- The different sections of a TCS model have been enclosed between BEGIN and END
+-- comments below. Additional information is provided below each BEGIN comment.
+-- The main sections of interest are "Class templates", and
+-- "Operator table" (the latter only for DSLs using operators).
+syntax clojureSyntax(k = 0) {
+
+-- BEGIN Primitive templates
+-- Specifies representation of primitive types.
+-- Only needs modification when default lexer is not satisfactory.
+-- Generally modified along with the lexer.
+
+	primitiveTemplate stringSymbol for String using STRING:
+		value = "ei.unescapeString(%token%, 1)",
+		serializer="'\'' + %value%.toCString() + '\''";
+
+	primitiveTemplate integerSymbol for Integer default using INT:
+		value = "Integer.valueOf(%token%)";
+
+	primitiveTemplate baseSymb for String using INTR:
+		value = "%token%";
+
+	primitiveTemplate backSlashSymb for String using BSCHAR:
+		value = "%token%";
+		
+	primitiveTemplate Symb for String default using SYMBOLS:
+		value = "%token%";
+		
+	primitiveTemplate colonSymb for String using COLONSYMBOL:
+		value = "ei.unescapeString(%token%, 1)",
+		serializer="%value%.toCString()";
+		
+	primitiveTemplate dotSymb for String using DOTSYMBOL:
+		value = "%token%";
+	
+	primitiveTemplate floatSymbol for Double default using FLOAT:
+		value = "Double.valueOf(%token%)";
+-- END Primitive templates
+
+-- BEGIN Class templates
+-- Specifies representation of classes.
+-- This is the main section to work on.
+	template Root main
+		:	 [ expressions ] {indentIncr = 0, startNL = false}
+		;
+
+	template Expression abstract 
+		;
+	
+	template Number abstract
+		;	
+		
+	template INumber
+		:	value
+		;
+	
+	template FNumber
+		:	value
+		;
+		
+	template OtherBaseNumber
+		:	value  {as=baseSymb}
+		;
+		
+--	template Bool
+--		:	value
+--		;
+	
+	template StringElem
+		:	value {as=stringSymbol}
+		;
+	
+	template Character
+		:	value {as=backSlashSymb}
+		;
+	
+	template Keyword
+		:	value {as=colonSymb}
+		;
+		
+	template ReservedWord
+		:	value {as=dotSymb}
+		;
+		
+	template Symbol
+		:	value {as=Symb}
+		;
+		
+	template Nil
+		: 	"nil"	
+		;
+		
+	template List
+		:	"(" elements ")"
+		;
+		
+	template Vector
+		:	"[" elements "]"
+		;
+		
+	template Map
+		:	"{" elements "}"
+		;
+		
+	template Set
+		:	"#""{" elements "}"
+		;
+	
+--	template MapBis
+--		:	"{" elements {separator= "," } "}"
+--		;	
+	
+	template Entry
+		:	key value
+		;
+		
+	template FunctionCall
+		:	"(" name{refersTo= value } param ")"
+		;
+	
+	template JavaFunctionCall
+		:	"(" name{refersTo= value } param ")"
+		;
+	
+	template FunctionDefn addToContext
+		:	"(" def name (isDefined(param)? param) corps ")"
+		;
+	
+	template FunctionAritm
+		:	"(" op p ")"
+		;
+		
+	template FnExpression
+		:	"(" "fn" param corps ")"
+		;
+		
+	template LoopExpression
+		:	"(" "loop" param corps ")"
+		;	
+	
+	template IfExpression
+		:	"(" "if" condition then else ")"
+		;
+	
+	template BuiltInExpression
+		:	"("builtInOp [ args ] ")"
+		;
+	
+	enumerationTemplate Operator
+		:	#plus = "+",
+			#minus	= "-",
+			#div = "/",
+			#mult = "*",
+			#dot = ".",
+			#declare = "declare"
+		;
+		
+	enumerationTemplate DefEnum
+		:	#def = "def",
+			#defStruct = "defstruct",
+			#defN = "defn"
+		;
+		
+	enumerationTemplate BuiltInOp
+		:	#map = "map",
+			#structMap	= "struct-map",
+			#accessor = "accessor",
+			#reduce = "reduce",
+			#recur = "recur",
+			#print = "print",
+			#range = "range"
+		;
+	
+-- END Class templates
+
+-- BEGIN Special symbols
+-- Possible modifications:
+--	- Addition of new symbols.
+--	- Modification of spaces information.
+--	- Removal of unused symbols so that using these symbols results in lexical
+--	error rather than parsing error.
+	symbols {
+		lsquare		= "[";
+		rsquare		= "]"	: rightSpace;
+--		excl		= "!";
+		coma		= ","	: leftNone, rightSpace;
+--		lparen		= "(";
+--		rparen		= ")"	: leftNone, rightSpace;
+--		lcurly		= "{"	: leftSpace;
+--		rcurly		= "}"	: leftNone, rightSpace;
+		semi		= ";"	: leftNone, rightSpace;
+		--colon		= ":"	: leftSpace, rightSpace;
+		pipe		= "|"	: leftSpace, rightSpace;
+		sharp		= "#"	: leftSpace;
+--		qmark		= "?";
+		--coloncolon	= "::"	: leftNone, rightNone;
+
+		-- operator symbols
+		--point		= "."	: leftNone;
+		rarrow		= "->"	: leftNone;
+		--minus		= "-"	: leftSpace, rightSpace;
+		--star		= "*"	: leftSpace, rightSpace;
+		--slash		= "/"	: leftSpace, rightSpace;
+		--plus		= "+"	: leftSpace, rightSpace;
+		eq			= "="	: leftSpace, rightSpace;
+		gt			= ">"	: leftSpace, rightSpace;
+		lt			= "<"	: leftSpace, rightSpace;
+		ge			= ">="	: leftSpace, rightSpace;
+		le			= "<="	: leftSpace, rightSpace;
+		ne			= "<>"	: leftSpace, rightSpace;
+		larrow		= "<-"	: leftSpace, rightSpace;
+	}
+-- END Special symbols
+
+-- BEGIN Operator table
+-- Defines all operators with their priority, arity, and associativity.
+-- All defined operators must be used in operator templates.
+
+-- Specify operator table(s) here if necessary.
+
+-- END Operator table
+
+
+-- BEGIN Lexer
+-- Specifies the lexical entities.
+-- Only needs modification when default lexer is not satisfactory.
+-- Generally modified along with Primitive templates.
+	token COMMENT	: endOfLine(start = ";");
+	token STRING	: multiLine(start = "\"", end = "\"", esc = "\\");
+
+	lexer = "
+%options testLiterals = false;
+
+NL
+	:	(	'\\r' '\\n'
+		|	'\\n' '\\r'	//Improbable
+		|	'\\r'
+		|	'\\n'
+		)
+	{newline();}
+	;
+
+WS
+	:	(	' '
+		|	'\\t'
+		)
+	;
+
+%protected
+DIGIT
+	:	'0'..'9'
+	;
+
+%protected
+SYMB
+	:	'*' | '+' | '!' | '-' | '_' | '?'
+	;
+
+%protected
+ALPHA
+	:	'a'..'z'
+	|	'A'..'Z'
+	//For Unicode compatibility (from 0000 to 00ff)
+	|	'\\u00C0' .. '\\u00D6'
+	|	'\\u00D8' .. '\\u00F6'
+	|	'\\u00F8' .. '\\u00FF'
+	;
+
+%protected
+SNAME
+%v2	options {
+%v2		testLiterals = true;
+%v2	}
+	:	(ALPHA) (ALPHA | DIGIT)*
+;
+
+
+
+INT
+	:	'-'?(DIGIT)+
+%v2		(('.' DIGIT)=> '.' (DIGIT)+ {$setType(FLOAT);})?
+	;
+
+%v3	FLOAT	:	DIGIT+ '.' DIGIT*	;
+
+
+INTR
+	:	(DIGIT)(DIGIT)? 'r' (DIGIT)+;
+
+BSCHAR
+	:	'\\\\' (ALPHA)+ ;
+
+%protected
+ALPHABIS
+	:	(ALPHA) | ':' | '/' | '.';
+
+%protected
+SIMPLESYMBOL
+	:	(ALPHA) ((ALPHABIS)|(DIGIT)|(SYMB))*;
+	
+SYMBOLS
+	:	(SIMPLESYMBOL) ('/' (SIMPLESYMBOL))*;
+
+COLONSYMBOL
+	:	':' SYMBOLS;
+	
+DOTSYMBOL
+	:	'.' SYMBOLS;
+	
+%protected
+ESC
+	:	'\\\\'!
+		(	'n' %v2{%setText(\"\\n\");}
+		|	'r' %v2{%setText(\"\\r\");}
+		|	't' %v2{%setText(\"\\t\");}
+		|	'b' %v2{%setText(\"\\b\");}
+		|	'f' %v2{%setText(\"\\f\");}
+		|	'\"' %v2{%setText(\"\\\"\");}
+		|	'\\'' %v2{%setText(\"\\'\");}
+		|	'\\\\' %v2{%setText(\"\\\\\");}
+		|	(
+				('0'..'3')
+				(
+%v2					options {
+%v2						warnWhenFollowAmbig = false;
+%v2					}
+				:	('0'..'7')
+					(
+%v2						options {
+%v2							warnWhenFollowAmbig = false;
+%v2						}
+					:	'0'..'7'
+					)?
+				)?
+			|	('4'..'7')
+				(
+%v2					options {
+%v2						warnWhenFollowAmbig = false;
+%v2					}
+				:	('0'..'7')
+				)?
+			)
+				{
+%v2					String s = %getText;
+%v2					int i;
+%v2					int ret = 0;
+%v2					String ans;
+%v2					for (i=0; i<s.length(); ++i)
+%v2						ret = ret*8 + s.charAt(i) - '0';
+%v2					ans = String.valueOf((char) ret);
+%v2					%setText(ans);
+				}
+		)
+	;
+	";
+-- END Lexer
+
+}

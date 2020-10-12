@@ -1,0 +1,52 @@
+package Metamodel;
+
+package SeminarSchedulingSystem {
+  class SeminarSchedulingSystem {
+    !ordered ref Presenter[*]#seminarSchedulingSystem presenter;
+    !ordered ref Seminar[*]#seminarSchedulingSystem seminar;
+  }
+
+  class Presenter {
+    !unique !ordered attr String[1] name;
+    !ordered ref SeminarSchedulingSystem[1]#presenter seminarSchedulingSystem;
+    !ordered ref Seminar[*]#qualified qualifiedFor;
+    ref Offering[*]#presenter offering;
+  }
+
+  class Seminar {
+    !unique !ordered attr String[1] title;
+    !ordered ref SeminarSchedulingSystem[1]#seminar seminarSchedulingSystem;
+    !ordered ref Presenter[*]#qualifiedFor qualified;
+    ref Offering[*]#seminar offering;
+  }
+
+  class Offering {
+    !unique !ordered attr Boolean[1] is_cancelled;
+    !ordered ref Date[1] date;
+    !ordered ref Attendee[*]#offering attendee;
+    !ordered ref Presenter#offering presenter;
+    !ordered ref Seminar#offering seminar;
+  }
+
+  class Date {
+    !unique !ordered attr Integer[1] year;
+    !unique !ordered attr Integer[1] month;
+    !unique !ordered attr Integer[1] day;
+  }
+
+  class Attendee {
+    !unique !ordered attr String[1] name;
+    !ordered ref Offering[*]#attendee offering;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

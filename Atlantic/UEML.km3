@@ -1,0 +1,106 @@
+-- @name		UEML
+-- @version		1.0
+-- @domains		UEML
+-- @authors		SIMON Eric(simon.eric3<at>gmail.com)
+-- @date		2006/07/18
+-- @description	UEML (Unified Enterprise Modelling Language) is a Themantic Network Project (IST–2001–34229) financed by European Union (EU). The aim of UEML is to create working group that will involve in the 6th Frame Program to develop core UEML. 
+-- @see 		DocBook: Interoperability of Entreprise Software and Application. Hervé Panetto. Hermes Science Publsing Limited, 2005
+-- @see			British Library Cataloguing-in-Publication Data
+-- @see			ISBN 1 905209 49 5
+-- @see			Publication of Maria Bergholtz, Paul Johannesson and Petia Wohed : UEML: Providing Requirements and Extensions for Interoperability Challenges 
+-- @see			page 92
+-- @see			http://dsv.su.se/~petia/Publications/EI2N05.pdf
+-- @see			www.ueml.org
+
+package UEML {
+
+ class UEMLObject {
+ 	reference has[0-1] : Geometry oppositeOf object;
+ 	reference model[0-1] : UEMLModel oppositeOf contains; 
+ }
+ 
+ class UEMLModel extends UEMLObject {
+ 	reference contains[*] container : UEMLObject oppositeOf model;
+ }
+
+ class Geometry {
+ 	reference object : UEMLObject oppositeOf has;
+ }
+
+ class Port extends UEMLObject {}
+ 
+ class Flow extends UEMLObject {
+ 	reference associationConnector : AssociationConnector oppositeOf classAssociation;
+ }
+ 
+ class Activity extends UEMLObject {
+ 	reference resourceRole[*] : ResourceRole oppositeOf in;
+ 	reference child[*] container : Activity oppositeOf parent;
+ 	reference parent[0-1] : Activity oppositeOf child;
+ 	reference hasOutput[1-*] container : OutputPort oppositeOf activity;
+ 	reference hasInput[1-*] container : InputPort oppositeOf activity;
+ }
+ 
+ class Object extends UEMLObject {
+ 	reference ioFlow[0-1] : IOFlow oppositeOf carries;
+ }
+ 
+ class InformationObject extends Object {
+ 	reference controlFlow[0-1] : ControlFlow oppositeOf carries;
+ }
+ 
+ class Resource extends Object {
+ 	reference carries[0-1] : ResourceFlow oppositeOf resourceCarries;
+ 	reference plays[*] : ResourceRole oppositeOf resourcePlays;
+ }
+ 
+ class MaterialResource extends Resource {}
+ class HumanResource extends Resource {}
+ 
+ class ResourceFlow extends Flow {
+ 	reference resourceCarries[*] : Resource oppositeOf carries;
+ }
+ 
+ class IOFlow extends Flow {
+ 	reference carries[*] : Object oppositeOf ioFlow;
+ }
+ 
+ class ControlFlow extends Flow {
+ 	reference carries[*] : InformationObject oppositeOf controlFlow;
+ }
+ 
+ class TriggerFlow extends ControlFlow {}
+ 
+ class ConstraintFlow extends ControlFlow {}
+ 
+ 
+ class ResourceRole extends Port {
+ 	reference resourcePlays[*] : Resource oppositeOf plays;
+ 	reference roleQualifier[0-1] : RoleType;
+ 	reference in : Activity oppositeOf resourceRole; 
+ }
+ 
+ class RoleType {}
+ 
+ class Anchor extends Port {
+ 	reference target : AssociationConnector oppositeOf origin;
+ 	reference origin : AssociationConnector oppositeOf target;
+ }
+ 
+ class OutputPort extends Anchor {
+ 	reference activity : Activity oppositeOf hasOutput; 
+ }
+ 
+ class InputPort extends Anchor {
+ 	reference activity : Activity oppositeOf hasInput; 
+ }
+ 
+ class ConnectionOperator extends Anchor {}
+ 
+ class AssociationConnector {
+ 	reference origin[*] : Anchor oppositeOf target;
+ 	reference target[*] : Anchor oppositeOf origin;
+ 	reference classAssociation : Flow oppositeOf associationConnector;
+ }
+ 
+}

@@ -1,0 +1,348 @@
+-- @name		UMLDI Collaborations
+-- @version		0.1
+-- @domains		UML
+-- @authors		David Touzet
+-- @date		2006/02/21	
+-- @description	This is a simplified metamodel of UML Collaborations diagram according to the UML Diagram Interchange standard. The source metamodel of UML is well described by the OMG. It has been voluntarily simplified to be used more easily.
+-- @see			UML Diagram Interchange 2.0 Adopted specification, OMG, http://www.omg.org/cgibin/doc?ptc/20030901, Unified Modeling Language (UML), version 1.5. http://www.omg.org/technology/documents/formal/uml.htm.
+
+package Core {
+	abstract class Element {
+	}
+
+	abstract class ModelElement extends Element {
+		reference namespace[0-1] : Namespace oppositeOf ownedElement;
+		attribute name[0-1] : String;
+		attribute visibility[0-1] : VisibilityKind;
+		attribute isSpecification : Boolean;
+	}
+
+	abstract class GeneralizableElement extends ModelElement {
+		reference generalization[*] : Generalization oppositeOf child;
+		attribute isRoot : Boolean;
+		attribute isLeaf : Boolean;
+		attribute isAbstract : Boolean;
+	}
+
+	abstract class Namespace extends ModelElement {
+		reference ownedElement[*] container : ModelElement oppositeOf namespace;
+	}
+
+	abstract class Classifier extends GeneralizableElement, Namespace {
+		reference powertypeRange[*] : Generalization oppositeOf powertype;
+		reference feature[*] ordered container : Feature oppositeOf owner;
+	}
+
+	abstract class Feature extends ModelElement {
+		reference owner[0-1] : Classifier oppositeOf feature;
+		attribute ownerScope : ScopeKind;
+	}
+
+	abstract class StructuralFeature extends Feature {
+		reference type : Classifier;
+		attribute multiplicity[0-1] : Multiplicity;
+		attribute changeability[0-1] : ChangeableKind;
+		attribute targetScope[0-1] : ScopeKind;
+		attribute ordering[0-1] : OrderingKind;
+	}
+
+	class AssociationEnd extends ModelElement {
+		reference association : Association oppositeOf connection;
+		reference specification[*] : Classifier;
+		reference participant : Classifier;
+		reference qualifier[*] ordered container : Attribute oppositeOf associationEnd;
+		attribute isNavigable : Boolean;
+		attribute ordering[0-1] : OrderingKind;
+		attribute aggregation[0-1] : AggregationKind;
+		attribute targetScope[0-1] : ScopeKind;
+		attribute multiplicity[0-1] : Multiplicity;
+		attribute changeability[0-1] : ChangeableKind;
+	}
+
+	abstract class Relationship extends ModelElement { }
+
+	class Association extends GeneralizableElement, Relationship {
+		reference connection[2-*] ordered container : AssociationEnd oppositeOf association;
+	}
+
+	class Attribute extends StructuralFeature {
+		reference associationEnd[0-1] : AssociationEnd oppositeOf qualifier;
+		attribute initialValue[0-1] : Expression;
+	}
+
+	abstract class BehavioralFeature extends Feature {
+		reference parameter[*] ordered container : Parameter oppositeOf behavioralFeature;
+		attribute isQuery : Boolean;
+	}
+
+	class Operation extends BehavioralFeature {
+		attribute concurrency[0-1] : CallConcurrencyKind;
+		attribute isRoot : Boolean;
+		attribute isLeaf : Boolean;
+		attribute isAbstract : Boolean;
+		attribute specification[0-1] : String;
+	}
+
+	class Parameter extends ModelElement {
+		reference type : Classifier;
+		reference behavioralFeature[0-1] : BehavioralFeature oppositeOf parameter;
+		attribute defaultValue[0-1] : Expression;
+		attribute kind : ParameterDirectionKind;
+	}
+
+	class Generalization extends Relationship {
+		reference parent : GeneralizableElement;
+		reference powertype[0-1] : Classifier oppositeOf powertypeRange;
+		reference child : GeneralizableElement oppositeOf generalization;
+		attribute discriminator[0-1] : String;
+	}
+
+}
+
+package Common_Behavior {
+	abstract class Instance extends ModelElement {
+		reference ownedInstance[*] container : Instance;
+		reference linkEnd[*] : LinkEnd oppositeOf instance;
+		reference classifier[1-*] : Classifier;
+		reference componentInstance[0-1] : ComponentInstance oppositeOf resident;
+		reference slot[*] container : AttributeLink oppositeOf instance;
+		reference ownedLink[*] container : Link;
+	}
+
+	class Signal extends Classifier {
+	}
+
+	abstract class Action extends ModelElement {
+		reference actualArgument[*] ordered container : Argument oppositeOf action;
+		reference actionSequence[0-1] : ActionSequence oppositeOf action;
+		attribute recurrence[0-1] : IterationExpression;
+		attribute target[0-1] : ObjectSetExpression;
+		attribute isAsynchronous : Boolean;
+		attribute script[0-1] : ActionExpression;
+	}
+
+	class CreateAction extends Action {
+		reference instantiation : Classifier;
+	}
+
+	class DestroyAction extends Action { }
+
+	class UninterpretedAction extends Action { }
+
+	class AttributeLink extends ModelElement {
+		reference instance[0-1] : Instance oppositeOf slot;
+		reference value : Instance;
+		reference linkEnd[0-1] : LinkEnd oppositeOf qualifiedValue;
+		reference "attribute" : Attribute;
+	}
+
+	class Object extends Instance { }
+
+	class Link extends ModelElement {
+		reference association : Association;
+		reference connection[2-*] container : LinkEnd oppositeOf link;
+	}
+
+	class LinkObject extends Object, Link { }
+
+	class DataValue extends Instance { }
+
+	class CallAction extends Action {
+		reference "operation" : Operation;
+	}
+
+	class SendAction extends Action {
+		reference signal : Signal;
+	}
+
+	class ActionSequence extends Action {
+		reference action[*] ordered container : Action oppositeOf actionSequence;
+	}
+
+	class Argument extends ModelElement {
+		reference action[0-1] : Action oppositeOf actualArgument;
+		attribute value : Expression;
+	}
+
+	class Reception extends BehavioralFeature {
+		reference signal : Signal;
+		attribute specification[0-1] : String;
+		attribute isRoot : Boolean;
+		attribute isLeaf : Boolean;
+		attribute isAbstract : Boolean;
+	}
+
+	class LinkEnd extends ModelElement {
+		reference link : Link oppositeOf connection;
+		reference qualifiedValue[*] ordered container : AttributeLink oppositeOf linkEnd;
+		reference instance : Instance oppositeOf linkEnd;
+		reference associationEnd : AssociationEnd;
+	}
+
+	class ReturnAction extends Action {	}
+
+	class TerminateAction extends Action {
+	}
+
+	class Stimulus extends ModelElement {
+		reference argument[*] ordered : Instance;
+		reference communicationLink[0-1] : Link;
+		reference receiver : Instance;
+		reference dispatchAction : Action;
+		reference sender : Instance;
+	}
+
+	class Exception extends Signal { }
+
+	class ComponentInstance extends Instance {
+		reference resident[*] : Instance oppositeOf componentInstance;
+		reference nodeInstance[0-1] : NodeInstance oppositeOf resident;
+	}
+
+	class NodeInstance extends Instance {
+		reference resident[*] : ComponentInstance oppositeOf nodeInstance;
+	}
+
+	class SubsystemInstance extends Instance { }
+}
+
+package Collaborations {
+	class Collaboration extends GeneralizableElement, Namespace {
+		reference usedCollaboration[*] : Collaboration;
+		reference representedOperation[0-1] : Operation;
+		reference representedClassifier[0-1] : Classifier;
+		reference interaction[*] container : Interaction oppositeOf context;
+		reference constrainingElement[*] : ModelElement;
+	}
+
+	class ClassifierRole extends Classifier {
+		reference availableContents[*] : ModelElement;
+		reference base[1-*] : Classifier;
+		reference conformingInstance[*] : Instance;
+		reference availableFeature[*] : Feature;
+		attribute multiplicity[0-1] : Multiplicity;
+	}
+
+	class AssociationRole extends Association {
+		reference base[0-1] : Association;
+		reference conformingLink[*] : Link;
+		reference message[*] : Message oppositeOf communicationConnection;
+		attribute multiplicity[0-1] : Multiplicity;
+	}
+
+	class AssociationEndRole extends AssociationEnd {
+		reference base[0-1] : AssociationEnd;
+		reference availableQualifier[*] : Attribute;
+		attribute collaborationMultiplicity[0-1] : Multiplicity;
+	}
+
+	class Message extends ModelElement {
+		reference interaction : Interaction oppositeOf message;
+		reference conformingStimulus[*] : Stimulus;
+		reference action : Action;
+		reference communicationConnection[0-1] : AssociationRole oppositeOf message;
+		reference activator[0-1] : Message;
+		reference receiver : ClassifierRole;
+		reference sender : ClassifierRole;
+		reference predecessor[*] : Message;
+	}
+
+	class Interaction extends ModelElement {
+		reference message[1-*] container : Message oppositeOf interaction;
+		reference context : Collaboration oppositeOf interaction;
+	}
+
+	class InteractionInstanceSet extends ModelElement {
+		reference interaction[0-1] : Interaction;
+		reference context : CollaborationInstanceSet oppositeOf interactionInstanceSet;
+		reference participatingStimulus[1-*] : Stimulus;
+	}
+
+	class CollaborationInstanceSet extends ModelElement {
+		reference collaboration[0-1] : Collaboration;
+		reference constrainingElement[*] : ModelElement;
+		reference participatingInstance[1-*] : Instance;
+		reference interactionInstanceSet[*] container : InteractionInstanceSet oppositeOf context;
+		reference participatingLink[*] : Link;
+	}
+}
+
+package Data_Types {
+	enumeration AggregationKind {
+		literal ak_none;
+		literal ak_aggregate;
+		literal ak_composite;
+	}
+
+	enumeration ChangeableKind {
+		literal ck_changeable;
+		literal ck_frozen;
+		literal ck_addOnly;
+	}
+
+	enumeration OrderingKind {
+		literal ok_unordered;
+		literal ok_ordered;
+	}
+
+	enumeration CallConcurrencyKind {
+		literal cck_sequential;
+		literal cck_guarded;
+		literal cck_concurrent;
+	}
+
+	enumeration ParameterDirectionKind {
+		literal pdk_in;
+		literal pdk_inout;
+		literal pdk_out;
+		literal pdk_return;
+	}
+
+	enumeration ScopeKind {
+		literal sk_instance;
+		literal sk_classifier;
+	}
+
+	enumeration VisibilityKind {
+		literal vk_public;
+		literal vk_protected;
+		literal vk_private;
+		literal vk_package;
+	}
+
+	class Multiplicity {
+		reference range[1-*] container : MultiplicityRange oppositeOf multiplicity;
+	}
+
+	class MultiplicityRange {
+		reference multiplicity : Multiplicity oppositeOf range;
+		attribute lower : Integer;
+		attribute upper : Integer;
+	}
+
+	class Expression {
+		attribute language[0-1] : String;
+		attribute body : String;
+	}
+
+	class BooleanExpression extends Expression {
+	}
+
+	class ObjectSetExpression extends Expression {
+	}
+
+	class ActionExpression extends Expression {
+	}
+
+	class IterationExpression extends Expression {
+	}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Float;
+	datatype Integer;
+	datatype Long;
+	datatype String;
+	datatype Double;
+}

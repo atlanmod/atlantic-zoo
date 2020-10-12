@@ -1,0 +1,2660 @@
+-- @name		MARTE (Modelling and Analysis of Real-Time and Embedded systems)
+-- @version		0.1
+-- @domains		Modeling of time and concurrent resources, Modeling of real time and embedded systems, Scheduling and performance analysis
+-- @authors		Freddy Allilaire
+-- @date		2007/09/17
+-- @description	This metamodel was created from the open-source implementation based on Eclipse of the MARTE profile available in Papyrus UML.
+-- @see			http://www.omg.org/cgi-bin/doc?ptc/2007-08-04
+-- @see			http://www.papyrusuml.org/
+-- @see			http://en.wikipedia.org/wiki/Modeling_and_Analysis_of_Real_Time_and_Embedded_systems
+
+package MARTE {
+
+	package MARTE_Foundations {
+
+		package NFPs {
+
+			enumeration ConstraintKind {
+				literal required;
+				literal offered;
+				literal constraint;
+			}
+
+			class NFP {
+				reference base_Property : Property;
+			}
+
+			class Unit {
+				attribute convFactor[0-1] : Real;
+				attribute convOffset[0-1] : Real;
+				reference baseUnit[0-1] : Unit;
+				reference base_EnumerationLiteral : EnumerationLiteral;
+			}
+
+			class NfpConstraint {
+				attribute kind[0-1] : ConstraintKind;
+				reference base_Constraint : Constraint;
+			}
+
+			class NfpType extends TupleType {
+				reference valueAttrib[0-1] : Property;
+				reference unitAttrib[0-1] : Property;
+				reference exprAttrib[0-1] : Property;
+			}
+		}
+
+		package Alloc {
+
+			class Allocated {
+				reference base_NamedElement : NamedElement;
+			}
+
+			class ApplicationAllocationEnd extends Allocated {
+				reference allocatedTo[*] : ExecutionPlatformAllocationEnd;
+			}
+
+			class ExecutionPlatformAllocationEnd extends Allocated {
+				reference allocatedFrom[*] : ApplicationAllocationEnd;
+			}
+
+			enumeration AllocationNature {
+				literal spatialDistribution;
+				literal timeScheduling;
+			}
+
+			enumeration AllocationKind {
+				literal structural;
+				literal behavioral;
+				literal hybrid;
+			}
+
+			class AllocateActivityGroup {
+				attribute isUnique[0-1] : Boolean;
+				reference base_ActivityPartition : ActivityPartition;
+			}
+
+			class ClockRefine {
+				reference base_Dependency : Dependency;
+				reference constraint[*] container : ClockConstraint;
+			}
+
+			class Allocate {
+				attribute kind[0-1] : AllocationKind;
+				attribute nature[0-1] : AllocationNature;
+				reference base_Abstraction : Abstraction;
+				reference impliedConstraint[*] container : NfpConstraint;
+			}
+		}
+
+		package Time {
+
+			class TimedDomain {
+				reference base_Package : Package;
+			}
+
+			class Clock {
+				attribute standard[0-1] : TimeStandardKind;
+				reference base_InstanceSpecification : InstanceSpecification;
+				reference type[0-1] : ClockType;
+				reference unit[0-1] container : Unit;
+			}
+
+			class ClockType {
+				attribute nature : TimeNatureKind;
+				reference unitType[0-1] : Enumeration;
+				attribute isLogical : Boolean;
+				reference resolAttrib[0-1] : Property;
+				reference maxValAttrib[0-1] : Property;
+				reference offsetAttrib[0-1] : Property;
+				reference getTime[0-1] : Operation;
+				reference setTime[0-1] : Operation;
+				reference indexToValue[0-1] : Operation;
+				reference base_Class : Class;
+			}
+
+			class TimedElement {
+				reference on[1-*] container : Clock;
+			}
+
+			class TimedValueSpecification extends TimedElement {
+				attribute interpretation[0-1] : TimeInterpretationKind;
+				reference base_ValueSpecification : ValueSpecification;
+			}
+
+			class TimedConstraint extends NfpConstraint, TimedElement {
+				attribute interpretation[0-1] : TimeInterpretationKind;
+			}
+
+			class TimedObservation extends TimedElement {
+				
+			}
+
+			class TimedInstantObservation extends TimedObservation {
+				attribute obsKind[0-1] : EventKind;
+				reference base_TimeObservation : TimeObservation;
+			}
+
+			class TimedDurationObservation extends TimedObservation {
+				attribute obsKind[0-2] : EventKind;
+				reference base_DurationObservation : DurationObservation;
+			}
+
+			class TimedEvent extends TimedElement {
+				attribute repetition[0-1] : Integer;
+				reference base_TimeEvent : TimeEvent;
+				reference every[0-1] : ValueSpecification;
+			}
+
+			class TimedProcessing extends TimedElement {
+				reference base_Action : Action;
+				reference base_Behavior : Behavior;
+				reference base_Message : Message;
+				reference duration[0-1] container : ValueSpecification;
+				reference start[0-1] : Event;
+				reference stop[0-1] : Event;
+			}
+
+			class ClockConstraint extends NfpConstraint, TimedElement {
+				
+			}
+		}
+
+		package GRM {
+
+			class Resource {
+				attribute resMult[0-1] : Integer;
+				attribute isProtected[0-1] : Boolean;
+				attribute isActive[0-1] : Boolean;
+				reference base_Property : Property;
+				reference base_InstanceSpecification : InstanceSpecification;
+				reference base_Classifier : Classifier;
+				reference base_Lifeline : Lifeline;
+				reference base_ConnectableElement : ConnectableElement;
+			}
+
+			class StorageResource extends Resource {
+				attribute elementSize[0-1] : Integer;
+			}
+
+			class CommunicationEndPoint extends Resource {
+				attribute packetSize[0-1] : Integer;
+			}
+
+			class SynchronizationResource extends Resource {
+				
+			}
+
+			class ConcurrencyResource extends Resource {
+				
+			}
+
+			class Scheduler extends Resource {
+				attribute isPreemptible[0-1] : Boolean;
+				attribute schedPolicy[0-1] : SchedPolicyKind;
+				attribute otherSchedPolicy[0-1] : String;
+				reference schedule[0-1] : OpaqueExpression;
+				reference processingUnit[*] : ProcessingResource;
+				reference host[0-1] : ComputingResource;
+			}
+
+			class ProcessingResource extends Resource {
+				attribute speedFactor[0-1] : Real;
+				reference scheduler[0-1] : Scheduler;
+			}
+
+			class ComputingResource extends ProcessingResource {
+				
+			}
+
+			class MutualExclusionResource extends Resource {
+				attribute protectKind[0-1] : ProtectProtocolKind;
+				attribute ceiling[0-1] : Integer;
+				attribute otherProtectProtocol[0-1] : String;
+			}
+
+			class SecondaryScheduler extends Scheduler {
+				
+			}
+
+			class SchedulableResource extends Resource {
+				reference schedParams[*] : SchedParameters;
+			}
+
+			class CommunicationMedia extends ProcessingResource {
+				attribute elementSize[0-1] : Integer;
+				reference base_Connector : Connector;
+			}
+
+			class DeviceResource extends ProcessingResource {
+				
+			}
+
+			class TimingResource extends ClockType, Resource {
+				
+			}
+
+			class ClockResource extends TimingResource {
+				
+			}
+
+			class TimerResource extends TimingResource {
+				reference duration[0-1] : NFP_Duration;
+				attribute isPeriodic[0-1] : Boolean;
+			}
+
+			class GRService {
+				reference owner[0-1] : Resource;
+				reference base_ExecutionSpecification : ExecutionSpecification;
+				reference base_BehavioralFeature : BehavioralFeature;
+				reference base_Behavior : Behavior;
+				reference base_Collaboration : Collaboration;
+				reference base_CollaborationUse : CollaborationUse;
+			}
+
+			class Release extends GRService {
+				
+			}
+
+			class Acquire extends GRService {
+				attribute isBlocking[0-1] : Boolean;
+			}
+
+			class ResourceUsage {
+				reference execTime[*] ordered : NFP_Duration;
+				reference msgSize[*] ordered : NFP_DataSize;
+				reference allocatedMemory[*] ordered : NFP_DataSize;
+				reference usedMemory[*] ordered : NFP_DataSize;
+				reference powerPeak[*] ordered : NFP_Power;
+				reference energy[*] ordered : NFP_Energy;
+				reference base_NamedElement : NamedElement;
+				reference usedResources[*] ordered container : Resource;
+				reference subUsage[*] container : ResourceUsage;
+			}
+		}
+
+		package GCM {
+
+			class FlowProperty {
+				attribute direction : DirectionKind;
+				reference base_Property : Property;
+			}
+
+			enumeration DirectionKind {
+				literal in;
+				literal out;
+				literal inout;
+			}
+
+			class FlowPort {
+				attribute isAtomic : Boolean;
+				attribute isConjugated : Boolean;
+				attribute direction[0-1] : DirectionKind;
+				reference base_Port : Port;
+			}
+
+			class MessagePort {
+				reference base_Port : Port;
+				attribute isAtomic : Boolean;
+				attribute isConjugated : Boolean;
+				attribute direction[0-1] : DirectionKind;
+			}
+
+			class SendFlowAction {
+				reference base_InvocationAction : InvocationAction;
+			}
+
+			class FlowSpecification {
+				attribute direction[0-1] : DirectionKind;
+				reference base_Interface : Interface;
+			}
+
+			class SignalSpecification {
+				attribute kind[0-1] : BFeatureKind;
+				reference base_Interface : Interface;
+			}
+
+			enumeration BFeatureKind {
+				literal in;
+				literal out;
+				literal inout;
+				literal required;
+				literal provided;
+				literal reqpro;
+			}
+
+			class FlowBFeature {
+				attribute kind : BFeatureKind;
+				reference base_BehavioralFeature : BehavioralFeature;
+			}
+		}
+	}
+
+	package MARTE_Annexes {
+
+		package RSM {
+
+			abstract class LinkTopology {
+				reference base_Connector : Connector;
+			}
+
+			class DefaultLink extends LinkTopology {
+				
+			}
+
+			class InterRepetition extends LinkTopology {
+				reference repetitionShapeDependence : IntegerVector;
+				attribute isModulo[0-1] : Boolean;
+			}
+
+			class Distribute extends Allocate {
+				reference patternShape : ShapeSpecification;
+				reference repetitionSpace : ShapeSpecification;
+				reference fromTiler : TilerSpecification;
+				reference toTiler : TilerSpecification;
+			}
+
+			class Reshape extends LinkTopology {
+				reference patternShape : ShapeSpecification;
+				reference repetitonShape : ShapeSpecification;
+				reference srcTiler container : Tiler;
+				reference targetTiler container : Tiler;
+			}
+
+			class Tiler extends LinkTopology {
+				reference origin[0-1] : IntegerVector;
+				reference paving[0-1] : IntegerMatrix;
+				reference fitting[0-1] : IntegerMatrix;
+				reference tiler[0-1] : TilerSpecification;
+			}
+		}
+
+		package VSL {
+
+			package Variables {
+
+				enumeration VariableDirectionKind {
+					literal in;
+					literal out;
+					literal inout;
+				}
+
+				class Var {
+					attribute dir[0-1] : VariableDirectionKind;
+					reference base_Property : Property;
+				}
+
+				class ExpressionContext {
+					reference base_NamedElement : NamedElement;
+				}
+			}
+
+			package DataTypes {
+
+				class BoundedSubtype {
+					reference baseType : DataType;
+					attribute minValue : String;
+					attribute maxValue : String;
+					attribute isMinOpen : Boolean;
+					attribute isMaxOpen : Boolean;
+					reference base_DataType : DataType;
+				}
+
+				class IntervalType {
+					reference intervalAttrib : Property;
+					reference base_DataType : DataType;
+				}
+
+				class CollectionType {
+					reference collectionAttrib : Property;
+					reference base_DataType : DataType;
+				}
+
+				class ChoiceType {
+					reference choiceAttrib[*] : Property;
+					reference defaultAttrib[0-1] : Property;
+					reference base_DataType : DataType;
+				}
+
+				class TupleType {
+					reference tupleAttrib[*] : Property;
+					reference base_DataType : DataType;
+				}
+			}
+		}
+	}
+
+	package MARTE_DesignModel {
+
+		package RTEMoCC {
+
+			class RtUnit {
+				attribute isDynamic : Boolean;
+				attribute isMain[0-1] : Boolean;
+				attribute poolSize[0-1] : Integer;
+				attribute poolPolicy[0-1] : PoolMgtPolicyKind;
+				reference poolWaitingTime[0-1] : NFP_Duration;
+				reference operationalMode[0-1] : Behavior;
+				reference main[0-1] : Operation;
+				reference memorySize[0-1] : NFP_DataSize;
+				reference base_BehavioredClassifier : BehavioredClassifier;
+			}
+
+			enumeration PoolMgtPolicyKind {
+				literal infiniteWait;
+				literal timedWait;
+				literal dynamic;
+				literal exception;
+				literal other;
+			}
+
+			class PpUnit {
+				attribute concPolicy[0-1] : CallConcurrencyKind;
+				reference memorySize[0-1] : NFP_DataSize;
+				reference base_BehavioredClassifier : BehavioredClassifier;
+			}
+
+			enumeration CallConcurrencyKind {
+				literal sequential;
+				literal guarded;
+				literal concurrent;
+			}
+
+			class RtBehavior {
+				attribute queueSchedPolicy[0-1] : SchedPolicyKind;
+				attribute queueSize[0-1] : Integer;
+				reference msgMaxSize[0-1] : NFP_DataSize;
+				reference base_Behavior : Behavior;
+			}
+
+			class rtf {
+				reference base_BehavioralFeature : BehavioralFeature;
+				reference base_Action : Action;
+				reference base_Message : Message;
+				reference base_Signal : Signal;
+				reference utility[0-1] : UtilityType;
+				reference occKind[0-1] : ArrivalPattern;
+				reference tRef[0-1] : TimedInstantObservation;
+				reference relDl[0-1] : NFP_Duration;
+				reference absDl[0-1] : NFP_DateTime;
+				reference boundDl[0-1] : NFP_BoundedDuration;
+				reference rdTime[0-1] : NFP_Duration;
+				reference miss[0-1] : NFP_Percentage;
+				reference priority[0-1] : NFP_Integer;
+			}
+
+			enumeration SynchronizationKind {
+				literal synchronous;
+				literal asynchronous;
+				literal delayedSynchronous;
+				literal rendezVous;
+				literal other;
+			}
+
+			class RtAction {
+				attribute isAtomic : Boolean;
+				attribute synchKind[0-1] : SynchronizationKind;
+				reference msgSize[0-1] : NFP_DataSize;
+				reference base_BehavioralFeature : BehavioralFeature;
+				reference base_InvocationAction : InvocationAction;
+			}
+
+			enumeration ExecutionKind {
+				literal deferred;
+				literal remoteImmediate;
+				literal localImmediate;
+			}
+
+			enumeration ConcurrencyKind {
+				literal reader;
+				literal writer;
+				literal parallel;
+			}
+
+			class RtService {
+				attribute concPolicy[0-1] : ConcurrencyKind;
+				attribute exeKind[0-1] : ExecutionKind;
+				attribute isAtomic : Boolean;
+				attribute synchKind[0-1] : SynchronizationKind;
+				reference base_BehavioralFeature : BehavioralFeature;
+			}
+
+			class RteConnector {
+				reference bandwidth[0-1] : NFP_DataTxRate;
+				reference packetT[0-1] : NFP_Duration;
+				reference blockT[0-1] : NFP_Duration;
+				attribute transmMode[0-1] : TransmModeKind;
+				reference base_Connector : Connector;
+			}
+		}
+
+		package HRM {
+
+			package HwLogical {
+
+				package HwGeneral {
+
+					class HwResource extends Resource {
+						reference description[0-1] : NFP_String;
+						reference p_HW_Services[*] container : HwResourceService;
+						reference r_HW_Services[*] container : HwResourceService;
+						reference ownedHW[*] : HwResource;
+						reference endPoints[*] : HwEndPoint;
+					}
+
+					class HwResourceService extends GRService {
+						
+					}
+				}
+
+				package HwCommunication {
+
+					class HwCommunicationResource extends HwResource {
+						
+					}
+
+					class HwArbiter extends HwCommunicationResource {
+						reference controlledMedias[*] : HwMedia oppositeOf arbiters;
+					}
+
+					class HwMedia extends HwCommunicationResource, CommunicationMedia {
+						reference bandWidth[0-1] : NFP_DataTxRate;
+						reference base_Association : Association;
+						reference arbiters[*] : HwArbiter oppositeOf controlledMedias;
+					}
+
+					class HwBus extends HwMedia {
+						reference adressWidth[0-1] : NFP_DataSize;
+						reference wordWidth[0-1] : NFP_DataSize;
+						attribute isSynchronous[0-1] : Boolean;
+						attribute isSerial[0-1] : Boolean;
+					}
+
+					class HwBridge extends HwMedia {
+						reference sides[*] : HwMedia;
+					}
+
+					class HwEndPoint extends HwCommunicationResource, CommunicationEndPoint {
+						reference base_Port : Port;
+						reference connectedTo[*] : HwMedia;
+					}
+				}
+
+				package HwComputing {
+
+					enumeration ISA_Type {
+						literal RISC;
+						literal CISC;
+						literal VLIW;
+						literal SIMD;
+						literal Other;
+						literal Undef;
+					}
+
+					enumeration PLD_Technology {
+						literal SRAM;
+						literal Antifuse;
+						literal Flash;
+						literal Other;
+						literal Undef;
+					}
+
+					enumeration PLD_Class {
+						literal SymetricalArray;
+						literal RowBased;
+						literal SeaOfGates;
+						literal HierarchicalPLD;
+						literal Other;
+						literal Undef;
+					}
+
+					class PLD_Organization {
+						reference nbRows[0-1] : NFP_Integer;
+						reference nbColumns[0-1] : NFP_Natural;
+						attribute "class"[0-1] : PLD_Class;
+					}
+
+					class HwProcessor extends HwComputingResource {
+						reference architecture[0-1] : NFP_DataSize;
+						reference mips[0-1] : NFP_Natural;
+						reference ipc[0-1] : NFP_Real;
+						reference nbCores[0-1] : NFP_Natural;
+						reference nbPipelines[0-1] : NFP_Natural;
+						reference nbStages[0-1] : NFP_Natural;
+						reference nbALUs[0-1] : NFP_Natural;
+						reference nbFBUs[0-1] : NFP_Natural;
+						reference ownedISAs[*] container : HwISA;
+						reference predictors[*] container : HwBranchPredictor;
+						reference caches[*] container : HWCache;
+						reference ownedMMUs[*] container : HwMMU;
+					}
+
+					class HwComputingResource extends HwResource, ComputingResource {
+						reference op_Frequencies[0-1] : NFP_FrequencyInterval;
+					}
+
+					class HwISA extends HwResource {
+						reference family[0-1] : NFP_String;
+						reference inst_Width[0-1] : NFP_DataSize;
+						attribute type[0-1] : ISA_Type;
+					}
+
+					class HwBranchPredictor extends HwResource {
+						
+					}
+
+					class HwASIC extends HwComputingResource {
+						
+					}
+
+					class HwPLD extends HwComputingResource {
+						attribute technology[0-1] : PLD_Technology;
+						reference organization[0-1] : PLD_Organization;
+						reference nbLUTs[0-1] : NFP_Natural;
+						reference ndLUT_Inputs[0-1] : NFP_Natural;
+						reference nbFlipFlops[0-1] : NFP_Natural;
+						reference blocksRAM[*] container : HwRAM;
+					}
+				}
+
+				package HwMemory {
+
+					class HwMemory extends HwProcessor, StorageResource {
+						reference memorySize[0-1] : NFP_DataSize;
+						reference adressSize[0-1] : NFP_DataSize;
+						reference timings[*] : Timing;
+					}
+
+					class Timing {
+						reference notation[0-1] : NFP_String;
+						reference description[0-1] : NFP_String;
+						reference value[0-1] : NFP_Duration;
+					}
+
+					enumeration Repl_Policy {
+						literal LRU;
+						literal NFU;
+						literal FIFO;
+						literal Random;
+						literal Other;
+						literal Undef;
+					}
+
+					enumeration WritePolicy {
+						literal WriteBack;
+						literal WriteThrough;
+						literal Other;
+						literal Undef;
+					}
+
+					enumeration CacheType {
+						literal Data;
+						literal Instruction;
+						literal Unified;
+						literal Other;
+						literal Undef;
+					}
+
+					enumeration ROM_Type {
+						literal MaskedROM;
+						literal EPROM;
+						literal OTP_EPROM;
+						literal EEPROM;
+						literal Flash;
+						literal Other;
+						literal Undef;
+					}
+
+					class CacheStructure {
+						reference nsSets[0-1] : NFP_Natural;
+						reference blockSize[0-1] : NFP_Natural;
+						reference associativity[0-1] : NFP_Natural;
+					}
+
+					class MemoryOrganization {
+						reference nbRows[0-1] : NFP_Natural;
+						reference nbColumns[0-1] : NFP_Natural;
+						reference nbBanks[0-1] : NFP_Natural;
+						reference wordSize[0-1] : NFP_DataSize;
+					}
+
+					class HwRAM extends HwMemory {
+						reference organization[0-1] : MemoryOrganization;
+						reference isSynchronous[0-1] : NFP_Boolean;
+						reference isStatic[0-1] : NFP_Boolean;
+						reference isNonVolatile[0-1] : NFP_Boolean;
+						attribute repl_Policy[0-1] : Repl_Policy;
+						attribute writePolicy[0-1] : WritePolicy;
+					}
+
+					class HwROM extends HwMemory {
+						attribute type[0-1] : ROM_Type;
+						reference organization[0-1] : MemoryOrganization;
+					}
+
+					class HwDrive extends HwMemory {
+						reference sectorSize[0-1] : NFP_DataSize;
+						reference buffer[0-1] container : HwRAM;
+					}
+
+					class HWCache extends HwMemory {
+						reference level[0-1] : NFP_Natural;
+						attribute type[0-1] : CacheType;
+						reference structure[0-1] : CacheStructure;
+						attribute repl_Policy[0-1] : Repl_Policy;
+						attribute writePolicy[0-1] : WritePolicy;
+					}
+				}
+
+				package HwStorageManager {
+
+					class HwStorageManager extends HwResource, StorageResource {
+						reference managedMemories[*] container : HwMemory;
+					}
+
+					class HwDMA extends HwStorageManager, HwArbiter {
+						reference nbChannels[0-1] : NFP_Natural;
+						reference transferWidth[0-1] : NFP_DataSize;
+						reference drivenBy[*] container : HwProcessor;
+					}
+
+					class HwMMU extends HwStorageManager {
+						reference virtualAddrSpace[0-1] : NFP_DataSize;
+						reference physicalAddrSpace[0-1] : NFP_DataSize;
+						reference memoryProtection[0-1] : NFP_Natural;
+						reference nbEntries[0-1] : NFP_Boolean;
+						reference ownedTLBs[*] container : HWCache;
+					}
+				}
+
+				package HwTiming {
+
+					class HwTimingResource extends TimingResource, HwResource {
+						
+					}
+
+					class HwClock extends HwTimingResource {
+						reference frequency[0-1] : NFP_Frequency;
+					}
+
+					class HwTimer extends HwTimingResource {
+						reference nbCounter[0-1] : NFP_Natural;
+						reference counterWidth[0-1] : NFP_DataSize;
+						reference inputClock[0-1] : HwClock;
+					}
+				}
+
+				package HwDevice {
+
+					class HwDevice extends HwResource, DeviceResource {
+						
+					}
+
+					class HwI_O extends HwDevice {
+						
+					}
+
+					class HwSupport extends HwDevice {
+						
+					}
+				}
+			}
+
+			package HwPhysical {
+
+--				WARNING package name was modified to avoid collision name error
+--				This problem will be fixed with KM3 2007
+--				package HwGeneral {
+				package HwPhysical_HwGeneral {
+					
+				}
+
+				package HwLayout {
+
+					class HwComponent extends HwResource {
+						attribute kind[0-1] : ComponentKind;
+						reference dimenssions[0-3] : NFP_Length;
+						reference area[0-1] : NFP_Area;
+						reference position[0-2] : NFP_NaturalInterval;
+						reference grid[0-2] : NFP_Natural;
+						reference nbPins[0-1] : NFP_Natural;
+						reference weight[0-1] : NFP_Real;
+						reference price[0-1] : NFP_String;
+						reference r_Conditions[*] : Env_Condition;
+						reference poweredServices[*] container : HwResourceService;
+						reference staticConsumption[0-1] : NFP_Power;
+						reference staticDissipation[0-1] : NFP_Power;
+					}
+
+					enumeration ComponentKind {
+						literal Card;
+						literal Channel;
+						literal Chip;
+						literal Port;
+						literal Unit;
+						literal Other;
+						literal Undef;
+					}
+
+					class Env_Condition {
+						attribute type[0-1] : ConditionType;
+						attribute status[0-1] : CompnentState;
+						reference description[0-1] : NFP_String;
+						reference range[0-1] : Realnterval;
+					}
+
+					enumeration ConditionType {
+						literal Temperature;
+						literal Humidity;
+						literal Altitude;
+						literal Vibration;
+						literal Shock;
+						literal Other;
+						literal Undef;
+					}
+
+					enumeration CompnentState {
+						literal Operating;
+						literal Storage;
+						literal Other;
+						literal Undef;
+					}
+				}
+
+				package HwPower {
+
+					class HwPowerSupply extends HwComponent {
+						reference suppliedPower[0-1] : NFP_Power;
+						reference capacity[0-1] : NFP_Energy;
+					}
+
+					class HwCoolingSupply extends HwComponent {
+						reference coolingPower[0-1] : NFP_Power;
+					}
+				}
+			}
+		}
+
+		package SRM {
+
+			package SW_ResourceCore {
+
+				class SwResource extends Resource {
+					reference identifierElements[*] : TypedElement;
+					reference stateElements[*] : TypedElement;
+					reference memorySizeFootprint[0-1] : TypedElement;
+					reference createServices[*] : BehavioralFeature;
+					reference deleteServices[*] : BehavioralFeature;
+					reference initializeServices[*] : BehavioralFeature;
+				}
+
+				class SwAccessService extends GRService {
+					attribute isModifier[0-1] : Boolean;
+					reference accessedElement : Property;
+				}
+			}
+
+			package SW_Concurrency {
+
+				enumeration InterruptKind {
+					literal HardwareInterruption;
+					literal ProcessorDetectedException;
+					literal ProgrammedException;
+					literal Undef;
+					literal Other;
+				}
+
+				class EntryPoint {
+					attribute isReentrant[0-1] : Boolean;
+					reference routine : BehavioralFeature;
+					reference base_BehavioralFeature : BehavioralFeature;
+					reference base_Dependency : Dependency;
+				}
+
+				abstract class SwConcurrentResource extends SwResource {
+					reference type[0-1] : ArrivalPattern;
+					attribute activationCapacity[0-1] : Integer;
+					reference entryPoints[*] : Element;
+					reference adressSpace[*] : TypedElement;
+					reference periodElements[*] : TypedElement;
+					reference priorityElements[*] : TypedElement;
+					reference stackSizeElements[*] : TypedElement;
+					reference activateServices[*] : BehavioralFeature;
+					reference enableConcurrencyServices[*] : BehavioralFeature;
+					reference resumeServices[*] : BehavioralFeature;
+					reference suspendServices[*] : BehavioralFeature;
+					reference terminateServices[*] : BehavioralFeature;
+					reference disableConcurrencyServices[*] : BehavioralFeature;
+					reference shareDataResources[*] : TypedElement;
+					reference messageResources[*] : TypedElement;
+					reference mutualExclusionResources[*] : TypedElement;
+					reference notificationResources[*] : TypedElement;
+				}
+
+				class InterruptResource extends SwConcurrentResource {
+					attribute kind[0-1] : InterruptKind;
+					attribute isMaskable[0-1] : Boolean;
+					reference vectorElements[*] : TypedElement;
+					reference maskElements[*] : TypedElement;
+					reference routineConnectServices[*] : BehavioralFeature;
+					reference routineDisconnectServices[*] : BehavioralFeature;
+				}
+
+				class SwSchedulableResource extends SwConcurrentResource {
+					attribute isStaticSchedulingFeature[0-1] : Boolean;
+					attribute isPreemptable[0-1] : Boolean;
+					reference schedulers : NamedElement;
+					reference deadlineElements[*] : TypedElement;
+					reference deadlineTypeElements[*] : TypedElement;
+					reference timeScliceElements[*] : TypedElement;
+					reference delayServices[*] : BehavioralFeature;
+					reference joinServices[*] : BehavioralFeature;
+					reference yieldServices[*] : BehavioralFeature;
+				}
+
+				class SwTimerResource extends TimerResource {
+					reference durationElements[0-1] : TypedElement;
+				}
+
+				class MemoryPartition extends SwResource {
+					reference concurrentResources[*] : TypedElement;
+					reference memorySpaces[*] : TypedElement;
+					reference fork[*] : BehavioralFeature;
+					reference exit[*] : BehavioralFeature;
+					reference base_Namespace : Namespace;
+				}
+
+				class Alarm extends InterruptResource {
+					attribute isWatchdog[0-1] : Boolean;
+					reference timers[*] : TypedElement;
+				}
+			}
+
+			package SW_Brokering {
+
+				enumeration AccessPolicyKind {
+					literal Read;
+					literal Write;
+					literal ReadWrite;
+					literal Undef;
+					literal Other;
+				}
+
+				class DeviceBroker extends SwResource {
+					attribute accessPolicy[0-1] : AccessPolicyKind;
+					attribute isBuffered[0-1] : Boolean;
+					reference devices[*] : TypedElement;
+					reference closeServices[*] : BehavioralFeature;
+					reference controlServices[*] : BehavioralFeature;
+					reference openServices[*] : BehavioralFeature;
+					reference readServices[*] : BehavioralFeature;
+					reference writeServices[*] : BehavioralFeature;
+				}
+
+				class MemoryBroker extends SwResource {
+					attribute accessPolicy[0-1] : AccessPolicyKind;
+					reference memories[*] : TypedElement;
+					reference memoryBlockAdressSelements[*] : TypedElement;
+					reference memoryBlockSizeElements[*] : TypedElement;
+					reference lockServices[*] : BehavioralFeature;
+					reference unlockServices[*] : BehavioralFeature;
+					reference mapServices[*] : BehavioralFeature;
+					reference unMapServices[*] : BehavioralFeature;
+				}
+			}
+
+			package SW_Interaction {
+
+				enumeration QueuePolicyKind {
+					literal FIFO;
+					literal LIFO;
+					literal Priority;
+					literal Undef;
+					literal Other;
+				}
+
+				enumeration MessageResourceKind {
+					literal MessageQueue;
+					literal Pipe;
+					literal Blackboard;
+					literal Undef;
+					literal Other;
+				}
+
+				enumeration NotificationKind {
+					literal Memorized;
+					literal Bounded;
+					literal Memoryless;
+					literal Undef;
+					literal Other;
+				}
+
+				enumeration NotificationResourceKind {
+					literal Event;
+					literal Barrier;
+					literal Undef;
+					literal Other;
+				}
+
+				enumeration MutualExclusionResourceKind {
+					literal BooleanSemaphore;
+					literal CountSemaphore;
+					literal Mutex;
+					literal Undef;
+					literal Other;
+				}
+
+				enumeration ConcurrentAccessProtocolKind {
+					literal PIP;
+					literal PCP;
+					literal NoPreemption;
+					literal Undef;
+					literal Other;
+				}
+
+				abstract class SwInteractionResource extends SwResource {
+					attribute isIntraPartitionInteraction[0-1] : Boolean;
+					attribute waitingQueuePolicy[0-1] : QueuePolicyKind;
+					attribute waitingQueueCapacity[0-1] : Integer;
+					reference waitingPolicyElements[*] : TypedElement;
+				}
+
+				abstract class SwCommunicationResource extends SwInteractionResource, CommunicationMedia {
+					
+				}
+
+				class SwSynchronizationResource extends SwInteractionResource, SynchronizationResource {
+					
+				}
+
+				class SharedDataComResource extends SwCommunicationResource {
+					reference readServices[*] : BehavioralFeature;
+					reference writeServices[*] : BehavioralFeature;
+				}
+
+				class MessageComResource extends SwCommunicationResource {
+					attribute isFixedMessageSize[0-1] : Boolean;
+					attribute meachnism[0-1] : MessageResourceKind;
+					reference messageSizeElements[*] : TypedElement;
+					reference messageQueueCapacityElements[*] : TypedElement;
+					attribute messageQueuePolicy[0-1] : QueuePolicyKind;
+					reference sendServices[*] : BehavioralFeature;
+					reference receiveServices[*] : BehavioralFeature;
+				}
+
+				class NotificationResource extends SwSynchronizationResource {
+					attribute occurence[0-1] : NotificationKind;
+					attribute mechanism[0-1] : NotificationResourceKind;
+					reference occurenceCountElements[*] : TypedElement;
+					reference maskElements[*] : TypedElement;
+					reference flushServices[*] : BehavioralFeature;
+					reference signalServices[*] : BehavioralFeature;
+					reference waitServices[*] : BehavioralFeature;
+					reference clearServices[*] : BehavioralFeature;
+				}
+
+				class SwMutualExclusionResource extends SwSynchronizationResource {
+					attribute mechanism[0-1] : MutualExclusionResourceKind;
+					attribute concurrentAccessProtocol[0-1] : ConcurrentAccessProtocolKind;
+					reference accessTokenElements[*] : TypedElement;
+					reference releaseServices[*] : BehavioralFeature;
+					reference acquireServices[*] : BehavioralFeature;
+				}
+			}
+		}
+	}
+
+	package MARTE_AnalysisModel {
+
+		package GQAM {
+
+			class GaWorkloadGenerator {
+				reference pop[0-1] : NFP_Integer;
+				reference base_Behavior : Behavior;
+			}
+
+			class GaEventTrace {
+				attribute content[0-1] : String;
+				attribute format[0-1] : String;
+				attribute location[0-1] : String;
+				reference base_NamedElement : NamedElement;
+			}
+
+			class GaWorkloadEvent {
+				reference pattern[0-1] : ArrivalPattern;
+				reference generator[0-1] : GaWorkloadGenerator;
+				reference trace[0-1] : GaEventTrace;
+				reference effect[0-1] : GaScenario;
+				reference timedEvent[0-1] : TimeEvent;
+				reference base_NamedElement : NamedElement;
+			}
+
+			class GaScenario extends ResourceUsage, TimedProcessing {
+				reference cause[0-1] : GaWorkloadEvent;
+				reference hostDemand[*] : NFP_Duration;
+				reference hostDemandOps[*] : NFP_Real;
+				reference interOccT[*] : NFP_Duration;
+				reference throughput[*] : NFP_Frequency;
+				reference respT[0-1] : NFP_Duration;
+				reference utilization[*] : NFP_Real;
+				reference utilizationHost[*] : NFP_Real;
+				reference root[0-1] : GaStep;
+				reference timing[*] : GaTimingObs;
+				reference behavior[0-1] : GaScenario;
+			}
+
+			class GaStep extends GaScenario {
+				reference isAtomic[0-1] : NFP_Boolean;
+				reference blockT[0-1] : NFP_Duration;
+				reference rep : NFP_Real;
+				reference prob[0-1] : NFP_Real;
+				reference priority[0-1] : NFP_Integer;
+				reference concurRes[0-1] : SchedulableResource;
+				reference host[0-1] : GaExecHost;
+				reference serDemand[*] ordered : GaRequestedService;
+				reference servCount[*] ordered : NFP_Real;
+			}
+
+			class GaExecHost extends ProcessingResource {
+				reference commTxOch[0-1] : NFP_Duration;
+				reference commRcvOvh[0-1] : NFP_Duration;
+				reference cntxtSwt[0-1] : NFP_Duration;
+				reference clockOvh[0-1] : NFP_Duration;
+				reference schedPriRange[0-1] : IntegerInterval;
+				reference memSize[0-1] : NFP_DataSize;
+				reference utilization[*] : NFP_Real;
+				reference throughput[*] : NFP_Frequency;
+			}
+
+			class GaRequestedService extends GaStep {
+				reference base_Operation : Operation;
+			}
+
+			class GaTimingObs extends NfpConstraint {
+				attribute laxity[0-1] : LaxityKind;
+				reference startObs[0-1] : TimeObservation;
+				reference stopObs[0-1] : TimeObservation;
+			}
+
+			enumeration LaxityKind {
+				literal hard;
+				literal soft;
+				literal other;
+			}
+
+			class GaCommStep extends GaStep {
+				
+			}
+
+			class GaAcqStep extends GaStep {
+				reference acqRes[0-1] : Resource;
+				reference resUnits[0-1] : NFP_Integer;
+			}
+
+			class GaRelStep extends GaStep {
+				reference relRes[0-1] : Resource;
+				reference resUnits[0-1] : NFP_Integer;
+			}
+
+			class GaLatencyObs extends GaTimingObs {
+				reference latency[*] : NFP_Duration;
+				reference miss[*] : NFP_Real;
+				reference utility[*] : UtilityType;
+				reference maxJitter[*] : NFP_Duration;
+			}
+
+			class GaCommHost extends ProcessingResource {
+				reference capacity[*] : NFP_DataTxRate;
+				reference packetT[*] : NFP_Duration;
+				reference blockT[*] : NFP_Duration;
+				attribute transmMode[0-1] : TransmModeKind;
+				reference utilization[*] : NFP_Real;
+				reference throughput[*] : NFP_Frequency;
+			}
+
+			class GaCommChannel extends SchedulableResource {
+				reference packetSize[0-1] : NFP_DataSize;
+				reference utlization[*] : NFP_Real;
+			}
+
+			class GaWorkloadBehavior {
+				reference behavior[*] : GaScenario;
+				reference demand[*] : GaWorkloadEvent;
+				reference base_NamedElement : NamedElement;
+			}
+
+			class GaAnalysisContext extends ExpressionContext {
+				reference context[*] : NFP_String;
+				reference workload[1-*] : GaWorkloadBehavior;
+				reference platform[1-*] : GaResourcesPlatform;
+			}
+
+			class GaResourcesPlatform {
+				reference resources[*] : Resource;
+				reference base_Classifier : Classifier;
+			}
+		}
+
+		package SAM {
+
+			enumeration OptimallityCriterionKind {
+				literal meetHardDeadlines;
+				literal minimizeMissedDeadlines;
+				literal minimizedMeanTardiness;
+				literal undef;
+				literal other;
+			}
+
+			class SaAnalysisContext extends GaAnalysisContext {
+				reference isSched[0-1] : NFP_Boolean;
+				attribute optCriterion[0-1] : OptimallityCriterionKind;
+			}
+
+			class SaEnd2EndFlow {
+				reference isSched[0-1] : NFP_Boolean;
+				reference schSlack[0-1] : NFP_Real;
+				reference end2EndT[*] : NFP_Duration;
+				reference end2EndD[*] : NFP_Duration;
+				reference timing[*] ordered : GaTimingObs;
+				reference base_NamedElement : NamedElement;
+			}
+
+			class SaCommStep extends GaCommStep {
+				reference deadline[0-1] : NFP_Duration;
+				reference spareCap[0-1] : NFP_Duration;
+				reference schSlack[0-1] : NFP_Real;
+				reference base_BehavioralFeature : BehavioralFeature;
+			}
+
+			class SaExecStep extends GaStep {
+				reference base_BehavioralFeature : BehavioralFeature;
+				reference deadline[0-1] : NFP_Duration;
+				reference spareCap[0-1] : NFP_Duration;
+				reference schSlack[0-1] : NFP_Real;
+				reference preemptT[0-1] : NFP_Duration;
+				reference readyT[0-1] : NFP_Duration;
+				reference delayT[0-1] : NFP_Duration;
+			}
+
+			class SaSchedObs extends GaTimingObs {
+				reference suspentions[*] : NFP_Integer;
+				reference blockT[*] : NFP_Duration;
+				reference overlaps[*] : NFP_Integer;
+			}
+
+			class SaSharedResource extends MutualExclusionResource {
+				reference capacity[0-1] : NFP_Integer;
+				reference isPreemp[0-1] : NFP_Boolean;
+				reference isConsum[0-1] : NFP_Boolean;
+				reference acquisT[*] : NFP_Duration;
+				reference releaseT[*] : NFP_Duration;
+			}
+
+			class SaCommHost extends GaCommHost {
+				reference isSched[0-1] : NFP_Boolean;
+				reference schSlack[0-1] : NFP_Real;
+			}
+
+			class SaExecHost extends GaExecHost {
+				reference isSched[0-1] : NFP_Boolean;
+				reference schSlack[0-1] : NFP_Real;
+				reference schedUtiliz[0-1] : NFP_Real;
+				reference ISRswitchT[0-1] : NFP_Duration;
+				reference ISRprioRange[0-1] : IntegerInterval;
+				attribute schedPolicy[0-1] : SchedPolicyKind;
+				reference isPreempible[0-1] : NFP_Boolean;
+			}
+		}
+
+		package PAM {
+
+			class PaStep extends GaStep {
+				reference noSynch[0-1] : NFP_Boolean;
+				attribute extOpDemand[*] ordered : String;
+				reference extOpCount[*] ordered : NFP_Real;
+				reference behavDemand[*] ordered : GaScenario;
+				reference behavCount[*] ordered : NFP_Real;
+			}
+
+			class PaRequestedStep extends PaStep, GaRequestedService {
+				
+			}
+
+			class PaCommStep extends PaStep, GaCommStep {
+				
+			}
+
+			class PaResPassStep extends GaStep {
+				reference resource[0-1] : Resource;
+				reference resUnits[0-1] : NFP_Integer;
+			}
+
+			class PaLogicalResource extends Resource {
+				reference utilization[0-1] : NFP_Real;
+				reference throughput[0-1] : NFP_Frequency;
+				reference poolSize : NFP_Integer;
+			}
+
+			class PaRunTInstance {
+				reference poolSize[0-1] : NFP_Integer;
+				attribute unbddPool[0-1] : Boolean;
+				reference instance[0-1] : Resource;
+				reference host[0-1] : SchedulableResource;
+				reference utilization[0-1] : NFP_Real;
+				reference throughput[0-1] : NFP_Frequency;
+				reference base_NamedElement : NamedElement;
+			}
+		}
+	}
+}
+
+package MARTE_Library {
+
+	package MeasurementUnits {
+
+		enumeration TimeUnitKind {
+			literal s;
+			literal tick;
+			literal ms;
+			literal us;
+			literal min;
+			literal hrs;
+			literal dys;
+		}
+
+		enumeration PowerUnitKind {
+			literal W;
+			literal mW;
+			literal KW;
+		}
+
+		enumeration FrequencyUnitKind {
+			literal Hz;
+			literal KHz;
+			literal MHz;
+			literal GHz;
+			literal rpm;
+		}
+
+		enumeration DataSizeUnitKind {
+			literal bits;
+			literal Bytes;
+			literal KB;
+			literal MB;
+			literal GB;
+		}
+
+		enumeration DataTxRateUnitKind {
+			literal b_per_s;
+			literal Kb_per_s;
+			literal Mb_per_s;
+		}
+
+		enumeration EnergyUnitKind {
+			literal J;
+			literal KJ;
+			literal Wh;
+			literal KWh;
+			literal mWh;
+		}
+
+		enumeration LengthUnitKind {
+			literal m;
+			literal cm;
+			literal mm;
+		}
+
+		enumeration AreaUnitKind {
+			literal mm2;
+			literal um2;
+		}
+	}
+
+	package GRM_BasicTypes {
+
+		class EDFParameters {
+			reference deadline[0-1] : NFP_Duration;
+		}
+
+		enumeration SchedPolicyKind {
+			literal EarliestDeadlineFirst;
+			literal FIFO;
+			literal FixedPriority;
+			literal LeastLaxityFirst;
+			literal RoundRobin;
+			literal TimeTableDriven;
+			literal Undef;
+			literal Other;
+		}
+
+		enumeration ProtectProtocolKind {
+			literal FIFO;
+			literal NoPreemption;
+			literal PriorityCeiling;
+			literal PriorityInheritance;
+			literal StackBased;
+			literal Undef;
+			literal Other;
+		}
+
+		enumeration PeriodicServerKind {
+			literal Sporadic;
+			literal Deferrable;
+			literal Undef;
+			literal Other;
+		}
+
+		class SchedParameters {
+			reference edf[0-1] : EDFParameters;
+			reference fp[0-1] : FixedPriorityParameters;
+			reference pooling[0-1] : PoolingParameters;
+			reference server[0-1] : PeriodicServerParameters;
+		}
+
+		class FixedPriorityParameters {
+			attribute priority[0-1] : Integer;
+		}
+
+		class PoolingParameters extends FixedPriorityParameters {
+			reference period[0-1] : NFP_Duration;
+			reference overhead[*] : NFP_Duration;
+		}
+
+		class PeriodicServerParameters extends FixedPriorityParameters {
+			attribute kind[0-1] : PeriodicServerKind;
+			attribute backgroundPriority[0-1] : Integer;
+			reference initialBudget[0-1] : NFP_Duration;
+			reference replenishPeriod[0-1] : NFP_Duration;
+			attribute maxPendingReplenish[0-1] : Integer;
+		}
+	}
+
+	package BasicNFP_Types {
+
+		enumeration SourceKind {
+			literal est;
+			literal meas;
+			literal calc;
+			literal req;
+		}
+
+		-- WARNING Enumeration name was modified (from MARTE Specification) to avoid collision name error
+		-- This problem will be fixed with KM3 2007
+--		enumeration DirectionKind {
+		enumeration BasicNFP_Types_DirectionKind {
+			literal incr;
+			literal decr;
+		}
+
+		enumeration StatisticalQualifierKind {
+			literal max;
+			literal min;
+			literal mean;
+			literal range;
+			literal percent;
+			literal distrib;
+			literal determ;
+			literal other;
+		}
+
+		class NFP_CommonType {
+			attribute expr[0-1] : VSL_Expression;
+			attribute source[0-1] : SourceKind;
+			attribute statQ[0-1] : StatisticalQualifierKind;
+			attribute dir[0-1] : BasicNFP_Types_DirectionKind;
+		}
+
+		class NFP_Frequency extends NFP_Real {
+			attribute unit[0-1] : FrequencyUnitKind;
+			attribute precision[0-1] : Real;
+		}
+
+		class NFP_Real extends NFP_CommonType {
+			attribute value[0-1] : Real;
+		}
+
+		class NFP_Natural extends NFP_CommonType {
+			attribute value[0-1] : UnlimitedNatural;
+		}
+
+		class NFP_Boolean extends NFP_CommonType {
+			attribute value[0-1] : Boolean;
+		}
+
+		class NFP_String extends NFP_CommonType {
+			attribute value[0-1] : String;
+		}
+
+		class NFP_Integer extends NFP_CommonType {
+			attribute value[0-1] : Integer;
+		}
+
+		class NFP_DateTime extends NFP_CommonType {
+			attribute value[0-1] : DateTime;
+		}
+
+		class NFP_DataTxRate extends NFP_Real {
+			attribute unit[0-1] : DataTxRateUnitKind;
+			attribute precision[0-1] : Real;
+		}
+
+		class NFP_Power extends NFP_Real {
+			attribute unit[0-1] : PowerUnitKind;
+			attribute precision[0-1] : Real;
+		}
+
+		class NFP_DataSize extends NFP_Real {
+			attribute unit[0-1] : DataSizeUnitKind;
+			attribute precision[0-1] : Real;
+		}
+
+		class NFP_Energy extends NFP_Real {
+			attribute unit[0-1] : EnergyUnitKind;
+			attribute precision[0-1] : Real;
+		}
+
+		class NFP_Length extends NFP_Real {
+			attribute unit[0-1] : LengthUnitKind;
+			attribute precision[0-1] : Real;
+		}
+
+		class NFP_Area extends NFP_Real {
+			attribute unit[0-1] : AreaUnitKind;
+			attribute precision[0-1] : Real;
+		}
+
+		class ArrivalPattern {
+			reference periodic[0-1] : PeriodicPattern;
+			reference aperiodic[0-1] : AperiodicPattern;
+			reference burst[0-1] : BurstPattern;
+			reference irregular[0-1] : IrregularPattern;
+			reference closed[0-1] : ClosedPattern;
+			reference sporadic[0-1] : SporadicPattern;
+		}
+
+		class PeriodicPattern {
+			reference period[0-1] : NFP_Duration;
+			reference jitter[0-1] : NFP_Duration;
+			reference phase[0-1] : NFP_Duration;
+		}
+
+		class AperiodicPattern {
+			reference distribution[0-1] : NFP_CommonType;
+		}
+
+		class BurstPattern extends AperiodicPattern {
+			reference minInterarrival[0-1] : NFP_Duration;
+			reference maxInterarrival[0-1] : NFP_Duration;
+			reference minEventInterval[0-1] : NFP_Duration;
+			reference maxEventInterval[0-1] : NFP_Duration;
+			reference burstSize[0-1] : NFP_Integer;
+		}
+
+		class IrregularPattern extends AperiodicPattern {
+			reference phase[0-1] : NFP_Duration;
+			reference interarrivals[*] : NFP_Duration;
+		}
+
+		class ClosedPattern {
+			reference population[0-1] : NFP_Integer;
+			reference extDelay[0-1] : NFP_Duration;
+		}
+
+		class SporadicPattern extends AperiodicPattern {
+			reference minInterarrival[0-1] : NFP_Duration;
+			reference maxInterarrival[0-1] : NFP_Duration;
+			reference jitter[0-1] : NFP_Duration;
+		}
+
+		class NFP_BoundedDuration extends NFP_CommonType {
+			attribute values[0-2] : Real;
+			attribute unit[0-1] : TimeUnitKind;
+			attribute clock[0-1] : String;
+			attribute precision[0-1] : Real;
+		}
+
+		class NFP_Percentage extends NFP_Real {
+			attribute unit[0-1] : String;
+		}
+
+		class NFP_Duration extends NFP_Real {
+			attribute unit[0-1] : TimeUnitKind;
+			attribute clock[0-1] : String;
+			attribute precision[0-1] : Real;
+		}
+	}
+
+	package MARTE_DataTypes {
+
+		class IntegerVector {
+			attribute vectorElem[*] : Integer;
+		}
+
+		class IntegerMatrix {
+			reference matrixElem[*] : IntegerVector;
+		}
+
+		class IntegerInterval {
+			attribute bound[2-2] : Integer;
+		}
+
+		enumeration TransmModeKind {
+			literal simplex;
+			literal halfDuplex;
+			literal fullDuplex;
+		}
+
+		class UtilityType {
+			operation eq(u : UtilityType) : Boolean;
+			operation lt(u : UtilityType) : Boolean;
+			operation gt(u : UtilityType) : Boolean;
+			operation le(u : UtilityType) : Boolean;
+			operation ge(u : UtilityType) : Boolean;
+			operation ne(u : UtilityType) : Boolean;
+		}
+
+		class Array {
+--		WARNING Generic type not implemented for the moment
+--			attribute vectorElement[*] : ;
+		}
+
+		class Realnterval {
+			attribute bound[2-2] : Real;
+		}
+
+		class NFP_FrequencyInterval {
+			reference bound[2-2] : NFP_Frequency;
+		}
+
+		-- WARNING Classifier name was modified to avoid collision name error
+		-- This problem will be fixed with KM3 2007
+		class MARTE_DataTypes_Interval {
+--		WARNING Generic type not implemented for the moment
+--			reference bound[2-2] : ;
+		}
+
+		class NFP_NaturalInterval {
+			reference bound[2-2] : NFP_Natural;
+		}
+
+		datatype VSL_Expression;
+	}
+
+	package TimeTypesLibrary {
+
+		enumeration TimeNatureKind {
+			literal discrete;
+			literal dense;
+		}
+
+		enumeration TimeInterpretationKind {
+			literal duration;
+			literal instant;
+		}
+	}
+
+	package TimeLibrary {
+
+		class TimedValueType {
+			attribute unit[0-1] : TUK;
+			attribute value[0-1] : Real;
+			attribute expr[0-1] : ClockedValueSpecification;
+			attribute onClock[0-1] : String;
+		}
+
+		enumeration TUK {
+			
+		}
+
+		datatype ClockedValueSpecification;
+
+		-- WARNING Enumeration name was modified (from MARTE Specification) to avoid collision name error
+		-- This problem will be fixed with KM3 2007
+--		enumeration TimeUnitKind {
+		enumeration TimeLibrary_TimeUnitKind {
+			literal s;
+			literal ms;
+			literal us;
+			literal ns;
+			literal min;
+			literal hrs;
+			literal dys;
+		}
+
+		enumeration TimeStandardKind {
+			literal TAI;
+			literal UT0;
+			literal UT1;
+			literal UTC;
+			literal Local;
+			literal TT;
+			literal TBD;
+			literal TCG;
+			literal TCB;
+			literal Sidereal;
+			literal GPS;
+		}
+
+		enumeration LogicalTimeUnit {
+			literal tick;
+		}
+
+		enumeration EventKind {
+			literal start;
+			literal finish;
+			literal send;
+			literal receive;
+			literal consume;
+		}
+
+		class IdealClock {
+			operation currentTime() : Real;
+		}
+	}
+
+	package RS_Library {
+
+		class TilerSpecification {
+			reference origin[0-1] : IntegerVector;
+			reference paving : IntegerMatrix;
+			reference fitting[0-1] : IntegerVector;
+		}
+
+		class ShapeSpecification {
+			attribute size[*] : UnlimitedNatural;
+		}
+	}
+
+	package MARTE_PrimitivesTypes {
+		datatype Integer;
+		datatype Boolean;
+		datatype UnlimitedNatural;
+		datatype String;
+		datatype DateTime;
+		datatype Real;
+	}
+}
+
+package uml {
+
+	abstract class Element {
+		reference ownedElement[*] : Element oppositeOf owner;
+		reference owner[0-1] : Element oppositeOf ownedElement;
+		reference ownedComment[*] container : Comment;
+	}
+
+	class Comment extends Element {
+		attribute body[0-1] : String;
+		reference annotatedElement[*] : Element;
+	}
+
+	class Package extends Namespace, PackageableElement, TemplateableElement {
+		reference ownedType[*] : Type oppositeOf "package";
+		reference packageMerge[*] container : PackageMerge oppositeOf receivingPackage;
+		reference packagedElement[*] container : PackageableElement;
+		reference nestedPackage[*] : Package oppositeOf nestingPackage;
+		reference nestingPackage[0-1] : Package oppositeOf nestedPackage;
+		reference profileApplication[*] container : ProfileApplication oppositeOf applyingPackage;
+	}
+
+	abstract class NamedElement extends Element {
+		attribute name[0-1] : String;
+		attribute visibility[0-1] : VisibilityKind;
+		attribute qualifiedName[0-1] : String;
+		reference clientDependency[*] : Dependency oppositeOf client;
+		reference namespace[0-1] : Namespace oppositeOf ownedMember;
+		reference nameExpression[0-1] container : StringExpression;
+	}
+
+	abstract class StructuralFeature extends Feature, TypedElement, MultiplicityElement {
+		attribute isReadOnly : Boolean;
+	}
+
+	abstract class ConnectableElement extends TypedElement, ParameterableElement {
+		reference end[*] ordered : ConnectorEnd;
+	}
+
+	abstract class TemplateableElement extends Element {
+		reference templateBinding[*] container : TemplateBinding oppositeOf boundElement;
+		reference ownedTemplateSignature[0-1] container : TemplateSignature oppositeOf template;
+	}
+
+	class Property extends StructuralFeature, ConnectableElement, DeploymentTarget, TemplateableElement {
+		reference "class"[0-1] : Class;
+		reference "datatype"[0-1] : DataType oppositeOf ownedAttribute;
+		reference owningAssociation[0-1] : Association oppositeOf ownedEnd;
+		reference association[0-1] : Association oppositeOf memberEnd;
+		attribute isDerived : Boolean;
+		attribute isDerivedUnion : Boolean;
+		attribute default[0-1] : String;
+		attribute aggregation : AggregationKind;
+		attribute isComposite : Boolean;
+		reference redefinedProperty[*] : Property;
+		reference defaultValue[0-1] container : ValueSpecification;
+		reference opposite[0-1] : Property;
+		reference subsettedProperty[*] : Property;
+		reference qualifier[*] ordered container : Property oppositeOf associationEnd;
+		reference associationEnd[0-1] : Property oppositeOf qualifier;
+	}
+
+	enumeration VisibilityKind {
+		literal public;
+		literal private;
+		literal protected;
+		literal "package";
+	}
+
+	class Dependency extends PackageableElement, DirectedRelationship {
+		reference supplier[1-*] : NamedElement;
+		reference client[1-*] : NamedElement oppositeOf clientDependency;
+	}
+
+	abstract class DirectedRelationship extends Relationship {
+		reference source[1-*] : Element;
+		reference target[1-*] : Element;
+	}
+
+	abstract class Relationship extends Element {
+		reference relatedElement[1-*] : Element;
+	}
+
+	abstract class Namespace extends NamedElement {
+		reference elementImport[*] container : ElementImport oppositeOf importingNamespace;
+		reference packageImport[*] container : PackageImport oppositeOf importingNamespace;
+		reference ownedRule[*] container : Constraint oppositeOf context;
+		reference member[*] : NamedElement;
+		reference importedMember[*] : PackageableElement;
+		reference ownedMember[*] : NamedElement oppositeOf namespace;
+	}
+
+	class ElementImport extends DirectedRelationship {
+		attribute visibility : VisibilityKind;
+		attribute alias[0-1] : String;
+		reference importedElement : PackageableElement;
+		reference importingNamespace : Namespace oppositeOf elementImport;
+	}
+
+	class PackageImport extends DirectedRelationship {
+		attribute visibility : VisibilityKind;
+		reference importedPackage : Package;
+		reference importingNamespace : Namespace oppositeOf packageImport;
+	}
+
+	class Constraint extends PackageableElement {
+		reference constrainedElement[*] ordered : Element;
+		reference specification container : ValueSpecification;
+		reference context[0-1] : Namespace oppositeOf ownedRule;
+	}
+
+	abstract class TypedElement extends NamedElement {
+		reference type[0-1] : Type;
+	}
+
+	abstract class Type extends PackageableElement {
+		reference "package"[0-1] : Package oppositeOf ownedType;
+	}
+
+	class Association extends Classifier, Relationship {
+		attribute isDerived : Boolean;
+		reference ownedEnd[*] ordered container : Property oppositeOf owningAssociation;
+		reference endType[1-*] ordered : Type;
+		reference memberEnd[2-*] ordered : Property oppositeOf association;
+		reference navigableOwnedEnd[*] : Property;
+	}
+
+	abstract class Classifier extends Namespace, RedefinableElement, Type, TemplateableElement {
+		attribute isAbstract : Boolean;
+		reference generalization[*] container : Generalization oppositeOf specific;
+		reference powertypeExtent[*] : GeneralizationSet oppositeOf powertype;
+		reference feature[*] : Feature oppositeOf featuringClassifier;
+		reference inheritedMember[*] : NamedElement;
+		reference redefinedClassifier[*] : Classifier;
+		reference general[*] : Classifier;
+		reference substitution[*] container : Substitution oppositeOf substitutingClassifier;
+		reference "attribute"[*] : Property;
+		reference representation[0-1] : CollaborationUse;
+		reference collaborationUse[*] container : CollaborationUse;
+		reference ownedUseCase[*] container : UseCase;
+		reference useCase[*] : UseCase oppositeOf subject;
+	}
+
+	abstract class RedefinableElement extends NamedElement {
+		attribute isLeaf : Boolean;
+		reference redefinedElement[*] : RedefinableElement;
+		reference redefinitionContext[*] : Classifier;
+	}
+
+	class TemplateBinding extends DirectedRelationship {
+		reference signature : TemplateSignature;
+		reference parameterSubstitution[*] container : TemplateParameterSubstitution oppositeOf templateBinding;
+		reference boundElement : TemplateableElement oppositeOf templateBinding;
+	}
+
+	class TemplateSignature extends Element {
+		reference parameter[1-*] ordered : TemplateParameter;
+		reference ownedParameter[*] ordered container : TemplateParameter oppositeOf signature;
+		reference template : TemplateableElement oppositeOf ownedTemplateSignature;
+	}
+
+	class TemplateParameter extends Element {
+		reference signature : TemplateSignature oppositeOf ownedParameter;
+		reference parameteredElement : ParameterableElement oppositeOf templateParameter;
+		reference ownedParameteredElement[0-1] container : ParameterableElement oppositeOf owningTemplateParameter;
+		reference default[0-1] : ParameterableElement;
+		reference ownedDefault[0-1] container : ParameterableElement;
+	}
+
+	abstract class ParameterableElement extends Element {
+		reference owningTemplateParameter[0-1] : TemplateParameter oppositeOf ownedParameteredElement;
+		reference templateParameter[0-1] : TemplateParameter oppositeOf parameteredElement;
+	}
+
+	class TemplateParameterSubstitution extends Element {
+		reference formal : TemplateParameter;
+		reference actual[1-*] : ParameterableElement;
+		reference ownedActual[*] container : ParameterableElement;
+		reference templateBinding : TemplateBinding oppositeOf parameterSubstitution;
+	}
+
+	class Generalization extends DirectedRelationship {
+		attribute isSubstitutable[0-1] : Boolean;
+		reference general : Classifier;
+		reference generalizationSet[*] : GeneralizationSet oppositeOf generalization;
+		reference specific : Classifier oppositeOf generalization;
+	}
+
+	class GeneralizationSet extends PackageableElement {
+		attribute isCovering : Boolean;
+		attribute isDisjoint : Boolean;
+		reference powertype[0-1] : Classifier oppositeOf powertypeExtent;
+		reference generalization[*] : Generalization oppositeOf generalizationSet;
+	}
+
+	abstract class Feature extends RedefinableElement {
+		attribute isStatic : Boolean;
+		reference featuringClassifier[*] : Classifier oppositeOf feature;
+	}
+
+	class Substitution extends Realization {
+		reference contract : Classifier;
+		reference substitutingClassifier : Classifier oppositeOf substitution;
+	}
+
+	abstract class PackageableElement extends NamedElement, ParameterableElement {
+		
+	}
+
+	class PackageMerge extends DirectedRelationship {
+		reference mergedPackage : Package;
+		reference receivingPackage : Package oppositeOf packageMerge;
+	}
+
+	class ProfileApplication extends DirectedRelationship {
+		reference appliedProfile : Profile;
+		attribute isStrict : Boolean;
+		reference applyingPackage : Package oppositeOf profileApplication;
+	}
+
+	class Profile extends Package {
+		reference ownedStereotype[*] : Stereotype;
+		reference metaclassReference[*] : ElementImport;
+		reference metamodelReference[*] : PackageImport;
+	}
+
+	class Stereotype extends "Class" {
+		reference icon[*] container : Image;
+	}
+
+	class "Class" extends EncapsulatedClassifier, BehavioredClassifier {
+		reference nestedClassifier[*] ordered container : Classifier;
+		reference ownedOperation[*] ordered container : Operation oppositeOf "class";
+		reference superClass[*] : Class;
+		attribute isActive : Boolean;
+		reference ownedReception[*] container : Reception;
+		reference extension[*] : Extension oppositeOf metaclass;
+	}
+
+	class StringExpression extends Expression, TemplateableElement {
+		reference subExpression[*] container : StringExpression oppositeOf owningExpression;
+		reference owningExpression[0-1] : StringExpression oppositeOf subExpression;
+	}
+
+	class Expression extends ValueSpecification {
+		attribute symbol[0-1] : String;
+		reference operand[*] ordered container : ValueSpecification;
+	}
+
+	abstract class ValueSpecification extends PackageableElement, TypedElement {
+	}
+
+	abstract class BehavioredClassifier extends Classifier {
+		reference ownedBehavior[*] container : Behavior;
+		reference classifierBehavior[0-1] : Behavior;
+		reference interfaceRealization[*] container : InterfaceRealization oppositeOf implementingClassifier;
+		reference ownedTrigger[*] container : Trigger;
+	}
+
+	abstract class Behavior extends Class {
+		attribute isReentrant : Boolean;
+		reference redefinedBehavior[*] : Behavior;
+		reference ownedParameter[*] ordered container : Parameter;
+		reference context[0-1] : BehavioredClassifier;
+		reference precondition[*] : Constraint;
+		reference postcondition[*] : Constraint;
+		reference ownedParameterSet[*] container : ParameterSet;
+		reference specification[0-1] : BehavioralFeature oppositeOf method;
+	}
+
+	abstract class MultiplicityElement extends Element {
+		attribute isOrdered : Boolean;
+		attribute isUnique : Boolean;
+		attribute upper[0-1] : UnlimitedNatural;
+		attribute lower[0-1] : Integer;
+		reference upperValue[0-1] container : ValueSpecification;
+		reference lowerValue[0-1] container : ValueSpecification;
+	}
+
+	abstract class DeploymentTarget extends NamedElement {
+		reference deployment[*] container : Deployment oppositeOf location;
+		reference deployedElement[*] : PackageableElement;
+		operation getDeployedElements() : PackageableElement;
+	}
+
+	class DataType extends Classifier {
+		reference ownedAttribute[*] ordered container : Property oppositeOf "datatype";
+		reference ownedOperation[*] ordered container : Operation oppositeOf "datatype";
+		operation createOwnedOperation(name : String, parameterNames : String, parameterTypes : Type, returnType : Type) : Operation;
+		operation createOwnedAttribute(name : String, type : Type, lower : Integer, upper : UnlimitedNatural) : Property;
+	}
+
+	enumeration AggregationKind {
+		literal none;
+		literal shared;
+		literal composite;
+	}
+
+	class CollaborationUse extends NamedElement {
+		reference type : Collaboration;
+		reference roleBinding[*] container : Dependency;
+	}
+
+	class UseCase extends BehavioredClassifier {
+		reference include[*] container : Include oppositeOf includingCase;
+		reference extend[*] container : Extend oppositeOf extension;
+		reference extensionPoint[*] container : ExtensionPoint oppositeOf useCase;
+		reference subject[*] : Classifier oppositeOf useCase;
+	}
+
+	class Realization extends Abstraction {
+		
+	}
+
+	class Abstraction extends Dependency {
+		reference mapping[0-1] container : OpaqueExpression;
+	}
+
+	class Image extends Element {
+		attribute content[0-1] : String;
+		attribute location[0-1] : String;
+		attribute format[0-1] : String;
+	}
+
+	class OpaqueExpression extends ValueSpecification {
+		attribute body[*] ordered : String;
+		attribute language[*] ordered unique : String;
+		reference result[0-1] : Parameter;
+		reference behavior[0-1] : Behavior;
+	}
+
+	class Parameter extends ConnectableElement, MultiplicityElement {
+		attribute direction : ParameterDirectionKind;
+		attribute default[0-1] : String;
+		reference defaultValue[0-1] container : ValueSpecification;
+		reference "operation"[0-1] : Operation;
+		reference parameterSet[*] : ParameterSet oppositeOf parameter;
+		attribute isException : Boolean;
+		attribute isStream : Boolean;
+		attribute effect[0-1] : ParameterEffectKind;
+	}
+
+	abstract class EncapsulatedClassifier extends StructuredClassifier {
+		reference ownedPort[*] : Port;
+	}
+
+	class Operation extends BehavioralFeature, ParameterableElement, TemplateableElement {
+		reference interface[0-1] : Interface oppositeOf ownedOperation;
+		reference "class"[0-1] : Class oppositeOf ownedOperation;
+		attribute isQuery : Boolean;
+		attribute isOrdered : Boolean;
+		attribute isUnique : Boolean;
+		attribute lower[0-1] : Integer;
+		attribute upper[0-1] : UnlimitedNatural;
+		reference precondition[*] : Constraint;
+		reference postcondition[*] : Constraint;
+		reference redefinedOperation[*] : Operation;
+		reference "datatype"[0-1] : DataType oppositeOf ownedOperation;
+		reference bodyCondition[0-1] : Constraint;
+		reference type[0-1] : Type;
+	}
+
+	class Reception extends BehavioralFeature {
+		reference signal[0-1] : Signal;
+	}
+
+	class Extension extends Association {
+		attribute isRequired : Boolean;
+		reference metaclass : Class oppositeOf extension;
+	}
+
+	class EnumerationLiteral extends InstanceSpecification {
+		reference "enumeration"[0-1] : Enumeration oppositeOf ownedLiteral;
+	}
+
+	class ActivityPartition extends NamedElement, ActivityGroup {
+		attribute isDimension : Boolean;
+		attribute isExternal : Boolean;
+		reference node[*] : ActivityNode oppositeOf inPartition;
+		reference subpartition[*] container : ActivityPartition oppositeOf superPartition;
+		reference superPartition[0-1] : ActivityPartition oppositeOf subpartition;
+		reference represents[0-1] : Element;
+		reference edge[*] : ActivityEdge oppositeOf inPartition;
+	}
+
+	class Enumeration extends DataType {
+		reference ownedLiteral[*] ordered container : EnumerationLiteral oppositeOf "enumeration";
+	}
+
+	class InstanceSpecification extends DeploymentTarget, PackageableElement, DeployedArtifact {
+		reference classifier[*] : Classifier;
+		reference slot[*] container : Slot oppositeOf owningInstance;
+		reference specification[0-1] container : ValueSpecification;
+	}
+
+	abstract class BehavioralFeature extends Namespace, Feature {
+		reference ownedParameter[*] ordered container : Parameter;
+		attribute isAbstract : Boolean;
+		reference method[*] : Behavior oppositeOf specification;
+		attribute concurrency : CallConcurrencyKind;
+		reference raisedException[*] : Type;
+		reference ownedParameterSet[*] container : ParameterSet;
+	}
+
+	class Signal extends Classifier {
+		reference ownedAttribute[*] ordered container : Property;
+	}
+
+	class TimeExpression extends ValueSpecification {
+		reference expr[0-1] : ValueSpecification;
+		reference observation[*] : Observation;
+	}
+
+	abstract class Observation extends PackageableElement {
+		
+	}
+
+	class Duration extends ValueSpecification {
+		reference expr[0-1] : ValueSpecification;
+		reference observation[*] : Observation;
+	}
+
+	class DurationInterval extends Interval {
+		
+	}
+
+	class Interval extends ValueSpecification {
+		reference min : ValueSpecification;
+		reference max : ValueSpecification;
+	}
+
+	class TimeConstraint extends IntervalConstraint {
+		attribute firstEvent[0-1] : Boolean;
+	}
+
+	class IntervalConstraint extends Constraint {
+		
+	}
+
+	class TimeInterval extends Interval {
+		
+	}
+
+	class DurationConstraint extends IntervalConstraint {
+		attribute firstEvent[0-2] unique : Boolean;
+	}
+
+	class TimeObservation extends Observation {
+		reference event : NamedElement;
+		attribute firstEvent : Boolean;
+	}
+
+	class DurationObservation extends Observation {
+		reference event[1-2] : NamedElement;
+		attribute firstEvent[0-2] unique : Boolean;
+	}
+
+	class ConnectorEnd extends MultiplicityElement {
+		reference definingEnd[0-1] : Property;
+		reference partWithPort[0-1] : Property;
+		reference role : ConnectableElement;
+	}
+
+	class TimeEvent extends Event {
+		attribute isRelative : Boolean;
+		reference when container : ValueSpecification;
+	}
+
+	abstract class Event extends PackageableElement {
+		
+	}
+
+	class Port extends Property {
+		attribute isBehavior : Boolean;
+		attribute isService : Boolean;
+		reference required[*] : Interface;
+		reference redefinedPort[*] : Port;
+		reference provided[*] : Interface;
+		reference protocol[0-1] : ProtocolStateMachine;
+	}
+
+	abstract class Action extends ExecutableNode {
+		reference output[*] ordered : OutputPin;
+		reference input[*] ordered : InputPin;
+		reference context[0-1] : Classifier;
+		reference localPrecondition[*] container : Constraint;
+		reference localPostcondition[*] container : Constraint;
+	}
+
+	class Message extends NamedElement {
+		attribute messageKind : MessageKind;
+		attribute messageSort : MessageSort;
+		reference receiveEvent[0-1] : MessageEnd;
+		reference sendEvent[0-1] : MessageEnd;
+		reference connector[0-1] : Connector;
+		reference interaction : Interaction oppositeOf message;
+		reference argument[*] ordered container : ValueSpecification;
+		reference signature[0-1] : NamedElement;
+	}
+
+	class Lifeline extends NamedElement {
+		reference represents[0-1] : ConnectableElement;
+		reference interaction : Interaction oppositeOf lifeline;
+		reference selector[0-1] container : ValueSpecification;
+		reference decomposedAs[0-1] : PartDecomposition;
+		reference coveredBy[*] : InteractionFragment oppositeOf covered;
+	}
+
+	abstract class ExecutionSpecification extends InteractionFragment {
+		reference start : OccurrenceSpecification;
+		reference finish : OccurrenceSpecification;
+	}
+
+	abstract class InvocationAction extends Action {
+		reference argument[*] ordered container : InputPin;
+		reference onPort[0-1] : Port;
+	}
+
+	class Connector extends Feature {
+		reference type[0-1] : Association;
+		reference redefinedConnector[*] : Connector;
+		reference end[2-*] ordered container : ConnectorEnd;
+		attribute kind[0-1] : ConnectorKind;
+		reference contract[*] : Behavior;
+	}
+
+	class Collaboration extends BehavioredClassifier, StructuredClassifier {
+		reference collaborationRole[*] : ConnectableElement;
+	}
+
+	class Interface extends Classifier {
+		reference ownedAttribute[*] ordered container : Property;
+		reference ownedOperation[*] ordered container : Operation oppositeOf interface;
+		reference nestedClassifier[*] ordered container : Classifier;
+		reference redefinedInterface[*] : Interface;
+		reference ownedReception[*] container : Reception;
+		reference protocol[0-1] container : ProtocolStateMachine;
+	}
+
+	class InterfaceRealization extends Realization {
+		reference contract : Interface;
+		reference implementingClassifier : BehavioredClassifier oppositeOf interfaceRealization;
+	}
+
+	class Trigger extends NamedElement {
+		reference event : Event;
+		reference port[*] : Port;
+	}
+
+	class ProtocolStateMachine extends StateMachine {
+		reference conformance[*] container : ProtocolConformance oppositeOf specificMachine;
+	}
+
+	class StateMachine extends Behavior {
+		reference region[1-*] container : Region oppositeOf stateMachine;
+		reference submachineState[*] : State oppositeOf submachine;
+		reference connectionPoint[*] container : Pseudostate oppositeOf stateMachine;
+		reference extendedStateMachine[*] : StateMachine;
+	}
+
+	class ProtocolConformance extends DirectedRelationship {
+		reference generalMachine : ProtocolStateMachine;
+		reference specificMachine : ProtocolStateMachine oppositeOf conformance;
+	}
+
+	class Deployment extends Dependency {
+		reference deployedArtifact[*] : DeployedArtifact;
+		reference configuration[*] container : DeploymentSpecification oppositeOf deployment;
+		reference location : DeploymentTarget oppositeOf deployment;
+	}
+
+	class Include extends NamedElement, DirectedRelationship {
+		reference addition : UseCase;
+		reference includingCase : UseCase oppositeOf include;
+	}
+
+	class Extend extends NamedElement, DirectedRelationship {
+		reference extendedCase : UseCase;
+		reference condition[0-1] container : Constraint;
+		reference extensionLocation[1-*] ordered : ExtensionPoint;
+		reference extension : UseCase oppositeOf extend;
+	}
+
+	class ExtensionPoint extends RedefinableElement {
+		reference useCase : UseCase oppositeOf extensionPoint;
+	}
+
+	class Region extends Namespace, RedefinableElement {
+		reference subvertex[*] container : Vertex oppositeOf "container";
+		reference transition[*] container : Transition oppositeOf "container";
+		reference state[0-1] : State oppositeOf region;
+		reference extendedRegion[0-1] : Region;
+		reference stateMachine[0-1] : StateMachine oppositeOf region;
+	}
+
+	abstract class StructuredClassifier extends Classifier {
+		reference ownedAttribute[*] ordered container : Property;
+		reference part[*] : Property;
+		reference role[*] : ConnectableElement;
+		reference ownedConnector[*] container : Connector;
+	}
+
+	abstract class Vertex extends NamedElement {
+		reference incoming[*] : Transition;
+		reference outgoing[*] : Transition;
+		reference "container"[0-1] : Region oppositeOf subvertex;
+	}
+
+	class Transition extends Namespace, RedefinableElement {
+		attribute kind : TransitionKind;
+		reference "container" : Region oppositeOf transition;
+		reference redefinedTransition[0-1] : Transition;
+		reference guard[0-1] : Constraint;
+		reference effect[0-1] container : Behavior;
+		reference trigger[*] container : Trigger;
+		reference target : Vertex;
+		reference source : Vertex;
+	}
+
+	enumeration TransitionKind {
+		literal internal;
+		literal local;
+		literal external;
+	}
+
+	class State extends Namespace, RedefinableElement, Vertex {
+		attribute isComposite : Boolean;
+		attribute isOrthogonal : Boolean;
+		attribute isSimple : Boolean;
+		attribute isSubmachineState : Boolean;
+		reference submachine[0-1] : StateMachine oppositeOf submachineState;
+		reference connection[*] container : ConnectionPointReference oppositeOf state;
+		reference connectionPoint[*] container : Pseudostate oppositeOf state;
+		reference redefinedState[0-1] : State;
+		reference stateInvariant[0-1] container : Constraint;
+		reference entry[0-1] container : Behavior;
+		reference exit[0-1] container : Behavior;
+		reference doActivity[0-1] container : Behavior;
+		reference deferrableTrigger[*] container : Trigger;
+		reference region[*] container : Region oppositeOf state;
+	}
+
+	class ParameterSet extends NamedElement {
+		reference parameter[1-*] : Parameter oppositeOf parameterSet;
+		reference condition[*] container : Constraint;
+	}
+
+	abstract class ActivityNode extends RedefinableElement {
+		reference inStructuredNode[0-1] : StructuredActivityNode oppositeOf node;
+		reference activity[0-1] : Activity oppositeOf node;
+		reference outgoing[*] : ActivityEdge oppositeOf source;
+		reference incoming[*] : ActivityEdge oppositeOf target;
+		reference inPartition[*] : ActivityPartition oppositeOf node;
+		reference inInterruptibleRegion[*] : InterruptibleActivityRegion oppositeOf node;
+		reference inGroup[*] : ActivityGroup oppositeOf containedNode;
+		reference redefinedNode[*] : ActivityNode;
+	}
+
+	abstract class ActivityGroup extends Element {
+		reference subgroup[*] : ActivityGroup oppositeOf superGroup;
+		reference superGroup[0-1] : ActivityGroup oppositeOf subgroup;
+		reference inActivity[0-1] : Activity oppositeOf group;
+		reference containedEdge[*] : ActivityEdge oppositeOf inGroup;
+		reference containedNode[*] : ActivityNode oppositeOf inGroup;
+	}
+
+	enumeration ParameterDirectionKind {
+		literal in;
+		literal inout;
+		literal out;
+		literal return;
+	}
+
+	enumeration ParameterEffectKind {
+		literal create;
+		literal read;
+		literal update;
+		literal delete;
+	}
+
+	abstract class ActivityEdge extends RedefinableElement {
+		reference source : ActivityNode oppositeOf outgoing;
+		reference target : ActivityNode oppositeOf incoming;
+		reference redefinedEdge[*] : ActivityEdge;
+		reference inPartition[*] : ActivityPartition oppositeOf edge;
+		reference guard container : ValueSpecification;
+		reference weight container : ValueSpecification;
+		reference interrupts[0-1] : InterruptibleActivityRegion oppositeOf interruptingEdge;
+		reference inStructuredNode[0-1] : StructuredActivityNode oppositeOf edge;
+		reference inGroup[*] : ActivityGroup oppositeOf containedEdge;
+		reference activity[0-1] : Activity oppositeOf edge;
+	}
+
+	class InterruptibleActivityRegion extends ActivityGroup {
+		reference node[*] : ActivityNode oppositeOf inInterruptibleRegion;
+		reference interruptingEdge[*] : ActivityEdge oppositeOf interrupts;
+	}
+
+	abstract class DeployedArtifact extends NamedElement {
+		
+	}
+
+	class Slot extends Element {
+		reference definingFeature : StructuralFeature;
+		reference value[*] ordered container : ValueSpecification;
+		reference owningInstance : InstanceSpecification oppositeOf slot;
+	}
+
+	abstract class ExecutableNode extends ActivityNode {
+		reference handler[*] container : ExceptionHandler oppositeOf protectedNode;
+	}
+	
+	class OutputPin extends Pin {
+	}
+
+	class Pin extends ObjectNode, MultiplicityElement {
+		attribute isControl : Boolean;
+	}
+
+	class InputPin extends Pin {
+	}
+
+	enumeration MessageKind {
+		literal complete;
+		literal lost;
+		literal found;
+		literal unknown;
+	}
+
+	class ExceptionHandler extends Element {
+		reference handlerBody : ExecutableNode;
+		reference exceptionInput : ObjectNode;
+		reference exceptionType[1-*] : Classifier;
+		reference protectedNode : ExecutableNode oppositeOf handler;
+	}
+
+	abstract class ObjectNode extends ActivityNode, TypedElement {
+		attribute ordering : ObjectNodeOrderingKind;
+		attribute isControlType : Boolean;
+		reference upperBound container : ValueSpecification;
+		reference inState[*] : State;
+		reference selection[0-1] : Behavior;
+	}
+
+	enumeration ObjectNodeOrderingKind {
+		literal unordered;
+		literal "ordered";
+		literal LIFO;
+		literal FIFO;
+	}
+
+	abstract class MessageEnd extends NamedElement {
+		reference message[0-1] : Message;
+	}
+
+	enumeration MessageSort {
+		literal synchCall;
+		literal asynchCall;
+		literal asynchSignal;
+		literal createMessage;
+		literal deleteMessage;
+		literal reply;
+	}
+
+	class Interaction extends Behavior, InteractionFragment {
+		reference lifeline[*] container : Lifeline oppositeOf interaction;
+		reference fragment[*] ordered container : InteractionFragment oppositeOf enclosingInteraction;
+		reference action[*] container : Action;
+		reference formalGate[*] container : Gate;
+		reference message[*] container : Message oppositeOf interaction;
+	}
+
+	class PartDecomposition extends InteractionUse {
+	}
+
+	class InteractionUse extends InteractionFragment {
+		reference refersTo : Interaction;
+		reference actualGate[*] container : Gate;
+		reference argument[*] ordered container : Action;
+	}
+
+	abstract class InteractionFragment extends NamedElement {
+		reference covered[*] : Lifeline oppositeOf coveredBy;
+		reference generalOrdering[*] container : GeneralOrdering;
+		reference enclosingInteraction[0-1] : Interaction oppositeOf fragment;
+		reference enclosingOperand[0-1] : InteractionOperand oppositeOf fragment;
+	}
+
+	enumeration ConnectorKind {
+		literal assembly;
+		literal delegation;
+	}
+
+	class Pseudostate extends Vertex {
+		attribute kind : PseudostateKind;
+		reference stateMachine[0-1] : StateMachine oppositeOf connectionPoint;
+		reference state[0-1] : State oppositeOf connectionPoint;
+	}
+
+	enumeration PseudostateKind {
+		literal initial;
+		literal deepHistory;
+		literal shallowHistory;
+		literal join;
+		literal fork;
+		literal junction;
+		literal choice;
+		literal entryPoint;
+		literal exitPoint;
+		literal terminate;
+	}
+
+	class ConnectionPointReference extends Vertex {
+		reference entry[*] : Pseudostate;
+		reference exit[*] : Pseudostate;
+		reference state[0-1] : State oppositeOf connection;
+	}
+
+	class StructuredActivityNode extends Action, Namespace, ActivityGroup {
+		reference variable[*] container : Variable oppositeOf scope;
+		reference edge[*] container : ActivityEdge oppositeOf inStructuredNode;
+		attribute mustIsolate : Boolean;
+		reference node[*] container : ActivityNode oppositeOf inStructuredNode;
+	}
+
+	class Variable extends ConnectableElement, MultiplicityElement {
+		reference scope[0-1] : StructuredActivityNode oppositeOf variable;
+		reference activityScope[0-1] : Activity oppositeOf variable;
+	}
+
+	class Activity extends Behavior {
+		reference structuredNode[*] : StructuredActivityNode;
+		reference variable[*] container : Variable oppositeOf activityScope;
+		reference node[*] container : ActivityNode oppositeOf activity;
+		attribute isReadOnly : Boolean;
+		reference edge[*] container : ActivityEdge oppositeOf activity;
+		reference partition[*] : ActivityPartition;
+		attribute isSingleExecution : Boolean;
+		reference group[*] container : ActivityGroup oppositeOf inActivity;
+	}
+
+	class OccurrenceSpecification extends InteractionFragment {
+		reference toBefore[*] : GeneralOrdering oppositeOf after;
+		reference event : Event;
+		reference toAfter[*] : GeneralOrdering oppositeOf before;
+	}
+
+	class DeploymentSpecification extends Artifact {
+		attribute deploymentLocation[0-1] : String;
+		attribute executionLocation[0-1] : String;
+		reference deployment[0-1] : Deployment oppositeOf configuration;
+	}
+
+	class Gate extends MessageEnd {
+	}
+
+	class Artifact extends Classifier, DeployedArtifact {
+		attribute fileName[0-1] : String;
+		reference nestedArtifact[*] container : Artifact;
+		reference manifestation[*] container : Manifestation;
+		reference ownedOperation[*] ordered container : Operation;
+		reference ownedAttribute[*] ordered container : Property;
+	}
+
+	class GeneralOrdering extends NamedElement {
+		reference before : OccurrenceSpecification oppositeOf toAfter;
+		reference after : OccurrenceSpecification oppositeOf toBefore;
+	}
+
+	class Manifestation extends Abstraction {
+		reference utilizedElement : PackageableElement;
+	}
+
+	class InteractionOperand extends Namespace, InteractionFragment {
+		reference guard[0-1] container : InteractionConstraint;
+		reference fragment[*] ordered container : InteractionFragment oppositeOf enclosingOperand;
+	}
+
+	class InteractionConstraint extends Constraint {
+		reference minint[0-1] container : ValueSpecification;
+		reference maxint[0-1] container : ValueSpecification;
+	}
+
+}

@@ -1,0 +1,127 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<rdf:RDF xmlns:rdf = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:rdfs = 'http://www.w3.org/2000/01/rdf-schema#' xmlns:xsd = 'http://www.w3.org/2001/XMLSchema#' xmlns:owl = 'http://www.w3.org/2002/07/owl#' xmlns = 'http://example.org/BusinessEntityModel#' xml:base = 'http://example.org/BusinessEntityModel'>
+  <owl:Ontology rdf:about = 'BusinessEntityModel'/>
+  <owl:Class rdf:ID = 'Class'>
+    <rdfs:label>Class</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID = 'OrganisationalUnit'>
+    <rdfs:label>OrganisationalUnit</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#BusinessRole'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Action'>
+    <rdfs:label>Action</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID = 'ArtifactRole'>
+    <rdfs:label>ArtifactRole</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#BusinessRole'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Task'>
+    <rdfs:label>Task</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Task.needs'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Task.associatedWith'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'PerformerRole'>
+    <rdfs:label>PerformerRole</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#BusinessRole'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#PerformerRole.perform'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'BusinessEntity'>
+    <rdfs:label>BusinessEntity</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Class'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#BusinessEntity.placehold'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'BusinessEntityPropertySet'>
+    <rdfs:label>BusinessEntityPropertySet</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#DataType'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'DataType'>
+    <rdfs:label>DataType</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID = 'BusinessRole'>
+    <rdfs:label>BusinessRole</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Action'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#BusinessRole.typ'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#BusinessRole.fille'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#BusinessRole.task'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#BusinessRole.characterisedby'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID = 'BusinessEntity.placehold'>
+    <rdfs:domain rdf:resource = '#BusinessEntity'/>
+    <rdfs:range rdf:resource = '#BusinessRole'/>
+    <owl:inverseOf rdf:resource = '#BusinessRole.fille'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Task.associatedWith'>
+    <rdfs:domain rdf:resource = '#Task'/>
+    <rdfs:range rdf:resource = '#BusinessRole'/>
+    <owl:inverseOf rdf:resource = '#BusinessRole.task'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'BusinessRole.typ'>
+    <rdfs:domain rdf:resource = '#BusinessRole'/>
+    <rdfs:range rdf:resource = '#Class'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'BusinessRole.task'>
+    <rdfs:domain rdf:resource = '#BusinessRole'/>
+    <rdfs:range rdf:resource = '#Task'/>
+    <owl:inverseOf rdf:resource = '#Task.associatedWith'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'BusinessRole.characterisedby'>
+    <rdfs:domain rdf:resource = '#BusinessRole'/>
+    <rdfs:range rdf:resource = '#BusinessEntityPropertySet'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'PerformerRole.perform'>
+    <rdfs:domain rdf:resource = '#PerformerRole'/>
+    <rdfs:range rdf:resource = '#Task'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'BusinessRole.fille'>
+    <rdfs:domain rdf:resource = '#BusinessRole'/>
+    <rdfs:range rdf:resource = '#BusinessEntity'/>
+    <owl:inverseOf rdf:resource = '#BusinessEntity.placehold'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Task.needs'>
+    <rdfs:domain rdf:resource = '#Task'/>
+    <rdfs:range rdf:resource = '#ArtifactRole'/>
+  </owl:ObjectProperty>
+  <owl:FunctionalProperty rdf:about = '#BusinessRole.characterisedby'/>
+  <owl:FunctionalProperty rdf:about = '#PerformerRole.perform'/>
+  <owl:FunctionalProperty rdf:about = '#BusinessRole.typ'/>
+</rdf:RDF>

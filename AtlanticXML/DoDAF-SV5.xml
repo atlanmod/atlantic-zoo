@@ -1,0 +1,130 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'DoDAF'>
+    <Class name = 'Element' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'description' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'view' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'DoDAFModel' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'document' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::Document' opposite = ''/>
+      <Reference name = 'sftm' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::SystemFunctionTraceabilityMatrix' opposite = ''/>
+      <Reference name = 'sd' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::SystemDocument' opposite = ''/>
+      <Reference name = 'am' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::AM' opposite = ''/>
+      <Reference name = 'system' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::System' opposite = ''/>
+      <Reference name = 'task' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::Task' opposite = ''/>
+      <Reference name = 'capability' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::Capability' opposite = ''/>
+      <Reference name = 'capabilityDocument' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::CapabilityDocument' opposite = ''/>
+      <Reference name = 'systemCapability' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::SystemCapability' opposite = ''/>
+    </Class>
+    <Class name = 'Document' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'cites' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::CapabilityDocument' opposite = ''/>
+      <Reference name = 'describes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemDocument' opposite = ''/>
+      <Reference name = 'records' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::ArchitectureDocument' opposite = ''/>
+      <Reference name = 'isThePrimaryReferenceFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::PA' opposite = ''/>
+    </Class>
+    <Class name = 'SystemFunctionTraceabilityMatrix' isAbstract = 'false' supertypes = 'DoDAF::Document'>
+      <Reference name = 'isDefinedBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::SystemFunctionTraceabilityElement' opposite = ''/>
+    </Class>
+    <Class name = 'SystemFunctionTraceabilityElement' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'systemFunction' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemFunction' opposite = 'DoDAF::SystemFunction::isCitedFor'/>
+      <Reference name = 'operationalActivity' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::Task' opposite = 'DoDAF::Task::isCitedFor'/>
+      <Reference name = 'systemProcessActivity' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemPA' opposite = 'DoDAF::SystemPA::mayBeCitedFor'/>
+      <Reference name = 'system' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::System' opposite = ''/>
+      <Reference name = 'capability' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::Capability' opposite = ''/>
+      <Attribute name = 'supportStatusCode' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'DoDAF::SupportStatusCode'/>
+    </Class>
+    <Class name = 'SystemDocument' isAbstract = 'false' supertypes = 'DoDAF::Element'/>
+    <Class name = 'ArchitectureDocument' isAbstract = 'false' supertypes = 'DoDAF::Element'/>
+    <Class name = 'PA' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'isParentFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::PA' opposite = 'DoDAF::PA::isChildFor'/>
+      <Reference name = 'isChildFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::PA' opposite = 'DoDAF::PA::isParentFor'/>
+      <Reference name = 'correspondsTo' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::PATask' opposite = ''/>
+      <Reference name = 'isIncludedIn' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::AMPA' opposite = ''/>
+      <Reference name = 'isAssignedTo' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemPA' opposite = ''/>
+      <Reference name = 'isSupportedBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::SoftwareApplicationProcedurePA' opposite = ''/>
+      <Reference name = 'isTheConsumerFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::PAExchangeRequirement' opposite = ''/>
+      <Reference name = 'isTheProducerFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::PAExchangeRequirement' opposite = ''/>
+    </Class>
+    <Class name = 'SystemFunction' isAbstract = 'false' supertypes = 'DoDAF::PA'>
+      <Reference name = 'isCitedFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemFunctionTraceabilityElement' opposite = 'DoDAF::SystemFunctionTraceabilityElement::systemFunction'/>
+    </Class>
+    <Class name = 'SystemPA' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'mayBeCitedFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemFunctionTraceabilityElement' opposite = 'DoDAF::SystemFunctionTraceabilityElement::systemProcessActivity'/>
+      <Reference name = 'provides' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::SystemCapability' opposite = ''/>
+      <Reference name = 'enables' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::SystemOperationalCapabilityTask' opposite = ''/>
+    </Class>
+    <Class name = 'SoftwareApplicationProcedurePA' isAbstract = 'false' supertypes = 'DoDAF::Element'/>
+    <Class name = 'AM' isAbstract = 'false' supertypes = 'DoDAF::InformationAsset'>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'isCitedBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::PATask' opposite = ''/>
+      <Reference name = 'includes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::AMPA' opposite = ''/>
+    </Class>
+    <Class name = 'InformationAsset' isAbstract = 'true' supertypes = 'DoDAF::Element'/>
+    <Class name = 'AMPA' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'isOrdinateOf' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::AMPA' opposite = 'DoDAF::AMPA::isSubordinateOf'/>
+      <Reference name = 'isSubordinateOf' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::AMPA' opposite = 'DoDAF::AMPA::isOrdinateOf'/>
+    </Class>
+    <Class name = 'System' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'isDesignedToProvide' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::SystemPA' opposite = ''/>
+      <Reference name = 'isDescribedBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemDocument' opposite = ''/>
+      <Reference name = 'performs' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemCapability' opposite = ''/>
+      <Reference name = 'isUsedToAccomplish' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemOperationalCapabilityTask' opposite = ''/>
+    </Class>
+    <Class name = 'Task' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Attribute name = 'levelIdentifier' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'references' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'cost' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'correspondsTo' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::PATask' opposite = ''/>
+      <Reference name = 'isSupportedBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::ArchitectureTask' opposite = ''/>
+      <Reference name = 'isTheSourceOfNeedFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::InformationExchangeRequirement' opposite = ''/>
+      <Reference name = 'isTheDestinationOfNeedFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::InformationExchangeRequirement' opposite = ''/>
+      <Reference name = 'isCitedFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemFunctionTraceabilityElement' opposite = 'DoDAF::SystemFunctionTraceabilityElement::operationalActivity'/>
+    </Class>
+    <Class name = 'ArchitectureTask' isAbstract = 'false' supertypes = 'DoDAF::Element'/>
+    <Class name = 'OperationalCapabilityTask' isAbstract = 'false' supertypes = 'DoDAF::Task'>
+      <Reference name = 'isAccomplishedA' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemOperationalCapabilityTask' opposite = ''/>
+    </Class>
+    <Class name = 'SystemOperationalCapabilityTask' isAbstract = 'false' supertypes = 'DoDAF::Task'/>
+    <Class name = 'PATask' isAbstract = 'false' supertypes = 'DoDAF::Task'/>
+    <Class name = 'Capability' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'isPerformedBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemCapability' opposite = ''/>
+      <Reference name = 'isOrdinateFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::Capability' opposite = ''/>
+      <Reference name = 'isSubordinateOf' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::Capability' opposite = ''/>
+      <Reference name = 'isPerformedByNC' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::NetworkCapability' opposite = ''/>
+      <Reference name = 'isPerformedByNLC' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::NodeLinkCapability' opposite = ''/>
+      <Reference name = 'isPerformedBySC' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemCapability' opposite = ''/>
+      <Reference name = 'isCitedInCD' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::CapabilityDocument' opposite = ''/>
+      <Reference name = 'isUsedInMICN' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::MaterielItemCapabilityNorm' opposite = ''/>
+      <Reference name = 'isUsedInOTCN' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::OrganizationTypeCapabilityNorm' opposite = ''/>
+      <Reference name = 'isAttainedFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::RequiredInformationTechnologyCapability' opposite = ''/>
+    </Class>
+    <Class name = 'CapabilityDocument' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'isCitedIn' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::Capability' opposite = ''/>
+    </Class>
+    <Class name = 'SystemCapability' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'isCitedIn' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::Capability' opposite = ''/>
+    </Class>
+    <Class name = 'NetworkCapability' isAbstract = 'false' supertypes = 'DoDAF::Capability'/>
+    <Class name = 'NodeLinkCapability' isAbstract = 'false' supertypes = 'DoDAF::Capability'/>
+    <Class name = 'MaterielItemCapabilityNorm' isAbstract = 'false' supertypes = 'DoDAF::Capability'/>
+    <Class name = 'OrganizationTypeCapabilityNorm' isAbstract = 'false' supertypes = 'DoDAF::Capability'/>
+    <Class name = 'RequiredInformationTechnologyCapability' isAbstract = 'false' supertypes = 'DoDAF::Capability'/>
+    <Class name = 'InformationTechnologyRequirement' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'specifies' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::RequiredInformationTechnologyCapability' opposite = ''/>
+    </Class>
+    <Class name = 'InformationExchangeRequirement' isAbstract = 'false' supertypes = 'DoDAF::InformationTechnologyRequirement'/>
+    <Class name = 'PAExchangeRequirement' isAbstract = 'false' supertypes = 'DoDAF::InformationTechnologyRequirement'>
+      <Reference name = 'isCitedIn' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::InformationExchangeRequirement' opposite = ''/>
+    </Class>
+    <Enumeration name = 'SupportStatusCode'>
+      <EnumLiteral name = 'red'/>
+      <EnumLiteral name = 'yellow'/>
+      <EnumLiteral name = 'green'/>
+    </Enumeration>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

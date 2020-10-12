@@ -1,0 +1,109 @@
+package Metamodel;
+
+package CompleteWebApplication {
+  class HyperLink {
+    !ordered ref Server.ServerPage[*]#link server;
+  }
+
+  package Client {
+    class ClientPage {
+      !ordered ref HyperLink[1] hyperlink;
+    }
+
+    class ClientPageModule {
+      !ordered val ClientPage[1] consistsOf;
+      !ordered ref Server.ServerPageModule[1] representsSMP;
+    }
+
+    class LogicInterface extends ClientPageModule {
+      !ordered ref Server.LogicModule[1] represents;
+      !ordered ref Server.Renderer[1] generatedBy;
+    }
+
+    class DesignElement extends ClientPageModule {
+      !ordered ref Server.DesignModule[1] represents;
+    }
+
+  }
+
+  package Server {
+    class ServerPage {
+      !ordered ref HyperLink[*]#server link;
+      !ordered ref Client.ClientPage[*] generates;
+      !ordered val ServerPageModule[+]#contains module;
+    }
+
+    class ServerPageModule {
+      !ordered ref ServerPage[+]#module contains;
+      !ordered ref Link[1] link;
+      !ordered val DesignModule[1] containsModule;
+    }
+
+    class DesignModule extends ServerPageModule {
+    }
+
+    class LogicModule extends ServerPageModule {
+      !ordered val UseCase[+] useCase;
+      !ordered val LogicElement[+] logicElement;
+    }
+
+    class Link {
+      !ordered ref ServerPage[1] page;
+      !ordered ref Data[1] posts;
+    }
+
+    class BeginUseCase extends Link {
+      !ordered ref UseCase[1] useCase;
+    }
+
+    class UseCase extends Link {
+      !ordered val LogicElement[+]#uses logicElem;
+    }
+
+    class LogicElement {
+      !ordered ref UseCase[+]#logicElem uses;
+      !ordered ref LogicElement[1]#next generatedBy;
+      !ordered ref LogicElement[1]#generatedBy next;
+    }
+
+    class Alternative extends LogicElement {
+    }
+
+    class UserDecision extends LogicElement {
+      !ordered val Alternative[+] allows;
+    }
+
+    class ServerDecision extends LogicElement {
+      !ordered ref Processor[1] evaluatesResultOf;
+    }
+
+    class Processor extends LogicElement {
+      !ordered ref Data[*]#persist persistentData;
+      !ordered ref Data[*]#uses inputData;
+      !ordered ref Data[+]#computes outputData;
+    }
+
+    class Renderer extends LogicElement {
+      !ordered ref Data[+]#renderer renders;
+    }
+
+    class Data {
+      !ordered ref Renderer[*]#renders renderer;
+      !ordered ref Processor[*]#persistentData persist;
+      !ordered ref Processor[*]#inputData uses;
+      !ordered ref Processor[*]#outputData computes;
+    }
+
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

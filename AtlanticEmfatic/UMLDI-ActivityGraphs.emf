@@ -1,0 +1,344 @@
+package Metamodel;
+
+package Core {
+  abstract class Element {
+  }
+
+  abstract class ModelElement extends Element {
+    !ordered ref Namespace#ownedElement namespace;
+    !unique !ordered attr String name;
+    !unique !ordered attr Data_Types.VisibilityKind visibility;
+    !unique !ordered attr Boolean[1] isSpecification;
+  }
+
+  abstract class GeneralizableElement extends ModelElement {
+    !ordered ref Generalization[*]#child generalization;
+    !unique !ordered attr Boolean[1] isRoot;
+    !unique !ordered attr Boolean[1] isLeaf;
+    !unique !ordered attr Boolean[1] isAbstract;
+  }
+
+  abstract class Namespace extends ModelElement {
+    !ordered val ModelElement[*]#namespace ownedElement;
+  }
+
+  abstract class Classifier extends GeneralizableElement, Namespace {
+    !ordered ref Generalization[*]#powertype powertypeRange;
+    val Feature[*]#owner feature;
+  }
+
+  abstract class Feature extends ModelElement {
+    !ordered ref Classifier#feature owner;
+    !unique !ordered attr Data_Types.ScopeKind[1] ownerScope;
+  }
+
+  abstract class Relationship extends ModelElement {
+  }
+
+  abstract class BehavioralFeature extends Feature {
+    val Parameter[*]#behavioralFeature parameter;
+    !unique !ordered attr Boolean[1] isQuery;
+  }
+
+  class Operation extends BehavioralFeature {
+    !unique !ordered attr Data_Types.CallConcurrencyKind concurrency;
+    !unique !ordered attr Boolean[1] isRoot;
+    !unique !ordered attr Boolean[1] isLeaf;
+    !unique !ordered attr Boolean[1] isAbstract;
+    !unique !ordered attr String specification;
+  }
+
+  class Parameter extends ModelElement {
+    !ordered ref Classifier[1] type;
+    !ordered ref BehavioralFeature#parameter behavioralFeature;
+    !unique !ordered attr Data_Types.Expression defaultValue;
+    !unique !ordered attr Data_Types.ParameterDirectionKind[1] kind;
+  }
+
+  class Generalization extends Relationship {
+    !ordered ref GeneralizableElement[1] parent;
+    !ordered ref Classifier#powertypeRange powertype;
+    !ordered ref GeneralizableElement[1]#generalization child;
+    !unique !ordered attr String discriminator;
+  }
+
+}
+
+package Common_Behavior {
+  class Signal extends Core.Classifier {
+  }
+
+  abstract class Action extends Core.ModelElement {
+    val Argument[*]#action actualArgument;
+    !ordered ref ActionSequence#action actionSequence;
+    !unique !ordered attr Data_Types.IterationExpression recurrence;
+    !unique !ordered attr Data_Types.ObjectSetExpression target;
+    !unique !ordered attr Boolean[1] isAsynchronous;
+    !unique !ordered attr Data_Types.ActionExpression script;
+  }
+
+  class CreateAction extends Action {
+    !ordered ref Core.Classifier[1] instantiation;
+  }
+
+  class DestroyAction extends Action {
+  }
+
+  class UninterpretedAction extends Action {
+  }
+
+  class CallAction extends Action {
+    !ordered ref Core.Operation[1] operation;
+  }
+
+  class SendAction extends Action {
+    !ordered ref Signal[1] signal;
+  }
+
+  class ActionSequence extends Action {
+    val Action[*]#actionSequence action;
+  }
+
+  class Argument extends Core.ModelElement {
+    !ordered ref Action#actualArgument action;
+    !unique !ordered attr Data_Types.Expression[1] value;
+  }
+
+  class ReturnAction extends Action {
+  }
+
+  class TerminateAction extends Action {
+  }
+
+  class Exception extends Signal {
+  }
+
+}
+
+package State_Machines {
+  class StateMachine extends Core.ModelElement {
+    !ordered ref Core.ModelElement context;
+    !ordered ref SubmachineState[*]#submachine submachineState;
+    !ordered val State[1]#stateMachine top;
+    !ordered val Transition[*]#stateMachine transitions;
+  }
+
+  abstract class Event extends Core.ModelElement {
+    val Core.Parameter[*] parameter;
+  }
+
+  abstract class StateVertex extends Core.ModelElement {
+    !ordered ref CompositeState#subvertex container;
+    !ordered ref Transition[*]#target incoming;
+    !ordered ref Transition[*]#source outgoing;
+  }
+
+  abstract class State extends StateVertex {
+    !ordered ref Event[*] deferrableEvent;
+    !ordered val Transition[*] internalTransition;
+    !ordered val Common_Behavior.Action exit;
+    !ordered val Common_Behavior.Action doActivity;
+    !ordered val Common_Behavior.Action entry;
+    !ordered ref StateMachine#top stateMachine;
+  }
+
+  class TimeEvent extends Event {
+    !unique !ordered attr Data_Types.TimeExpression[1] when;
+  }
+
+  class CallEvent extends Event {
+    !ordered ref Core.Operation[1] operation;
+  }
+
+  class SignalEvent extends Event {
+    !ordered ref Common_Behavior.Signal[1] signal;
+  }
+
+  class Transition extends Core.ModelElement {
+    !ordered ref StateVertex[1]#incoming target;
+    !ordered ref Event trigger;
+    !ordered ref StateMachine#transitions stateMachine;
+    !ordered ref StateVertex[1]#outgoing source;
+    !ordered val Common_Behavior.Action effect;
+    !ordered val Guard#transition guard;
+  }
+
+  class CompositeState extends State {
+    !ordered val StateVertex[*]#container subvertex;
+    !unique !ordered attr Boolean[1] isConcurrent;
+  }
+
+  class ChangeEvent extends Event {
+    !unique !ordered attr Data_Types.BooleanExpression[1] changeExpression;
+  }
+
+  class Guard extends Core.ModelElement {
+    !ordered ref Transition[1]#guard transition;
+    !unique !ordered attr Data_Types.BooleanExpression[1] expression;
+  }
+
+  class Pseudostate extends StateVertex {
+    !unique !ordered attr Data_Types.PseudostateKind[1] kind;
+  }
+
+  class SimpleState extends State {
+  }
+
+  class SubmachineState extends CompositeState {
+    !ordered ref StateMachine[1]#submachineState submachine;
+  }
+
+  class SynchState extends StateVertex {
+    !unique !ordered attr Integer[1] bound;
+  }
+
+  class StubState extends StateVertex {
+    !unique !ordered attr String[1] referenceState;
+  }
+
+  class FinalState extends State {
+  }
+
+}
+
+package Activity_Graphs {
+  class ActivityGraph extends State_Machines.StateMachine {
+    !ordered val Partition[*]#activityGraph partition;
+  }
+
+  class Partition extends Core.ModelElement {
+    !ordered ref Core.ModelElement[*] contents;
+    !ordered ref ActivityGraph[1]#partition activityGraph;
+  }
+
+  class SubactivityState extends State_Machines.SubmachineState {
+    !unique !ordered attr Boolean[1] isDynamic;
+    !unique !ordered attr Data_Types.ArgListsExpression dynamicArguments;
+    !unique !ordered attr Data_Types.Multiplicity dynamicMultiplicity;
+  }
+
+  class ActionState extends State_Machines.SimpleState {
+    !unique !ordered attr Boolean[1] isDynamic;
+    !unique !ordered attr Data_Types.ArgListsExpression dynamicArguments;
+    !unique !ordered attr Data_Types.Multiplicity dynamicMultiplicity;
+  }
+
+  class CallState extends ActionState {
+  }
+
+  class ObjectFlowState extends State_Machines.SimpleState {
+    !ordered ref Core.Classifier[1] type;
+    !ordered ref Core.Parameter[*] parameter;
+    !unique !ordered attr Boolean[1] isSynch;
+  }
+
+  class ClassifierInState extends Core.Classifier {
+    !ordered ref State_Machines.State[+] inState;
+    !ordered ref Core.Classifier[1] type;
+  }
+
+}
+
+package Data_Types {
+  enum AggregationKind {
+    ak_none = 0;
+    ak_aggregate = 0;
+    ak_composite = 0;
+  }
+
+  enum ChangeableKind {
+    ck_changeable = 0;
+    ck_frozen = 0;
+    ck_addOnly = 0;
+  }
+
+  enum OrderingKind {
+    ok_unordered = 0;
+    ok_ordered = 0;
+  }
+
+  enum CallConcurrencyKind {
+    cck_sequential = 0;
+    cck_guarded = 0;
+    cck_concurrent = 0;
+  }
+
+  enum ParameterDirectionKind {
+    pdk_in = 0;
+    pdk_inout = 0;
+    pdk_out = 0;
+    pdk_return = 0;
+  }
+
+  enum PseudostateKind {
+    pk_choice = 0;
+    pk_deepHistory = 0;
+    pk_fork = 0;
+    pk_initial = 0;
+    pk_join = 0;
+    pk_junction = 0;
+    pk_shallowHistory = 0;
+  }
+
+  enum ScopeKind {
+    sk_instance = 0;
+    sk_classifier = 0;
+  }
+
+  enum VisibilityKind {
+    vk_public = 0;
+    vk_protected = 0;
+    vk_private = 0;
+    vk_package = 0;
+  }
+
+  class Multiplicity {
+    !ordered val MultiplicityRange[+]#multiplicity range;
+  }
+
+  class MultiplicityRange {
+    !ordered ref Multiplicity[1]#range multiplicity;
+    !unique !ordered attr Integer[1] lower;
+    !unique !ordered attr Integer[1] upper;
+  }
+
+  class Expression {
+    !unique !ordered attr String language;
+    !unique !ordered attr String[1] body;
+  }
+
+  class BooleanExpression extends Expression {
+  }
+
+  class ObjectSetExpression extends Expression {
+  }
+
+  class ActionExpression extends Expression {
+  }
+
+  class IterationExpression extends Expression {
+  }
+
+  class TimeExpression extends Expression {
+  }
+
+  class ArgListsExpression extends Expression {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Float : "";
+
+  datatype Integer : "";
+
+  datatype Long : "";
+
+  datatype String : "";
+
+  datatype Double : "";
+
+}
+

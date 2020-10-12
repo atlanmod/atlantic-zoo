@@ -1,0 +1,393 @@
+-- @name		SBVRvoc
+-- @version		1.0
+-- @authors		Guillaume Doux
+-- @date		April 2008
+-- @description	A simple metamodel for SBVR (the vocabulary part)
+package SBVRvoc {
+
+	-- Every class should extend LocatedElement, directly or indirectly.
+	-- This is a technical constraint to support text-to-model traceability.
+	abstract class LocatedElement {
+		attribute location[0-1] : String;
+		attribute commentsBefore[*] ordered : String;
+		attribute commentsAfter[*] ordered : String;
+	}
+
+-- BEGIN Language-specific classes (replace sample contents)
+	class Root extends LocatedElement {
+		reference entries[*] ordered container :VocabularyEntry;
+	}
+	
+	--the caption order is not significant
+	class VocabularyEntry extends LocatedElement {
+		reference primaryRep container: PrimaryRepresentation;
+		reference caption[*] container: Caption;		
+	}
+	
+	--BEGIN caption declaration
+	
+	abstract class Caption extends LocatedElement {}
+	
+	class DefCaption extends Caption{
+		reference definition container : ConceptDefinition;
+	}
+	
+	class DescCaption extends Caption{
+		reference description container : Note;
+	}
+	
+	class SrcCaption extends Caption{
+		reference source container : ConceptSource;
+	}
+	
+	class DBCaption extends Caption{
+		reference dictionaryBasis container: ConceptSource;
+	}
+	
+	class GenCCaption extends Caption{
+		reference generalConcept container: PrimaryRepresentation;--VocabularyEntry; -- defined later may be name of a vocabulary entry
+	}
+	
+	class CTypCaption extends Caption{
+		reference conceptType[*] container: PrimaryRepresentation; -- name of the correspondinfg vocabulary entry
+	}
+	
+	class Necessity extends Caption {
+		reference exp container: SBVRExpression;
+	}
+	
+	class Possibility extends Caption {
+		reference exp container: SBVRExpression;
+	}
+	
+	class RefSCaption extends Caption{
+		reference referenceScheme container: PrimaryRepresentation;--SBVRExpression;
+	}
+	
+	class NoteCaption extends Caption{
+		reference note container: Note;
+	}
+	
+	class ExCaption extends Caption{
+		reference example[*] ordered container: SBVRExpression; 
+	}
+	
+	class SynCaption extends Caption{
+		reference synonym[*] ordered container: PrimaryRepresentation;
+	}
+	
+	class SynFCaption extends Caption{
+		reference synonymousForm[*] container : SBVRExpression;
+	}
+	
+	class SeeCaption extends Caption{
+		reference see[0-1] container: PrimaryRepresentation; 
+	}
+	
+	class SFCaption extends Caption{
+		reference subjectField[0-1] container: PrimaryRepresentation; -- find by name --not container
+	}
+	
+	class NSURICaption extends Caption{
+		reference namespaceURI[0-1] container: NameSpaceURI;
+	}
+	
+	-- END caption declaration
+
+
+	abstract class PrimaryRepresentation extends LocatedElement {
+	}
+	
+	abstract class NotFactTypeRepresentation extends PrimaryRepresentation {
+	}
+
+
+	class TermRepresentation extends NotFactTypeRepresentation {
+		reference term [1-*] ordered container : StringWord;
+	}
+	
+	class NameRepresentation extends NotFactTypeRepresentation {
+		attribute hasThe : Boolean;
+		reference name [1-*] ordered container : NameWord;
+	}
+	
+	class FactTypeFormRepresentation extends PrimaryRepresentation {
+		reference primaryRep1 container : NotFactTypeRepresentation;
+		attribute verbExp[1-*] ordered : Verb;
+		reference primaryRep2 container : NotFactTypeRepresentation;
+	}
+	
+
+	class ConceptDefinition extends LocatedElement{
+		reference exp container : Concept;--SBVRProp
+		reference conjexp[*] container : ConjConcept;
+	}	
+	
+	class ConceptSource extends LocatedElement {
+		reference source[1-*] ordered container: Word; -- to define with vocabularies later
+	} 
+
+	
+	class Note extends LocatedElement {
+		reference sentences[1-*] ordered container: Sentence;
+	}
+	
+	class Sentence extends LocatedElement {
+		reference words[1-*] ordered container: Word;
+	}
+	
+	class NameSpaceURI extends LocatedElement {
+		reference URI [1-*] ordered container: Word;
+	}
+	
+
+	-- BEGIN string representation
+	
+	abstract class Word extends LocatedElement{--Expression{
+		
+		attribute val : String;
+	}
+	
+	class StringWord extends Word{
+	}
+	
+	class QuotedStringWord extends Word{
+	}
+	
+	class NameWord extends Word{
+	}
+	
+	-- END string representation
+
+	-- BEGIN enumerations
+
+	enumeration Verb {
+		literal is;
+		literal relevant;
+		literal comprises;
+		literal to;
+		literal work;
+		literal in;
+		literal trades;
+		literal as;
+		literal are;
+		literal accepted;
+		literal generally;
+		literal important;
+		literal across;
+		literal share;
+		literal sets;
+		literal assigned;
+		literal by;
+		literal contains;
+		literal for;
+		literal has;
+		literal specifies;
+		literal specified;
+	}
+	
+		enumeration ConjonctionnalKeyWord{
+		literal and;
+		literal or;
+		literal if;
+		literal whether;
+	}
+	
+	enumeration ModalVerb{
+		literal must;
+		literal may;
+		literal never;
+		literal always;
+	}
+	
+	enumeration Join{ --followed by a verb
+		literal that;
+		literal who;
+	}
+	
+	enumeration Link{ --not followed by a verb
+		literal of;
+		literal quoteS; --'s
+	}
+	
+		enumeration Qualif {
+		literal the;
+		literal The;
+		literal a;
+		literal A;
+		literal an;
+		literal An;
+		literal Each;
+		literal each;
+		literal Some;
+		literal some;
+		literal At;
+		literal at;
+		literal Exactly;
+		literal exactly;
+	}
+	
+	enumeration EndOperator{
+		literal given;
+		literal thanone;
+		literal one;
+		literal isobligatorythat;
+		literal ispermittedthat;
+		literal isprohibitedthat;
+		literal isnecessarythat;
+		literal ispossiblethat;
+		literal isimpossiblethat;
+		literal isnotthecasethat;
+		literal least;
+		literal leastone;
+		literal most;
+		literal mostone;
+		literal leastnandatmostm;
+		literal andonlyif;
+		literal ornot;
+		literal not;
+		literal of;
+	}
+	
+	--END enumeration
+	
+	--BEGIN SBVR expression "grammar"
+	
+	class SBVRExpression extends LocatedElement{
+		attribute hasPoint : Boolean;
+		reference firstProposition container: SimpleSBVRProp;
+		reference nextProposition[*] container: SBVRPropWithKW;
+	}
+	
+	class SBVRPropWithKW extends LocatedElement{
+		attribute conjonction : ConjonctionnalKeyWord; --choice a correct subset...
+		attribute endConj : EndOperator;
+		reference proposition container: SimpleSBVRProp;
+	}
+	
+
+	
+
+	class ModalForm extends LocatedElement {
+		attribute modal : ModalVerb;
+		attribute isNeg : Boolean;
+	}
+	
+	class SimpleSBVRProp extends LocatedElement{
+		reference modal [0-1] container: ModalBegin;
+		reference concept1 container: Concept;
+		reference modalVerb [0-1] container: ModalForm;
+		attribute verbs [1-*] : Verb;
+		reference concept2 container: Concept;
+	}
+	
+	class SubSBVRProp extends LocatedElement {
+		attribute join : Join;
+		attribute modalVerb [0-1] : ModalVerb;
+		attribute verbs [1-*] : Verb;
+		reference concept2 container: Concept;
+	}
+	
+	class LinkSBVRConcept extends LocatedElement {
+		attribute link : Link;
+		reference concept container: Concept;
+	}
+	
+	class ConjConcept extends LocatedElement {
+		attribute conjonction : ConjonctionnalKeyWord;
+		reference concept container : Concept;
+	}
+	
+	abstract class Concept extends LocatedElement {
+		reference subProp [0-1] container: SubSBVRProp;
+		reference linkedConcept [0-1] container: LinkSBVRConcept;
+	}
+	
+	class NameConcept extends Concept {
+		attribute the [0-1] : Qualif;
+		reference name [1-*] container: NameWord;
+	}
+	
+	class ObjectConcept extends Concept {
+		reference operatoredConcept container: NounConcept;
+		reference qualify [0-1] container: Qualification;
+	}
+	
+	class StringConcept extends Concept {
+		reference stringWord [1-*] container: QuotedStringWord;
+	}
+
+	--need verification on this
+	--abstract class NounConcept {}
+
+	class NounConcept extends LocatedElement{
+		reference qualif[0-1] container : Qualifier;
+		reference noun [1-*] container : StringWord;
+	}
+
+	class Qualification extends LocatedElement {
+		reference generalConcept [1-*] container: GeneralConcept;
+	}
+	
+	abstract class GeneralConcept extends LocatedElement {
+	}
+	
+	class NameGConcept extends GeneralConcept {
+		reference name container: NameConcept;
+	}
+	
+	class NounGConcept extends GeneralConcept {
+		reference noun [1-*] container: StringWord;
+	}
+	
+
+	
+	--END SBVR expression "grammar"
+	
+	--BEGIN keywords
+	
+
+
+	class Qualifier extends LocatedElement{
+		attribute op : Qualif;
+		attribute endOperator : EndOperator;
+		
+		reference min [0-1] container: StringWord;
+		reference max [0-1] container: StringWord;
+	}
+
+	class ModalBegin extends LocatedElement{
+		attribute endOperator : EndOperator;
+	}	
+	
+	class ModalBeginC extends ModalBegin{}
+	
+--	class UnaryOperatorWithOneParam extends UnaryOperator{
+--		attribute param [0-1]: Integer;
+--	}
+	
+--	class UnaryOperatorWithTwoParam extends UnaryOperator{
+--		attribute min [0-1]: Integer;
+--		attribute max [0-1]: Integer;
+--	}
+	--Need verification on this for nounConcept
+--	class UnaryOperator extends NounConcept{
+--		attribute op : String;
+--		attribute endOperator : EndOperator;
+--		--attribute hasEndOperator : Boolean;
+--		reference operande container: NounConcept;--DesignedExpression; 
+--	}
+
+	
+	
+	--END keywords
+	
+-- END Language-specific classes
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Double;
+	datatype Integer;
+	datatype String;
+}

@@ -1,0 +1,101 @@
+package Metamodel;
+
+package SpreadsheetMLSimplified {
+  class DateTimeType {
+    !unique !ordered attr Integer[1] year;
+    !unique !ordered attr Integer[1] month;
+    !unique !ordered attr Integer[1] day;
+    !unique !ordered attr Integer[1] hour;
+    !unique !ordered attr Integer[1] minute;
+    !unique !ordered attr Integer[1] second;
+  }
+
+  abstract class ValueType {
+    !ordered ref Data[1]#value vt_data;
+  }
+
+  class StringValue extends ValueType {
+    !unique !ordered attr String[1] value;
+  }
+
+  class NumberValue extends ValueType {
+    !unique !ordered attr PrimitiveTypes.Double[1] value;
+  }
+
+  class DateTimeTypeValue extends ValueType {
+    !ordered val DateTimeType[1] value;
+  }
+
+  class BooleanValue extends ValueType {
+    !unique !ordered attr Boolean[1] value;
+  }
+
+  class ErrorValue extends ValueType {
+  }
+
+  class Workbook {
+    val Worksheet[*]#ws_workbook wb_worksheets;
+  }
+
+  class Worksheet {
+    !ordered ref Workbook[1]#wb_worksheets ws_workbook;
+    !ordered val Table#t_worksheet ws_table;
+    !unique !ordered attr String[1] name;
+  }
+
+  class Table {
+    !ordered ref Worksheet[1]#ws_table t_worksheet;
+    val Column[*]#c_table t_cols;
+    val Row[*]#r_table t_rows;
+  }
+
+  abstract class TableElement {
+    !unique !ordered attr Integer index;
+  }
+
+  abstract class ColOrRowElement extends TableElement {
+    !unique !ordered attr Boolean hidden;
+    !unique !ordered attr Integer span;
+  }
+
+  class Column extends ColOrRowElement {
+    !ordered ref Table[1]#t_cols c_table;
+    !unique !ordered attr Boolean autoFitWidth;
+    !unique !ordered attr PrimitiveTypes.Double width;
+  }
+
+  class Row extends ColOrRowElement {
+    !ordered ref Table[1]#t_rows r_table;
+    val Cell[*]#c_row r_cells;
+    !unique !ordered attr Boolean autoFitHeight;
+    !unique !ordered attr PrimitiveTypes.Double height;
+  }
+
+  class Cell extends TableElement {
+    !ordered ref Row[1]#r_cells c_row;
+    !unique !ordered attr String arrayRange;
+    !unique !ordered attr String formula;
+    !unique !ordered attr String hRef;
+    !unique !ordered attr PrimitiveTypes.Double mergeAcross;
+    !unique !ordered attr PrimitiveTypes.Double mergeDown;
+    !ordered val Data#d_cell c_data;
+  }
+
+  class Data {
+    !ordered ref Cell[1]#c_data d_cell;
+    !ordered val ValueType[1]#vt_data value;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

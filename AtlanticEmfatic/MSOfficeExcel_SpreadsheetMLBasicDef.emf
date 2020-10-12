@@ -1,0 +1,184 @@
+package Metamodel;
+
+package SpreadsheetMLBasicDef {
+  class DateTimeType {
+    !unique !ordered attr Integer[1] year;
+    !unique !ordered attr Integer[1] month;
+    !unique !ordered attr Integer[1] day;
+    !unique !ordered attr Integer[1] hour;
+    !unique !ordered attr Integer[1] minute;
+    !unique !ordered attr Integer[1] second;
+  }
+
+  class VersionType {
+    !unique !ordered attr Integer[1] n;
+    !unique !ordered attr Integer[1] nn;
+  }
+
+  abstract class ValueType {
+    !ordered ref Data[1]#value vt_data;
+  }
+
+  class StringValue extends ValueType {
+    !unique !ordered attr String[1] value;
+  }
+
+  class NumberValue extends ValueType {
+    !unique !ordered attr PrimitiveTypes.Double[1] value;
+  }
+
+  class DateTimeTypeValue extends ValueType {
+    !ordered val DateTimeType[1] value;
+  }
+
+  class BooleanValue extends ValueType {
+    !unique !ordered attr Boolean[1] value;
+  }
+
+  class ErrorValue extends ValueType {
+  }
+
+  class DocumentPropertiesCollection {
+    !ordered ref Workbook[1]#wb_docProperties dp_workbook;
+    !unique !ordered attr String title;
+    !unique !ordered attr String subject;
+    !unique !ordered attr String keywords;
+    !unique !ordered attr String description;
+    !unique !ordered attr String category;
+    !unique !ordered attr String author;
+    !unique !ordered attr String lastAuthor;
+    !unique !ordered attr String manager;
+    !unique !ordered attr String company;
+    !unique !ordered attr String hyperlinkBase;
+    !unique !ordered attr Integer revision;
+    !unique !ordered attr String presentationFormat;
+    !unique !ordered attr String guid;
+    !unique !ordered attr String appName;
+    !ordered val VersionType version;
+    !unique !ordered attr Integer totalTime;
+    !ordered val DateTimeType lastPrinted;
+    !ordered val DateTimeType created;
+    !ordered val DateTimeType lastSaved;
+    !unique !ordered attr Integer pages;
+    !unique !ordered attr Integer words;
+    !unique !ordered attr Integer characters;
+    !unique !ordered attr Integer charactersWithSpaces;
+    !unique !ordered attr Integer bytes;
+    !unique !ordered attr Integer lines;
+    !unique !ordered attr Integer paragraphs;
+  }
+
+  class CustomDocumentPropertiesCollection {
+    !ordered ref Workbook[1]#wb_customDocProperties cdp_workbook;
+    !ordered val CustomDocumentProperty[+]#customDocumentProperty_cdpe customDocumentProperties;
+  }
+
+  class CustomDocumentProperty {
+    !ordered ref CustomDocumentPropertiesCollection[1]#customDocumentProperties customDocumentProperty_cdpe;
+    !unique !ordered attr String[1] name;
+    !ordered val ValueType[1] value;
+  }
+
+  class SmartTagType {
+    !ordered ref SmartTagsCollection[1]#smartTagTypes smartTagType_ste;
+    !unique !ordered attr String[1] namespaceuri;
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String url;
+  }
+
+  class SmartTagsCollection {
+    !ordered ref Workbook[1]#wb_smartTags st_workbook;
+    !ordered ref Cell[1]#c_smartTags st_cell;
+    !ordered val SmartTagType[*]#smartTagType_ste smartTagTypes;
+  }
+
+  class Workbook {
+    !ordered val SmartTagsCollection#st_workbook wb_smartTags;
+    !ordered val DocumentPropertiesCollection#dp_workbook wb_docProperties;
+    !ordered val CustomDocumentPropertiesCollection#cdp_workbook wb_customDocProperties;
+    val Worksheet[*]#ws_workbook wb_worksheets;
+  }
+
+  class Worksheet {
+    !ordered ref Workbook[1]#wb_worksheets ws_workbook;
+    !ordered val Table#t_worksheet ws_table;
+    !unique !ordered attr String[1] name;
+  }
+
+  abstract class StyledElement {
+  }
+
+  class Table extends StyledElement {
+    !ordered ref Worksheet[1]#ws_table t_worksheet;
+    val Column[*]#c_table t_cols;
+    val Row[*]#r_table t_rows;
+    !unique !ordered attr PrimitiveTypes.Double defaultColumnWidth;
+    !unique !ordered attr PrimitiveTypes.Double defaultRowHeight;
+    !unique !ordered attr Integer expandedColumnCount;
+    !unique !ordered attr Integer expandedRowCount;
+    !unique !ordered attr Integer leftCell;
+    !unique !ordered attr Integer topCell;
+    !unique !ordered attr Boolean fullColumns;
+    !unique !ordered attr Boolean fullRows;
+  }
+
+  abstract class TableElement extends StyledElement {
+    !unique !ordered attr Integer index;
+  }
+
+  abstract class ColOrRowElement extends TableElement {
+    !unique !ordered attr Boolean hidden;
+    !unique !ordered attr Integer span;
+  }
+
+  class Column extends ColOrRowElement {
+    !ordered ref Table[1]#t_cols c_table;
+    !unique !ordered attr Boolean autoFitWidth;
+    !unique !ordered attr PrimitiveTypes.Double width;
+  }
+
+  class Row extends ColOrRowElement {
+    !ordered ref Table[1]#t_rows r_table;
+    val Cell[*]#c_row r_cells;
+    !unique !ordered attr Boolean autoFitHeight;
+    !unique !ordered attr PrimitiveTypes.Double height;
+  }
+
+  class Cell extends TableElement {
+    !ordered ref Row[1]#r_cells c_row;
+    !ordered val SmartTagsCollection[*]#st_cell c_smartTags;
+    !unique !ordered attr String arrayRange;
+    !unique !ordered attr String formula;
+    !unique !ordered attr String hRef;
+    !unique !ordered attr PrimitiveTypes.Double mergeAcross;
+    !unique !ordered attr PrimitiveTypes.Double mergeDown;
+    !ordered val Data#d_cell c_data;
+    !ordered val Comment#c_cell c_comment;
+  }
+
+  class Comment {
+    !ordered ref Cell[1]#c_comment c_cell;
+    !ordered val Data[1]#d_comment com_data;
+    !unique !ordered attr String author;
+    !unique !ordered attr Boolean showAlways;
+  }
+
+  class Data {
+    !ordered ref Cell[1]#c_data d_cell;
+    !ordered ref Comment[1]#com_data d_comment;
+    !ordered val ValueType[1]#vt_data value;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

@@ -1,0 +1,47 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'Reqtify'>
+    <Class name = 'Project' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'documents' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Reqtify::Document' opposite = 'Reqtify::Document::project'/>
+    </Class>
+    <Class name = 'TypedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ElementWithIL' isAbstract = 'true' supertypes = 'Reqtify::TypedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'label' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Document' isAbstract = 'false' supertypes = 'Reqtify::ElementWithIL'>
+      <Reference name = 'project' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Reqtify::Project' opposite = 'Reqtify::Project::documents'/>
+      <Reference name = 'sections' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Reqtify::Section' opposite = 'Reqtify::Section::document'/>
+    </Class>
+    <Class name = 'TextElement' isAbstract = 'true' supertypes = 'Reqtify::ElementWithIL'>
+      <Attribute name = 'description' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Section' isAbstract = 'false' supertypes = 'Reqtify::TextElement'>
+      <Reference name = 'document' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Reqtify::Document' opposite = 'Reqtify::Document::sections'/>
+      <Reference name = 'sectionChildren' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Reqtify::Section' opposite = 'Reqtify::Section::sectionParent'/>
+      <Reference name = 'sectionParent' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Reqtify::Section' opposite = 'Reqtify::Section::sectionChildren'/>
+      <Reference name = 'requirements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Reqtify::AbstractRequirement' opposite = 'Reqtify::AbstractRequirement::section'/>
+    </Class>
+    <Class name = 'AbstractRequirement' isAbstract = 'true' supertypes = 'Reqtify::TextElement'>
+      <Reference name = 'section' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Reqtify::Section' opposite = 'Reqtify::Section::requirements'/>
+      <Reference name = 'isContained' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Reqtify::MacroRequirement' opposite = 'Reqtify::MacroRequirement::contains'/>
+      <Reference name = 'coverLinks' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Reqtify::CoverLink' opposite = ''/>
+      <Reference name = 'attribute' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Reqtify::Attribute' opposite = ''/>
+    </Class>
+    <Class name = 'Requirement' isAbstract = 'false' supertypes = 'Reqtify::AbstractRequirement'/>
+    <Class name = 'MacroRequirement' isAbstract = 'false' supertypes = 'Reqtify::AbstractRequirement'>
+      <Reference name = 'contains' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Reqtify::AbstractRequirement' opposite = 'Reqtify::AbstractRequirement::isContained'/>
+    </Class>
+    <Class name = 'CoverLink' isAbstract = 'false' supertypes = 'Reqtify::TypedElement'>
+      <Reference name = 'linkWith' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Reqtify::AbstractRequirement' opposite = ''/>
+    </Class>
+    <Class name = 'Attribute' isAbstract = 'false' supertypes = 'Reqtify::TypedElement'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

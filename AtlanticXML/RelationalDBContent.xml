@@ -1,0 +1,30 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'RelationalDBContent'>
+    <Class name = 'NamedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'DataBase' isAbstract = 'false' supertypes = 'RelationalDBContent::NamedElement'>
+      <Attribute name = 'SGBDname' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'tables' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'RelationalDBContent::Table' opposite = 'RelationalDBContent::Table::database'/>
+    </Class>
+    <Class name = 'Table' isAbstract = 'false' supertypes = 'RelationalDBContent::NamedElement'>
+      <Reference name = 'database' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RelationalDBContent::DataBase' opposite = 'RelationalDBContent::DataBase::tables'/>
+      <Reference name = 'tuples' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'RelationalDBContent::Tuple' opposite = 'RelationalDBContent::Tuple::owner'/>
+    </Class>
+    <Class name = 'Tuple' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RelationalDBContent::Table' opposite = 'RelationalDBContent::Table::tuples'/>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'RelationalDBContent::TupleElement' opposite = 'RelationalDBContent::TupleElement::tuple'/>
+    </Class>
+    <Class name = 'TupleElement' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'tuple' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RelationalDBContent::Tuple' opposite = 'RelationalDBContent::Tuple::elements'/>
+      <Attribute name = 'value' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Double'/>
+  </Package>
+</Metamodel>

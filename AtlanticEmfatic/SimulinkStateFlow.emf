@@ -1,0 +1,104 @@
+package Metamodel;
+
+package SimulinkStateFlow {
+  class Simulink {
+    !ordered val System[*]#simulink subSystem;
+  }
+
+  class System {
+    !unique !ordered attr String[1] name;
+    !ordered ref Simulink[1]#subSystem simulink;
+    !ordered ref Block[1]#system blocks;
+    !ordered ref Line[1]#system lines;
+    !ordered val System[*] subSystem;
+  }
+
+  class Connector {
+  }
+
+  class Line {
+    !unique !ordered attr String[1] name;
+    !ordered ref Block[1]#lines block;
+    !ordered ref System[1]#lines system;
+  }
+
+  class BranchPoint extends Connector {
+  }
+
+  class Port extends Connector {
+    !unique !ordered attr Units[1] units;
+  }
+
+  class Block {
+    !unique !ordered attr String[1] description;
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] priority;
+    !unique !ordered attr String[1] natagme;
+    !unique !ordered attr String[1] blockType;
+    !ordered val Line[*]#block lines;
+    !ordered val Parameter[*]#block parameters;
+    !ordered val Annotation[*]#block annotations;
+    !ordered val BlockRef[*] blockRefs;
+    !ordered ref System[1]#blocks system;
+  }
+
+  class BlockRef {
+  }
+
+  class Primitive extends Block {
+    !unique !ordered attr String[1] deadLine;
+    !unique !ordered attr String[1] period;
+    !unique !ordered attr String[1] executionTime;
+  }
+
+  class OutPut extends Port {
+    !unique !ordered attr Integer[1] number;
+  }
+
+  class TriggerPort extends Port {
+    !unique !ordered attr TriggerEnum[1] triggerType;
+  }
+
+  class EnablePort extends Port {
+    !unique !ordered attr EnableEnum[1] statesWhenEnabling;
+  }
+
+  class Reference extends Block {
+    !unique !ordered attr String[1] sourceBlock;
+    !unique !ordered attr String[1] sourceType;
+  }
+
+  class Annotation {
+    !unique !ordered attr String[1] text;
+    !ordered ref Block[1]#annotations block;
+  }
+
+  class Parameter {
+    !unique !ordered attr String[1] value;
+    !ordered ref Block[1]#parameters block;
+  }
+
+  enum Units {
+    alpha = 0;
+    beta = 0;
+  }
+
+  enum TriggerEnum {
+    alpha = 0;
+    beta = 0;
+  }
+
+  enum EnableEnum {
+    alpha = 0;
+    beta = 0;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+}
+

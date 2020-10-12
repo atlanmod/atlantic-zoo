@@ -1,0 +1,59 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'CSM'>
+    <Class name = 'CSM' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'step' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'CSM::Step' opposite = ''/>
+      <Reference name = 'generalResource' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'CSM::GeneralResource' opposite = ''/>
+      <Reference name = 'scenarion' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'CSM::Scenarion' opposite = ''/>
+    </Class>
+    <Class name = 'GeneralResource' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'resourceAcquire' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'CSM::ResourceAcquire' opposite = 'CSM::ResourceAcquire::generalResource'/>
+      <Reference name = 'resourceRelease' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'CSM::ResourceRelease' opposite = 'CSM::ResourceRelease::generalResource'/>
+    </Class>
+    <Class name = 'Step' isAbstract = 'false' supertypes = 'CSM::Scenarion'>
+      <Reference name = 'postPath' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CSM::PathConnection' opposite = 'CSM::PathConnection::post'/>
+      <Reference name = 'prePath' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CSM::PathConnection' opposite = 'CSM::PathConnection::pre'/>
+      <Reference name = 'activeResource' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CSM::ActiveResource' opposite = 'CSM::ActiveResource::step'/>
+    </Class>
+    <Class name = 'Scenarion' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'step' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'CSM::Step' opposite = ''/>
+      <Reference name = 'root' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'CSM::Start' opposite = ''/>
+    </Class>
+    <Class name = 'Start' isAbstract = 'false' supertypes = 'CSM::Step'>
+      <Reference name = 'workload' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CSM::Workload' opposite = 'CSM::Workload::start'/>
+    </Class>
+    <Class name = 'End' isAbstract = 'false' supertypes = 'CSM::Step'/>
+    <Class name = 'ResourceAcquire' isAbstract = 'false' supertypes = 'CSM::Step'>
+      <Reference name = 'generalResource' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CSM::GeneralResource' opposite = 'CSM::GeneralResource::resourceAcquire'/>
+    </Class>
+    <Class name = 'ResourceRelease' isAbstract = 'false' supertypes = 'CSM::Step'>
+      <Reference name = 'generalResource' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CSM::GeneralResource' opposite = 'CSM::GeneralResource::resourceRelease'/>
+    </Class>
+    <Class name = 'Workload' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'start' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CSM::Start' opposite = 'CSM::Start::workload'/>
+    </Class>
+    <Class name = 'Component' isAbstract = 'false' supertypes = 'CSM::PassiveResource'/>
+    <Class name = 'ProcessingResource' isAbstract = 'false' supertypes = 'CSM::ActiveResource'/>
+    <Class name = 'ExternalService' isAbstract = 'false' supertypes = 'CSM::ActiveResource'/>
+    <Class name = 'ActiveResource' isAbstract = 'false' supertypes = 'CSM::GeneralResource'>
+      <Reference name = 'step' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'CSM::Step' opposite = 'CSM::Step::activeResource'/>
+    </Class>
+    <Class name = 'PassiveResource' isAbstract = 'false' supertypes = 'CSM::GeneralResource'/>
+    <Class name = 'Message' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'PathConnection' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'message' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CSM::Message' opposite = ''/>
+      <Reference name = 'post' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'CSM::Step' opposite = 'CSM::Step::postPath'/>
+      <Reference name = 'pre' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'CSM::Step' opposite = 'CSM::Step::prePath'/>
+    </Class>
+    <Class name = 'Join' isAbstract = 'false' supertypes = 'CSM::PathConnection'/>
+    <Class name = 'Fork' isAbstract = 'false' supertypes = 'CSM::PathConnection'/>
+    <Class name = 'Merge' isAbstract = 'false' supertypes = 'CSM::PathConnection'/>
+    <Class name = 'Branch' isAbstract = 'false' supertypes = 'CSM::PathConnection'/>
+    <Class name = 'Seqence' isAbstract = 'false' supertypes = 'CSM::PathConnection'/>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+  </Package>
+</Metamodel>

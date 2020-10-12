@@ -1,0 +1,154 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_SQLDML"{
+labelloc=t
+color=black
+label=SQLDML
+ node[shape=record];
+LocatedElement[label="{/LocatedElement/|location : String\ncommentsBefore[*] : String\ncommentsAfter[*] : String| }"]
+;
+ node[shape=record];
+SQLRoot[label="{SQLRoot| | }"]
+ SQLRoot->Statement[arrowhead=vee,arrowtail=diamond,headlabel="statements[*]",group=Statement,minlen=2,constraint=true,]
+ SQLRoot->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Statement[label="{/Statement/| | }"]
+ Statement->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ViewStatement[label="{ViewStatement|name : String| }"]
+ ViewStatement->ColumnExp[arrowhead=vee,arrowtail=diamond,headlabel="columns[1-*]",group=ColumnExp,minlen=2,constraint=true,]
+ ViewStatement->QueryStmt[arrowhead=vee,arrowtail=diamond,headlabel="query",group=QueryStmt,minlen=2,constraint=true,]
+ ViewStatement->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InsertStmt[label="{InsertStmt|tableName : String| }"]
+ InsertStmt->Expression[arrowhead=vee,arrowtail=diamond,headlabel="values[*]",group=Expression,minlen=2,constraint=true,]
+ InsertStmt->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+QueryStmt[label="{/QueryStmt/| | }"]
+ QueryStmt->Table[arrowhead=vee,arrowtail=diamond,headlabel="tables[1-*]",group=Table,minlen=2,constraint=true,]
+ QueryStmt->WhereClause[arrowhead=vee,arrowtail=diamond,headlabel="condition[0-1]",group=WhereClause,minlen=2,constraint=true,]
+ QueryStmt->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+QueryStmtCol[label="{QueryStmtCol| | }"]
+ QueryStmtCol->Expression[arrowhead=vee,arrowtail=diamond,headlabel="columns[1-*]",group=Expression,minlen=2,constraint=true,]
+ QueryStmtCol->QueryStmt[arrowhead=onormal,group=QueryStmt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+QueryStmtAllCol[label="{QueryStmtAllCol| | }"]
+ QueryStmtAllCol->QueryStmt[arrowhead=onormal,group=QueryStmt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NamedElement[label="{/NamedElement/|name : String| }"]
+ NamedElement->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Table[label="{Table|alias : String| }"]
+ Table->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+WhereClause[label="{WhereClause| | }"]
+ WhereClause->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expression",group=Expression,minlen=2,constraint=true,]
+ WhereClause->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Expression[label="{/Expression/| | }"]
+ Expression->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BinaryExp[label="{/BinaryExp/|opName : String| }"]
+ BinaryExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="leftExp",group=Expression,minlen=2,constraint=true,]
+ BinaryExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="rightExp",group=Expression,minlen=2,constraint=true,]
+ BinaryExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OrExp[label="{OrExp| | }"]
+ OrExp->BinaryExp[arrowhead=onormal,group=BinaryExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AndExp[label="{AndExp| | }"]
+ AndExp->BinaryExp[arrowhead=onormal,group=BinaryExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NotExp[label="{NotExp|opName : String| }"]
+ NotExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="valueExp",group=Expression,minlen=2,constraint=true,]
+ NotExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="unused[0-1]",group=Expression,minlen=2,constraint=true,]
+ NotExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LikeExp[label="{LikeExp|columnName : String| }"]
+ LikeExp->StringValueExp[arrowhead=vee,arrowtail=diamond,headlabel="expression",group=StringValueExp,minlen=2,constraint=true,]
+ LikeExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InExp[label="{InExp|columnName : String| }"]
+ InExp->Predicate[arrowhead=vee,arrowtail=diamond,headlabel="elements[1-*]",group=Predicate,minlen=2,constraint=true,]
+ InExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperationExp[label="{OperationExp|optName : String| }"]
+ OperationExp->BinaryExp[arrowhead=onormal,group=BinaryExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Predicate[label="{/Predicate/| | }"]
+ Predicate->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+QueryPredicate[label="{QueryPredicate| | }"]
+ QueryPredicate->QueryStmt[arrowhead=vee,arrowtail=diamond,headlabel="query",group=QueryStmt,minlen=2,constraint=true,]
+ QueryPredicate->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ColumnExp[label="{ColumnExp|alias : String| }"]
+ ColumnExp->DataType[arrowhead=vee,arrowtail=diamond,headlabel="type",group=DataType,minlen=2,constraint=true,]
+ ColumnExp->Predicate[arrowhead=onormal,group=Predicate,minlen=2,constraint=true,]
+ ColumnExp->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ValueExp[label="{/ValueExp/| | }"]
+ ValueExp->DataType[arrowhead=vee,arrowtail=diamond,headlabel="type[0-1]",group=DataType,minlen=2,constraint=true,]
+ ValueExp->Predicate[arrowhead=onormal,group=Predicate,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StringValueExp[label="{StringValueExp|aValue : String| }"]
+ StringValueExp->ValueExp[arrowhead=onormal,group=ValueExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IntegerValueExp[label="{IntegerValueExp|aValue : Integer| }"]
+ IntegerValueExp->ValueExp[arrowhead=onormal,group=ValueExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ListExp[label="{ListExp| | }"]
+ ListExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="elements[*]",group=Expression,minlen=2,constraint=true,]
+ ListExp->Predicate[arrowhead=onormal,group=Predicate,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FunctionExp[label="{FunctionExp|name : String| }"]
+ FunctionExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="arguments[*]",group=Expression,minlen=2,constraint=true,]
+ FunctionExp->Predicate[arrowhead=onormal,group=Predicate,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataType[label="{DataType| | }"]
+ DataType->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

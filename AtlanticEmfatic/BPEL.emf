@@ -1,0 +1,1227 @@
+package Metamodel;
+
+package BPEL {
+  class Process extends BPELExtensibleElement {
+    !unique !ordered attr ecore.EString name;
+    !unique !ordered attr ecore.EString targetNamespace;
+    !unique !ordered attr ecore.EString queryLanguage;
+    !unique !ordered attr ecore.EString expressionLanguage;
+    !unique !ordered attr ecore.EBooleanObject suppressJoinFailure;
+    !unique !ordered attr ecore.EBooleanObject variableAccessSerializable;
+    !ordered val PartnerLinks partnerLinks;
+    !ordered val Variables variables;
+    !ordered val Activity[1] activity;
+    !ordered val FaultHandler faultHandlers;
+    !ordered val EventHandler eventHandlers;
+    !ordered val CorrelationSets correlationSets;
+    val BPELImport[*] imports;
+    !ordered val Extensions extensions;
+    !unique !ordered attr ecore.EBooleanObject exitOnStandardFault;
+  }
+
+  class PartnerLink extends BPELExtensibleElement {
+    !unique !ordered attr ecore.EString name;
+    !ordered ref partnerlinktype.Role myRole;
+    !ordered ref partnerlinktype.Role partnerRole;
+    !ordered ref partnerlinktype.PartnerLinkType PartnerLinkType;
+    !unique !ordered attr ecore.EBooleanObject initializePartnerRole;
+  }
+
+  class FaultHandler extends BPELExtensibleElement {
+    val Catch[*] catch;
+    !ordered val CatchAll catchAll;
+  }
+
+  class Activity extends BPELExtensibleElement {
+    !unique !ordered attr ecore.EString name;
+    !unique !ordered attr ecore.EBooleanObject suppressJoinFailure;
+    !ordered val Targets targets;
+    !ordered val Sources sources;
+  }
+
+  class CorrelationSet extends BPELExtensibleElement {
+    !unique !ordered attr ecore.EString name;
+    ref messageproperties.Property[*] properties;
+  }
+
+  class Invoke extends PartnerActivity {
+    !ordered ref Variable outputVariable;
+    !ordered ref Variable inputVariable;
+    !ordered val CompensationHandler compensationHandler;
+    !ordered val FaultHandler faultHandler;
+    ref ToPart[*] toPart;
+    ref FromPart[*] fromPart;
+  }
+
+  class Link extends BPELExtensibleElement {
+    !unique !ordered attr ecore.EString name;
+    ref Source[*]#Link sources;
+    ref Target[*]#Link targets;
+  }
+
+  class Catch extends BPELExtensibleElement {
+    !unique !ordered attr WSDL.QName faultName;
+    !ordered val Variable faultVariable;
+    !ordered val Activity[1] activity;
+    !ordered ref WSDL.Message faultMessageType;
+    !ordered ref XSD.XSDElementDeclaration faultElement;
+  }
+
+  class Reply extends PartnerActivity, Activity {
+    !unique !ordered attr WSDL.QName faultName;
+    !ordered ref Variable variable;
+    ref ToPart[*] toPart;
+  }
+
+  class PartnerActivity extends Activity {
+    !ordered ref PartnerLink[1] partnerLink;
+    !ordered val Correlations correlations;
+    !ordered ref WSDL.PortType[1] portType;
+    !ordered ref WSDL.Operation[1] operation;
+  }
+
+  class Receive extends PartnerActivity {
+    !unique !ordered attr ecore.EBooleanObject createInstance;
+    !ordered ref Variable[1] variable;
+    ref FromPart[*] fromPart;
+  }
+
+  class Exit extends Activity {
+  }
+
+  class Throw extends Activity {
+    !unique !ordered attr WSDL.QName faultName;
+    !ordered ref Variable faultVariable;
+  }
+
+  class Wait extends Activity {
+    !ordered val Expression for;
+    !ordered val Expression until;
+  }
+
+  class Empty extends Activity {
+  }
+
+  class Sequence extends Activity {
+    val Activity[+] activities;
+  }
+
+  class Switch extends Activity {
+    val Case[+] cases;
+    !ordered val Otherwise otherwise;
+  }
+
+  class Case extends BPELExtensibleElement {
+    !ordered val Activity[1] activity;
+    !ordered val Condition[1] condition;
+  }
+
+  class While extends Activity {
+    !ordered val Activity[1] activity;
+    !ordered val Condition[1] condition;
+  }
+
+  class Pick extends Activity {
+    !unique !ordered attr ecore.EBooleanObject createInstance;
+    val OnMessage[+] messages;
+    val OnAlarm[*] alarm;
+  }
+
+  class Flow extends Activity {
+    val Activity[+] activities;
+    !ordered val Links links;
+    !ordered val CompletionCondition completionCondition;
+  }
+
+  class OnAlarm extends BPELExtensibleElement {
+    !ordered val Activity[1] activity;
+    !ordered val Expression for;
+    !ordered val Expression until;
+    !ordered val Expression repeatEvery;
+  }
+
+  class Assign extends Activity {
+    val Copy[+] copy;
+    !unique !ordered attr ecore.EBooleanObject validate;
+  }
+
+  class Copy extends BPELExtensibleElement {
+    !ordered val To[1] to;
+    !ordered val From[1] from;
+    !unique !ordered attr ecore.EBooleanObject keepSrcElementName;
+  }
+
+  class Extension extends BPELExtensibleElement {
+    !unique !ordered attr ecore.EString namespace;
+    !unique !ordered attr ecore.EBooleanObject mustUnderstand;
+  }
+
+  class Scope extends Activity {
+    !unique !ordered attr ecore.EBooleanObject isolated;
+    !ordered val FaultHandler faultHandlers;
+    !ordered val CompensationHandler compensationHandler;
+    !ordered val Activity[1] activity;
+    !ordered val Variables variables;
+    !ordered val CorrelationSets correlationSets;
+    !ordered val EventHandler eventHandlers;
+    !ordered val PartnerLinks partnerLinks;
+    !ordered val TerminationHandler terminationHandler;
+  }
+
+  class Compensate extends Activity {
+    !ordered ref ecore.EObject scope;
+  }
+
+  class CompensationHandler extends BPELExtensibleElement {
+    !ordered val Activity[1] activity;
+  }
+
+  class To extends BPELExtensibleElement {
+    !ordered ref Variable variable;
+    !ordered ref WSDL.Part part;
+    !ordered ref PartnerLink partnerLink;
+    !ordered ref messageproperties.Property property;
+    !ordered val BPELQuery query;
+  }
+
+  class From extends To, BPELExtensibleElement {
+    !unique !ordered attr ecore.EBooleanObject opaque;
+    !unique !ordered attr EndpointReferenceRole endpointReference;
+    !unique !ordered attr ecore.EString literal;
+    !unique !ordered attr ecore.EBooleanObject unsafeLiteral;
+    !ordered val Expression expression;
+    !ordered val ServiceRef serviceRef;
+    !ordered ref XSD.XSDTypeDefinition type;
+  }
+
+  class OnMessage extends BPELExtensibleElement {
+    !ordered ref Variable variable;
+    !ordered val Activity activity;
+    !ordered ref WSDL.PortType[1] portType;
+    !ordered ref PartnerLink[1] partnerLink;
+    !ordered val Correlations correlations;
+    !ordered ref WSDL.Operation[1] operation;
+    ref FromPart[*] fromPart;
+  }
+
+  class Expression extends WSDL.ExtensibilityElement {
+    !unique !ordered attr ecore.EJavaObject body;
+    !unique !ordered attr ecore.EString expressionLanguage;
+    !unique !ordered attr ecore.EBooleanObject opaque;
+  }
+
+  class BooleanExpression extends Expression {
+  }
+
+  class Correlation extends BPELExtensibleElement {
+    !unique !ordered attr ecore.EString initiate;
+    !unique !ordered attr CorrelationPattern pattern;
+    !ordered ref CorrelationSet[1] set;
+  }
+
+  enum CorrelationPattern {
+    outin = 0;
+    in = 0;
+    out = 0;
+  }
+
+  enum EndpointReferenceRole {
+    partnerRole = 0;
+    myRole = 0;
+  }
+
+  class EventHandler extends BPELExtensibleElement {
+    val OnAlarm[*] alarm;
+    val OnEvent[*] events;
+  }
+
+  class Source extends BPELExtensibleElement {
+    !ordered ref Link[1]#sources Link;
+    !ordered ref Activity[1] activity;
+    !ordered val Condition transitionCondition;
+  }
+
+  class Target extends BPELExtensibleElement {
+    !ordered ref Link[1]#targets Link;
+    !ordered ref Activity[1] activity;
+  }
+
+  class PartnerLinks extends BPELExtensibleElement {
+    val PartnerLink[*] children;
+  }
+
+  class Variables extends BPELExtensibleElement {
+    val Variable[*] children;
+  }
+
+  class CorrelationSets extends BPELExtensibleElement {
+    val CorrelationSet[*] children;
+  }
+
+  class Links extends BPELExtensibleElement {
+    val Link[*] children;
+  }
+
+  class CatchAll extends BPELExtensibleElement {
+    !ordered val Activity[1] activity;
+  }
+
+  class Correlations extends BPELExtensibleElement {
+    val Correlation[*] children;
+  }
+
+  class Variable extends BPELExtensibleElement {
+    !unique !ordered attr ecore.EString name;
+    !ordered ref WSDL.Message messageType;
+    !ordered ref XSD.XSDElementDeclaration XSDElement;
+    !ordered ref XSD.XSDTypeDefinition type;
+    !ordered ref From from;
+  }
+
+  class Otherwise extends BPELExtensibleElement {
+    !ordered val Activity[1] activity;
+  }
+
+  class UnknownExtensibilityAttribute extends WSDL.UnknownExtensibilityElement {
+  }
+
+  class OnEvent extends BPELExtensibleElement {
+    !ordered val Activity activity;
+    !ordered val Variable variable;
+    !ordered ref PartnerLink[1] partnerLink;
+    !ordered val Correlations correlations;
+    !ordered ref WSDL.Operation[1] operation;
+    !ordered ref WSDL.PortType[1] portType;
+    !ordered ref WSDL.Message[1] messageType;
+    ref FromPart[*] fromPart;
+    !ordered val CorrelationSets correlationSets;
+  }
+
+  class BPELImport {
+    !unique !ordered attr ecore.EString namespace;
+    !unique !ordered attr ecore.EString location;
+    !unique !ordered attr ecore.EString importType;
+  }
+
+  class Rethrow extends Activity {
+  }
+
+  class Condition extends Expression {
+  }
+
+  class Targets extends BPELExtensibleElement {
+    val Target[*] children;
+    !ordered val Condition joinCondition;
+  }
+
+  class Sources extends BPELExtensibleElement {
+    val Source[*] children;
+  }
+
+  class BPELQuery {
+    !unique !ordered attr ecore.EString value;
+    !unique !ordered attr ecore.EString queryLanguage;
+  }
+
+  class ServiceRef {
+    !unique !ordered attr ecore.EString referenceScheme;
+    !unique !ordered attr ecore.EJavaObject value;
+  }
+
+  class Extensions extends BPELExtensibleElement {
+    val Extension[*] children;
+  }
+
+  class ExtensionActivity extends Activity {
+  }
+
+  class FromPart {
+    !unique !ordered attr ecore.EString part;
+    !ordered ref To to;
+  }
+
+  class ToPart {
+    !unique !ordered attr ecore.EString part;
+    !ordered ref From from;
+  }
+
+  class OpaqueActivity extends Activity {
+  }
+
+  class ForEach extends Activity {
+    !unique !ordered attr ecore.EBooleanObject parallel;
+    !ordered val Variable[1] counterName;
+    !ordered val CompletionCondition completionCondition;
+    !ordered val Iterator[1] iterator;
+    !ordered val Activity[1] activity;
+  }
+
+  class RepeatUntil extends Activity {
+    !ordered val Activity[1] activity;
+    !ordered val Condition[1] condition;
+  }
+
+  class TerminationHandler extends BPELExtensibleElement {
+    !ordered val Activity activity;
+  }
+
+  class Validate extends Activity {
+    ref Variable[*] variables;
+  }
+
+  class If extends Activity {
+    !ordered val Condition condition;
+    !ordered val Then then;
+    val ElseIf[*] elseIf;
+    !ordered val Else else;
+  }
+
+  class Then extends BPELExtensibleElement {
+    !ordered val Activity[1] activity;
+  }
+
+  class ElseIf extends BPELExtensibleElement {
+    !ordered val Condition condition;
+    !ordered val Activity[1] activity;
+  }
+
+  class Else extends BPELExtensibleElement {
+    !ordered val Activity[1] activity;
+  }
+
+  class CompletionCondition {
+    !ordered val Branches branches;
+  }
+
+  class Branches extends Expression {
+    !unique !ordered attr ecore.EBooleanObject countCompletedBranchesOnly;
+  }
+
+  class BPELExtensibleElement extends WSDL.WSDLExtensibleElement {
+    !ordered val Documentation documentation;
+  }
+
+  class Documentation {
+    !unique !ordered attr ecore.EString lang;
+    !unique !ordered attr ecore.EString source;
+    !unique !ordered attr ecore.EString value;
+  }
+
+  class Iterator {
+    !ordered val Expression finalCounterValue;
+    !ordered val Expression startCounterValue;
+  }
+
+}
+
+package messageproperties {
+  class Property extends WSDL.ExtensibilityElement {
+    !unique !ordered attr WSDL.QName qName;
+    !unique !ordered attr ecore.EString name;
+    !unique !ordered attr ecore.EJavaObject type;
+    !unique !ordered attr ecore.EString ID;
+  }
+
+  class PropertyAlias extends WSDL.ExtensibilityElement {
+    !unique !ordered attr ecore.EJavaObject messageType;
+    !unique !ordered attr ecore.EString part;
+    !unique !ordered attr ecore.EJavaObject propertyName;
+    !unique !ordered attr ecore.EString ID;
+    !ordered ref WSDL.Part[1] wsdlPart;
+    !ordered val messagepropertiesQuery query;
+    !unique !ordered attr ecore.EJavaObject type;
+    !unique !ordered attr ecore.EJavaObject XSDElement;
+  }
+
+  class messagepropertiesQuery extends WSDL.ExtensibilityElement {
+    !unique !ordered attr ecore.EString queryLanguage;
+    !unique !ordered attr ecore.EString value;
+  }
+
+}
+
+package WSDL {
+  abstract class WSDLElement {
+    !unique !ordered attr WSDLDOMElement documentationElement;
+    !unique !ordered attr WSDLDOMElement element;
+  }
+
+  class PortType extends WSDLElement, IPortType {
+    !unique !ordered attr QName qName;
+    !unique !ordered attr ecore.EBoolean undefined;
+    !unique !ordered attr ecore.EBoolean proxy;
+    !unique !ordered attr ecore.EString resourceURI;
+    val Operation[*] eOperations;
+  }
+
+  class Operation extends WSDLElement, IOperation {
+    !unique !ordered attr OperationType style;
+    !unique !ordered attr ecore.EString name;
+    !unique !ordered attr ecore.EBoolean undefined;
+    !unique !ordered attr ecore.EBoolean proxy;
+    !unique !ordered attr ecore.EString resourceURI;
+    !ordered val Input eInput;
+    !ordered val Output eOutput;
+    val Fault[*] eFaults;
+    ref Part[*] eParameterOrdering;
+  }
+
+  class Message extends WSDLElement, IMessage {
+    !unique !ordered attr QName qName;
+    !unique !ordered attr ecore.EBoolean undefined;
+    !unique !ordered attr ecore.EBoolean proxy;
+    !unique !ordered attr ecore.EString resourceURI;
+    val Part[*] eParts;
+  }
+
+  class Part extends WSDLElement, IPart {
+    !unique !ordered attr ecore.EString name;
+    !unique !ordered attr QName elementName;
+    !unique !ordered attr QName typeName;
+    !ordered ref XSD.XSDTypeDefinition typeDefinition;
+    !ordered ref XSD.XSDElementDeclaration elementDeclaration;
+    !ordered ref Message eMessage;
+  }
+
+  class Binding extends WSDLExtensibleElement, IBinding {
+    !unique !ordered attr QName qName;
+    !unique !ordered attr ecore.EBoolean undefined;
+    !unique !ordered attr ecore.EBoolean proxy;
+    !unique !ordered attr ecore.EString resourceURI;
+    !ordered ref PortType[1] ePortType;
+    val BindingOperation[*] eBindingOperations;
+  }
+
+  class BindingOperation extends WSDLExtensibleElement, IBindingOperation {
+    !unique !ordered attr ecore.EString name;
+    !ordered ref Operation[1] eOperation;
+    !ordered val BindingInput eBindingInput;
+    !ordered val BindingOutput eBindingOutput;
+    val BindingFault[*] eBindingFaults;
+  }
+
+  class Service extends WSDLExtensibleElement, IService {
+    !unique !ordered attr QName qName;
+    !unique !ordered attr ecore.EBoolean undefined;
+    !unique !ordered attr ecore.EBoolean proxy;
+    !unique !ordered attr ecore.EString resourceURI;
+    val Port[*] ePorts;
+  }
+
+  class Port extends WSDLExtensibleElement, IPort {
+    !unique !ordered attr ecore.EString name;
+    !ordered ref Binding[1] eBinding;
+  }
+
+  class ExtensibilityElement extends WSDLElement, IExtensibilityElement {
+    !unique !ordered attr ecore.EBoolean required;
+    !unique !ordered attr QName elementType;
+  }
+
+  class Definition extends WSDLExtensibleElement, IDefinition {
+    !unique !ordered attr ecore.EString targetNamespace;
+    !unique !ordered attr ecore.EString location;
+    !unique !ordered attr QName qName;
+    !unique !ordered attr ecore.EString encoding;
+    val WSDLImport[*] eImports;
+    !ordered val Types eTypes;
+    val Message[*] eMessages;
+    val PortType[*] ePortTypes;
+    val Binding[*] eBindings;
+    val Service[*] eServices;
+    val Namespace[*] eNamespaces;
+  }
+
+  class WSDLImport extends WSDLElement, IImport {
+    !unique !ordered attr ecore.EString namespaceURI;
+    !unique !ordered attr ecore.EString locationURI;
+    !ordered ref Definition eDefinition;
+    !ordered ref XSD.XSDSchema eSchema;
+  }
+
+  abstract class WSDLExtensibleElement extends WSDLElement {
+    val ExtensibilityElement[*] eExtensibilityElements;
+  }
+
+  class Input extends MessageReference, WSDLElement, IInput {
+  }
+
+  class Output extends MessageReference, WSDLElement, IOutput {
+  }
+
+  class Fault extends MessageReference, WSDLElement, IFault {
+  }
+
+  class BindingInput extends WSDLExtensibleElement, IBindingInput {
+    !unique !ordered attr ecore.EString name;
+    !ordered ref Input[1] eInput;
+  }
+
+  class BindingOutput extends WSDLExtensibleElement, IBindingOutput {
+    !unique !ordered attr ecore.EString name;
+    !ordered ref Output[1] eOutput;
+  }
+
+  class BindingFault extends WSDLExtensibleElement, IBindingFault {
+    !unique !ordered attr ecore.EString name;
+    !ordered ref Fault[1] eFault;
+  }
+
+  datatype QName : "";
+
+  class Namespace {
+    !unique !ordered attr ecore.EString URI;
+    !unique !ordered attr ecore.EString prefix;
+  }
+
+  datatype OperationType : "";
+
+  abstract class IPortType {
+  }
+
+  abstract class IOperation {
+  }
+
+  abstract class IInput {
+  }
+
+  abstract class IOutput {
+  }
+
+  abstract class IFault {
+  }
+
+  abstract class IMessage {
+  }
+
+  abstract class IPart {
+  }
+
+  abstract class IService {
+  }
+
+  abstract class IPort {
+  }
+
+  abstract class IBinding {
+  }
+
+  abstract class IBindingOperation {
+  }
+
+  abstract class IBindingInput {
+  }
+
+  abstract class IBindingOutput {
+  }
+
+  abstract class IBindingFault {
+  }
+
+  datatype WSDLDOMElement : "";
+
+  abstract class IExtensibilityElement {
+  }
+
+  abstract class IDefinition {
+  }
+
+  abstract class IImport {
+  }
+
+  abstract class IList {
+  }
+
+  abstract class IMap {
+  }
+
+  abstract class IURL {
+  }
+
+  abstract class IExtensionRegistry {
+  }
+
+  class Types extends WSDLExtensibleElement, ITypes {
+  }
+
+  abstract class IIterator {
+  }
+
+  datatype WSDLException : "";
+
+  abstract class ITypes {
+  }
+
+  class UnknownExtensibilityElement extends ExtensibilityElement {
+    val UnknownExtensibilityElement[*] children;
+  }
+
+  class XSDSchemaExtensibilityElement extends ExtensibilityElement {
+    !ordered val XSD.XSDSchema schema;
+  }
+
+  datatype WSDLDOMDocument : "";
+
+  abstract class MessageReference extends WSDLElement {
+    !unique !ordered attr ecore.EString name;
+    !ordered ref Message[1] eMessage;
+  }
+
+}
+
+package partnerlinktype {
+  class PartnerLinkType extends WSDL.ExtensibilityElement {
+    !unique !ordered attr ecore.EString name;
+    !unique !ordered attr ecore.EString ID;
+    val Role[*] role;
+  }
+
+  class Role extends WSDL.ExtensibilityElement {
+    !unique !ordered attr ecore.EString ID;
+    !unique !ordered attr ecore.EString name;
+    !unique !ordered attr ecore.EJavaObject portType;
+  }
+
+}
+
+package ecore {
+  class EObject {
+  }
+
+  datatype EBoolean : "";
+
+  datatype EBooleanObject : "";
+
+  datatype EInt : "";
+
+  datatype EJavaObject : "";
+
+  datatype EString : "";
+
+}
+
+package XSD {
+  class XSDAnnotation extends XSDComponent, XSDRedefineContent {
+    attr XSDDOMElement[*] applicationInformation;
+    attr XSDDOMElement[*] userInformation;
+    attr DOMAttr[*] attributes;
+  }
+
+  class XSDAttributeDeclaration extends XSDFeature, XSDSchemaContent {
+    !unique !ordered attr ecore.EBoolean attributeDeclarationReference;
+    !ordered val XSDAnnotation annotation;
+    !ordered val XSDSimpleTypeDefinition anonymousTypeDefinition;
+    !ordered ref XSDSimpleTypeDefinition[1] typeDefinition;
+    !ordered ref XSDAttributeDeclaration[1] resolvedAttributeDeclaration;
+  }
+
+  abstract class XSDAttributeGroupContent extends XSDConcreteComponent {
+  }
+
+  class XSDAttributeGroupDefinition extends XSDRedefinableComponent, XSDAttributeGroupContent, XSDRedefineContent {
+    !unique !ordered attr ecore.EBoolean attributeGroupDefinitionReference;
+    !ordered val XSDAnnotation annotation;
+    val XSDAttributeGroupContent[*] contents;
+    ref XSDAttributeUse[*] attributeUses;
+    !ordered val XSDWildcard attributeWildcardContent;
+    !ordered ref XSDWildcard attributeWildcard;
+    !ordered ref XSDAttributeGroupDefinition[1] resolvedAttributeGroupDefinition;
+    !ordered val XSDWildcard syntheticWildcard;
+  }
+
+  class XSDAttributeUse extends XSDComponent, XSDAttributeGroupContent {
+    !unique !ordered attr ecore.EBoolean required;
+    !unique !ordered attr Value value;
+    !unique !ordered attr XSDConstraint constraint;
+    !unique !ordered attr XSDAttributeUseCategory use;
+    !unique !ordered attr ecore.EString lexicalValue;
+    !ordered ref XSDAttributeDeclaration[1] attributeDeclaration;
+    !ordered val XSDAttributeDeclaration[1] content;
+  }
+
+  class XSDBoundedFacet extends XSDFundamentalFacet {
+    !unique !ordered attr ecore.EBoolean value;
+  }
+
+  class XSDCardinalityFacet extends XSDFundamentalFacet {
+    !unique !ordered attr XSDCardinality value;
+  }
+
+  abstract class XSDComplexTypeContent extends XSDComponent {
+  }
+
+  class XSDComplexTypeDefinition extends XSDTypeDefinition, XSDScope {
+    !unique !ordered attr XSDDerivationMethod derivationMethod;
+    attr XSDComplexFinal[*] final;
+    !unique !ordered attr ecore.EBoolean ~abstract;
+    !unique !ordered attr XSDContentTypeCategory contentTypeCategory;
+    attr XSDProhibitedSubstitutions[*] prohibitedSubstitutions;
+    attr XSDComplexFinal[*] lexicalFinal;
+    attr XSDProhibitedSubstitutions[*] block;
+    !unique !ordered attr ecore.EBoolean mixed;
+    !ordered val XSDAnnotation contentAnnotation;
+    !ordered ref XSDTypeDefinition[1] baseTypeDefinition;
+    !ordered val XSDComplexTypeContent content;
+    !ordered ref XSDComplexTypeContent contentType;
+    ref XSDAttributeUse[*] attributeUses;
+    val XSDAttributeGroupContent[*] attributeContents;
+    !ordered ref XSDWildcard attributeWildcard;
+    !ordered val XSDWildcard attributeWildcardContent;
+    !ordered ref XSDTypeDefinition[1] rootTypeDefinition;
+    !ordered val XSDParticle syntheticParticle;
+    !ordered val XSDWildcard syntheticWildcard;
+  }
+
+  abstract class XSDComponent extends XSDConcreteComponent {
+  }
+
+  abstract class XSDConcreteComponent {
+    !unique !ordered attr XSDDOMElement element;
+    !ordered ref XSDConcreteComponent container;
+    !ordered ref XSDConcreteComponent[1] rootContainer;
+    !ordered ref XSDSchema schema;
+    val XSDDiagnostic[*] diagnostics;
+  }
+
+  abstract class XSDConstrainingFacet extends XSDFacet {
+  }
+
+  class XSDDiagnostic extends XSDConcreteComponent {
+    !unique !ordered attr XSDDiagnosticSeverity severity;
+    !unique !ordered attr ecore.EString message;
+    !unique !ordered attr ecore.EString locationURI;
+    !unique !ordered attr ecore.EInt line;
+    !unique !ordered attr ecore.EInt column;
+    !unique !ordered attr DOMNode node;
+    !unique !ordered attr ecore.EString annotationURI;
+    !unique !ordered attr ecore.EString key;
+    attr ecore.EString[*] substitutions;
+    ref XSDConcreteComponent[+] components;
+    !ordered ref XSDConcreteComponent[1] primaryComponent;
+  }
+
+  class XSDElementDeclaration extends XSDFeature, XSDSchemaContent, XSDTerm {
+    !unique !ordered attr ecore.EBoolean nillable;
+    attr XSDDisallowedSubstitutions[*] disallowedSubstitutions;
+    attr XSDSubstitutionGroupExclusions[*] substitutionGroupExclusions;
+    !unique !ordered attr ecore.EBoolean ~abstract;
+    attr XSDProhibitedSubstitutions[*] lexicalFinal;
+    attr XSDDisallowedSubstitutions[*] block;
+    !unique !ordered attr ecore.EBoolean elementDeclarationReference;
+    !unique !ordered attr ecore.EBoolean circular;
+    !ordered val XSDAnnotation annotation;
+    !ordered val XSDTypeDefinition anonymousTypeDefinition;
+    !ordered ref XSDTypeDefinition[1] typeDefinition;
+    val XSDIdentityConstraintDefinition[*] identityConstraintDefinitions;
+    !ordered ref XSDElementDeclaration[1] resolvedElementDeclaration;
+    !ordered ref XSDElementDeclaration substitutionGroupAffiliation;
+    ref XSDElementDeclaration[*] substitutionGroup;
+  }
+
+  class XSDEnumerationFacet extends XSDRepeatableFacet {
+    attr Value[*] value;
+  }
+
+  abstract class XSDFacet extends XSDComponent {
+    !unique !ordered attr ecore.EString lexicalValue;
+    !unique !ordered attr ecore.EString facetName;
+    !unique !ordered attr Value effectiveValue;
+    !ordered val XSDAnnotation annotation;
+    !ordered ref XSDSimpleTypeDefinition simpleTypeDefinition;
+  }
+
+  abstract class XSDFeature extends XSDNamedComponent {
+    !unique !ordered attr Value value;
+    !unique !ordered attr XSDConstraint constraint;
+    !unique !ordered attr XSDForm form;
+    !unique !ordered attr ecore.EString lexicalValue;
+    !unique !ordered attr ecore.EBoolean global;
+    !unique !ordered attr ecore.EBoolean featureReference;
+    !ordered ref XSDScope scope;
+    !ordered ref XSDFeature[1] resolvedFeature;
+    !ordered ref XSDTypeDefinition[1] type;
+  }
+
+  abstract class XSDFixedFacet extends XSDConstrainingFacet {
+    !unique !ordered attr ecore.EBoolean fixed;
+  }
+
+  class XSDFractionDigitsFacet extends XSDFixedFacet {
+    !unique !ordered attr ecore.EInt value;
+  }
+
+  abstract class XSDFundamentalFacet extends XSDFacet {
+  }
+
+  class XSDIdentityConstraintDefinition extends XSDNamedComponent {
+    !unique !ordered attr XSDIdentityConstraintCategory identityConstraintCategory;
+    !ordered val XSDAnnotation annotation;
+    !ordered ref XSDIdentityConstraintDefinition referencedKey;
+    !ordered val XSDXPathDefinition[1] selector;
+    val XSDXPathDefinition[+] fields;
+  }
+
+  class XSDImport extends XSDSchemaDirective {
+    !unique !ordered attr ecore.EString namespace;
+    !ordered val XSDAnnotation annotation;
+  }
+
+  class XSDInclude extends XSDSchemaCompositor {
+    !ordered val XSDAnnotation annotation;
+  }
+
+  class XSDLengthFacet extends XSDFixedFacet {
+    !unique !ordered attr ecore.EInt value;
+  }
+
+  class XSDMaxExclusiveFacet extends XSDMaxFacet {
+  }
+
+  abstract class XSDMaxFacet extends XSDFixedFacet {
+    !unique !ordered attr Value value;
+    !unique !ordered attr ecore.EBoolean inclusive;
+    !unique !ordered attr ecore.EBoolean exclusive;
+  }
+
+  class XSDMaxInclusiveFacet extends XSDMaxFacet {
+  }
+
+  class XSDMaxLengthFacet extends XSDFixedFacet {
+    !unique !ordered attr ecore.EInt value;
+  }
+
+  class XSDMinExclusiveFacet extends XSDMinFacet {
+  }
+
+  abstract class XSDMinFacet extends XSDFixedFacet {
+    !unique !ordered attr Value value;
+    !unique !ordered attr ecore.EBoolean inclusive;
+    !unique !ordered attr ecore.EBoolean exclusive;
+  }
+
+  class XSDMinInclusiveFacet extends XSDMinFacet {
+  }
+
+  class XSDMinLengthFacet extends XSDFixedFacet {
+    !unique !ordered attr ecore.EInt value;
+  }
+
+  class XSDModelGroup extends XSDTerm {
+    !unique !ordered attr XSDCompositor compositor;
+    !ordered val XSDAnnotation annotation;
+    val XSDParticle[*] contents;
+    ref XSDParticle[+] particles;
+  }
+
+  class XSDModelGroupDefinition extends XSDRedefinableComponent, XSDParticleContent, XSDRedefineContent {
+    !unique !ordered attr ecore.EBoolean modelGroupDefinitionReference;
+    !ordered val XSDAnnotation annotation;
+    !ordered val XSDModelGroup[1] modelGroup;
+    !ordered ref XSDModelGroupDefinition[1] resolvedModelGroupDefinition;
+  }
+
+  abstract class XSDNamedComponent extends XSDComponent {
+    !unique !ordered attr ecore.EString name;
+    !unique !ordered attr ecore.EString targetNamespace;
+    !unique !ordered attr ecore.EString aliasName;
+    !unique !ordered attr ecore.EString uRI;
+    !unique !ordered attr ecore.EString aliasURI;
+    !unique !ordered attr ecore.EString qName;
+  }
+
+  class XSDNotationDeclaration extends XSDNamedComponent, XSDSchemaContent {
+    !unique !ordered attr ecore.EString systemIdentifier;
+    !unique !ordered attr ecore.EString publicIdentifier;
+    !ordered val XSDAnnotation annotation;
+  }
+
+  class XSDNumericFacet extends XSDFundamentalFacet {
+    !unique !ordered attr ecore.EBoolean value;
+  }
+
+  class XSDOrderedFacet extends XSDFundamentalFacet {
+    !unique !ordered attr XSDOrdered value;
+  }
+
+  class XSDParticle extends XSDComplexTypeContent {
+    !unique !ordered attr ecore.EInt minOccurs;
+    !unique !ordered attr ecore.EInt maxOccurs;
+    !ordered val XSDParticleContent[1] content;
+    !ordered ref XSDTerm[1] term;
+  }
+
+  abstract class XSDParticleContent extends XSDConcreteComponent {
+  }
+
+  class XSDPatternFacet extends XSDRepeatableFacet {
+    attr ecore.EString[*] value;
+  }
+
+  abstract class XSDRedefinableComponent extends XSDNamedComponent, XSDRedefineContent {
+    !unique !ordered attr ecore.EBoolean circular;
+  }
+
+  abstract class XSDRedefineContent extends XSDSchemaContent {
+  }
+
+  class XSDRedefine extends XSDSchemaCompositor {
+    ref XSDAnnotation[*] annotations;
+    val XSDRedefineContent[*] contents;
+  }
+
+  abstract class XSDRepeatableFacet extends XSDConstrainingFacet {
+    ref XSDAnnotation[*] annotations;
+  }
+
+  class XSDSchema extends XSDScope {
+    !unique !ordered attr XSDDOMDocument document;
+    !unique !ordered attr ecore.EString schemaLocation;
+    !unique !ordered attr ecore.EString targetNamespace;
+    !unique !ordered attr XSDForm attributeFormDefault;
+    !unique !ordered attr XSDForm elementFormDefault;
+    attr XSDProhibitedSubstitutions[*] finalDefault;
+    attr XSDDisallowedSubstitutions[*] blockDefault;
+    !unique !ordered attr ecore.EString version;
+    val XSDSchemaContent[*] contents;
+    ref XSDElementDeclaration[*] elementDeclarations;
+    ref XSDAttributeDeclaration[*] attributeDeclarations;
+    ref XSDAttributeGroupDefinition[*] attributeGroupDefinitions;
+    ref XSDTypeDefinition[*] typeDefinitions;
+    ref XSDModelGroupDefinition[*] modelGroupDefinitions;
+    ref XSDIdentityConstraintDefinition[*] identityConstraintDefinitions;
+    ref XSDNotationDeclaration[*] notationDeclarations;
+    ref XSDAnnotation[*] annotations;
+    ref XSDDiagnostic[*] allDiagnostics;
+    ref XSDSchemaDirective[*] referencingDirectives;
+    !ordered ref XSDSchema[1] rootVersion;
+    !ordered ref XSDSchema originalVersion;
+    val XSDSchema[*] incorporatedVersions;
+    !ordered ref XSDSchema[1] schemaForSchema;
+  }
+
+  abstract class XSDSchemaCompositor extends XSDSchemaDirective {
+    !ordered ref XSDSchema incorporatedSchema;
+  }
+
+  abstract class XSDSchemaContent extends XSDConcreteComponent {
+  }
+
+  abstract class XSDSchemaDirective extends XSDSchemaContent {
+    !unique !ordered attr ecore.EString schemaLocation;
+    !ordered ref XSDSchema resolvedSchema;
+  }
+
+  abstract class XSDScope extends XSDComponent {
+  }
+
+  class XSDSimpleTypeDefinition extends XSDTypeDefinition, XSDComplexTypeContent {
+    !unique !ordered attr XSDVariety variety;
+    attr XSDSimpleFinal[*] final;
+    attr XSDSimpleFinal[*] lexicalFinal;
+    attr ecore.EString[*] validFacets;
+    val XSDSimpleTypeDefinition[*] contents;
+    val XSDConstrainingFacet[*] facetContents;
+    ref XSDConstrainingFacet[*] facets;
+    ref XSDSimpleTypeDefinition[*] memberTypeDefinitions;
+    val XSDFundamentalFacet[+] fundamentalFacets;
+    !ordered ref XSDSimpleTypeDefinition[1] baseTypeDefinition;
+    !ordered ref XSDSimpleTypeDefinition primitiveTypeDefinition;
+    !ordered ref XSDSimpleTypeDefinition itemTypeDefinition;
+    !ordered ref XSDSimpleTypeDefinition[1] rootTypeDefinition;
+    !ordered ref XSDMinFacet minFacet;
+    !ordered ref XSDMaxFacet maxFacet;
+    !ordered ref XSDMaxInclusiveFacet maxInclusiveFacet;
+    !ordered ref XSDMinInclusiveFacet minInclusiveFacet;
+    !ordered ref XSDMinExclusiveFacet minExclusiveFacet;
+    !ordered ref XSDMaxExclusiveFacet maxExclusiveFacet;
+    !ordered ref XSDLengthFacet lengthFacet;
+    !ordered ref XSDWhiteSpaceFacet whiteSpaceFacet;
+    ref XSDEnumerationFacet[*] enumerationFacets;
+    ref XSDPatternFacet[*] patternFacets;
+    !ordered ref XSDCardinalityFacet[1] cardinalityFacet;
+    !ordered ref XSDNumericFacet[1] numericFacet;
+    !ordered ref XSDMaxLengthFacet maxLengthFacet;
+    !ordered ref XSDMinLengthFacet minLengthFacet;
+    !ordered ref XSDTotalDigitsFacet totalDigitsFacet;
+    !ordered ref XSDFractionDigitsFacet fractionDigitsFacet;
+    !ordered ref XSDOrderedFacet[1] orderedFacet;
+    !ordered ref XSDBoundedFacet[1] boundedFacet;
+    !ordered ref XSDMaxFacet effectiveMaxFacet;
+    !ordered ref XSDWhiteSpaceFacet effectiveWhiteSpaceFacet;
+    !ordered ref XSDMaxLengthFacet effectiveMaxLengthFacet;
+    !ordered ref XSDFractionDigitsFacet effectiveFractionDigitsFacet;
+    !ordered ref XSDPatternFacet effectivePatternFacet;
+    !ordered ref XSDEnumerationFacet effectiveEnumerationFacet;
+    !ordered ref XSDTotalDigitsFacet effectiveTotalDigitsFacet;
+    !ordered ref XSDMinLengthFacet effectiveMinLengthFacet;
+    !ordered ref XSDLengthFacet effectiveLengthFacet;
+    !ordered ref XSDMinFacet effectiveMinFacet;
+    val XSDFacet[*] syntheticFacets;
+  }
+
+  abstract class XSDTerm extends XSDComponent, XSDParticleContent {
+  }
+
+  class XSDTotalDigitsFacet extends XSDFixedFacet {
+    !unique !ordered attr ecore.EInt value;
+  }
+
+  abstract class XSDTypeDefinition extends XSDRedefinableComponent, XSDRedefineContent {
+    !ordered val XSDAnnotation annotation;
+    !ordered val XSDAnnotation derivationAnnotation;
+    ref XSDAnnotation[*] annotations;
+    !ordered ref XSDTypeDefinition[1] rootType;
+    !ordered ref XSDTypeDefinition[1] baseType;
+    !ordered ref XSDSimpleTypeDefinition simpleType;
+    !ordered ref XSDParticle complexType;
+  }
+
+  class XSDWhiteSpaceFacet extends XSDFixedFacet {
+    !unique !ordered attr XSDWhiteSpace value;
+  }
+
+  class XSDWildcard extends XSDTerm {
+    !unique !ordered attr XSDNamespaceConstraintCategory namespaceConstraintCategory;
+    attr ecore.EString[*] namespaceConstraint;
+    !unique !ordered attr XSDProcessContents processContents;
+    attr ecore.EString[*] lexicalNamespaceConstraint;
+    !ordered val XSDAnnotation annotation;
+    ref XSDAnnotation[*] annotations;
+  }
+
+  class XSDXPathDefinition extends XSDComponent {
+    !unique !ordered attr XSDXPathVariety variety;
+    !unique !ordered attr ecore.EString value;
+    !ordered val XSDAnnotation annotation;
+  }
+
+  datatype DOMAttr : "";
+
+  datatype XSDDOMDocument : "";
+
+  datatype XSDDOMElement : "";
+
+  datatype DOMNode : "";
+
+  datatype Value : "";
+
+  enum XSDAttributeUseCategory {
+    prohibited = 0;
+    optional = 0;
+    required = 0;
+  }
+
+  enum XSDCardinality {
+    countablyInfinite = 0;
+    finite = 0;
+  }
+
+  enum XSDComplexFinal {
+    all = 0;
+    restriction = 0;
+    extension = 0;
+  }
+
+  enum XSDCompositor {
+    all = 0;
+    choice = 0;
+    sequence = 0;
+  }
+
+  enum XSDConstraint {
+    fixed = 0;
+    default = 0;
+  }
+
+  enum XSDContentTypeCategory {
+    elementOnly = 0;
+    mixed = 0;
+    simple = 0;
+    empty = 0;
+  }
+
+  enum XSDDerivationMethod {
+    extension = 0;
+    restriction = 0;
+  }
+
+  enum XSDDiagnosticSeverity {
+    fatal = 0;
+    warning = 0;
+    error = 0;
+    information = 0;
+  }
+
+  enum XSDDisallowedSubstitutions {
+    extension = 0;
+    substitution = 0;
+    all = 0;
+    restriction = 0;
+  }
+
+  enum XSDForm {
+    unqualified = 0;
+    qualified = 0;
+  }
+
+  enum XSDIdentityConstraintCategory {
+    keyref = 0;
+    ~unique = 0;
+    key = 0;
+  }
+
+  enum XSDNamespaceConstraintCategory {
+    set = 0;
+    not = 0;
+    any = 0;
+  }
+
+  enum XSDOrdered {
+    ~false = 0;
+    total = 0;
+    partial = 0;
+  }
+
+  enum XSDProcessContents {
+    skip = 0;
+    lax = 0;
+    strict = 0;
+  }
+
+  enum XSDProhibitedSubstitutions {
+    extension = 0;
+    restriction = 0;
+    all = 0;
+  }
+
+  enum XSDSimpleFinal {
+    list = 0;
+    restriction = 0;
+    all = 0;
+    union = 0;
+  }
+
+  enum XSDSubstitutionGroupExclusions {
+    restriction = 0;
+    extension = 0;
+  }
+
+  enum XSDVariety {
+    union = 0;
+    list = 0;
+    atomic = 0;
+  }
+
+  enum XSDWhiteSpace {
+    replace = 0;
+    collapse = 0;
+    preserve = 0;
+  }
+
+  enum XSDXPathVariety {
+    field = 0;
+    selector = 0;
+  }
+
+}
+

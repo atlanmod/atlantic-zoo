@@ -1,0 +1,6 @@
+( defstruct LocatedElement :location )
+( defstruct Query )
+( defstruct Entry :name :type :allFields :fields :location )
+( defstruct Field :name :entry )
+( defstruct Predicate :entry :expression )
+( defstruct Expression :field :value )

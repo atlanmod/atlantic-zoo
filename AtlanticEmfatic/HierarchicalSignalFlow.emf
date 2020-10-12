@@ -1,0 +1,55 @@
+package Metamodel;
+
+package HierarchicalSignalFlow {
+  class Port {
+    !ordered ref Asso_Port_Signal[1]#src asso_Port_Signalsrc;
+    !ordered ref Asso_Port_Signal[1]#dst asso_Port_Signaldst;
+  }
+
+  class Signal {
+    !ordered ref Base[1]#signal base;
+    !ordered ref Asso_Port_Signal[1]#signal asso_Port_Signal;
+  }
+
+  class Base {
+    !ordered ref Compound[1]#base compound;
+    !ordered val InputPort[*]#base inputPort;
+    !ordered val OutputPort[*]#base outputPort;
+    !ordered val Signal[*]#base signal;
+  }
+
+  class Compound extends Base {
+    !ordered val LocalPort[*]#compound localPort;
+    !ordered val Base[*]#compound base;
+  }
+
+  class InputPort extends Port {
+    !ordered ref Base[1]#inputPort base;
+  }
+
+  class OutputPort extends Port {
+    !ordered ref Base[1]#outputPort base;
+  }
+
+  class LocalPort extends Port {
+    !ordered ref Compound[1]#localPort compound;
+  }
+
+  class Primitive extends Base {
+  }
+
+  class Asso_Port_Signal {
+    !ordered ref Port[+]#asso_Port_Signalsrc src;
+    !ordered ref Port[+]#asso_Port_Signaldst dst;
+    !ordered ref Signal[1]#asso_Port_Signal signal;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+}
+

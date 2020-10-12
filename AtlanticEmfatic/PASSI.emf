@@ -1,0 +1,101 @@
+package Metamodel;
+
+package PASSI {
+  package Solution Domain {
+    class FIPA-Platform Agent {
+      !ordered val FIPA-platform Task[*]#fipa_platform_Agent fipa_platform_Task;
+      !ordered ref Agency Domain.Agent[1]#fipa_platform_AgentA agent;
+    }
+
+    class FIPA-platform Task {
+      !ordered ref FIPA-Platform Agent[1]#fipa_platform_Task fipa_platform_Agent;
+      !ordered ref Agency Domain.Task[1]#fipa_platform_TaskT task;
+    }
+
+    class Service {
+    }
+
+  }
+
+  package Agency Domain {
+    class Agent {
+      !unique !ordered attr String[1] Name;
+      !ordered ref Problem Domain.Ontology[1] Knowledge;
+      !ordered ref Solution Domain.FIPA-Platform Agent[1]#agent fipa_platform_AgentA;
+      !ordered val Role[1]#agentR role;
+      !ordered ref Problem Domain.Ressource[*] resource;
+      !ordered ref Problem Domain.Non functionnal Requirement[*] non_functionnal_Requirement;
+      !ordered ref Problem Domain.Requirement[+] requirement;
+    }
+
+    class Role {
+      !ordered ref Agent[1]#role agentR;
+      !ordered ref Solution Domain.Service[*] service;
+      !ordered ref Task[+] task;
+      !ordered ref Problem Domain.Scenario[+] scenario;
+      !ordered ref Communication[*] communication;
+    }
+
+    class Task {
+      !unique !ordered attr String[1] Name;
+      !ordered ref Solution Domain.FIPA-platform Task[1]#task fipa_platform_TaskT;
+    }
+
+    class Communication {
+      !unique !ordered attr String[1] Name;
+      !ordered ref Problem Domain.Ontology[1] Exchanged Knowledge;
+      !ordered val Message[1]#communication message;
+      !ordered ref AIP[1] aip;
+    }
+
+    class Message {
+      !ordered ref Communication[1]#message communication;
+      !ordered ref Performative[1] Comm_Act;
+    }
+
+    class AIP {
+      !unique !ordered attr String[1] Name;
+      !ordered val Performative[1]#aip performative;
+    }
+
+    class Performative {
+      !ordered ref AIP[1]#performative aip;
+    }
+
+  }
+
+  package Problem Domain {
+    class Ressource {
+      !unique !ordered attr String[1] Name;
+    }
+
+    class Non functionnal Requirement {
+    }
+
+    class Requirement {
+    }
+
+    class Scenario {
+    }
+
+    class Ontology {
+    }
+
+    class Concept extends Ontology {
+    }
+
+    class Action extends Ontology {
+    }
+
+    class Predicate extends Ontology {
+    }
+
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+}
+

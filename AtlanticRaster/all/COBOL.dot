@@ -1,0 +1,77 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_COBOL"{
+labelloc=t
+color=black
+label=COBOL
+ node[shape=record];
+COBOLElement[label="{COBOLElement|level : String\nrefined : Boolean\nname : String| }"]
+ COBOLElement->COBOLClassifier[arrowhead=none,arrowtail=none,headlabel="sharedType",taillabel="typedElements[*]",group=COBOLClassifier,minlen=2,constraint=false,]
+ COBOLElement->COBOLComposedType[arrowhead=diamond,arrowtail=none,headlabel="group[0-1]",taillabel="elements[*]",group=COBOLComposedType,minlen=2,constraint=true,]
+ COBOLElement->COBOLElementInitialValue[arrowhead=vee,arrowtail=none,headlabel="initial[*]",group=COBOLElementInitialValue,minlen=2,constraint=false,]
+ COBOLElement->COBOL88Element[arrowhead=vee,arrowtail=diamond,headlabel="contains[*]",group=COBOL88Element,minlen=2,constraint=true,]
+ COBOLElement->COBOLSourceText[arrowhead=vee,arrowtail=none,headlabel="source",group=COBOLSourceText,minlen=2,constraint=false,]
+ COBOLElement->COBOLFixedLengthArray[arrowhead=vee,arrowtail=diamond,headlabel="array[0-1]",group=COBOLFixedLengthArray,minlen=2,constraint=true,]
+;
+ node[shape=record];
+COBOLClassifier[label="{COBOLClassifier|typeded : Boolean\nname : String| }"]
+;
+ node[shape=record];
+COBOLSimpleType[label="{COBOLSimpleType|usageValue : COBOLUsageValue\npictureString : String\nusage : Boolean| }"]
+ COBOLSimpleType->COBOLClassifier[arrowhead=onormal,group=COBOLClassifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+COBOLComposedType[label="{COBOLComposedType| | }"]
+ COBOLComposedType->COBOLClassifier[arrowhead=onormal,group=COBOLClassifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+COBOLElementInitialValue[label="{COBOLElementInitialValue|initVal : String\nvalueKind : COBOLInitialValueKind| }"]
+;
+ node[shape=record];
+COBOL88Element[label="{COBOL88Element|name : String| }"]
+ COBOL88Element->COBOL88ElementValue[arrowhead=vee,arrowtail=diamond,headlabel="has[1-*]",group=COBOL88ElementValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+COBOL88ElementValue[label="{COBOL88ElementValue|lowerLimit : String\nupperLimit : String\nrange : Boolean| }"]
+;
+ node[shape=record];
+COBOLRedefiningElement[label="{COBOLRedefiningElement| | }"]
+ COBOLRedefiningElement->COBOLElement[arrowhead=vee,arrowtail=none,headlabel="redefines",group=COBOLElement,minlen=2,constraint=false,]
+ COBOLRedefiningElement->COBOLElement[arrowhead=onormal,group=COBOLElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+COBOL66Element[label="{COBOL66Element|name : String| }"]
+ COBOL66Element->COBOLElement[arrowhead=vee,arrowtail=none,headlabel="end[0-1]",group=COBOLElement,minlen=2,constraint=false,]
+ COBOL66Element->COBOLElement[arrowhead=vee,arrowtail=none,headlabel="start",group=COBOLElement,minlen=2,constraint=false,]
+;
+ node[shape=record];
+COBOLSourceText[label="{COBOLSourceText|source : String\nfileName : String| }"]
+;
+ node[shape=record];
+COBOLFixedLengthArray[label="{COBOLFixedLengthArray|maxUpper : Integer| }"]
+;
+ node[shape=record];
+COBOLVariableLengthArray[label="{COBOLVariableLengthArray|minUpper : Integer| }"]
+ COBOLVariableLengthArray->COBOLElement[arrowhead=vee,arrowtail=none,headlabel="dependingOn",group=COBOLElement,minlen=2,constraint=false,]
+ COBOLVariableLengthArray->COBOLFixedLengthArray[arrowhead=onormal,group=COBOLFixedLengthArray,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

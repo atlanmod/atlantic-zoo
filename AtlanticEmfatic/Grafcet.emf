@@ -1,0 +1,57 @@
+package Metamodel;
+
+package Grafcet {
+  abstract class LocatedElement {
+    !unique !ordered attr String[1] location;
+  }
+
+  abstract class NamedElement extends LocatedElement {
+    !unique !ordered attr String[1] name;
+  }
+
+  class Grafcet extends NamedElement {
+    !ordered val Element[*]#grafcet elements;
+    !ordered val Connection[*]#grafcet connections;
+  }
+
+  abstract class Element extends NamedElement {
+    !ordered ref Grafcet[1]#elements grafcet;
+  }
+
+  class Step extends Element {
+    !unique !ordered attr Boolean[1] isInitial;
+    !unique !ordered attr Boolean[1] isActive;
+    !unique !ordered attr String[1] action;
+    !ordered ref TransitionToStep[*]#to incomingConnections;
+    !ordered ref StepToTransition[*]#from outgoingConnections;
+  }
+
+  class Transition extends Element {
+    !unique !ordered attr String[1] condition;
+    !ordered ref StepToTransition[*]#to incomingConnections;
+    !ordered ref TransitionToStep[*]#from outgoingConnections;
+  }
+
+  abstract class Connection extends NamedElement {
+    !ordered ref Grafcet[1]#connections grafcet;
+  }
+
+  class StepToTransition extends Connection {
+    !ordered ref Step[1]#outgoingConnections from;
+    !ordered ref Transition[1]#incomingConnections to;
+  }
+
+  class TransitionToStep extends Connection {
+    !ordered ref Transition[1]#outgoingConnections from;
+    !ordered ref Step[1]#incomingConnections to;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+}
+

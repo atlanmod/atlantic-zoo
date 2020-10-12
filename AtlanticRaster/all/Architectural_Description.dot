@@ -1,0 +1,49 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_ArchitecturalDescription"{
+labelloc=t
+color=black
+label=ArchitecturalDescription
+ node[shape=record];
+Architecture[label="{Architecture| | }"]
+ Architecture->ArchitectureDescription[arrowhead=vee,arrowtail=none,headlabel="describedBy",group=ArchitectureDescription,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ArchitectureDescription[label="{ArchitectureDescription| | }"]
+ ArchitectureDescription->ArchitectureView[arrowhead=vee,arrowtail=diamond,headlabel="organizedBy[1-*]",group=ArchitectureView,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ArchitectureView[label="{ArchitectureView| | }"]
+ ArchitectureView->ArchitectureDescription[arrowhead=none,arrowtail=none,headlabel="selectedBy[1-*]",taillabel="selects[1-*]",group=ArchitectureDescription,minlen=2,constraint=false,]
+ ArchitectureView->ModelElement[arrowhead=vee,arrowtail=diamond,headlabel="constituents[1-*]",group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ArchitectureViewPoint[label="{ArchitectureViewPoint| | }"]
+ ArchitectureViewPoint->MainView[arrowhead=vee,arrowtail=none,headlabel="defines",group=MainView,minlen=2,constraint=false,]
+ ArchitectureViewPoint->ArchitectureView[arrowhead=none,arrowtail=none,headlabel="views[1-*]",taillabel="conformsTo[1-*]",group=ArchitectureView,minlen=2,constraint=false,]
+;
+ node[shape=record];
+MainView[label="{MainView| | }"]
+ MainView->ArchitectureView[arrowhead=vee,arrowtail=none,headlabel="isProjectedOnto[1-*]",group=ArchitectureView,minlen=2,constraint=false,]
+ MainView->ModelElement[arrowhead=vee,arrowtail=diamond,headlabel="consistsOf[1-*]",group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ModelElement[label="{ModelElement| | }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

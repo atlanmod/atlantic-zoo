@@ -1,0 +1,83 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'HSM'>
+    <Class name = 'MgaObject' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'position' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'StateBase' isAbstract = 'false' supertypes = 'HSM::MgaObject'>
+      <Attribute name = 'defaultTransition' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'marked' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'associationStateStatedst' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'HSM::AssociationStateState' opposite = 'HSM::AssociationStateState::dstTransition'/>
+      <Reference name = 'associationStateStatesrc' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'HSM::AssociationStateState' opposite = 'HSM::AssociationStateState::srcTransition'/>
+      <Reference name = 'data' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'HSM::DataVar' opposite = 'HSM::DataVar::stateBase'/>
+      <Reference name = 'associationDataStateBase' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'HSM::AssociationDataStateBase' opposite = 'HSM::AssociationDataStateBase::stateBase'/>
+    </Class>
+    <Class name = 'DataVar' isAbstract = 'false' supertypes = 'HSM::MgaObject'>
+      <Reference name = 'stateBase' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'HSM::StateBase' opposite = 'HSM::StateBase::data'/>
+      <Reference name = 'orState' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'HSM::OrState' opposite = 'HSM::OrState::dataVar'/>
+      <Reference name = 'associationDataStateBase' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'HSM::AssociationDataStateBase' opposite = 'HSM::AssociationDataStateBase::dataVar'/>
+    </Class>
+    <Class name = 'Transition' isAbstract = 'false' supertypes = 'HSM::MgaObject'>
+      <Attribute name = 'guard' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'trigger' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'action' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'isSync' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'orState' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'HSM::OrState' opposite = 'HSM::OrState::transition'/>
+      <Reference name = 'associationStateState' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'HSM::AssociationStateState' opposite = 'HSM::AssociationStateState::transition'/>
+    </Class>
+    <Class name = 'StateDateRelation' isAbstract = 'false' supertypes = 'HSM::MgaObject'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'color' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'RootFolder' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'rootFolders' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'HSM::RootFolder' opposite = ''/>
+      <Reference name = 'orState' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'HSM::OrState' opposite = 'HSM::OrState::rootFolder'/>
+    </Class>
+    <Class name = 'OrState' isAbstract = 'false' supertypes = 'HSM::CompoundState'>
+      <Reference name = 'rootFolder' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'HSM::RootFolder' opposite = 'HSM::RootFolder::orState'/>
+      <Reference name = 'state' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'HSM::State' opposite = 'HSM::State::orState'/>
+      <Reference name = 'init' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'HSM::Init' opposite = 'HSM::Init::orState'/>
+      <Reference name = 'dataVar' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'HSM::DataVar' opposite = 'HSM::DataVar::orState'/>
+      <Reference name = 'stateDataRelation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'HSM::StateDataRelation' opposite = 'HSM::StateDataRelation::orState'/>
+      <Reference name = 'transition' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'HSM::Transition' opposite = 'HSM::Transition::orState'/>
+      <Reference name = 'compoundState' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'HSM::CompoundState' opposite = 'HSM::CompoundState::orState'/>
+    </Class>
+    <Class name = 'AndState' isAbstract = 'false' supertypes = 'HSM::CompoundState'>
+      <Reference name = 'compoundState' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'HSM::CompoundState' opposite = 'HSM::CompoundState::andState'/>
+    </Class>
+    <Class name = 'CompoundState' isAbstract = 'false' supertypes = 'HSM::StateBase'>
+      <Reference name = 'andState' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'HSM::AndState' opposite = 'HSM::AndState::compoundState'/>
+      <Reference name = 'orState' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'HSM::OrState' opposite = 'HSM::OrState::compoundState'/>
+    </Class>
+    <Class name = 'PrimitiveState' isAbstract = 'false' supertypes = 'HSM::StateBase'/>
+    <Class name = 'Init' isAbstract = 'false' supertypes = 'HSM::PrimitiveState'>
+      <Reference name = 'orState' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'HSM::OrState' opposite = 'HSM::OrState::init'/>
+    </Class>
+    <Class name = 'State' isAbstract = 'false' supertypes = 'HSM::PrimitiveState'>
+      <Reference name = 'orState' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'HSM::OrState' opposite = 'HSM::OrState::state'/>
+    </Class>
+    <Class name = 'StateDataRelation' isAbstract = 'false' supertypes = 'HSM::PrimitiveState'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'color' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'orState' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'HSM::OrState' opposite = 'HSM::OrState::stateDataRelation'/>
+      <Reference name = 'associationDataStateBase1' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'HSM::AssociationDataStateBase' opposite = 'HSM::AssociationDataStateBase::stateDataRelation'/>
+    </Class>
+    <Class name = 'AssociationStateState' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'transition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'HSM::Transition' opposite = 'HSM::Transition::associationStateState'/>
+      <Reference name = 'dstTransition' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'HSM::StateBase' opposite = 'HSM::StateBase::associationStateStatedst'/>
+      <Reference name = 'srcTransition' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'HSM::StateBase' opposite = 'HSM::StateBase::associationStateStatesrc'/>
+    </Class>
+    <Class name = 'AssociationDataStateBase' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'stateDataRelation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'HSM::StateDataRelation' opposite = 'HSM::StateDataRelation::associationDataStateBase1'/>
+      <Reference name = 'dataVar' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'HSM::DataVar' opposite = 'HSM::DataVar::associationDataStateBase'/>
+      <Reference name = 'stateBase' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'HSM::StateBase' opposite = 'HSM::StateBase::associationDataStateBase'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+  </Package>
+</Metamodel>

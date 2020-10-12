@@ -1,0 +1,61 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'OpenQVT'>
+    <Class name = 'Variable' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'visibility' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'context' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OpenQVT::Context' opposite = 'OpenQVT::Context::variables'/>
+    </Class>
+    <Class name = 'Context' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'variables' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'OpenQVT::Variable' opposite = 'OpenQVT::Variable::context'/>
+      <Reference name = 'rule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OpenQVT::Rule' opposite = 'OpenQVT::Rule::context'/>
+    </Class>
+    <Class name = 'Rule' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'context' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OpenQVT::Context' opposite = 'OpenQVT::Context::rule'/>
+      <Reference name = 'subRule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OpenQVT::Rule' opposite = 'OpenQVT::Rule::superRule'/>
+      <Reference name = 'superRule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OpenQVT::Rule' opposite = 'OpenQVT::Rule::subRule'/>
+      <Reference name = 'services' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'OpenQVT::Service' opposite = 'OpenQVT::Service::rule'/>
+    </Class>
+    <Class name = 'RootRule' isAbstract = 'false' supertypes = 'OpenQVT::Rule'>
+      <Reference name = 'ruleSet' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OpenQVT::RuleSet' opposite = 'OpenQVT::RuleSet::rootRule'/>
+    </Class>
+    <Class name = 'RuleSetCall' isAbstract = 'false' supertypes = 'OpenQVT::Rule'>
+      <Reference name = 'ruleSet' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OpenQVT::RuleSet' opposite = ''/>
+    </Class>
+    <Class name = 'QARule' isAbstract = 'false' supertypes = 'OpenQVT::Rule'>
+      <Reference name = 'query' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OpenQVT::Query' opposite = 'OpenQVT::Query::qARule'/>
+      <Reference name = 'action' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OpenQVT::Action' opposite = 'OpenQVT::Action::qARule'/>
+    </Class>
+    <Class name = 'RuleSet' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'rootRule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OpenQVT::RootRule' opposite = 'OpenQVT::RootRule::ruleSet'/>
+    </Class>
+    <Class name = 'Service' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'visibility' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'signature' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'rule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OpenQVT::Rule' opposite = 'OpenQVT::Rule::services'/>
+    </Class>
+    <Class name = 'OCLService' isAbstract = 'false' supertypes = 'OpenQVT::Service'/>
+    <Class name = 'RTransService' isAbstract = 'false' supertypes = 'OpenQVT::Service'/>
+    <Class name = 'JavaService' isAbstract = 'false' supertypes = 'OpenQVT::Service'/>
+    <Class name = 'RulePart' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'service' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OpenQVT::Service' opposite = ''/>
+    </Class>
+    <Class name = 'Action' isAbstract = 'false' supertypes = 'OpenQVT::RulePart'>
+      <Reference name = 'qARule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OpenQVT::QARule' opposite = 'OpenQVT::QARule::action'/>
+    </Class>
+    <Class name = 'RTransAction' isAbstract = 'false' supertypes = 'OpenQVT::Action'/>
+    <Class name = 'JavaAction' isAbstract = 'false' supertypes = 'OpenQVT::Action'/>
+    <Class name = 'Query' isAbstract = 'false' supertypes = 'OpenQVT::RulePart'>
+      <Reference name = 'qARule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OpenQVT::QARule' opposite = 'OpenQVT::QARule::query'/>
+    </Class>
+    <Class name = 'OCLFilter' isAbstract = 'false' supertypes = 'OpenQVT::Query'/>
+    <Class name = 'RTransQuery' isAbstract = 'false' supertypes = 'OpenQVT::Query'/>
+    <Class name = 'JavaQuery' isAbstract = 'false' supertypes = 'OpenQVT::Query'/>
+    <Class name = 'JavaFilter' isAbstract = 'false' supertypes = 'OpenQVT::Query'/>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

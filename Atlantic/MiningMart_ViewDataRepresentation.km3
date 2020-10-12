@@ -1,0 +1,221 @@
+-- @name		data representation
+-- @version		1.0
+-- @domains		Mining Mart
+-- @authors		SIMON Eric(simon.eric3<at>gmail.com)
+-- @date		2006/07/20
+-- @description	This metamodel represents the concepts "Data representation" of Mining Mart.
+-- @see			M4 - The Mining Mart MetaModel
+-- @see 		Authors: Anca Vaduva, Jörg-Uwe Kietz, Regina Zücker and Klaus R. Dittrich
+-- @see 		ftp://ftp.ifi.unizh.ch/pub/techreports/TR-2001/ifi-2001.02.pdf, page 9
+
+-- @begin SimplfiedMiningMart
+package SimplfiedMiningMart {
+
+-- @comment "ModelElement is hte base for all modeling metaclass in the UML. All other modeling metaclass are either directly or indirectly specialized from ModelElement." 
+ class ModelElement {}
+ 
+ -- @comment "Classifier is a general element that describes behavioral and structural features; it appears in several specific forms; that means, the class Classifier may be specialized as Class, DataType, Interface, Component, aso."
+ class Classifier extends ModelElement {}
+ class StructuralFeature extends ModelElement {}
+ 
+ --@comment "A Class is a description of a set of objects that share the same attributes operations, methods, relationships, and semantics. Specializations in M4 of the UML class Class are ColumnSet and Concept"
+ class Class extends Classifier {
+ 	attribute name : String;
+ 	reference attributes[1-*] container : Attribute oppositeOf "class"; 
+ }
+
+ class DataType extends Classifier {
+ 	reference "attribute" : Attribute oppositeOf has;
+ } 
+ 
+ class Attribute extends StructuralFeature {
+ 	reference "class" : Class oppositeOf attributes;
+ 	reference has : DataType oppositeOf "attribute";
+ }
+
+ -- .... the other Type
+}
+-- @end SimplfiedMiningMart
+
+-- @begin DataRepresentation
+package DataRepresentation {
+
+ -- @comment "An instance of the class Column defines a set of values in a result set, e.g., a view or a table."
+ class Column extends Attribute {
+ 	attribute name : String;
+ 	reference dataType : DataType;
+ 	reference keys[*] : Key oppositeOf hasColumn;
+ 	reference belongsToColumnSet : ColumnSet oppositeOf hasColumn;
+ 	reference corespondsToBaseAttribute : BaseAttribute;
+ }
+ 
+ -- @comment  "A ColumnSet describes any general set of columns - typivally a table, view or snapshot."
+ -- @comment "Constraint: ColumnSet points either to a Concept or a RelationShip."
+ -- @comment "Constraint: There are ColumnSets which do not point to any concept but to a relationship- this is the case when the RelationShip has the multiplicity m:n, then it will be implemented as a separate table."
+ class ColumnSet extends Class {
+ 	--reference name : String; including in the superclass
+ 	attribute number : Integer;
+ 	attribute file : String;
+ 	attribute dbConnectString : String;
+ 	attribute user : String;
+ 	reference hasColumn[1-*] : Column oppositeOf belongsToColumnSet; 
+ 	reference hasKey[1-*] : Key oppositeOf isAssociatedToColumnSet;
+ 	reference correspondsToConcept[0-1] : Concept oppositeOf correspondsToColumnSet;
+ 	reference  correspondsToRelationShip[0-1] : RelationShip  oppositeOf correspondsToColumnSet;
+  }
+  
+  -- @comment "ColumnStatistics contains statistic information for columns necessary during data mining."
+ class ColumnStatistics {
+  	attribute "unique" : Integer;
+ 	attribute missing : Integer;
+ 	attribute min : Integer;
+ 	attribute max : Integer;
+ 	attribute average : Integer;
+ 	attribute standarDeviation : Integer;
+ 	attribute distributionValue : String;
+ 	attribute distributionCount : Integer;
+ 	attribute distributionMin : Integer;
+ 	attribute distributionMax : Integer;
+ 	reference forColumn : Column;
+ }
+ 
+ --@comment "ColumnSetStatistics contains statistic information for ColumnSets."
+ class ColumnSetStatistics extends ModelElement {
+ 	attribute allNumber : Integer;
+ 	attribute ordinalNumber : Integer;
+ 	attribute nominalNumber : Integer;
+ 	attribute timeNumber : Integer;
+ 	reference forColumnSet : ColumnSet;
+ }
+ 
+ class Snapshot extends ColumnSet {}
+ class Table extends ColumnSet {}
+ class View extends ColumnSet {}
+ 
+ -- @comment The class Key, so its subtypes, represents "the corresponding  notions known from the relational model."
+ class Key extends ModelElement {
+ 	attribute isUsedForIndex : Boolean;
+ 	reference hasColumn[1-*] : Column oppositeOf keys;
+ 	reference isAssociatedToColumnSet : ColumnSet oppositeOf hasKey;
+ }
+  
+ class ForeignKey extends Key {
+ 	reference isConnectionTo[0-1] : Table;
+ 	reference correspondsToRelationShip[0-1] : RelationShip oppositeOf correspondsToForeignKey;
+ }
+ 
+ class PrimaryKey extends Key {}
+ 
+ -- @comment "A Concept is the basic elment  of the conceptual data representation."
+ -- @comment "Contraint: Each ColumnSet has a Conceptor or RelationShip but not each Concept or RelationShip points to a  ColumnSet has no correspondant on the database side"
+ -- @comment "Contraint: For each instance of FromConcept association an instance of ToConcept association has to exist and conversely"
+ class Concept extends Class, Parameter {
+ 	-- reference name : String;  ncluding in the superclass
+ 	attribute subConceptRestriction : String;
+ 	reference isA : Concept;
+ 	reference FromConcept : RelationShip oppositeOf FromConcept ;
+  	reference ToConcept : RelationShip oppositeOf ToConcept;
+  	reference correspondsToColumnSet[0-1] : ColumnSet oppositeOf correspondsToConcept;
+ }
+ 
+ -- @comment "A RelationShip expresses the connection existing between two concepts."
+ -- @comment "Constraint: Each RelationShip corresponds to either a ColumnSet or a ForeignKey on the implemtation level. That  means, the association correspondsToForeignKey exist wirhout the association correspondsToColumnSet. However, when correspondsToColumnSetExists, it requires two ForeignKeys as well."
+ -- @comment "Constraint: A Relationship cannot exist without FromConcept and ToConcept;
+ class RelationShip extends ModelElement, Parameter {
+ 	attribute name : String;
+ 	attribute subRelationShipRestriction : String;
+ 	attribute defined : String;
+ 	reference isA : RelationShip;
+ 	reference correspondsToForeignKey[1-*] : ForeignKey oppositeOf  correspondsToRelationShip;
+ 	reference correspondsToColumnSet[0-1] : ColumnSet oppositeOf correspondsToRelationShip;
+ 	reference FromConcept : Concept oppositeOf FromConcept;
+ 	reference ToConcept : Concept oppositeOf ToConcept;
+ } 
+ 
+ -- @comment "Contains feature of Concepts. It may be either a BaseAttribute or a MultiColumnFeature."
+ class FeatureAttribute extends Attribute {
+ 	attribute name : String;
+ 	attribute relevanceForMining : Boolean;
+ 	reference attributeType : DataType;
+ 	reference belongsToConcept container : Concept;
+ 	reference correspondsToColumns[1-*] : Column;
+ }
+ 
+ -- @comment  " A BaseAttribute may have various mining relevant dtat types." 
+ class BaseAttribute extends FeatureAttribute {
+ 	reference isPartMultiColumnFeature[0-1] : MultiColumnFeature oppositeOf consitsOfBaseAttributes;
+ 	reference domainDataType : DomainDataType oppositeOf baseAttributeD;
+ }
+ 
+ -- @comment "A MultiColumnFeature consits of a set BaseAttributes."
+ class MultiColumnFeature extends FeatureAttribute {
+ 	reference consitsOfBaseAttributes[*] container : BaseAttribute oppositeOf isPartMultiColumnFeature;
+ }
+ 
+ -- @comment "Value is needed within arithmetc expressions and conditions used in operators like for e.g., segmentation operators." 
+ class Value extends Attribute, Parameter {
+ 	attribute name :String;
+ 	reference domainDataType: DomainDataType;
+ 	reference belongsToUserInput[1-*] container : UserInput; 
+ }
+ 
+ -- @comment "Contains the set of values entered by users when specifying cases."
+ class UserInput extends Class {
+ 	-- reference name : String; including in the superclass
+ 	reference containsValues[1-*] : Value;
+ }
+  
+ -- @comment "All values of this attribute are ordered ."
+ class Ordinal extends DomainDataType {}
+ 
+ -- @comment "Scalar attributes are usually represented as numeric or date on the implementation level.."
+ class Scalar extends Ordinal {}
+ 
+ --  @comment  "It represents the absolute point of time."
+ class Time extends Scalar {}
+ 
+ --  @comment  "Has only two values : 0 or 1."
+ class Binary extends Scalar, Nominal {}
+ 
+ -- @comment "Has fixed small number of values."
+ class Categorial extends Nominal {}
+ 
+ -- @comment  "This kind of attributes is used for identification and is not suitable for mining."
+ class KeyAttribute  extends Nominal {}
+ 
+ -- @comment  "It represents the identification of an individual for which Time data collected."
+ class TimeGroup extends KeyAttribute {}
+ 
+ -- @comment  "This data type is used for geographical information system(GIS) and mining visualisation."
+ class Spatial extends KeyAttribute {}
+
+ -- @comment " It has only one possible value and thus it is not suitable for mining. Typically is the result of a selection."
+ class Constant extends Nominal {}
+ 
+ --@comment "It is necessarily bound to a Relationship and a Concept."
+ class RoleRestriction extends Attribute {
+ 	attribute name : String;
+ 	reference restrictionForRelationShip : RelationShip;
+ 	reference restrictionForConcept : Concept;
+ 	reference restrictionToConcept : Concept;
+ 	attribute min : Integer;
+ 	attribute max : Integer;
+ 	reference belongsToConcept : Concept;
+ }
+ 
+ -- @comment "This class represents the domain specific data type of BaseAttribute."
+ class DomainDataType extends DataType {
+ 	reference baseAttributeD : BaseAttribute oppositeOf domainDataType;
+ }
+  
+ class Nominal extends DomainDataType {}
+  
+ class Parameter {} 
+}
+-- @end DataRepresentation
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+	datatype Boolean;
+}

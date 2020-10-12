@@ -1,0 +1,78 @@
+package Metamodel;
+
+package ODPIV {
+  class InvariantSchema {
+    !ordered ref ActionTemplate[*]#AT_constrainer constrainer_AT;
+    !ordered ref ActionType[*]#ATy_constrainer constrainer_ATy;
+    !ordered ref StateChange[*]#SC_constrainer constrainer_SC;
+    !ordered ref State[*]#S_constrainer constrainer_S;
+    !ordered ref InformationObjectTemplate[*]#IOT_constrainer constrainer_IOT;
+    !ordered ref InformationObjectType[*]#IOTy_constrainer constrainer_IOTy;
+  }
+
+  class InformationObjectTemplate {
+    !ordered ref InformationObject[*]#IO_IOT IOT_IO;
+    !ordered ref InvariantSchema[*]#constrainer_IOT IOT_constrainer;
+  }
+
+  class InformationObjectType {
+    !ordered ref InformationObject[*]#IO_IOTy IOTy_IO;
+    !ordered ref InvariantSchema[*]#constrainer_IOTy IOTy_constrainer;
+  }
+
+  class InformationObject {
+    !ordered ref StaticSchema[*]#SS_IO describer;
+    !ordered ref InformationObjectTemplate[*]#IOT_IO IO_IOT;
+    !ordered ref InformationObjectType[*]#IOTy_IO IO_IOTy;
+    !ordered ref Action[*]#participant IO_A;
+    !ordered ref State[1]#S_IO IO_S;
+  }
+
+  class State {
+    !ordered ref StateChange[1]#startState change;
+    !ordered ref StateChange[1]#endState causeSC;
+    !ordered val InformationObject[1]#IO_S S_IO;
+    !ordered ref InvariantSchema[*]#constrainer_S S_constrainer;
+  }
+
+  class StateChange {
+    !ordered ref State[1]#change startState;
+    !ordered ref State[1]#causeSC endState;
+    !ordered ref DynamicSchema[+]#dsStateChange specifier;
+    !ordered ref Action[*]#effect cause;
+    !ordered ref InvariantSchema[*]#constrainer_SC SC_constrainer;
+  }
+
+  class DynamicSchema {
+    !ordered ref StateChange[*]#specifier dsStateChange;
+  }
+
+  class StaticSchema {
+    !unique !ordered attr PrimitiveTypes.Double[1] locationTime;
+    !ordered ref InformationObject[+]#describer SS_IO;
+  }
+
+  class Action {
+    !ordered ref StateChange[*]#cause effect;
+    !ordered ref ActionTemplate[*]#AT_A A_AT;
+    !ordered ref InformationObject[*]#IO_A participant;
+    !ordered ref ActionType[*]#ATy_A A_ATy;
+  }
+
+  class ActionType {
+    !ordered ref Action[*]#A_ATy ATy_A;
+    !ordered ref InvariantSchema[*]#constrainer_ATy ATy_constrainer;
+  }
+
+  class ActionTemplate {
+    !ordered ref Action[*]#A_AT AT_A;
+    !ordered ref InvariantSchema[*]#constrainer_AT AT_constrainer;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Double : "";
+
+}
+

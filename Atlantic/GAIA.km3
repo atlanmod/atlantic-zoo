@@ -1,0 +1,101 @@
+-- @name		GAIA
+-- @version		1.0
+-- @domains		Multi-Agent
+-- @authors		SIMON Eric(simon.eric3@gmail.com)
+-- @date		2006/07/13
+-- @description	This metamodel describes the concepts of Gaia. It is a methodology for agent-oriented analysis and design.
+-- @see			A Study of some Multi-Agent Meta-Models
+-- @see 		Authors: Carole Bernon, Massimo Cossentino, Marie-Pierre Gleizes, Paola Turci, Franco Zambonelli
+-- @see 		http://www.jamesodell.com/AOSE04-proceedings/AOSE04-08.pdf, p6
+
+package GAIA {
+
+ class OrganizationalStructure {
+ 	reference organization[*] 	container 	: Organization;
+ }
+ 
+ class Organization {
+ 	reference collaborates					: Organization	oppositeOf interacts;
+ 	reference interacts 					: Organization	oppositeOf collaborates;
+ 	reference member[*] 		container	: AgentType;
+ 	reference observes[*]					: OrganizationalRule;
+ }
+ 
+ class OrganizationalRule {}
+ 
+ class SafetyRule 	extends OrganizationalRule {}
+ class LivenessRule	extends OrganizationalRule {}
+ 
+ class AgentType {
+ 	reference provides[1-*]	: Service;
+ 	reference collaborates	: AgentType oppositeOf agentType;
+ 	reference agentType	: AgentType oppositeOf collaborates;
+ 	reference plays[*]	: Role;
+ }
+ 
+ class Service {
+ 	attribute inputs : String;
+ 	attribute outputs : String;
+ 	attribute "pre-conditions" :String;
+ 	attribute "post-conditions"	:String;
+ }
+
+ class Role {
+ 	reference activity[1-*] 			: Activity;
+ 	reference communication[*] : Communication;
+ 	reference responsibility[1-*] 	: Responsibility;
+ 	reference actsOn[0-1] 			: AssociationConnector oppositeOf role ;
+ }
+	
+ class Activity {}
+	
+ class Responsibility {}
+	
+ class LivenessProperty 	extends Responsibility {}
+ class SafetyProperty 		extends Responsibility {}
+	
+ class AssociationConnector {
+		reference actsOn[*]	 		: Resource;
+		reference role 					: Role 			oppositeOf actsOn;
+		reference permission[*] 	: Permission	oppositeOf association; 
+ }
+	
+ class Permission {
+ 	reference association : AssociationConnector oppositeOf permission;		
+ }
+	
+ class Resource {
+	attribute name 			:String;
+	attribute description 	: String;
+	reference permitted_action[*] 	: Action;
+	reference environnement : Environnement oppositeOf resource; 
+ }
+
+ class Environnement {
+ 	reference resource[*] container : Resource oppositeOf environnement;
+ }
+
+ class Action {
+ 	attribute type :String;
+ }
+ 
+ class Communication {
+ 	reference observes[*] : OrganizationalRule;
+ 	reference protocol : Protocol;
+ }
+ 
+ class Protocol {
+ 	attribute name 			:String ;
+	attribute initiator 	:String ;
+	attribute partner 		:String ;
+	attribute inputs 		:String ;
+	attribute outputs 		:String ;
+	attribute description 	:String ;
+ }
+ 
+}
+
+package PrimitiveTypes {
+	datatype String;
+}
+

@@ -1,0 +1,1465 @@
+-- @name		KDM
+-- @version		1.0
+-- @domains		Object Management Group (OMG), Architecture-Driven Modernization (ADM), Model-Driven Reverse Engineering 
+-- @authors		KM3 version auto-generated using ATL by the ATLAS Group (INRIA & LINA) from the Ecore version provided within the KDM Eclipse Plugin (KDM Analytics, Inc).
+-- @date		2007/05/09
+-- @description	This metamodel describes the whole Knowledge Discovery Meta-Model (KDM), KDM being the first part of the work of the OMG Architecture-Driven Modernization (ADM) Task Force. KDM specifies the core concepts required for understanding existing software in preparation for its modernization and provides infrastructure to support more detailed definitions of Knowledge Discovery.
+-- @see 		http://www.kdmanalytics.com/kdm/
+
+package KDM_MetaModel {
+
+	package action {
+
+		class ActionElement extends AbstractCodeElement {
+			attribute kind[0-1] : String;
+			reference codeElement[*] container : AbstractCodeElement;
+			reference actionRelation[*] ordered container : AbstractActionRelationship;
+		}
+
+		abstract class AbstractActionRelationship extends KDMRelationship {
+			
+		}
+
+		class ControlFlow extends AbstractActionRelationship {
+			reference to : ActionElement;
+			reference from : ActionElement;
+		}
+
+		class Calls extends AbstractActionRelationship {
+			reference to : ControlElement;
+			reference from : ActionElement;
+		}
+
+		class Creates extends AbstractActionRelationship {
+			reference to : Datatype;
+			reference from : ActionElement;
+		}
+
+		class Reads extends AbstractActionRelationship {
+			reference to : DataElement;
+			reference from : ActionElement;
+		}
+
+		class Writes extends AbstractActionRelationship {
+			reference to : DataElement;
+			reference from : ActionElement;
+		}
+
+		class CompliesTo extends AbstractActionRelationship {
+			reference to : CodeItem;
+			reference from : ActionElement;
+		}
+
+		class Flow extends ControlFlow {
+			
+		}
+
+		class TrueFlow extends ControlFlow {
+			
+		}
+
+		class FalseFlow extends ControlFlow {
+			
+		}
+
+		class GuardedFlow extends ControlFlow {
+			
+		}
+
+		class UsesType extends AbstractActionRelationship {
+			reference to : Datatype;
+			reference from : ActionElement;
+		}
+
+		class Addresses extends AbstractActionRelationship {
+			reference to : ComputationalObject;
+			reference from : ActionElement;
+		}
+
+		class ActionRelationship extends AbstractActionRelationship {
+			reference to : KDMEntity;
+			reference from : ActionElement;
+		}
+
+		class Throws extends AbstractActionRelationship {
+			reference to : DataElement;
+			reference from : ActionElement;
+		}
+
+		class Dispatches extends AbstractActionRelationship {
+			reference to : DataElement;
+			reference from : ActionElement;
+		}
+
+		class EntryFlow extends AbstractActionRelationship {
+			reference to : ActionElement;
+			reference from : ControlElement;
+		}
+
+		class BlockUnit extends ActionElement {
+			
+		}
+
+		class ExceptionUnit extends BlockUnit {
+			
+		}
+
+		class TryUnit extends ExceptionUnit {
+			
+		}
+
+		class FinallyUnit extends ExceptionUnit {
+			
+		}
+
+		class CatchUnit extends ExceptionUnit {
+			
+		}
+
+		class ExitFlow extends AbstractActionRelationship {
+			reference to : ActionElement;
+			reference from : ActionElement;
+		}
+
+		class ExceptionFlow extends AbstractActionRelationship {
+			reference to : ActionElement;
+			reference from : ActionElement;
+		}
+	}
+
+	package build {
+
+		abstract class AbstractBuildElement extends KDMEntity {
+			reference buildRelation[*] container : AbstractBuildRelationship;
+		}
+
+		class BuildResource extends AbstractBuildElement {
+			reference implementation[*] : KDMEntity;
+			reference groupedBuild[*] : AbstractBuildElement;
+			reference buildElement[*] container : AbstractBuildElement;
+		}
+
+		class BuildDescription extends BuildResource {
+			reference source[*] container : SourceRef;
+			attribute text[0-1] : String;
+		}
+
+		class SymbolicLink extends AbstractBuildElement {
+			
+		}
+
+		abstract class AbstractBuildRelationship extends KDMRelationship {
+			
+		}
+
+		class LinksTo extends AbstractBuildRelationship {
+			reference to : AbstractBuildElement;
+			reference from : SymbolicLink;
+		}
+
+		class Consumes extends AbstractBuildRelationship {
+			reference to : AbstractBuildElement;
+			reference from : BuildStep;
+		}
+
+		class BuildModel extends KDMModel {
+			reference buildElement[*] container : AbstractBuildElement;
+		}
+
+		class BuildComponent extends BuildResource {
+			
+		}
+
+		class Supplier extends AbstractBuildElement {
+			
+		}
+
+		class Tool extends AbstractBuildElement {
+			
+		}
+
+		class BuildElement extends AbstractBuildElement {
+			
+		}
+
+		class BuildRelationship extends AbstractBuildRelationship {
+			reference to : KDMEntity;
+			reference from : AbstractBuildElement;
+		}
+
+		class SuppliedBy extends AbstractBuildRelationship {
+			reference to : Supplier;
+			reference from : AbstractBuildElement;
+		}
+
+		class Library extends BuildResource {
+			
+		}
+
+		class BuildStep extends BuildResource {
+			
+		}
+
+		class Produces extends AbstractBuildRelationship {
+			reference to : AbstractBuildElement;
+			reference from : BuildStep;
+		}
+
+		class SupportedBy extends AbstractBuildRelationship {
+			reference to : Tool;
+			reference from : BuildStep;
+		}
+
+		class BuildProduct extends BuildResource {
+			
+		}
+
+		class DescribedBy extends AbstractBuildRelationship {
+			reference to : BuildDescription;
+			reference from : BuildStep;
+		}
+	}
+
+	package code {
+
+		abstract class AbstractCodeElement extends KDMEntity {
+			reference source[*] container : SourceRef;
+			reference comment[*] container : CommentUnit;
+			reference codeRelation[*] container : AbstractCodeRelationship;
+		}
+
+		abstract class CodeItem extends AbstractCodeElement {
+			
+		}
+
+		abstract class ComputationalObject extends CodeItem {
+			
+		}
+
+		class ControlElement extends ComputationalObject {
+			reference type[0-1] : Datatype;
+			reference entryFlow[*] container : EntryFlow;
+			reference codeElement[*] ordered container : AbstractCodeElement;
+		}
+
+		class MethodUnit extends ControlElement {
+			attribute kind[0-1] : MethodKind;
+			attribute export[0-1] : ExportKind;
+		}
+
+		class Module extends CodeItem {
+			reference codeElement[*] ordered container : AbstractCodeElement;
+		}
+
+		class CodeAssembly extends Module {
+			
+		}
+
+		class CallableUnit extends ControlElement {
+			attribute kind[0-1] : CallableKind;
+		}
+
+		abstract class Datatype extends CodeItem {
+			
+		}
+
+		class TemplateUnit extends Datatype {
+			reference codeElement[*] ordered container : CodeItem;
+		}
+
+		class TemplateParameter extends Datatype {
+			
+		}
+
+		abstract class AbstractCodeRelationship extends KDMRelationship {
+			
+		}
+
+		class InstanceOf extends AbstractCodeRelationship {
+			reference to : TemplateUnit;
+			reference from : AbstractCodeElement;
+		}
+
+		class CompilationUnit extends Module {
+			
+		}
+
+		class CodeModel extends KDMModel {
+			reference codeElement[*] container : AbstractCodeElement;
+		}
+
+		class DerivedType extends Datatype {
+			reference itemUnit container : ItemUnit;
+		}
+
+		class ArrayType extends DerivedType {
+			attribute size[0-1] : Integer;
+			reference indexUnit container : IndexUnit;
+		}
+
+		class PrimitiveType extends Datatype {
+			
+		}
+
+		class BooleanType extends PrimitiveType {
+			
+		}
+
+		class CharType extends PrimitiveType {
+			
+		}
+
+		class ClassUnit extends Datatype {
+			attribute isAbstract[0-1] : Boolean;
+			reference codeElement[*] ordered container : CodeItem;
+		}
+
+		class CompositeType extends Datatype {
+			reference itemUnit[*] ordered container : ItemUnit;
+		}
+
+		class RecordType extends CompositeType {
+			
+		}
+
+		class EnumeratedType extends Datatype {
+			reference value[*] ordered container : Value;
+		}
+
+		class Extends extends AbstractCodeRelationship {
+			reference to : Datatype;
+			reference from : Datatype;
+		}
+
+		class ScaledType extends PrimitiveType {
+			
+		}
+
+		class FloatType extends PrimitiveType {
+			
+		}
+
+		class HasType extends AbstractCodeRelationship {
+			reference to : Datatype;
+			reference from : CodeItem;
+		}
+
+		class ImplementationOf extends AbstractCodeRelationship {
+			reference to : CodeItem;
+			reference from : CodeItem;
+		}
+
+		class Implements extends AbstractCodeRelationship {
+			reference to : CodeItem;
+			reference from : CodeItem;
+		}
+
+		class IntegerType extends PrimitiveType {
+			
+		}
+
+		class InterfaceUnit extends Datatype {
+			reference codeElement[*] ordered container : CodeItem;
+		}
+
+		class PointerType extends DerivedType {
+			
+		}
+
+		abstract class DefinedType extends Datatype {
+			reference type : Datatype;
+			reference codeElement[0-1] container : Datatype;
+		}
+
+		class TypeUnit extends DefinedType {
+			
+		}
+
+		class RangeType extends DerivedType {
+			attribute lower[0-1] : Integer;
+			attribute upper[0-1] : Integer;
+		}
+
+		class Signature extends Datatype {
+			reference parameterUnit[*] ordered container : ParameterUnit;
+		}
+
+		class DataElement extends ComputationalObject {
+			reference type : Datatype;
+			attribute ext[0-1] : String;
+			attribute size[0-1] : Integer;
+			reference codeElement[*] container : Datatype;
+		}
+
+		class StringType extends PrimitiveType {
+			
+		}
+
+		class ChoiceType extends CompositeType {
+			
+		}
+
+		class NamespaceUnit extends CodeItem {
+			reference groupedCode[*] : CodeItem;
+		}
+
+		class VisibleIn extends AbstractCodeRelationship {
+			reference to : CodeItem;
+			reference from : CodeItem;
+		}
+
+		class CommentUnit extends ModelElement {
+			attribute text[0-1] : String;
+		}
+
+		class SharedUnit extends CompilationUnit {
+			
+		}
+
+		class DecimalType extends PrimitiveType {
+			
+		}
+
+		class DateType extends PrimitiveType {
+			
+		}
+
+		class TimeType extends PrimitiveType {
+			
+		}
+
+		enumeration MethodKind {
+			literal operator;
+			literal destructor;
+			literal method;
+			literal "abstract";
+			literal virtual;
+			literal unknown;
+			literal constructor;
+		}
+
+		class VoidType extends PrimitiveType {
+			
+		}
+
+		abstract class ValueElement extends DataElement {
+			
+		}
+
+		class Value extends ValueElement {
+			
+		}
+
+		class ValueList extends ValueElement {
+			reference valueElement[*] ordered container : ValueElement;
+		}
+
+		class StorableUnit extends DataElement {
+			attribute kind[0-1] : StorableKind;
+		}
+
+		class MemberUnit extends DataElement {
+			attribute export[0-1] : ExportKind;
+		}
+
+		class ParameterUnit extends DataElement {
+			attribute kind[0-1] : ParameterKind;
+			attribute pos[0-1] : Integer;
+		}
+
+		class ItemUnit extends DataElement {
+			
+		}
+
+		class IndexUnit extends DataElement {
+			
+		}
+
+		class SynonymType extends DefinedType {
+			
+		}
+
+		class SequenceType extends DerivedType {
+			attribute size[0-1] : Integer;
+		}
+
+		class BagType extends DerivedType {
+			attribute size[0-1] : Integer;
+		}
+
+		class SetType extends DerivedType {
+			attribute size[0-1] : Integer;
+		}
+
+		class CodeElement extends CodeItem {
+			
+		}
+
+		class CodeRelationship extends AbstractCodeRelationship {
+			reference to : KDMEntity;
+			reference from : CodeItem;
+		}
+
+		enumeration ParameterKind {
+			literal byReference;
+			literal unknown;
+			literal exception;
+			literal return;
+			literal byValue;
+			literal catchall;
+			literal byName;
+			literal throws;
+			literal variadic;
+		}
+
+		enumeration ExportKind {
+			literal private;
+			literal unknown;
+			literal public;
+			literal protected;
+			literal final;
+		}
+
+		class LanguageUnit extends Module {
+			
+		}
+
+		class OrdinalType extends PrimitiveType {
+			
+		}
+
+		class BitstringType extends PrimitiveType {
+			
+		}
+
+		class OctetType extends PrimitiveType {
+			
+		}
+
+		class OctetstringType extends PrimitiveType {
+			
+		}
+
+		class BitType extends PrimitiveType {
+			
+		}
+
+		enumeration StorableKind {
+			literal global;
+			literal external;
+			literal static;
+			literal unknown;
+			literal register;
+			literal local;
+		}
+
+		enumeration CallableKind {
+			literal external;
+			literal regular;
+			literal stored;
+			literal operator;
+			literal unknown;
+		}
+
+		class Imports extends AbstractCodeRelationship {
+			reference to : CodeItem;
+			reference from : CodeItem;
+		}
+
+		class Package extends Module {
+			
+		}
+
+		class ParameterTo extends AbstractCodeRelationship {
+			reference to : CodeItem;
+			reference from : AbstractCodeElement;
+		}
+
+		class TemplateType extends Datatype {
+			
+		}
+
+		class PreprocessorDirective extends AbstractCodeElement {
+			reference codeElement[*] container : AbstractCodeElement;
+		}
+
+		class MacroDirective extends PreprocessorDirective {
+			
+		}
+
+		class MacroUnit extends PreprocessorDirective {
+			attribute kind[0-1] : MacroKind;
+		}
+
+		class ConditionalDirective extends PreprocessorDirective {
+			
+		}
+
+		class IncludeDirective extends PreprocessorDirective {
+			
+		}
+
+		enumeration MacroKind {
+			literal external;
+			literal unknown;
+			literal option;
+			literal undefined;
+			literal regular;
+		}
+
+		class VariantTo extends AbstractCodeRelationship {
+			reference to : PreprocessorDirective;
+			reference from : PreprocessorDirective;
+		}
+
+		class Expands extends AbstractCodeRelationship {
+			reference to : PreprocessorDirective;
+			reference from : PreprocessorDirective;
+		}
+
+		class Redefines extends AbstractCodeRelationship {
+			reference to : PreprocessorDirective;
+			reference from : PreprocessorDirective;
+		}
+
+		class GeneratedFrom extends AbstractCodeRelationship {
+			reference to : PreprocessorDirective;
+			reference from : AbstractCodeElement;
+		}
+
+		class Includes extends AbstractCodeRelationship {
+			reference to : AbstractCodeElement;
+			reference from : PreprocessorDirective;
+		}
+
+		class HasValue extends AbstractCodeRelationship {
+			reference to : CodeItem;
+			reference from : CodeItem;
+		}
+	}
+
+	package conceptual {
+
+		class ConceptualModel extends KDMModel {
+			reference conceptualElement[*] container : AbstractConceptualElement;
+		}
+
+		abstract class AbstractConceptualElement extends KDMEntity {
+			reference source[*] container : SourceRef;
+			reference implementation[*] : KDMEntity;
+			reference conceptualRelation[*] container : AbstractConceptualRelationship;
+			reference abstraction[*] container : ActionElement;
+		}
+
+		class TermUnit extends AbstractConceptualElement {
+			
+		}
+
+		class ConceptualContainer extends AbstractConceptualElement {
+			reference conceptualElement[*] container : AbstractConceptualElement;
+		}
+
+		class FactUnit extends ConceptualContainer {
+			
+		}
+
+		abstract class AbstractConceptualRelationship extends KDMRelationship {
+			
+		}
+
+		class ConceptualRelationship extends AbstractConceptualRelationship {
+			reference to : KDMEntity;
+			reference from : AbstractConceptualElement;
+		}
+
+		class BehaviorUnit extends ConceptualContainer {
+			
+		}
+
+		class RuleUnit extends ConceptualContainer {
+			
+		}
+
+		class ScenarioUnit extends ConceptualContainer {
+			
+		}
+
+		class ConceptualFlow extends AbstractConceptualRelationship {
+			reference to : ConceptualContainer;
+			reference from : ConceptualContainer;
+		}
+
+		class ConceptualElement extends AbstractConceptualElement {
+			
+		}
+
+		class ConceptualRole extends AbstractConceptualElement {
+			reference conceptualElement : AbstractConceptualElement;
+		}
+	}
+
+	package core {
+
+		abstract class Element {
+			reference "attribute"[*] container : Attribute;
+			reference annotation[*] container : Annotation;
+		}
+
+		abstract class ModelElement extends Element {
+			reference stereotype[*] : Stereotype;
+			reference taggedValue[*] container : ExtendedValue;
+		}
+
+		abstract class KDMEntity extends ModelElement {
+			attribute name[0-1] : String;
+			operation createAggregation(otherEntity : KDMEntity);
+			operation deleteAggregation(aggregation : AggregatedRelationship);
+			operation getInbound() : KDMRelationship;
+			operation getOutbound() : KDMRelationship;
+			operation getOwnedRelation() : KDMRelationship;
+			operation getInAggregated() : AggregatedRelationship;
+			operation getOutAggregated() : AggregatedRelationship;
+			operation getOwner() : KDMEntity;
+			operation getOwnedElement() : KDMEntity;
+			operation getGroup() : KDMEntity;
+			operation getGroupedElement() : KDMEntity;
+			operation getModel() : KDMModel;
+		}
+
+		abstract class KDMRelationship extends ModelElement {
+			operation getTo() : KDMEntity;
+			operation getFrom() : KDMEntity;
+		}
+
+		class AggregatedRelationship extends ModelElement {
+			reference from : KDMEntity;
+			reference to : KDMEntity;
+			reference relation[*] : KDMRelationship;
+			attribute density[0-1] : Integer;
+		}
+
+		datatype String;
+
+		datatype Integer;
+
+		datatype Boolean;
+	}
+
+	package data {
+
+		class DataModel extends KDMModel {
+			reference dataElement[*] container : AbstractDataElement;
+		}
+
+		abstract class AbstractDataElement extends KDMEntity {
+			reference source[*] container : SourceRef;
+			reference dataRelation[*] container : AbstractDataRelationship;
+			reference abstraction[*] ordered container : ActionElement;
+		}
+
+		class DataResource extends AbstractDataElement {
+			
+		}
+
+		class IndexElement extends DataResource {
+			reference implementation[*] : ItemUnit;
+		}
+
+		class UniqueKey extends IndexElement {
+			
+		}
+
+		class Index extends IndexElement {
+			
+		}
+
+		abstract class AbstractDataRelationship extends KDMRelationship {
+			
+		}
+
+		class KeyRelation extends AbstractDataRelationship {
+			reference to : UniqueKey;
+			reference from : ReferenceKey;
+		}
+
+		class ReferenceKey extends IndexElement {
+			
+		}
+
+		class DataContainer extends DataResource {
+			reference dataElement[*] container : DataResource;
+		}
+
+		class Catalog extends DataContainer {
+			
+		}
+
+		class RelationalSchema extends DataContainer {
+			reference codeElement[*] container : CodeItem;
+		}
+
+		class ColumnSet extends DataContainer {
+			reference itemUnit[*] ordered container : ItemUnit;
+		}
+
+		class RelationalTable extends ColumnSet {
+			
+		}
+
+		class RelationalView extends ColumnSet {
+			
+		}
+
+		class RecordFile extends ColumnSet {
+			
+		}
+
+		class DataEvent extends DataResource {
+			attribute kind[0-1] : String;
+		}
+
+		class XMLSchema extends AbstractDataElement {
+			reference contentElement[*] container : AbstractContentElement;
+		}
+
+		abstract class AbstractContentElement extends AbstractDataElement {
+			
+		}
+
+		class ComplexContentType extends AbstractContentElement {
+			reference contentElement[*] ordered container : AbstractContentElement;
+		}
+
+		class AllContent extends ComplexContentType {
+			
+		}
+
+		class SeqContent extends ComplexContentType {
+			
+		}
+
+		class ChoiceContent extends ComplexContentType {
+			
+		}
+
+		class ContentItem extends AbstractContentElement {
+			reference type[0-1] : ComplexContentType;
+			reference contentElement[*] container : AbstractContentElement;
+		}
+
+		class GroupContent extends ContentItem {
+			
+		}
+
+		class ContentRestriction extends AbstractContentElement {
+			attribute kind[0-1] : String;
+			attribute value[0-1] : String;
+		}
+
+		class SimpleContentType extends ComplexContentType {
+			reference type[*] : ComplexContentType;
+			attribute kind[0-1] : String;
+		}
+
+		class ExtendedDataElement extends AbstractDataElement {
+			
+		}
+
+		class DataRelationship extends AbstractDataRelationship {
+			reference to : KDMEntity;
+			reference from : AbstractDataElement;
+		}
+
+		class MixedContent extends ComplexContentType {
+			
+		}
+
+		class ContentReference extends ContentItem {
+			
+		}
+
+		class DataAction extends AbstractDataElement {
+			attribute kind[0-1] : String;
+			reference implementation[*] : ActionElement;
+			reference dataElement[*] container : DataEvent;
+		}
+
+		class ReadsColumnSet extends AbstractActionRelationship {
+			reference to : ColumnSet;
+			reference from : ActionElement;
+		}
+
+		class ContentAttribute extends ContentItem {
+			
+		}
+
+		class TypedBy extends AbstractDataRelationship {
+			reference to : ComplexContentType;
+			reference from : ContentItem;
+		}
+
+		class ReferenceTo extends AbstractDataRelationship {
+			reference to : ContentItem;
+			reference from : ContentItem;
+		}
+
+		class RestrictionOf extends AbstractDataRelationship {
+			reference to : ComplexContentType;
+			reference from : ComplexContentType;
+		}
+
+		class ExtensionTo extends AbstractDataRelationship {
+			reference to : ComplexContentType;
+			reference from : ComplexContentType;
+		}
+
+		class DatatypeOf extends AbstractDataRelationship {
+			reference to : Datatype;
+			reference from : ComplexContentType;
+		}
+
+		class HasContent extends AbstractActionRelationship {
+			reference to : AbstractDataElement;
+			reference from : ActionElement;
+		}
+
+		class WritesColumnSet extends AbstractActionRelationship {
+			reference to : ColumnSet;
+			reference from : ActionElement;
+		}
+
+		class ProducesDataEvent extends AbstractActionRelationship {
+			reference to : DataEvent;
+			reference from : ActionElement;
+		}
+
+		class DataSegment extends ColumnSet {
+			
+		}
+
+		class ContentElement extends ContentItem {
+			
+		}
+
+		class ManagesData extends AbstractActionRelationship {
+			reference to : AbstractDataElement;
+			reference from : ActionElement;
+		}
+	}
+
+	package event {
+
+		class EventModel extends KDMModel {
+			reference eventElement[*] container : AbstractEventElement;
+		}
+
+		abstract class AbstractEventElement extends KDMEntity {
+			reference source[*] container : SourceRef;
+			reference eventRelation[*] container : AbstractEventRelationship;
+			reference abstraction[*] ordered container : ActionElement;
+			reference implementation[*] : AbstractCodeElement;
+		}
+
+		class Event extends AbstractEventElement {
+			attribute kind[0-1] : String;
+		}
+
+		abstract class AbstractEventRelationship extends KDMRelationship {
+			
+		}
+
+		class EventRelationship extends AbstractEventRelationship {
+			reference to : KDMEntity;
+			reference from : AbstractEventElement;
+		}
+
+		class EventResource extends AbstractEventElement {
+			reference eventElement[*] container : AbstractEventElement;
+		}
+
+		class State extends EventResource {
+			
+		}
+
+		class Transition extends EventResource {
+			
+		}
+
+		class OnEntry extends Transition {
+			
+		}
+
+		class OnExit extends Transition {
+			
+		}
+
+		class EventAction extends AbstractEventElement {
+			attribute kind[0-1] : String;
+			reference eventElement[*] container : Event;
+		}
+
+		class ReadsState extends AbstractActionRelationship {
+			reference to : State;
+			reference from : ActionElement;
+		}
+
+		class ProducesEvent extends AbstractActionRelationship {
+			reference to : Event;
+			reference from : ActionElement;
+		}
+
+		class ConsumesEvent extends AbstractEventRelationship {
+			reference to : Event;
+			reference from : Transition;
+		}
+
+		class NextState extends AbstractEventRelationship {
+			reference to : State;
+			reference from : Transition;
+		}
+
+		class InitialState extends State {
+			
+		}
+
+		class EventElement extends AbstractEventElement {
+			
+		}
+
+		class HasState extends AbstractActionRelationship {
+			reference to : AbstractEventElement;
+			reference from : ActionElement;
+		}
+	}
+
+	package source {
+
+		class SourceRef extends Element {
+			reference region[*] container : SourceRegion;
+			attribute language[0-1] : String;
+			attribute snippet[0-1] : String;
+		}
+
+		class SourceRegion extends Element {
+			reference file[0-1] : SourceFile;
+			attribute startLine[0-1] : Integer;
+			attribute startPosition[0-1] : Integer;
+			attribute endLine[0-1] : Integer;
+			attribute endPosition[0-1] : Integer;
+			attribute language[0-1] : String;
+			attribute path[0-1] : String;
+		}
+
+		class InventoryModel extends KDMModel {
+			reference inventoryElement[*] container : AbstractInventoryElement;
+		}
+
+		abstract class AbstractInventoryElement extends KDMEntity {
+			reference inventoryRelation[*] container : AbstractInventoryRelationship;
+		}
+
+		class InventoryItem extends AbstractInventoryElement {
+			attribute version[0-1] : String;
+			attribute path[0-1] : String;
+		}
+
+		class SourceFile extends InventoryItem {
+			attribute language[0-1] : String;
+			attribute encoding[0-1] : String;
+		}
+
+		class Image extends InventoryItem {
+			
+		}
+
+		class ResourceDescription extends InventoryItem {
+			
+		}
+
+		class Configuration extends InventoryItem {
+			
+		}
+
+		class InventoryContainer extends AbstractInventoryElement {
+			reference inventoryElement[*] container : AbstractInventoryElement;
+		}
+
+		class Directory extends InventoryContainer {
+			attribute path[0-1] : String;
+		}
+
+		class Project extends InventoryContainer {
+			
+		}
+
+		abstract class AbstractInventoryRelationship extends KDMRelationship {
+			
+		}
+
+		class BinaryFile extends InventoryItem {
+			
+		}
+
+		class ExecutableFile extends InventoryItem {
+			
+		}
+
+		class DependsOn extends AbstractInventoryRelationship {
+			reference to : AbstractInventoryElement;
+			reference from : AbstractInventoryElement;
+		}
+
+		class InventoryElement extends AbstractInventoryElement {
+			
+		}
+
+		class InventoryRelationship extends AbstractInventoryRelationship {
+			reference to : KDMEntity;
+			reference from : AbstractInventoryElement;
+		}
+	}
+
+	package platform {
+
+		abstract class AbstractPlatformElement extends KDMEntity {
+			reference source[*] container : SourceRef;
+			reference relation[*] container : AbstractPlatformRelationship;
+			reference abstraction[*] ordered container : ActionElement;
+			reference implementation[*] : AbstractCodeElement;
+		}
+
+		class PlatformModel extends KDMModel {
+			reference platformElement[*] container : AbstractPlatformElement;
+		}
+
+		abstract class AbstractPlatformRelationship extends KDMRelationship {
+			
+		}
+
+		class Requires extends AbstractPlatformRelationship {
+			reference to : AbstractPlatformElement;
+			reference from : DeployedComponent;
+		}
+
+		class ResourceType extends AbstractPlatformElement {
+			reference platformElement[*] container : AbstractPlatformElement;
+		}
+
+		class NamingResource extends ResourceType {
+			
+		}
+
+		class MarshalledResource extends ResourceType {
+			
+		}
+
+		class MessagingResource extends ResourceType {
+			
+		}
+
+		class FileResource extends ResourceType {
+			
+		}
+
+		class ExecutionResource extends ResourceType {
+			
+		}
+
+		class PlatformAction extends AbstractPlatformElement {
+			attribute kind[0-1] : String;
+			reference platformElement[*] container : PlatformEvent;
+		}
+
+		class ExternalActor extends PlatformAction {
+			
+		}
+
+		class DataManager extends ResourceType {
+			
+		}
+
+		class BindsTo extends AbstractPlatformRelationship {
+			reference to : ResourceType;
+			reference from : ResourceType;
+		}
+
+		class PlatformElement extends AbstractPlatformElement {
+			
+		}
+
+		class PlatformRelationship extends AbstractPlatformRelationship {
+			reference to : KDMEntity;
+			reference from : AbstractPlatformElement;
+		}
+
+		class PlatformEvent extends AbstractPlatformElement {
+			attribute kind[0-1] : String;
+		}
+
+		class LockResource extends ResourceType {
+			
+		}
+
+		class DeployedSoftwareSystem extends AbstractPlatformElement {
+			reference groupedComponent[*] : DeployedComponent;
+		}
+
+		class Machine extends AbstractPlatformElement {
+			reference deployedComponent[*] container : DeployedComponent;
+			reference deployedResource[*] container : DeployedResource;
+		}
+
+		class DeployedComponent extends AbstractPlatformElement {
+			reference groupedCode[*] : Module;
+		}
+
+		class DeployedResource extends AbstractPlatformElement {
+			reference platformElement[*] container : ResourceType;
+		}
+
+		class Loads extends AbstractPlatformRelationship {
+			reference to : DeployedComponent;
+			reference from : ActionElement;
+		}
+
+		class Spawns extends AbstractPlatformRelationship {
+			reference to : RuntimeResource;
+			reference from : ActionElement;
+		}
+
+		class RuntimeResource extends ResourceType {
+			
+		}
+
+		class Thread extends RuntimeResource {
+			
+		}
+
+		class Process extends RuntimeResource {
+			
+		}
+
+		class ReadsResource extends AbstractActionRelationship {
+			reference to : ResourceType;
+			reference from : ActionElement;
+		}
+
+		class WritesResource extends AbstractActionRelationship {
+			reference to : ResourceType;
+			reference from : ActionElement;
+		}
+
+		class ManagesResource extends AbstractActionRelationship {
+			reference to : ResourceType;
+			reference from : ActionElement;
+		}
+
+		class DefinedBy extends AbstractActionRelationship {
+			reference to : CodeItem;
+			reference from : ActionElement;
+		}
+
+		class StreamResource extends ResourceType {
+			
+		}
+	}
+
+	package structure {
+
+		abstract class AbstractStructureElement extends KDMEntity {
+			reference aggregated[*] container : AggregatedRelationship;
+			reference implementation[*] : KDMEntity;
+			reference structureElement[*] container : AbstractStructureElement;
+			reference structureRelationship[*] container : AbstractStructureRelationship;
+		}
+
+		class Subsystem extends AbstractStructureElement {
+			
+		}
+
+		class Layer extends AbstractStructureElement {
+			
+		}
+
+		class StructureModel extends KDMModel {
+			reference structureElement[*] container : AbstractStructureElement;
+		}
+
+		class Component extends AbstractStructureElement {
+			
+		}
+
+		class SoftwareSystem extends AbstractStructureElement {
+			
+		}
+
+		abstract class AbstractStructureRelationship extends KDMRelationship {
+			
+		}
+
+		class StructureRelationship extends AbstractStructureRelationship {
+			reference to : KDMEntity;
+			reference from : AbstractStructureElement;
+		}
+
+		class ArchitectureView extends AbstractStructureElement {
+			
+		}
+
+		class StructureElement extends AbstractStructureElement {
+			
+		}
+	}
+
+	package kdm {
+
+		abstract class KDMFramework extends ModelElement {
+			reference audit[*] container : Audit;
+			reference extensionFamily[*] container : ExtensionFamily;
+			attribute name[0-1] : String;
+		}
+
+		abstract class KDMModel extends KDMFramework {
+			
+		}
+
+		class Audit extends Element {
+			attribute description[0-1] : String;
+			attribute author[0-1] : String;
+			attribute date[0-1] : String;
+		}
+
+		class Segment extends KDMFramework {
+			reference segment[*] container : Segment;
+			reference model[*] container : KDMModel;
+		}
+
+		class Attribute extends Element {
+			attribute tag[0-1] : String;
+			attribute value[0-1] : String;
+		}
+
+		class Annotation extends Element {
+			attribute text[0-1] : String;
+		}
+
+		class TagDefinition extends Element {
+			attribute tag[0-1] : String;
+			attribute type[0-1] : String;
+		}
+
+		abstract class ExtendedValue extends Element {
+			reference tag : TagDefinition;
+		}
+
+		class Stereotype extends Element {
+			reference tag[*] container : TagDefinition;
+			attribute name[0-1] : String;
+			attribute type[0-1] : String;
+		}
+
+		class ExtensionFamily extends Element {
+			reference stereotype[*] container : Stereotype;
+			attribute name[0-1] : String;
+		}
+
+		class TaggedRef extends ExtendedValue {
+			reference "reference" : ModelElement;
+		}
+
+		class TaggedValue extends ExtendedValue {
+			attribute value[0-1] : String;
+		}
+	}
+
+	package ui {
+
+		abstract class AbstractUIElement extends KDMEntity {
+			reference source[*] container : SourceRef;
+			reference UIRelation[*] container : AbstractUIRelationship;
+			reference implementation[*] : AbstractCodeElement;
+			reference abstraction[*] ordered container : ActionElement;
+		}
+
+		class UIResource extends AbstractUIElement {
+			reference UIElement[*] container : AbstractUIElement;
+		}
+
+		class UIDisplay extends UIResource {
+			
+		}
+
+		class Screen extends UIDisplay {
+			
+		}
+
+		class Report extends UIDisplay {
+			
+		}
+
+		class UIModel extends KDMModel {
+			reference UIElement[*] container : AbstractUIElement;
+		}
+
+		abstract class AbstractUIRelationship extends KDMRelationship {
+			
+		}
+
+		class UILayout extends AbstractUIRelationship {
+			reference to : UIResource;
+			reference from : UIResource;
+		}
+
+		class UIField extends UIResource {
+			
+		}
+
+		class DisplaysImage extends AbstractUIRelationship {
+			reference to : Image;
+			reference from : ActionElement;
+		}
+
+		class Displays extends AbstractUIRelationship {
+			reference to : UIResource;
+			reference from : ActionElement;
+		}
+
+		class UIFlow extends AbstractUIRelationship {
+			reference to : AbstractUIElement;
+			reference from : AbstractUIElement;
+		}
+
+		class UIElement extends AbstractUIElement {
+			
+		}
+
+		class UIRelationship extends AbstractUIRelationship {
+			reference to : KDMEntity;
+			reference from : AbstractUIElement;
+		}
+
+		class UIAction extends AbstractUIElement {
+			attribute kind[0-1] : String;
+			reference UIElement[*] container : UIEvent;
+		}
+
+		class UIEvent extends AbstractUIElement {
+			attribute kind[0-1] : String;
+		}
+
+		class ReadsUI extends AbstractActionRelationship {
+			reference to : UIResource;
+			reference from : ActionElement;
+		}
+
+		class WritesUI extends AbstractActionRelationship {
+			reference to : UIResource;
+			reference from : ActionElement;
+		}
+
+		class ManagesUI extends AbstractActionRelationship {
+			reference to : UIResource;
+			reference from : ActionElement;
+		}
+	}
+}

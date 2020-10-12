@@ -1,0 +1,88 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'COBOL'>
+    <Enumeration name = 'COBOLUsageValue'>
+      <EnumLiteral name = 'cuv_binary'/>
+      <EnumLiteral name = 'cuv_dbcs'/>
+      <EnumLiteral name = 'cuv_double'/>
+      <EnumLiteral name = 'cuv_display'/>
+      <EnumLiteral name = 'cuv_float'/>
+      <EnumLiteral name = 'cuv_index'/>
+      <EnumLiteral name = 'cuv_objectReference'/>
+      <EnumLiteral name = 'cuv_packedDecimal'/>
+      <EnumLiteral name = 'cuv_pointer'/>
+      <EnumLiteral name = 'cuv_procedurePointer'/>
+    </Enumeration>
+    <Enumeration name = 'COBOLInitialValueKind'>
+      <EnumLiteral name = 'civk_string_value'/>
+      <EnumLiteral name = 'civk_low_value'/>
+      <EnumLiteral name = 'civk_high_value'/>
+      <EnumLiteral name = 'civk_zero_value'/>
+      <EnumLiteral name = 'civk_quotes'/>
+      <EnumLiteral name = 'civk_null'/>
+      <EnumLiteral name = 'civk_all_literal'/>
+    </Enumeration>
+    <Class name = 'COBOLElement' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'level' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'refined' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'sharedType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'COBOL::COBOLClassifier' opposite = 'COBOL::COBOLClassifier::typedElements'/>
+      <Reference name = 'group' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'COBOL::COBOLComposedType' opposite = 'COBOL::COBOLComposedType::elements'/>
+      <Reference name = 'initial' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'COBOL::COBOLElementInitialValue' opposite = ''/>
+      <Reference name = 'contains' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'COBOL::COBOL88Element' opposite = ''/>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'COBOL::COBOLSourceText' opposite = ''/>
+      <Reference name = 'array' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'COBOL::COBOLFixedLengthArray' opposite = ''/>
+    </Class>
+    <Class name = 'COBOLClassifier' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'typeded' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'typedElements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'COBOL::COBOLElement' opposite = 'COBOL::COBOLElement::sharedType'/>
+    </Class>
+    <Class name = 'COBOLSimpleType' isAbstract = 'false' supertypes = 'COBOL::COBOLClassifier'>
+      <Attribute name = 'usageValue' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'COBOL::COBOLUsageValue'/>
+      <Attribute name = 'pictureString' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'usage' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'COBOLComposedType' isAbstract = 'false' supertypes = 'COBOL::COBOLClassifier'>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'COBOL::COBOLElement' opposite = 'COBOL::COBOLElement::group'/>
+    </Class>
+    <Class name = 'COBOLElementInitialValue' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'initVal' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'valueKind' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'COBOL::COBOLInitialValueKind'/>
+    </Class>
+    <Class name = 'COBOL88Element' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'has' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'COBOL::COBOL88ElementValue' opposite = ''/>
+    </Class>
+    <Class name = 'COBOL88ElementValue' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'lowerLimit' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'upperLimit' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'range' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'COBOLRedefiningElement' isAbstract = 'false' supertypes = 'COBOL::COBOLElement'>
+      <Reference name = 'redefines' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'COBOL::COBOLElement' opposite = ''/>
+    </Class>
+    <Class name = 'COBOL66Element' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'end' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'COBOL::COBOLElement' opposite = ''/>
+      <Reference name = 'start' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'COBOL::COBOLElement' opposite = ''/>
+    </Class>
+    <Class name = 'COBOLSourceText' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'source' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'fileName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'COBOLFixedLengthArray' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'maxUpper' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'COBOLVariableLengthArray' isAbstract = 'false' supertypes = 'COBOL::COBOLFixedLengthArray'>
+      <Attribute name = 'minUpper' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'dependingOn' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'COBOL::COBOLElement' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Double'/>
+  </Package>
+</Metamodel>

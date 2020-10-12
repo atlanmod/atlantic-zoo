@@ -1,0 +1,91 @@
+package Metamodel;
+
+package Promenade {
+  class Strong extends DynPrecedence, BasPrecedence {
+  }
+
+  class Start extends DynPrecedence, BasPrecedence {
+  }
+
+  class End extends DynPrecedence, BasPrecedence {
+  }
+
+  class FeedBack extends DynPrecedence, BasPrecedence {
+  }
+
+  class Weak extends DynPrecedence, DerPrecedence {
+  }
+
+  class Grouping extends DynPrecedence, DerPrecedence {
+  }
+
+  class Precedence {
+    !ordered ref DerPrecedence[*]#precs deprecs;
+    !ordered ref ParBinding[*]#precs parbind;
+  }
+
+  class DynPrecedence extends Precedence {
+  }
+
+  class DerPrecedence extends Precedence {
+    !ordered ref Precedence[+]#deprecs precs;
+    !ordered ref MetaTaskOccurence[*]#dprecs auxTasks;
+  }
+
+  class BasPrecedence extends Precedence {
+  }
+
+  class MetaTaskOccurence extends ModelElement {
+    !ordered ref DerPrecedence[*]#auxTasks dprecs;
+    !ordered ref MetaTask[*]#occurs taskCl;
+  }
+
+  class ParBinding {
+    !unique !ordered attr Boolean[1] inclusion;
+    !ordered ref Precedence[+]#parbind precs;
+    !ordered ref ParameterPrec[1]#parbindsTar targetPar;
+    !ordered ref ParameterPrec[1]#parbindsSour sourcePar;
+  }
+
+  class ParameterPrec extends ParameterUML {
+    !ordered ref ParBinding[+]#targetPar parbindsTar;
+    !ordered ref ParBinding[+]#sourcePar parbindsSour;
+    !ordered ref ParameterPrec[+]#orParams dstParams;
+    !ordered ref ParameterPrec[+]#dstParams orParams;
+  }
+
+  class ModelElement {
+    !ordered ref DependancyUML[1]#suppier dependencyUMLsupp;
+    !ordered ref DependancyUML[1]#client dependencyUMLcli;
+  }
+
+  class DependancyUML {
+    !ordered ref ModelElement[+]#dependencyUMLsupp suppier;
+    !ordered ref ModelElement[+]#dependencyUMLcli client;
+  }
+
+  class MetaTask extends ModelElement {
+    !ordered ref ParameterUML[+]#task params;
+    !ordered ref MetaTaskOccurence[*]#taskCl occurs;
+  }
+
+  class ParameterUML {
+    !ordered ref MetaTask[1]#params task;
+    !ordered ref MetaDocument[+]#params doc;
+  }
+
+  class MetaDocument {
+    !ordered ref ParameterUML[+]#doc params;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+}
+

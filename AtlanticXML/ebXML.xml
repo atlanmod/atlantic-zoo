@@ -1,0 +1,121 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'ebXML'>
+    <Class name = 'MultyPartyCollaboration' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'partners' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ebXML::BusinessPartnerRole' opposite = 'ebXML::BusinessPartnerRole::collaboration'/>
+    </Class>
+    <Class name = 'BusinessPartnerRole' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'collaboration' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::MultyPartyCollaboration' opposite = 'ebXML::MultyPartyCollaboration::partners'/>
+      <Reference name = 'transition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ebXML::Transaction' opposite = ''/>
+      <Reference name = 'performers' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ebXML::Performs' opposite = 'ebXML::Performs::performedBy'/>
+    </Class>
+    <Class name = 'Performs' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'performedBy' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::BusinessPartnerRole' opposite = 'ebXML::BusinessPartnerRole::performers'/>
+      <Reference name = 'collaboration' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::BinaryCollaboration' opposite = 'ebXML::BinaryCollaboration::roles'/>
+      <Reference name = 'role' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::AuthorizedRole' opposite = 'ebXML::AuthorizedRole::performers'/>
+    </Class>
+    <Class name = 'AuthorizedRole' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'isInitiator' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'performers' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::Performs' opposite = 'ebXML::Performs::role'/>
+    </Class>
+    <Class name = 'Transaction' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'onInitiation' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'conditionGuard' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'conditionExpression' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::BusinessState' opposite = ''/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::BusinessState' opposite = ''/>
+    </Class>
+    <Class name = 'BinaryCollaboration' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'pattern' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'timeToPerform' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'preCondition' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'postCondition' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'beginsWhen' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'endsWhen' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'roles' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ebXML::Performs' opposite = 'ebXML::Performs::collaboration'/>
+      <Reference name = 'transitions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ebXML::Transaction' opposite = ''/>
+      <Reference name = 'states' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ebXML::BusinessState' opposite = 'ebXML::BusinessState::collaboration'/>
+    </Class>
+    <Class name = 'BusinessState' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'collaboration' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::BinaryCollaboration' opposite = 'ebXML::BinaryCollaboration::states'/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::AuthorizedRole' opposite = ''/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::AuthorizedRole' opposite = ''/>
+    </Class>
+    <Class name = 'Start' isAbstract = 'false' supertypes = 'ebXML::BusinessState'/>
+    <Class name = 'Fork' isAbstract = 'false' supertypes = 'ebXML::BusinessState'>
+      <Attribute name = 'waitForAll' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Join' isAbstract = 'false' supertypes = 'ebXML::BusinessState'/>
+    <Class name = 'CompletionState' isAbstract = 'false' supertypes = 'ebXML::BusinessState'>
+      <Attribute name = 'guardCondition' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Failure' isAbstract = 'false' supertypes = 'ebXML::CompletionState'/>
+    <Class name = 'Success' isAbstract = 'false' supertypes = 'ebXML::CompletionState'/>
+    <Class name = 'BusinessActivity' isAbstract = 'true' supertypes = 'ebXML::BusinessState'/>
+    <Class name = 'BusinessTransactionActivity' isAbstract = 'false' supertypes = 'ebXML::BusinessActivity'>
+      <Attribute name = 'timeToPerform' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'isConcurrent' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isLegallyBinding' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'use' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::BusinessTransaction' opposite = ''/>
+    </Class>
+    <Class name = 'CollaborationActivity' isAbstract = 'false' supertypes = 'ebXML::BusinessActivity'>
+      <Reference name = 'use' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::BinaryCollaboration' opposite = ''/>
+    </Class>
+    <Class name = 'BusinessTransaction' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'pattern' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'isGuaranteedDeliveryRequired' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'preCondition' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'postCondition' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'beginsWhen' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'endsWhen' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'requester' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ebXML::RequestingBusinessActivity' opposite = 'ebXML::RequestingBusinessActivity::transaction'/>
+      <Reference name = 'responder' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ebXML::RespondingBusinessActivity' opposite = 'ebXML::RespondingBusinessActivity::transaction'/>
+    </Class>
+    <Class name = 'BusinessAction' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'isIntelligiblecheckRequired' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isAuthorizationRequired' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'timeToAcknowledgeReceipt' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'isNonRepudiationRequired' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isNonRepudiationOfRecipientRequired' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'RequestingBusinessActivity' isAbstract = 'false' supertypes = 'ebXML::BusinessAction'>
+      <Attribute name = 'timeToAcknowledgeAcceptance' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'transaction' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ebXML::BusinessTransaction' opposite = 'ebXML::BusinessTransaction::requester'/>
+      <Reference name = 'documentEnvelope' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::DocumentEnvelope' opposite = 'ebXML::DocumentEnvelope::requesting'/>
+    </Class>
+    <Class name = 'RespondingBusinessActivity' isAbstract = 'false' supertypes = 'ebXML::BusinessAction'>
+      <Reference name = 'transaction' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ebXML::BusinessTransaction' opposite = 'ebXML::BusinessTransaction::responder'/>
+      <Reference name = 'documentEnvelope' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::DocumentEnvelope' opposite = 'ebXML::DocumentEnvelope::responding'/>
+    </Class>
+    <Class name = 'DocumentSecurity' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'isConfidential' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isTamperProof' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isAuthenticated' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'DocumentEnvelope' isAbstract = 'false' supertypes = 'ebXML::DocumentSecurity'>
+      <Attribute name = 'isPositiveResponse' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'requesting' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::RequestingBusinessActivity' opposite = 'ebXML::RequestingBusinessActivity::documentEnvelope'/>
+      <Reference name = 'responding' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::RespondingBusinessActivity' opposite = 'ebXML::RespondingBusinessActivity::documentEnvelope'/>
+      <Reference name = 'attachements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ebXML::Attachment' opposite = 'ebXML::Attachment::envelope'/>
+      <Reference name = 'document' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::BusinessDocument' opposite = 'ebXML::BusinessDocument::envelopes'/>
+    </Class>
+    <Class name = 'Attachment' isAbstract = 'false' supertypes = 'ebXML::DocumentSecurity'>
+      <Attribute name = 'mimeType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'specification' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'version' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'envelope' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::DocumentEnvelope' opposite = 'ebXML::DocumentEnvelope::attachements'/>
+      <Reference name = 'document' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::BusinessDocument' opposite = 'ebXML::BusinessDocument::attachments'/>
+    </Class>
+    <Class name = 'BusinessDocument' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'specificationLocation' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'specificationElement' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'conditionExpression' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'envelopes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::DocumentEnvelope' opposite = 'ebXML::DocumentEnvelope::document'/>
+      <Reference name = 'attachments' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ebXML::Attachment' opposite = 'ebXML::Attachment::document'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

@@ -1,0 +1,230 @@
+-- @name		XASM
+-- @version		1.15
+-- @domains		
+-- @authors		Davide Di Ruscio (diruscio@di.univaq.it)
+-- @date		2006/05/1
+-- @description	This is a metamodel for XASM (eXtensible Abstract State Machine) an Abstract State Machines (ASMs) based language
+-- @see			http://www.xasm.org
+-- @see			http://www.eecs.umich.edu/gasm/
+
+package ASM {
+
+	abstract class LocatedElement {
+		attribute location : String;
+	}
+	
+	abstract class XAsmFile extends LocatedElement {}
+	
+	class XAsmSpec extends XAsmFile {
+		reference Asm[1-*] container :  Asm;
+	}
+
+--	class Declarations extends XAsmFile {
+--	 	reference declarations[*] ordered container : Declaration;	
+
+--@begin Asm
+	class Asm  extends LocatedElement {
+		reference signature container: Signature;-- oppositeOf name;
+		attribute returnType[0-1]  : String;	 
+	 	reference metaInformation container: MetaInformation;
+		reference body container : Body;
+	 }
+		  
+	 class Signature extends LocatedElement {
+		attribute isMain : Boolean;
+		attribute name : String;
+--	 	reference name : Asm oppositeOf signature;
+	 	reference arguments[0-*] container : Argument;
+	 }
+	 
+	 class Argument extends VariableDecl {
+	 	attribute type : String;
+	 }
+	 
+	 class Body extends XAsmFile {
+	 	reference declarations[*] ordered container : Declaration;
+	 	reference initialization[0-1] container : Initialization;
+	 	reference rules[0-*] container : Rule;
+	 }
+	 
+	class MetaInformation extends LocatedElement {
+		reference usedAsIn[0-*] container : Signature;
+		attribute usedAs : AsmType;
+		reference accessUpdateFunctions[0-*] container : AccessUpdateFunction;
+	}
+	
+	class AccessUpdateFunction extends LocatedElement {
+		attribute type : AccessUpdateType;
+		reference functions[1-*] container : Function;
+	}
+	
+	abstract class Declaration extends LocatedElement {}
+	
+	class Function extends Declaration, ElementDecl {
+	--	attribute isStatic : Boolean;
+		reference parameters[0-*] container : Parameter;
+		attribute returnType : String;
+		reference initTerm[0-1] container : Term;
+		attribute isExternal : Boolean;
+	}
+	
+	class Parameter extends LocatedElement {
+		attribute name : String;
+		attribute type : String;
+	}
+
+	class Universe extends Declaration {
+		attribute name : String;
+		attribute contents[0-*]: String;
+		reference superUniverses[*] : Universe;
+	}
+	
+--	class Declaration {
+--		reference universes[0-*] container : Universe;
+--		reference functions[0-*] container: Function;
+--		reference subAsms[0-*] container : Signature;
+--		reference externalFunctions[0-*] container : Signature;
+--	}
+	
+	class Initialization extends LocatedElement {
+		reference rules[1-*] container : Rule;
+	}
+--@end Asm	
+	
+	
+--@begin Terms
+	abstract class Term extends LocatedElement {
+	}
+	
+--	class VariableTerm extends Term {
+--		attribute name : String;
+--		reference declaration : VariableDecl;
+--	}
+	
+	abstract class Constant extends Term {
+	}
+
+	-- can be VariableTerm is terms->size() = 0
+	class FunctionOrVariableTerm extends Term {
+		reference declaration : ElementDecl;
+--		attribute name : String;
+		reference terms[0-*] container : Term;
+	}
+	
+	class OperatorTerm extends Term {
+		attribute opName : String;
+		reference leftExp container : Term;
+		reference rightExp[0-1] container : Term;
+	}
+
+-- @begin Constants
+	class BooleanConstant extends Constant {
+		attribute value : Boolean;
+	}
+
+	class IntegerConstant extends Constant {
+		attribute value : Integer;
+	}
+
+	class StringConstant extends Constant {
+		attribute value : String;
+	}
+	
+	class UndefConstant extends Constant {}
+-- @end Constants
+--@end Terms
+
+	 
+-- @begin  Rule 
+	abstract class Rule extends LocatedElement {
+		attribute inSequence : Boolean;
+	}
+	
+	class SkipRule extends Rule {
+	}
+	
+	class AsmInvocation extends Rule {
+		attribute asmName : String;
+		reference arguments[*] container : Term;
+	}
+	
+	class UpdateRule extends Rule {
+		reference function container : FunctionOrVariableTerm;
+		reference updateTerm container : Term;
+	}
+	
+	class ChooseRule extends Rule {
+		reference chooseId container : VariableDecl;
+		reference inSet[0-1] container : Universe;
+		reference guard[0-1] container : Term;
+		reference ifChoosenRules[1-*] container : Rule;
+		reference ifNotChoosenRule[0-1] container: Rule;
+	}
+	
+	class DoForallRule extends Rule {
+		reference id container : VariableDecl;
+		reference inSet[0-1] container : Universe;
+		reference condition[0-1] container : Term;
+		reference doRule[1-*] container : Rule;
+	}
+	
+	class ConditionalRule extends Rule {
+		reference condition container : Term;
+		reference thenRule[1-*] container :  Rule ;
+		reference elseRule[0-1] container : Rule;
+		reference elseIfRule[0-1] container : ElseIf ;
+	}
+	
+	class ElseIf  extends LocatedElement {
+		reference condition container : Term;
+		reference thenRule[1-*] container :  Rule ;
+		reference elseRule[0-1] container : Rule;
+		reference elseIfRule[0-1] container : ElseIf ;
+	}
+	
+	class ExtendRule extends Rule {
+		reference extensions[1-*] container : Extension;
+		reference rules[1-*] container : Rule;		
+	}
+	
+	abstract class ElementDecl extends LocatedElement {
+		attribute name : String;		
+	}
+	
+	class VariableDecl extends ElementDecl {
+--		reference extension : Extension oppositeOf elements;	
+	}
+	
+	class Extension extends LocatedElement {
+		reference elements[1-*] container : VariableDecl;-- oppositeOf extension;
+		reference universe container : Universe;
+	}
+	
+	class ReturnRule extends Rule {
+		reference term container : Term;
+	}
+-- @end  Rule 
+	
+}
+
+
+package Enum {
+
+	enumeration AccessUpdateType {
+		literal access;
+		literal update;
+	}
+	
+	
+	enumeration AsmType {
+		literal function;
+		literal subasm;
+	}
+
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+	datatype Boolean;
+}

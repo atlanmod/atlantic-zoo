@@ -1,0 +1,88 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_Pascal"{
+labelloc=t
+color=black
+label=Pascal
+ node[shape=record];
+Program[label="{Program|name : String| }"]
+;
+ node[shape=record];
+Variable[label="{Variable|name : String| }"]
+ Variable->Program[arrowhead=diamond,arrowtail=none,headlabel="program",taillabel="variables[*]",group=Program,minlen=2,constraint=true,]
+ Variable->Procedure[arrowhead=diamond,arrowtail=none,headlabel="procedure",taillabel="variables[*]",group=Procedure,minlen=2,constraint=true,]
+ Variable->Type[arrowhead=none,arrowtail=none,headlabel="type",taillabel="variables[*]",group=Type,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Type[label="{Type|name : String| }"]
+ Type->Program[arrowhead=diamond,arrowtail=none,headlabel="program",taillabel="types[*]",group=Program,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parameter[label="{Parameter| | }"]
+ Parameter->Procedure[arrowhead=diamond,arrowtail=none,headlabel="procedure_parameter",taillabel="parameters[*]",group=Procedure,minlen=2,constraint=true,]
+ Parameter->Variable[arrowhead=onormal,group=Variable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Instruction[label="{Instruction| | }"]
+ Instruction->Block[arrowhead=diamond,arrowtail=none,headlabel="block",taillabel="instructions[*]{ordered}",group=Block,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Calculation[label="{Calculation| | }"]
+ Calculation->Instruction[arrowhead=onormal,group=Instruction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Control[label="{Control| | }"]
+ Control->Instruction[arrowhead=onormal,group=Instruction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Assignment[label="{Assignment| | }"]
+ Assignment->Instruction[arrowhead=onormal,group=Instruction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Block[label="{Block| | }"]
+ Block->Procedure[arrowhead=diamond,arrowtail=none,headlabel="procedure",taillabel="block_procedure",group=Procedure,minlen=2,constraint=true,]
+ Block->Loop[arrowhead=diamond,arrowtail=none,headlabel="loop",taillabel="block_loop",group=Loop,minlen=2,constraint=true,]
+ Block->Conditional[arrowhead=diamond,arrowtail=none,headlabel="conditional",taillabel="blocks[12]{ordered}",group=Conditional,minlen=2,constraint=true,]
+ Block->Instruction[arrowhead=onormal,group=Instruction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Conditional[label="{Conditional| | }"]
+ Conditional->Control[arrowhead=onormal,group=Control,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Loop[label="{Loop| | }"]
+ Loop->Control[arrowhead=onormal,group=Control,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Procedure[label="{Procedure|name : String| }"]
+ Procedure->Program[arrowhead=diamond,arrowtail=none,headlabel="program",taillabel="procedures[*]",group=Program,minlen=2,constraint=true,]
+ Procedure->Control[arrowhead=onormal,group=Control,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Function[label="{Function| | }"]
+ Function->Type[arrowhead=vee,arrowtail=none,headlabel="returnType",group=Type,minlen=2,constraint=false,]
+ Function->Procedure[arrowhead=onormal,group=Procedure,minlen=2,constraint=true,]
+;
+ node[shape=record];
+For[label="{For| | }"]
+ For->Loop[arrowhead=onormal,group=Loop,minlen=2,constraint=true,]
+;
+ node[shape=record];
+While[label="{While| | }"]
+ While->Loop[arrowhead=onormal,group=Loop,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Repeat[label="{Repeat| | }"]
+ Repeat->Loop[arrowhead=onormal,group=Loop,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

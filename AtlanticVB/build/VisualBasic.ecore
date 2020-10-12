@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore">
+  <ecore:EPackage name="VisualBasic">
+    <eClassifiers xsi:type="ecore:EClass" name="LocatedElement" abstract="true">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="location" ordered="false" unique="false" lowerBound="1" eType="/1/String"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="commentsBefore" unique="false" upperBound="-1" eType="/1/String"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="commentsAfter" unique="false" upperBound="-1" eType="/1/String"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="NamedElement" abstract="true" eSuperTypes="/0/LocatedElement">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" ordered="false" unique="false" lowerBound="1" eType="/1/String"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="VBFile" eSuperTypes="/0/LocatedElement">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="namespaces" ordered="false" upperBound="-1" eType="/0/Namespace" containment="true" eOpposite="/0/Namespace/vbFile"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="datatypes" ordered="false" upperBound="-1" eType="/0/DataType" containment="true" eOpposite="/0/DataType/vbFile"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Namespace" eSuperTypes="/0/NamedElement">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="vbFile" ordered="false" lowerBound="1" eType="/0/VBFile" eOpposite="/0/VBFile/namespaces"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="classes" ordered="false" upperBound="-1" eType="/0/Class" containment="true" eOpposite="/0/Class/namespace"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="interfaces" ordered="false" upperBound="-1" eType="/0/Interface" containment="true" eOpposite="/0/Interface/namespace"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="enumerations" ordered="false" upperBound="-1" eType="/0/Enumeration" containment="true" eOpposite="/0/Enumeration/namespace"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Classifier" eSuperTypes="/0/NamedElement"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Class" eSuperTypes="/0/Classifier">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="isAbstract" ordered="false" unique="false" lowerBound="1" eType="/1/Boolean"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="namespace" ordered="false" lowerBound="1" eType="/0/Namespace" eOpposite="/0/Namespace/classes"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="superclass" ordered="false" eType="/0/Class"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="fields" ordered="false" upperBound="-1" eType="/0/Field" containment="true" eOpposite="/0/Field/owner"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="implements" ordered="false" upperBound="-1" eType="/0/Interface" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Field" eSuperTypes="/0/NamedElement">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="owner" ordered="false" lowerBound="1" eType="/0/Class" eOpposite="/0/Class/fields"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="isMultiple" ordered="false" unique="false" lowerBound="1" eType="/1/Boolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="type_name" ordered="false" unique="false" lowerBound="1" eType="/1/String"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Interface" eSuperTypes="/0/Classifier">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="namespace" ordered="false" lowerBound="1" eType="/0/Namespace" eOpposite="/0/Namespace/interfaces"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="superclasses" ordered="false" upperBound="-1" eType="/0/Interface"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="properties" ordered="false" upperBound="-1" eType="/0/Property" containment="true" eOpposite="/0/Property/owner"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Property" eSuperTypes="/0/NamedElement">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="owner" ordered="false" lowerBound="1" eType="/0/Interface" eOpposite="/0/Interface/properties"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="isMultiple" ordered="false" unique="false" lowerBound="1" eType="/1/Boolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="type_name" ordered="false" unique="false" lowerBound="1" eType="/1/String"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DataType" eSuperTypes="/0/Classifier">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="vbFile" ordered="false" lowerBound="1" eType="/0/VBFile" eOpposite="/0/VBFile/datatypes"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" ordered="false" unique="false" lowerBound="1" eType="/0/PrimitiveType"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="PrimitiveType">
+      <eLiterals name="Boolean" value="1"/>
+      <eLiterals name="Integer" value="2"/>
+      <eLiterals name="String" value="3"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Enumeration" eSuperTypes="/0/Classifier">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="namespace" ordered="false" lowerBound="1" eType="/0/Namespace" eOpposite="/0/Namespace/enumerations"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="literals" ordered="false" upperBound="-1" eType="/0/Literal" containment="true" eOpposite="/0/Literal/owner"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Literal" eSuperTypes="/0/NamedElement">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="owner" ordered="false" lowerBound="1" eType="/0/Enumeration" eOpposite="/0/Enumeration/literals"/>
+    </eClassifiers>
+  </ecore:EPackage>
+  <ecore:EPackage name="PrimitiveTypes">
+    <eClassifiers xsi:type="ecore:EDataType" name="Boolean"/>
+    <eClassifiers xsi:type="ecore:EDataType" name="Integer"/>
+    <eClassifiers xsi:type="ecore:EDataType" name="String"/>
+  </ecore:EPackage>
+</xmi:XMI>

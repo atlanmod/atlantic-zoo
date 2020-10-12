@@ -1,0 +1,47 @@
+-- @name		data representation
+-- @version		1.0
+-- @domains		Mining Mart
+-- @authors		SIMON Eric(simon.eric3<at>gmail.com)
+-- @date		2006/07/20
+-- @description	This metamodel is a simplified version of Mining Mart metamodel.
+-- @see			M4 - The Mining Mart MetaModel
+-- @see 		Authors: Anca Vaduva, Jörg-Uwe Kietz, Regina Zücker and Klaus R. Dittrich
+-- @see 		ftp://ftp.ifi.unizh.ch/pub/techreports/TR-2001/ifi-2001.02.pdf, page 7
+
+package SimplifiedMiningMart {
+
+-- @comment "ModelElement is the base for all modeling metaclass in the UML. All other modeling metaclass are either directly or indirectly specialized from ModelElement." 
+ class ModelElement {}
+ 
+ -- @comment "Classifier is a general element that describes behavioral and structural features; it appears in several specific forms; that means, the class Classifier may be specialized as Class, DataType, Interface, Component, aso."
+ class Classifier extends ModelElement {}
+ class StructuralFeature extends ModelElement {}
+ 
+ --@comment "A Class is a description of a set of objects that share the same attributes operations, methods, relationships, and semantics. Specializations in M4 of the UML class Class are ColumnSet and Concept"
+ class Class extends Classifier {
+ 	reference name : "String";
+ 	reference attributes[1-*] container : Attribute oppositeOf "class"; 
+ }
+
+ class DataType extends Classifier {
+ 	reference "attribute" : Attribute oppositeOf has;
+ } 
+ 
+ class Attribute extends StructuralFeature {
+ 	reference "class" : Class oppositeOf attributes;
+ 	reference has : DataType oppositeOf "attribute";
+ }
+ 
+ class Concept extends Class {}
+ class ColumnSet extends Class {}
+ 
+ class Column extends Attribute {}
+ class FeatureAttribute extends Attribute {}
+ class Value extends Attribute {}
+ class RoleRestriction extends Attribute {}
+ 
+ class "Integer" extends DataType {}
+ class "String" extends DataType {}
+ class DomainDataType extends DataType {}
+ -- .... the other Type
+}

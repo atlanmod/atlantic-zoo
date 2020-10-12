@@ -1,0 +1,80 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_SimulinkStateFlow"{
+labelloc=t
+color=black
+label=SimulinkStateFlow
+ node[shape=record];
+Simulink[label="{Simulink| | }"]
+;
+ node[shape=record];
+System[label="{System|name : String| }"]
+ System->Simulink[arrowhead=diamond,arrowtail=none,headlabel="simulink",taillabel="subSystem[*]",group=Simulink,minlen=2,constraint=true,]
+ System->System[arrowhead=vee,arrowtail=diamond,headlabel="subSystem[*]",group=System,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Connector[label="{Connector| | }"]
+;
+ node[shape=record];
+Line[label="{Line|name : String| }"]
+ Line->Block[arrowhead=diamond,arrowtail=none,headlabel="block",taillabel="lines[*]",group=Block,minlen=2,constraint=true,]
+ Line->System[arrowhead=none,arrowtail=none,headlabel="system",taillabel="lines",group=System,minlen=2,constraint=false,]
+;
+ node[shape=record];
+BranchPoint[label="{BranchPoint| | }"]
+ BranchPoint->Connector[arrowhead=onormal,group=Connector,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Port[label="{Port|units : Units| }"]
+ Port->Connector[arrowhead=onormal,group=Connector,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Block[label="{Block|description : String\nname : String\npriority : String\nnatagme : String\nblockType : String| }"]
+ Block->BlockRef[arrowhead=vee,arrowtail=diamond,headlabel="blockRefs[*]",group=BlockRef,minlen=2,constraint=true,]
+ Block->System[arrowhead=none,arrowtail=none,headlabel="system",taillabel="blocks",group=System,minlen=2,constraint=false,]
+;
+ node[shape=record];
+BlockRef[label="{BlockRef| | }"]
+;
+ node[shape=record];
+Primitive[label="{Primitive|deadLine : String\nperiod : String\nexecutionTime : String| }"]
+ Primitive->Block[arrowhead=onormal,group=Block,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OutPut[label="{OutPut|number : Integer| }"]
+ OutPut->Port[arrowhead=onormal,group=Port,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TriggerPort[label="{TriggerPort|triggerType : TriggerEnum| }"]
+ TriggerPort->Port[arrowhead=onormal,group=Port,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EnablePort[label="{EnablePort|statesWhenEnabling : EnableEnum| }"]
+ EnablePort->Port[arrowhead=onormal,group=Port,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Reference[label="{Reference|sourceBlock : String\nsourceType : String| }"]
+ Reference->Block[arrowhead=onormal,group=Block,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Annotation[label="{Annotation|text : String| }"]
+ Annotation->Block[arrowhead=diamond,arrowtail=none,headlabel="block",taillabel="annotations[*]",group=Block,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parameter[label="{Parameter|value : String| }"]
+ Parameter->Block[arrowhead=diamond,arrowtail=none,headlabel="block",taillabel="parameters[*]",group=Block,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

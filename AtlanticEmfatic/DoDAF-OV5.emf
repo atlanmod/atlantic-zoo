@@ -1,0 +1,174 @@
+package Metamodel;
+
+package DoDAF {
+  abstract class Element {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] description;
+    !unique !ordered attr String[1] view;
+  }
+
+  class DoDAFModel extends Element {
+    !ordered val Document[*] document;
+    !ordered val AM[*] am;
+    !ordered val Task[*] task;
+    !ordered val InformationAssetDocument[*] iaDocument;
+    !ordered val AMSpecification[*] amSpecification;
+    !ordered val DOSCR[*] doscr;
+    !ordered val OrganizationType[*] organizationType;
+  }
+
+  class Document extends Element {
+    !unique !ordered attr String[1] type;
+    !ordered ref InformationAssetDocument[*] cites;
+    !ordered val ArchitectureDocument[*] records;
+    !ordered val IE[*] isTheReferenceFor;
+    !ordered val PA[*] isThePrimaryReferenceFor;
+  }
+
+  class AMSpecification extends Document {
+    !ordered val AMSpecificationElement[*] isSpecifiedUsing;
+  }
+
+  class AMSpecificationElement extends Element {
+    !ordered ref PAExchangeRequirement#isTheSubjectOf subject;
+  }
+
+  class PAExchangeRequirement extends Element {
+    !ordered ref AMSpecificationElement[*]#subject isTheSubjectOf;
+  }
+
+  class ArchitectureDocument extends Element {
+  }
+
+  class IE extends Element {
+    !ordered ref AMIERole[*] isAssociatedWith;
+    !ordered ref IE[*]#isSubordinateOf isOrdinateOf;
+    !ordered ref IE[*]#isOrdinateOf isSubordinateOf;
+  }
+
+  class AMIERole extends Element {
+    !ordered ref AMPA[*] defines;
+  }
+
+  class Control extends AMIERole {
+    !unique !ordered attr String[1] source;
+    !unique !ordered attr String[1] destination;
+  }
+
+  class Input extends AMIERole {
+    !ordered ref Output[*] isTheInputThatIsDefinedBy;
+    !unique !ordered attr String[1] source;
+    !unique !ordered attr String[1] destination;
+    !unique !ordered attr String[1] information;
+  }
+
+  class Output extends AMIERole {
+    !unique !ordered attr String[1] source;
+    !unique !ordered attr String[1] destination;
+    !unique !ordered attr String[1] information;
+  }
+
+  class Mechanism extends AMIERole {
+    !unique !ordered attr String[1] source;
+    !unique !ordered attr String[1] destination;
+    !unique !ordered attr String[1] resourceType;
+  }
+
+  class MechanismSystem extends Mechanism {
+  }
+
+  class MechanismReference extends Mechanism {
+  }
+
+  class MechanismFacility extends Mechanism {
+  }
+
+  class InformationAssetDocument extends Element {
+  }
+
+  class AMPA extends Element {
+    !ordered ref AMPA[*]#isSubordinateOf isOrdinateOf;
+    !ordered ref AMPA[*]#isOrdinateOf isSubordinateOf;
+    !ordered val AMIERole[*] defines;
+  }
+
+  class PACapability extends Element {
+  }
+
+  class PA extends Element {
+    !ordered val PAExchangeRequirement[*] isTheProducerFor;
+    !ordered val PAExchangeRequirement[*] isTheConsumerFor;
+    !ordered ref PA[*]#isChildFor isParentFor;
+    !ordered ref PA[*]#isParentFor isChildFor;
+    !ordered val PACapability[*] has;
+    !ordered ref AMPA[*] isIncludedIn;
+    !ordered ref PATask[*] correspondsTo;
+  }
+
+  class AM extends InformationAsset {
+    !unique !ordered attr String[1] type;
+    !ordered ref AMSpecification[*] specifies;
+    !ordered val AMPA[*] includes;
+    !ordered ref PATask[*] paTask;
+  }
+
+  abstract class InformationAsset extends Element {
+    !ordered val PACapability[*] isDescribedUsing;
+    !ordered ref InformationAssetDocument[*] isCitedIn;
+  }
+
+  class Task extends Element {
+    !unique !ordered attr String[1] levelIdentifier;
+    !unique !ordered attr String[1] references;
+    !unique !ordered attr String[1] cost;
+  }
+
+  class PATask extends Task {
+    !ordered ref InformationAsset[1] isCitedBy;
+  }
+
+  class Organization extends Element {
+    !ordered ref OrganizationType[1]#isTheTypeOf type;
+    !ordered ref InformationAsset[*] supplies;
+    !ordered ref InformationAsset[*] providesStewardshipFor;
+    !ordered ref InformationAsset[*] owns;
+    !ordered ref IE[*] develops;
+    !ordered ref MechanismReference[*] isCitedAs;
+  }
+
+  class OrganizationType extends Element {
+    !ordered val Organization[*]#type isTheTypeOf;
+    !ordered val MechanismReference[*] isCitedAs;
+  }
+
+  class OperationalRole extends Element {
+    !ordered val MechanismReference[*] isCitedAs;
+  }
+
+  class Occupation extends Element {
+    !ordered val OperationalRole[*] mayBeCitedForOR;
+    !ordered val PersonType[*] mayBeCitedForPT;
+  }
+
+  class PersonType extends Element {
+    !ordered val OperationalRole[*] mayBeCitedFor;
+    !ordered val Skill[*] can;
+  }
+
+  class Skill extends Element {
+    !ordered val OperationalRole[*] mayBeCitedFor;
+  }
+
+  class DOSCR extends Element {
+    !ordered val Occupation[1] mayBeAn;
+    !ordered val PersonType[*] appliesTo;
+    !ordered val OperationalRole[*] mayBeCitedFor;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+}
+

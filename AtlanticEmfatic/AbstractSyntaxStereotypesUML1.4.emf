@@ -1,0 +1,62 @@
+package Metamodel;
+
+package AbstractSynthax {
+  class ModelElement {
+    !ordered ref TaggedValue[*]#referenceValue referenceTag;
+    !ordered ref Stereotype[*]#extendedElement stereotype;
+    !ordered ref Constraint[*]#constrainedElement constraint;
+    !ordered val TaggedValue[*] taggedValue;
+  }
+
+  class Constraint {
+    ref ModelElement[*]#constraint constrainedElement;
+    !ordered ref Stereotype#stereotypeConstraint constrainedStereotype;
+  }
+
+  class TaggedValue {
+    !unique !ordered attr String[1] dataValue;
+    !ordered ref ModelElement[*]#referenceTag referenceValue;
+    !ordered ref TagDefinition[1]#typedValue type;
+  }
+
+  class TagDefinition extends ModelElement {
+    !unique !ordered attr String[1] tagType;
+    !ordered ref Multiplicity[1] multiplicity;
+    !ordered ref TaggedValue[*]#type typedValue;
+    !ordered ref Stereotype#definedTag owner;
+  }
+
+  class Multiplicity {
+    !unique !ordered attr String[1] value;
+  }
+
+  class GeneralizableElement {
+  }
+
+  class Stereotype extends GeneralizableElement {
+    !ordered ref Geometry[1] icon;
+    !ordered ref Name[*] baseClass;
+    !ordered val TagDefinition[*]#owner definedTag;
+    !ordered val Constraint[*]#constrainedStereotype stereotypeConstraint;
+    !ordered ref ModelElement[*]#stereotype extendedElement;
+  }
+
+  class Geometry {
+    !unique !ordered attr String[1] value;
+  }
+
+  class Name {
+    !unique !ordered attr String[1] value;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

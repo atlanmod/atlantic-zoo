@@ -1,0 +1,320 @@
+-- @name			DoDAF-SV4
+-- @version		0.1	
+-- @domains		Architecture Description, SoS (System of System)
+-- @authors		Albin Jossic (jossic.albin <at> gmail.com) 
+-- @date			2006/06/26	
+-- @description	A Metamodel of DoDAF (Department of Defense Architecture Framework). This metamodel describes DoDAF SV4 (Structural View) Systems Functionalities Description. This part of DoDAF is used to represent system functional hierarchies and system functions.
+-- @see			http://www.defenselink.mil/nii/global_Info_grid.html
+-- @see			http://www.defenselink.mil/nii/doc/DoDAF_v1_Volume_II.pdf
+-- @see			Tailoring DODAF to Support a Service Oriented Architecture, Fatma Dandashi, Huei-Wan Ang, Christopher Bashioum Mitre Corp. 12-7-2004
+-- @see 			"Recommended Practice for Architectural description of Softwrare-Intensive Systems", IEEE Std 1471-2000, IEEE, 2000.
+-- @see			IEEE1471ConceptualModel.km3 and IEEE1471ViewpointM2.km3
+-- @see			DoDAF.km3
+-- @see			DoDAF-OV5.km3
+-- @see			DoDAF-SV5.km3
+
+--@comments PA = Process Activity
+--@comments AM = Activity Model
+--@comments IE = Information Element
+
+--@begin package DoDAF-SV4
+package DoDAF {
+
+	--@begin class Element
+	--@comments this class is not a part of DoDAF
+	abstract class Element {
+		attribute name : String;
+		attribute description : String;
+		attribute view : String;
+	}	
+	--@end class Element
+	
+	--@begin class DoDAF-SV4 System Functionality Description
+	--@comments it is the root of the composition tree
+	class DoDAFModel extends Element {
+		reference document[*] container : Document;
+		reference sfd[*] container : SystemFunctionalityDescription;
+		reference amSpecification[*] container : AMSpecification;
+		reference sd[*] container : SystemDocument;
+		reference task[*] container : Task;
+		reference iaDocument[*] container : InformationAssetDocument;
+		reference position[*] container : Position;		
+		reference occupation[*] container : Occupation;
+		reference ad[*] container : ArchitectureDocument;
+		reference system[*] container : System;		
+		reference am[*] container : AM;
+		reference spas[*] container : SystemPAStandard;
+		reference its[*] container : InformationTechnologyStandard;
+		reference orpa[*] container : OperationalRolePA;
+		reference ptcn[*] container : PersonTypeCapabilityNorm;		
+	}
+	--@begin class  DoDAF-SV4 System Functionality Description
+	
+	
+	--@begin CADM ER System Functionality Description
+	
+	--@begin class Document
+	class Document extends Element {
+		attribute type : String;
+		reference cites[*] : InformationAssetDocument;
+		reference describes[*] : SystemDocument;
+		reference records[*] container : ArchitectureDocument;
+		reference isTheReferenceFor[*] container : IE;
+		reference isThePrimaryReferenceFor[*] container : PA;
+	}
+	--@end class Document
+	
+	--@begin class SystemFunctionalityDescription
+	class SystemFunctionalityDescription extends Document {}
+	--@end class SystemFunctionalityDescription
+	
+	--@begin class FunctionalSpecification
+	class FunctionalSpecification extends Document {
+		reference mayBeA container : SystemDocument;
+	}
+	--@end class FunctionalSpecification
+	
+	--@begin class ActivityModelSpecification
+	class AMSpecification extends Document {
+		reference isUsedIn[*] container : FunctionalSpecification;
+	}
+	--@end class ActivityModelSpecification
+	
+	--@begin class SystemDocument
+	class SystemDocument extends Element {}
+	--@end class SystemDocument
+	
+	--@begin class ArchitectureDocument
+	class ArchitectureDocument extends Element {}
+	--@end class ArchitectureDocument
+	
+	--@begin class System
+	class System extends Element {
+		reference isDesignedToProvide[*] container : SystemPA;
+		reference isDescribedBy[*] : SystemDocument;
+	}
+	--@end class System
+	
+	--@begin class System Process Activity
+	class SystemPA extends Element {
+		reference isDefinedUsing[*] : SystemPAStandard;
+	}
+	--@end class System Process Activity
+	
+	--@begin class InformationElement
+	class IE extends Element {
+		reference isAssociatedWith[*] : AMIERole;
+		reference isOrdinateOf[*] : IE oppositeOf isSubordinateOf;
+		reference isSubordinateOf[*] : IE oppositeOf isOrdinateOf;
+	}
+	--@end class InformationElement
+	
+	--@begin Activity Model Information Element Role 
+	--@begin class ActivityModelInformationElementRole
+	class AMIERole extends Element {
+		reference defines[*] : AMPA;
+		reference isRepresentedBy[*] container : AMIERoleGraphic;
+	}
+	--@end class ActivityModelInformationElementRole
+	
+	--@begin class ActivityModelInformationElementRoleGraphic
+	class AMIERoleGraphic extends Element {}
+	--@end class ActivityModelInformationElementRoleGraphic
+	
+	--@begin class Input
+	class Input extends AMIERole {
+		reference isTheInputThatIsDefinedBy[*] container : Output;
+		attribute source : String;
+		attribute destination : String;
+		attribute information : String;
+	}
+	--@end class Input
+	
+	--@begin class Output 
+	class Output extends AMIERole {
+		attribute source : String;
+		attribute destination : String;
+		attribute information : String;
+	}
+	--@end class Output
+	--@begin Activity Model Information Element Role 
+	
+	--@begin class InformationAssetDocument
+	class InformationAssetDocument extends Element {}
+	--@end class InformationAssetDocument
+	
+	--@begin class ActivityModelProcessActivity
+	class AMPA extends Element {
+		reference isOrdinateOf[*] : AMPA oppositeOf isSubordinateOf;
+		reference isSubordinateOf[*] : AMPA oppositeOf isOrdinateOf;
+		reference defines[*] container : AMIERole;
+		reference isRepresentedBy[*] container : AMPAGraphic;
+	}
+	--@end class ActivityModelProcessActivity
+	
+	--@begin class ActivityModelProcessActivityGraphic
+	class AMPAGraphic extends Element {}
+	--@end class ActivityModelProceActivityModelProcessActivityGraphicssActivity
+	
+	--@begin class ProcessActivity
+	class PA extends Element {
+		reference isParentFor[*] : PA oppositeOf isChildFor;
+		reference isChildFor[*] : PA oppositeOf isParentFor;
+		reference isIncludedIn[*] : AMPA;
+		reference isAssignedTo[*] : SystemPA;	
+		reference represents[*] container : ArchitectureBusinessSubFunction;
+		reference correspondsTo[*] : PATask;
+		reference has[*] container : PACapability;
+		reference isPerformedBy[*] : OperationalRolePA;
+	}
+	--@end class ProcessActivity
+	
+	--@begin class ProcessActivityCapability
+	class PACapability extends Element {}
+	--@end class ProcessActivityCapability
+	
+	--@begin class ActivityModel
+	class AM extends InformationAsset {
+		attribute type : String;
+		reference isCitedBy[*] container : PATask; 
+		reference specifies[*] : AMSpecification;
+		reference includes[*] container : AMPA;
+		reference isUsedToDescribe[*] : SystemFunctionalityDescription;
+		reference defines[*] container : LineOfBusiness;
+	}
+	--@end class ActivityModel
+	
+	--@begin class InformationAsset
+	class InformationAsset extends Element {
+		reference isCitedIn[*] : InformationAssetDocument;
+		reference describes[*] container : DataStore;
+	}
+	--@end class InformationAsset
+	
+	--@begin class DataStore
+	class DataStore extends PA {}
+	--@end class DataStore
+	
+	--@begin class SystemFunction
+	class SystemFunction extends PA {}
+	--@end class SystemFunction
+	
+	--@begin class System Process Activity Standard
+	class SystemPAStandard extends Element {
+		reference isUsedToDefine[*] : InformationTechnologyStandard;
+	}
+	--@end class System Process Activity Standard
+	
+	--@begin class Information Technology Standard
+	class InformationTechnologyStandard extends Element {
+		reference isUsedToDefine[*] : SystemPAStandard;
+	}
+	--@end class Information Technology Standard
+	
+	--@begin Human Factors and Lines and Business for SV-4
+	--@begin class LineOfBusiness
+	class LineOfBusiness extends Element {
+		reference appliesToTask[*] : Task;
+		reference appliesToBS[*] container : BusinessSubfunction;				
+	}
+	--@end class LineOfBusiness
+	
+	--@begin class Task
+	class Task extends Element {
+		attribute levelIdentifier : String;
+		attribute references : String;
+		attribute cost : String;
+		reference correspondsTo[*] : PATask;
+		reference supports[*] : TaskMissionArea;
+	}
+	--@end class Task
+	
+	--@begin class HumanBehaviourTask
+	class HumanBehaviourTask extends Task {}
+	--@end class HumanBehaviourTask
+	
+	--@begin class OperationalCapabilityTask
+	class OperationalCapabilityTask extends Task {}
+	--@end class OperationalCapabilityTask
+	
+	--@begin class TaskMissionArea
+	class TaskMissionArea extends Task {
+		reference hasContributionFrom[*] container : OperationalCapabilityTask;
+	}
+	--@end class TaskMissionArea
+	
+	--@begin class PATask
+	class PATask extends Task {}
+	--@end class PATask
+	
+	--@begin class BusinessSubfunction
+	class BusinessSubfunction extends Element {
+		reference appliesTo[*] : ArchitectureBusinessSubFunction;
+	}
+	--@end class BusinessSubfunction
+	
+	--@begin class ArchitectureBusinessSubFunction
+	class ArchitectureBusinessSubFunction extends Element {}
+	--@end class ArchitectureBusinessSubFunction
+	
+	--@begin class OperationalRoleProcessActivity
+	class OperationalRolePA extends Element {}
+	--@end class OperationalRoleProcessActivity
+	
+	--@begin class OperationalRole
+	class OperationalRole extends Element {
+		reference performs[*] container : OperationalRolePA;
+		reference isPerformedByOTOR[*] container : OrganizationTypeOperationalRole;
+		reference isPerformedByOOR[*] container : OrganizationOperationalRole;
+	}
+	--@end class OperationalRole
+	
+	--@begin class OrganizationTypeOperationalRole
+	class OrganizationTypeOperationalRole extends Element {}
+	--@end class OrganizationTypeOperationalRole
+	
+	--@begin class OrganizationOperationalRole
+	class OrganizationOperationalRole extends Element {}
+	--@end class OrganizationOperationalRole
+	
+	--@begin class Occupation
+	class Occupation extends Element {
+		reference mayBeCitedForOR[*] container : OperationalRole;
+		reference mayBeCitedForPT[*] container : PersonType;
+	}
+	--@end class Occupation
+	
+	--@begin class PersonType
+	class PersonType extends Element {
+		reference mayBeCitedFor[*] container : OperationalRole;
+		reference performsTo[*] container : PersonTypeCapabilityNorm;
+		reference can[*] container : Skill;
+	}
+	--@end class PersonType
+	
+	--@begin class PersonTypeCapabilityNorm
+	class PersonTypeCapabilityNorm extends Element {}
+	--@end class PersonTypeCapabilityNorm
+	
+	--@begin class Skill
+	class Skill extends Element {
+		reference mayBeCitedFor[*] container : OperationalRole;
+	}
+	--@end class Skill
+	
+	--@begin class Position
+	class Position extends Element {
+		reference mayBeCitedFor[*] container : OperationalRole;
+	}
+	--@end class Position	
+	--@end Human Factors and Lines and Business for SV-4
+	
+	--@end CADM ER System Functionality Description
+}
+--@end package DoDAF-SV4
+
+--@begin package PrimitiveTypes
+package PrimitiveTypes {
+	datatype String;
+}
+--@end package PrimitiveTypes

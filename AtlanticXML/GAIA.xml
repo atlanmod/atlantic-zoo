@@ -1,0 +1,74 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'GAIA'>
+    <Class name = 'OrganizationalStructure' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'organization' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'GAIA::Organization' opposite = ''/>
+    </Class>
+    <Class name = 'Organization' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'collaborates' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'GAIA::Organization' opposite = 'GAIA::Organization::interacts'/>
+      <Reference name = 'interacts' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'GAIA::Organization' opposite = 'GAIA::Organization::collaborates'/>
+      <Reference name = 'member' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'GAIA::AgentType' opposite = ''/>
+      <Reference name = 'observes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'GAIA::OrganizationalRule' opposite = ''/>
+    </Class>
+    <Class name = 'OrganizationalRule' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'SafetyRule' isAbstract = 'false' supertypes = 'GAIA::OrganizationalRule'/>
+    <Class name = 'LivenessRule' isAbstract = 'false' supertypes = 'GAIA::OrganizationalRule'/>
+    <Class name = 'AgentType' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'provides' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'GAIA::Service' opposite = ''/>
+      <Reference name = 'collaborates' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'GAIA::AgentType' opposite = 'GAIA::AgentType::agentType'/>
+      <Reference name = 'agentType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'GAIA::AgentType' opposite = 'GAIA::AgentType::collaborates'/>
+      <Reference name = 'plays' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'GAIA::Role' opposite = ''/>
+    </Class>
+    <Class name = 'Service' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'inputs' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'outputs' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'pre-conditions' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'post-conditions' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Role' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'activity' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'GAIA::Activity' opposite = ''/>
+      <Reference name = 'communication' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'GAIA::Communication' opposite = ''/>
+      <Reference name = 'responsibility' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'GAIA::Responsibility' opposite = ''/>
+      <Reference name = 'actsOn' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'GAIA::AssociationConnector' opposite = 'GAIA::AssociationConnector::role'/>
+    </Class>
+    <Class name = 'Activity' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Responsibility' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'LivenessProperty' isAbstract = 'false' supertypes = 'GAIA::Responsibility'/>
+    <Class name = 'SafetyProperty' isAbstract = 'false' supertypes = 'GAIA::Responsibility'/>
+    <Class name = 'AssociationConnector' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'actsOn' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'GAIA::Resource' opposite = ''/>
+      <Reference name = 'role' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'GAIA::Role' opposite = 'GAIA::Role::actsOn'/>
+      <Reference name = 'permission' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'GAIA::Permission' opposite = 'GAIA::Permission::association'/>
+    </Class>
+    <Class name = 'Permission' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'association' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'GAIA::AssociationConnector' opposite = 'GAIA::AssociationConnector::permission'/>
+    </Class>
+    <Class name = 'Resource' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'description' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'permitted_action' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'GAIA::Action' opposite = ''/>
+      <Reference name = 'environnement' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'GAIA::Environnement' opposite = 'GAIA::Environnement::resource'/>
+    </Class>
+    <Class name = 'Environnement' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'resource' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'GAIA::Resource' opposite = 'GAIA::Resource::environnement'/>
+    </Class>
+    <Class name = 'Action' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Communication' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'observes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'GAIA::OrganizationalRule' opposite = ''/>
+      <Reference name = 'protocol' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'GAIA::Protocol' opposite = ''/>
+    </Class>
+    <Class name = 'Protocol' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'initiator' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'partner' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'inputs' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'outputs' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'description' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

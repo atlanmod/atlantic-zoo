@@ -1,0 +1,37 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'SimpleUML'>
+    <Class name = 'UMLModelElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'kind' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Attribute' isAbstract = 'false' supertypes = 'SimpleUML::UMLModelElement'>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimpleUML::Class' opposite = 'SimpleUML::Class::attribute'/>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimpleUML::Classifier' opposite = 'SimpleUML::Classifier::typeOpposite'/>
+    </Class>
+    <Class name = 'Package' isAbstract = 'false' supertypes = 'SimpleUML::UMLModelElement'>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SimpleUML::PackageElement' opposite = 'SimpleUML::PackageElement::namespace'/>
+    </Class>
+    <Class name = 'PackageElement' isAbstract = 'true' supertypes = 'SimpleUML::UMLModelElement'>
+      <Reference name = 'namespace' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimpleUML::Package' opposite = 'SimpleUML::Package::elements'/>
+    </Class>
+    <Class name = 'Classifier' isAbstract = 'true' supertypes = 'SimpleUML::PackageElement'>
+      <Reference name = 'typeOpposite' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SimpleUML::Attribute' opposite = 'SimpleUML::Attribute::type'/>
+    </Class>
+    <Class name = 'Class' isAbstract = 'false' supertypes = 'SimpleUML::Classifier'>
+      <Reference name = 'attribute' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SimpleUML::Attribute' opposite = 'SimpleUML::Attribute::owner'/>
+      <Reference name = 'general' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SimpleUML::Class' opposite = 'SimpleUML::Class::generalOpposite'/>
+      <Reference name = 'generalOpposite' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SimpleUML::Class' opposite = 'SimpleUML::Class::general'/>
+      <Reference name = 'reverse' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SimpleUML::Association' opposite = 'SimpleUML::Association::source'/>
+      <Reference name = 'forward' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SimpleUML::Association' opposite = 'SimpleUML::Association::destination'/>
+    </Class>
+    <Class name = 'PrimitiveDataType' isAbstract = 'false' supertypes = 'SimpleUML::Classifier'/>
+    <Class name = 'Association' isAbstract = 'false' supertypes = 'SimpleUML::PackageElement'>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimpleUML::Class' opposite = 'SimpleUML::Class::reverse'/>
+      <Reference name = 'destination' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimpleUML::Class' opposite = 'SimpleUML::Class::forward'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

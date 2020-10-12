@@ -1,0 +1,79 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_HPROF"{
+labelloc=t
+color=black
+label=HPROF
+ node[shape=record];
+LocatedElement[label="{/LocatedElement/|location[0-1] : String\ncommentsBefore[*] : String\ncommentsAfter[*] : String| }"]
+;
+ node[shape=record];
+Profile[label="{Profile|header : String| }"]
+ Profile->ThreadAction[arrowhead=vee,arrowtail=diamond,headlabel="threadActions[*]{ordered}",group=ThreadAction,minlen=2,constraint=true,]
+ Profile->Trace[arrowhead=vee,arrowtail=diamond,headlabel="traces[*]{ordered}",group=Trace,minlen=2,constraint=true,]
+ Profile->Times[arrowhead=vee,arrowtail=diamond,headlabel="times",group=Times,minlen=2,constraint=true,]
+ Profile->Method[arrowhead=vee,arrowtail=diamond,headlabel="methods[*]{ordered}",group=Method,minlen=2,constraint=true,]
+ Profile->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Method[label="{Method|fullyQualifiedName : String| }"]
+ Method->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ThreadAction[label="{/ThreadAction/|id : Integer| }"]
+ ThreadAction->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ThreadStart[label="{ThreadStart|obj : Integer\nname : String\ngroup : String| }"]
+ ThreadStart->ThreadAction[arrowhead=onormal,group=ThreadAction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ThreadEnd[label="{ThreadEnd| | }"]
+ ThreadEnd->ThreadAction[arrowhead=onormal,group=ThreadAction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Trace[label="{Trace|id : Integer\nthreadId : Integer| }"]
+ Trace->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StackTraceElement[label="{StackTraceElement|fileName[0-1] : String\nline : Integer| }"]
+ StackTraceElement->Method[arrowhead=none,arrowtail=none,headlabel="method",taillabel="stackTraceElements",group=Method,minlen=2,constraint=false,]
+ StackTraceElement->Trace[arrowhead=diamond,arrowtail=none,headlabel="trace",taillabel="elements{ordered}",group=Trace,minlen=2,constraint=true,]
+ StackTraceElement->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Times[label="{Times|unit : String\ntotal : Integer| }"]
+ Times->Date[arrowhead=vee,arrowtail=diamond,headlabel="date",group=Date,minlen=2,constraint=true,]
+ Times->Time[arrowhead=vee,arrowtail=diamond,headlabel="elements[*]",group=Time,minlen=2,constraint=true,]
+ Times->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Time[label="{Time|rank : Integer\nself : Double\naccum : Double\ncount : Integer| }"]
+ Time->Trace[arrowhead=none,arrowtail=none,headlabel="trace",taillabel="times",group=Trace,minlen=2,constraint=false,]
+ Time->Method[arrowhead=vee,arrowtail=none,headlabel="method",group=Method,minlen=2,constraint=false,]
+ Time->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Date[label="{Date|day : Day\nmonth : Month\ndayOfMonth : Integer\nhour : Integer\nminutes : Integer\nseconds : Integer\nyear : Integer| }"]
+ Date->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

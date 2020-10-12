@@ -1,0 +1,121 @@
+package Metamodel;
+
+package QoSConceptualModel {
+  class QoSComponent {
+    !ordered ref QoSProfile[*]#for profile;
+    !ordered val Operation[1] operations;
+  }
+
+  abstract class QoSProfile {
+    !ordered ref QoSComponent[1]#profile for;
+    !ordered ref QoSStatement[+] provide;
+    !ordered ref QoSStatement[+] uses;
+  }
+
+  class QoSContraints extends QoSCharacteristic {
+  }
+
+  class Operation {
+  }
+
+  class CompoundProfile extends QoSProfile {
+    !ordered ref ProfileTransition[*]#compoundProfile profileTransition;
+    val SimpleProfile[+]#compoundProfile simpleProfile;
+  }
+
+  class SimpleProfile extends QoSProfile {
+    !ordered ref CompoundProfile[1]#simpleProfile compoundProfile;
+    !ordered ref QoSStatement[1] use;
+    !ordered ref QoSStatement[1] provides;
+  }
+
+  class ProfileTransition {
+    ref Operation[*] operations;
+    !ordered ref SimpleProfile[1] from;
+    !ordered ref SimpleProfile[1] to;
+    !ordered val CompoundProfile[1]#profileTransition compoundProfile;
+  }
+
+  class QoSStatement {
+    !ordered val QoSContraints[+] contraints;
+    !ordered ref CoumpoundQoSStatement[1]#statement relation;
+    val Parameter[*] parameter;
+  }
+
+  class SingleQoSStatement extends QoSStatement {
+    !ordered val QoSContraint[1] contraint;
+  }
+
+  class CoumpoundQoSStatement extends QoSStatement {
+    !ordered val QoSStatement[2..*]#relation statement;
+  }
+
+  class QoSContraint {
+    !ordered ref QualificationKind[1] qualification;
+  }
+
+  class QualificationKind extends QoSCharacteristic {
+    !unique !ordered attr String[1] value;
+  }
+
+  class QoSCharacteristic {
+    !ordered ref BooleanExpression[1] invariant;
+    !ordered ref MappingExpression[1] parallel_and_composition;
+    !ordered ref MappingExpression[1] parallel_or_composition;
+    !ordered ref MappingExpression[1] sequential_composition;
+    !ordered ref MappingExpression[1] values;
+    !ordered val StatisticalAttributekindKind[*] statisticalAttribute;
+    !ordered val Parameter[1] parameter;
+    !ordered ref Domain[1] domain;
+  }
+
+  class BooleanExpression {
+    !unique !ordered attr String[1] value;
+  }
+
+  class MappingExpression {
+    !unique !ordered attr String[1] value;
+  }
+
+  class StatisticalAttributekindKind {
+  }
+
+  class Parameter {
+  }
+
+  class DataType {
+  }
+
+  class Domain extends DataType {
+    !ordered ref DirectionKind[1] direction;
+  }
+
+  class DirectionKind {
+    !unique !ordered attr String[1] value;
+  }
+
+  class Numeric extends Domain {
+  }
+
+  class Set extends Domain {
+    val StringSet[+] stringSet;
+  }
+
+  class Enumeration extends Domain {
+  }
+
+  class StringSet {
+    !unique !ordered attr String[+] string;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

@@ -1,0 +1,441 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'MARTE'>
+    <Class name = 'TimeBase' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'instants' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'MARTE::Instant' opposite = 'MARTE::Instant::owner'/>
+    </Class>
+    <Class name = 'Instant' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'isBefore' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::TimeBase' opposite = 'MARTE::TimeBase::instants'/>
+      <Reference name = 'timeValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::TimeValue' opposite = 'MARTE::TimeValue::denotedInstant'/>
+    </Class>
+    <Class name = 'TimeValue' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'denotedInstant' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Instant' opposite = 'MARTE::Instant::timeValue'/>
+      <Reference name = 'ref' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::TimeBase' opposite = ''/>
+    </Class>
+    <Class name = 'TimeInterval' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'endValues' lower = '2' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::TimeValue' opposite = ''/>
+      <Reference name = 'denotedInterval' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Interval' opposite = 'MARTE::Interval::timeInterval'/>
+    </Class>
+    <Class name = 'Interval' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'includingMin' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'includingMax' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'base' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::TimeBase' opposite = ''/>
+      <Reference name = 'timeInterval' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::TimeInterval' opposite = 'MARTE::TimeInterval::denotedInterval'/>
+      <Reference name = 'instants' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Instant' opposite = ''/>
+    </Class>
+    <Class name = 'SingleTimeBase' isAbstract = 'false' supertypes = 'MARTE::TimeBase'>
+      <Reference name = 'currentValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::SingleTimeValue' opposite = ''/>
+      <Reference name = 'maximumValue' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::SingleTimeValue' opposite = ''/>
+      <Reference name = 'currentInstant' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::SingleInstant' opposite = ''/>
+    </Class>
+    <Class name = 'SingleInstant' isAbstract = 'false' supertypes = 'MARTE::Instant'>
+      <Reference name = 'coPoint' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::CoincidencePoint' opposite = 'MARTE::CoincidencePoint::coincidenceInstants'/>
+    </Class>
+    <Class name = 'SingleInterval' isAbstract = 'false' supertypes = 'MARTE::Interval'>
+      <Reference name = 'first' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::SingleInstant' opposite = ''/>
+      <Reference name = 'last' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::SingleInstant' opposite = ''/>
+      <Reference name = 'members' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'MARTE::SingleInstant' opposite = ''/>
+    </Class>
+    <Class name = 'SingleTimeValue' isAbstract = 'false' supertypes = 'MARTE::TimeValue'/>
+    <Class name = 'SingleTimeInterval' isAbstract = 'false' supertypes = 'MARTE::TimeInterval'>
+      <Reference name = 'start' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::SingleTimeValue' opposite = ''/>
+      <Reference name = 'end' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::SingleTimeValue' opposite = ''/>
+    </Class>
+    <Class name = 'DiscreteTimeBase' isAbstract = 'false' supertypes = 'MARTE::TimeBase'>
+      <Reference name = 'refEvent' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Event' opposite = ''/>
+    </Class>
+    <Class name = 'DiscreteInstant' isAbstract = 'false' supertypes = 'MARTE::Instant'>
+      <Reference name = 'next' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::DiscreteInstant' opposite = 'MARTE::DiscreteInstant::previous'/>
+      <Reference name = 'previous' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::DiscreteInstant' opposite = 'MARTE::DiscreteInstant::next'/>
+      <Reference name = 'refOcc' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::EventOccurence' opposite = ''/>
+    </Class>
+    <Class name = 'Event' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'occ' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'MARTE::EventOccurence' opposite = ''/>
+    </Class>
+    <Class name = 'EventOccurence' isAbstract = 'true' supertypes = ''/>
+    <Class name = 'PhysicalTime' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'physicalInstants' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'MARTE::PhysicalInstant' opposite = ''/>
+    </Class>
+    <Class name = 'PhysicalInstant' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'measurement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::MetricTimeValue' opposite = ''/>
+    </Class>
+    <Class name = 'Duration' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'start' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::PhysicalInstant' opposite = ''/>
+      <Reference name = 'end' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::PhysicalInstant' opposite = ''/>
+      <Reference name = 'measurement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::MetricTimeInterval' opposite = ''/>
+    </Class>
+    <Class name = 'MultipleTimeBase' isAbstract = 'false' supertypes = 'MARTE::TimeBase'>
+      <Reference name = 'bases' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MARTE::SingleTimeBase' opposite = ''/>
+    </Class>
+    <Class name = 'CoincidencePoint' isAbstract = 'false' supertypes = 'MARTE::Instant'>
+      <Reference name = 'coincidenceInstants' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::SingleInstant' opposite = 'MARTE::SingleInstant::coPoint'/>
+    </Class>
+    <Class name = 'MultipleInterval' isAbstract = 'false' supertypes = 'MARTE::Interval'>
+      <Reference name = 'first' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::CoincidencePoint' opposite = ''/>
+      <Reference name = 'last' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::CoincidencePoint' opposite = ''/>
+    </Class>
+    <Class name = 'MultipleTimeValue' isAbstract = 'false' supertypes = 'MARTE::TimeValue'>
+      <Reference name = 'values' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::SingleTimeValue' opposite = ''/>
+    </Class>
+    <Class name = 'MetricTimeValue' isAbstract = 'false' supertypes = 'MARTE::DiscreteTimeValue'/>
+    <Class name = 'DiscreteTimeValue' isAbstract = 'false' supertypes = 'MARTE::TimeValue'/>
+    <Class name = 'MetricTimeInterval' isAbstract = 'false' supertypes = 'MARTE::DiscreteTimeInterval'/>
+    <Class name = 'DiscreteTimeInterval' isAbstract = 'false' supertypes = 'MARTE::TimeInterval'/>
+    <Class name = 'SimultaneousEventOccurrence' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'at' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Instant' opposite = ''/>
+      <Reference name = 'occurence' lower = '2' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::TimedEventOccurence' opposite = ''/>
+    </Class>
+    <Class name = 'TimedEvent' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'timestamp' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::MetricTimeValue' opposite = ''/>
+    </Class>
+    <Class name = 'TimedEventOccurence' isAbstract = 'false' supertypes = 'MARTE::EventOccurence'>
+      <Reference name = 'at' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Instant' opposite = ''/>
+      <Reference name = 'timestamp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::TimeValue' opposite = ''/>
+    </Class>
+    <Class name = 'TimedAction' isAbstract = 'false' supertypes = 'MARTE::Scenario'>
+      <Reference name = 'duration' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::TimeInterval' opposite = ''/>
+      <Reference name = 'start' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::TimeValue' opposite = ''/>
+      <Reference name = 'end' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::TimeValue' opposite = ''/>
+    </Class>
+    <Class name = 'Delay' isAbstract = 'false' supertypes = 'MARTE::TimedAction'/>
+    <Class name = 'TimingMechanism' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'stability' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'drift' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'skew' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'origin' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::TimedEvent' opposite = ''/>
+      <Reference name = 'resolution' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::MetricTimeInterval' opposite = ''/>
+      <Reference name = 'refClock' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Clock' opposite = ''/>
+      <Attribute name = 'state' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Clock' isAbstract = 'false' supertypes = 'MARTE::DiscreteTimeBase, MARTE::TimingMechanism'>
+      <Reference name = 'accuracy' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::MetricTimeInterval' opposite = ''/>
+      <Reference name = 'offset' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::MetricTimeInterval' opposite = ''/>
+      <Reference name = 'generatedInterrupt' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ClockInterrupt' opposite = ''/>
+    </Class>
+    <Class name = 'Timer' isAbstract = 'false' supertypes = 'MARTE::TimingMechanism'>
+      <Attribute name = 'isPeriodic' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'duration' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::MetricTimeValue' opposite = ''/>
+      <Reference name = 'genratedTimeOuts' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::TimeOut' opposite = ''/>
+    </Class>
+    <Class name = 'TimeOut' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'ClockInterrupt' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'System' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'dimension' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Quantity' opposite = ''/>
+    </Class>
+    <Class name = 'Model' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'ownes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ModelElement' opposite = 'MARTE::ModelElement::owner'/>
+    </Class>
+    <Class name = 'AnnotatedModel' isAbstract = 'false' supertypes = 'MARTE::Model'>
+      <Reference name = 'conformsTo' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ModelingConcern' opposite = 'MARTE::ModelingConcern::annotedModel'/>
+      <Reference name = 'import' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::NFPLibrary' opposite = ''/>
+    </Class>
+    <Class name = 'ModelElement' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Model' opposite = 'MARTE::Model::ownes'/>
+    </Class>
+    <Class name = 'AnnotatedModelElement' isAbstract = 'false' supertypes = 'MARTE::ModelElement'>
+      <Reference name = 'annotation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::NFP' opposite = ''/>
+    </Class>
+    <Class name = 'NFP' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'measurementQuantity' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Quantity' opposite = ''/>
+      <Reference name = 'storedBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::NFPLibrary' opposite = 'MARTE::NFPLibrary::usedNFP'/>
+      <Reference name = 'groupedBy' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::NFPCategory' opposite = 'MARTE::NFPCategory::setOf'/>
+    </Class>
+    <Class name = 'NFPLibrary' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'refersTo' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::NFPLibrary' opposite = ''/>
+      <Reference name = 'usedNFP' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::NFP' opposite = 'MARTE::NFP::storedBy'/>
+    </Class>
+    <Class name = 'NFPCategory' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'setOf' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MARTE::NFP' opposite = 'MARTE::NFP::groupedBy'/>
+      <Reference name = 'ownes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::NFPCategory' opposite = 'MARTE::NFPCategory::owner'/>
+      <Reference name = 'owner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::NFPCategory' opposite = 'MARTE::NFPCategory::ownes'/>
+    </Class>
+    <Class name = 'ModelingConcern' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'relevantQuantity' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Quantity' opposite = ''/>
+      <Reference name = 'annotedModel' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::AnnotatedModel' opposite = 'MARTE::AnnotatedModel::conformsTo'/>
+    </Class>
+    <Class name = 'AnalysisConcern' isAbstract = 'false' supertypes = 'MARTE::ModelingConcern'/>
+    <Class name = 'DesignConcern' isAbstract = 'false' supertypes = 'MARTE::ModelingConcern'/>
+    <Class name = 'Quantity' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'BasicQuantity' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'DerivedQuantity' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'QualitativeNFP' isAbstract = 'false' supertypes = 'MARTE::NFP'>
+      <Reference name = 'parameter' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::NFP' opposite = ''/>
+    </Class>
+    <Class name = 'QuantitativeNFP' isAbstract = 'false' supertypes = 'MARTE::NFP'>
+      <Reference name = 'sampleSet' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MARTE::Realization' opposite = 'MARTE::Realization::owner'/>
+      <Reference name = 'measure' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MARTE::Measure' opposite = 'MARTE::Measure::owner'/>
+    </Class>
+    <Class name = 'Realization' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'function' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Measure' opposite = 'MARTE::Measure::appliesTo'/>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::QuantitativeNFP' opposite = 'MARTE::QuantitativeNFP::sampleSet'/>
+    </Class>
+    <Class name = 'Measure' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'appliesTo' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Realization' opposite = 'MARTE::Realization::function'/>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::QuantitativeNFP' opposite = 'MARTE::QuantitativeNFP::measure'/>
+    </Class>
+    <Class name = 'ComplexNFP' isAbstract = 'false' supertypes = 'MARTE::NFP'>
+      <Reference name = 'parent' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ComplexNFP' opposite = 'MARTE::ComplexNFP::child'/>
+      <Reference name = 'child' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ComplexNFP' opposite = 'MARTE::ComplexNFP::parent'/>
+      <Reference name = 'ownes' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MARTE::BasicNFP' opposite = 'MARTE::BasicNFP::dimensionOf'/>
+    </Class>
+    <Class name = 'BasicNFP' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'statisticalQualifier' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'MARTE::StatisticalQualifierKinds'/>
+      <Attribute name = 'directon' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'MARTE::DirectionKinds'/>
+      <Reference name = 'typedBy' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::NFPType' opposite = ''/>
+      <Reference name = 'valuedBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::NFPValueSpecification' opposite = ''/>
+      <Reference name = 'dimensionOf' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MARTE::ComplexNFP' opposite = 'MARTE::ComplexNFP::ownes'/>
+    </Class>
+    <Class name = 'NFPType' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'valueSpecificationLanguage' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'source' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'MARTE::SourceKinds'/>
+      <Reference name = 'constrainedSpec' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::NFPValueSpecification' opposite = 'MARTE::NFPValueSpecification::constrainedBy'/>
+    </Class>
+    <Class name = 'NFPInstantType' isAbstract = 'false' supertypes = 'MARTE::NFPType'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'unit' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'MARTE::InstantUnitKinds'/>
+    </Class>
+    <Class name = 'NFPurationType' isAbstract = 'false' supertypes = 'MARTE::NFPType'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'unit' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'MARTE::DurationUnitKinds'/>
+    </Class>
+    <Class name = 'NFPRateType' isAbstract = 'false' supertypes = 'MARTE::NFPType'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'unit' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'MARTE::RateUnitKinds'/>
+    </Class>
+    <Class name = 'NFPProbabilityType' isAbstract = 'false' supertypes = 'MARTE::NFPType'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'unit' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'MARTE::ProbabilityUnitKinds'/>
+    </Class>
+    <Class name = 'NFPSizeType' isAbstract = 'false' supertypes = 'MARTE::NFPType'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'unit' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'MARTE::SizeUnitKinds'/>
+    </Class>
+    <Class name = 'NFPValueSpecification' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'constrainedBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::NFPType' opposite = 'MARTE::NFPType::constrainedSpec'/>
+      <Reference name = 'expression' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::NFPExpression' opposite = 'MARTE::NFPExpression::operand'/>
+    </Class>
+    <Class name = 'NFPConstant' isAbstract = 'false' supertypes = 'MARTE::NFPValueSpecification'>
+      <Reference name = 'ownerList' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::NFPListConstant' opposite = 'MARTE::NFPListConstant::listElements'/>
+    </Class>
+    <Class name = 'NFPListConstant' isAbstract = 'false' supertypes = 'MARTE::NFPConstant'>
+      <Reference name = 'listElements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'MARTE::NFPConstant' opposite = 'MARTE::NFPConstant::ownerList'/>
+    </Class>
+    <Class name = 'NFPStringConstant' isAbstract = 'false' supertypes = 'MARTE::NFPConstant'>
+      <Attribute name = 'body' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'NFPIntegerConstant' isAbstract = 'false' supertypes = 'MARTE::NFPConstant'>
+      <Attribute name = 'body' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'NFPRealConstant' isAbstract = 'false' supertypes = 'MARTE::NFPConstant'>
+      <Attribute name = 'bodyBeforeComa' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'bodyAfterComa' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'NFPBooleanConstant' isAbstract = 'false' supertypes = 'MARTE::NFPConstant'>
+      <Attribute name = 'body' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'NFPVariable' isAbstract = 'false' supertypes = 'MARTE::NFPValueSpecification'>
+      <Attribute name = 'varName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'NFPExpression' isAbstract = 'false' supertypes = 'MARTE::NFPValueSpecification'>
+      <Attribute name = 'body' lower = '1' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'operand' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MARTE::NFPValueSpecification' opposite = 'MARTE::NFPValueSpecification::expression'/>
+    </Class>
+    <Enumeration name = 'SourceKinds'>
+      <EnumLiteral name = 'est'/>
+      <EnumLiteral name = 'meas'/>
+      <EnumLiteral name = 'req'/>
+      <EnumLiteral name = 'implicit'/>
+      <EnumLiteral name = 'calc'/>
+    </Enumeration>
+    <Enumeration name = 'DirectionKinds'>
+      <EnumLiteral name = 'increasing'/>
+      <EnumLiteral name = 'decreasing'/>
+      <EnumLiteral name = 'undefined'/>
+    </Enumeration>
+    <Enumeration name = 'StatisticalQualifierKinds'>
+      <EnumLiteral name = 'max'/>
+      <EnumLiteral name = 'min'/>
+      <EnumLiteral name = 'range'/>
+      <EnumLiteral name = 'mean'/>
+      <EnumLiteral name = 'variance'/>
+      <EnumLiteral name = 'standardDeviation'/>
+      <EnumLiteral name = 'percentil'/>
+      <EnumLiteral name = 'frequency'/>
+      <EnumLiteral name = 'moment'/>
+      <EnumLiteral name = 'distribution'/>
+      <EnumLiteral name = 'instantaneous'/>
+    </Enumeration>
+    <Enumeration name = 'InstantUnitKinds'>
+      <EnumLiteral name = 'TAI'/>
+      <EnumLiteral name = 'UT0'/>
+      <EnumLiteral name = 'UT1'/>
+      <EnumLiteral name = 'UTC'/>
+      <EnumLiteral name = 'TT'/>
+      <EnumLiteral name = 'TDB'/>
+      <EnumLiteral name = 'TCG'/>
+      <EnumLiteral name = 'TCB'/>
+      <EnumLiteral name = 'Sideral'/>
+      <EnumLiteral name = 'Local'/>
+    </Enumeration>
+    <Enumeration name = 'DurationUnitKinds'>
+      <EnumLiteral name = 'ns'/>
+      <EnumLiteral name = 'us'/>
+      <EnumLiteral name = 'ms'/>
+      <EnumLiteral name = 's'/>
+      <EnumLiteral name = 'min'/>
+      <EnumLiteral name = 'hrs'/>
+      <EnumLiteral name = 'dys'/>
+      <EnumLiteral name = 'wks'/>
+      <EnumLiteral name = 'mos'/>
+      <EnumLiteral name = 'yrs'/>
+    </Enumeration>
+    <Enumeration name = 'RateUnitKinds'>
+      <EnumLiteral name = 'kbs'/>
+      <EnumLiteral name = 'MIPS'/>
+    </Enumeration>
+    <Enumeration name = 'ProbabilityUnitKinds'>
+      <EnumLiteral name = 'us'/>
+      <EnumLiteral name = 's'/>
+    </Enumeration>
+    <Enumeration name = 'SizeUnitKinds'>
+      <EnumLiteral name = 'bits'/>
+      <EnumLiteral name = 'bytes'/>
+      <EnumLiteral name = 'Mb'/>
+      <EnumLiteral name = 'MB'/>
+    </Enumeration>
+    <Class name = 'Classifier' isAbstract = 'true' supertypes = 'MARTE::AnnotatedModelElement'>
+      <Reference name = 'instances' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::InstanceSpecification' opposite = 'MARTE::InstanceSpecification::type'/>
+    </Class>
+    <Class name = 'ResourceClassifier' isAbstract = 'true' supertypes = 'MARTE::Classifier'>
+      <Reference name = 'offeredService' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ResourceServiceClassifier' opposite = 'MARTE::ResourceServiceClassifier::resType'/>
+    </Class>
+    <Class name = 'ResourceServiceClassifier' isAbstract = 'true' supertypes = 'MARTE::Classifier'>
+      <Reference name = 'resType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ResourceClassifier' opposite = 'MARTE::ResourceClassifier::offeredService'/>
+    </Class>
+    <Class name = 'InstanceSpecification' isAbstract = 'true' supertypes = 'MARTE::AnnotatedModelElement'>
+      <Reference name = 'type' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Classifier' opposite = 'MARTE::Classifier::instances'/>
+    </Class>
+    <Class name = 'ResourceInstanceSpecification' isAbstract = 'true' supertypes = 'MARTE::InstanceSpecification'>
+      <Reference name = 'offeredServiceInstance' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ResourceServiceInstanceSpecification' opposite = 'MARTE::ResourceServiceInstanceSpecification::resintSpec'/>
+    </Class>
+    <Class name = 'ResourceServiceInstanceSpecification' isAbstract = 'true' supertypes = 'MARTE::InstanceSpecification'>
+      <Reference name = 'resintSpec' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ResourceInstanceSpecification' opposite = 'MARTE::ResourceInstanceSpecification::offeredServiceInstance'/>
+    </Class>
+    <Class name = 'Hardware' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Hardware' opposite = 'MARTE::Hardware::containH'/>
+      <Reference name = 'containH' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Hardware' opposite = 'MARTE::Hardware::owner'/>
+      <Reference name = 'containHL' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::HardwareLibrary' opposite = 'MARTE::HardwareLibrary::owner'/>
+      <Reference name = 'containHE' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::HardwareEntity' opposite = 'MARTE::HardwareEntity::owner'/>
+      <Reference name = 'deploymentConfiguration' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::HardwareDeployment' opposite = 'MARTE::HardwareDeployment::owner'/>
+    </Class>
+    <Class name = 'HardwareLibrary' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Hardware' opposite = 'MARTE::Hardware::containHL'/>
+    </Class>
+    <Class name = 'HardwareEntity' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Hardware' opposite = 'MARTE::Hardware::containHE'/>
+    </Class>
+    <Class name = 'HardwareDeployment' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Hardware' opposite = 'MARTE::Hardware::deploymentConfiguration'/>
+      <Reference name = 'contain' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::HardwareEntityInstance' opposite = 'MARTE::HardwareEntityInstance::owner'/>
+    </Class>
+    <Class name = 'HardwareEntityInstance' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::HardwareDeployment' opposite = 'MARTE::HardwareDeployment::contain'/>
+    </Class>
+    <Class name = 'ECUInstance' isAbstract = 'false' supertypes = 'MARTE::HardwareEntityInstance'>
+      <Reference name = 'composedOf' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MARTE::ECUGateInstance' opposite = ''/>
+    </Class>
+    <Class name = 'ChannelInstance' isAbstract = 'false' supertypes = 'MARTE::HardwareEntityInstance'>
+      <Reference name = 'gateInstances' lower = '2' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ECUGateInstance' opposite = 'MARTE::ECUGateInstance::channel'/>
+    </Class>
+    <Class name = 'ECUGateInstance' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'channel' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ChannelInstance' opposite = 'MARTE::ChannelInstance::gateInstances'/>
+    </Class>
+    <Class name = 'ECU' isAbstract = 'false' supertypes = 'MARTE::HardwareEntity'>
+      <Reference name = 'contain' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MARTE::ECUGate' opposite = 'MARTE::ECUGate::owner'/>
+    </Class>
+    <Class name = 'ECUGate' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ECU' opposite = 'MARTE::ECU::contain'/>
+      <Reference name = 'kindOf' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Channel' opposite = 'MARTE::Channel::specify'/>
+    </Class>
+    <Class name = 'Channel' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'specify' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ECUGate' opposite = 'MARTE::ECUGate::kindOf'/>
+    </Class>
+    <Class name = 'AnalysisContext' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'global' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ComplexNFP' opposite = ''/>
+      <Reference name = 'workload' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'MARTE::Workload' opposite = ''/>
+      <Reference name = 'behavior' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'MARTE::Behavior' opposite = ''/>
+      <Reference name = 'usedResources' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MARTE::Resource' opposite = ''/>
+    </Class>
+    <Class name = 'Workload' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'transaction' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Transaction' opposite = 'MARTE::Transaction::workload'/>
+    </Class>
+    <Class name = 'Transaction' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'workload' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Workload' opposite = 'MARTE::Workload::transaction'/>
+      <Reference name = 'trigger' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MARTE::Trigger' opposite = ''/>
+      <Reference name = 'response' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'MARTE::Response' opposite = ''/>
+    </Class>
+    <Class name = 'Trigger' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'arrivalPattern' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ComplexNFP' opposite = ''/>
+      <Reference name = 'effect' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Response' opposite = 'MARTE::Response::cause'/>
+    </Class>
+    <Class name = 'Response' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'efficiency' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ComplexNFP' opposite = ''/>
+      <Reference name = 'endToEndLatency' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ComplexNFP' opposite = ''/>
+      <Reference name = 'cause' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Trigger' opposite = 'MARTE::Trigger::effect'/>
+      <Reference name = 'behavior' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Scenario' opposite = 'MARTE::Scenario::endToEndResponse'/>
+    </Class>
+    <Class name = 'Behavior' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'scenario' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MARTE::Scenario' opposite = 'MARTE::Scenario::behavior'/>
+    </Class>
+    <Class name = 'Scenario' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'behavior' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Behavior' opposite = 'MARTE::Behavior::scenario'/>
+      <Reference name = 'scenarionLatency' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ComplexNFP' opposite = ''/>
+      <Reference name = 'steps' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'MARTE::Step' opposite = ''/>
+      <Reference name = 'root' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Step' opposite = ''/>
+      <Reference name = 'endToEndResponse' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Response' opposite = 'MARTE::Response::behavior'/>
+    </Class>
+    <Class name = 'Step' isAbstract = 'false' supertypes = 'MARTE::Scenario'>
+      <Reference name = 'predecessor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Step' opposite = 'MARTE::Step::successor'/>
+      <Reference name = 'successor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Step' opposite = 'MARTE::Step::predecessor'/>
+      <Reference name = 'stepLatency' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ComplexNFP' opposite = ''/>
+      <Reference name = 'usedResourceService' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Service' opposite = ''/>
+    </Class>
+    <Class name = 'Resource' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'BasicResource' isAbstract = 'false' supertypes = 'MARTE::Resource'/>
+    <Class name = 'StructuredResource' isAbstract = 'false' supertypes = 'MARTE::Resource'>
+      <Reference name = 'basicResource' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'MARTE::BasicResource' opposite = ''/>
+    </Class>
+    <Class name = 'ProcessingResource' isAbstract = 'false' supertypes = 'MARTE::StructuredResource'>
+      <Reference name = 'links' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Link' opposite = ''/>
+      <Reference name = 'components' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Component' opposite = ''/>
+    </Class>
+    <Class name = 'Link' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'ProcessResource' isAbstract = 'false' supertypes = 'MARTE::StructuredResource'>
+      <Reference name = 'components' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Component' opposite = 'MARTE::Component::process'/>
+    </Class>
+    <Class name = 'Component' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'process' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ProcessResource' opposite = 'MARTE::ProcessResource::components'/>
+      <Reference name = 'interfaces' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Interface' opposite = ''/>
+    </Class>
+    <Class name = 'StructuredComponent' isAbstract = 'false' supertypes = 'MARTE::Component'/>
+    <Class name = 'BasicComponent' isAbstract = 'false' supertypes = 'MARTE::Component'/>
+    <Class name = 'LogicalResource' isAbstract = 'false' supertypes = 'MARTE::StructuredResource'/>
+    <Class name = 'ServerResource' isAbstract = 'false' supertypes = 'MARTE::StructuredResource'>
+      <Reference name = 'services' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Service' opposite = 'MARTE::Service::resource'/>
+    </Class>
+    <Class name = 'Service' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'resource' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::ServerResource' opposite = 'MARTE::ServerResource::services'/>
+      <Reference name = 'interface' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Interface' opposite = 'MARTE::Interface::service'/>
+    </Class>
+    <Class name = 'Interface' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'service' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MARTE::Service' opposite = 'MARTE::Service::interface'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'Boolean'/>
+  </Package>
+</Metamodel>

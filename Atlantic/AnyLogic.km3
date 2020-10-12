@@ -1,0 +1,184 @@
+-- @name		AnyLogic
+-- @version		1.0
+-- @domains		Simulation
+-- @authors		Jendrick Johannes (jendrick.johannes <at> tu-dresden.de)
+-- @date		2008/01/29
+-- @description	This metamodel describes simulation models for AnyLogic, a tool which is a simulation engine that can run simulations in order to analyze systems and provides visual representation of the running simulation.
+-- @see			XJ Technologies: AnyLogic — multi-paradigm simulation software (June 2007). http://www.xjtek.com/anylogic
+
+package AnyLogic {
+
+    -- Common Superclasses
+    class ModelElement {
+	    attribute id : Integer;
+	    attribute name : String;
+	    attribute excludeFromBuild : Boolean;        
+    }
+    
+    class VisualModelElement extends ModelElement {
+    	reference position container : Point; 
+        reference label container : Point;
+        attribute publicFlag : Boolean;
+	    attribute presentationFlag : Boolean;
+		attribute showLabel : Boolean;    
+    }
+    
+    class Point {
+        attribute x : Integer;
+        attribute y : Integer;
+    }
+    
+    -- Simulation Model
+	class Model extends ModelElement {
+	    attribute engineVersion : Integer;
+	    attribute javaPackageName : String;
+		reference activeObjectClasses[*] container : ActiveObjectClass;
+		reference experiments[*] container : Experiment;
+	}
+
+    -- ActiveObjectClass with embedded objects and connectors
+    class ActiveObjectClass extends ModelElement {
+		reference clientAreaTopLeft container : Point;
+		attribute presentationTopGroupPersistent : Boolean;
+		attribute iconTopGroupPersistent : Boolean;
+		attribute generic : Boolean;
+		attribute genericParameters : String;
+        attribute agent : Boolean;
+        attribute environmentDefinesInitialLocation : Boolean;
+        
+		-- Connectors
+		reference connectors[*] container : Connector;
+		
+		-- EmbeddedObjects
+		reference embeddedObjects[*] container : EmbeddedObject;
+		
+		--Shapes
+		reference shapes[*] container : Shape;
+    }
+
+
+    
+    -- !!! CONNECTORS !!!
+    class Connector extends VisualModelElement {
+    	reference sourceEmbeddedObject : EmbeddedObject;
+		attribute sourceConnectableName : String;
+		reference targetEmbeddedObject : EmbeddedObject;
+		attribute targetConnectableName : String;
+		reference points[*] container : Point;
+    }    
+    
+    -- Embedded Objects (Instances)   
+    class EmbeddedObject extends VisualModelElement {
+		reference presentation : EmbeddedObjectPresentation;
+		reference activeObjectClass container : ActiveObjectClassRef;
+		attribute genericParametersSubstitute : String;
+		reference parameters[*] container : Parameter;
+	}
+	
+	class ActiveObjectClassRef {
+	   attribute packageName : String;
+	   attribute className : String;
+	}
+	
+	class Parameter {
+		attribute name : String;
+		attribute value : String;
+	}
+	
+	class Shape extends VisualModelElement {
+		attribute asObject : Boolean;
+		attribute embeddedIcon : Boolean;
+		attribute rotation : Double;
+	}
+	
+	class EmbeddedObjectPresentation extends Shape {
+	}
+	
+	--- Experiments and Simulations
+	class Experiment extends ModelElement {
+	}
+	
+	class SimulationExperiment extends Experiment {
+		reference activeObjectClass : ActiveObjectClass;
+	
+		reference clientAreaTopLeft container : Point;
+		attribute presentationTopGroupPersistent : Boolean;
+		attribute iconTopGroupPersistent : Boolean;
+		reference frame container : Frame;
+		attribute commandLineArguments : String;
+		attribute maximumMemory : Integer;
+		attribute randomSeed : Boolean;    
+		attribute seedValue : Integer;
+		attribute vmArgs : String;
+		attribute absoluteAccuracy : Double;
+		attribute relativeAccuracy : Double;
+		attribute timeAccuracy : Double;
+		attribute fixedTimeStep : Double;
+		reference shapes [*] container : Shape;
+		reference controls [*] container : Control;
+		reference parameters [*] container : Parameter;
+
+		attribute enableAdaptiveFrameManagement : Boolean;
+		attribute enableAntiAliasing : Boolean;
+		attribute enablePanning : Boolean;
+		attribute enableZoom : Boolean;
+		attribute executionMode : String;
+		attribute cpuRatio : String;  
+		attribute title : String;
+		attribute framesPerSecond : String;
+		attribute realTimeScale : String;
+		reference uiProperties [*] container : Parameter;
+		
+		attribute useCalendar : Boolean;
+		attribute stopOption : String;
+		attribute initialDate : String;
+		attribute initialTime : String;
+		attribute finalDate : String;
+		attribute finalTime : String;	
+		attribute modelTimeUnit : String;
+	}
+	
+	class Control extends VisualModelElement {
+		attribute width : Integer;
+		attribute height : Integer; 
+		attribute asObject : Boolean;
+        attribute embeddedIcon: Boolean;
+		attribute fillColor : Integer;
+		attribute textColor : Integer;
+		attribute enableExpression : String;
+		attribute actionCode : String;
+		attribute labelText : String;
+		reference font container : Font;
+	}
+	
+	class Button extends Control {
+	}
+	
+	class Frame {
+        attribute x : Integer;
+        attribute y : Integer;
+        attribute width : Integer;
+        attribute height : Integer;	
+	}
+	
+	class Text extends Shape {
+		attribute color : Integer;
+		attribute text : String;
+		reference font container : Font;
+		attribute alignment : String;
+	}
+	
+	class Font {
+		attribute name : String;
+		attribute size : Integer;
+		attribute style : Integer;
+	}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+	datatype Double;
+}
+

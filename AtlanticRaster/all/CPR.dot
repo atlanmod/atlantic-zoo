@@ -1,0 +1,56 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_CPR"{
+labelloc=t
+color=black
+label=CPR
+ node[shape=record];
+Plan[label="{Plan| | }"]
+ Plan->Plan[arrowhead=diamond,arrowtail=none,headlabel="super_plan",taillabel="sub_plans[*]",group=Plan,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Objective[label="{Objective| | }"]
+ Objective->Plan[arrowhead=diamond,arrowtail=none,headlabel="objective_plan",taillabel="objectives[*]",group=Plan,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EvaluationCriteria[label="{EvaluationCriteria| | }"]
+ EvaluationCriteria->Objective[arrowhead=diamond,arrowtail=none,headlabel="criteria_objective",taillabel="criterias[*]",group=Objective,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Action[label="{Action| | }"]
+ Action->Plan[arrowhead=diamond,arrowtail=none,headlabel="action_plan",taillabel="actions[*]{ordered}",group=Plan,minlen=2,constraint=true,]
+ Action->Action[arrowhead=diamond,arrowtail=none,headlabel="super_action",taillabel="sub_actions[*]{ordered}",group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Actor[label="{Actor| | }"]
+ Actor->Action[arrowhead=diamond,arrowtail=none,headlabel="actor_action",taillabel="actor",group=Action,minlen=2,constraint=true,]
+ Actor->Actor[arrowhead=diamond,arrowtail=none,headlabel="super_actor",taillabel="sub_actors[*]",group=Actor,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Resource[label="{Resource| | }"]
+ Resource->Action[arrowhead=diamond,arrowtail=none,headlabel="resource_action",taillabel="resources[*]",group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TimeSpec[label="{TimeSpec| | }"]
+ TimeSpec->Action[arrowhead=diamond,arrowtail=none,headlabel="timeSpec_action",taillabel="timeSpecs[*]",group=Action,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

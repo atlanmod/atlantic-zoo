@@ -1,0 +1,425 @@
+package Metamodel;
+
+package AGATE {
+  abstract class Entity {
+  }
+
+  abstract class Object extends Entity {
+    !unique !ordered attr String[1] ~id;
+  }
+
+  abstract class AGATEObject extends Object {
+    !unique !ordered attr String[1] notice;
+    !unique !ordered attr String[1] description;
+    !unique !ordered attr Integer[1] sensitivity;
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] comment;
+    !ordered ref OperationalContext[1] isValidIn;
+    !ordered ref Stake[1] isAssociatedWith;
+  }
+
+  class Objective extends AGATEObject {
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr Integer[1] priority;
+    !unique !ordered attr String[1] indicator;
+    !unique !ordered attr String[1] traceability;
+  }
+
+  class OperationalContext extends AGATEObject {
+  }
+
+  class Project extends AGATEObject {
+    !ordered ref Role[1] moi;
+    !ordered ref Role[1] moa;
+    !ordered ref Role[1] director;
+    !ordered ref ProjectContextElement[*] defines;
+    !ordered ref InformationSystem[*]#associatedProjects associatedISs;
+  }
+
+  class Standard extends GenericStandard {
+    !ordered ref InterfaceCharacteristic[*] caracterizeIC;
+    !ordered ref TechnicalComponent[*] caracterizeTC;
+    !ordered ref LogicalComponent[*] caracterizeLC;
+    !ordered ref Package[*] caracterizeP;
+    !ordered ref Requirement[*] caracterizeR;
+  }
+
+  abstract class GenericStandard extends AGATEObject {
+    !ordered val Standard[*] composedOf;
+  }
+
+  class Threat extends GenericThreat {
+    !unique !ordered attr String[1] nature;
+    !unique !ordered attr String[1] DCSSI;
+    !ordered ref Vulnerability[*] clarifies;
+  }
+
+  abstract class GenericThreat extends AGATEObject {
+    !ordered val Threat[*] composedBy;
+  }
+
+  abstract class Vulnerability {
+    !unique !ordered attr Integer[1] level;
+    !ordered ref Entity[1] relatesTo;
+  }
+
+  class TrafficClass extends AGATEObject {
+    !ordered ref Traffic[*]#trafficClass traffic;
+  }
+
+  abstract class InterfaceCharacteristic extends AGATEObject {
+    !unique !ordered attr String[1] type;
+  }
+
+  class ConfidentialityLevel extends InterfaceCharacteristic {
+  }
+
+  class Protocol extends InterfaceCharacteristic {
+    !unique !ordered attr Integer[1] isoLevel;
+  }
+
+  class Flow extends InterfaceCharacteristic {
+    !unique !ordered attr String[1] unit;
+  }
+
+  class Other extends InterfaceCharacteristic {
+  }
+
+  class ProjectContextElement extends AGATEObject {
+    !unique !ordered attr String[1] type;
+  }
+
+  class DataClass extends AGATEObject {
+  }
+
+  class Event extends AGATEObject {
+  }
+
+  class Risk extends AGATEObject {
+    !unique !ordered attr Integer[1] disponibilityLevel;
+    !unique !ordered attr Integer[1] integrityLevel;
+    !unique !ordered attr Integer[1] confidencialityLevel;
+    !ordered ref CountermeasureRequirement[1] isCoveredByCR;
+    !ordered ref ArchitectureObject[1] isCoveredByAO;
+    !ordered ref MADIOSObject[1] isCoveredByMO;
+    !ordered ref DomainRelation[1] isCoveredByDR;
+    !ordered ref ReusableObject[1] relatesToRO;
+    !ordered ref CommunicationObject[1] relatesToCO;
+    !ordered ref Threat[1] isGeneratedBy;
+  }
+
+  class Stake extends AGATEObject {
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr String[1] relativeDate;
+    !unique !ordered attr String[1] unit;
+    !unique !ordered attr String[1] date;
+    !ordered val Event[*] events;
+  }
+
+  abstract class Requirement extends AGATEObject {
+    !unique !ordered attr Integer[1] criticality;
+    !unique !ordered attr String[1] priority;
+    !unique !ordered attr String[1] state;
+    !ordered ref ArchitectureObject[*] isCoveredBy;
+    !ordered ref ArchitectureObject[*] characterizes;
+  }
+
+  class CountermeasureRequirement extends Requirement {
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr String[1] residualVulnerability;
+  }
+
+  class TechnicalRequirement extends Requirement {
+  }
+
+  class PerformanceRequirement extends Requirement {
+  }
+
+  class InteroperabilityRequirement extends Requirement {
+  }
+
+  class OperationalRequirement extends Requirement {
+  }
+
+  class SecurityRequirement extends Requirement {
+  }
+
+  abstract class Means extends AGATEObject {
+    !ordered ref OrganizationObject[1] isProvidedBy;
+  }
+
+  abstract class DomainRelation extends AGATEObject {
+  }
+
+  class HierarchicalRelation extends DomainRelation {
+  }
+
+  class FunctionalRelation extends DomainRelation {
+    !ordered ref OperationalFunction necessaryObjectOF;
+    !ordered ref OperationalFunction dependentObjectOF;
+    !ordered ref OrganizationObject necessaryObjectOO;
+    !ordered ref OrganizationObject dependentObjectOO;
+    !ordered ref Package[1] necessaryObjectP;
+    !ordered ref Package[1] dependentObjectP;
+  }
+
+  class Dependence extends DomainRelation {
+    !unique !ordered attr String[1] type;
+    !ordered ref Service necessaryObjectS;
+    !ordered ref Service dependentObjectS;
+    !ordered ref LogicalComponent necessaryObjectLC;
+    !ordered ref LogicalComponent dependentObjectLC;
+    !ordered ref Package necessaryObjectP;
+    !ordered ref Package dependentObjectP;
+    !ordered ref Center necessaryObjectC;
+    !ordered ref Center dependentObjectC;
+    !ordered ref InformationSystem necessaryObjectIS;
+    !ordered ref InformationSystem dependentObjectIS;
+  }
+
+  abstract class ArchitectureObject extends AGATEObject {
+  }
+
+  abstract class ReusableObject extends ArchitectureObject {
+    !unique !ordered attr String[1] membership;
+    !unique !ordered attr Integer[1] confidentialityLevel;
+    !ordered ref Entity belongsTo;
+    !ordered ref InformationSystem isAttachedToIS;
+    !ordered ref Actor isAttachedToA;
+    !ordered ref Means isA;
+  }
+
+  class Site extends GenericSite {
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr String[1] localization;
+    !ordered val ReusableObject[*] deployedObjects;
+  }
+
+  abstract class GenericSite extends ReusableObject {
+    !ordered val Site[*] composedOf;
+  }
+
+  class Package extends ReusableObject {
+    !ordered val Package[*] subPackage;
+    !ordered ref Role[*] time;
+    !ordered val ReusableObject[*] groupedObjects;
+    !ordered ref LogicalComponent[1] isCoveredByLC;
+    !ordered ref TechnicalComponent[1] isCoveredByTC;
+    !ordered ref Interface[*] composedOf;
+  }
+
+  class Service extends ReusableObject {
+    !unique !ordered attr String[1] Statut;
+    !ordered ref ReferenceService[1] isASpecializationOf;
+    !ordered ref LogicalComponent[1] isCoveredBy;
+  }
+
+  class TechnicalComponent extends ReusableObject {
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr Boolean[1] cots;
+    !unique !ordered attr Boolean[1] editor;
+    !unique !ordered attr Boolean[1] constructor;
+    !unique !ordered attr String[1] version;
+    !unique !ordered attr String[1] technology;
+    !unique !ordered attr String[1] definedExtension;
+    !unique !ordered attr String[1] statut;
+    !ordered val TechnicalComponent[*] composedOf;
+    !ordered ref ReferenceTechnicalComponent[1] isASpecializationOf;
+    !ordered val Interface[*] interfaces;
+  }
+
+  class LogicalComponent extends ReusableObject {
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr String[1] statut;
+    !ordered val LogicalComponent[*] composedOf;
+    !ordered ref ReferenceLogicalComponent[1] isASpecializationOf;
+    !ordered val Interface[*] interfaces;
+    !ordered ref TechnicalComponent[1] isCoveredBy;
+  }
+
+  class OperationalFunction extends ReusableObject {
+    !ordered val OperationalFunction[*] composedOf;
+    !ordered ref Package[*] isCoveredByP;
+    !ordered ref Service[*] isCoveredByS;
+  }
+
+  abstract class OrganizationObject extends ReusableObject {
+    !ordered ref Role[*] time;
+    !ordered ref HierarchicalRelation[1] subordinate;
+    !ordered ref HierarchicalRelation[1] superior;
+  }
+
+  class Center extends GenericCenter {
+    !ordered val ReusableObject[*] deployedObjects;
+  }
+
+  abstract class GenericCenter extends OrganizationObject {
+    !ordered val Center[*] centers;
+  }
+
+  class InformationSystem extends OrganizationObject {
+    !unique !ordered attr String[1] nature;
+    !unique !ordered attr String[1] version;
+    !unique !ordered attr String[1] membershipCountry;
+    !unique !ordered attr String[1] currentLocation;
+    !unique !ordered attr String[1] startServiceDate;
+    !unique !ordered attr String[1] stopServiceDate;
+    !unique !ordered attr Boolean[1] isGeneric;
+    !unique !ordered attr String[1] functionalDomain;
+    !unique !ordered attr String[1] type;
+    !ordered val InformationSystem[*] composedOf;
+    !ordered ref Project[*]#associatedISs associatedProjects;
+    !ordered val Objective[*] defines;
+    !ordered ref Role[*] fulfills;
+    !ordered ref OperationalContext[*] fixes;
+    !ordered ref Actor[*] usedBy;
+    !ordered val Interface[*] interfaces;
+  }
+
+  class Role extends GenericRole {
+    !unique !ordered attr String[1] type;
+  }
+
+  abstract class GenericRole extends OrganizationObject {
+    !ordered val Role[*] roles;
+  }
+
+  class Actor extends GenericActor {
+  }
+
+  abstract class GenericActor extends OrganizationObject {
+    !ordered val Actor[*] actors;
+  }
+
+  class TelecomOperator extends Actor {
+    !unique !ordered attr String[1] contractType;
+    !ordered val Interface[*] interfaces;
+  }
+
+  abstract class CommunicationObject extends ArchitectureObject {
+    !unique !ordered attr Integer[1] confidentialityLevel;
+    !ordered ref Entity belongsTo;
+  }
+
+  class Interface extends CommunicationObject {
+    !ordered val InterfaceCharacteristic[*] characteristics;
+    !ordered val Interface[*] composedOf;
+  }
+
+  class Interconnection extends CommunicationObject {
+    !unique !ordered attr String[1] linkType;
+    !ordered ref Interface[2] between;
+  }
+
+  class InformationFlow extends CommunicationObject {
+    !unique !ordered attr Integer[1] priority;
+    !unique !ordered attr String[1] frequency;
+    !unique !ordered attr String[1] media;
+    !unique !ordered attr String[1] continuity;
+    !unique !ordered attr String[1] myContainer;
+    !unique !ordered attr String[1] time;
+    !unique !ordered attr String[1] availabilityRatio;
+    !unique !ordered attr Integer[1] integrity;
+    !unique !ordered attr Integer[1] interoperabilityLevel;
+    !unique !ordered attr String[1] mediumFlow;
+    !unique !ordered attr String[1] maximumFlow;
+    !unique !ordered attr String[1] duration;
+    !unique !ordered attr String[1] unitMediumFlow;
+    !unique !ordered attr String[1] averageEvent;
+    !unique !ordered attr String[1] maximumFlowOverOneDuration;
+    !ordered ref Information[1] transports;
+    !ordered ref Package[1] receiverP;
+    !ordered ref Package[1] transmitterP;
+    !ordered ref OrganizationObject[1] receiverOO;
+    !ordered ref OrganizationObject[1] transmitterOO;
+    !ordered ref OperationalFunction[1] receiverOF;
+    !ordered ref OperationalFunction[1] transmitterOF;
+  }
+
+  class Traffic extends CommunicationObject {
+    !unique !ordered attr String[1] sequence;
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr Integer[1] interoperabilityLevel;
+    !ordered ref TrafficClass[1]#traffic trafficClass;
+    !ordered ref DataClass[1] dataClass;
+    !ordered ref Package receiverP;
+    !ordered ref Package transmitterP;
+    !ordered ref InformationSystem receiverIS;
+    !ordered ref InformationSystem transmitterIS;
+    !ordered ref Center receiverC;
+    !ordered ref Center transmitterC;
+    !ordered ref TelecomOperator receiverTO;
+    !ordered ref TelecomOperator transmitterTO;
+    !ordered ref LogicalComponent receiverLC;
+    !ordered ref LogicalComponent transmitterLC;
+    !ordered ref TechnicalComponent receiverTC;
+    !ordered ref TechnicalComponent transmitterTC;
+  }
+
+  class Information extends CommunicationObject {
+    !unique !ordered attr String[1] format;
+    !unique !ordered attr String[1] storageSupport;
+    !unique !ordered attr String[1] persistence;
+    !ordered ref DataClass DataType;
+  }
+
+  abstract class ReferenceObject extends Object {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] description;
+  }
+
+  class ReferenceTechnicalComponent extends ReferenceObject {
+    !ordered ref ReferenceTechnicalComponent[*] composedOf;
+  }
+
+  class TechnicalComponentReferenceFrame extends ReferenceObject {
+    !ordered ref ReferenceTechnicalComponent[*] composedOf;
+  }
+
+  class ReferenceLogicalComponent extends ReferenceObject {
+    !ordered val ReferenceLogicalComponent[*] composedOf;
+  }
+
+  class ReferenceService extends ReferenceObject {
+    !ordered val ReferenceObject[*] composedOf;
+  }
+
+  class ServiceReferenceFrame {
+    !ordered val ReferenceService[*] composedOfRS;
+    !ordered val ReferenceLogicalComponent[*] composedOfRLC;
+  }
+
+  abstract class MADIOSObject extends Object {
+  }
+
+  class Process extends MADIOSObject {
+    !ordered ref Package[*] isCoveredByP;
+    !ordered ref Service[*] isCoveredByS;
+  }
+
+  class Procedure extends MADIOSObject {
+    !ordered ref Package[*] isCoveredByP;
+    !ordered ref Service[*] isCoveredByS;
+  }
+
+  class Operation extends MADIOSObject {
+    !ordered ref Package[*] isCoveredByP;
+    !ordered ref Service[*] isCoveredByS;
+  }
+
+  class Activity extends MADIOSObject {
+    !ordered ref Package[*] isCoveredByP;
+    !ordered ref Service[*] isisCoveredByS;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+  datatype Boolean : "";
+
+}
+

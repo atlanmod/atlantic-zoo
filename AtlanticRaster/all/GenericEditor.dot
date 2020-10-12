@@ -1,0 +1,70 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_Editor"{
+labelloc=t
+color=black
+label=Editor
+ node[shape=record];
+LocatedElement[label="{/LocatedElement/|location : String| }"]
+;
+ node[shape=record];
+Editor[label="{Editor|extension : String| }"]
+ Editor->AbstractElement[arrowhead=vee,arrowtail=diamond,headlabel="abstractElements[*]",group=AbstractElement,minlen=2,constraint=true,]
+ Editor->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AbstractElement[label="{/AbstractElement/|type : String| }"]
+ AbstractElement->Format[arrowhead=vee,arrowtail=diamond,headlabel="format[0-1]",group=Format,minlen=2,constraint=true,]
+ AbstractElement->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Block[label="{Block|blockbegin : String\nblockend : String| }"]
+ Block->AbstractElement[arrowhead=onormal,group=AbstractElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GroupElement[label="{GroupElement| | }"]
+ GroupElement->Indent[arrowhead=vee,arrowtail=diamond,headlabel="indent[0-1]",group=Indent,minlen=2,constraint=true,]
+ GroupElement->Element[arrowhead=vee,arrowtail=diamond,headlabel="element[*]",group=Element,minlen=2,constraint=true,]
+ GroupElement->AbstractElement[arrowhead=onormal,group=AbstractElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Element[label="{Element|element : String| }"]
+ Element->GroupElement[arrowhead=vee,arrowtail=none,headlabel="groupElement",group=GroupElement,minlen=2,constraint=false,]
+ Element->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Format[label="{Format| | }"]
+ Format->Color[arrowhead=vee,arrowtail=diamond,headlabel="color[0-1]",group=Color,minlen=2,constraint=true,]
+ Format->Font[arrowhead=vee,arrowtail=diamond,headlabel="font[0-1]",group=Font,minlen=2,constraint=true,]
+ Format->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Color[label="{Color|red : Integer\ngreen : Integer\nblue : Integer| }"]
+ Color->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Font[label="{Font|font : String\nbold : Boolean\nitalic : Boolean| }"]
+ Font->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Indent[label="{Indent|retrait : String| }"]
+ Indent->GroupElement[arrowhead=vee,arrowtail=none,headlabel="groupElementIndent",group=GroupElement,minlen=2,constraint=false,]
+ Indent->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+
+}
+}

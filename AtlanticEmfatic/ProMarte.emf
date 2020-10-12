@@ -1,0 +1,581 @@
+package Metamodel;
+
+package MARTE {
+  abstract class TimeBase {
+    !unique !ordered attr String[1] name;
+    val Instant[*]#owner instants;
+  }
+
+  abstract class Instant {
+    !unique !ordered attr Boolean[1] isBefore;
+    !ordered ref TimeBase[1]#instants owner;
+    !ordered ref TimeValue[1]#denotedInstant timeValue;
+  }
+
+  abstract class TimeValue {
+    !ordered ref Instant[*]#timeValue denotedInstant;
+    !ordered ref TimeBase[1] ~ref;
+  }
+
+  abstract class TimeInterval {
+    !ordered ref TimeValue[2..*] endValues;
+    !ordered ref Interval[*]#timeInterval denotedInterval;
+  }
+
+  abstract class Interval {
+    !unique !ordered attr Boolean[1] includingMin;
+    !unique !ordered attr Boolean[1] includingMax;
+    !ordered ref TimeBase[1] base;
+    !ordered ref TimeInterval[1]#denotedInterval timeInterval;
+    !ordered ref Instant[*] instants;
+  }
+
+  class SingleTimeBase extends TimeBase {
+    !ordered ref SingleTimeValue[1] currentValue;
+    !ordered ref SingleTimeValue maximumValue;
+    !ordered ref SingleInstant[1] currentInstant;
+  }
+
+  class SingleInstant extends Instant {
+    !ordered ref CoincidencePoint[1]#coincidenceInstants coPoint;
+  }
+
+  class SingleInterval extends Interval {
+    !ordered ref SingleInstant[1] first;
+    !ordered ref SingleInstant[1] last;
+    ref SingleInstant[*] members;
+  }
+
+  class SingleTimeValue extends TimeValue {
+  }
+
+  class SingleTimeInterval extends TimeInterval {
+    !ordered ref SingleTimeValue[1] start;
+    !ordered ref SingleTimeValue[1] end;
+  }
+
+  class DiscreteTimeBase extends TimeBase {
+    !ordered ref Event[1] refEvent;
+  }
+
+  class DiscreteInstant extends Instant {
+    !ordered ref DiscreteInstant#previous next;
+    !ordered ref DiscreteInstant#next previous;
+    !ordered ref EventOccurence[1] refOcc;
+  }
+
+  abstract class Event {
+    val EventOccurence[*] occ;
+  }
+
+  abstract class EventOccurence {
+  }
+
+  abstract class PhysicalTime {
+    val PhysicalInstant[*] physicalInstants;
+  }
+
+  abstract class PhysicalInstant {
+    !ordered ref MetricTimeValue[*] measurement;
+  }
+
+  abstract class Duration {
+    !ordered ref PhysicalInstant[1] start;
+    !ordered ref PhysicalInstant[1] end;
+    !ordered ref MetricTimeInterval[*] measurement;
+  }
+
+  class MultipleTimeBase extends TimeBase {
+    !ordered val SingleTimeBase[+] bases;
+  }
+
+  class CoincidencePoint extends Instant {
+    !ordered ref SingleInstant[+]#coPoint coincidenceInstants;
+  }
+
+  class MultipleInterval extends Interval {
+    !ordered ref CoincidencePoint[+] first;
+    !ordered ref CoincidencePoint[+] last;
+  }
+
+  class MultipleTimeValue extends TimeValue {
+    !ordered ref SingleTimeValue[+] values;
+  }
+
+  class MetricTimeValue extends DiscreteTimeValue {
+  }
+
+  class DiscreteTimeValue extends TimeValue {
+  }
+
+  class MetricTimeInterval extends DiscreteTimeInterval {
+  }
+
+  class DiscreteTimeInterval extends TimeInterval {
+  }
+
+  class SimultaneousEventOccurrence {
+    !ordered ref Instant[1] at;
+    !ordered ref TimedEventOccurence[2..*] occurence;
+  }
+
+  class TimedEvent {
+    !ordered ref MetricTimeValue[+] timestamp;
+  }
+
+  class TimedEventOccurence extends EventOccurence {
+    !ordered ref Instant[1] at;
+    !ordered ref TimeValue[1] timestamp;
+  }
+
+  class TimedAction extends Scenario {
+    !ordered ref TimeInterval[*] duration;
+    !ordered ref TimeValue[*] start;
+    !ordered ref TimeValue[*] end;
+  }
+
+  class Delay extends TimedAction {
+  }
+
+  class TimingMechanism {
+    !unique !ordered attr String[1] stability;
+    !unique !ordered attr String[1] drift;
+    !unique !ordered attr String[1] skew;
+    !ordered ref TimedEvent[1] origin;
+    !ordered ref MetricTimeInterval[1] resolution;
+    !ordered ref Clock[1] refClock;
+    !unique !ordered attr String[1] state;
+  }
+
+  class Clock extends DiscreteTimeBase, TimingMechanism {
+    !ordered ref MetricTimeInterval[1] accuracy;
+    !ordered ref MetricTimeInterval[1] offset;
+    !ordered ref ClockInterrupt[*] generatedInterrupt;
+  }
+
+  class Timer extends TimingMechanism {
+    !unique !ordered attr Boolean[1] isPeriodic;
+    !ordered ref MetricTimeValue[1] duration;
+    !ordered ref TimeOut[*] genratedTimeOuts;
+  }
+
+  class TimeOut {
+  }
+
+  class ClockInterrupt {
+  }
+
+  class System {
+    !ordered ref Quantity[*] dimension;
+  }
+
+  class Model {
+    !ordered ref ModelElement[*]#owner ownes;
+  }
+
+  class AnnotatedModel extends Model {
+    !ordered ref ModelingConcern[+]#annotedModel conformsTo;
+    !ordered ref NFPLibrary[*] ~import;
+  }
+
+  class ModelElement {
+    !ordered ref Model[1]#ownes owner;
+  }
+
+  class AnnotatedModelElement extends ModelElement {
+    !ordered ref NFP[*] annotation;
+  }
+
+  class NFP {
+    !ordered ref Quantity[1] measurementQuantity;
+    !ordered ref NFPLibrary[*]#usedNFP storedBy;
+    !ordered ref NFPCategory[1]#setOf groupedBy;
+  }
+
+  class NFPLibrary {
+    !ordered ref NFPLibrary[*] refersTo;
+    !ordered ref NFP[*]#storedBy usedNFP;
+  }
+
+  class NFPCategory {
+    !ordered val NFP[+]#groupedBy setOf;
+    !ordered ref NFPCategory[*]#owner ownes;
+    !ordered ref NFPCategory#ownes owner;
+  }
+
+  class ModelingConcern {
+    !ordered ref Quantity[*] relevantQuantity;
+    !ordered ref AnnotatedModel[1]#conformsTo annotedModel;
+  }
+
+  class AnalysisConcern extends ModelingConcern {
+  }
+
+  class DesignConcern extends ModelingConcern {
+  }
+
+  class Quantity {
+  }
+
+  class BasicQuantity {
+  }
+
+  class DerivedQuantity {
+  }
+
+  class QualitativeNFP extends NFP {
+    !ordered ref NFP[*] parameter;
+  }
+
+  class QuantitativeNFP extends NFP {
+    !ordered val Realization[*]#owner sampleSet;
+    !ordered val Measure[*]#owner measure;
+  }
+
+  class Realization {
+    !ordered ref Measure[*]#appliesTo function;
+    !ordered ref QuantitativeNFP[1]#sampleSet owner;
+  }
+
+  class Measure {
+    !ordered ref Realization[+]#function appliesTo;
+    !ordered ref QuantitativeNFP[1]#measure owner;
+  }
+
+  class ComplexNFP extends NFP {
+    !ordered ref ComplexNFP[*]#child parent;
+    !ordered ref ComplexNFP[*]#parent child;
+    !ordered val BasicNFP[+]#dimensionOf ownes;
+  }
+
+  class BasicNFP {
+    !unique !ordered attr StatisticalQualifierKinds[1] statisticalQualifier;
+    !unique !ordered attr DirectionKinds[1] directon;
+    !ordered ref NFPType[1] typedBy;
+    !ordered ref NFPValueSpecification[*] valuedBy;
+    !ordered val ComplexNFP[*]#ownes dimensionOf;
+  }
+
+  class NFPType {
+    !unique !ordered attr String[1] valueSpecificationLanguage;
+    !unique !ordered attr SourceKinds source;
+    !ordered ref NFPValueSpecification[*]#constrainedBy constrainedSpec;
+  }
+
+  class NFPInstantType extends NFPType {
+    !unique !ordered attr String[1] value;
+    !unique !ordered attr InstantUnitKinds unit;
+  }
+
+  class NFPurationType extends NFPType {
+    !unique !ordered attr String[1] value;
+    !unique !ordered attr DurationUnitKinds unit;
+  }
+
+  class NFPRateType extends NFPType {
+    !unique !ordered attr String[1] value;
+    !unique !ordered attr RateUnitKinds unit;
+  }
+
+  class NFPProbabilityType extends NFPType {
+    !unique !ordered attr String[1] value;
+    !unique !ordered attr ProbabilityUnitKinds unit;
+  }
+
+  class NFPSizeType extends NFPType {
+    !unique !ordered attr String[1] value;
+    !unique !ordered attr SizeUnitKinds unit;
+  }
+
+  class NFPValueSpecification {
+    !ordered ref NFPType[*]#constrainedSpec constrainedBy;
+    !ordered ref NFPExpression#operand expression;
+  }
+
+  class NFPConstant extends NFPValueSpecification {
+    !ordered ref NFPListConstant#listElements ownerList;
+  }
+
+  class NFPListConstant extends NFPConstant {
+    ref NFPConstant[*]#ownerList listElements;
+  }
+
+  class NFPStringConstant extends NFPConstant {
+    !unique !ordered attr String[1] body;
+  }
+
+  class NFPIntegerConstant extends NFPConstant {
+    !unique !ordered attr Integer[1] body;
+  }
+
+  class NFPRealConstant extends NFPConstant {
+    !unique !ordered attr Integer[1] bodyBeforeComa;
+    !unique !ordered attr Integer[1] bodyAfterComa;
+  }
+
+  class NFPBooleanConstant extends NFPConstant {
+    !unique !ordered attr Boolean[1] body;
+  }
+
+  class NFPVariable extends NFPValueSpecification {
+    !unique !ordered attr String[1] varName;
+  }
+
+  class NFPExpression extends NFPValueSpecification {
+    !unique attr String[+] body;
+    !ordered val NFPValueSpecification[*]#expression operand;
+  }
+
+  enum SourceKinds {
+    est = 0;
+    meas = 0;
+    req = 0;
+    implicit = 0;
+    calc = 0;
+  }
+
+  enum DirectionKinds {
+    increasing = 0;
+    decreasing = 0;
+    undefined = 0;
+  }
+
+  enum StatisticalQualifierKinds {
+    max = 0;
+    min = 0;
+    range = 0;
+    mean = 0;
+    variance = 0;
+    standardDeviation = 0;
+    percentil = 0;
+    frequency = 0;
+    moment = 0;
+    distribution = 0;
+    instantaneous = 0;
+  }
+
+  enum InstantUnitKinds {
+    TAI = 0;
+    UT0 = 0;
+    UT1 = 0;
+    UTC = 0;
+    TT = 0;
+    TDB = 0;
+    TCG = 0;
+    TCB = 0;
+    Sideral = 0;
+    Local = 0;
+  }
+
+  enum DurationUnitKinds {
+    ns = 0;
+    us = 0;
+    ms = 0;
+    s = 0;
+    min = 0;
+    hrs = 0;
+    dys = 0;
+    wks = 0;
+    mos = 0;
+    yrs = 0;
+  }
+
+  enum RateUnitKinds {
+    kbs = 0;
+    MIPS = 0;
+  }
+
+  enum ProbabilityUnitKinds {
+    us = 0;
+    s = 0;
+  }
+
+  enum SizeUnitKinds {
+    bits = 0;
+    bytes = 0;
+    Mb = 0;
+    MB = 0;
+  }
+
+  abstract class Classifier extends AnnotatedModelElement {
+    !ordered ref InstanceSpecification[*]#type instances;
+  }
+
+  abstract class ResourceClassifier extends Classifier {
+    !ordered ref ResourceServiceClassifier[+]#resType offeredService;
+  }
+
+  abstract class ResourceServiceClassifier extends Classifier {
+    !ordered ref ResourceClassifier[1]#offeredService resType;
+  }
+
+  abstract class InstanceSpecification extends AnnotatedModelElement {
+    !ordered ref Classifier[+]#instances type;
+  }
+
+  abstract class ResourceInstanceSpecification extends InstanceSpecification {
+    !ordered ref ResourceServiceInstanceSpecification[+]#resintSpec offeredServiceInstance;
+  }
+
+  abstract class ResourceServiceInstanceSpecification extends InstanceSpecification {
+    !ordered ref ResourceInstanceSpecification[1]#offeredServiceInstance resintSpec;
+  }
+
+  class Hardware {
+    !ordered ref Hardware[1]#containH owner;
+    !ordered ref Hardware[*]#owner containH;
+    !ordered ref HardwareLibrary[*]#owner containHL;
+    !ordered ref HardwareEntity[*]#owner containHE;
+    !ordered ref HardwareDeployment[*]#owner deploymentConfiguration;
+  }
+
+  class HardwareLibrary {
+    !ordered ref Hardware[1]#containHL owner;
+  }
+
+  class HardwareEntity {
+    !ordered ref Hardware[1]#containHE owner;
+  }
+
+  class HardwareDeployment {
+    !ordered ref Hardware[1]#deploymentConfiguration owner;
+    !ordered ref HardwareEntityInstance[+]#owner contain;
+  }
+
+  class HardwareEntityInstance {
+    !ordered ref HardwareDeployment[1]#contain owner;
+  }
+
+  class ECUInstance extends HardwareEntityInstance {
+    !ordered val ECUGateInstance[*] composedOf;
+  }
+
+  class ChannelInstance extends HardwareEntityInstance {
+    !ordered ref ECUGateInstance[2..*]#channel gateInstances;
+  }
+
+  class ECUGateInstance {
+    !ordered ref ChannelInstance[1]#gateInstances channel;
+  }
+
+  class ECU extends HardwareEntity {
+    !ordered val ECUGate[+]#owner contain;
+  }
+
+  class ECUGate {
+    !ordered ref ECU[1]#contain owner;
+    !ordered ref Channel[1]#specify kindOf;
+  }
+
+  class Channel {
+    !ordered ref ECUGate#kindOf specify;
+  }
+
+  class AnalysisContext {
+    !ordered ref ComplexNFP[*] global;
+    !ordered val Workload workload;
+    !ordered val Behavior behavior;
+    !ordered val Resource[+] usedResources;
+  }
+
+  class Workload {
+    !ordered ref Transaction[+]#workload transaction;
+  }
+
+  class Transaction {
+    !ordered ref Workload[+]#transaction workload;
+    !ordered val Trigger[+] trigger;
+    !ordered val Response[1] response;
+  }
+
+  class Trigger {
+    !ordered ref ComplexNFP[1] arrivalPattern;
+    !ordered ref Response[+]#cause effect;
+  }
+
+  class Response {
+    !ordered ref ComplexNFP[1] efficiency;
+    !ordered ref ComplexNFP[1] endToEndLatency;
+    !ordered ref Trigger[+]#effect cause;
+    !ordered ref Scenario[+]#endToEndResponse behavior;
+  }
+
+  class Behavior {
+    !ordered val Scenario[+]#behavior scenario;
+  }
+
+  class Scenario {
+    !ordered ref Behavior[+]#scenario behavior;
+    !ordered ref ComplexNFP[*] scenarionLatency;
+    val Step[+] steps;
+    !ordered ref Step[1] root;
+    !ordered ref Response[1]#behavior endToEndResponse;
+  }
+
+  class Step extends Scenario {
+    !ordered ref Step[*]#successor predecessor;
+    !ordered ref Step[*]#predecessor successor;
+    !ordered ref ComplexNFP[*] stepLatency;
+    !ordered ref Service[*] usedResourceService;
+  }
+
+  class Resource {
+  }
+
+  class BasicResource extends Resource {
+  }
+
+  class StructuredResource extends Resource {
+    !ordered val BasicResource[1] basicResource;
+  }
+
+  class ProcessingResource extends StructuredResource {
+    !ordered ref Link[*] links;
+    !ordered ref Component[+] components;
+  }
+
+  class Link {
+  }
+
+  class ProcessResource extends StructuredResource {
+    !ordered ref Component[+]#process components;
+  }
+
+  class Component {
+    !ordered ref ProcessResource[+]#components process;
+    !ordered ref Interface[+] interfaces;
+  }
+
+  class StructuredComponent extends Component {
+  }
+
+  class BasicComponent extends Component {
+  }
+
+  class LogicalResource extends StructuredResource {
+  }
+
+  class ServerResource extends StructuredResource {
+    !ordered ref Service[+]#resource services;
+  }
+
+  class Service {
+    !ordered ref ServerResource[1]#services resource;
+    !ordered ref Interface[1]#service ~interface;
+  }
+
+  class Interface {
+    !ordered ref Service[1]#~interface service;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+  datatype Boolean : "";
+
+}
+

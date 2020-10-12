@@ -1,0 +1,44 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_BQL"{
+labelloc=t
+color=black
+label=BQL
+ node[shape=record];
+LocatedElement[label="{/LocatedElement/|location : String\ncommentsBefore[*] : String\ncommentsAfter[*] : String| }"]
+;
+ node[shape=record];
+Query[label="{Query| | }"]
+ Query->Entry[arrowhead=vee,arrowtail=diamond,headlabel="entries[*]",group=Entry,minlen=2,constraint=true,]
+ Query->Predicate[arrowhead=vee,arrowtail=diamond,headlabel="predicates[*]",group=Predicate,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Entry[label="{Entry|name : String\ntype : String\nallFields : Boolean| }"]
+ Entry->Predicate[arrowhead=none,arrowtail=none,headlabel="predicate[0-1]",taillabel="entry",group=Predicate,minlen=2,constraint=false,]
+ Entry->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Field[label="{Field|name : String| }"]
+ Field->Entry[arrowhead=diamond,arrowtail=none,headlabel="entry",taillabel="fields[1-*]",group=Entry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Predicate[label="{Predicate| | }"]
+ Predicate->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expression[1-*]",group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Expression[label="{Expression|field : String\nvalue : String| }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+
+}
+}

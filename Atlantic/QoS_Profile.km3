@@ -1,0 +1,54 @@
+-- @name 		QoS Profile
+-- @domains 	Quality of Service 
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/07/10
+-- @description This metamodel describe a metamodel for a QoS Profile
+-- @see 		This metamodel has been extracted from information available in the following article:
+-- @see 		Article "Modelling QoS : Towards a UML Profile"
+-- @see 		by Jan Oyvind Aagedal, Earl F. Ecklund
+-- @see 		Page 280, Section 3.2.2, Fig. 3. Conceptual model for QoS profile
+-- @see 		Lecture Notes in Computer Science 2460
+-- @see 		Jean-Marc Jézéquel, Heinrich Hussman, Stephen Cook
+-- @see 		UML 2002 - The Unified Modeling Language
+
+package QoSProfile {
+	class QoSComponent {
+		 reference operations container : Operation;
+		 reference profile [*] : QoSProfile oppositeOf for;
+	}
+	
+	class Operation {
+	}
+	
+	abstract class QoSProfile {
+		 reference for : QoSComponent oppositeOf profile;
+	}
+	
+	class CompoundProfile extends QoSProfile {
+		reference profileTransition [*] : ProfileTransition oppositeOf compoundProfile; 
+		reference simpleProfile [1-*] ordered container : SimpleProfile oppositeOf compoundProfile;
+	}
+	
+	class SimpleProfile extends QoSProfile {
+		reference compoundProfile : CompoundProfile oppositeOf simpleProfile;
+		reference uses : QoSStatement;
+		reference provides : QoSStatement;
+	}
+	
+	class QoSStatement {
+	}
+	
+	class ProfileTransition {
+		reference operations [*] ordered : Operation;
+		reference from : SimpleProfile; 
+		reference to : SimpleProfile; 
+		reference compoundProfile container : CompoundProfile oppositeOf profileTransition; 
+	}
+
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

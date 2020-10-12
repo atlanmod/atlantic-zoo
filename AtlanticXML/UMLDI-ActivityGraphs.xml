@@ -1,0 +1,252 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'Core'>
+    <Class name = 'Element' isAbstract = 'true' supertypes = ''/>
+    <Class name = 'ModelElement' isAbstract = 'true' supertypes = 'Core::Element'>
+      <Reference name = 'namespace' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::Namespace' opposite = 'Core::Namespace::ownedElement'/>
+      <Attribute name = 'name' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'visibility' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Data_Types::VisibilityKind'/>
+      <Attribute name = 'isSpecification' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'GeneralizableElement' isAbstract = 'true' supertypes = 'Core::ModelElement'>
+      <Reference name = 'generalization' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Core::Generalization' opposite = 'Core::Generalization::child'/>
+      <Attribute name = 'isRoot' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isLeaf' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isAbstract' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'Namespace' isAbstract = 'true' supertypes = 'Core::ModelElement'>
+      <Reference name = 'ownedElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Core::ModelElement' opposite = 'Core::ModelElement::namespace'/>
+    </Class>
+    <Class name = 'Classifier' isAbstract = 'true' supertypes = 'Core::GeneralizableElement, Core::Namespace'>
+      <Reference name = 'powertypeRange' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Core::Generalization' opposite = 'Core::Generalization::powertype'/>
+      <Reference name = 'feature' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Core::Feature' opposite = 'Core::Feature::owner'/>
+    </Class>
+    <Class name = 'Feature' isAbstract = 'true' supertypes = 'Core::ModelElement'>
+      <Reference name = 'owner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::Classifier' opposite = 'Core::Classifier::feature'/>
+      <Attribute name = 'ownerScope' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Data_Types::ScopeKind'/>
+    </Class>
+    <Class name = 'Relationship' isAbstract = 'true' supertypes = 'Core::ModelElement'/>
+    <Class name = 'BehavioralFeature' isAbstract = 'true' supertypes = 'Core::Feature'>
+      <Reference name = 'parameter' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Core::Parameter' opposite = 'Core::Parameter::behavioralFeature'/>
+      <Attribute name = 'isQuery' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'Operation' isAbstract = 'false' supertypes = 'Core::BehavioralFeature'>
+      <Attribute name = 'concurrency' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Data_Types::CallConcurrencyKind'/>
+      <Attribute name = 'isRoot' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isLeaf' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isAbstract' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'specification' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Parameter' isAbstract = 'false' supertypes = 'Core::ModelElement'>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::Classifier' opposite = ''/>
+      <Reference name = 'behavioralFeature' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::BehavioralFeature' opposite = 'Core::BehavioralFeature::parameter'/>
+      <Attribute name = 'defaultValue' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Data_Types::Expression'/>
+      <Attribute name = 'kind' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Data_Types::ParameterDirectionKind'/>
+    </Class>
+    <Class name = 'Generalization' isAbstract = 'false' supertypes = 'Core::Relationship'>
+      <Reference name = 'parent' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::GeneralizableElement' opposite = ''/>
+      <Reference name = 'powertype' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::Classifier' opposite = 'Core::Classifier::powertypeRange'/>
+      <Reference name = 'child' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::GeneralizableElement' opposite = 'Core::GeneralizableElement::generalization'/>
+      <Attribute name = 'discriminator' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+  </Package>
+  <Package name = 'Common_Behavior'>
+    <Class name = 'Signal' isAbstract = 'false' supertypes = 'Core::Classifier'/>
+    <Class name = 'Action' isAbstract = 'true' supertypes = 'Core::ModelElement'>
+      <Reference name = 'actualArgument' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Common_Behavior::Argument' opposite = 'Common_Behavior::Argument::action'/>
+      <Reference name = 'actionSequence' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Common_Behavior::ActionSequence' opposite = 'Common_Behavior::ActionSequence::action'/>
+      <Attribute name = 'recurrence' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Data_Types::IterationExpression'/>
+      <Attribute name = 'target' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Data_Types::ObjectSetExpression'/>
+      <Attribute name = 'isAsynchronous' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'script' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Data_Types::ActionExpression'/>
+    </Class>
+    <Class name = 'CreateAction' isAbstract = 'false' supertypes = 'Common_Behavior::Action'>
+      <Reference name = 'instantiation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::Classifier' opposite = ''/>
+    </Class>
+    <Class name = 'DestroyAction' isAbstract = 'false' supertypes = 'Common_Behavior::Action'/>
+    <Class name = 'UninterpretedAction' isAbstract = 'false' supertypes = 'Common_Behavior::Action'/>
+    <Class name = 'CallAction' isAbstract = 'false' supertypes = 'Common_Behavior::Action'>
+      <Reference name = 'operation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::Operation' opposite = ''/>
+    </Class>
+    <Class name = 'SendAction' isAbstract = 'false' supertypes = 'Common_Behavior::Action'>
+      <Reference name = 'signal' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Common_Behavior::Signal' opposite = ''/>
+    </Class>
+    <Class name = 'ActionSequence' isAbstract = 'false' supertypes = 'Common_Behavior::Action'>
+      <Reference name = 'action' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Common_Behavior::Action' opposite = 'Common_Behavior::Action::actionSequence'/>
+    </Class>
+    <Class name = 'Argument' isAbstract = 'false' supertypes = 'Core::ModelElement'>
+      <Reference name = 'action' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Common_Behavior::Action' opposite = 'Common_Behavior::Action::actualArgument'/>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Data_Types::Expression'/>
+    </Class>
+    <Class name = 'ReturnAction' isAbstract = 'false' supertypes = 'Common_Behavior::Action'/>
+    <Class name = 'TerminateAction' isAbstract = 'false' supertypes = 'Common_Behavior::Action'/>
+    <Class name = 'Exception' isAbstract = 'false' supertypes = 'Common_Behavior::Signal'/>
+  </Package>
+  <Package name = 'State_Machines'>
+    <Class name = 'StateMachine' isAbstract = 'false' supertypes = 'Core::ModelElement'>
+      <Reference name = 'context' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::ModelElement' opposite = ''/>
+      <Reference name = 'submachineState' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'State_Machines::SubmachineState' opposite = 'State_Machines::SubmachineState::submachine'/>
+      <Reference name = 'top' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'State_Machines::State' opposite = 'State_Machines::State::stateMachine'/>
+      <Reference name = 'transitions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'State_Machines::Transition' opposite = 'State_Machines::Transition::stateMachine'/>
+    </Class>
+    <Class name = 'Event' isAbstract = 'true' supertypes = 'Core::ModelElement'>
+      <Reference name = 'parameter' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Core::Parameter' opposite = ''/>
+    </Class>
+    <Class name = 'StateVertex' isAbstract = 'true' supertypes = 'Core::ModelElement'>
+      <Reference name = 'container' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'State_Machines::CompositeState' opposite = 'State_Machines::CompositeState::subvertex'/>
+      <Reference name = 'incoming' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'State_Machines::Transition' opposite = 'State_Machines::Transition::target'/>
+      <Reference name = 'outgoing' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'State_Machines::Transition' opposite = 'State_Machines::Transition::source'/>
+    </Class>
+    <Class name = 'State' isAbstract = 'true' supertypes = 'State_Machines::StateVertex'>
+      <Reference name = 'deferrableEvent' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'State_Machines::Event' opposite = ''/>
+      <Reference name = 'internalTransition' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'State_Machines::Transition' opposite = ''/>
+      <Reference name = 'exit' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Common_Behavior::Action' opposite = ''/>
+      <Reference name = 'doActivity' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Common_Behavior::Action' opposite = ''/>
+      <Reference name = 'entry' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Common_Behavior::Action' opposite = ''/>
+      <Reference name = 'stateMachine' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'State_Machines::StateMachine' opposite = 'State_Machines::StateMachine::top'/>
+    </Class>
+    <Class name = 'TimeEvent' isAbstract = 'false' supertypes = 'State_Machines::Event'>
+      <Attribute name = 'when' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Data_Types::TimeExpression'/>
+    </Class>
+    <Class name = 'CallEvent' isAbstract = 'false' supertypes = 'State_Machines::Event'>
+      <Reference name = 'operation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::Operation' opposite = ''/>
+    </Class>
+    <Class name = 'SignalEvent' isAbstract = 'false' supertypes = 'State_Machines::Event'>
+      <Reference name = 'signal' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Common_Behavior::Signal' opposite = ''/>
+    </Class>
+    <Class name = 'Transition' isAbstract = 'false' supertypes = 'Core::ModelElement'>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'State_Machines::StateVertex' opposite = 'State_Machines::StateVertex::incoming'/>
+      <Reference name = 'trigger' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'State_Machines::Event' opposite = ''/>
+      <Reference name = 'stateMachine' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'State_Machines::StateMachine' opposite = 'State_Machines::StateMachine::transitions'/>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'State_Machines::StateVertex' opposite = 'State_Machines::StateVertex::outgoing'/>
+      <Reference name = 'effect' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Common_Behavior::Action' opposite = ''/>
+      <Reference name = 'guard' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'State_Machines::Guard' opposite = 'State_Machines::Guard::transition'/>
+    </Class>
+    <Class name = 'CompositeState' isAbstract = 'false' supertypes = 'State_Machines::State'>
+      <Reference name = 'subvertex' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'State_Machines::StateVertex' opposite = 'State_Machines::StateVertex::container'/>
+      <Attribute name = 'isConcurrent' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'ChangeEvent' isAbstract = 'false' supertypes = 'State_Machines::Event'>
+      <Attribute name = 'changeExpression' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Data_Types::BooleanExpression'/>
+    </Class>
+    <Class name = 'Guard' isAbstract = 'false' supertypes = 'Core::ModelElement'>
+      <Reference name = 'transition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'State_Machines::Transition' opposite = 'State_Machines::Transition::guard'/>
+      <Attribute name = 'expression' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Data_Types::BooleanExpression'/>
+    </Class>
+    <Class name = 'Pseudostate' isAbstract = 'false' supertypes = 'State_Machines::StateVertex'>
+      <Attribute name = 'kind' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Data_Types::PseudostateKind'/>
+    </Class>
+    <Class name = 'SimpleState' isAbstract = 'false' supertypes = 'State_Machines::State'/>
+    <Class name = 'SubmachineState' isAbstract = 'false' supertypes = 'State_Machines::CompositeState'>
+      <Reference name = 'submachine' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'State_Machines::StateMachine' opposite = 'State_Machines::StateMachine::submachineState'/>
+    </Class>
+    <Class name = 'SynchState' isAbstract = 'false' supertypes = 'State_Machines::StateVertex'>
+      <Attribute name = 'bound' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'StubState' isAbstract = 'false' supertypes = 'State_Machines::StateVertex'>
+      <Attribute name = 'referenceState' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'FinalState' isAbstract = 'false' supertypes = 'State_Machines::State'/>
+  </Package>
+  <Package name = 'Activity_Graphs'>
+    <Class name = 'ActivityGraph' isAbstract = 'false' supertypes = 'State_Machines::StateMachine'>
+      <Reference name = 'partition' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Activity_Graphs::Partition' opposite = 'Activity_Graphs::Partition::activityGraph'/>
+    </Class>
+    <Class name = 'Partition' isAbstract = 'false' supertypes = 'Core::ModelElement'>
+      <Reference name = 'contents' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Core::ModelElement' opposite = ''/>
+      <Reference name = 'activityGraph' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Activity_Graphs::ActivityGraph' opposite = 'Activity_Graphs::ActivityGraph::partition'/>
+    </Class>
+    <Class name = 'SubactivityState' isAbstract = 'false' supertypes = 'State_Machines::SubmachineState'>
+      <Attribute name = 'isDynamic' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'dynamicArguments' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Data_Types::ArgListsExpression'/>
+      <Attribute name = 'dynamicMultiplicity' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Data_Types::Multiplicity'/>
+    </Class>
+    <Class name = 'ActionState' isAbstract = 'false' supertypes = 'State_Machines::SimpleState'>
+      <Attribute name = 'isDynamic' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'dynamicArguments' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Data_Types::ArgListsExpression'/>
+      <Attribute name = 'dynamicMultiplicity' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Data_Types::Multiplicity'/>
+    </Class>
+    <Class name = 'CallState' isAbstract = 'false' supertypes = 'Activity_Graphs::ActionState'/>
+    <Class name = 'ObjectFlowState' isAbstract = 'false' supertypes = 'State_Machines::SimpleState'>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::Classifier' opposite = ''/>
+      <Reference name = 'parameter' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Core::Parameter' opposite = ''/>
+      <Attribute name = 'isSynch' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'ClassifierInState' isAbstract = 'false' supertypes = 'Core::Classifier'>
+      <Reference name = 'inState' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'State_Machines::State' opposite = ''/>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::Classifier' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'Data_Types'>
+    <Enumeration name = 'AggregationKind'>
+      <EnumLiteral name = 'ak_none'/>
+      <EnumLiteral name = 'ak_aggregate'/>
+      <EnumLiteral name = 'ak_composite'/>
+    </Enumeration>
+    <Enumeration name = 'ChangeableKind'>
+      <EnumLiteral name = 'ck_changeable'/>
+      <EnumLiteral name = 'ck_frozen'/>
+      <EnumLiteral name = 'ck_addOnly'/>
+    </Enumeration>
+    <Enumeration name = 'OrderingKind'>
+      <EnumLiteral name = 'ok_unordered'/>
+      <EnumLiteral name = 'ok_ordered'/>
+    </Enumeration>
+    <Enumeration name = 'CallConcurrencyKind'>
+      <EnumLiteral name = 'cck_sequential'/>
+      <EnumLiteral name = 'cck_guarded'/>
+      <EnumLiteral name = 'cck_concurrent'/>
+    </Enumeration>
+    <Enumeration name = 'ParameterDirectionKind'>
+      <EnumLiteral name = 'pdk_in'/>
+      <EnumLiteral name = 'pdk_inout'/>
+      <EnumLiteral name = 'pdk_out'/>
+      <EnumLiteral name = 'pdk_return'/>
+    </Enumeration>
+    <Enumeration name = 'PseudostateKind'>
+      <EnumLiteral name = 'pk_choice'/>
+      <EnumLiteral name = 'pk_deepHistory'/>
+      <EnumLiteral name = 'pk_fork'/>
+      <EnumLiteral name = 'pk_initial'/>
+      <EnumLiteral name = 'pk_join'/>
+      <EnumLiteral name = 'pk_junction'/>
+      <EnumLiteral name = 'pk_shallowHistory'/>
+    </Enumeration>
+    <Enumeration name = 'ScopeKind'>
+      <EnumLiteral name = 'sk_instance'/>
+      <EnumLiteral name = 'sk_classifier'/>
+    </Enumeration>
+    <Enumeration name = 'VisibilityKind'>
+      <EnumLiteral name = 'vk_public'/>
+      <EnumLiteral name = 'vk_protected'/>
+      <EnumLiteral name = 'vk_private'/>
+      <EnumLiteral name = 'vk_package'/>
+    </Enumeration>
+    <Class name = 'Multiplicity' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'range' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Data_Types::MultiplicityRange' opposite = 'Data_Types::MultiplicityRange::multiplicity'/>
+    </Class>
+    <Class name = 'MultiplicityRange' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'multiplicity' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Data_Types::Multiplicity' opposite = 'Data_Types::Multiplicity::range'/>
+      <Attribute name = 'lower' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'upper' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'Expression' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'language' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'body' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'BooleanExpression' isAbstract = 'false' supertypes = 'Data_Types::Expression'/>
+    <Class name = 'ObjectSetExpression' isAbstract = 'false' supertypes = 'Data_Types::Expression'/>
+    <Class name = 'ActionExpression' isAbstract = 'false' supertypes = 'Data_Types::Expression'/>
+    <Class name = 'IterationExpression' isAbstract = 'false' supertypes = 'Data_Types::Expression'/>
+    <Class name = 'TimeExpression' isAbstract = 'false' supertypes = 'Data_Types::Expression'/>
+    <Class name = 'ArgListsExpression' isAbstract = 'false' supertypes = 'Data_Types::Expression'/>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Float'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'Long'/>
+    <DataType name = 'String'/>
+    <DataType name = 'Double'/>
+  </Package>
+</Metamodel>

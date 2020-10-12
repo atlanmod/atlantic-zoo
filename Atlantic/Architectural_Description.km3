@@ -1,0 +1,47 @@
+-- @name 		Architectural Description
+-- @domains 	Software Architecture Description
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/07/20
+-- @description This metamodel fragment describes an Architectural Description
+-- @see 		This metamodel has been extracted from information available in the following article:
+-- @see 		Article "Towards a UML Profile for Software Architecture Descriptions"
+-- @see 		by Mohamed Mancona Kandé, Alfred Strohmeier
+-- @see 		Page 519, Section 4.1, Fig. 4. Extended P1471 Conceptual Model of Architectural Description
+-- @see 		Lecture Notes in Computer Science 1939
+-- @see 		Andy Evans, Stuart Kent, Bran Selic
+-- @see 		UML 2000 - The Unified Modeling Language
+
+package ArchitecturalDescription {
+	class Architecture {
+		reference describedBy : ArchitectureDescription;
+	}
+	
+	class ArchitectureDescription {
+		reference selects [1-*] : ArchitectureView oppositeOf selectedBy;
+		reference organizedBy [1-*] container : ArchitectureView;
+	}
+	
+	class ArchitectureView {
+		reference selectedBy [1-*] : ArchitectureDescription oppositeOf selects;
+		reference constituents [1-*] container : ModelElement;
+		reference conformsTo [1-*] : ArchitectureViewPoint oppositeOf views;
+	}
+	
+	class ArchitectureViewPoint {
+		reference defines : MainView;
+		reference views [1-*] : ArchitectureView oppositeOf conformsTo;
+	}
+	
+	class MainView {
+		reference isProjectedOnto [1-*] : ArchitectureView;
+		reference consistsOf [1-*] container : ModelElement;
+	}
+	
+	class ModelElement {}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

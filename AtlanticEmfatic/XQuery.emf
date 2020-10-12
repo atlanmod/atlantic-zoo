@@ -1,0 +1,101 @@
+package Metamodel;
+
+package XQuery {
+  class XQueryProgram {
+    val ExecutableExpression[*]#xQueryProgram expressions;
+  }
+
+  class Expression {
+    !ordered ref ElementNode#nodes parentNode;
+    !ordered ref Return[1]#expressions returnEx;
+  }
+
+  class ExecutableExpression extends Expression {
+    !ordered ref XQueryProgram[1]#expressions xQueryProgram;
+    !ordered ref FunctionDeclaration[1]#expression functionDeclaration;
+  }
+
+  class Node extends Expression {
+    !unique !ordered attr String[1] name;
+  }
+
+  class FLWOR extends ExecutableExpression {
+    !ordered val For[1]#flwor for;
+    !ordered val Let[1]#flwor let;
+    !ordered val Where[1]#flwor where;
+    !ordered val OrderBy[1]#flwor orderBy;
+    !ordered val Return[1]#flwor return;
+  }
+
+  class FunctionCall extends ExecutableExpression {
+    !unique !ordered attr String[1] name;
+    !ordered val XPath[*]#functionCall parameters;
+  }
+
+  class FunctionDeclaration extends ExecutableExpression {
+    !unique !ordered attr String[1] name;
+    !ordered val ExecutableExpression[+]#functionDeclaration expression;
+  }
+
+  class ElementNode extends Node {
+    !ordered val Expression[*]#parentNode nodes;
+  }
+
+  class AttributeNode extends Node {
+    !unique !ordered attr String[1] value;
+  }
+
+  class TextNode extends ElementNode {
+  }
+
+  class ReturnXPath extends Expression {
+    !unique !ordered attr String[1] value;
+  }
+
+  class XPath extends ReturnXPath {
+    !ordered ref FunctionCall[1]#parameters functionCall;
+    !ordered ref For[1]#expression for;
+    !ordered ref Let[1]#expression let;
+  }
+
+  class BooleanExp extends XPath {
+    !ordered ref Where[1]#expression where;
+  }
+
+  class For {
+    !unique !ordered attr String[1] var;
+    !ordered ref FLWOR[1]#for flwor;
+    !ordered val XPath[1]#for expression;
+  }
+
+  class Let {
+    !unique !ordered attr String[1] var;
+    !ordered ref FLWOR[1]#let flwor;
+    !ordered val XPath[1]#let expression;
+  }
+
+  class Where {
+    !ordered ref FLWOR[1]#where flwor;
+    !ordered val BooleanExp[1]#where expression;
+  }
+
+  class OrderBy {
+    !ordered val FLWOR[1]#orderBy flwor;
+  }
+
+  class Return {
+    !ordered ref FLWOR[1]#return flwor;
+    !ordered val Expression[*]#returnEx expressions;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

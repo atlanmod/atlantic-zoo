@@ -1,0 +1,135 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Double'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+  </Package>
+  <Package name = 'PRR'>
+    <Class name = 'Element' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'location' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsBefore' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsAfter' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'NamedElement' isAbstract = 'true' supertypes = 'PRR::Element'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'RuleSet' isAbstract = 'false' supertypes = 'PRR::Element'>
+      <Reference name = 'rules' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'PRR::Rule' opposite = 'PRR::Rule::ruleOwner'/>
+    </Class>
+    <Class name = 'Rule' isAbstract = 'false' supertypes = 'PRR::NamedElement'>
+      <Reference name = 'binding' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PRR::Binding' opposite = 'PRR::Binding::bindingOwner'/>
+      <Reference name = 'condition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PRR::RuleCondition' opposite = 'PRR::RuleCondition::ruleConditionOwner'/>
+      <Reference name = 'actions' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'PRR::RuleAction' opposite = 'PRR::RuleAction::actionOwner'/>
+      <Reference name = 'ruleOwner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PRR::RuleSet' opposite = 'PRR::RuleSet::rules'/>
+    </Class>
+    <Class name = 'RuleAction' isAbstract = 'false' supertypes = 'PRR::Element'>
+      <Reference name = 'actionOwner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PRR::Rule' opposite = 'PRR::Rule::actions'/>
+    </Class>
+    <Class name = 'RuleCondition' isAbstract = 'false' supertypes = 'PRR::Element'>
+      <Reference name = 'ruleConditionOwner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PRR::Rule' opposite = 'PRR::Rule::condition'/>
+      <Reference name = 'conditionExp' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PRRExpressions::OclExpression' opposite = 'PRRExpressions::OclExpression::conditionOwner'/>
+    </Class>
+    <Class name = 'Binding' isAbstract = 'false' supertypes = 'PRR::Element'>
+      <Reference name = 'bindingOwner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PRR::Rule' opposite = 'PRR::Rule::binding'/>
+      <Reference name = 'ruleVariable' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PRR::RuleVariable' opposite = 'PRR::RuleVariable::ruleVariableOwner'/>
+    </Class>
+    <Class name = 'RuleVariable' isAbstract = 'false' supertypes = 'PRRExpressions::VariableDeclaration'>
+      <Reference name = 'ruleVariableOwner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PRR::Binding' opposite = 'PRR::Binding::ruleVariable'/>
+      <Reference name = 'filter' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PRRExpressions::OclExpression' opposite = 'PRRExpressions::OclExpression::filterRuleVariableOwner'/>
+    </Class>
+    <Package name = 'PRRActions'>
+      <Class name = 'DeleteAction' isAbstract = 'false' supertypes = 'PRR::RuleAction'>
+        <Reference name = 'objValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PRRExpressions::OclExpression' opposite = ''/>
+      </Class>
+      <Class name = 'CreateAction' isAbstract = 'false' supertypes = 'PRR::RuleAction, PRRExpressions::VariableDeclaration'>
+        <Reference name = 'insertArguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'PRRExpressions::OclExpression' opposite = 'PRRExpressions::OclExpression::parentInsert'/>
+      </Class>
+      <Class name = 'AssignAction' isAbstract = 'false' supertypes = 'PRR::RuleAction'>
+        <Reference name = 'objValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PRRExpressions::OclExpression' opposite = 'PRRExpressions::OclExpression::assignedObj'/>
+        <Reference name = 'aValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PRRExpressions::OclExpression' opposite = ''/>
+      </Class>
+      <Class name = 'InvokeAction' isAbstract = 'false' supertypes = 'PRR::RuleAction'>
+        <Reference name = 'invocation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PRRExpressions::OclExpression' opposite = ''/>
+      </Class>
+    </Package>
+    <Package name = 'PRRExpressions'>
+      <Class name = 'PropertyCallExp' isAbstract = 'true' supertypes = 'PRRExpressions::OclExpression'>
+        <Reference name = 'source' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PRRExpressions::OclExpression' opposite = 'PRRExpressions::OclExpression::appliedProperty'/>
+      </Class>
+      <Class name = 'OclExpression' isAbstract = 'true' supertypes = 'PRR::Element'>
+        <Reference name = 'loopExp' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PRRExpressions::LoopExp' opposite = 'PRRExpressions::LoopExp::body'/>
+        <Reference name = 'appliedProperty' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PRRExpressions::PropertyCallExp' opposite = 'PRRExpressions::PropertyCallExp::source'/>
+        <Reference name = 'parentOperation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PRRExpressions::OperationCallExp' opposite = 'PRRExpressions::OperationCallExp::arguments'/>
+        <Reference name = 'parentInsert' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PRRActions::CreateAction' opposite = 'PRRActions::CreateAction::insertArguments'/>
+        <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PRRTypes::OclType' opposite = 'PRRTypes::OclType::oclExpression'/>
+        <Reference name = 'filterRuleVariableOwner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PRR::RuleVariable' opposite = 'PRR::RuleVariable::filter'/>
+        <Reference name = 'conditionOwner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PRR::RuleCondition' opposite = 'PRR::RuleCondition::conditionExp'/>
+        <Reference name = 'assignedObj' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PRRActions::AssignAction' opposite = 'PRRActions::AssignAction::objValue'/>
+      </Class>
+      <Class name = 'IteratorExp' isAbstract = 'false' supertypes = 'PRRExpressions::LoopExp'>
+        <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+      <Class name = 'LoopExp' isAbstract = 'false' supertypes = 'PRRExpressions::PropertyCallExp'>
+        <Reference name = 'body' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PRRExpressions::OclExpression' opposite = 'PRRExpressions::OclExpression::loopExp'/>
+        <Reference name = 'iterators' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PRRExpressions::Iterator' opposite = 'PRRExpressions::Iterator::loopExpr'/>
+      </Class>
+      <Class name = 'OperatorCallExp' isAbstract = 'false' supertypes = 'PRRExpressions::OperationCallExp'/>
+      <Class name = 'OperationCallExp' isAbstract = 'false' supertypes = 'PRRExpressions::PropertyCallExp'>
+        <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'PRRExpressions::OclExpression' opposite = 'PRRExpressions::OclExpression::parentOperation'/>
+        <Attribute name = 'operationName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        <Attribute name = 'signature' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+      <Class name = 'CollectionOperationCallExp' isAbstract = 'false' supertypes = 'PRRExpressions::OperationCallExp'/>
+      <Class name = 'StringExp' isAbstract = 'false' supertypes = 'PRRExpressions::PrimitiveExp'>
+        <Attribute name = 'stringSymbol' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+      <Class name = 'BooleanExp' isAbstract = 'false' supertypes = 'PRRExpressions::PrimitiveExp'>
+        <Attribute name = 'booleanSymbol' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      </Class>
+      <Class name = 'NumericExp' isAbstract = 'true' supertypes = 'PRRExpressions::PrimitiveExp'/>
+      <Class name = 'IntegerExp' isAbstract = 'false' supertypes = 'PRRExpressions::NumericExp'>
+        <Attribute name = 'integerSymbol' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      </Class>
+      <Class name = 'RealExp' isAbstract = 'false' supertypes = 'PRRExpressions::NumericExp'>
+        <Attribute name = 'realSymbol' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+      </Class>
+      <Class name = 'PrimitiveExp' isAbstract = 'true' supertypes = 'PRRExpressions::OclExpression'/>
+      <Class name = 'NavigationOrAttributeCallExp' isAbstract = 'false' supertypes = 'PRRExpressions::PropertyCallExp'>
+        <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+      <Class name = 'Iterator' isAbstract = 'false' supertypes = 'PRRExpressions::VariableDeclaration'>
+        <Reference name = 'loopExpr' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PRRExpressions::LoopExp' opposite = 'PRRExpressions::LoopExp::iterators'/>
+      </Class>
+      <Class name = 'VariableDeclaration' isAbstract = 'false' supertypes = 'PRR::Element'>
+        <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PRRTypes::OclType' opposite = 'PRRTypes::OclType::variableDeclaration'/>
+        <Attribute name = 'varName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        <Reference name = 'variableExp' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PRRExpressions::VariableExp' opposite = 'PRRExpressions::VariableExp::referredVariable'/>
+      </Class>
+      <Class name = 'VariableExp' isAbstract = 'false' supertypes = 'PRRExpressions::OclExpression'>
+        <Reference name = 'referredVariable' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PRRExpressions::VariableDeclaration' opposite = 'PRRExpressions::VariableDeclaration::variableExp'/>
+      </Class>
+      <Class name = 'TypeExp' isAbstract = 'false' supertypes = 'PRRExpressions::OclExpression'>
+        <Reference name = 'referredType' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PRRTypes::OclType' opposite = 'PRRTypes::OclType::typeExp'/>
+      </Class>
+      <Class name = 'AllInstanceExp' isAbstract = 'false' supertypes = 'PRRExpressions::OclExpression'>
+        <Reference name = 'sourceType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PRRTypes::OclType' opposite = 'PRRTypes::OclType::appliedAllInstance'/>
+      </Class>
+    </Package>
+    <Package name = 'PRRTypes'>
+      <Class name = 'OclType' isAbstract = 'false' supertypes = 'PRR::NamedElement'>
+        <Reference name = 'variableDeclaration' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PRRExpressions::VariableDeclaration' opposite = 'PRRExpressions::VariableDeclaration::type'/>
+        <Reference name = 'oclExpression' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PRRExpressions::OclExpression' opposite = 'PRRExpressions::OclExpression::type'/>
+        <Reference name = 'appliedAllInstance' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PRRExpressions::AllInstanceExp' opposite = 'PRRExpressions::AllInstanceExp::sourceType'/>
+        <Reference name = 'typeExp' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PRRExpressions::TypeExp' opposite = 'PRRExpressions::TypeExp::referredType'/>
+      </Class>
+      <Class name = 'StringType' isAbstract = 'false' supertypes = 'PRRTypes::Primitive'/>
+      <Class name = 'Primitive' isAbstract = 'true' supertypes = 'PRRTypes::OclType'/>
+      <Class name = 'RealType' isAbstract = 'false' supertypes = 'PRRTypes::NumericType'/>
+      <Class name = 'BooleanType' isAbstract = 'false' supertypes = 'PRRTypes::Primitive'/>
+      <Class name = 'NumericType' isAbstract = 'true' supertypes = 'PRRTypes::Primitive'/>
+      <Class name = 'IntegerType' isAbstract = 'false' supertypes = 'PRRTypes::NumericType'/>
+    </Package>
+  </Package>
+</Metamodel>

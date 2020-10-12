@@ -1,0 +1,7 @@
+( defstruct Subsystem )
+( defstruct Relation :subsystem :classes )
+( defstruct Class :name :is_deferred :parentSubsystem :subsystem )
+( defstruct Feature :theClass :type )
+( defstruct Type :name )
+( defstruct Entity :theClass :type )
+( defstruct Routine :theClass :type )

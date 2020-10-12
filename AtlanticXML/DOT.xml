@@ -1,0 +1,129 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+    <DataType name = 'Double'/>
+  </Package>
+  <Package name = 'DOT'>
+    <Class name = 'Label' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'element' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DOT::GraphElement' opposite = 'DOT::GraphElement::label'/>
+    </Class>
+    <Class name = 'SimpleLabel' isAbstract = 'false' supertypes = 'DOT::Label'>
+      <Attribute name = 'content' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ComplexLabel' isAbstract = 'false' supertypes = 'DOT::Label'>
+      <Reference name = 'compartments' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'DOT::Compartment' opposite = 'DOT::Compartment::complexLabel'/>
+    </Class>
+    <Class name = 'Compartment' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'complexLabel' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DOT::ComplexLabel' opposite = 'DOT::ComplexLabel::compartments'/>
+      <Reference name = 'compartments' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'DOT::Compartment' opposite = ''/>
+      <Reference name = 'anchor' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DOT::Anchor' opposite = 'DOT::Anchor::source'/>
+    </Class>
+    <Class name = 'VerticalCompartment' isAbstract = 'false' supertypes = 'DOT::Compartment'/>
+    <Class name = 'HorizontalCompartment' isAbstract = 'false' supertypes = 'DOT::Compartment'/>
+    <Class name = 'SimpleCompartment' isAbstract = 'false' supertypes = 'DOT::Compartment'>
+      <Attribute name = 'content' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Anchor' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'source' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DOT::Compartment' opposite = 'DOT::Compartment::anchor'/>
+    </Class>
+    <Class name = 'GraphElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'label' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'DOT::Label' opposite = 'DOT::Label::element'/>
+      <Attribute name = 'style' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'color' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Graph' isAbstract = 'false' supertypes = 'DOT::GraphElement'>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'rankDir' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'labeljust' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'labelloc' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'concentrate' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'nodes' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'DOT::Nodelike' opposite = 'DOT::Nodelike::graph'/>
+      <Attribute name = 'boundingBox' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'compound' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'layers' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DOT::Layer' opposite = 'DOT::Layer::graph'/>
+      <Attribute name = 'nodeSeparation' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+      <Attribute name = 'ordering' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'size' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'ratio' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'center' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'Layer' isAbstract = 'false' supertypes = 'DOT::GraphElement'>
+      <Reference name = 'nodes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DOT::Nodelike' opposite = 'DOT::Nodelike::layers'/>
+      <Reference name = 'arcs' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DOT::Arc' opposite = 'DOT::Arc::layers'/>
+      <Reference name = 'graph' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DOT::Graph' opposite = 'DOT::Graph::layers'/>
+      <Attribute name = 'layerSeparator' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Nodelike' isAbstract = 'true' supertypes = 'DOT::GraphElement'>
+      <Reference name = 'owner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DOT::SubGraph' opposite = 'DOT::SubGraph::nodes'/>
+      <Reference name = 'refers' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DOT::Arc' opposite = 'DOT::Arc::fromNode'/>
+      <Reference name = 'referredBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DOT::Arc' opposite = 'DOT::Arc::toNode'/>
+      <Reference name = 'graph' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DOT::Graph' opposite = 'DOT::Graph::nodes'/>
+      <Reference name = 'layers' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DOT::Layer' opposite = 'DOT::Layer::nodes'/>
+    </Class>
+    <Class name = 'SubGraph' isAbstract = 'false' supertypes = 'DOT::Nodelike'>
+      <Reference name = 'nodes' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'DOT::Nodelike' opposite = 'DOT::Nodelike::owner'/>
+      <Attribute name = 'labelloc' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Node' isAbstract = 'false' supertypes = 'DOT::Nodelike'>
+      <Attribute name = 'fixedSize' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'fontname' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'fontsize' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'height' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'width' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'shape' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'DOT::NodeShape' opposite = ''/>
+    </Class>
+    <Class name = 'Arc' isAbstract = 'true' supertypes = 'DOT::GraphElement'>
+      <Reference name = 'fromNode' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DOT::Nodelike' opposite = 'DOT::Nodelike::refers'/>
+      <Reference name = 'toNode' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DOT::Nodelike' opposite = 'DOT::Nodelike::referredBy'/>
+      <Reference name = 'layers' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DOT::Layer' opposite = 'DOT::Layer::arcs'/>
+      <Attribute name = 'constraint' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'group' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'minlen' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'sameHead' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'sameTail' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'lhead' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DOT::Nodelike' opposite = ''/>
+      <Reference name = 'ltail' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DOT::Nodelike' opposite = ''/>
+      <Attribute name = 'decorate' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'DirectedArc' isAbstract = 'false' supertypes = 'DOT::Arc'>
+      <Reference name = 'arrowHead' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'DOT::ArrowShape' opposite = ''/>
+      <Reference name = 'headlabel' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DOT::Label' opposite = ''/>
+      <Reference name = 'taillabel' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DOT::Label' opposite = ''/>
+      <Reference name = 'arrowTail' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'DOT::ArrowShape' opposite = ''/>
+      <Attribute name = 'tail_lp' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+      <Attribute name = 'head_lp' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+    </Class>
+    <Class name = 'UndirectedArc' isAbstract = 'false' supertypes = 'DOT::Arc'/>
+    <Class name = 'Shape' isAbstract = 'true' supertypes = 'DOT::GraphElement'>
+      <Attribute name = 'width' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'height' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'peripheries' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'NodeShape' isAbstract = 'true' supertypes = 'DOT::Shape'/>
+    <Class name = 'SimpleNodeShape' isAbstract = 'false' supertypes = 'DOT::NodeShape'/>
+    <Class name = 'PointNodeShape' isAbstract = 'false' supertypes = 'DOT::NodeShape'/>
+    <Class name = 'ComplexNodeShape' isAbstract = 'true' supertypes = 'DOT::NodeShape'/>
+    <Class name = 'PolygonNodeShape' isAbstract = 'false' supertypes = 'DOT::ComplexNodeShape'>
+      <Attribute name = 'sides' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'skew' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'distortion' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'isRegular' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'orientation' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'MNodeShape' isAbstract = 'false' supertypes = 'DOT::ComplexNodeShape'>
+      <Reference name = 'toplabel' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'DOT::Label' opposite = ''/>
+      <Reference name = 'bottomlabel' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'DOT::Label' opposite = ''/>
+    </Class>
+    <Class name = 'RecordNodeShape' isAbstract = 'false' supertypes = 'DOT::ComplexNodeShape'/>
+    <Class name = 'ArrowShape' isAbstract = 'false' supertypes = 'DOT::Shape'>
+      <Attribute name = 'clipping' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'isPlain' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'size' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+  </Package>
+</Metamodel>

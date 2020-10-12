@@ -1,0 +1,51 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_UseCase"{
+labelloc=t
+color=black
+label=UseCase
+ node[shape=record];
+Actor[label="{Actor| | }"]
+ Actor->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UseCase[label="{UseCase| | }"]
+ UseCase->Include[arrowhead=vee,arrowtail=diamond,headlabel="include[1-*]{ordered}",group=Include,minlen=2,constraint=true,]
+ UseCase->Extend[arrowhead=vee,arrowtail=diamond,headlabel="extend[1-*]{ordered}",group=Extend,minlen=2,constraint=true,]
+ UseCase->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Extend[label="{Extend| | }"]
+ Extend->UseCase[arrowhead=vee,arrowtail=none,headlabel="extension[1-*]{ordered}",group=UseCase,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Include[label="{Include| | }"]
+ Include->UseCase[arrowhead=vee,arrowtail=none,headlabel="includingCase[1-*]{ordered}",group=UseCase,minlen=2,constraint=false,]
+;
+ node[shape=record];
+UseCaseContainer[label="{UseCaseContainer| | }"]
+ UseCaseContainer->NamedElement[arrowhead=vee,arrowtail=diamond,headlabel="ownedElement[*]{ordered}",group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BehavioredClassifier[label="{BehavioredClassifier| | }"]
+;
+ node[shape=record];
+NamedElement[label="{/NamedElement/|name[0-1] : String| }"]
+;
+ node[shape=record];
+Association[label="{Association| | }"]
+ Association->Actor[arrowhead=vee,arrowtail=none,headlabel="actor[0-1]",group=Actor,minlen=2,constraint=false,]
+ Association->UseCase[arrowhead=vee,arrowtail=none,headlabel="useCase[0-1]",group=UseCase,minlen=2,constraint=false,]
+ Association->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

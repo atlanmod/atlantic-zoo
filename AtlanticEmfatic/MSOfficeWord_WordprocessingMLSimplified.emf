@@ -1,0 +1,160 @@
+package Metamodel;
+
+package WordprocessingMLBasicDef {
+  class StringProperty extends StringType {
+  }
+
+  class StringType {
+    !unique !ordered attr String[1] ~val;
+  }
+
+  enum BreakType {
+    bt_page = 0;
+    bt_column = 0;
+    bt_text_wrapping = 0;
+  }
+
+  enum NoteValue {
+    ftn_normal = 0;
+    ftn_separator = 0;
+    ftn_continuation_separator = 0;
+    ftn_continuation_notice = 0;
+  }
+
+  enum OnOffType {
+    oot_on = 0;
+    oot_off = 0;
+  }
+
+  enum FldCharTypeProperty {
+    fctp_begin = 0;
+    fctp_separate = 0;
+    fctp_end = 0;
+  }
+
+  class WordDocument {
+    !ordered val StringProperty ignoreSubtree;
+    !ordered val StringProperty ignoreElements;
+    !ordered val BodyElt[1]#be_wordDocument body;
+  }
+
+  class BodyElt {
+    !ordered ref WordDocument[1]#body be_wordDocument;
+    val BlockLevelElt[*]#ble_bodyElt blockLevelElts;
+  }
+
+  abstract class BlockLevelElt {
+    !ordered ref BodyElt[1]#blockLevelElts ble_bodyElt;
+    !ordered ref NoteElt[1]#n_blockLevelElts ble_note;
+  }
+
+  abstract class BlockLevelChunkElt extends BlockLevelElt {
+  }
+
+  class ParaElt extends BlockLevelChunkElt {
+    val ParaContentElt[*]#pce_pElt pContentElts;
+  }
+
+  abstract class ParaContentElt {
+    !ordered ref ParaElt[1]#pContentElts pce_pElt;
+  }
+
+  class RunElt extends ParaContentElt {
+    val RunContentElt[*]#rce_rElt rContentElts;
+  }
+
+  abstract class RunContentElt {
+    !ordered ref RunElt[1]#rContentElts rce_rElt;
+  }
+
+  class BreakElt extends RunContentElt {
+    !unique !ordered attr BreakType type;
+  }
+
+  class Text extends RunContentElt, StringType {
+  }
+
+  class DelText extends RunContentElt, StringType {
+  }
+
+  class InstrText extends RunContentElt, StringType {
+  }
+
+  class DelInstrText extends RunContentElt, StringType {
+  }
+
+  class NoBreakHyphen extends RunContentElt {
+  }
+
+  class SoftHyphen extends RunContentElt {
+  }
+
+  class AnnotationRef extends RunContentElt {
+  }
+
+  class FootnoteRef extends RunContentElt {
+  }
+
+  class EndnoteRef extends RunContentElt {
+  }
+
+  class Separator extends RunContentElt {
+  }
+
+  class ContinuationSeparator extends RunContentElt {
+  }
+
+  class PgNum extends RunContentElt {
+  }
+
+  class Cr extends RunContentElt {
+  }
+
+  class Footnote extends RunContentElt, NoteElt {
+  }
+
+  class Endnote extends RunContentElt, NoteElt {
+  }
+
+  abstract class NoteElt {
+    val BlockLevelElt[+]#ble_note n_blockLevelElts;
+    !unique !ordered attr NoteValue type;
+    !unique !ordered attr OnOffType suppressRef;
+  }
+
+  class Picture extends RunContentElt {
+  }
+
+  class Symbol extends RunContentElt, SymElt {
+  }
+
+  class SymElt {
+    !ordered val StringType[1] font;
+    !ordered val StringType[1] char;
+  }
+
+  class Tab extends RunContentElt {
+  }
+
+  class FldChar extends RunContentElt, FldCharElt {
+  }
+
+  class FldCharElt {
+    !ordered val StringType fldData;
+    !unique !ordered attr FldCharTypeProperty[1] fldCharType;
+    !unique !ordered attr OnOffType[1] fldLock;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

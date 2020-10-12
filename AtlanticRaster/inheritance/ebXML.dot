@@ -1,0 +1,105 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_ebXML"{
+labelloc=t
+color=black
+label=ebXML
+ node[shape=record];
+MultyPartyCollaboration[label="{MultyPartyCollaboration| | }"]
+;
+ node[shape=record];
+BusinessPartnerRole[label="{BusinessPartnerRole| | }"]
+;
+ node[shape=record];
+Performs[label="{Performs| | }"]
+;
+ node[shape=record];
+AuthorizedRole[label="{AuthorizedRole|isInitiator : Boolean| }"]
+;
+ node[shape=record];
+Transaction[label="{Transaction|onInitiation : String\nconditionGuard : String\nconditionExpression : String| }"]
+;
+ node[shape=record];
+BinaryCollaboration[label="{BinaryCollaboration|pattern : String\ntimeToPerform : String\npreCondition : String\npostCondition : String\nbeginsWhen : String\nendsWhen : String| }"]
+;
+ node[shape=record];
+BusinessState[label="{/BusinessState/| | }"]
+;
+ node[shape=record];
+Start[label="{Start| | }"]
+ Start->BusinessState[arrowhead=onormal,group=BusinessState,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Fork[label="{Fork|waitForAll : String| }"]
+ Fork->BusinessState[arrowhead=onormal,group=BusinessState,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Join[label="{Join| | }"]
+ Join->BusinessState[arrowhead=onormal,group=BusinessState,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompletionState[label="{CompletionState|guardCondition : String| }"]
+ CompletionState->BusinessState[arrowhead=onormal,group=BusinessState,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Failure[label="{Failure| | }"]
+ Failure->CompletionState[arrowhead=onormal,group=CompletionState,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Success[label="{Success| | }"]
+ Success->CompletionState[arrowhead=onormal,group=CompletionState,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BusinessActivity[label="{/BusinessActivity/| | }"]
+ BusinessActivity->BusinessState[arrowhead=onormal,group=BusinessState,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BusinessTransactionActivity[label="{BusinessTransactionActivity|timeToPerform : String\nisConcurrent : Boolean\nisLegallyBinding : Boolean| }"]
+ BusinessTransactionActivity->BusinessActivity[arrowhead=onormal,group=BusinessActivity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CollaborationActivity[label="{CollaborationActivity| | }"]
+ CollaborationActivity->BusinessActivity[arrowhead=onormal,group=BusinessActivity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BusinessTransaction[label="{BusinessTransaction|pattern : String\nisGuaranteedDeliveryRequired : Boolean\npreCondition : String\npostCondition : String\nbeginsWhen : String\nendsWhen : String| }"]
+;
+ node[shape=record];
+BusinessAction[label="{/BusinessAction/|isIntelligiblecheckRequired : Boolean\nisAuthorizationRequired : Boolean\ntimeToAcknowledgeReceipt : String\nisNonRepudiationRequired : Boolean\nisNonRepudiationOfRecipientRequired : Boolean| }"]
+;
+ node[shape=record];
+RequestingBusinessActivity[label="{RequestingBusinessActivity|timeToAcknowledgeAcceptance : String| }"]
+ RequestingBusinessActivity->BusinessAction[arrowhead=onormal,group=BusinessAction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RespondingBusinessActivity[label="{RespondingBusinessActivity| | }"]
+ RespondingBusinessActivity->BusinessAction[arrowhead=onormal,group=BusinessAction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DocumentSecurity[label="{/DocumentSecurity/|isConfidential : Boolean\nisTamperProof : Boolean\nisAuthenticated : Boolean| }"]
+;
+ node[shape=record];
+DocumentEnvelope[label="{DocumentEnvelope|isPositiveResponse : Boolean| }"]
+ DocumentEnvelope->DocumentSecurity[arrowhead=onormal,group=DocumentSecurity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Attachment[label="{Attachment|mimeType : String\nspecification : String\nversion : String| }"]
+ Attachment->DocumentSecurity[arrowhead=onormal,group=DocumentSecurity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BusinessDocument[label="{BusinessDocument|specificationLocation : String\nspecificationElement : String\nconditionExpression : String| }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

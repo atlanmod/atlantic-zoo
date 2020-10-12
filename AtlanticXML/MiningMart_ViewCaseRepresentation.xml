@@ -1,0 +1,104 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'SimplfiedMiningMart'>
+    <Class name = 'ModelElement' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Classifier' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::ModelElement'/>
+    <Class name = 'StructuralFeature' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::ModelElement'/>
+    <Class name = 'Class' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::Classifier'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'attributes' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SimplfiedMiningMart::Attribute' opposite = 'SimplfiedMiningMart::Attribute::class'/>
+    </Class>
+    <Class name = 'DataType' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::Classifier'>
+      <Reference name = 'attribute' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimplfiedMiningMart::Attribute' opposite = 'SimplfiedMiningMart::Attribute::has'/>
+    </Class>
+    <Class name = 'Attribute' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::StructuralFeature'>
+      <Reference name = 'class' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimplfiedMiningMart::Class' opposite = 'SimplfiedMiningMart::Class::attributes'/>
+      <Reference name = 'has' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimplfiedMiningMart::DataType' opposite = 'SimplfiedMiningMart::DataType::attribute'/>
+    </Class>
+  </Package>
+  <Package name = 'CaseRepresentation'>
+    <Class name = 'Case' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::ModelElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'caseMode' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'caseInput' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CaseRepresentation::Parameter' opposite = ''/>
+      <Attribute name = 'documentation' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'listOfStep' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'CaseRepresentation::Step' opposite = 'CaseRepresentation::Step::belongsToCase'/>
+    </Class>
+    <Class name = 'Step' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::ModelElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'description' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'belongsToCase' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CaseRepresentation::Case' opposite = 'CaseRepresentation::Case::listOfStep'/>
+      <Reference name = 'embedsOperator' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CaseRepresentation::Operator' opposite = ''/>
+      <Reference name = 'predecessors' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'CaseRepresentation::Step' opposite = ''/>
+      <Reference name = 'successors' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'CaseRepresentation::Step' opposite = ''/>
+    </Class>
+    <Class name = 'LoopStep' isAbstract = 'false' supertypes = 'CaseRepresentation::Step'/>
+    <Class name = 'MultiStep' isAbstract = 'false' supertypes = 'CaseRepresentation::Step'>
+      <Attribute name = 'iterationCondition' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Operator' isAbstract = 'true' supertypes = 'SimplfiedMiningMart::ModelElement'>
+      <Attribute name = 'loopable' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'numberOfInputParameters' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'numberOfOutputParameters' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'manual' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'tool' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'input' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'CaseRepresentation::Parameter' opposite = ''/>
+      <Reference name = 'output' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'CaseRepresentation::Parameter' opposite = ''/>
+      <Reference name = 'realizes' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CaseRepresentation::ExecutionElement' opposite = ''/>
+    </Class>
+    <Class name = 'Parameter' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'place' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'parameterType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CaseRepresentation::ParameterType' opposite = ''/>
+      <Reference name = 'belongsToOperator' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CaseRepresentation::Operator' opposite = ''/>
+    </Class>
+    <Enumeration name = 'ParameterType'>
+      <EnumLiteral name = 'Value'/>
+      <EnumLiteral name = 'Concept'/>
+      <EnumLiteral name = 'RelationShip'/>
+      <EnumLiteral name = 'FeatureAttribute'/>
+    </Enumeration>
+    <Class name = 'FeatureConstruction' isAbstract = 'false' supertypes = 'CaseRepresentation::Operator'>
+      <Attribute name = 'scalingFactor' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'DataMinStep' isAbstract = 'false' supertypes = 'CaseRepresentation::Operator'/>
+    <Class name = 'TimeOperator' isAbstract = 'false' supertypes = 'CaseRepresentation::Operator'/>
+    <Class name = 'FeatureSelection' isAbstract = 'false' supertypes = 'CaseRepresentation::Operator'/>
+    <Class name = 'MultiRelFeatureConstr' isAbstract = 'false' supertypes = 'CaseRepresentation::Operator'/>
+    <Class name = 'RowSelection' isAbstract = 'false' supertypes = 'CaseRepresentation::Operator'/>
+    <Class name = 'Agregation' isAbstract = 'false' supertypes = 'CaseRepresentation::MultiRelFeatureConstr'/>
+    <Class name = 'Scaling' isAbstract = 'false' supertypes = 'CaseRepresentation::FeatureConstruction'/>
+    <Class name = 'Discretization' isAbstract = 'false' supertypes = 'CaseRepresentation::FeatureConstruction'/>
+    <Class name = 'Segmentation' isAbstract = 'false' supertypes = 'CaseRepresentation::RowSelection'/>
+    <Class name = 'Sampling' isAbstract = 'false' supertypes = 'CaseRepresentation::RowSelection'/>
+    <Class name = 'ExecutionElement' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CaseRepresentation::DataObject' opposite = 'CaseRepresentation::DataObject::source'/>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CaseRepresentation::DataObject' opposite = 'CaseRepresentation::DataObject::target'/>
+    </Class>
+    <Class name = 'DataObject' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CaseRepresentation::ExecutionElement' opposite = 'CaseRepresentation::ExecutionElement::source'/>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CaseRepresentation::ExecutionElement' opposite = 'CaseRepresentation::ExecutionElement::target'/>
+    </Class>
+    <Class name = 'MSL-Tool' isAbstract = 'false' supertypes = 'CaseRepresentation::ExecutionElement'/>
+    <Class name = 'TransformationGroup' isAbstract = 'false' supertypes = 'CaseRepresentation::ExecutionElement'>
+      <Reference name = 'transformation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'CaseRepresentation::Transformation' opposite = 'CaseRepresentation::Transformation::transformationGroup'/>
+    </Class>
+    <Class name = 'Transformation' isAbstract = 'false' supertypes = 'CaseRepresentation::ExecutionElement'>
+      <Reference name = 'transformationGroup' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CaseRepresentation::TransformationGroup' opposite = 'CaseRepresentation::TransformationGroup::transformation'/>
+    </Class>
+    <Class name = 'Function' isAbstract = 'false' supertypes = 'CaseRepresentation::Transformation'>
+      <Attribute name = 'nameOf' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'signature' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'StoredProcedure' isAbstract = 'false' supertypes = 'CaseRepresentation::Transformation'>
+      <Attribute name = 'nameOf' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'signature' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'SQLQuery' isAbstract = 'false' supertypes = 'CaseRepresentation::Transformation'/>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+  </Package>
+</Metamodel>

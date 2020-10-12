@@ -1,0 +1,185 @@
+-- @name		Abstract Syntax of the XMorph Language
+-- @version		1.0
+-- @domains		Tarzan Model Transformation Engine
+-- @authors		SIMON Eric(simon.eric3@gamail.com)
+-- @date		2006/07/24
+-- @description	This metamodel describes the abstract syntax of XMorph language.
+-- @see 		srv-linux.fleurey.com/weblog/attachments/steel.pdf
+-- @see 		authors Jim Steel and Michael Lawley  
+-- @see 		page 3, section2, figure 1:Abstract Syntax of the XMorph Language
+
+package ViewAbstractSyntaxOfXMorphLanguage {
+
+ abstract class VarScope {
+ 	reference var[*] container : AbstractVar oppositeOf scope;
+ }
+
+ abstract class AbstractVar {
+ 	reference scope : VarScope oppositeOf var;
+ 	reference varUse : VarUse oppositeOf var;
+ }
+
+ class VarUse extends Expression {
+ 	reference var : AbstractVar oppositeOf varUse;
+ }
+
+ class "MOF::Property" {
+	reference part : Key oppositeOf property;
+ }
+
+ class Key {
+ 	reference property[*] : "MOF::Property" oppositeOf part;
+ 	reference transformation : Transformation oppositeOf keys;
+ }
+ 
+ abstract class PatternScope extends VarScope {
+ 	reference patternDefn[*] container : PatternDefn oppositeOf scope;
+ }
+ 
+ class PatternDefn extends VarScope {
+ 	reference scope : PatternScope oppositeOf patternDefn;
+ 	reference parameter[*] : PatternVar oppositeOf patternDefn;
+ 	reference body container : Term oppositeOf patternDefn;
+ }
+ 
+ class TRule extends VarScope {
+ 	reference superseded[*] : TRule oppositeOf superseder;
+ 	reference superseder[*] : TRule oppositeOf superseded;
+ 	reference transformation : Transformation oppositeOf tRule;
+ 	reference extended[*] : TRule oppositeOf extender;
+ 	reference extender[*] : TRule oppositeOf extended;
+ 	reference term[0-1] container : Term oppositeOf tRule;
+ 	reference tgt[*] container : SimpleTerm oppositeOf tRuleST;
+ }
+ 
+ class Transformation extends PatternScope {
+ 	reference keys[*] container : Key oppositeOf transformation;
+ 	reference tRule[*] container : TRule oppositeOf transformation;
+ }
+ 
+ class Query extends PatternScope {
+ 	reference term container : Term oppositeOf query;
+ 	reference parameter[*] : PatternVar oppositeOf query;
+ }
+ 
+ abstract class Term {
+ 	reference patternDefn[0-1] : PatternDefn oppositeOf body;
+ 	reference query[0-1] : Query oppositeOf term;
+ 	reference tRule[0-1] : TRule oppositeOf term;
+ 	reference context[0-1] : ExtentVar oppositeOf src;
+ 	reference compoundTerm[0-1] : CompoundTerm oppositeOf term;
+ }
+
+ class TRuleVar extends AbstractVar {
+ 	reference superseder[*] : TRuleVar oppositeOf superseded;
+ 	reference superseded[*] : TRuleVar oppositeOf superseder;
+ 	reference extended[*] : TRuleVar oppositeOf extender;
+ 	reference extender[*] : TRuleVar oppositeOf extended;
+ }
+ 
+ class PatternVar extends AbstractVar {
+ 	reference query : Query oppositeOf parameter;
+ 	reference patternDefn : PatternDefn oppositeOf parameter;
+ }
+
+ class ExtentVar extends AbstractVar {
+ 	reference src : Term oppositeOf context;
+ }
+
+ abstract class CompoundTerm extends Term {
+ 	reference term[1-*] container : Term oppositeOf compoundTerm;
+ }
+ 
+ class AndTerm extends CompoundTerm {}
+ 
+ class OrTerm extends CompoundTerm {}
+ 
+ class NotTerm extends CompoundTerm {}
+ 
+ class IfTerm extends CompoundTerm {}
+ 
+ abstract class SimpleTerm extends Term {
+ 	reference tRuleST[0-1] : TRule oppositeOf tgt;
+ 	reference arg[*] container : Expression oppositeOf term;
+ }
+ 
+ class TrackingUse extends SimpleTerm {
+ 	attribute featureNames : String;
+ 	reference tracking : "MOF::Class" oppositeOf tracking;
+ }
+ 
+ class "MOF::Class" { 
+ 	reference tracking[*] : TrackingUse oppositeOf tracking;
+ }
+ 
+ class PatternUse extends SimpleTerm {}
+ 
+ abstract class MofTerm extends SimpleTerm {}
+ 
+ class Condition extends SimpleTerm {
+ 	attribute reason : String;
+ }
+ 
+ class MofInstance extends MofTerm {
+ 	attribute isExactly : Boolean;
+ 	reference typeName : Expression;
+ 	reference instance : Expression; 
+ }
+ 
+ class MofOrder extends MofTerm {
+ 	reference lesser : Expression oppositeOf lesser;
+ 	reference instance : Expression oppositeOf instance;
+ 	reference greater : Expression oppositeOf greater;
+ }
+ 
+ abstract class Expression {
+ 	reference lesser : MofOrder oppositeOf lesser;
+ 	reference instance : MofOrder oppositeOf instance;
+ 	reference greater : MofOrder oppositeOf greater;
+ 	reference term : SimpleTerm oppositeOf arg;
+ 	reference expr[0-1] : CoumpoundExpr oppositeOf arg;
+ }
+ 
+ abstract class CoumpoundExpr extends Expression {
+ 	reference arg[*] container : Expression oppositeOf expr;
+ }
+ 
+ class CollectionExpr extends CoumpoundExpr {
+ 	attribute "unique" : Boolean;
+ 	attribute "ordered" : Boolean;
+ }
+ 
+ class FunctionExpr extends CoumpoundExpr {
+ 	attribute function : String;
+ }
+ 
+ class FeatureExpr extends CoumpoundExpr {
+ 	attribute collect : String;
+ 	attribute featureName : String;
+ }
+
+ class InstanceRef extends Expression {
+ 	reference obj : "MOF::Object" oppositeOf obj;
+ }
+ 
+ class "MOF::Object" extends Expression {
+	reference obj : InstanceRef oppositeOf obj;
+ }
+ 
+ abstract class SimpleExpr extends Expression {
+ 	attribute representation : String;
+ }
+ 
+ class StringConstant extends SimpleExpr {}
+ class IntConstant extends SimpleExpr {}
+ class BooleanConstant extends SimpleExpr {}
+ class EnumConstant extends SimpleExpr {}
+ 
+ 
+}
+
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+}

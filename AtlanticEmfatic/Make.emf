@@ -1,0 +1,52 @@
+package Metamodel;
+
+package Make {
+  class Makefile {
+    !unique !ordered attr String[1] name;
+    !ordered val Comment comment;
+    val Element[+] elements;
+  }
+
+  abstract class Element {
+    !unique !ordered attr String[1] name;
+  }
+
+  class Rule extends Element {
+    val Dependency[*] dependencies;
+    val ShellLine[+]#ruleShellLine shellLines;
+  }
+
+  class Macro extends Element {
+    !unique !ordered attr String[1] value;
+  }
+
+  class ShellLine {
+    !unique !ordered attr String[1] command;
+    !unique !ordered attr Boolean[1] display;
+    !ordered ref Rule[1]#shellLines ruleShellLine;
+  }
+
+  class Comment {
+    !unique !ordered attr String[1] text;
+  }
+
+  abstract class Dependency {
+  }
+
+  class RuleDep extends Dependency {
+    !ordered ref Rule[1] ruledep;
+  }
+
+  class FileDep extends Dependency {
+    !unique !ordered attr String[1] name;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+}
+

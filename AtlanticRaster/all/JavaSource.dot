@@ -1,0 +1,39 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_JavaSource"{
+labelloc=t
+color=black
+label=JavaSource
+ node[shape=record];
+JavaSource[label="{JavaSource| | }"]
+ JavaSource->ClassDeclaration[arrowhead=vee,arrowtail=diamond,headlabel="classes[1-*]",group=ClassDeclaration,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NamedElement[label="{/NamedElement/|name : String| }"]
+;
+ node[shape=record];
+ClassDeclaration[label="{ClassDeclaration| | }"]
+ ClassDeclaration->ClassDeclaration[arrowhead=vee,arrowtail=none,headlabel="superclass[0-1]",group=ClassDeclaration,minlen=2,constraint=false,]
+ ClassDeclaration->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MethodDefinition[label="{MethodDefinition| | }"]
+ MethodDefinition->ClassDeclaration[arrowhead=diamond,arrowtail=none,headlabel="class",taillabel="methods[*]",group=ClassDeclaration,minlen=2,constraint=true,]
+ MethodDefinition->MethodInvocation[arrowhead=vee,arrowtail=diamond,headlabel="invocations[*]",group=MethodInvocation,minlen=2,constraint=true,]
+ MethodDefinition->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MethodInvocation[label="{MethodInvocation| | }"]
+ MethodInvocation->MethodDefinition[arrowhead=vee,arrowtail=none,headlabel="method",group=MethodDefinition,minlen=2,constraint=false,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

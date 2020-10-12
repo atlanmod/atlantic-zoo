@@ -1,0 +1,80 @@
+-- @name		C#
+-- @version		1.0
+-- @domains		Programming language, object-oriented programming
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/08
+-- @description	This metamodel simply describes C# which is a simple, modern, object-oriented, and type-safe programming language that has its roots in the C family of languages. It has been developped by Microsoft. This simplified metamodel corresponds to a small subset of the language.
+-- @see			http://msdn.microsoft.com/vcsharp/
+
+package CSharp {
+
+	-- @begin CSharp definition 
+
+	class Member {
+		attribute name : String;
+		reference owner[0-1] : Type oppositeOf members;
+	}
+	
+	class TypedAttribute extends Member {
+		reference type : Type;
+	}
+	
+	class Field extends TypedAttribute {}
+	
+	class Property extends TypedAttribute {
+		attribute isReadable : Boolean;
+		attribute isWritable : Boolean;
+	}
+	
+	class MethodBase extends Member {
+		attribute visibility : String;
+		attribute isAbstract : Boolean;
+		attribute isFinal : Boolean;
+		attribute isStatic : Boolean;
+		reference parameters[*] container : Parameter oppositeOf method; 
+	}
+	
+	class Constructor extends MethodBase {}
+	
+	class Method extends MethodBase {
+		reference returnType : Type;
+	}
+	
+	class Type extends Member {
+		attribute qualifiedName : String;
+		attribute isAbstract : Boolean;
+		attribute visibility : String;
+		attribute isSealed : Boolean;
+		attribute nameSpace : String;
+		reference members[*] container : Member oppositeOf owner;
+		reference t_container[0-1] : Assembly oppositeOf content;
+		reference super[0-1] : Type;
+	}
+	
+	class Parameter {
+		attribute isIn : Boolean;
+		attribute isOut : Boolean;
+		attribute name : Boolean;
+		attribute position : Integer;
+		reference method : MethodBase oppositeOf parameters;
+		reference type : Type;	
+	}
+	
+	class Assembly {
+		attribute name : String;
+		reference content[*] container : Type oppositeOf  t_container;
+	}
+	
+	-- @end CSharp definition 
+
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

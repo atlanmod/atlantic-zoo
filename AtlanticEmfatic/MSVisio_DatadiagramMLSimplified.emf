@@ -1,0 +1,233 @@
+package Metamodel;
+
+package DatadiagramMLSimplified {
+  class CellType {
+    !unique !ordered attr String unit;
+    !unique !ordered attr String formula;
+    !unique !ordered attr String err;
+    !unique !ordered attr String value;
+  }
+
+  class VisioDocument {
+    !ordered val MastersCollection#ms_visioDocument docMasters;
+    !ordered val PagesCollection#ps_visioDocument docPages;
+  }
+
+  class PageSheet extends Shape, UniqueIdElt, MasterElt, PageElt {
+  }
+
+  abstract class NamedElt {
+    !unique !ordered attr String name;
+    !unique !ordered attr String nameU;
+  }
+
+  abstract class IdentifiedElt {
+    !unique !ordered attr Integer[1] ID;
+  }
+
+  abstract class UniqueIdElt {
+    !unique !ordered attr String UniqueID;
+  }
+
+  class Shape {
+    !ordered ref ShapesCollection[1]#shapes ss_shapes;
+    !unique !ordered attr Integer lineStyle;
+    !unique !ordered attr Integer fillStyle;
+    !unique !ordered attr Integer textStyle;
+    val ShapeElt[*]#sse_shapeSheet shapeElts;
+  }
+
+  abstract class ShapeElt {
+    !ordered ref Shape[1]#shapeElts sse_shapeSheet;
+  }
+
+  abstract class IXElt {
+    !unique !ordered attr Integer iX;
+  }
+
+  abstract class DelElt {
+    !unique !ordered attr Boolean del;
+  }
+
+  class Geom extends ShapeElt, IXElt, DelElt {
+    !ordered val CellType noFill;
+    !ordered val CellType noLine;
+    !ordered val CellType noShow;
+    !ordered val CellType noSnap;
+    val LineTo[*]#lt_geom linesTo;
+    val MoveTo[*]#mt_geom movesTo;
+    val ArcTo[*]#ac_geom arcsTo;
+    val SplineKnot[*]#sk_geom splineKnots;
+    val PolylineTo[*]#pt_geom polylinesTo;
+    val InfiniteLine[*]#il_geom infiniteLines;
+    val Ellipse[*]#e_geom ellipses;
+    val EllipticalArcTo[*]#eat_geom ellipticalArcsTo;
+    val SplineStart[*]#ss_geom splineStarts;
+    val NURBSTo[*]#nt_geom nurbsTo;
+  }
+
+  abstract class XYElt extends IXElt, DelElt {
+    !ordered val CellType x;
+    !ordered val CellType y;
+  }
+
+  class LineTo extends XYElt {
+    !ordered ref Geom[1]#linesTo lt_geom;
+  }
+
+  class MoveTo extends XYElt {
+    !ordered ref Geom[1]#movesTo mt_geom;
+  }
+
+  abstract class XYAElt extends XYElt {
+    !ordered val CellType a;
+  }
+
+  class ArcTo extends XYAElt {
+    !ordered ref Geom[1]#arcsTo ac_geom;
+  }
+
+  class SplineKnot extends XYAElt {
+    !ordered ref Geom[1]#splineKnots sk_geom;
+  }
+
+  class PolylineTo extends XYAElt {
+    !ordered ref Geom[1]#polylinesTo pt_geom;
+  }
+
+  abstract class XYABElt extends XYAElt {
+    !ordered val CellType b;
+  }
+
+  class InfiniteLine extends XYABElt {
+    !ordered ref Geom[1]#infiniteLines il_geom;
+  }
+
+  abstract class XYABCDElt extends XYABElt {
+    !ordered val CellType c;
+    !ordered val CellType d;
+  }
+
+  class Ellipse extends XYABCDElt {
+    !ordered ref Geom[1]#ellipses e_geom;
+  }
+
+  class EllipticalArcTo extends XYABCDElt {
+    !ordered ref Geom[1]#ellipticalArcsTo eat_geom;
+  }
+
+  class SplineStart extends XYABCDElt {
+    !ordered ref Geom[1]#splineStarts ss_geom;
+  }
+
+  abstract class XYABCDEElt extends XYABCDElt {
+    !ordered val CellType e;
+  }
+
+  class NURBSTo extends XYABCDEElt {
+    !ordered ref Geom[1]#nurbsTo nt_geom;
+  }
+
+  class Text extends ShapeElt {
+    val TextElt[*]#te_text textElts;
+  }
+
+  abstract class TextElt {
+    !ordered ref Text[1]#textElts te_text;
+  }
+
+  class StringElt extends TextElt {
+    !unique !ordered attr String[1] value;
+  }
+
+  class MastersCollection {
+    !ordered ref VisioDocument[1]#docMasters ms_visioDocument;
+    val Master[*]#m_masters masters;
+    val MasterShortCut[*]#m_masterShortCuts masterShortCuts;
+  }
+
+  class MasterShortCut extends IdentifiedElt, NamedElt {
+    !ordered ref MastersCollection[1]#masterShortCuts m_masterShortCuts;
+    !unique !ordered attr Integer iconSize;
+    !unique !ordered attr Integer patternFlags;
+    !unique !ordered attr String prompt;
+    !unique !ordered attr String shortcutURL;
+    !unique !ordered attr String shortcutHelp;
+    !unique !ordered attr Integer alignName;
+    val Icon[*]#i_masterShortCut icons;
+  }
+
+  class Icon extends MasterElt {
+    !ordered ref MasterShortCut[1]#icons i_masterShortCut;
+    !unique !ordered attr String[1] value;
+  }
+
+  class Master extends IdentifiedElt, UniqueIdElt, NamedElt {
+    !ordered ref MastersCollection[1]#masters m_masters;
+    !unique !ordered attr String baseID;
+    !unique !ordered attr Boolean matchByName;
+    !unique !ordered attr Integer iconSize;
+    !unique !ordered attr Integer patternFlags;
+    !unique !ordered attr String prompt;
+    !unique !ordered attr Boolean hidden;
+    !unique !ordered attr Boolean iconUpdate;
+    !unique !ordered attr Integer alignName;
+    val MasterElt[*]#me_master masterElts;
+  }
+
+  class ShapesCollection extends MasterElt, PageElt {
+    val Shape[*]#ss_shapes shapes;
+  }
+
+  class ConnectsCollection extends MasterElt, PageElt {
+    val Connect[*]#c_connects connections;
+  }
+
+  class Connect {
+    !ordered ref ConnectsCollection[1]#connections c_connects;
+    !unique !ordered attr Integer[1] fromSheet;
+    !unique !ordered attr Integer[1] toSheet;
+    !unique !ordered attr String fromCell;
+    !unique !ordered attr String toCell;
+    !unique !ordered attr Integer fromPart;
+    !unique !ordered attr Integer toPart;
+  }
+
+  abstract class MasterElt {
+    !ordered ref Master[1]#masterElts me_master;
+  }
+
+  class PagesCollection {
+    !ordered ref VisioDocument[1]#docPages ps_visioDocument;
+    val Page[*]#p_pages pages;
+  }
+
+  class Page extends IdentifiedElt, NamedElt {
+    !ordered ref PagesCollection[1]#pages p_pages;
+    !unique !ordered attr Boolean background;
+    !unique !ordered attr Integer backPage;
+    !unique !ordered attr PrimitiveTypes.Double viewScale;
+    !unique !ordered attr PrimitiveTypes.Double viewCenterX;
+    !unique !ordered attr PrimitiveTypes.Double ViewCenterY;
+    !unique !ordered attr Integer reviewerID;
+    !unique !ordered attr Integer associatedPage;
+    val PageElt[*]#pe_page pageElts;
+  }
+
+  abstract class PageElt {
+    !ordered ref Page[1]#pageElts pe_page;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

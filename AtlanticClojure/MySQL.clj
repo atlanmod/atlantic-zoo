@@ -1,0 +1,8 @@
+( defstruct NamedElement :name )
+( defstruct DataBase :name )
+( defstruct Table :database :name )
+( defstruct Column :type :isPrimaryKey :null :defaultValue :comment :table :name )
+( defstruct IntegerColumn :isAutoIncrement :type :isPrimaryKey :null :defaultValue :comment :table :name )
+( defstruct EnumColumn :enumSet :type :isPrimaryKey :null :defaultValue :comment :table :name )
+( defstruct EnumSet )
+( defstruct EnumItem :enumSet :name )

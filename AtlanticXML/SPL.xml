@@ -1,0 +1,353 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'SPL'>
+    <Class name = 'LocatedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'location' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsBefore' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsAfter' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Program' isAbstract = 'false' supertypes = 'SPL::LocatedElement'>
+      <Reference name = 'service' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Service' opposite = ''/>
+    </Class>
+    <Class name = 'Service' isAbstract = 'false' supertypes = 'SPL::LocatedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'declarations' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Declaration' opposite = ''/>
+      <Reference name = 'sessions' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Session' opposite = ''/>
+    </Class>
+    <Class name = 'Session' isAbstract = 'true' supertypes = 'SPL::LocatedElement'/>
+    <Class name = 'Registration' isAbstract = 'false' supertypes = 'SPL::Session'>
+      <Reference name = 'declarations' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Declaration' opposite = ''/>
+      <Reference name = 'sessions' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Session' opposite = ''/>
+    </Class>
+    <Class name = 'Dialog' isAbstract = 'false' supertypes = 'SPL::Session'>
+      <Reference name = 'declarations' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Declaration' opposite = ''/>
+      <Reference name = 'methods' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Method' opposite = ''/>
+    </Class>
+    <Class name = 'Event' isAbstract = 'false' supertypes = 'SPL::Session'>
+      <Attribute name = 'eventId' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'declarations' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Declaration' opposite = ''/>
+      <Reference name = 'methods' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Method' opposite = ''/>
+    </Class>
+    <Class name = 'Method' isAbstract = 'false' supertypes = 'SPL::Session'>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::TypeExpression' opposite = ''/>
+      <Attribute name = 'direction' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Enum::Direction'/>
+      <Reference name = 'methodName' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::MethodName' opposite = ''/>
+      <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Argument' opposite = ''/>
+      <Reference name = 'statements' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Statement' opposite = ''/>
+      <Reference name = 'branches' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Branch' opposite = ''/>
+    </Class>
+    <Class name = 'Argument' isAbstract = 'false' supertypes = 'SPL::VariableDeclaration'/>
+    <Class name = 'MethodName' isAbstract = 'true' supertypes = 'SPL::LocatedElement'/>
+    <Class name = 'SIPMethodName' isAbstract = 'false' supertypes = 'SPL::MethodName'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Enum::SIPMethod'/>
+    </Class>
+    <Class name = 'ControlMethodName' isAbstract = 'false' supertypes = 'SPL::MethodName'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Enum::ControlMethod'/>
+    </Class>
+    <Class name = 'Branch' isAbstract = 'false' supertypes = 'SPL::LocatedElement'>
+      <Reference name = 'statements' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Statement' opposite = ''/>
+    </Class>
+    <Class name = 'DefaultBranch' isAbstract = 'false' supertypes = 'SPL::Branch'/>
+    <Class name = 'NamedBranch' isAbstract = 'false' supertypes = 'SPL::Branch'>
+      <Attribute name = 'name' lower = '1' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'TypeExpression' isAbstract = 'true' supertypes = 'SPL::LocatedElement'/>
+    <Class name = 'SimpleType' isAbstract = 'false' supertypes = 'SPL::TypeExpression'>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Enum::PrimitiveType'/>
+    </Class>
+    <Class name = 'SequenceType' isAbstract = 'false' supertypes = 'SPL::TypeExpression'>
+      <Attribute name = 'modifier' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Enum::Modifier'/>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Enum::PrimitiveType'/>
+      <Attribute name = 'size' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'DefinedType' isAbstract = 'false' supertypes = 'SPL::TypeExpression'>
+      <Attribute name = 'typeName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Declaration' isAbstract = 'true' supertypes = 'SPL::LocatedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'VariableDeclaration' isAbstract = 'false' supertypes = 'SPL::Declaration'>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::TypeExpression' opposite = ''/>
+      <Reference name = 'initExp' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'FunctionDeclaration' isAbstract = 'true' supertypes = 'SPL::Declaration'>
+      <Reference name = 'returnType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::TypeExpression' opposite = ''/>
+      <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Argument' opposite = ''/>
+    </Class>
+    <Class name = 'RemoteFunctionDeclaration' isAbstract = 'false' supertypes = 'SPL::FunctionDeclaration'>
+      <Attribute name = 'functionLocation' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Enum::FunctionLocation'/>
+    </Class>
+    <Class name = 'LocalFunctionDeclaration' isAbstract = 'false' supertypes = 'SPL::FunctionDeclaration'>
+      <Reference name = 'statements' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Statement' opposite = ''/>
+    </Class>
+    <Class name = 'StructureDeclaration' isAbstract = 'false' supertypes = 'SPL::Declaration'>
+      <Reference name = 'properties' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Argument' opposite = ''/>
+    </Class>
+    <Class name = 'StructureProperty' isAbstract = 'false' supertypes = 'SPL::LocatedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::TypeExpression' opposite = ''/>
+    </Class>
+    <Class name = 'FunctionCall' isAbstract = 'false' supertypes = 'SPL::LocatedElement'>
+      <Reference name = 'function' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SPL::FunctionDeclaration' opposite = ''/>
+      <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'Statement' isAbstract = 'true' supertypes = 'SPL::LocatedElement'/>
+    <Class name = 'CompoundStat' isAbstract = 'false' supertypes = 'SPL::Statement'>
+      <Reference name = 'statements' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Statement' opposite = ''/>
+    </Class>
+    <Class name = 'SetStat' isAbstract = 'false' supertypes = 'SPL::Statement'>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Place' opposite = ''/>
+      <Reference name = 'setValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'DeclarationStat' isAbstract = 'false' supertypes = 'SPL::Statement'>
+      <Reference name = 'declaration' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Declaration' opposite = ''/>
+    </Class>
+    <Class name = 'ReturnStat' isAbstract = 'false' supertypes = 'SPL::Statement'>
+      <Reference name = 'returnedValue' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Expression' opposite = ''/>
+      <Reference name = 'branch' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SPL::NamedBranch' opposite = ''/>
+    </Class>
+    <Class name = 'IfStat' isAbstract = 'false' supertypes = 'SPL::Statement'>
+      <Reference name = 'condition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Expression' opposite = ''/>
+      <Reference name = 'thenStatements' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Statement' opposite = ''/>
+      <Reference name = 'elseStatements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Statement' opposite = ''/>
+    </Class>
+    <Class name = 'WhenStat' isAbstract = 'false' supertypes = 'SPL::Statement'>
+      <Reference name = 'idExp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Variable' opposite = ''/>
+      <Reference name = 'whenHeaders' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::WhenHeader' opposite = ''/>
+      <Reference name = 'statements' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Statement' opposite = ''/>
+      <Reference name = 'elseStatements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Statement' opposite = ''/>
+    </Class>
+    <Class name = 'ForeachStat' isAbstract = 'false' supertypes = 'SPL::Statement'>
+      <Attribute name = 'iteratorName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'sequenceExp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Expression' opposite = ''/>
+      <Reference name = 'statements' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Statement' opposite = ''/>
+    </Class>
+    <Class name = 'SelectStat' isAbstract = 'false' supertypes = 'SPL::Statement'>
+      <Reference name = 'matchedExp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Expression' opposite = ''/>
+      <Reference name = 'selectCases' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::SelectCase' opposite = ''/>
+      <Reference name = 'selectDefault' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::SelectDefault' opposite = ''/>
+    </Class>
+    <Class name = 'FunctionCallStat' isAbstract = 'false' supertypes = 'SPL::Statement'>
+      <Reference name = 'functionCall' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::FunctionCall' opposite = ''/>
+    </Class>
+    <Class name = 'ContinueStat' isAbstract = 'false' supertypes = 'SPL::Statement'/>
+    <Class name = 'BreakStat' isAbstract = 'false' supertypes = 'SPL::Statement'/>
+    <Class name = 'PushStat' isAbstract = 'false' supertypes = 'SPL::Statement'>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Place' opposite = ''/>
+      <Reference name = 'pushedValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'WhenHeader' isAbstract = 'false' supertypes = 'SPL::VariableDeclaration'>
+      <Attribute name = 'headerId' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'value' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Constant' opposite = ''/>
+    </Class>
+    <Class name = 'SelectMember' isAbstract = 'true' supertypes = 'SPL::LocatedElement'>
+      <Reference name = 'statements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Statement' opposite = ''/>
+    </Class>
+    <Class name = 'SelectDefault' isAbstract = 'false' supertypes = 'SPL::SelectMember'/>
+    <Class name = 'SelectCase' isAbstract = 'false' supertypes = 'SPL::SelectMember'>
+      <Reference name = 'values' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Constant' opposite = ''/>
+    </Class>
+    <Class name = 'Expression' isAbstract = 'true' supertypes = 'SPL::LocatedElement'/>
+    <Class name = 'ConstantExp' isAbstract = 'false' supertypes = 'SPL::Expression'>
+      <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Constant' opposite = ''/>
+    </Class>
+    <Class name = 'OperatorExp' isAbstract = 'false' supertypes = 'SPL::Expression'>
+      <Attribute name = 'opName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'leftExp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Expression' opposite = ''/>
+      <Reference name = 'rightExp' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'ForwardExp' isAbstract = 'false' supertypes = 'SPL::Expression'>
+      <Attribute name = 'isParallel' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'exp' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'WithExp' isAbstract = 'false' supertypes = 'SPL::Expression'>
+      <Reference name = 'exp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Expression' opposite = ''/>
+      <Reference name = 'msgFields' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::MessageField' opposite = ''/>
+    </Class>
+    <Class name = 'BlockExp' isAbstract = 'false' supertypes = 'SPL::Expression'>
+      <Reference name = 'exp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'ReasonExp' isAbstract = 'false' supertypes = 'SPL::Expression'/>
+    <Class name = 'BODYExp' isAbstract = 'false' supertypes = 'SPL::Expression'/>
+    <Class name = 'RequestURIExp' isAbstract = 'false' supertypes = 'SPL::Expression'/>
+    <Class name = 'PopExp' isAbstract = 'false' supertypes = 'SPL::Expression'>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Place' opposite = ''/>
+    </Class>
+    <Class name = 'FunctionCallExp' isAbstract = 'false' supertypes = 'SPL::Expression'>
+      <Reference name = 'functionCall' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::FunctionCall' opposite = ''/>
+    </Class>
+    <Class name = 'Place' isAbstract = 'true' supertypes = 'SPL::Expression'/>
+    <Class name = 'SIPHeaderPlace' isAbstract = 'false' supertypes = 'SPL::Place'>
+      <Attribute name = 'header' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Enum::SIPHeader'/>
+    </Class>
+    <Class name = 'VariablePlace' isAbstract = 'true' supertypes = 'SPL::Place'/>
+    <Class name = 'PropertyCallPlace' isAbstract = 'false' supertypes = 'SPL::VariablePlace'>
+      <Attribute name = 'propName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::VariablePlace' opposite = ''/>
+    </Class>
+    <Class name = 'Variable' isAbstract = 'false' supertypes = 'SPL::VariablePlace'>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SPL::Declaration' opposite = ''/>
+    </Class>
+    <Class name = 'MessageField' isAbstract = 'true' supertypes = 'SPL::LocatedElement'>
+      <Reference name = 'exp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'ReasonMessageField' isAbstract = 'false' supertypes = 'SPL::MessageField'/>
+    <Class name = 'HeadedMessageField' isAbstract = 'false' supertypes = 'SPL::MessageField'>
+      <Attribute name = 'headerId' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Constant' isAbstract = 'true' supertypes = 'SPL::LocatedElement'/>
+    <Class name = 'BooleanConstant' isAbstract = 'false' supertypes = 'SPL::Constant'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'IntegerConstant' isAbstract = 'false' supertypes = 'SPL::Constant'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'StringConstant' isAbstract = 'false' supertypes = 'SPL::Constant'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'URIConstant' isAbstract = 'false' supertypes = 'SPL::Constant'>
+      <Attribute name = 'uri' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'SequenceConstant' isAbstract = 'false' supertypes = 'SPL::Constant'>
+      <Reference name = 'values' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SPL::Constant' opposite = ''/>
+    </Class>
+    <Class name = 'ResponseConstant' isAbstract = 'false' supertypes = 'SPL::Constant'>
+      <Reference name = 'response' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPL::Response' opposite = ''/>
+    </Class>
+    <Class name = 'Response' isAbstract = 'true' supertypes = 'SPL::LocatedElement'/>
+    <Class name = 'SuccessResponse' isAbstract = 'false' supertypes = 'SPL::Response'>
+      <Attribute name = 'successKind' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Enum::SuccessKind'/>
+    </Class>
+    <Class name = 'ErrorResponse' isAbstract = 'false' supertypes = 'SPL::Response'/>
+    <Class name = 'ClientErrorResponse' isAbstract = 'false' supertypes = 'SPL::ErrorResponse'>
+      <Attribute name = 'errorKind' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Enum::ClientErrorKind'/>
+    </Class>
+    <Class name = 'GlobalErrorResponse' isAbstract = 'false' supertypes = 'SPL::ErrorResponse'>
+      <Attribute name = 'errorKind' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Enum::GlobalErrorKind'/>
+    </Class>
+    <Class name = 'RedirectionErrorResponse' isAbstract = 'false' supertypes = 'SPL::ErrorResponse'>
+      <Attribute name = 'errorKind' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Enum::RedirectionErrorKind'/>
+    </Class>
+    <Class name = 'ServerErrorResponse' isAbstract = 'false' supertypes = 'SPL::ErrorResponse'>
+      <Attribute name = 'errorKind' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Enum::ServerErrorKind'/>
+    </Class>
+  </Package>
+  <Package name = 'Enum'>
+    <Enumeration name = 'Direction'>
+      <EnumLiteral name = 'inout'/>
+      <EnumLiteral name = 'in'/>
+      <EnumLiteral name = 'out'/>
+    </Enumeration>
+    <Enumeration name = 'SIPMethod'>
+      <EnumLiteral name = 'ACK'/>
+      <EnumLiteral name = 'BYE'/>
+      <EnumLiteral name = 'CANCEL'/>
+      <EnumLiteral name = 'INVITE'/>
+      <EnumLiteral name = 'NOTIFY'/>
+      <EnumLiteral name = 'OPTIONS'/>
+      <EnumLiteral name = 'REACK'/>
+      <EnumLiteral name = 'REGISTER'/>
+      <EnumLiteral name = 'REINVITE'/>
+      <EnumLiteral name = 'REREGISTER'/>
+      <EnumLiteral name = 'RESUBSCRIBE'/>
+      <EnumLiteral name = 'SUBSCRIBE'/>
+    </Enumeration>
+    <Enumeration name = 'ControlMethod'>
+      <EnumLiteral name = 'deploy'/>
+      <EnumLiteral name = 'undeploy'/>
+      <EnumLiteral name = 'uninvite'/>
+      <EnumLiteral name = 'unregister'/>
+      <EnumLiteral name = 'unsubscribe'/>
+    </Enumeration>
+    <Enumeration name = 'PrimitiveType'>
+      <EnumLiteral name = 'void'/>
+      <EnumLiteral name = 'bool'/>
+      <EnumLiteral name = 'int'/>
+      <EnumLiteral name = 'request'/>
+      <EnumLiteral name = 'response'/>
+      <EnumLiteral name = 'string'/>
+      <EnumLiteral name = 'time'/>
+      <EnumLiteral name = 'uri'/>
+    </Enumeration>
+    <Enumeration name = 'Modifier'>
+      <EnumLiteral name = 'LIFO'/>
+      <EnumLiteral name = 'FIFO'/>
+    </Enumeration>
+    <Enumeration name = 'FunctionLocation'>
+      <EnumLiteral name = 'remote'/>
+      <EnumLiteral name = 'local'/>
+    </Enumeration>
+    <Enumeration name = 'SIPHeader'>
+      <EnumLiteral name = 'CALL_ID'/>
+      <EnumLiteral name = 'CONTACT'/>
+      <EnumLiteral name = 'CSEQ'/>
+      <EnumLiteral name = 'EVENT'/>
+      <EnumLiteral name = 'FROM'/>
+      <EnumLiteral name = 'MAX_FORWARDS'/>
+      <EnumLiteral name = 'SUBSCRIPTION_STATE'/>
+      <EnumLiteral name = 'TO'/>
+      <EnumLiteral name = 'VIA'/>
+    </Enumeration>
+    <Enumeration name = 'SuccessKind'>
+      <EnumLiteral name = 'OK'/>
+      <EnumLiteral name = 'ACCEPTED'/>
+    </Enumeration>
+    <Enumeration name = 'ClientErrorKind'>
+      <EnumLiteral name = 'ADDRESS_INCOMPLETE'/>
+      <EnumLiteral name = 'AMBIGUOUS'/>
+      <EnumLiteral name = 'BAD_EXTENSION'/>
+      <EnumLiteral name = 'BAD_REQUEST'/>
+      <EnumLiteral name = 'BUSY_HERE'/>
+      <EnumLiteral name = 'CALL_OR_TRANSACTION_DOES_NOT_EXIST'/>
+      <EnumLiteral name = 'EXTENSION_REQUIRED'/>
+      <EnumLiteral name = 'FORBIDDEN'/>
+      <EnumLiteral name = 'GONE'/>
+      <EnumLiteral name = 'INTERVAL_TOO_BRIEF'/>
+      <EnumLiteral name = 'LOOP_DETECTED'/>
+      <EnumLiteral name = 'METHOD_NOT_ALLOWED'/>
+      <EnumLiteral name = 'NOT_ACCEPTABLE_HERE'/>
+      <EnumLiteral name = 'NOT_ACCEPTABLE'/>
+      <EnumLiteral name = 'NOT_FOUND'/>
+      <EnumLiteral name = 'PAYMENT_REQUIRED'/>
+      <EnumLiteral name = 'PROXY_AUTHENTICATION_REQUIRED'/>
+      <EnumLiteral name = 'REQUESTURI_TOO_LONG'/>
+      <EnumLiteral name = 'REQUEST_ENTITY_TOO_LARGE'/>
+      <EnumLiteral name = 'REQUEST_PENDING'/>
+      <EnumLiteral name = 'REQUEST_TERMINATED'/>
+      <EnumLiteral name = 'REQUEST_TIMEOUT'/>
+      <EnumLiteral name = 'TEMPORARILY_UNAVAILABLE'/>
+      <EnumLiteral name = 'TOO_MANY_HOPS'/>
+      <EnumLiteral name = 'UNAUTHORIZED'/>
+      <EnumLiteral name = 'UNDECIPHERABLE'/>
+      <EnumLiteral name = 'UNSUPPORTED_MEDIA_TYPE'/>
+      <EnumLiteral name = 'UNSUPPORTED_URI_SCHEME'/>
+    </Enumeration>
+    <Enumeration name = 'GlobalErrorKind'>
+      <EnumLiteral name = 'BUSY_EVERYWHERE'/>
+      <EnumLiteral name = 'DECLINE'/>
+      <EnumLiteral name = 'DOES_NOT_EXIST_ANYWHERE'/>
+      <EnumLiteral name = 'NOT_ACCEPTABLE'/>
+    </Enumeration>
+    <Enumeration name = 'RedirectionErrorKind'>
+      <EnumLiteral name = 'ALTERNATIVE_SERVICE'/>
+      <EnumLiteral name = 'MOVED_PERMANENTLY'/>
+      <EnumLiteral name = 'MOVED_TEMPORARILY'/>
+      <EnumLiteral name = 'MULTIPLE_CHOICES'/>
+      <EnumLiteral name = 'USE_PROXY'/>
+    </Enumeration>
+    <Enumeration name = 'ServerErrorKind'>
+      <EnumLiteral name = 'BAD_GATEWAY'/>
+      <EnumLiteral name = 'MESSAGE_TOO_LARGE'/>
+      <EnumLiteral name = 'NOT_IMPLEMENTED'/>
+      <EnumLiteral name = 'SERVER_INTERNAL_ERROR'/>
+      <EnumLiteral name = 'SERVER_TIMEOUT'/>
+      <EnumLiteral name = 'SERVICE_UNAVAILABLE'/>
+      <EnumLiteral name = 'VERSION_NOT_SUPPORTED'/>
+    </Enumeration>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'Boolean'/>
+  </Package>
+</Metamodel>

@@ -1,0 +1,133 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_DiagramInterchange"{
+labelloc=t
+color=black
+label=DiagramInterchange
+ node[shape=record];
+Dimension[label="{Dimension|width : Double\nheigth : Double| }"]
+;
+ node[shape=record];
+Point[label="{Point|x : Double\ny : Double| }"]
+;
+ node[shape=record];
+BezierPoint[label="{BezierPoint| | }"]
+ BezierPoint->Point[arrowhead=vee,arrowtail=none,headlabel="controls[0-2]{ordered}",group=Point,minlen=2,constraint=false,]
+ BezierPoint->Point[arrowhead=onormal,group=Point,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Property[label="{Property|key : String\nvalue : String| }"]
+;
+ node[shape=record];
+DiagramElement[label="{/DiagramElement/|isVisible : Boolean| }"]
+ DiagramElement->Property[arrowhead=vee,arrowtail=diamond,headlabel="properties[*]",group=Property,minlen=2,constraint=true,]
+ DiagramElement->GraphElement[arrowhead=diamond,arrowtail=none,headlabel="de_container[0-1]",taillabel="contained[*]{ordered}",group=GraphElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Reference[label="{Reference|isIndividualRepresentation : Boolean| }"]
+ Reference->DiagramElement[arrowhead=none,arrowtail=none,headlabel="referenced",taillabel="references[*]",group=DiagramElement,minlen=2,constraint=false,]
+ Reference->DiagramElement[arrowhead=onormal,group=DiagramElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GraphElement[label="{/GraphElement/| | }"]
+ GraphElement->Point[arrowhead=vee,arrowtail=none,headlabel="position",group=Point,minlen=2,constraint=false,]
+ GraphElement->DiagramElement[arrowhead=onormal,group=DiagramElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GraphEdge[label="{GraphEdge| | }"]
+ GraphEdge->Point[arrowhead=vee,arrowtail=none,headlabel="waypoints[0-2]{ordered}",group=Point,minlen=2,constraint=false,]
+ GraphEdge->GraphConnector[arrowhead=none,arrowtail=none,headlabel="anchors[22]{ordered}",taillabel="graphEdges[*]",group=GraphConnector,minlen=2,constraint=false,]
+ GraphEdge->GraphElement[arrowhead=onormal,group=GraphElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GraphNode[label="{GraphNode| | }"]
+ GraphNode->Dimension[arrowhead=vee,arrowtail=none,headlabel="size[0-1]",group=Dimension,minlen=2,constraint=false,]
+ GraphNode->GraphElement[arrowhead=onormal,group=GraphElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GraphConnector[label="{GraphConnector| | }"]
+ GraphConnector->Point[arrowhead=vee,arrowtail=none,headlabel="position",group=Point,minlen=2,constraint=false,]
+ GraphConnector->GraphElement[arrowhead=diamond,arrowtail=none,headlabel="gc_graphElement",taillabel="anchorages[*]",group=GraphElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DiagramLink[label="{DiagramLink|zoom : Double| }"]
+ DiagramLink->Point[arrowhead=vee,arrowtail=none,headlabel="viewPort",group=Point,minlen=2,constraint=false,]
+ DiagramLink->GraphElement[arrowhead=diamond,arrowtail=none,headlabel="dl_graphElement",taillabel="links[*]",group=GraphElement,minlen=2,constraint=true,]
+ DiagramLink->Diagram[arrowhead=none,arrowtail=none,headlabel="dl_diagram",taillabel="diagramLinks[*]",group=Diagram,minlen=2,constraint=false,]
+;
+ node[shape=record];
+SemanticModelBridge[label="{/SemanticModelBridge/|presentation : String| }"]
+ SemanticModelBridge->GraphElement[arrowhead=diamond,arrowtail=none,headlabel="smb_graphElement[0-1]",taillabel="semanticModel",group=GraphElement,minlen=2,constraint=true,]
+ SemanticModelBridge->Diagram[arrowhead=diamond,arrowtail=none,headlabel="smb_diagram[0-1]",taillabel="namespace",group=Diagram,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Diagram[label="{Diagram|name : String\nzoom : Double| }"]
+ Diagram->Point[arrowhead=vee,arrowtail=none,headlabel="viewPort",group=Point,minlen=2,constraint=false,]
+ Diagram->GraphNode[arrowhead=onormal,group=GraphNode,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleSemanticModelElement[label="{SimpleSemanticModelElement|typeInfo : String| }"]
+ SimpleSemanticModelElement->SemanticModelBridge[arrowhead=onormal,group=SemanticModelBridge,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UML1SemanticModelBridge[label="{UML1SemanticModelBridge| | }"]
+ UML1SemanticModelBridge->CoreElement[arrowhead=vee,arrowtail=none,headlabel="element",group=CoreElement,minlen=2,constraint=false,]
+ UML1SemanticModelBridge->SemanticModelBridge[arrowhead=onormal,group=SemanticModelBridge,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CoreSemanticModelBridge[label="{CoreSemanticModelBridge| | }"]
+ CoreSemanticModelBridge->ElementsElement[arrowhead=vee,arrowtail=none,headlabel="element",group=ElementsElement,minlen=2,constraint=false,]
+ CoreSemanticModelBridge->SemanticModelBridge[arrowhead=onormal,group=SemanticModelBridge,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CoreElement[label="{CoreElement| | }"]
+;
+ node[shape=record];
+ElementsElement[label="{ElementsElement| | }"]
+;
+ node[shape=record];
+LeafElement[label="{/LeafElement/| | }"]
+ LeafElement->DiagramElement[arrowhead=onormal,group=DiagramElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TextElement[label="{TextElement|text : String| }"]
+ TextElement->LeafElement[arrowhead=onormal,group=LeafElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Image[label="{Image|uri : String\nmimeType : String| }"]
+ Image->LeafElement[arrowhead=onormal,group=LeafElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GraphicPrimitive[label="{/GraphicPrimitive/| | }"]
+ GraphicPrimitive->LeafElement[arrowhead=onormal,group=LeafElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Polyline[label="{Polyline|closed : Boolean| }"]
+ Polyline->Point[arrowhead=vee,arrowtail=none,headlabel="waypoints[2-*]{ordered}",group=Point,minlen=2,constraint=false,]
+ Polyline->GraphicPrimitive[arrowhead=onormal,group=GraphicPrimitive,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Ellipse[label="{Ellipse|radiusX : Double\nradiusY : Double\nrotation : Double\nstartAngle : Double\nendAngle : Double| }"]
+ Ellipse->Point[arrowhead=vee,arrowtail=none,headlabel="center",group=Point,minlen=2,constraint=false,]
+ Ellipse->GraphicPrimitive[arrowhead=onormal,group=GraphicPrimitive,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

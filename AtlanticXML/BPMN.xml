@@ -1,0 +1,181 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'bpmn'>
+    <Class name = 'Activity' isAbstract = 'false' supertypes = 'bpmn::Vertex, bpmn::NamedBpmnObject'>
+      <Attribute name = 'orderedMessages' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'bpmn::MessagingEdge'/>
+      <Reference name = 'incomingMessages' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'bpmn::MessagingEdge' opposite = 'bpmn::MessagingEdge::target'/>
+      <Reference name = 'outgoingMessages' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'bpmn::MessagingEdge' opposite = 'bpmn::MessagingEdge::source'/>
+      <Reference name = 'groups' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'bpmn::Group' opposite = 'bpmn::Group::activities'/>
+      <Attribute name = 'activityType' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'bpmn::ActivityType'/>
+      <Reference name = 'eventHandlerFor' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'bpmn::SubProcess' opposite = 'bpmn::SubProcess::eventHandlers'/>
+      <Reference name = 'lane' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'bpmn::Lane' opposite = 'bpmn::Lane::activities'/>
+      <Attribute name = 'looping' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'type::Boolean'/>
+    </Class>
+    <Enumeration name = 'ActivityType'>
+      <EnumLiteral name = 'SubProcess'/>
+      <EnumLiteral name = 'EventEndMultiple'/>
+      <EnumLiteral name = 'EventEndMessage'/>
+      <EnumLiteral name = 'EventIntermediateMessage'/>
+      <EnumLiteral name = 'EventStartMultiple'/>
+      <EnumLiteral name = 'EventIntermediateMultiple'/>
+      <EnumLiteral name = 'GatewayParallel'/>
+      <EnumLiteral name = 'EventStartTimer'/>
+      <EnumLiteral name = 'EventStartEmpty'/>
+      <EnumLiteral name = 'EventIntermediateCancel'/>
+      <EnumLiteral name = 'EventEndError'/>
+      <EnumLiteral name = 'EventStartRule'/>
+      <EnumLiteral name = 'EventEndTerminate'/>
+      <EnumLiteral name = 'EventStartLink'/>
+      <EnumLiteral name = 'EventIntermediateLink'/>
+      <EnumLiteral name = 'EventEndCancel'/>
+      <EnumLiteral name = 'EventEndLink'/>
+      <EnumLiteral name = 'EventIntermediateEmpty'/>
+      <EnumLiteral name = 'EventIntermediateCompensation'/>
+      <EnumLiteral name = 'Task'/>
+      <EnumLiteral name = 'GatewayDataBasedExclusive'/>
+      <EnumLiteral name = 'GatewayComplex'/>
+      <EnumLiteral name = 'EventEndEmpty'/>
+      <EnumLiteral name = 'EventIntermediateError'/>
+      <EnumLiteral name = 'EventIntermediateTimer'/>
+      <EnumLiteral name = 'EventEndCompensation'/>
+      <EnumLiteral name = 'EventStartMessage'/>
+      <EnumLiteral name = 'GatewayDataBasedInclusive'/>
+      <EnumLiteral name = 'GatewayEventBasedExclusive'/>
+      <EnumLiteral name = 'EventIntermediateRule'/>
+    </Enumeration>
+    <DataType name = 'ActivityTypeObject'/>
+    <Class name = 'Artifact' isAbstract = 'false' supertypes = 'bpmn::Identifiable, bpmn::NamedBpmnObject'>
+      <Reference name = 'associations' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'bpmn::Association' opposite = 'bpmn::Association::source'/>
+      <Reference name = 'artifactsContainer' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'bpmn::ArtifactsContainer' opposite = 'bpmn::ArtifactsContainer::artifacts'/>
+    </Class>
+    <Class name = 'ArtifactsContainer' isAbstract = 'false' supertypes = 'bpmn::NamedBpmnObject'>
+      <Reference name = 'artifacts' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'bpmn::Artifact' opposite = 'bpmn::Artifact::artifactsContainer'/>
+    </Class>
+    <Class name = 'Association' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'direction' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'bpmn::DirectionType'/>
+      <Reference name = 'source' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'bpmn::Artifact' opposite = 'bpmn::Artifact::associations'/>
+      <Reference name = 'target' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'bpmn::IdentifiableNode' opposite = 'bpmn::IdentifiableNode::associations'/>
+    </Class>
+    <Class name = 'BpmnDiagram' isAbstract = 'false' supertypes = 'bpmn::Identifiable, bpmn::ArtifactsContainer'>
+      <Reference name = 'pools' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'bpmn::Pool' opposite = 'bpmn::Pool::bpmnDiagram'/>
+      <Reference name = 'messages' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'bpmn::MessagingEdge' opposite = 'bpmn::MessagingEdge::bpmnDiagram'/>
+      <Attribute name = 'author' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'type::String'/>
+      <Attribute name = 'title' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'type::String'/>
+    </Class>
+    <Class name = 'DataObject' isAbstract = 'false' supertypes = 'bpmn::Artifact'/>
+    <Enumeration name = 'DirectionType'>
+      <EnumLiteral name = 'Both'/>
+      <EnumLiteral name = 'From'/>
+      <EnumLiteral name = 'To'/>
+      <EnumLiteral name = 'None'/>
+    </Enumeration>
+    <DataType name = 'DirectionTypeObject'/>
+    <Class name = 'Graph' isAbstract = 'false' supertypes = 'bpmn::IdentifiableNode, bpmn::ArtifactsContainer'>
+      <Reference name = 'vertices' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'bpmn::Vertex' opposite = 'bpmn::Vertex::graph'/>
+      <Reference name = 'sequenceEdges' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'bpmn::SequenceEdge' opposite = 'bpmn::SequenceEdge::graph'/>
+    </Class>
+    <Class name = 'Group' isAbstract = 'false' supertypes = 'bpmn::Artifact'>
+      <Reference name = 'activities' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'bpmn::Activity' opposite = 'bpmn::Activity::groups'/>
+    </Class>
+    <Class name = 'Identifiable' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'iD' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'type::ID'/>
+    </Class>
+    <Class name = 'IdentifiableNode' isAbstract = 'false' supertypes = 'bpmn::Identifiable'>
+      <Reference name = 'associations' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'bpmn::Association' opposite = 'bpmn::Association::target'/>
+    </Class>
+    <Class name = 'Lane' isAbstract = 'false' supertypes = 'bpmn::Identifiable, bpmn::NamedBpmnObject'>
+      <Reference name = 'activities' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'bpmn::Activity' opposite = 'bpmn::Activity::lane'/>
+      <Reference name = 'pool' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'bpmn::Pool' opposite = 'bpmn::Pool::lanes'/>
+    </Class>
+    <Class name = 'MessagingEdge' isAbstract = 'false' supertypes = 'bpmn::Identifiable, bpmn::NamedBpmnObject'>
+      <Reference name = 'bpmnDiagram' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'bpmn::BpmnDiagram' opposite = 'bpmn::BpmnDiagram::messages'/>
+      <Reference name = 'source' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'bpmn::Activity' opposite = 'bpmn::Activity::outgoingMessages'/>
+      <Reference name = 'target' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'bpmn::Activity' opposite = 'bpmn::Activity::incomingMessages'/>
+    </Class>
+    <Class name = 'NamedBpmnObject' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'documentation' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'type::String'/>
+      <Attribute name = 'name' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'type::String'/>
+      <Attribute name = 'ncname' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'type::String'/>
+    </Class>
+    <Class name = 'Pool' isAbstract = 'false' supertypes = 'bpmn::Graph, bpmn::NamedBpmnObject'>
+      <Reference name = 'lanes' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'bpmn::Lane' opposite = 'bpmn::Lane::pool'/>
+      <Reference name = 'bpmnDiagram' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'bpmn::BpmnDiagram' opposite = 'bpmn::BpmnDiagram::pools'/>
+    </Class>
+    <Class name = 'SequenceEdge' isAbstract = 'false' supertypes = 'bpmn::Identifiable, bpmn::NamedBpmnObject'>
+      <Reference name = 'graph' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'bpmn::Graph' opposite = 'bpmn::Graph::sequenceEdges'/>
+      <Attribute name = 'isDefault' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'type::Boolean'/>
+      <Reference name = 'source' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'bpmn::Vertex' opposite = 'bpmn::Vertex::outgoingEdges'/>
+      <Reference name = 'target' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'bpmn::Vertex' opposite = 'bpmn::Vertex::incomingEdges'/>
+    </Class>
+    <Class name = 'SubProcess' isAbstract = 'false' supertypes = 'bpmn::Activity, bpmn::Graph'>
+      <Reference name = 'eventHandlers' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'bpmn::Activity' opposite = 'bpmn::Activity::eventHandlerFor'/>
+      <Attribute name = 'isTransaction' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'type::Boolean'/>
+    </Class>
+    <Class name = 'TextAnnotation' isAbstract = 'false' supertypes = 'bpmn::Artifact'/>
+    <Class name = 'Vertex' isAbstract = 'false' supertypes = 'bpmn::IdentifiableNode'>
+      <Reference name = 'outgoingEdges' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'bpmn::SequenceEdge' opposite = 'bpmn::SequenceEdge::source'/>
+      <Reference name = 'incomingEdges' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'bpmn::SequenceEdge' opposite = 'bpmn::SequenceEdge::target'/>
+      <Reference name = 'graph' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'bpmn::Graph' opposite = 'bpmn::Graph::vertices'/>
+    </Class>
+  </Package>
+  <Package name = 'type'>
+    <DataType name = 'AnySimpleType'/>
+    <DataType name = 'AnyURI'/>
+    <DataType name = 'Base64Binary'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'BooleanObject'/>
+    <DataType name = 'Byte'/>
+    <DataType name = 'ByteObject'/>
+    <DataType name = 'Date'/>
+    <DataType name = 'DateTime'/>
+    <DataType name = 'Decimal'/>
+    <DataType name = 'Double'/>
+    <DataType name = 'DoubleObject'/>
+    <DataType name = 'Duration'/>
+    <DataType name = 'ENTITIES'/>
+    <DataType name = 'ENTITIESBase'/>
+    <DataType name = 'ENTITY'/>
+    <DataType name = 'Float'/>
+    <DataType name = 'FloatObject'/>
+    <DataType name = 'GDay'/>
+    <DataType name = 'GMonth'/>
+    <DataType name = 'GMonthDay'/>
+    <DataType name = 'GYear'/>
+    <DataType name = 'GYearMonth'/>
+    <DataType name = 'HexBinary'/>
+    <DataType name = 'ID'/>
+    <DataType name = 'IDREF'/>
+    <DataType name = 'IDREFS'/>
+    <DataType name = 'IDREFSBase'/>
+    <DataType name = 'Int'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'IntObject'/>
+    <DataType name = 'Language'/>
+    <DataType name = 'Long'/>
+    <DataType name = 'LongObject'/>
+    <DataType name = 'Name'/>
+    <DataType name = 'NCName'/>
+    <DataType name = 'NegativeInteger'/>
+    <DataType name = 'NMTOKEN'/>
+    <DataType name = 'NMTOKENS'/>
+    <DataType name = 'NMTOKENSBase'/>
+    <DataType name = 'NonNegativeInteger'/>
+    <DataType name = 'NonPositiveInteger'/>
+    <DataType name = 'NormalizedString'/>
+    <DataType name = 'NOTATION'/>
+    <DataType name = 'PositiveInteger'/>
+    <DataType name = 'QName'/>
+    <DataType name = 'Short'/>
+    <DataType name = 'ShortObject'/>
+    <DataType name = 'String'/>
+    <DataType name = 'Time'/>
+    <DataType name = 'Token'/>
+    <DataType name = 'UnsignedByte'/>
+    <DataType name = 'UnsignedByteObject'/>
+    <DataType name = 'UnsignedInt'/>
+    <DataType name = 'UnsignedIntObject'/>
+    <DataType name = 'UnsignedLong'/>
+    <DataType name = 'UnsignedShort'/>
+    <DataType name = 'UnsignedShortObject'/>
+  </Package>
+</Metamodel>

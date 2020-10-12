@@ -1,0 +1,157 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'Maude'>
+    <Class name = 'MaudeSpec' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'els' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Maude::MaudeTopEl' opposite = ''/>
+      <Reference name = 'printableEls' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'Maude::MaudeTopEl' opposite = ''/>
+    </Class>
+    <Class name = 'MaudeTopEl' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ModExpression' isAbstract = 'true' supertypes = ''/>
+    <Class name = 'InstModExp' isAbstract = 'false' supertypes = 'Maude::ModExpression'>
+      <Reference name = 'modExp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Maude::ModExpression' opposite = ''/>
+      <Reference name = 'views' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'Maude::View' opposite = ''/>
+    </Class>
+    <Class name = 'RenModExp' isAbstract = 'false' supertypes = 'Maude::ModExpression'>
+      <Reference name = 'modExp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Maude::ModExpression' opposite = ''/>
+      <Reference name = 'renamings' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Maude::RenMapping' opposite = ''/>
+    </Class>
+    <Class name = 'CompModExp' isAbstract = 'false' supertypes = 'Maude::ModExpression'>
+      <Reference name = 'modExps' lower = '2' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Maude::ModExpression' opposite = ''/>
+    </Class>
+    <Class name = 'ModuleIdModExp' isAbstract = 'false' supertypes = 'Maude::ModExpression'>
+      <Reference name = 'module' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Maude::Module' opposite = ''/>
+    </Class>
+    <Class name = 'TheoryIdModExp' isAbstract = 'false' supertypes = 'Maude::ModExpression'>
+      <Reference name = 'theory' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Maude::Theory' opposite = ''/>
+    </Class>
+    <Class name = 'Parameter' isAbstract = 'false' supertypes = 'Maude::ModExpression'>
+      <Attribute name = 'label' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'modExp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Maude::ModExpression' opposite = ''/>
+    </Class>
+    <Class name = 'Theory' isAbstract = 'true' supertypes = 'Maude::MaudeTopEl'>
+      <Reference name = 'els' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Maude::ModElement' opposite = 'Maude::ModElement::theory'/>
+    </Class>
+    <Class name = 'FTheory' isAbstract = 'false' supertypes = 'Maude::Theory'/>
+    <Class name = 'STheory' isAbstract = 'false' supertypes = 'Maude::Theory'/>
+    <Class name = 'Module' isAbstract = 'true' supertypes = 'Maude::MaudeTopEl'>
+      <Reference name = 'els' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Maude::ModElement' opposite = 'Maude::ModElement::module'/>
+      <Reference name = 'params' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Maude::Parameter' opposite = ''/>
+    </Class>
+    <Class name = 'FModule' isAbstract = 'false' supertypes = 'Maude::Module'/>
+    <Class name = 'SModule' isAbstract = 'false' supertypes = 'Maude::Module'/>
+    <Class name = 'ModElement' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'module' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Maude::Module' opposite = 'Maude::Module::els'/>
+      <Reference name = 'theory' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Maude::Theory' opposite = 'Maude::Theory::els'/>
+    </Class>
+    <Class name = 'ModImportation' isAbstract = 'false' supertypes = 'Maude::ModElement'>
+      <Reference name = 'imports' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Maude::ModExpression' opposite = ''/>
+      <Attribute name = 'mode' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Maude::ImportationMode'/>
+    </Class>
+    <Enumeration name = 'ImportationMode'>
+      <EnumLiteral name = 'protecting'/>
+      <EnumLiteral name = 'including'/>
+      <EnumLiteral name = 'extending'/>
+    </Enumeration>
+    <Class name = 'Type' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Sort' isAbstract = 'false' supertypes = 'Maude::Type, Maude::ModElement'>
+      <Reference name = 'subsortRels' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Maude::SubsortRel' opposite = 'Maude::SubsortRel::supersorts'/>
+      <Reference name = 'supersortRels' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Maude::SubsortRel' opposite = 'Maude::SubsortRel::subsorts'/>
+      <Reference name = 'kind' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Maude::Kind' opposite = 'Maude::Kind::sorts'/>
+    </Class>
+    <Class name = 'Kind' isAbstract = 'false' supertypes = 'Maude::Type'>
+      <Reference name = 'sorts' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Maude::Sort' opposite = 'Maude::Sort::kind'/>
+    </Class>
+    <Class name = 'SubsortRel' isAbstract = 'false' supertypes = 'Maude::ModElement'>
+      <Reference name = 'subsorts' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Maude::Sort' opposite = 'Maude::Sort::supersortRels'/>
+      <Reference name = 'supersorts' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Maude::Sort' opposite = 'Maude::Sort::subsortRels'/>
+    </Class>
+    <Class name = 'Operation' isAbstract = 'false' supertypes = 'Maude::ModElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'coarity' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Maude::Type' opposite = ''/>
+      <Reference name = 'arity' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'Maude::Type' opposite = ''/>
+      <Attribute name = 'atts' lower = '0' upper = '-1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Statement' isAbstract = 'true' supertypes = 'Maude::ModElement'>
+      <Attribute name = 'label' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'atts' lower = '0' upper = '-1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'conds' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Maude::Condition' opposite = ''/>
+    </Class>
+    <Class name = 'Membership' isAbstract = 'false' supertypes = 'Maude::Statement'>
+      <Reference name = 'term' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Maude::Term' opposite = ''/>
+      <Reference name = 'sort' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Maude::Sort' opposite = ''/>
+    </Class>
+    <Class name = 'Equation' isAbstract = 'false' supertypes = 'Maude::Statement'>
+      <Reference name = 'lhs' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Maude::Term' opposite = ''/>
+      <Reference name = 'rhs' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Maude::Term' opposite = ''/>
+    </Class>
+    <Class name = 'Rule' isAbstract = 'false' supertypes = 'Maude::Statement'>
+      <Reference name = 'lhs' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Maude::Term' opposite = ''/>
+      <Reference name = 'rhs' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Maude::Term' opposite = ''/>
+    </Class>
+    <Class name = 'Condition' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'lhs' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Maude::Term' opposite = ''/>
+    </Class>
+    <Class name = 'EquationalCond' isAbstract = 'true' supertypes = 'Maude::Condition'/>
+    <Class name = 'RewriteCond' isAbstract = 'false' supertypes = 'Maude::Condition'>
+      <Reference name = 'rhs' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Maude::Term' opposite = ''/>
+    </Class>
+    <Class name = 'MembershipCond' isAbstract = 'false' supertypes = 'Maude::EquationalCond'>
+      <Reference name = 'rhs' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Maude::Sort' opposite = ''/>
+    </Class>
+    <Class name = 'BooleanCond' isAbstract = 'false' supertypes = 'Maude::EquationalCond'/>
+    <Class name = 'MatchingCond' isAbstract = 'false' supertypes = 'Maude::EquationalCond'>
+      <Reference name = 'rhs' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Maude::Term' opposite = ''/>
+    </Class>
+    <Class name = 'EqualCond' isAbstract = 'false' supertypes = 'Maude::EquationalCond'>
+      <Reference name = 'rhs' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Maude::Term' opposite = ''/>
+    </Class>
+    <Class name = 'Term' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Maude::Type' opposite = ''/>
+    </Class>
+    <Class name = 'Constant' isAbstract = 'false' supertypes = 'Maude::Term'>
+      <Attribute name = 'op' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'RecTerm' isAbstract = 'false' supertypes = 'Maude::Term'>
+      <Attribute name = 'op' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'args' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Maude::Term' opposite = ''/>
+    </Class>
+    <Class name = 'Variable' isAbstract = 'false' supertypes = 'Maude::Term'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'View' isAbstract = 'false' supertypes = 'Maude::MaudeTopEl'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Maude::ModExpression' opposite = ''/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Maude::ModExpression' opposite = ''/>
+      <Reference name = 'els' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Maude::ViewMapping' opposite = ''/>
+    </Class>
+    <Class name = 'ViewMapping' isAbstract = 'true' supertypes = ''/>
+    <Class name = 'RenMapping' isAbstract = 'true' supertypes = 'Maude::ViewMapping'/>
+    <Class name = 'TermMapping' isAbstract = 'false' supertypes = 'Maude::ViewMapping'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Maude::Term' opposite = ''/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Maude::Term' opposite = ''/>
+    </Class>
+    <Class name = 'SortMapping' isAbstract = 'false' supertypes = 'Maude::RenMapping'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Maude::Sort' opposite = ''/>
+      <Attribute name = 'to' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'OpTypedMapping' isAbstract = 'false' supertypes = 'Maude::RenMapping'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Maude::Operation' opposite = ''/>
+      <Attribute name = 'to' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'atts' lower = '0' upper = '-1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'OpMapping' isAbstract = 'false' supertypes = 'Maude::RenMapping'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Maude::Operation' opposite = ''/>
+      <Attribute name = 'to' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'LabelMapping' isAbstract = 'false' supertypes = 'Maude::RenMapping'>
+      <Attribute name = 'from' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'to' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

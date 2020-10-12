@@ -1,0 +1,86 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'QoSConceptualModel'>
+    <Class name = 'QoSComponent' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'profile' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'QoSConceptualModel::QoSProfile' opposite = 'QoSConceptualModel::QoSProfile::for'/>
+      <Reference name = 'operations' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'QoSConceptualModel::Operation' opposite = ''/>
+    </Class>
+    <Class name = 'QoSProfile' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'for' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'QoSConceptualModel::QoSComponent' opposite = 'QoSConceptualModel::QoSComponent::profile'/>
+      <Reference name = 'provide' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'QoSConceptualModel::QoSStatement' opposite = ''/>
+      <Reference name = 'uses' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'QoSConceptualModel::QoSStatement' opposite = ''/>
+    </Class>
+    <Class name = 'QoSContraints' isAbstract = 'false' supertypes = 'QoSConceptualModel::QoSCharacteristic'/>
+    <Class name = 'Operation' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'CompoundProfile' isAbstract = 'false' supertypes = 'QoSConceptualModel::QoSProfile'>
+      <Reference name = 'profileTransition' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'QoSConceptualModel::ProfileTransition' opposite = 'QoSConceptualModel::ProfileTransition::compoundProfile'/>
+      <Reference name = 'simpleProfile' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'QoSConceptualModel::SimpleProfile' opposite = 'QoSConceptualModel::SimpleProfile::compoundProfile'/>
+    </Class>
+    <Class name = 'SimpleProfile' isAbstract = 'false' supertypes = 'QoSConceptualModel::QoSProfile'>
+      <Reference name = 'compoundProfile' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'QoSConceptualModel::CompoundProfile' opposite = 'QoSConceptualModel::CompoundProfile::simpleProfile'/>
+      <Reference name = 'use' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'QoSConceptualModel::QoSStatement' opposite = ''/>
+      <Reference name = 'provides' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'QoSConceptualModel::QoSStatement' opposite = ''/>
+    </Class>
+    <Class name = 'ProfileTransition' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'operations' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'QoSConceptualModel::Operation' opposite = ''/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'QoSConceptualModel::SimpleProfile' opposite = ''/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'QoSConceptualModel::SimpleProfile' opposite = ''/>
+      <Reference name = 'compoundProfile' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'QoSConceptualModel::CompoundProfile' opposite = 'QoSConceptualModel::CompoundProfile::profileTransition'/>
+    </Class>
+    <Class name = 'QoSStatement' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'contraints' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'QoSConceptualModel::QoSContraints' opposite = ''/>
+      <Reference name = 'relation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'QoSConceptualModel::CoumpoundQoSStatement' opposite = 'QoSConceptualModel::CoumpoundQoSStatement::statement'/>
+      <Reference name = 'parameter' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'QoSConceptualModel::Parameter' opposite = ''/>
+    </Class>
+    <Class name = 'SingleQoSStatement' isAbstract = 'false' supertypes = 'QoSConceptualModel::QoSStatement'>
+      <Reference name = 'contraint' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'QoSConceptualModel::QoSContraint' opposite = ''/>
+    </Class>
+    <Class name = 'CoumpoundQoSStatement' isAbstract = 'false' supertypes = 'QoSConceptualModel::QoSStatement'>
+      <Reference name = 'statement' lower = '2' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'QoSConceptualModel::QoSStatement' opposite = 'QoSConceptualModel::QoSStatement::relation'/>
+    </Class>
+    <Class name = 'QoSContraint' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'qualification' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'QoSConceptualModel::QualificationKind' opposite = ''/>
+    </Class>
+    <Class name = 'QualificationKind' isAbstract = 'false' supertypes = 'QoSConceptualModel::QoSCharacteristic'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'QoSCharacteristic' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'invariant' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'QoSConceptualModel::BooleanExpression' opposite = ''/>
+      <Reference name = 'parallel_and_composition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'QoSConceptualModel::MappingExpression' opposite = ''/>
+      <Reference name = 'parallel_or_composition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'QoSConceptualModel::MappingExpression' opposite = ''/>
+      <Reference name = 'sequential_composition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'QoSConceptualModel::MappingExpression' opposite = ''/>
+      <Reference name = 'values' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'QoSConceptualModel::MappingExpression' opposite = ''/>
+      <Reference name = 'statisticalAttribute' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'QoSConceptualModel::StatisticalAttributekindKind' opposite = ''/>
+      <Reference name = 'parameter' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'QoSConceptualModel::Parameter' opposite = ''/>
+      <Reference name = 'domain' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'QoSConceptualModel::Domain' opposite = ''/>
+    </Class>
+    <Class name = 'BooleanExpression' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'MappingExpression' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'StatisticalAttributekindKind' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Parameter' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'DataType' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Domain' isAbstract = 'false' supertypes = 'QoSConceptualModel::DataType'>
+      <Reference name = 'direction' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'QoSConceptualModel::DirectionKind' opposite = ''/>
+    </Class>
+    <Class name = 'DirectionKind' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Numeric' isAbstract = 'false' supertypes = 'QoSConceptualModel::Domain'/>
+    <Class name = 'Set' isAbstract = 'false' supertypes = 'QoSConceptualModel::Domain'>
+      <Reference name = 'stringSet' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'QoSConceptualModel::StringSet' opposite = ''/>
+    </Class>
+    <Class name = 'Enumeration' isAbstract = 'false' supertypes = 'QoSConceptualModel::Domain'/>
+    <Class name = 'StringSet' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'string' lower = '1' upper = '-1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

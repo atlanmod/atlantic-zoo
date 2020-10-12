@@ -1,0 +1,303 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'ATL'>
+    <Class name = 'LocatedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'location' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsBefore' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsAfter' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Unit' isAbstract = 'false' supertypes = 'ATL::LocatedElement'>
+      <Reference name = 'libraries' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ATL::LibraryRef' opposite = 'ATL::LibraryRef::unit'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Library' isAbstract = 'false' supertypes = 'ATL::Unit'>
+      <Reference name = 'helpers' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ATL::Helper' opposite = 'ATL::Helper::library'/>
+    </Class>
+    <Class name = 'Query' isAbstract = 'false' supertypes = 'ATL::Unit'>
+      <Reference name = 'body' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclExpression' opposite = ''/>
+      <Reference name = 'helpers' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ATL::Helper' opposite = 'ATL::Helper::query'/>
+    </Class>
+    <Class name = 'Module' isAbstract = 'false' supertypes = 'ATL::Unit'>
+      <Attribute name = 'isRefining' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'inModels' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'OCL::OclModel' opposite = ''/>
+      <Reference name = 'outModels' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclModel' opposite = ''/>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ATL::ModuleElement' opposite = 'ATL::ModuleElement::module'/>
+    </Class>
+    <Class name = 'ModuleElement' isAbstract = 'true' supertypes = 'ATL::LocatedElement'>
+      <Reference name = 'module' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ATL::Module' opposite = 'ATL::Module::elements'/>
+    </Class>
+    <Class name = 'Helper' isAbstract = 'false' supertypes = 'ATL::ModuleElement'>
+      <Reference name = 'query' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ATL::Query' opposite = 'ATL::Query::helpers'/>
+      <Reference name = 'library' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ATL::Library' opposite = 'ATL::Library::helpers'/>
+      <Reference name = 'definition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclFeatureDefinition' opposite = ''/>
+    </Class>
+    <Class name = 'Rule' isAbstract = 'true' supertypes = 'ATL::ModuleElement'>
+      <Reference name = 'outPattern' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ATL::OutPattern' opposite = 'ATL::OutPattern::rule'/>
+      <Reference name = 'actionBlock' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ATL::ActionBlock' opposite = 'ATL::ActionBlock::rule'/>
+      <Reference name = 'variables' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ATL::RuleVariableDeclaration' opposite = 'ATL::RuleVariableDeclaration::rule'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'MatchedRule' isAbstract = 'false' supertypes = 'ATL::Rule'>
+      <Reference name = 'inPattern' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ATL::InPattern' opposite = 'ATL::InPattern::rule'/>
+      <Reference name = 'children' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ATL::MatchedRule' opposite = 'ATL::MatchedRule::superRule'/>
+      <Reference name = 'superRule' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ATL::MatchedRule' opposite = 'ATL::MatchedRule::children'/>
+      <Attribute name = 'isAbstract' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isRefining' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isNoDefault' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'LazyMatchedRule' isAbstract = 'false' supertypes = 'ATL::MatchedRule'>
+      <Attribute name = 'isUnique' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'CalledRule' isAbstract = 'false' supertypes = 'ATL::Rule'>
+      <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'OCL::Parameter' opposite = ''/>
+      <Attribute name = 'isEntrypoint' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isEndpoint' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'InPattern' isAbstract = 'false' supertypes = 'ATL::LocatedElement'>
+      <Reference name = 'elements' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ATL::InPatternElement' opposite = 'ATL::InPatternElement::inPattern'/>
+      <Reference name = 'rule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ATL::MatchedRule' opposite = 'ATL::MatchedRule::inPattern'/>
+      <Reference name = 'filter' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'OutPattern' isAbstract = 'false' supertypes = 'ATL::LocatedElement'>
+      <Reference name = 'rule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ATL::Rule' opposite = 'ATL::Rule::outPattern'/>
+      <Reference name = 'elements' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ATL::OutPatternElement' opposite = 'ATL::OutPatternElement::outPattern'/>
+    </Class>
+    <Class name = 'PatternElement' isAbstract = 'true' supertypes = 'OCL::VariableDeclaration'/>
+    <Class name = 'InPatternElement' isAbstract = 'true' supertypes = 'ATL::PatternElement'>
+      <Reference name = 'mapsTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ATL::OutPatternElement' opposite = 'ATL::OutPatternElement::sourceElement'/>
+      <Reference name = 'inPattern' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ATL::InPattern' opposite = 'ATL::InPattern::elements'/>
+      <Reference name = 'models' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'OCL::OclModel' opposite = ''/>
+    </Class>
+    <Class name = 'SimpleInPatternElement' isAbstract = 'false' supertypes = 'ATL::InPatternElement'/>
+    <Class name = 'OutPatternElement' isAbstract = 'true' supertypes = 'ATL::PatternElement'>
+      <Reference name = 'outPattern' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ATL::OutPattern' opposite = 'ATL::OutPattern::elements'/>
+      <Reference name = 'sourceElement' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ATL::InPatternElement' opposite = 'ATL::InPatternElement::mapsTo'/>
+      <Reference name = 'bindings' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ATL::Binding' opposite = 'ATL::Binding::outPatternElement'/>
+      <Reference name = 'model' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::OclModel' opposite = ''/>
+    </Class>
+    <Class name = 'SimpleOutPatternElement' isAbstract = 'false' supertypes = 'ATL::OutPatternElement'>
+      <Reference name = 'reverseBindings' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'OCL::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'ForEachOutPatternElement' isAbstract = 'false' supertypes = 'ATL::OutPatternElement'>
+      <Reference name = 'collection' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclExpression' opposite = ''/>
+      <Reference name = 'iterator' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::Iterator' opposite = ''/>
+    </Class>
+    <Class name = 'Binding' isAbstract = 'false' supertypes = 'ATL::LocatedElement'>
+      <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclExpression' opposite = ''/>
+      <Reference name = 'outPatternElement' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ATL::OutPatternElement' opposite = 'ATL::OutPatternElement::bindings'/>
+      <Attribute name = 'propertyName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'isAssignment' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'RuleVariableDeclaration' isAbstract = 'false' supertypes = 'OCL::VariableDeclaration'>
+      <Reference name = 'rule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ATL::Rule' opposite = 'ATL::Rule::variables'/>
+    </Class>
+    <Class name = 'LibraryRef' isAbstract = 'false' supertypes = 'ATL::LocatedElement'>
+      <Reference name = 'unit' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ATL::Unit' opposite = 'ATL::Unit::libraries'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ActionBlock' isAbstract = 'false' supertypes = 'ATL::LocatedElement'>
+      <Reference name = 'rule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ATL::Rule' opposite = 'ATL::Rule::actionBlock'/>
+      <Reference name = 'statements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ATL::Statement' opposite = ''/>
+    </Class>
+    <Class name = 'Statement' isAbstract = 'true' supertypes = 'ATL::LocatedElement'/>
+    <Class name = 'ExpressionStat' isAbstract = 'false' supertypes = 'ATL::Statement'>
+      <Reference name = 'expression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'BindingStat' isAbstract = 'false' supertypes = 'ATL::Statement'>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclExpression' opposite = ''/>
+      <Attribute name = 'propertyName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'isAssignment' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'IfStat' isAbstract = 'false' supertypes = 'ATL::Statement'>
+      <Reference name = 'condition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclExpression' opposite = ''/>
+      <Reference name = 'thenStatements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ATL::Statement' opposite = ''/>
+      <Reference name = 'elseStatements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ATL::Statement' opposite = ''/>
+    </Class>
+    <Class name = 'ForStat' isAbstract = 'false' supertypes = 'ATL::Statement'>
+      <Reference name = 'iterator' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::Iterator' opposite = ''/>
+      <Reference name = 'collection' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclExpression' opposite = ''/>
+      <Reference name = 'statements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ATL::Statement' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'OCL'>
+    <Class name = 'OclExpression' isAbstract = 'true' supertypes = 'ATL::LocatedElement'>
+      <Reference name = 'type' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclType' opposite = 'OCL::OclType::oclExpression'/>
+      <Reference name = 'ifExp3' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::IfExp' opposite = 'OCL::IfExp::elseExpression'/>
+      <Reference name = 'appliedProperty' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::PropertyCallExp' opposite = 'OCL::PropertyCallExp::source'/>
+      <Reference name = 'collection' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::CollectionExp' opposite = 'OCL::CollectionExp::elements'/>
+      <Reference name = 'letExp' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::LetExp' opposite = 'OCL::LetExp::in_'/>
+      <Reference name = 'loopExp' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::LoopExp' opposite = 'OCL::LoopExp::body'/>
+      <Reference name = 'parentOperation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::OperationCallExp' opposite = 'OCL::OperationCallExp::arguments'/>
+      <Reference name = 'initializedVariable' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::VariableDeclaration' opposite = 'OCL::VariableDeclaration::initExpression'/>
+      <Reference name = 'ifExp2' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::IfExp' opposite = 'OCL::IfExp::thenExpression'/>
+      <Reference name = 'owningOperation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::Operation' opposite = 'OCL::Operation::body'/>
+      <Reference name = 'ifExp1' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::IfExp' opposite = 'OCL::IfExp::condition'/>
+      <Reference name = 'owningAttribute' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::Attribute' opposite = 'OCL::Attribute::initExpression'/>
+    </Class>
+    <Class name = 'VariableExp' isAbstract = 'false' supertypes = 'OCL::OclExpression'>
+      <Reference name = 'referredVariable' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::VariableDeclaration' opposite = 'OCL::VariableDeclaration::variableExp'/>
+    </Class>
+    <Class name = 'SuperExp' isAbstract = 'false' supertypes = 'OCL::OclExpression'/>
+    <Class name = 'PrimitiveExp' isAbstract = 'true' supertypes = 'OCL::OclExpression'/>
+    <Class name = 'StringExp' isAbstract = 'false' supertypes = 'OCL::PrimitiveExp'>
+      <Attribute name = 'stringSymbol' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'BooleanExp' isAbstract = 'false' supertypes = 'OCL::PrimitiveExp'>
+      <Attribute name = 'booleanSymbol' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'NumericExp' isAbstract = 'true' supertypes = 'OCL::PrimitiveExp'/>
+    <Class name = 'RealExp' isAbstract = 'false' supertypes = 'OCL::NumericExp'>
+      <Attribute name = 'realSymbol' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+    </Class>
+    <Class name = 'IntegerExp' isAbstract = 'false' supertypes = 'OCL::NumericExp'>
+      <Attribute name = 'integerSymbol' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'CollectionExp' isAbstract = 'true' supertypes = 'OCL::OclExpression'>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'OCL::OclExpression' opposite = 'OCL::OclExpression::collection'/>
+    </Class>
+    <Class name = 'BagExp' isAbstract = 'false' supertypes = 'OCL::CollectionExp'/>
+    <Class name = 'OrderedSetExp' isAbstract = 'false' supertypes = 'OCL::CollectionExp'/>
+    <Class name = 'SequenceExp' isAbstract = 'false' supertypes = 'OCL::CollectionExp'/>
+    <Class name = 'SetExp' isAbstract = 'false' supertypes = 'OCL::CollectionExp'/>
+    <Class name = 'TupleExp' isAbstract = 'false' supertypes = 'OCL::OclExpression'>
+      <Reference name = 'tuplePart' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'OCL::TuplePart' opposite = 'OCL::TuplePart::tuple'/>
+    </Class>
+    <Class name = 'TuplePart' isAbstract = 'false' supertypes = 'OCL::VariableDeclaration'>
+      <Reference name = 'tuple' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::TupleExp' opposite = 'OCL::TupleExp::tuplePart'/>
+    </Class>
+    <Class name = 'MapExp' isAbstract = 'false' supertypes = 'OCL::OclExpression'>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'OCL::MapElement' opposite = 'OCL::MapElement::map'/>
+    </Class>
+    <Class name = 'MapElement' isAbstract = 'false' supertypes = 'ATL::LocatedElement'>
+      <Reference name = 'map' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::MapExp' opposite = 'OCL::MapExp::elements'/>
+      <Reference name = 'key' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclExpression' opposite = ''/>
+      <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'EnumLiteralExp' isAbstract = 'false' supertypes = 'OCL::OclExpression'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'OclUndefinedExp' isAbstract = 'false' supertypes = 'OCL::OclExpression'/>
+    <Class name = 'PropertyCallExp' isAbstract = 'true' supertypes = 'OCL::OclExpression'>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclExpression' opposite = 'OCL::OclExpression::appliedProperty'/>
+    </Class>
+    <Class name = 'NavigationOrAttributeCallExp' isAbstract = 'false' supertypes = 'OCL::PropertyCallExp'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'OperationCallExp' isAbstract = 'false' supertypes = 'OCL::PropertyCallExp'>
+      <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'OCL::OclExpression' opposite = 'OCL::OclExpression::parentOperation'/>
+      <Attribute name = 'operationName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'OperatorCallExp' isAbstract = 'false' supertypes = 'OCL::OperationCallExp'/>
+    <Class name = 'CollectionOperationCallExp' isAbstract = 'false' supertypes = 'OCL::OperationCallExp'/>
+    <Class name = 'LoopExp' isAbstract = 'true' supertypes = 'OCL::PropertyCallExp'>
+      <Reference name = 'body' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclExpression' opposite = 'OCL::OclExpression::loopExp'/>
+      <Reference name = 'iterators' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'OCL::Iterator' opposite = 'OCL::Iterator::loopExpr'/>
+    </Class>
+    <Class name = 'IterateExp' isAbstract = 'false' supertypes = 'OCL::LoopExp'>
+      <Reference name = 'result' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::VariableDeclaration' opposite = 'OCL::VariableDeclaration::baseExp'/>
+    </Class>
+    <Class name = 'IteratorExp' isAbstract = 'false' supertypes = 'OCL::LoopExp'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'LetExp' isAbstract = 'false' supertypes = 'OCL::OclExpression'>
+      <Reference name = 'variable' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::VariableDeclaration' opposite = 'OCL::VariableDeclaration::letExp'/>
+      <Reference name = 'in_' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclExpression' opposite = 'OCL::OclExpression::letExp'/>
+    </Class>
+    <Class name = 'IfExp' isAbstract = 'false' supertypes = 'OCL::OclExpression'>
+      <Reference name = 'thenExpression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclExpression' opposite = 'OCL::OclExpression::ifExp2'/>
+      <Reference name = 'condition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclExpression' opposite = 'OCL::OclExpression::ifExp1'/>
+      <Reference name = 'elseExpression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclExpression' opposite = 'OCL::OclExpression::ifExp3'/>
+    </Class>
+    <Class name = 'VariableDeclaration' isAbstract = 'false' supertypes = 'ATL::LocatedElement'>
+      <Attribute name = 'id' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'varName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'type' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclType' opposite = 'OCL::OclType::variableDeclaration'/>
+      <Reference name = 'initExpression' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclExpression' opposite = 'OCL::OclExpression::initializedVariable'/>
+      <Reference name = 'letExp' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::LetExp' opposite = 'OCL::LetExp::variable'/>
+      <Reference name = 'baseExp' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::IterateExp' opposite = 'OCL::IterateExp::result'/>
+      <Reference name = 'variableExp' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'OCL::VariableExp' opposite = 'OCL::VariableExp::referredVariable'/>
+    </Class>
+    <Class name = 'Iterator' isAbstract = 'false' supertypes = 'OCL::VariableDeclaration'>
+      <Reference name = 'loopExpr' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::LoopExp' opposite = 'OCL::LoopExp::iterators'/>
+    </Class>
+    <Class name = 'Parameter' isAbstract = 'false' supertypes = 'OCL::VariableDeclaration'>
+      <Reference name = 'operation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::Operation' opposite = 'OCL::Operation::parameters'/>
+    </Class>
+    <Class name = 'CollectionType' isAbstract = 'false' supertypes = 'OCL::OclType'>
+      <Reference name = 'elementType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclType' opposite = 'OCL::OclType::collectionTypes'/>
+    </Class>
+    <Class name = 'OclType' isAbstract = 'false' supertypes = 'OCL::OclExpression'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'definitions' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::OclContextDefinition' opposite = 'OCL::OclContextDefinition::context_'/>
+      <Reference name = 'oclExpression' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::OclExpression' opposite = 'OCL::OclExpression::type'/>
+      <Reference name = 'operation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::Operation' opposite = 'OCL::Operation::returnType'/>
+      <Reference name = 'mapType2' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::MapType' opposite = 'OCL::MapType::valueType'/>
+      <Reference name = 'attribute' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::Attribute' opposite = 'OCL::Attribute::type'/>
+      <Reference name = 'mapType' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::MapType' opposite = 'OCL::MapType::keyType'/>
+      <Reference name = 'collectionTypes' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::CollectionType' opposite = 'OCL::CollectionType::elementType'/>
+      <Reference name = 'tupleTypeAttribute' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::TupleTypeAttribute' opposite = 'OCL::TupleTypeAttribute::type'/>
+      <Reference name = 'variableDeclaration' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::VariableDeclaration' opposite = 'OCL::VariableDeclaration::type'/>
+    </Class>
+    <Class name = 'Primitive' isAbstract = 'true' supertypes = 'OCL::OclType'/>
+    <Class name = 'StringType' isAbstract = 'false' supertypes = 'OCL::Primitive'/>
+    <Class name = 'BooleanType' isAbstract = 'false' supertypes = 'OCL::Primitive'/>
+    <Class name = 'NumericType' isAbstract = 'true' supertypes = 'OCL::Primitive'/>
+    <Class name = 'IntegerType' isAbstract = 'false' supertypes = 'OCL::NumericType'/>
+    <Class name = 'RealType' isAbstract = 'false' supertypes = 'OCL::NumericType'/>
+    <Class name = 'BagType' isAbstract = 'false' supertypes = 'OCL::CollectionType'/>
+    <Class name = 'OrderedSetType' isAbstract = 'false' supertypes = 'OCL::CollectionType'/>
+    <Class name = 'SequenceType' isAbstract = 'false' supertypes = 'OCL::CollectionType'/>
+    <Class name = 'SetType' isAbstract = 'false' supertypes = 'OCL::CollectionType'/>
+    <Class name = 'OclAnyType' isAbstract = 'false' supertypes = 'OCL::OclType'/>
+    <Class name = 'TupleType' isAbstract = 'false' supertypes = 'OCL::OclType'>
+      <Reference name = 'attributes' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'OCL::TupleTypeAttribute' opposite = 'OCL::TupleTypeAttribute::tupleType'/>
+    </Class>
+    <Class name = 'TupleTypeAttribute' isAbstract = 'false' supertypes = 'ATL::LocatedElement'>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclType' opposite = 'OCL::OclType::tupleTypeAttribute'/>
+      <Reference name = 'tupleType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::TupleType' opposite = 'OCL::TupleType::attributes'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'OclModelElement' isAbstract = 'false' supertypes = 'OCL::OclType'>
+      <Reference name = 'model' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::OclModel' opposite = 'OCL::OclModel::elements'/>
+    </Class>
+    <Class name = 'MapType' isAbstract = 'false' supertypes = 'OCL::OclType'>
+      <Reference name = 'valueType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclType' opposite = 'OCL::OclType::mapType2'/>
+      <Reference name = 'keyType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclType' opposite = 'OCL::OclType::mapType'/>
+    </Class>
+    <Class name = 'OclFeatureDefinition' isAbstract = 'false' supertypes = 'ATL::LocatedElement'>
+      <Reference name = 'feature' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclFeature' opposite = 'OCL::OclFeature::definition'/>
+      <Reference name = 'context_' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclContextDefinition' opposite = 'OCL::OclContextDefinition::definition'/>
+    </Class>
+    <Class name = 'OclContextDefinition' isAbstract = 'false' supertypes = 'ATL::LocatedElement'>
+      <Reference name = 'definition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::OclFeatureDefinition' opposite = 'OCL::OclFeatureDefinition::context_'/>
+      <Reference name = 'context_' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclType' opposite = 'OCL::OclType::definitions'/>
+    </Class>
+    <Class name = 'OclFeature' isAbstract = 'true' supertypes = 'ATL::LocatedElement'>
+      <Reference name = 'definition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::OclFeatureDefinition' opposite = 'OCL::OclFeatureDefinition::feature'/>
+    </Class>
+    <Class name = 'Attribute' isAbstract = 'false' supertypes = 'OCL::OclFeature'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'initExpression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclExpression' opposite = 'OCL::OclExpression::owningAttribute'/>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclType' opposite = 'OCL::OclType::attribute'/>
+    </Class>
+    <Class name = 'Operation' isAbstract = 'false' supertypes = 'OCL::OclFeature'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'OCL::Parameter' opposite = 'OCL::Parameter::operation'/>
+      <Reference name = 'returnType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclType' opposite = 'OCL::OclType::operation'/>
+      <Reference name = 'body' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCL::OclExpression' opposite = 'OCL::OclExpression::owningOperation'/>
+    </Class>
+    <Class name = 'OclModel' isAbstract = 'false' supertypes = 'ATL::LocatedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'metamodel' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCL::OclModel' opposite = 'OCL::OclModel::model'/>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'OCL::OclModelElement' opposite = 'OCL::OclModelElement::model'/>
+      <Reference name = 'model' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'OCL::OclModel' opposite = 'OCL::OclModel::metamodel'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Double'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

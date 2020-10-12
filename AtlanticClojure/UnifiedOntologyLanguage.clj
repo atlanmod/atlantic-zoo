@@ -1,0 +1,6 @@
+( defstruct Node )
+( defstruct Resource :context )
+( defstruct Literal )
+( defstruct Fact :object :subject :predicate :context )
+( defstruct Package :context )
+( defstruct Ontology :context )

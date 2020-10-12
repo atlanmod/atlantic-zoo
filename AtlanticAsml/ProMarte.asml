@@ -1,0 +1,688 @@
+abstract class TimeBase
+  var name as Set of String
+  // instants IsContainer
+  var instants as Set of Instant
+
+abstract class Instant
+  var isBefore as Set of Boolean
+  var owner as Set of TimeBase
+  var timeValue as Set of TimeValue
+
+abstract class TimeValue
+  var denotedInstant as Set of Instant
+  var _ref as Set of TimeBase
+
+abstract class TimeInterval
+  var endValues as Set of TimeValue
+  var denotedInterval as Set of Interval
+
+abstract class Interval
+  var includingMin as Set of Boolean
+  var includingMax as Set of Boolean
+  var base as Set of TimeBase
+  var timeInterval as Set of TimeInterval
+  var instants as Set of Instant
+
+class SingleTimeBase extends TimeBase
+  var currentValue as Set of SingleTimeValue
+  var maximumValue as Set of SingleTimeValue
+  var currentInstant as Set of SingleInstant
+
+class SingleInstant extends Instant
+  var coPoint as Set of CoincidencePoint
+
+class SingleInterval extends Interval
+  var first as Set of SingleInstant
+  var last as Set of SingleInstant
+  var members as Set of SingleInstant
+
+class SingleTimeValue extends TimeValue
+
+class SingleTimeInterval extends TimeInterval
+  var start as Set of SingleTimeValue
+  var end as Set of SingleTimeValue
+
+class DiscreteTimeBase extends TimeBase
+  var refEvent as Set of _Event
+
+class DiscreteInstant extends Instant
+  var next as Set of DiscreteInstant
+  var previous as Set of DiscreteInstant
+  var refOcc as Set of EventOccurence
+
+abstract class _Event
+  // occ IsContainer
+  var occ as Set of EventOccurence
+
+abstract class EventOccurence
+
+abstract class PhysicalTime
+  // physicalInstants IsContainer
+  var physicalInstants as Set of PhysicalInstant
+
+abstract class PhysicalInstant
+  var measurement as Set of MetricTimeValue
+
+abstract class Duration
+  var start as Set of PhysicalInstant
+  var end as Set of PhysicalInstant
+  var measurement as Set of MetricTimeInterval
+
+class MultipleTimeBase extends TimeBase
+  // bases IsContainer
+  var bases as Set of SingleTimeBase
+
+class CoincidencePoint extends Instant
+  var coincidenceInstants as Set of SingleInstant
+
+class MultipleInterval extends Interval
+  var first as Set of CoincidencePoint
+  var last as Set of CoincidencePoint
+
+class MultipleTimeValue extends TimeValue
+  var values as Set of SingleTimeValue
+
+class MetricTimeValue extends DiscreteTimeValue
+
+class DiscreteTimeValue extends TimeValue
+
+class MetricTimeInterval extends DiscreteTimeInterval
+
+class DiscreteTimeInterval extends TimeInterval
+
+class SimultaneousEventOccurrence
+  var at as Set of Instant
+  var occurence as Set of TimedEventOccurence
+
+class TimedEvent
+  var timestamp as Set of MetricTimeValue
+
+class TimedEventOccurence extends EventOccurence
+  var at as Set of Instant
+  var timestamp as Set of TimeValue
+
+class TimedAction extends Scenario
+  var duration as Set of TimeInterval
+  var start as Set of TimeValue
+  var end as Set of TimeValue
+
+class Delay extends TimedAction
+
+class TimingMechanism
+  var stability as Set of String
+  var drift as Set of String
+  var skew as Set of String
+  var state as Set of String
+  var origin as Set of TimedEvent
+  var resolution as Set of MetricTimeInterval
+  var refClock as Set of Clock
+
+class Clock extends DiscreteTimeBase
+  var accuracy as Set of MetricTimeInterval
+  var offset as Set of MetricTimeInterval
+  var generatedInterrupt as Set of ClockInterrupt
+
+class Timer extends TimingMechanism
+  var isPeriodic as Set of Boolean
+  var duration as Set of MetricTimeValue
+  var genratedTimeOuts as Set of TimeOut
+
+class TimeOut
+
+class ClockInterrupt
+
+class System
+  var dimension as Set of Quantity
+
+class Model
+  var ownes as Set of ModelElement
+
+class AnnotatedModel extends Model
+  var conformsTo as Set of ModelingConcern
+  var _import as Set of NFPLibrary
+
+class ModelElement
+  var owner as Set of Model
+
+class AnnotatedModelElement extends ModelElement
+  var annotation as Set of NFP
+
+class NFP
+  var measurementQuantity as Set of Quantity
+  var storedBy as Set of NFPLibrary
+  var groupedBy as Set of NFPCategory
+
+class NFPLibrary
+  var refersTo as Set of NFPLibrary
+  var usedNFP as Set of NFP
+
+class NFPCategory
+  // setOf IsContainer
+  var setOf as Set of NFP
+  var ownes as Set of NFPCategory
+  var owner as Set of NFPCategory
+
+class ModelingConcern
+  var relevantQuantity as Set of Quantity
+  var annotedModel as Set of AnnotatedModel
+
+class AnalysisConcern extends ModelingConcern
+
+class DesignConcern extends ModelingConcern
+
+class Quantity
+
+class BasicQuantity
+
+class DerivedQuantity
+
+class QualitativeNFP extends NFP
+  var parameter as Set of NFP
+
+class QuantitativeNFP extends NFP
+  // sampleSet IsContainer
+  var sampleSet as Set of Realization
+  // measure IsContainer
+  var measure as Set of Measure
+
+class Realization
+  var _function as Set of Measure
+  var owner as Set of QuantitativeNFP
+
+class Measure
+  var appliesTo as Set of Realization
+  var owner as Set of QuantitativeNFP
+
+class ComplexNFP extends NFP
+  var parent as Set of ComplexNFP
+  var child as Set of ComplexNFP
+  // ownes IsContainer
+  var ownes as Set of BasicNFP
+
+class BasicNFP
+  var statisticalQualifier as Set of StatisticalQualifierKinds
+  var directon as Set of DirectionKinds
+  var typedBy as Set of NFPType
+  var valuedBy as Set of NFPValueSpecification
+  // dimensionOf IsContainer
+  var dimensionOf as Set of ComplexNFP
+
+class NFPType
+  var valueSpecificationLanguage as Set of String
+  var source as Set of SourceKinds
+  var constrainedSpec as Set of NFPValueSpecification
+
+class NFPInstantType extends NFPType
+  var value as Set of String
+  var unit as Set of InstantUnitKinds
+
+class NFPurationType extends NFPType
+  var value as Set of String
+  var unit as Set of DurationUnitKinds
+
+class NFPRateType extends NFPType
+  var value as Set of String
+  var unit as Set of RateUnitKinds
+
+class NFPProbabilityType extends NFPType
+  var value as Set of String
+  var unit as Set of ProbabilityUnitKinds
+
+class NFPSizeType extends NFPType
+  var value as Set of String
+  var unit as Set of SizeUnitKinds
+
+class NFPValueSpecification
+  var constrainedBy as Set of NFPType
+  var expression as Set of NFPExpression
+
+class NFPConstant extends NFPValueSpecification
+  var ownerList as Set of NFPListConstant
+
+class NFPListConstant extends NFPConstant
+  var listElements as Set of NFPConstant
+
+class NFPStringConstant extends NFPConstant
+  var body as Set of String
+
+class NFPIntegerConstant extends NFPConstant
+  var body as Set of Integer
+
+class NFPRealConstant extends NFPConstant
+  var bodyBeforeComa as Set of Integer
+  var bodyAfterComa as Set of Integer
+
+class NFPBooleanConstant extends NFPConstant
+  var body as Set of Boolean
+
+class NFPVariable extends NFPValueSpecification
+  var varName as Set of String
+
+class NFPExpression extends NFPValueSpecification
+  var body as Set of String
+  // operand IsContainer
+  var operand as Set of NFPValueSpecification
+
+abstract class Classifier extends AnnotatedModelElement
+  var instances as Set of InstanceSpecification
+
+abstract class ResourceClassifier extends Classifier
+  var offeredService as Set of ResourceServiceClassifier
+
+abstract class ResourceServiceClassifier extends Classifier
+  var resType as Set of ResourceClassifier
+
+abstract class InstanceSpecification extends AnnotatedModelElement
+  var _type as Set of Classifier
+
+abstract class ResourceInstanceSpecification extends InstanceSpecification
+  var offeredServiceInstance as Set of ResourceServiceInstanceSpecification
+
+abstract class ResourceServiceInstanceSpecification extends InstanceSpecification
+  var resintSpec as Set of ResourceInstanceSpecification
+
+class Hardware
+  var owner as Set of Hardware
+  var containH as Set of Hardware
+  var containHL as Set of HardwareLibrary
+  var containHE as Set of HardwareEntity
+  var deploymentConfiguration as Set of HardwareDeployment
+
+class HardwareLibrary
+  var owner as Set of Hardware
+
+class HardwareEntity
+  var owner as Set of Hardware
+
+class HardwareDeployment
+  var owner as Set of Hardware
+  var contain as Set of HardwareEntityInstance
+
+class HardwareEntityInstance
+  var owner as Set of HardwareDeployment
+
+class ECUInstance extends HardwareEntityInstance
+  // composedOf IsContainer
+  var composedOf as Set of ECUGateInstance
+
+class ChannelInstance extends HardwareEntityInstance
+  var gateInstances as Set of ECUGateInstance
+
+class ECUGateInstance
+  var channel as Set of ChannelInstance
+
+class ECU extends HardwareEntity
+  // contain IsContainer
+  var contain as Set of ECUGate
+
+class ECUGate
+  var owner as Set of ECU
+  var kindOf as Set of Channel
+
+class Channel
+  var specify as Set of ECUGate
+
+class AnalysisContext
+  var global as Set of ComplexNFP
+  // workload IsContainer
+  var workload as Set of Workload
+  // behavior IsContainer
+  var behavior as Set of Behavior
+  // usedResources IsContainer
+  var usedResources as Set of Resource
+
+class Workload
+  var transaction as Set of Transaction
+
+class Transaction
+  var workload as Set of Workload
+  // trigger IsContainer
+  var trigger as Set of Trigger
+  // response IsContainer
+  var response as Set of Response
+
+class Trigger
+  var arrivalPattern as Set of ComplexNFP
+  var effect as Set of Response
+
+class Response
+  var efficiency as Set of ComplexNFP
+  var endToEndLatency as Set of ComplexNFP
+  var cause as Set of Trigger
+  var behavior as Set of Scenario
+
+class Behavior
+  // scenario IsContainer
+  var scenario as Set of Scenario
+
+class Scenario
+  var behavior as Set of Behavior
+  var scenarionLatency as Set of ComplexNFP
+  // steps IsContainer
+  var steps as Set of _Step
+  var root as Set of _Step
+  var endToEndResponse as Set of Response
+
+class _Step extends Scenario
+  var predecessor as Set of _Step
+  var successor as Set of _Step
+  var stepLatency as Set of ComplexNFP
+  var usedResourceService as Set of Service
+
+class Resource
+
+class BasicResource extends Resource
+
+class StructuredResource extends Resource
+  // basicResource IsContainer
+  var basicResource as Set of BasicResource
+
+class ProcessingResource extends StructuredResource
+  var links as Set of Link
+  var components as Set of Component
+
+class Link
+
+class ProcessResource extends StructuredResource
+  var components as Set of Component
+
+class Component
+  var _process as Set of ProcessResource
+  var interfaces as Set of _Interface
+
+class StructuredComponent extends Component
+
+class BasicComponent extends Component
+
+class LogicalResource extends StructuredResource
+
+class ServerResource extends StructuredResource
+  var services as Set of Service
+
+class Service
+  var resource as Set of ServerResource
+  var _interface as Set of _Interface
+
+class _Interface
+  var service as Set of Service
+
+enum SourceKinds
+  est
+  meas
+  req
+  implicit
+  calc
+
+enum DirectionKinds
+  increasing
+  decreasing
+  undefined
+
+enum StatisticalQualifierKinds
+  max
+  min
+  range
+  mean
+  variance
+  standardDeviation
+  percentil
+  frequency
+  moment
+  distribution
+  instantaneous
+
+enum InstantUnitKinds
+  TAI
+  UT0
+  UT1
+  UTC
+  TT
+  TDB
+  TCG
+  TCB
+  Sideral
+  Local
+
+enum DurationUnitKinds
+  ns
+  us
+  ms
+  s
+  min
+  hrs
+  dys
+  wks
+  mos
+  yrs
+
+enum RateUnitKinds
+  kbs
+  MIPS
+
+enum ProbabilityUnitKinds
+  us
+  s
+
+enum SizeUnitKinds
+  bits
+  bytes
+  Mb
+  MB
+
+var TimeBase_Universe as Set of TimeBase
+
+var Instant_Universe as Set of Instant
+
+var TimeValue_Universe as Set of TimeValue
+
+var TimeInterval_Universe as Set of TimeInterval
+
+var Interval_Universe as Set of Interval
+
+var SingleTimeBase_Universe as Set of SingleTimeBase
+
+var SingleInstant_Universe as Set of SingleInstant
+
+var SingleInterval_Universe as Set of SingleInterval
+
+var SingleTimeValue_Universe as Set of SingleTimeValue
+
+var SingleTimeInterval_Universe as Set of SingleTimeInterval
+
+var DiscreteTimeBase_Universe as Set of DiscreteTimeBase
+
+var DiscreteInstant_Universe as Set of DiscreteInstant
+
+var _Event_Universe as Set of _Event
+
+var EventOccurence_Universe as Set of EventOccurence
+
+var PhysicalTime_Universe as Set of PhysicalTime
+
+var PhysicalInstant_Universe as Set of PhysicalInstant
+
+var Duration_Universe as Set of Duration
+
+var MultipleTimeBase_Universe as Set of MultipleTimeBase
+
+var CoincidencePoint_Universe as Set of CoincidencePoint
+
+var MultipleInterval_Universe as Set of MultipleInterval
+
+var MultipleTimeValue_Universe as Set of MultipleTimeValue
+
+var MetricTimeValue_Universe as Set of MetricTimeValue
+
+var DiscreteTimeValue_Universe as Set of DiscreteTimeValue
+
+var MetricTimeInterval_Universe as Set of MetricTimeInterval
+
+var DiscreteTimeInterval_Universe as Set of DiscreteTimeInterval
+
+var SimultaneousEventOccurrence_Universe as Set of SimultaneousEventOccurrence
+
+var TimedEvent_Universe as Set of TimedEvent
+
+var TimedEventOccurence_Universe as Set of TimedEventOccurence
+
+var TimedAction_Universe as Set of TimedAction
+
+var Delay_Universe as Set of Delay
+
+var TimingMechanism_Universe as Set of TimingMechanism
+
+var Clock_Universe as Set of Clock
+
+var Timer_Universe as Set of Timer
+
+var TimeOut_Universe as Set of TimeOut
+
+var ClockInterrupt_Universe as Set of ClockInterrupt
+
+var System_Universe as Set of System
+
+var Model_Universe as Set of Model
+
+var AnnotatedModel_Universe as Set of AnnotatedModel
+
+var ModelElement_Universe as Set of ModelElement
+
+var AnnotatedModelElement_Universe as Set of AnnotatedModelElement
+
+var NFP_Universe as Set of NFP
+
+var NFPLibrary_Universe as Set of NFPLibrary
+
+var NFPCategory_Universe as Set of NFPCategory
+
+var ModelingConcern_Universe as Set of ModelingConcern
+
+var AnalysisConcern_Universe as Set of AnalysisConcern
+
+var DesignConcern_Universe as Set of DesignConcern
+
+var Quantity_Universe as Set of Quantity
+
+var BasicQuantity_Universe as Set of BasicQuantity
+
+var DerivedQuantity_Universe as Set of DerivedQuantity
+
+var QualitativeNFP_Universe as Set of QualitativeNFP
+
+var QuantitativeNFP_Universe as Set of QuantitativeNFP
+
+var Realization_Universe as Set of Realization
+
+var Measure_Universe as Set of Measure
+
+var ComplexNFP_Universe as Set of ComplexNFP
+
+var BasicNFP_Universe as Set of BasicNFP
+
+var NFPType_Universe as Set of NFPType
+
+var NFPInstantType_Universe as Set of NFPInstantType
+
+var NFPurationType_Universe as Set of NFPurationType
+
+var NFPRateType_Universe as Set of NFPRateType
+
+var NFPProbabilityType_Universe as Set of NFPProbabilityType
+
+var NFPSizeType_Universe as Set of NFPSizeType
+
+var NFPValueSpecification_Universe as Set of NFPValueSpecification
+
+var NFPConstant_Universe as Set of NFPConstant
+
+var NFPListConstant_Universe as Set of NFPListConstant
+
+var NFPStringConstant_Universe as Set of NFPStringConstant
+
+var NFPIntegerConstant_Universe as Set of NFPIntegerConstant
+
+var NFPRealConstant_Universe as Set of NFPRealConstant
+
+var NFPBooleanConstant_Universe as Set of NFPBooleanConstant
+
+var NFPVariable_Universe as Set of NFPVariable
+
+var NFPExpression_Universe as Set of NFPExpression
+
+var Classifier_Universe as Set of Classifier
+
+var ResourceClassifier_Universe as Set of ResourceClassifier
+
+var ResourceServiceClassifier_Universe as Set of ResourceServiceClassifier
+
+var InstanceSpecification_Universe as Set of InstanceSpecification
+
+var ResourceInstanceSpecification_Universe as Set of ResourceInstanceSpecification
+
+var ResourceServiceInstanceSpecification_Universe as Set of ResourceServiceInstanceSpecification
+
+var Hardware_Universe as Set of Hardware
+
+var HardwareLibrary_Universe as Set of HardwareLibrary
+
+var HardwareEntity_Universe as Set of HardwareEntity
+
+var HardwareDeployment_Universe as Set of HardwareDeployment
+
+var HardwareEntityInstance_Universe as Set of HardwareEntityInstance
+
+var ECUInstance_Universe as Set of ECUInstance
+
+var ChannelInstance_Universe as Set of ChannelInstance
+
+var ECUGateInstance_Universe as Set of ECUGateInstance
+
+var ECU_Universe as Set of ECU
+
+var ECUGate_Universe as Set of ECUGate
+
+var Channel_Universe as Set of Channel
+
+var AnalysisContext_Universe as Set of AnalysisContext
+
+var Workload_Universe as Set of Workload
+
+var Transaction_Universe as Set of Transaction
+
+var Trigger_Universe as Set of Trigger
+
+var Response_Universe as Set of Response
+
+var Behavior_Universe as Set of Behavior
+
+var Scenario_Universe as Set of Scenario
+
+var _Step_Universe as Set of _Step
+
+var Resource_Universe as Set of Resource
+
+var BasicResource_Universe as Set of BasicResource
+
+var StructuredResource_Universe as Set of StructuredResource
+
+var ProcessingResource_Universe as Set of ProcessingResource
+
+var Link_Universe as Set of Link
+
+var ProcessResource_Universe as Set of ProcessResource
+
+var Component_Universe as Set of Component
+
+var StructuredComponent_Universe as Set of StructuredComponent
+
+var BasicComponent_Universe as Set of BasicComponent
+
+var LogicalResource_Universe as Set of LogicalResource
+
+var ServerResource_Universe as Set of ServerResource
+
+var Service_Universe as Set of Service
+
+var _Interface_Universe as Set of _Interface
+
+Main()

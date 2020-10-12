@@ -1,0 +1,52 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'SPEM'>
+    <Class name = 'ArtifactUsageName' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'isInput' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isOutput' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'hasWorkPerArtifact' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'artifactKind' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SPEM::ArtifactKind' opposite = 'SPEM::ArtifactKind::artifactUsageNames'/>
+      <Reference name = 'workDefinition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SPEM::WorkDefinition' opposite = 'SPEM::WorkDefinition::artifactUsageNames'/>
+    </Class>
+    <Class name = 'ProcessDefinitionElement' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'guidances' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SPEM::Guidance' opposite = 'SPEM::Guidance::processDefinitionElements'/>
+      <Reference name = 'processComponents' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SPEM::ProcessComponent' opposite = 'SPEM::ProcessComponent::processDefinitionElements'/>
+    </Class>
+    <Class name = 'Guidance' isAbstract = 'false' supertypes = 'SPEM::ProcessDefinitionElement'>
+      <Reference name = 'processDefinitionElements' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SPEM::ProcessDefinitionElement' opposite = 'SPEM::ProcessDefinitionElement::guidances'/>
+    </Class>
+    <Class name = 'ArtifactKind' isAbstract = 'false' supertypes = 'SPEM::ProcessDefinitionElement'>
+      <Reference name = 'artifactUsageNames' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SPEM::ArtifactUsageName' opposite = 'SPEM::ArtifactUsageName::artifactKind'/>
+      <Reference name = 'responsible' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SPEM::RoleKind' opposite = 'SPEM::RoleKind::artifactKinds'/>
+    </Class>
+    <Class name = 'WorkItem' isAbstract = 'false' supertypes = 'SPEM::ProcessDefinitionElement'/>
+    <Class name = 'RoleKind' isAbstract = 'false' supertypes = 'SPEM::ProcessDefinitionElement'>
+      <Reference name = 'artifactKinds' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SPEM::ArtifactKind' opposite = 'SPEM::ArtifactKind::responsible'/>
+    </Class>
+    <Class name = 'Condition' isAbstract = 'false' supertypes = 'SPEM::ProcessDefinitionElement'/>
+    <Class name = 'ProcessComponent' isAbstract = 'false' supertypes = 'SPEM::ProcessDefinitionElement'>
+      <Reference name = 'processDefinitionElements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SPEM::ProcessDefinitionElement' opposite = 'SPEM::ProcessDefinitionElement::processComponents'/>
+    </Class>
+    <Class name = 'Goal' isAbstract = 'false' supertypes = 'SPEM::Condition'>
+      <Reference name = 'workDefinition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SPEM::WorkDefinition' opposite = 'SPEM::WorkDefinition::goal'/>
+    </Class>
+    <Class name = 'Precondition' isAbstract = 'false' supertypes = 'SPEM::Condition'>
+      <Reference name = 'workDefinition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SPEM::WorkDefinition' opposite = 'SPEM::WorkDefinition::precondition'/>
+    </Class>
+    <Class name = 'WorkDefinition' isAbstract = 'false' supertypes = 'SPEM::WorkItem'>
+      <Reference name = 'artifactUsageNames' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SPEM::ArtifactUsageName' opposite = 'SPEM::ArtifactUsageName::workDefinition'/>
+      <Reference name = 'goal' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPEM::Goal' opposite = 'SPEM::Goal::workDefinition'/>
+      <Reference name = 'precondition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SPEM::Precondition' opposite = 'SPEM::Precondition::workDefinition'/>
+    </Class>
+    <Class name = 'ActivityKind' isAbstract = 'false' supertypes = 'SPEM::WorkDefinition'>
+      <Reference name = 'performer' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SPEM::RoleKind' opposite = ''/>
+      <Reference name = 'assistant' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SPEM::RoleKind' opposite = ''/>
+    </Class>
+    <Class name = 'Iteration' isAbstract = 'false' supertypes = 'SPEM::WorkDefinition'/>
+    <Class name = 'Phase' isAbstract = 'false' supertypes = 'SPEM::WorkDefinition'/>
+    <Class name = 'Lifecycle' isAbstract = 'false' supertypes = 'SPEM::WorkDefinition'/>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+  </Package>
+</Metamodel>

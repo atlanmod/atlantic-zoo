@@ -1,0 +1,148 @@
+-- @name		DiagramInterchange 
+-- @version		1.0
+-- @domains		UML, Diagrams
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/11
+-- @description	This metamodel describes a subset of Diagram Interchange which is an extension of the UML meta-model and is currently based on UML 2.0. The existing mechanism of XMI[UML] for exchanging models includes only the logical information but not the graphical presentation information. The diagram interchange extension allows graphical information to be included for diagrams used in UML models. 
+-- @see			UML 2.0 Diagram Interchange Specification, http://www.omg.org/docs/ptc/03-09-01.pdf	
+
+package DiagramInterchange {
+
+	-- @begin Special data types
+
+	class Dimension {
+		attribute width : Double;
+		attribute heigth : Double;
+	}
+	
+	class Point {
+		attribute x : Double;
+		attribute y : Double;
+	}
+	
+	class BezierPoint extends Point {
+		reference controls[0-2] ordered : Point;
+	}
+	
+	-- @end Special data types
+	
+	
+	-- @begin Diagram interchange structure
+	
+	class Property {
+		attribute key : String;
+		attribute value : String;
+	}
+	
+	abstract class DiagramElement {
+		attribute isVisible : Boolean;
+		reference properties[*] container : Property;
+		reference references[*] : Reference oppositeOf referenced;
+		reference de_container[0-1] : GraphElement oppositeOf contained;
+	}
+	
+	class Reference extends DiagramElement {
+		attribute isIndividualRepresentation : Boolean;
+		reference referenced : DiagramElement oppositeOf references;
+	}
+	
+	abstract class GraphElement extends DiagramElement {
+		reference position : Point;
+		reference contained[*] ordered container : DiagramElement oppositeOf de_container;
+		reference semanticModel container : SemanticModelBridge oppositeOf smb_graphElement;
+		reference anchorages[*] container : GraphConnector oppositeOf gc_graphElement;
+		reference links[*] container : DiagramLink oppositeOf dl_graphElement;
+	}
+	
+	class GraphEdge extends GraphElement {
+		reference waypoints[0-2] ordered : Point;
+		reference anchors[2-2] ordered : GraphConnector oppositeOf graphEdges;
+	}
+	
+	class GraphNode extends GraphElement {
+		reference size[0-1] : Dimension;
+	}
+	
+	class GraphConnector {
+		reference position : Point;
+		reference gc_graphElement : GraphElement oppositeOf anchorages;
+		reference graphEdges[*] : GraphEdge oppositeOf anchors;
+	}
+	
+	class DiagramLink {
+		attribute zoom : Double;
+		reference viewPort : Point;
+		reference dl_graphElement : GraphElement oppositeOf links;
+		reference dl_diagram : Diagram oppositeOf diagramLinks;
+	}
+	
+	abstract class SemanticModelBridge {
+		attribute presentation : String;
+		reference smb_graphElement[0-1] : GraphElement oppositeOf semanticModel;
+		reference smb_diagram[0-1] : Diagram oppositeOf namespace;
+	}
+	 
+	class Diagram extends GraphNode {
+		attribute name : String;
+		attribute zoom : Double;
+		reference viewPort : Point;
+		reference diagramLinks[*] : DiagramLink oppositeOf dl_diagram;
+		reference namespace container : SemanticModelBridge oppositeOf smb_diagram;  
+	}
+	
+	class SimpleSemanticModelElement extends SemanticModelBridge {
+		attribute typeInfo : String;
+	}
+	
+	class UML1SemanticModelBridge extends SemanticModelBridge {
+		reference element : CoreElement;
+	} 
+	
+	class CoreSemanticModelBridge extends SemanticModelBridge {
+		reference element : ElementsElement;
+	} 
+	
+	class CoreElement {}
+	
+	class ElementsElement {}
+	
+	abstract class LeafElement extends DiagramElement {}
+	
+	class TextElement extends LeafElement {
+		attribute text : String;
+	}
+	
+	class Image extends LeafElement {
+		attribute uri : String;
+		attribute mimeType : String;
+	}  
+	
+	abstract class GraphicPrimitive extends LeafElement {}
+	
+	class Polyline extends GraphicPrimitive {
+		reference waypoints[2-*] ordered : Point;
+		attribute closed : Boolean;
+	}
+	
+	class Ellipse extends GraphicPrimitive {
+		reference center : Point;
+		attribute radiusX : Double;
+		attribute radiusY : Double;
+		attribute rotation : Double;
+		attribute startAngle : Double;
+		attribute endAngle : Double;
+	}
+	 
+	-- @end Diagram interchange structure
+
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

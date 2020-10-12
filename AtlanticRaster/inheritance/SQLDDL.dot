@@ -1,0 +1,86 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_SQLDDL"{
+labelloc=t
+color=black
+label=SQLDDL
+ node[shape=record];
+LocatedElement[label="{/LocatedElement/|location : String\ncommentsBefore[*] : String\ncommentsAfter[*] : String| }"]
+;
+ node[shape=record];
+NamedElement[label="{/NamedElement/|name : String| }"]
+ NamedElement->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Database[label="{Database| | }"]
+ Database->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Table[label="{Table| | }"]
+ Table->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TableElement[label="{/TableElement/| | }"]
+ TableElement->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Column[label="{Column|name : String\ncanBeNull : Boolean| }"]
+ Column->TableElement[arrowhead=onormal,group=TableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Key[label="{/Key/|isUnique : Boolean\nname[0-1] : String| }"]
+ Key->TableElement[arrowhead=onormal,group=TableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleKey[label="{SimpleKey| | }"]
+ SimpleKey->Key[arrowhead=onormal,group=Key,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PrimaryKey[label="{PrimaryKey| | }"]
+ PrimaryKey->Key[arrowhead=onormal,group=Key,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ForeignKey[label="{ForeignKey| | }"]
+ ForeignKey->Key[arrowhead=onormal,group=Key,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Type[label="{Type|length[0-2] : Integer\nisUnsigned : Boolean| }"]
+ Type->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parameter[label="{Parameter| | }"]
+ Parameter->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Value[label="{/Value/| | }"]
+ Value->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IntegerVal[label="{IntegerVal|value : Integer| }"]
+ IntegerVal->Value[arrowhead=onormal,group=Value,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NullVal[label="{NullVal| | }"]
+ NullVal->Value[arrowhead=onormal,group=Value,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StringVal[label="{StringVal|value : String| }"]
+ StringVal->Value[arrowhead=onormal,group=Value,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

@@ -1,0 +1,118 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'M'>
+    <Class name = 'IdentifiedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'qualifiers' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'identifier' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'MElement' isAbstract = 'true' supertypes = 'M::IdentifiedElement'/>
+    <Class name = 'MElementReference' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'alias' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'referencedElement' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'M::MElement' opposite = ''/>
+    </Class>
+    <Class name = 'Module' isAbstract = 'false' supertypes = 'M::MElement'>
+      <Reference name = 'imports' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'M::ImportDirective' opposite = 'M::ImportDirective::module'/>
+      <Reference name = 'exports' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'M::ExportDirective' opposite = 'M::ExportDirective::module'/>
+      <Reference name = 'moduleMembers' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'M::ModuleMember' opposite = 'M::ModuleMember::module'/>
+    </Class>
+    <Class name = 'ModuleMember' isAbstract = 'true' supertypes = 'M::MElement'>
+      <Reference name = 'module' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'M::Module' opposite = 'M::Module::moduleMembers'/>
+    </Class>
+    <Class name = 'ImportDirective' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'module' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'M::Module' opposite = 'M::Module::imports'/>
+      <Reference name = 'importedElements' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'M::MElementReference' opposite = ''/>
+    </Class>
+    <Class name = 'ExportDirective' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'module' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'M::Module' opposite = 'M::Module::exports'/>
+      <Reference name = 'exportedElements' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'M::ModuleMember' opposite = ''/>
+    </Class>
+    <Class name = 'Value' isAbstract = 'true' supertypes = ''/>
+    <Class name = 'NumericalValue' isAbstract = 'true' supertypes = 'M::Value'/>
+    <Class name = 'StringValue' isAbstract = 'false' supertypes = 'M::Value'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'IntegerValue' isAbstract = 'false' supertypes = 'M::NumericalValue'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'DecimalValue' isAbstract = 'false' supertypes = 'M::NumericalValue'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+    </Class>
+    <Class name = 'BooleanValue' isAbstract = 'false' supertypes = 'M::Value'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Package name = 'Types'>
+      <Class name = 'DerivedType' isAbstract = 'false' supertypes = 'M::ModuleMember'>
+        <Reference name = 'supertypes' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Types::TypeReference' opposite = 'Types::TypeReference::subtype'/>
+        <Reference name = 'fields' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Types::Field' opposite = 'Types::Field::owner'/>
+        <Reference name = 'initializationExpression' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Expressions::InitializationExpression' opposite = 'Expressions::InitializationExpression::type'/>
+        <Reference name = 'whereExpression' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Expressions::WhereExpression' opposite = 'Expressions::WhereExpression::type'/>
+        <Reference name = 'expression' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Expressions::Expression' opposite = ''/>
+      </Class>
+      <Class name = 'TypeReference' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'subtype' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Types::DerivedType' opposite = 'Types::DerivedType::supertypes'/>
+        <Reference name = 'field' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Types::Field' opposite = 'Types::Field::type'/>
+        <Attribute name = 'lowerBound' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+        <Attribute name = 'upperBound' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      </Class>
+      <Class name = 'IntrinsicTypeReference' isAbstract = 'false' supertypes = 'Types::TypeReference'>
+        <Attribute name = 'typeIdentifier' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+      <Class name = 'DerivedTypeReference' isAbstract = 'false' supertypes = 'Types::TypeReference'>
+        <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Types::DerivedType' opposite = ''/>
+      </Class>
+      <Class name = 'Field' isAbstract = 'false' supertypes = 'M::IdentifiedElement'>
+        <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Types::DerivedType' opposite = 'Types::DerivedType::fields'/>
+        <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Types::TypeReference' opposite = 'Types::TypeReference::field'/>
+      </Class>
+      <Class name = 'Collection' isAbstract = 'false' supertypes = 'M::IdentifiedElement'/>
+      <Class name = 'ComputedValue' isAbstract = 'false' supertypes = 'M::IdentifiedElement'/>
+    </Package>
+    <Package name = 'Expressions'>
+      <Class name = 'Expression' isAbstract = 'true' supertypes = ''/>
+      <Class name = 'InitializationExpression' isAbstract = 'false' supertypes = 'Expressions::Expression'>
+        <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Types::DerivedType' opposite = 'Types::DerivedType::initializationExpression'/>
+        <Reference name = 'values' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'M::Value' opposite = ''/>
+      </Class>
+      <Class name = 'WhereExpression' isAbstract = 'false' supertypes = 'Expressions::Expression'>
+        <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Types::DerivedType' opposite = 'Types::DerivedType::whereExpression'/>
+        <Reference name = 'queryExpressions' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Expressions::QueryExpression' opposite = 'Expressions::QueryExpression::whereExpression'/>
+      </Class>
+      <Class name = 'IdentityExpression' isAbstract = 'false' supertypes = 'Expressions::WhereExpression'>
+        <Reference name = 'identity' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Types::Field' opposite = ''/>
+      </Class>
+      <Class name = 'QueryExpression' isAbstract = 'true' supertypes = 'Expressions::Expression'>
+        <Reference name = 'whereExpression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Expressions::WhereExpression' opposite = 'Expressions::WhereExpression::queryExpressions'/>
+      </Class>
+      <Class name = 'EqualExpression' isAbstract = 'false' supertypes = 'Expressions::QueryExpression'>
+        <Reference name = 'leftValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Expressions::ValueExpression' opposite = ''/>
+        <Reference name = 'rightValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Expressions::ValueExpression' opposite = ''/>
+      </Class>
+      <Class name = 'InExpression' isAbstract = 'false' supertypes = 'Expressions::QueryExpression'>
+        <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Expressions::ValueExpression' opposite = ''/>
+        <Reference name = 'collection' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Expressions::CollectionExpression' opposite = 'Expressions::CollectionExpression::inExpression'/>
+      </Class>
+      <Class name = 'CollectionExpression' isAbstract = 'false' supertypes = 'Expressions::Expression'>
+        <Reference name = 'inExpression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Expressions::InExpression' opposite = 'Expressions::InExpression::collection'/>
+        <Reference name = 'collectionValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Expressions::ValueExpression' opposite = ''/>
+      </Class>
+      <Class name = 'ValueExpression' isAbstract = 'true' supertypes = 'Expressions::Expression'/>
+      <Class name = 'DefaultValueExpression' isAbstract = 'false' supertypes = 'Expressions::ValueExpression'/>
+      <Class name = 'StandardValueExpression' isAbstract = 'false' supertypes = 'Expressions::ValueExpression'>
+        <Reference name = 'context' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Expressions::ValueExpression' opposite = ''/>
+        <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+    </Package>
+    <Package name = 'Languages'>
+      <Class name = 'Language' isAbstract = 'false' supertypes = 'M::ModuleMember'/>
+    </Package>
+    <Package name = 'ObjectModel'>
+      <Class name = 'Entity' isAbstract = 'false' supertypes = 'M::ModuleMember'/>
+    </Package>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'Double'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

@@ -1,0 +1,105 @@
+-- @name		CWMRelationalData 
+-- @version		1.0
+-- @domains		Data Warehousing, MOF
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/10
+-- @description	This metamodel describes a subset of the "relational data" part of the Common WareHouse Metamodel (CWM) which is a specification that describes metadata interchange among data warehousing, business intelligence, knowledge management and portal technologies.
+-- @see			The Data Warehousing, CWM and MOF Resource Page, http://www.omg.org/technology/cwm/
+	
+
+package CWMRelationalData  {
+
+	-- @begin CWM Special types
+
+	class QueryExpression {
+		attribute expresssion : String;
+	}
+	
+	-- @end CWM Special types
+	
+	
+	-- @begin CWM Relational Data  structure
+
+	class CheckConstraint {
+		reference constraintElements[*] : Column oppositeOf column_constraints;
+		reference constrainedElements[*] : Table oppositeOf table_constraints;
+	}
+	
+	class Column {
+		attribute precision : Integer;
+		attribute scale : Integer;
+		attribute isNullable : Boolean;
+		attribute length : Integer;
+		attribute collectionName : String;
+		attribute characterSetName : String;
+		reference column_constraints[*] : CheckConstraint oppositeOf constraintElements;
+		reference type : SQLDataType oppositeOf structuralFeatures;
+		reference owner[0-1] : ColumnSet oppositeOf features;
+		reference optionScopeColumnSet[0-1] : NamedColumnSet oppositeOf optionScopeColumn;
+	}
+	
+	class ColumnSet {
+		reference features[*] container : Column oppositeOf owner;
+	}
+	
+	class NamedColumnSet extends ColumnSet {
+		reference optionScopeColumn : Column oppositeOf optionScopeColumnSet;
+		reference triggers[*] : Trigger oppositeOf namedColumnSet;
+	}
+	
+	class QueryColumnSet extends ColumnSet {
+		reference query container : QueryExpression;
+	}
+	
+	class Table extends NamedColumnSet {
+		attribute isTemporary : Boolean;
+		attribute temporaryScope : String;
+		attribute isSystem : Boolean;
+		reference table_constraints[*] : CheckConstraint oppositeOf constrainedElements;
+	}
+	
+	class View extends NamedColumnSet {
+		attribute isReadOnly : Boolean;
+		attribute checkOption : Boolean;
+		reference queryExpression container : QueryExpression;
+	}
+	
+	class Trigger {
+		reference namedColumnSet : NamedColumnSet oppositeOf triggers;
+	}
+	
+	class SQLDataType {
+		attribute typeNumber : Integer;
+		reference structuralFeatures[*] : Column oppositeOf type;
+	}
+	
+	class SQLDistinctType extends SQLDataType {
+		attribute length : Integer;
+		attribute precision : Integer;
+		attribute scale : Integer;
+		reference sqlSimpleType : SQLSimpleType oppositeOf sqlDistinctTypes;
+	}
+	
+	class SQLSimpleType extends SQLDataType {
+		attribute characterMaximumLength : Integer;
+		attribute characterOctetLength : Integer;
+		attribute numericPrecision : Integer;
+		attribute numericPrecisionRadix : Integer;
+		attribute numericScale : Integer;
+		attribute dateTimePrecision :Integer;
+		reference sqlDistinctTypes[*] : SQLDistinctType oppositeOf sqlSimpleType;	
+	}
+	
+	-- @end CWM Relational Data  structure
+
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

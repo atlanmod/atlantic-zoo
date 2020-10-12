@@ -1,0 +1,63 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_FlatSignalFlow"{
+labelloc=t
+color=black
+label=FlatSignalFlow
+ node[shape=record];
+RootFolder[label="{RootFolder| | }"]
+;
+ node[shape=record];
+RootContainer[label="{RootContainer|name : String\nposition[0-1] : String| }"]
+ RootContainer->RootFolder[arrowhead=diamond,arrowtail=none,headlabel="rootFolder",taillabel="rootContainer[*]",group=RootFolder,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Actor[label="{Actor|memory : String\nscript : String\nfile : String\nWCET : String\nname : String\nposition[0-1] : String| }"]
+ Actor->RootContainer[arrowhead=diamond,arrowtail=none,headlabel="rootContainer",taillabel="actor[*]",group=RootContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Transmitter[label="{Transmitter|name : String\nposition[0-1] : String| }"]
+ Transmitter->Actor[arrowhead=diamond,arrowtail=none,headlabel="actor",taillabel="transmitter[*]",group=Actor,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Receiver[label="{Receiver|name : String\nposition[0-1] : String| }"]
+ Receiver->Actor[arrowhead=diamond,arrowtail=none,headlabel="actor",taillabel="receiver[*]",group=Actor,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InputSignal[label="{InputSignal|name : String\nposition[0-1] : String| }"]
+ InputSignal->RootContainer[arrowhead=diamond,arrowtail=none,headlabel="rootContainer",taillabel="inputSignal[*]",group=RootContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OutputSignal[label="{OutputSignal|name : String\nposition[0-1] : String| }"]
+ OutputSignal->RootContainer[arrowhead=diamond,arrowtail=none,headlabel="rootContainer",taillabel="outputSignal[*]",group=RootContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Queue[label="{Queue|name : String\nposition[0-1] : String| }"]
+ Queue->RootContainer[arrowhead=diamond,arrowtail=none,headlabel="rootContainer",taillabel="queue[*]",group=RootContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AssociationReceiverQueue[label="{AssociationReceiverQueue| | }"]
+ AssociationReceiverQueue->Queue[arrowhead=none,arrowtail=none,headlabel="srcqueue[1-*]",taillabel="associationReceiverQueue",group=Queue,minlen=2,constraint=false,]
+ AssociationReceiverQueue->Receiver[arrowhead=none,arrowtail=none,headlabel="dstreceiver[1-*]",taillabel="associationReceiverQueue",group=Receiver,minlen=2,constraint=false,]
+ AssociationReceiverQueue->InputSignal[arrowhead=none,arrowtail=none,headlabel="inputSignal",taillabel="associationReceiverQueue",group=InputSignal,minlen=2,constraint=false,]
+;
+ node[shape=record];
+AssociationQueueTransmitter[label="{AssociationQueueTransmitter| | }"]
+ AssociationQueueTransmitter->Queue[arrowhead=none,arrowtail=none,headlabel="dstqueue[1-*]",taillabel="associationQueueTransmitter",group=Queue,minlen=2,constraint=false,]
+ AssociationQueueTransmitter->Transmitter[arrowhead=none,arrowtail=none,headlabel="srctransmitter[1-*]",taillabel="associationQueueTransmitter",group=Transmitter,minlen=2,constraint=false,]
+ AssociationQueueTransmitter->OutputSignal[arrowhead=none,arrowtail=none,headlabel="outputSignal",taillabel="associationQueueTransmitter",group=OutputSignal,minlen=2,constraint=false,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

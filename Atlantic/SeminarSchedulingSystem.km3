@@ -1,0 +1,59 @@
+-- @name 		Seminar Scheduling System
+-- @domains 	Seminar
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/07/10
+-- @description This metamodel fragment describes a partial Seminar scheduling system metamodel.
+-- @see 		This metamodel fragment has been extracted from information available in the following article:
+-- @see 		Article "Reflections on the Object Contraint Language"
+-- @see 		by Alie Hamie, Franco Civello, John howse, Stuart Kent, Richard Mitchell
+-- @see 		Page 163, Section 2.1, Figure 1 : A class diagram for a seminar scheduling system
+-- @see 		Lecture Notes in Computer Science 1618
+-- @see 		Jean Bézivin, Pierre Alain Muller
+-- @see 		The Unified Modeling Language UML 98: Beyond the notation
+
+package SeminarSchedulingSystem {
+	
+	class SeminarSchedulingSystem {
+		reference presenter [*] : Presenter oppositeOf seminarSchedulingSystem;
+		reference seminar [*] : Seminar oppositeOf seminarSchedulingSystem;
+	}
+	
+	class Presenter {
+		attribute name : String;
+		reference seminarSchedulingSystem : SeminarSchedulingSystem oppositeOf presenter;
+		reference qualifiedFor [*] : Seminar oppositeOf qualified;
+		reference offering [*] ordered : Offering oppositeOf presenter; 
+	}
+	
+	class Seminar {
+		attribute title : String;
+		reference seminarSchedulingSystem : SeminarSchedulingSystem oppositeOf seminar;
+		reference qualified [*] : Presenter oppositeOf qualifiedFor;
+		reference offering [*] ordered : Offering oppositeOf seminar; 
+	}
+	
+	class Offering {
+		attribute is_cancelled : Boolean;
+		reference date : Date;
+		reference attendee [*] : Attendee oppositeOf offering;
+		reference presenter [0-1] : Presenter oppositeOf offering;
+		reference seminar [0-1] : Seminar oppositeOf offering;
+	}
+	
+	class Date {
+		attribute year : Integer;
+		attribute month : Integer;
+		attribute day : Integer;
+	}
+	
+	class Attendee {
+		attribute name : String;
+		reference offering [*] : Offering oppositeOf attendee;
+	}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

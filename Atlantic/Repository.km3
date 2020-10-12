@@ -1,0 +1,58 @@
+-- @name		Repository
+-- @version		1.0
+-- @authors		Youssef Srour (Srour.youssef@gmail.com)
+-- @date		2006/07/25
+-- @description	This metamodel describes Repository. The repository metamodel includes only elements that contribute to the structure and semantics of the system under development. Classes in the repository model are, e.g., SUBSYSTEM, CLASS, FEATURE etc.
+-- @see			http://delivery.acm.org/10.1145/360000/353185/p188-herrmann.pdf?key1=353185&key2=7631095511&coll=portal&dl=ACM&CFID=11111111&CFTOKEN=2222222
+
+package Repository {
+
+-- Begin class Subsystem
+	class Subsystem {
+		reference classes[*] container : Class oppositeOf parentSubsystem;
+		reference relations[*] container : Relation oppositeOf subsystem;
+	}--End class Subsystem
+
+-- Begin class Relation
+	class Relation {
+		reference subsystem : Subsystem oppositeOf relations;
+		reference classes[2-2] : Class oppositeOf relations;
+	}--End class Relation
+
+-- Begin class Class
+	class Class {
+		attribute name : String;
+		attribute is_deferred : Boolean;
+		reference features[*] container : Feature oppositeOf theClass;
+		reference parentSubsystem : Subsystem oppositeOf classes;
+		reference subsystem : Subsystem;
+		reference relations [*] : Relation oppositeOf classes;
+	}--End class Class
+
+-- Begin class Feature
+	class Feature {
+		reference theClass : Class oppositeOf features;
+		reference type : Type;
+	}--End class Feature
+
+-- Begin class Type
+	class Type {
+		attribute name : String;
+		
+	}--End class Type
+
+-- Begin class Entity
+	class Entity extends Feature {
+		
+	}--End class Entity
+
+-- Begin class Routine
+	class Routine extends Feature {
+		
+	}--End class Routine
+}
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+	datatype Integer;
+}

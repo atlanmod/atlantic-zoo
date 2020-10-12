@@ -1,0 +1,54 @@
+-- ******************************************************************************
+-- Copyright (c) 2009 INRIA
+-- All rights reserved. This program and the accompanying materials 
+-- are made available under the terms of the Eclipse Public License v1.0 
+-- which accompanies this distribution, and is available at
+-- http://www.eclipse.org/legal/epl-v10.html
+-- 
+-- Contributors: 
+-- 	INRIA - Initial implementation
+--  @author Jean-Sébastien Sottet(INRIA)
+--  
+-- ******************************************************************************	
+-- @name		PDG
+-- @version		0.2
+-- @domains		Program Comprehension, Reverse engineering, Program Optimization
+-- @authors		Jean-Sébastien Sottet jean-sebastien.sottet <at> inria.fr
+-- @date		2009/03/20
+-- @description	Program Dependence Graph
+-- @see			http://en.wikipedia.org/wiki/Dependency_graph
+
+package PDG {
+
+	class MProgramDependenceGraph {
+		reference node  container : EnterNode;
+	}
+	
+	class EnterNode {
+		attribute name : String;
+		reference  controlDependenceNodes[*] container : ExpressionNode;
+	} 
+	
+	
+	class ExpressionNode   {
+		attribute name : String;
+		reference expression container : Expression; 
+		reference dataDependenceNodes[*] : ExpressionNode;
+		reference controlDependenceNodes[*] container : ExpressionNode;
+	
+	}
+	
+	
+	class Expression {
+		attribute name : String;
+		attribute isIdentifier : Boolean;	
+		reference innerExpressions[*]  ordered container : Expression;
+	}
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean;
+  datatype String;
+  datatype Integer;
+}

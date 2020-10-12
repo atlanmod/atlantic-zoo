@@ -1,0 +1,1317 @@
+package Metamodel;
+
+package KDM_MetaModel {
+  package action {
+    class ActionElement extends code.AbstractCodeElement {
+      !unique !ordered attr String kind;
+      !ordered val code.AbstractCodeElement[*] codeElement;
+      val AbstractActionRelationship[*] actionRelation;
+    }
+
+    abstract class AbstractActionRelationship extends core.KDMRelationship {
+    }
+
+    class ControlFlow extends AbstractActionRelationship {
+      !ordered ref ActionElement[1] to;
+      !ordered ref ActionElement[1] from;
+    }
+
+    class Calls extends AbstractActionRelationship {
+      !ordered ref code.ControlElement[1] to;
+      !ordered ref ActionElement[1] from;
+    }
+
+    class Creates extends AbstractActionRelationship {
+      !ordered ref code.Datatype[1] to;
+      !ordered ref ActionElement[1] from;
+    }
+
+    class Reads extends AbstractActionRelationship {
+      !ordered ref code.DataElement[1] to;
+      !ordered ref ActionElement[1] from;
+    }
+
+    class Writes extends AbstractActionRelationship {
+      !ordered ref code.DataElement[1] to;
+      !ordered ref ActionElement[1] from;
+    }
+
+    class CompliesTo extends AbstractActionRelationship {
+      !ordered ref code.CodeItem[1] to;
+      !ordered ref ActionElement[1] from;
+    }
+
+    class Flow extends ControlFlow {
+    }
+
+    class TrueFlow extends ControlFlow {
+    }
+
+    class FalseFlow extends ControlFlow {
+    }
+
+    class GuardedFlow extends ControlFlow {
+    }
+
+    class UsesType extends AbstractActionRelationship {
+      !ordered ref code.Datatype[1] to;
+      !ordered ref ActionElement[1] from;
+    }
+
+    class Addresses extends AbstractActionRelationship {
+      !ordered ref code.ComputationalObject[1] to;
+      !ordered ref ActionElement[1] from;
+    }
+
+    class ActionRelationship extends AbstractActionRelationship {
+      !ordered ref core.KDMEntity[1] to;
+      !ordered ref ActionElement[1] from;
+    }
+
+    class Throws extends AbstractActionRelationship {
+      !ordered ref code.DataElement[1] to;
+      !ordered ref ActionElement[1] from;
+    }
+
+    class Dispatches extends AbstractActionRelationship {
+      !ordered ref code.DataElement[1] to;
+      !ordered ref ActionElement[1] from;
+    }
+
+    class EntryFlow extends AbstractActionRelationship {
+      !ordered ref ActionElement[1] to;
+      !ordered ref code.ControlElement[1] from;
+    }
+
+    class BlockUnit extends ActionElement {
+    }
+
+    class ExceptionUnit extends BlockUnit {
+    }
+
+    class TryUnit extends ExceptionUnit {
+    }
+
+    class FinallyUnit extends ExceptionUnit {
+    }
+
+    class CatchUnit extends ExceptionUnit {
+    }
+
+    class ExitFlow extends AbstractActionRelationship {
+      !ordered ref ActionElement[1] to;
+      !ordered ref ActionElement[1] from;
+    }
+
+    class ExceptionFlow extends AbstractActionRelationship {
+      !ordered ref ActionElement[1] to;
+      !ordered ref ActionElement[1] from;
+    }
+
+  }
+
+  package build {
+    abstract class AbstractBuildElement extends core.KDMEntity {
+      !ordered val AbstractBuildRelationship[*] buildRelation;
+    }
+
+    class BuildResource extends AbstractBuildElement {
+      !ordered ref core.KDMEntity[*] implementation;
+      !ordered ref AbstractBuildElement[*] groupedBuild;
+      !ordered val AbstractBuildElement[*] buildElement;
+    }
+
+    class BuildDescription extends BuildResource {
+      !ordered val source.SourceRef[*] source;
+      !unique !ordered attr String text;
+    }
+
+    class SymbolicLink extends AbstractBuildElement {
+    }
+
+    abstract class AbstractBuildRelationship extends core.KDMRelationship {
+    }
+
+    class LinksTo extends AbstractBuildRelationship {
+      !ordered ref AbstractBuildElement[1] to;
+      !ordered ref SymbolicLink[1] from;
+    }
+
+    class Consumes extends AbstractBuildRelationship {
+      !ordered ref AbstractBuildElement[1] to;
+      !ordered ref BuildStep[1] from;
+    }
+
+    class BuildModel extends kdm.KDMModel {
+      !ordered val AbstractBuildElement[*] buildElement;
+    }
+
+    class BuildComponent extends BuildResource {
+    }
+
+    class Supplier extends AbstractBuildElement {
+    }
+
+    class Tool extends AbstractBuildElement {
+    }
+
+    class BuildElement extends AbstractBuildElement {
+    }
+
+    class BuildRelationship extends AbstractBuildRelationship {
+      !ordered ref core.KDMEntity[1] to;
+      !ordered ref AbstractBuildElement[1] from;
+    }
+
+    class SuppliedBy extends AbstractBuildRelationship {
+      !ordered ref Supplier[1] to;
+      !ordered ref AbstractBuildElement[1] from;
+    }
+
+    class Library extends BuildResource {
+    }
+
+    class BuildStep extends BuildResource {
+    }
+
+    class Produces extends AbstractBuildRelationship {
+      !ordered ref AbstractBuildElement[1] to;
+      !ordered ref BuildStep[1] from;
+    }
+
+    class SupportedBy extends AbstractBuildRelationship {
+      !ordered ref Tool[1] to;
+      !ordered ref BuildStep[1] from;
+    }
+
+    class BuildProduct extends BuildResource {
+    }
+
+    class DescribedBy extends AbstractBuildRelationship {
+      !ordered ref BuildDescription[1] to;
+      !ordered ref BuildStep[1] from;
+    }
+
+  }
+
+  package code {
+    abstract class AbstractCodeElement extends core.KDMEntity {
+      !ordered val source.SourceRef[*] source;
+      !ordered val CommentUnit[*] comment;
+      !ordered val AbstractCodeRelationship[*] codeRelation;
+    }
+
+    abstract class CodeItem extends AbstractCodeElement {
+    }
+
+    abstract class ComputationalObject extends CodeItem {
+    }
+
+    class ControlElement extends ComputationalObject {
+      !ordered ref Datatype type;
+      !ordered val action.EntryFlow[*] entryFlow;
+      val AbstractCodeElement[*] codeElement;
+    }
+
+    class MethodUnit extends ControlElement {
+      !unique !ordered attr MethodKind kind;
+      !unique !ordered attr ExportKind export;
+    }
+
+    class Module extends CodeItem {
+      val AbstractCodeElement[*] codeElement;
+    }
+
+    class CodeAssembly extends Module {
+    }
+
+    class CallableUnit extends ControlElement {
+      !unique !ordered attr CallableKind kind;
+    }
+
+    abstract class Datatype extends CodeItem {
+    }
+
+    class TemplateUnit extends Datatype {
+      val CodeItem[*] codeElement;
+    }
+
+    class TemplateParameter extends Datatype {
+    }
+
+    abstract class AbstractCodeRelationship extends core.KDMRelationship {
+    }
+
+    class InstanceOf extends AbstractCodeRelationship {
+      !ordered ref TemplateUnit[1] to;
+      !ordered ref AbstractCodeElement[1] from;
+    }
+
+    class CompilationUnit extends Module {
+    }
+
+    class CodeModel extends kdm.KDMModel {
+      !ordered val AbstractCodeElement[*] codeElement;
+    }
+
+    class DerivedType extends Datatype {
+      !ordered val ItemUnit[1] itemUnit;
+    }
+
+    class ArrayType extends DerivedType {
+      !unique !ordered attr Integer size;
+      !ordered val IndexUnit[1] indexUnit;
+    }
+
+    class PrimitiveType extends Datatype {
+    }
+
+    class BooleanType extends PrimitiveType {
+    }
+
+    class CharType extends PrimitiveType {
+    }
+
+    class ClassUnit extends Datatype {
+      !unique !ordered attr Boolean isAbstract;
+      val CodeItem[*] codeElement;
+    }
+
+    class CompositeType extends Datatype {
+      val ItemUnit[*] itemUnit;
+    }
+
+    class RecordType extends CompositeType {
+    }
+
+    class EnumeratedType extends Datatype {
+      val Value[*] value;
+    }
+
+    class Extends extends AbstractCodeRelationship {
+      !ordered ref Datatype[1] to;
+      !ordered ref Datatype[1] from;
+    }
+
+    class ScaledType extends PrimitiveType {
+    }
+
+    class FloatType extends PrimitiveType {
+    }
+
+    class HasType extends AbstractCodeRelationship {
+      !ordered ref Datatype[1] to;
+      !ordered ref CodeItem[1] from;
+    }
+
+    class ImplementationOf extends AbstractCodeRelationship {
+      !ordered ref CodeItem[1] to;
+      !ordered ref CodeItem[1] from;
+    }
+
+    class Implements extends AbstractCodeRelationship {
+      !ordered ref CodeItem[1] to;
+      !ordered ref CodeItem[1] from;
+    }
+
+    class IntegerType extends PrimitiveType {
+    }
+
+    class InterfaceUnit extends Datatype {
+      val CodeItem[*] codeElement;
+    }
+
+    class PointerType extends DerivedType {
+    }
+
+    abstract class DefinedType extends Datatype {
+      !ordered ref Datatype[1] type;
+      !ordered val Datatype codeElement;
+    }
+
+    class TypeUnit extends DefinedType {
+    }
+
+    class RangeType extends DerivedType {
+      !unique !ordered attr Integer lower;
+      !unique !ordered attr Integer upper;
+    }
+
+    class Signature extends Datatype {
+      val ParameterUnit[*] parameterUnit;
+    }
+
+    class DataElement extends ComputationalObject {
+      !ordered ref Datatype[1] type;
+      !unique !ordered attr String ext;
+      !unique !ordered attr Integer size;
+      !ordered val Datatype[*] codeElement;
+    }
+
+    class StringType extends PrimitiveType {
+    }
+
+    class ChoiceType extends CompositeType {
+    }
+
+    class NamespaceUnit extends CodeItem {
+      !ordered ref CodeItem[*] groupedCode;
+    }
+
+    class VisibleIn extends AbstractCodeRelationship {
+      !ordered ref CodeItem[1] to;
+      !ordered ref CodeItem[1] from;
+    }
+
+    class CommentUnit extends core.ModelElement {
+      !unique !ordered attr String text;
+    }
+
+    class SharedUnit extends CompilationUnit {
+    }
+
+    class DecimalType extends PrimitiveType {
+    }
+
+    class DateType extends PrimitiveType {
+    }
+
+    class TimeType extends PrimitiveType {
+    }
+
+    enum MethodKind {
+      operator = 0;
+      destructor = 0;
+      method = 0;
+      ~abstract = 0;
+      virtual = 0;
+      unknown = 0;
+      constructor = 0;
+    }
+
+    class VoidType extends PrimitiveType {
+    }
+
+    abstract class ValueElement extends DataElement {
+    }
+
+    class Value extends ValueElement {
+    }
+
+    class ValueList extends ValueElement {
+      val ValueElement[*] valueElement;
+    }
+
+    class StorableUnit extends DataElement {
+      !unique !ordered attr StorableKind kind;
+    }
+
+    class MemberUnit extends DataElement {
+      !unique !ordered attr ExportKind export;
+    }
+
+    class ParameterUnit extends DataElement {
+      !unique !ordered attr ParameterKind kind;
+      !unique !ordered attr Integer pos;
+    }
+
+    class ItemUnit extends DataElement {
+    }
+
+    class IndexUnit extends DataElement {
+    }
+
+    class SynonymType extends DefinedType {
+    }
+
+    class SequenceType extends DerivedType {
+      !unique !ordered attr Integer size;
+    }
+
+    class BagType extends DerivedType {
+      !unique !ordered attr Integer size;
+    }
+
+    class SetType extends DerivedType {
+      !unique !ordered attr Integer size;
+    }
+
+    class CodeElement extends CodeItem {
+    }
+
+    class CodeRelationship extends AbstractCodeRelationship {
+      !ordered ref core.KDMEntity[1] to;
+      !ordered ref CodeItem[1] from;
+    }
+
+    enum ParameterKind {
+      byReference = 0;
+      unknown = 0;
+      exception = 0;
+      return = 0;
+      byValue = 0;
+      catchall = 0;
+      byName = 0;
+      ~throws = 0;
+      variadic = 0;
+    }
+
+    enum ExportKind {
+      private = 0;
+      unknown = 0;
+      public = 0;
+      protected = 0;
+      final = 0;
+    }
+
+    class LanguageUnit extends Module {
+    }
+
+    class OrdinalType extends PrimitiveType {
+    }
+
+    class BitstringType extends PrimitiveType {
+    }
+
+    class OctetType extends PrimitiveType {
+    }
+
+    class OctetstringType extends PrimitiveType {
+    }
+
+    class BitType extends PrimitiveType {
+    }
+
+    enum StorableKind {
+      global = 0;
+      external = 0;
+      static = 0;
+      unknown = 0;
+      register = 0;
+      local = 0;
+    }
+
+    enum CallableKind {
+      external = 0;
+      regular = 0;
+      stored = 0;
+      operator = 0;
+      unknown = 0;
+    }
+
+    class Imports extends AbstractCodeRelationship {
+      !ordered ref CodeItem[1] to;
+      !ordered ref CodeItem[1] from;
+    }
+
+    class Package extends Module {
+    }
+
+    class ParameterTo extends AbstractCodeRelationship {
+      !ordered ref CodeItem[1] to;
+      !ordered ref AbstractCodeElement[1] from;
+    }
+
+    class TemplateType extends Datatype {
+    }
+
+    class PreprocessorDirective extends AbstractCodeElement {
+      !ordered val AbstractCodeElement[*] codeElement;
+    }
+
+    class MacroDirective extends PreprocessorDirective {
+    }
+
+    class MacroUnit extends PreprocessorDirective {
+      !unique !ordered attr MacroKind kind;
+    }
+
+    class ConditionalDirective extends PreprocessorDirective {
+    }
+
+    class IncludeDirective extends PreprocessorDirective {
+    }
+
+    enum MacroKind {
+      external = 0;
+      unknown = 0;
+      option = 0;
+      undefined = 0;
+      regular = 0;
+    }
+
+    class VariantTo extends AbstractCodeRelationship {
+      !ordered ref PreprocessorDirective[1] to;
+      !ordered ref PreprocessorDirective[1] from;
+    }
+
+    class Expands extends AbstractCodeRelationship {
+      !ordered ref PreprocessorDirective[1] to;
+      !ordered ref PreprocessorDirective[1] from;
+    }
+
+    class Redefines extends AbstractCodeRelationship {
+      !ordered ref PreprocessorDirective[1] to;
+      !ordered ref PreprocessorDirective[1] from;
+    }
+
+    class GeneratedFrom extends AbstractCodeRelationship {
+      !ordered ref PreprocessorDirective[1] to;
+      !ordered ref AbstractCodeElement[1] from;
+    }
+
+    class Includes extends AbstractCodeRelationship {
+      !ordered ref AbstractCodeElement[1] to;
+      !ordered ref PreprocessorDirective[1] from;
+    }
+
+    class HasValue extends AbstractCodeRelationship {
+      !ordered ref CodeItem[1] to;
+      !ordered ref CodeItem[1] from;
+    }
+
+  }
+
+  package conceptual {
+    class ConceptualModel extends kdm.KDMModel {
+      !ordered val AbstractConceptualElement[*] conceptualElement;
+    }
+
+    abstract class AbstractConceptualElement extends core.KDMEntity {
+      !ordered val source.SourceRef[*] source;
+      !ordered ref core.KDMEntity[*] implementation;
+      !ordered val AbstractConceptualRelationship[*] conceptualRelation;
+      !ordered val action.ActionElement[*] abstraction;
+    }
+
+    class TermUnit extends AbstractConceptualElement {
+    }
+
+    class ConceptualContainer extends AbstractConceptualElement {
+      !ordered val AbstractConceptualElement[*] conceptualElement;
+    }
+
+    class FactUnit extends ConceptualContainer {
+    }
+
+    abstract class AbstractConceptualRelationship extends core.KDMRelationship {
+    }
+
+    class ConceptualRelationship extends AbstractConceptualRelationship {
+      !ordered ref core.KDMEntity[1] to;
+      !ordered ref AbstractConceptualElement[1] from;
+    }
+
+    class BehaviorUnit extends ConceptualContainer {
+    }
+
+    class RuleUnit extends ConceptualContainer {
+    }
+
+    class ScenarioUnit extends ConceptualContainer {
+    }
+
+    class ConceptualFlow extends AbstractConceptualRelationship {
+      !ordered ref ConceptualContainer[1] to;
+      !ordered ref ConceptualContainer[1] from;
+    }
+
+    class ConceptualElement extends AbstractConceptualElement {
+    }
+
+    class ConceptualRole extends AbstractConceptualElement {
+      !ordered ref AbstractConceptualElement[1] conceptualElement;
+    }
+
+  }
+
+  package core {
+    abstract class Element {
+      !ordered val kdm.Attribute[*] attribute;
+      !ordered val kdm.Annotation[*] annotation;
+    }
+
+    abstract class ModelElement extends Element {
+      !ordered ref kdm.Stereotype[*] stereotype;
+      !ordered val kdm.ExtendedValue[*] taggedValue;
+    }
+
+    abstract class KDMEntity extends ModelElement {
+      !unique !ordered attr String name;
+    }
+
+    abstract class KDMRelationship extends ModelElement {
+    }
+
+    class AggregatedRelationship extends ModelElement {
+      !ordered ref KDMEntity[1] from;
+      !ordered ref KDMEntity[1] to;
+      !ordered ref KDMRelationship[*] relation;
+      !unique !ordered attr Integer density;
+    }
+
+    datatype String : "";
+
+    datatype Integer : "";
+
+    datatype Boolean : "";
+
+  }
+
+  package data {
+    class DataModel extends kdm.KDMModel {
+      !ordered val AbstractDataElement[*] dataElement;
+    }
+
+    abstract class AbstractDataElement extends core.KDMEntity {
+      !ordered val source.SourceRef[*] source;
+      !ordered val AbstractDataRelationship[*] dataRelation;
+      val action.ActionElement[*] abstraction;
+    }
+
+    class DataResource extends AbstractDataElement {
+    }
+
+    class IndexElement extends DataResource {
+      !ordered ref code.ItemUnit[*] implementation;
+    }
+
+    class UniqueKey extends IndexElement {
+    }
+
+    class Index extends IndexElement {
+    }
+
+    abstract class AbstractDataRelationship extends core.KDMRelationship {
+    }
+
+    class KeyRelation extends AbstractDataRelationship {
+      !ordered ref UniqueKey[1] to;
+      !ordered ref ReferenceKey[1] from;
+    }
+
+    class ReferenceKey extends IndexElement {
+    }
+
+    class DataContainer extends DataResource {
+      !ordered val DataResource[*] dataElement;
+    }
+
+    class Catalog extends DataContainer {
+    }
+
+    class RelationalSchema extends DataContainer {
+      !ordered val code.CodeItem[*] codeElement;
+    }
+
+    class ColumnSet extends DataContainer {
+      val code.ItemUnit[*] itemUnit;
+    }
+
+    class RelationalTable extends ColumnSet {
+    }
+
+    class RelationalView extends ColumnSet {
+    }
+
+    class RecordFile extends ColumnSet {
+    }
+
+    class DataEvent extends DataResource {
+      !unique !ordered attr String kind;
+    }
+
+    class XMLSchema extends AbstractDataElement {
+      !ordered val AbstractContentElement[*] contentElement;
+    }
+
+    abstract class AbstractContentElement extends AbstractDataElement {
+    }
+
+    class ComplexContentType extends AbstractContentElement {
+      val AbstractContentElement[*] contentElement;
+    }
+
+    class AllContent extends ComplexContentType {
+    }
+
+    class SeqContent extends ComplexContentType {
+    }
+
+    class ChoiceContent extends ComplexContentType {
+    }
+
+    class ContentItem extends AbstractContentElement {
+      !ordered ref ComplexContentType type;
+      !ordered val AbstractContentElement[*] contentElement;
+    }
+
+    class GroupContent extends ContentItem {
+    }
+
+    class ContentRestriction extends AbstractContentElement {
+      !unique !ordered attr String kind;
+      !unique !ordered attr String value;
+    }
+
+    class SimpleContentType extends ComplexContentType {
+      !ordered ref ComplexContentType[*] type;
+      !unique !ordered attr String kind;
+    }
+
+    class ExtendedDataElement extends AbstractDataElement {
+    }
+
+    class DataRelationship extends AbstractDataRelationship {
+      !ordered ref core.KDMEntity[1] to;
+      !ordered ref AbstractDataElement[1] from;
+    }
+
+    class MixedContent extends ComplexContentType {
+    }
+
+    class ContentReference extends ContentItem {
+    }
+
+    class DataAction extends AbstractDataElement {
+      !unique !ordered attr String kind;
+      !ordered ref action.ActionElement[*] implementation;
+      !ordered val DataEvent[*] dataElement;
+    }
+
+    class ReadsColumnSet extends action.AbstractActionRelationship {
+      !ordered ref ColumnSet[1] to;
+      !ordered ref action.ActionElement[1] from;
+    }
+
+    class ContentAttribute extends ContentItem {
+    }
+
+    class TypedBy extends AbstractDataRelationship {
+      !ordered ref ComplexContentType[1] to;
+      !ordered ref ContentItem[1] from;
+    }
+
+    class ReferenceTo extends AbstractDataRelationship {
+      !ordered ref ContentItem[1] to;
+      !ordered ref ContentItem[1] from;
+    }
+
+    class RestrictionOf extends AbstractDataRelationship {
+      !ordered ref ComplexContentType[1] to;
+      !ordered ref ComplexContentType[1] from;
+    }
+
+    class ExtensionTo extends AbstractDataRelationship {
+      !ordered ref ComplexContentType[1] to;
+      !ordered ref ComplexContentType[1] from;
+    }
+
+    class DatatypeOf extends AbstractDataRelationship {
+      !ordered ref code.Datatype[1] to;
+      !ordered ref ComplexContentType[1] from;
+    }
+
+    class HasContent extends action.AbstractActionRelationship {
+      !ordered ref AbstractDataElement[1] to;
+      !ordered ref action.ActionElement[1] from;
+    }
+
+    class WritesColumnSet extends action.AbstractActionRelationship {
+      !ordered ref ColumnSet[1] to;
+      !ordered ref action.ActionElement[1] from;
+    }
+
+    class ProducesDataEvent extends action.AbstractActionRelationship {
+      !ordered ref DataEvent[1] to;
+      !ordered ref action.ActionElement[1] from;
+    }
+
+    class DataSegment extends ColumnSet {
+    }
+
+    class ContentElement extends ContentItem {
+    }
+
+    class ManagesData extends action.AbstractActionRelationship {
+      !ordered ref AbstractDataElement[1] to;
+      !ordered ref action.ActionElement[1] from;
+    }
+
+  }
+
+  package event {
+    class EventModel extends kdm.KDMModel {
+      !ordered val AbstractEventElement[*] eventElement;
+    }
+
+    abstract class AbstractEventElement extends core.KDMEntity {
+      !ordered val source.SourceRef[*] source;
+      !ordered val AbstractEventRelationship[*] eventRelation;
+      val action.ActionElement[*] abstraction;
+      !ordered ref code.AbstractCodeElement[*] implementation;
+    }
+
+    class Event extends AbstractEventElement {
+      !unique !ordered attr String kind;
+    }
+
+    abstract class AbstractEventRelationship extends core.KDMRelationship {
+    }
+
+    class EventRelationship extends AbstractEventRelationship {
+      !ordered ref core.KDMEntity[1] to;
+      !ordered ref AbstractEventElement[1] from;
+    }
+
+    class EventResource extends AbstractEventElement {
+      !ordered val AbstractEventElement[*] eventElement;
+    }
+
+    class State extends EventResource {
+    }
+
+    class Transition extends EventResource {
+    }
+
+    class OnEntry extends Transition {
+    }
+
+    class OnExit extends Transition {
+    }
+
+    class EventAction extends AbstractEventElement {
+      !unique !ordered attr String kind;
+      !ordered val Event[*] eventElement;
+    }
+
+    class ReadsState extends action.AbstractActionRelationship {
+      !ordered ref State[1] to;
+      !ordered ref action.ActionElement[1] from;
+    }
+
+    class ProducesEvent extends action.AbstractActionRelationship {
+      !ordered ref Event[1] to;
+      !ordered ref action.ActionElement[1] from;
+    }
+
+    class ConsumesEvent extends AbstractEventRelationship {
+      !ordered ref Event[1] to;
+      !ordered ref Transition[1] from;
+    }
+
+    class NextState extends AbstractEventRelationship {
+      !ordered ref State[1] to;
+      !ordered ref Transition[1] from;
+    }
+
+    class InitialState extends State {
+    }
+
+    class EventElement extends AbstractEventElement {
+    }
+
+    class HasState extends action.AbstractActionRelationship {
+      !ordered ref AbstractEventElement[1] to;
+      !ordered ref action.ActionElement[1] from;
+    }
+
+  }
+
+  package source {
+    class SourceRef extends core.Element {
+      !ordered val SourceRegion[*] region;
+      !unique !ordered attr String language;
+      !unique !ordered attr String snippet;
+    }
+
+    class SourceRegion extends core.Element {
+      !ordered ref SourceFile file;
+      !unique !ordered attr Integer startLine;
+      !unique !ordered attr Integer startPosition;
+      !unique !ordered attr Integer endLine;
+      !unique !ordered attr Integer endPosition;
+      !unique !ordered attr String language;
+      !unique !ordered attr String path;
+    }
+
+    class InventoryModel extends kdm.KDMModel {
+      !ordered val AbstractInventoryElement[*] inventoryElement;
+    }
+
+    abstract class AbstractInventoryElement extends core.KDMEntity {
+      !ordered val AbstractInventoryRelationship[*] inventoryRelation;
+    }
+
+    class InventoryItem extends AbstractInventoryElement {
+      !unique !ordered attr String version;
+      !unique !ordered attr String path;
+    }
+
+    class SourceFile extends InventoryItem {
+      !unique !ordered attr String language;
+      !unique !ordered attr String encoding;
+    }
+
+    class Image extends InventoryItem {
+    }
+
+    class ResourceDescription extends InventoryItem {
+    }
+
+    class Configuration extends InventoryItem {
+    }
+
+    class InventoryContainer extends AbstractInventoryElement {
+      !ordered val AbstractInventoryElement[*] inventoryElement;
+    }
+
+    class Directory extends InventoryContainer {
+      !unique !ordered attr String path;
+    }
+
+    class Project extends InventoryContainer {
+    }
+
+    abstract class AbstractInventoryRelationship extends core.KDMRelationship {
+    }
+
+    class BinaryFile extends InventoryItem {
+    }
+
+    class ExecutableFile extends InventoryItem {
+    }
+
+    class DependsOn extends AbstractInventoryRelationship {
+      !ordered ref AbstractInventoryElement[1] to;
+      !ordered ref AbstractInventoryElement[1] from;
+    }
+
+    class InventoryElement extends AbstractInventoryElement {
+    }
+
+    class InventoryRelationship extends AbstractInventoryRelationship {
+      !ordered ref core.KDMEntity[1] to;
+      !ordered ref AbstractInventoryElement[1] from;
+    }
+
+  }
+
+  package platform {
+    abstract class AbstractPlatformElement extends core.KDMEntity {
+      !ordered val source.SourceRef[*] source;
+      !ordered val AbstractPlatformRelationship[*] relation;
+      val action.ActionElement[*] abstraction;
+      !ordered ref code.AbstractCodeElement[*] implementation;
+    }
+
+    class PlatformModel extends kdm.KDMModel {
+      !ordered val AbstractPlatformElement[*] platformElement;
+    }
+
+    abstract class AbstractPlatformRelationship extends core.KDMRelationship {
+    }
+
+    class Requires extends AbstractPlatformRelationship {
+      !ordered ref AbstractPlatformElement[1] to;
+      !ordered ref DeployedComponent[1] from;
+    }
+
+    class ResourceType extends AbstractPlatformElement {
+      !ordered val AbstractPlatformElement[*] platformElement;
+    }
+
+    class NamingResource extends ResourceType {
+    }
+
+    class MarshalledResource extends ResourceType {
+    }
+
+    class MessagingResource extends ResourceType {
+    }
+
+    class FileResource extends ResourceType {
+    }
+
+    class ExecutionResource extends ResourceType {
+    }
+
+    class PlatformAction extends AbstractPlatformElement {
+      !unique !ordered attr String kind;
+      !ordered val PlatformEvent[*] platformElement;
+    }
+
+    class ExternalActor extends PlatformAction {
+    }
+
+    class DataManager extends ResourceType {
+    }
+
+    class BindsTo extends AbstractPlatformRelationship {
+      !ordered ref ResourceType[1] to;
+      !ordered ref ResourceType[1] from;
+    }
+
+    class PlatformElement extends AbstractPlatformElement {
+    }
+
+    class PlatformRelationship extends AbstractPlatformRelationship {
+      !ordered ref core.KDMEntity[1] to;
+      !ordered ref AbstractPlatformElement[1] from;
+    }
+
+    class PlatformEvent extends AbstractPlatformElement {
+      !unique !ordered attr String kind;
+    }
+
+    class LockResource extends ResourceType {
+    }
+
+    class DeployedSoftwareSystem extends AbstractPlatformElement {
+      !ordered ref DeployedComponent[*] groupedComponent;
+    }
+
+    class Machine extends AbstractPlatformElement {
+      !ordered val DeployedComponent[*] deployedComponent;
+      !ordered val DeployedResource[*] deployedResource;
+    }
+
+    class DeployedComponent extends AbstractPlatformElement {
+      !ordered ref code.Module[*] groupedCode;
+    }
+
+    class DeployedResource extends AbstractPlatformElement {
+      !ordered val ResourceType[*] platformElement;
+    }
+
+    class Loads extends AbstractPlatformRelationship {
+      !ordered ref DeployedComponent[1] to;
+      !ordered ref action.ActionElement[1] from;
+    }
+
+    class Spawns extends AbstractPlatformRelationship {
+      !ordered ref RuntimeResource[1] to;
+      !ordered ref action.ActionElement[1] from;
+    }
+
+    class RuntimeResource extends ResourceType {
+    }
+
+    class Thread extends RuntimeResource {
+    }
+
+    class Process extends RuntimeResource {
+    }
+
+    class ReadsResource extends action.AbstractActionRelationship {
+      !ordered ref ResourceType[1] to;
+      !ordered ref action.ActionElement[1] from;
+    }
+
+    class WritesResource extends action.AbstractActionRelationship {
+      !ordered ref ResourceType[1] to;
+      !ordered ref action.ActionElement[1] from;
+    }
+
+    class ManagesResource extends action.AbstractActionRelationship {
+      !ordered ref ResourceType[1] to;
+      !ordered ref action.ActionElement[1] from;
+    }
+
+    class DefinedBy extends action.AbstractActionRelationship {
+      !ordered ref code.CodeItem[1] to;
+      !ordered ref action.ActionElement[1] from;
+    }
+
+    class StreamResource extends ResourceType {
+    }
+
+  }
+
+  package structure {
+    abstract class AbstractStructureElement extends core.KDMEntity {
+      !ordered val core.AggregatedRelationship[*] aggregated;
+      !ordered ref core.KDMEntity[*] implementation;
+      !ordered val AbstractStructureElement[*] structureElement;
+      !ordered val AbstractStructureRelationship[*] structureRelationship;
+    }
+
+    class Subsystem extends AbstractStructureElement {
+    }
+
+    class Layer extends AbstractStructureElement {
+    }
+
+    class StructureModel extends kdm.KDMModel {
+      !ordered val AbstractStructureElement[*] structureElement;
+    }
+
+    class Component extends AbstractStructureElement {
+    }
+
+    class SoftwareSystem extends AbstractStructureElement {
+    }
+
+    abstract class AbstractStructureRelationship extends core.KDMRelationship {
+    }
+
+    class StructureRelationship extends AbstractStructureRelationship {
+      !ordered ref core.KDMEntity[1] to;
+      !ordered ref AbstractStructureElement[1] from;
+    }
+
+    class ArchitectureView extends AbstractStructureElement {
+    }
+
+    class StructureElement extends AbstractStructureElement {
+    }
+
+  }
+
+  package kdm {
+    abstract class KDMFramework extends core.ModelElement {
+      !ordered val Audit[*] audit;
+      !ordered val ExtensionFamily[*] extensionFamily;
+      !unique !ordered attr String name;
+    }
+
+    abstract class KDMModel extends KDMFramework {
+    }
+
+    class Audit extends core.Element {
+      !unique !ordered attr String description;
+      !unique !ordered attr String author;
+      !unique !ordered attr String date;
+    }
+
+    class Segment extends KDMFramework {
+      !ordered val Segment[*] segment;
+      !ordered val KDMModel[*] model;
+    }
+
+    class Attribute extends core.Element {
+      !unique !ordered attr String tag;
+      !unique !ordered attr String value;
+    }
+
+    class Annotation extends core.Element {
+      !unique !ordered attr String text;
+    }
+
+    class TagDefinition extends core.Element {
+      !unique !ordered attr String tag;
+      !unique !ordered attr String type;
+    }
+
+    abstract class ExtendedValue extends core.Element {
+      !ordered ref TagDefinition[1] tag;
+    }
+
+    class Stereotype extends core.Element {
+      !ordered val TagDefinition[*] tag;
+      !unique !ordered attr String name;
+      !unique !ordered attr String type;
+    }
+
+    class ExtensionFamily extends core.Element {
+      !ordered val Stereotype[*] stereotype;
+      !unique !ordered attr String name;
+    }
+
+    class TaggedRef extends ExtendedValue {
+      !ordered ref core.ModelElement[1] reference;
+    }
+
+    class TaggedValue extends ExtendedValue {
+      !unique !ordered attr String value;
+    }
+
+  }
+
+  package ui {
+    abstract class AbstractUIElement extends core.KDMEntity {
+      !ordered val source.SourceRef[*] source;
+      !ordered val AbstractUIRelationship[*] UIRelation;
+      !ordered ref code.AbstractCodeElement[*] implementation;
+      val action.ActionElement[*] abstraction;
+    }
+
+    class UIResource extends AbstractUIElement {
+      !ordered val AbstractUIElement[*] UIElement;
+    }
+
+    class UIDisplay extends UIResource {
+    }
+
+    class Screen extends UIDisplay {
+    }
+
+    class Report extends UIDisplay {
+    }
+
+    class UIModel extends kdm.KDMModel {
+      !ordered val AbstractUIElement[*] UIElement;
+    }
+
+    abstract class AbstractUIRelationship extends core.KDMRelationship {
+    }
+
+    class UILayout extends AbstractUIRelationship {
+      !ordered ref UIResource[1] to;
+      !ordered ref UIResource[1] from;
+    }
+
+    class UIField extends UIResource {
+    }
+
+    class DisplaysImage extends AbstractUIRelationship {
+      !ordered ref source.Image[1] to;
+      !ordered ref action.ActionElement[1] from;
+    }
+
+    class Displays extends AbstractUIRelationship {
+      !ordered ref UIResource[1] to;
+      !ordered ref action.ActionElement[1] from;
+    }
+
+    class UIFlow extends AbstractUIRelationship {
+      !ordered ref AbstractUIElement[1] to;
+      !ordered ref AbstractUIElement[1] from;
+    }
+
+    class UIElement extends AbstractUIElement {
+    }
+
+    class UIRelationship extends AbstractUIRelationship {
+      !ordered ref core.KDMEntity[1] to;
+      !ordered ref AbstractUIElement[1] from;
+    }
+
+    class UIAction extends AbstractUIElement {
+      !unique !ordered attr String kind;
+      !ordered val UIEvent[*] UIElement;
+    }
+
+    class UIEvent extends AbstractUIElement {
+      !unique !ordered attr String kind;
+    }
+
+    class ReadsUI extends action.AbstractActionRelationship {
+      !ordered ref UIResource[1] to;
+      !ordered ref action.ActionElement[1] from;
+    }
+
+    class WritesUI extends action.AbstractActionRelationship {
+      !ordered ref UIResource[1] to;
+      !ordered ref action.ActionElement[1] from;
+    }
+
+    class ManagesUI extends action.AbstractActionRelationship {
+      !ordered ref UIResource[1] to;
+      !ordered ref action.ActionElement[1] from;
+    }
+
+  }
+
+}
+

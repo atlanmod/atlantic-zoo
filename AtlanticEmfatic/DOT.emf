@@ -1,0 +1,168 @@
+package Metamodel;
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Double : "";
+
+}
+
+package DOT {
+  abstract class Label {
+    !ordered ref GraphElement[1]#label element;
+  }
+
+  class SimpleLabel extends Label {
+    !unique !ordered attr String[1] content;
+  }
+
+  class ComplexLabel extends Label {
+    val Compartment[+]#complexLabel compartments;
+  }
+
+  abstract class Compartment {
+    !ordered ref ComplexLabel[1]#compartments complexLabel;
+    !ordered val Compartment compartments;
+    !ordered ref Anchor#source anchor;
+  }
+
+  class VerticalCompartment extends Compartment {
+  }
+
+  class HorizontalCompartment extends Compartment {
+  }
+
+  class SimpleCompartment extends Compartment {
+    !unique !ordered attr String[1] content;
+  }
+
+  class Anchor {
+    !unique !ordered attr String[1] name;
+    !ordered ref Compartment#anchor source;
+  }
+
+  abstract class GraphElement {
+    !unique !ordered attr String[1] name;
+    !ordered val Label#element label;
+    !unique !ordered attr String style;
+    !unique !ordered attr String color;
+  }
+
+  class Graph extends GraphElement {
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr String rankDir;
+    !unique !ordered attr String labeljust;
+    !unique !ordered attr String labelloc;
+    !unique !ordered attr Boolean concentrate;
+    val Nodelike[*]#graph nodes;
+    !unique !ordered attr String boundingBox;
+    !unique !ordered attr Boolean compound;
+    !ordered val Layer[*]#graph layers;
+    !unique !ordered attr PrimitiveTypes.Double nodeSeparation;
+    !unique !ordered attr String ordering;
+    !unique !ordered attr String size;
+    !unique !ordered attr String ratio;
+    !unique !ordered attr Boolean center;
+  }
+
+  class Layer extends GraphElement {
+    !ordered ref Nodelike[*]#layers nodes;
+    !ordered ref Arc[*]#layers arcs;
+    !ordered ref Graph[1]#layers graph;
+    !unique !ordered attr String layerSeparator;
+  }
+
+  abstract class Nodelike extends GraphElement {
+    !ordered ref SubGraph#nodes owner;
+    !ordered ref Arc[*]#fromNode refers;
+    !ordered ref Arc[*]#toNode referredBy;
+    !ordered ref Graph#nodes graph;
+    !ordered ref Layer[*]#nodes layers;
+  }
+
+  class SubGraph extends Nodelike {
+    val Nodelike[*]#owner nodes;
+    !unique !ordered attr String labelloc;
+  }
+
+  class Node extends Nodelike {
+    !unique !ordered attr Boolean fixedSize;
+    !unique !ordered attr String fontname;
+    !unique !ordered attr Integer fontsize;
+    !unique !ordered attr Integer height;
+    !unique !ordered attr Integer width;
+    !ordered val NodeShape shape;
+  }
+
+  abstract class Arc extends GraphElement {
+    !ordered ref Nodelike[1]#refers fromNode;
+    !ordered ref Nodelike[1]#referredBy toNode;
+    !ordered ref Layer[*]#arcs layers;
+    !unique !ordered attr Boolean constraint;
+    !unique !ordered attr String group;
+    !unique !ordered attr Integer minlen;
+    !unique !ordered attr String sameHead;
+    !unique !ordered attr String sameTail;
+    !ordered ref Nodelike lhead;
+    !ordered ref Nodelike ltail;
+    !unique !ordered attr Boolean decorate;
+  }
+
+  class DirectedArc extends Arc {
+    !ordered val ArrowShape arrowHead;
+    !ordered ref Label headlabel;
+    !ordered ref Label taillabel;
+    !ordered val ArrowShape arrowTail;
+    !unique !ordered attr PrimitiveTypes.Double tail_lp;
+    !unique !ordered attr PrimitiveTypes.Double head_lp;
+  }
+
+  class UndirectedArc extends Arc {
+  }
+
+  abstract class Shape extends GraphElement {
+    !unique !ordered attr Integer[1] width;
+    !unique !ordered attr Integer[1] height;
+    !unique !ordered attr Integer[1] peripheries;
+  }
+
+  abstract class NodeShape extends Shape {
+  }
+
+  class SimpleNodeShape extends NodeShape {
+  }
+
+  class PointNodeShape extends NodeShape {
+  }
+
+  abstract class ComplexNodeShape extends NodeShape {
+  }
+
+  class PolygonNodeShape extends ComplexNodeShape {
+    !unique !ordered attr Integer[1] sides;
+    !unique !ordered attr Integer[1] skew;
+    !unique !ordered attr Integer[1] distortion;
+    !unique !ordered attr Boolean[1] isRegular;
+    !unique !ordered attr Integer[1] orientation;
+  }
+
+  class MNodeShape extends ComplexNodeShape {
+    !ordered val Label toplabel;
+    !ordered val Label bottomlabel;
+  }
+
+  class RecordNodeShape extends ComplexNodeShape {
+  }
+
+  class ArrowShape extends Shape {
+    !unique !ordered attr String[1] clipping;
+    !unique !ordered attr Boolean[1] isPlain;
+    !unique !ordered attr Integer[1] size;
+  }
+
+}
+

@@ -1,0 +1,80 @@
+-- @name 		OCL Expressions
+-- @domains 	OCL
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/07/10
+-- @description This metamodel describes OCL Expressions
+-- @see 		This metamodel has been extracted from information available in the following article:
+-- @see 		Article "A Metamodel for OCL"
+-- @see 		by Mark Richters and Martin Gogolla
+-- @see 		Page 161, Section 5, Fig. 7 Metamodel for OCL Expressions
+-- @see 		Lecture Notes in Computer Science 1723
+-- @see 		Robert France, Bernhard Rumpe (Eds.)
+-- @see 		The Unified Modeling Language UML 99: Beyond the standard
+
+package OCLExpressions {
+	abstract class OclExpression {
+		reference queryArg [*] : QueryExp oppositeOf argument;
+		reference querySrc [*] : QueryExp oppositeOf source;
+		reference resultType container : Type oppositeOf oclExpression;
+		reference varDec [1-*] : VariableDeclaration oppositeOf oclExpression;
+		reference varInit [*] : VariableInitialisation oppositeOf initExpression;
+	}
+
+	class SelfExp extends OclExpression {
+	}
+	
+	class ResultExp extends OclExpression {
+	}
+	
+	class VariableExp extends OclExpression {
+		attribute var : String;
+	}
+
+	abstract class OperationExp extends OclExpression {
+	}
+	
+	abstract class QueryExp extends OclExpression {
+		reference argument container : OclExpression oppositeOf queryArg;
+		reference source container : OclExpression oppositeOf querySrc;
+		reference varDeclaration [0-1] container : VariableDeclaration oppositeOf queryExp;
+	}
+	
+	abstract class Type {
+		reference oclExpression [*] : OclExpression oppositeOf resultType;
+		reference varDec [*] container : VariableDeclaration oppositeOf varType;
+	}
+	
+	class VariableDeclaration {
+		attribute var : String;
+		reference varType : Type oppositeOf varDec;
+		reference oclExpression [*] : OclExpression oppositeOf varDec;
+		reference queryExp [*] : QueryExp oppositeOf  varDeclaration; 
+		reference varInit [*] : VariableInitialisation oppositeOf varDec;
+	}
+	
+	class VariableInitialisation {
+		reference initExpression container : OclExpression oppositeOf varInit;
+		reference varDec container : VariableDeclaration oppositeOf varInit;
+		reference iterateExp container : IterateExp oppositeOf varInit;
+	}
+	
+	class ForAllExp {}
+	
+	class ExistsExp {}
+	
+	class SelectExp {}
+	
+	class RejectExp {}
+	
+	class CollectExp {}
+
+	class IterateExp {
+		reference varInit container : VariableInitialisation oppositeOf iterateExp;
+	}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

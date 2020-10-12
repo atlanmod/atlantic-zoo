@@ -1,0 +1,194 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_DoDAF"{
+labelloc=t
+color=black
+label=DoDAF
+ node[shape=record];
+Element[label="{/Element/|name : String\ndescription : String\nview : String| }"]
+;
+ node[shape=record];
+DoDAFModel[label="{DoDAFModel| | }"]
+ DoDAFModel->Document[arrowhead=vee,arrowtail=diamond,headlabel="document[*]",group=Document,minlen=2,constraint=true,]
+ DoDAFModel->SystemFunctionTraceabilityMatrix[arrowhead=vee,arrowtail=diamond,headlabel="sftm[*]",group=SystemFunctionTraceabilityMatrix,minlen=2,constraint=true,]
+ DoDAFModel->SystemDocument[arrowhead=vee,arrowtail=diamond,headlabel="sd[*]",group=SystemDocument,minlen=2,constraint=true,]
+ DoDAFModel->AM[arrowhead=vee,arrowtail=diamond,headlabel="am[*]",group=AM,minlen=2,constraint=true,]
+ DoDAFModel->System[arrowhead=vee,arrowtail=diamond,headlabel="system[*]",group=System,minlen=2,constraint=true,]
+ DoDAFModel->Task[arrowhead=vee,arrowtail=diamond,headlabel="task[*]",group=Task,minlen=2,constraint=true,]
+ DoDAFModel->Capability[arrowhead=vee,arrowtail=diamond,headlabel="capability[*]",group=Capability,minlen=2,constraint=true,]
+ DoDAFModel->CapabilityDocument[arrowhead=vee,arrowtail=diamond,headlabel="capabilityDocument[*]",group=CapabilityDocument,minlen=2,constraint=true,]
+ DoDAFModel->SystemCapability[arrowhead=vee,arrowtail=diamond,headlabel="systemCapability[*]",group=SystemCapability,minlen=2,constraint=true,]
+ DoDAFModel->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Document[label="{Document|type : String| }"]
+ Document->CapabilityDocument[arrowhead=vee,arrowtail=none,headlabel="cites[*]",group=CapabilityDocument,minlen=2,constraint=false,]
+ Document->SystemDocument[arrowhead=vee,arrowtail=none,headlabel="describes[*]",group=SystemDocument,minlen=2,constraint=false,]
+ Document->ArchitectureDocument[arrowhead=vee,arrowtail=diamond,headlabel="records[*]",group=ArchitectureDocument,minlen=2,constraint=true,]
+ Document->PA[arrowhead=vee,arrowtail=diamond,headlabel="isThePrimaryReferenceFor[*]",group=PA,minlen=2,constraint=true,]
+ Document->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SystemFunctionTraceabilityMatrix[label="{SystemFunctionTraceabilityMatrix| | }"]
+ SystemFunctionTraceabilityMatrix->SystemFunctionTraceabilityElement[arrowhead=vee,arrowtail=diamond,headlabel="isDefinedBy[*]",group=SystemFunctionTraceabilityElement,minlen=2,constraint=true,]
+ SystemFunctionTraceabilityMatrix->Document[arrowhead=onormal,group=Document,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SystemFunctionTraceabilityElement[label="{SystemFunctionTraceabilityElement|supportStatusCode : SupportStatusCode| }"]
+ SystemFunctionTraceabilityElement->SystemFunction[arrowhead=none,arrowtail=none,headlabel="systemFunction[0-1]",taillabel="isCitedFor[*]",group=SystemFunction,minlen=2,constraint=false,]
+ SystemFunctionTraceabilityElement->SystemPA[arrowhead=none,arrowtail=none,headlabel="systemProcessActivity[0-1]",taillabel="mayBeCitedFor[*]",group=SystemPA,minlen=2,constraint=false,]
+ SystemFunctionTraceabilityElement->System[arrowhead=vee,arrowtail=none,headlabel="system[0-1]",group=System,minlen=2,constraint=false,]
+ SystemFunctionTraceabilityElement->Capability[arrowhead=vee,arrowtail=none,headlabel="capability[0-1]",group=Capability,minlen=2,constraint=false,]
+ SystemFunctionTraceabilityElement->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SystemDocument[label="{SystemDocument| | }"]
+ SystemDocument->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ArchitectureDocument[label="{ArchitectureDocument| | }"]
+ ArchitectureDocument->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PA[label="{PA| | }"]
+ PA->PA[arrowhead=none,arrowtail=none,headlabel="isParentFor[*]",taillabel="isChildFor[*]",group=PA,minlen=2,constraint=false,]
+ PA->PATask[arrowhead=vee,arrowtail=none,headlabel="correspondsTo[*]",group=PATask,minlen=2,constraint=false,]
+ PA->AMPA[arrowhead=vee,arrowtail=none,headlabel="isIncludedIn[*]",group=AMPA,minlen=2,constraint=false,]
+ PA->SystemPA[arrowhead=vee,arrowtail=none,headlabel="isAssignedTo[*]",group=SystemPA,minlen=2,constraint=false,]
+ PA->SoftwareApplicationProcedurePA[arrowhead=vee,arrowtail=diamond,headlabel="isSupportedBy[*]",group=SoftwareApplicationProcedurePA,minlen=2,constraint=true,]
+ PA->PAExchangeRequirement[arrowhead=vee,arrowtail=diamond,headlabel="isTheConsumerFor[*]",group=PAExchangeRequirement,minlen=2,constraint=true,]
+ PA->PAExchangeRequirement[arrowhead=vee,arrowtail=diamond,headlabel="isTheProducerFor[*]",group=PAExchangeRequirement,minlen=2,constraint=true,]
+ PA->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SystemFunction[label="{SystemFunction| | }"]
+ SystemFunction->PA[arrowhead=onormal,group=PA,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SystemPA[label="{SystemPA| | }"]
+ SystemPA->SystemCapability[arrowhead=vee,arrowtail=diamond,headlabel="provides[*]",group=SystemCapability,minlen=2,constraint=true,]
+ SystemPA->SystemOperationalCapabilityTask[arrowhead=vee,arrowtail=diamond,headlabel="enables[*]",group=SystemOperationalCapabilityTask,minlen=2,constraint=true,]
+ SystemPA->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SoftwareApplicationProcedurePA[label="{SoftwareApplicationProcedurePA| | }"]
+ SoftwareApplicationProcedurePA->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AM[label="{AM|type : String| }"]
+ AM->PATask[arrowhead=vee,arrowtail=diamond,headlabel="isCitedBy[*]",group=PATask,minlen=2,constraint=true,]
+ AM->AMPA[arrowhead=vee,arrowtail=diamond,headlabel="includes[*]",group=AMPA,minlen=2,constraint=true,]
+ AM->InformationAsset[arrowhead=onormal,group=InformationAsset,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InformationAsset[label="{/InformationAsset/| | }"]
+ InformationAsset->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AMPA[label="{AMPA| | }"]
+ AMPA->AMPA[arrowhead=none,arrowtail=none,headlabel="isOrdinateOf[*]",taillabel="isSubordinateOf[*]",group=AMPA,minlen=2,constraint=false,]
+ AMPA->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+System[label="{System| | }"]
+ System->SystemPA[arrowhead=vee,arrowtail=diamond,headlabel="isDesignedToProvide[*]",group=SystemPA,minlen=2,constraint=true,]
+ System->SystemDocument[arrowhead=vee,arrowtail=none,headlabel="isDescribedBy[*]",group=SystemDocument,minlen=2,constraint=false,]
+ System->SystemCapability[arrowhead=vee,arrowtail=none,headlabel="performs[*]",group=SystemCapability,minlen=2,constraint=false,]
+ System->SystemOperationalCapabilityTask[arrowhead=vee,arrowtail=none,headlabel="isUsedToAccomplish[*]",group=SystemOperationalCapabilityTask,minlen=2,constraint=false,]
+ System->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Task[label="{Task|levelIdentifier : String\nreferences : String\ncost : String| }"]
+ Task->PATask[arrowhead=vee,arrowtail=none,headlabel="correspondsTo[*]",group=PATask,minlen=2,constraint=false,]
+ Task->ArchitectureTask[arrowhead=vee,arrowtail=none,headlabel="isSupportedBy[*]",group=ArchitectureTask,minlen=2,constraint=false,]
+ Task->InformationExchangeRequirement[arrowhead=vee,arrowtail=diamond,headlabel="isTheSourceOfNeedFor[*]",group=InformationExchangeRequirement,minlen=2,constraint=true,]
+ Task->InformationExchangeRequirement[arrowhead=vee,arrowtail=diamond,headlabel="isTheDestinationOfNeedFor[*]",group=InformationExchangeRequirement,minlen=2,constraint=true,]
+ Task->SystemFunctionTraceabilityElement[arrowhead=none,arrowtail=none,headlabel="isCitedFor[*]",taillabel="operationalActivity[0-1]",group=SystemFunctionTraceabilityElement,minlen=2,constraint=false,]
+ Task->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ArchitectureTask[label="{ArchitectureTask| | }"]
+ ArchitectureTask->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperationalCapabilityTask[label="{OperationalCapabilityTask| | }"]
+ OperationalCapabilityTask->SystemOperationalCapabilityTask[arrowhead=vee,arrowtail=none,headlabel="isAccomplishedA",group=SystemOperationalCapabilityTask,minlen=2,constraint=false,]
+ OperationalCapabilityTask->Task[arrowhead=onormal,group=Task,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SystemOperationalCapabilityTask[label="{SystemOperationalCapabilityTask| | }"]
+ SystemOperationalCapabilityTask->Task[arrowhead=onormal,group=Task,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PATask[label="{PATask| | }"]
+ PATask->Task[arrowhead=onormal,group=Task,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Capability[label="{Capability| | }"]
+ Capability->SystemCapability[arrowhead=vee,arrowtail=none,headlabel="isPerformedBy[*]",group=SystemCapability,minlen=2,constraint=false,]
+ Capability->Capability[arrowhead=vee,arrowtail=none,headlabel="isOrdinateFor[*]",group=Capability,minlen=2,constraint=false,]
+ Capability->Capability[arrowhead=vee,arrowtail=none,headlabel="isSubordinateOf[*]",group=Capability,minlen=2,constraint=false,]
+ Capability->NetworkCapability[arrowhead=vee,arrowtail=none,headlabel="isPerformedByNC[*]",group=NetworkCapability,minlen=2,constraint=false,]
+ Capability->NodeLinkCapability[arrowhead=vee,arrowtail=none,headlabel="isPerformedByNLC[*]",group=NodeLinkCapability,minlen=2,constraint=false,]
+ Capability->SystemCapability[arrowhead=vee,arrowtail=none,headlabel="isPerformedBySC[*]",group=SystemCapability,minlen=2,constraint=false,]
+ Capability->CapabilityDocument[arrowhead=vee,arrowtail=none,headlabel="isCitedInCD[*]",group=CapabilityDocument,minlen=2,constraint=false,]
+ Capability->MaterielItemCapabilityNorm[arrowhead=vee,arrowtail=none,headlabel="isUsedInMICN[*]",group=MaterielItemCapabilityNorm,minlen=2,constraint=false,]
+ Capability->OrganizationTypeCapabilityNorm[arrowhead=vee,arrowtail=none,headlabel="isUsedInOTCN[*]",group=OrganizationTypeCapabilityNorm,minlen=2,constraint=false,]
+ Capability->RequiredInformationTechnologyCapability[arrowhead=vee,arrowtail=none,headlabel="isAttainedFor[*]",group=RequiredInformationTechnologyCapability,minlen=2,constraint=false,]
+ Capability->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CapabilityDocument[label="{CapabilityDocument| | }"]
+ CapabilityDocument->Capability[arrowhead=vee,arrowtail=none,headlabel="isCitedIn[*]",group=Capability,minlen=2,constraint=false,]
+ CapabilityDocument->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SystemCapability[label="{SystemCapability| | }"]
+ SystemCapability->Capability[arrowhead=vee,arrowtail=none,headlabel="isCitedIn[*]",group=Capability,minlen=2,constraint=false,]
+ SystemCapability->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NetworkCapability[label="{NetworkCapability| | }"]
+ NetworkCapability->Capability[arrowhead=onormal,group=Capability,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NodeLinkCapability[label="{NodeLinkCapability| | }"]
+ NodeLinkCapability->Capability[arrowhead=onormal,group=Capability,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MaterielItemCapabilityNorm[label="{MaterielItemCapabilityNorm| | }"]
+ MaterielItemCapabilityNorm->Capability[arrowhead=onormal,group=Capability,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OrganizationTypeCapabilityNorm[label="{OrganizationTypeCapabilityNorm| | }"]
+ OrganizationTypeCapabilityNorm->Capability[arrowhead=onormal,group=Capability,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RequiredInformationTechnologyCapability[label="{RequiredInformationTechnologyCapability| | }"]
+ RequiredInformationTechnologyCapability->Capability[arrowhead=onormal,group=Capability,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InformationTechnologyRequirement[label="{InformationTechnologyRequirement| | }"]
+ InformationTechnologyRequirement->RequiredInformationTechnologyCapability[arrowhead=vee,arrowtail=none,headlabel="specifies[*]",group=RequiredInformationTechnologyCapability,minlen=2,constraint=false,]
+ InformationTechnologyRequirement->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InformationExchangeRequirement[label="{InformationExchangeRequirement| | }"]
+ InformationExchangeRequirement->InformationTechnologyRequirement[arrowhead=onormal,group=InformationTechnologyRequirement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PAExchangeRequirement[label="{PAExchangeRequirement| | }"]
+ PAExchangeRequirement->InformationExchangeRequirement[arrowhead=vee,arrowtail=diamond,headlabel="isCitedIn[*]",group=InformationExchangeRequirement,minlen=2,constraint=true,]
+ PAExchangeRequirement->InformationTechnologyRequirement[arrowhead=onormal,group=InformationTechnologyRequirement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

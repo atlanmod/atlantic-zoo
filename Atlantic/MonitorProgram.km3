@@ -1,0 +1,133 @@
+-- @name		Monitor Program 
+-- @version		1.1
+-- @domains		programming
+-- @authors		Frédéric Jouault
+-- @date		2005/05/09	
+-- @description	This metamodel describes programs containing Hoare s monitors definitions. A Program inherits both from Structure and ProcContainerElement. A Progam can contain VariableDeclarations (as a Structure), Procedures (as a ProcContainerElement), and Monitors. A Monitor is also a Structure and a ProcContainerElement, and can therefore contain VariableDeclarations and Procedures. Besides Statements and Parameters, a Procedure, as a Structure, can also contain VariableDeclarations. Each VariableDeclaration is associated with a one and only Type. It may also contain an initial value that is represented by an Expression (see below). Parameters inherit from VariableDeclaration. They are characterized by a "direction" attribute ("in" or "out"). A Procedure contains a sequence of Statements. An AssignmentStat contains a "target" VariableExp and a "value" Expression. A WhileStat contains a "condition" Expression and several "doStats" Statements. A ConditionalStat contains a "condition" Expression, several "thenStats" Statements and, optionally, "elseStats" Statements. Finally, an ExpressionStat simply contains an Expression. Expression is an abstract entity from which the following elements inherit: IntegerExp and BooleanExp (which inherit from the abstract LiteralExp entity), VariableExp which is associated with a VariableDeclaration, PropertyCallExp (abstract) which is characterized by its "source" element (of type Expression). There exist three types of PropertyCallExp: the AttributeCallExp, the OperatorCallExp and the ProcedureCallExp. An OperatorCallExp contains a right element (of type Expression). A ProcedureCallExp can contain "argument" Expressions.
+
+package MonitorProgram {
+
+	abstract class LocatedElement {
+		attribute location : String;
+	}
+    
+	abstract class NamedElement extends LocatedElement {
+		attribute name : String;
+	}
+	
+	abstract class Structure extends NamedElement {
+		reference variables[*] ordered container : VariableDeclaration oppositeOf structure;    
+	}
+	
+	abstract class ProcContainerElement extends Structure {
+		reference procedures[*] ordered container : Procedure oppositeOf "container";
+	}
+	
+	class Program extends ProcContainerElement {
+		reference monitors[*] ordered container : Monitor oppositeOf program;
+	}
+	
+	class Monitor extends ProcContainerElement {
+		reference program : Program oppositeOf monitors;
+	}
+	
+	-- @comment Procedures
+	class Procedure extends Structure {
+		reference "container" : ProcContainerElement oppositeOf procedures;
+		reference parameters[*] ordered container : Parameter oppositeOf procedure;
+		reference statements[*] ordered container : Statement;
+	}
+	
+	class VariableDeclaration extends NamedElement {
+		reference type : Type;
+		reference initialValue[0-1] container : Expression;
+		reference structure : Structure oppositeOf variables;
+	}
+
+	class Parameter extends VariableDeclaration {
+		attribute direction : Direction;
+		reference procedure : Procedure oppositeOf parameters;
+	}
+
+	enumeration Direction {
+		literal in;
+		literal out;
+	}
+	-- End Procedures
+
+	-- @comment Types
+	class Type extends NamedElement {
+	}
+	-- End Types
+
+	-- @comment Expressions
+	abstract class Expression extends LocatedElement {
+	}
+    
+	class VariableExp extends Expression {
+		reference declaration : VariableDeclaration;
+	}
+    
+	-- @comment PropertyCalls
+	abstract class PropertyCallExp extends Expression {
+		reference source container : Expression;
+		attribute name : String;
+	}
+
+	class OperatorCallExp extends PropertyCallExp {
+		reference right container : Expression;
+	}
+
+	class AttributeCallExp extends PropertyCallExp {
+	}
+
+	class ProcedureCallExp extends PropertyCallExp {
+		reference arguments[*] ordered container : Expression;
+	}
+	-- End PropertyCalls
+
+	-- @comment Literals    
+	abstract class LiteralExp extends Expression {
+	}
+
+	class BooleanExp extends LiteralExp {
+		attribute symbol : Boolean;
+	}
+
+	class IntegerExp extends LiteralExp {
+		attribute symbol : Integer;
+	}
+	-- End Literals    
+	-- End Expressions
+
+	-- @comment Statements
+	abstract class Statement extends LocatedElement {
+	}
+
+	class AssignmentStat extends Statement {
+		reference target container : VariableExp;
+		reference value container : Expression;
+	}
+    
+	class ConditionalStat extends Statement {
+		reference condition container : Expression;
+		reference thenStats[1-*] container : Statement;
+		reference elseStats[*] container : Statement;
+	}
+    
+	class WhileStat extends Statement {
+		reference condition container : Expression;
+		reference doStats[1-*] container : Statement;
+	}
+
+	class ExpressionStat extends Statement {
+		reference expression container : Expression;
+	}
+	-- End Statements
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

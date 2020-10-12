@@ -1,0 +1,79 @@
+package Metamodel;
+
+package PtolemyII {
+  class EDataType {
+    !unique !ordered attr String[1] value;
+  }
+
+  class NamedObject {
+    !unique !ordered attr String[1] name;
+  }
+
+  class Attribute extends NamedObject {
+    !ordered ref Entity[1]#attributes att_container;
+    !unique !ordered attr String[1] value;
+  }
+
+  class Entity extends NamedObject {
+    val Attribute[*]#att_container attributes;
+    val Parameter[*]#pa_container parameters;
+    val Port[*]#po_container ports;
+  }
+
+  class Port extends NamedObject {
+    !ordered ref Entity[1]#ports po_container;
+    !ordered ref Relation[*]#ports links;
+  }
+
+  class Relation extends NamedObject {
+    !ordered ref Port[*]#links ports;
+  }
+
+  class Director extends NamedObject {
+    !ordered ref CompositeActor[1]#directors ca_container;
+  }
+
+  class Parameter extends Attribute {
+    !ordered ref Entity[1]#parameters pa_container;
+    !ordered ref EDataType[1] dataType;
+  }
+
+  class ComponentPort extends Port {
+  }
+
+  class ComponentRelation extends Relation {
+    !ordered ref CompositeEntity[1]#relations re_container;
+  }
+
+  class ComponentEntity extends Attribute {
+    !ordered ref CompositeEntity[1]#containees ce_container;
+  }
+
+  class AtomicActor extends ComponentEntity {
+  }
+
+  class CompositeEntity extends ComponentEntity {
+    val ComponentEntity[*]#ce_container containees;
+    val ComponentRelation[*]#re_container relations;
+  }
+
+  class WorkSpace extends CompositeEntity {
+  }
+
+  class CompositeActor extends CompositeEntity {
+    !ordered ref Director[0..2]#ca_container directors;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

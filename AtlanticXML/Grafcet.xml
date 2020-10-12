@@ -1,0 +1,45 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'Grafcet'>
+    <Class name = 'LocatedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'location' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'NamedElement' isAbstract = 'true' supertypes = 'Grafcet::LocatedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Grafcet' isAbstract = 'false' supertypes = 'Grafcet::NamedElement'>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Grafcet::Element' opposite = 'Grafcet::Element::grafcet'/>
+      <Reference name = 'connections' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Grafcet::Connection' opposite = 'Grafcet::Connection::grafcet'/>
+    </Class>
+    <Class name = 'Element' isAbstract = 'true' supertypes = 'Grafcet::NamedElement'>
+      <Reference name = 'grafcet' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Grafcet::Grafcet' opposite = 'Grafcet::Grafcet::elements'/>
+    </Class>
+    <Class name = 'Step' isAbstract = 'false' supertypes = 'Grafcet::Element'>
+      <Attribute name = 'isInitial' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isActive' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'action' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'incomingConnections' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Grafcet::TransitionToStep' opposite = 'Grafcet::TransitionToStep::to'/>
+      <Reference name = 'outgoingConnections' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Grafcet::StepToTransition' opposite = 'Grafcet::StepToTransition::from'/>
+    </Class>
+    <Class name = 'Transition' isAbstract = 'false' supertypes = 'Grafcet::Element'>
+      <Attribute name = 'condition' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'incomingConnections' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Grafcet::StepToTransition' opposite = 'Grafcet::StepToTransition::to'/>
+      <Reference name = 'outgoingConnections' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Grafcet::TransitionToStep' opposite = 'Grafcet::TransitionToStep::from'/>
+    </Class>
+    <Class name = 'Connection' isAbstract = 'true' supertypes = 'Grafcet::NamedElement'>
+      <Reference name = 'grafcet' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Grafcet::Grafcet' opposite = 'Grafcet::Grafcet::connections'/>
+    </Class>
+    <Class name = 'StepToTransition' isAbstract = 'false' supertypes = 'Grafcet::Connection'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Grafcet::Step' opposite = 'Grafcet::Step::outgoingConnections'/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Grafcet::Transition' opposite = 'Grafcet::Transition::incomingConnections'/>
+    </Class>
+    <Class name = 'TransitionToStep' isAbstract = 'false' supertypes = 'Grafcet::Connection'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Grafcet::Transition' opposite = 'Grafcet::Transition::outgoingConnections'/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Grafcet::Step' opposite = 'Grafcet::Step::incomingConnections'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+  </Package>
+</Metamodel>

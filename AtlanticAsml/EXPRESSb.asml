@@ -1,0 +1,775 @@
+class ONEOFConstraint extends SubtypeConstraint
+
+class SupertypeRule extends CommonElement
+  var assertsAbstract as Set of Boolean
+  var namedSupertype as Set of EntityType
+  // constraints IsContainer
+  var constraints as Set of SubtypeConstraint
+
+class SubtypeConstraint
+  var constrainedSubtypes as Set of Extent
+  // equivalentRule IsContainer
+  var equivalentRule as Set of Expression
+  var collection as Set of SupertypeRule
+
+class Extent extends SETValue
+  var constraints as Set of SubtypeConstraint
+  var content as Set of EntityInstance
+  var withinPopulation as Set of Population
+  var constraintRules as Set of GlobalRule
+  var forType as Set of EntityType
+  // id IsContainer
+  var id as Set of ScopedId
+
+class TOTAL_OVERConstraint extends SubtypeConstraint
+
+class ANDConstraint extends SubtypeConstraint
+
+class GlobalRule extends SchemaElement
+  // supportingBody IsContainer
+  var supportingBody as Set of Statement
+  var constrainedExtents as Set of Extent
+  // containsRules IsContainer
+  var containsRules as Set of NamedRule
+
+class NamedRule extends LocalElement
+  var position as Set of Integer
+  // assertsExpression IsContainer
+  var assertsExpression as Set of Expression
+
+class ProcedureCall extends Statement
+  var invokes as Set of _Procedure
+  // actualParameters IsContainer
+  var actualParameters as Set of ActualParameter
+
+class SkipStatement extends ControlStatement
+
+class AliasStatement extends Statement
+  var bindsToReference as Set of VARExpression
+  // body IsContainer
+  var body as Set of Statement
+  // aliasVariable IsContainer
+  var aliasVariable as Set of AliasVariable
+
+class ControlVariable extends NamedVariable
+  var boundValue as Set of Expression
+  var initialValue as Set of Expression
+  var increment as Set of Expression
+
+class AliasVariable extends NamedVariable
+  var referent as Set of VARExpression
+
+abstract class ControlStatement extends Statement
+
+class VARCell extends VARExpression
+  var id as Set of Identifier
+  var refersTo as Set of VARVariable
+
+class NullStatement extends ControlStatement
+
+abstract class VARExpression
+  var text as Set of ExpressText
+
+class AttributeCell extends VARExpression
+  var id as Set of Identifier
+  var refersTo as Set of ExplicitAttribute
+  // baseEntity IsContainer
+  var baseEntity as Set of VARExpression
+
+class StatementBlock extends Statement
+  var delimited as Set of Boolean
+  // bodyStatements_Statement IsContainer
+  var bodyStatements_Statement as Set of Statement
+
+class CaseAction
+  var isDefault as Set of Boolean
+  var labelValue as Set of Expression
+  // action IsContainer
+  var action as Set of Statement
+
+class MemberCell extends VARExpression
+  var indexValue as Set of Expression
+  // baseAggregate IsContainer
+  var baseAggregate as Set of VARExpression
+
+class RepeatStatement extends Statement
+  var whileExpression as Set of Expression
+  // body IsContainer
+  var body as Set of Statement
+  // controlVariable IsContainer
+  var controlVariable as Set of ControlVariable
+  var untilExpression as Set of Expression
+
+class GroupCell extends VARExpression
+  var id as Set of Identifier
+  // baseEntity IsContainer
+  var baseEntity as Set of VARExpression
+  var refersTo as Set of SingleEntityType
+
+class VariableCell extends VARExpression
+  var id as Set of Identifier
+  var refersTo as Set of Variable
+
+class CaseStatement extends Statement
+  // cases IsContainer
+  var cases as Set of CaseAction
+  var selectionExpression as Set of Expression
+
+class IfStatement extends Statement
+  // ifCondition IsContainer
+  var ifCondition as Set of Expression
+  // elseActions IsContainer
+  var elseActions as Set of Statement
+  // thenActions IsContainer
+  var thenActions as Set of Statement
+
+class EscapeStatement extends ControlStatement
+
+class ReturnStatement extends ControlStatement
+  var returnValue as Set of Expression
+
+class Assignment extends Statement
+  var assignedValue as Set of Expression
+  var variable as Set of VARExpression
+
+abstract class Selector extends Expression
+  var entityInstance as Set of Expression
+
+class RepeatCount
+  var derivation as Set of Expression
+
+class EnumItemRef extends Primary
+  var id as Set of Identifier
+  var refersTo as Set of EnumerationItem
+
+class Literal extends Primary
+  var refersTo as Set of SimpleValue
+
+class BinaryIndex extends IndexOperation
+  var firstBit as Set of Expression
+  var lastBit as Set of Expression
+
+class IndeterminateRef extends Primary
+  var refersTo as Set of Indeterminate
+
+class SELFRef extends Primary
+
+abstract class IndexOperation extends Expression
+  var baseValue as Set of Expression
+
+class BinaryOperation extends Operation
+  var _operator as Set of BinaryOperator
+  var leftOperand as Set of Expression
+  var rightOperand as Set of Expression
+
+class AggregateInitializer extends Expression
+  var resultValue as Set of GenericAggregate
+  // bindings IsContainer
+  var bindings as Set of MemberBinding
+
+class StringIndex extends IndexOperation
+  var firstCode as Set of Expression
+  var lastCode as Set of Expression
+
+class PartialEntityConstructor extends Expression
+  var id as Set of Identifier
+  var resultValue as Set of PartialEntityValue
+  var attributeGroup as Set of SingleEntityType
+  // bindings IsContainer
+  var bindings as Set of AttributeBinding
+
+class Coercion extends Operation
+  var operand as Set of Expression
+  var targetType as Set of VariableType
+
+abstract class Primary extends Expression
+
+class ActualParameter
+  var position as Set of Integer
+  var inProcedureCall as Set of ProcedureCall
+  var inFunctionCall as Set of FunctionCall
+  var formalParameter as Set of Parameter
+  var actualReferent as Set of VARExpression
+  var actualValue as Set of Expression
+
+class ParameterRef extends Primary
+  var id as Set of Identifier
+  var refersTo as Set of Parameter
+
+class AttributeRef extends Selector
+  var id as Set of Identifier
+  var refersTo as Set of _Attribute
+
+class AggregateIndex extends IndexOperation
+  // indexValue IsContainer
+  var indexValue as Set of Expression
+
+class GroupRef extends Selector
+  var id as Set of Identifier
+  var refersTo as Set of SingleEntityType
+
+class UnaryOperation extends Operation
+  var _operator as Set of UnaryOperator
+  var unaryOperand as Set of Expression
+
+class UsedInRef extends Selector
+  var inverseOf as Set of _Attribute
+
+class ConstantRef extends Primary
+  var id as Set of Identifier
+  var refersTo as Set of Constant
+
+class QueryExpression extends LocalScope
+  // selectCondition IsContainer
+  var selectCondition as Set of Expression
+  var queryVariable as Set of QueryVariable
+  var aggregateOperand as Set of Expression
+
+class QueryVariable extends NamedVariable
+
+abstract class Operation extends Expression
+
+class AttributeBinding
+  var position as Set of Integer
+  var attributeValue as Set of Expression
+  var toValue as Set of AttributeValue
+  var _attribute as Set of ExplicitAttribute
+
+class FunctionCall extends Expression
+  // actualParameters IsContainer
+  var actualParameters as Set of ActualParameter
+  var invokesFunction as Set of _Function
+  var returnsResult as Set of FunctionResult
+
+class MemberBinding
+  var position as Set of Integer
+  // repetition IsContainer
+  var repetition as Set of RepeatCount
+  var toSlot as Set of ListMember
+  var memberValue as Set of Expression
+
+class ExtentRef extends Primary
+  var id as Set of Identifier
+  var refersTo as Set of NamedType
+
+class VariableRef extends Primary
+  var id as Set of Identifier
+  var refersTo as Set of NamedVariable
+
+abstract class TypeElement extends NamedElement
+
+class SingleEntityType
+  var declaresExplicitAttribute as Set of ExplicitAttribute
+  // declaresAttribute IsContainer
+  var declaresAttribute as Set of _Attribute
+  var declaredIn as Set of EntityType
+  var equivalent as Set of PartialEntityType
+  // id IsContainer
+  var id as Set of ScopedId
+
+class AGGREGATEType extends GeneralizedType
+  // upperBound IsContainer
+  var upperBound as Set of SizeConstraint
+  var memberType as Set of ParameterType
+  var _constraint as Set of ActualStructureConstraint
+  // lowerBound IsContainer
+  var lowerBound as Set of SizeConstraint
+
+class GeneralBAGType extends GeneralAggregationType
+
+class DomainRule extends DomainConstraint
+  var position as Set of Integer
+
+abstract class GeneralAggregationType extends GeneralizedType
+  var memberType as Set of GeneralizedType
+
+abstract class ConcreteType extends InstantiableType
+
+class Expression
+  var text as Set of ExpressText
+  var evaluation as Set of Instance
+  var interpretationContext as Set of Scope
+  var dataType as Set of DataType
+
+class InverseAttribute extends _Attribute
+  var isUnique as Set of Boolean
+  var modelsRole as Set of DomainRole
+  var explicit as Set of InvertibleAttribute
+
+class EnumerationType extends DefinedType
+  var isExtensible as Set of Boolean
+  var values as Set of EnumerationItem
+  // declaredItems IsContainer
+  var declaredItems as Set of EnumerationItem
+  var extension as Set of EnumerationType
+  var base as Set of EnumerationType
+
+abstract class VariableType extends DataType
+
+class ArrayBound
+  var bound as Set of Integer
+  var boundExpression as Set of Expression
+
+class GeneralSETType extends GeneralAggregationType
+
+class LISTType extends ConcreteAggregationType
+
+class Redeclaration
+  var position as Set of Integer
+  var isMandatory as Set of Boolean
+  var derivation as Set of Expression
+  var restrictedType as Set of AttributeType
+  var refines as Set of Redeclaration
+  // upperBound IsContainer
+  var upperBound as Set of SizeConstraint
+  // lowerBound IsContainer
+  var lowerBound as Set of SizeConstraint
+  var scope as Set of EntityType
+  var originalAttribute as Set of _Attribute
+  var refinedRole as Set of Role
+  // alias IsContainer
+  var alias as Set of ScopedId
+
+class EntityType extends NamedType
+  var isAbstract as Set of Boolean
+  var playsRole as Set of Role
+  // redeclarations IsContainer
+  var redeclarations as Set of Redeclaration
+  // attributes IsContainer
+  var attributes as Set of _Attribute
+  var playsRangeRole as Set of RangeRole
+  var declares as Set of SingleEntityType
+  var extension as Set of Extent
+  var invertibleAttributes as Set of InvertibleAttribute
+  var playsDomainRole as Set of DomainRole
+  var uniqueRules as Set of UniqueRule
+  var usedIn as Set of InvertibleAttribute
+  var subtypeOf as Set of EntityType
+
+abstract class DataType
+  var instances as Set of Instance
+
+class PartialEntityType extends DataType
+  var components as Set of SingleEntityType
+
+class Schema extends Scope
+  var name as Set of Identifier
+  var version as Set of Identifier
+  var documentation as Set of Remark
+  // interfaces IsContainer
+  var interfaces as Set of InterfacedElement
+  // schemaElements IsContainer
+  var schemaElements as Set of SchemaElement
+  var interfacedElements as Set of SchemaElement
+
+class InvertibleAttribute extends ExplicitAttribute
+  var inverse as Set of InverseAttribute
+  var rangeType as Set of EntityType
+  var createsRelationship as Set of Relationship
+  var referencingType as Set of EntityType
+  var modelsRole as Set of RangeRole
+
+abstract class GeneralizedType extends ParameterType
+  var occursIn as Set of ParameterType
+
+class InterfacedElement
+  var isUSE as Set of Boolean
+  var interfacingSchema as Set of Schema
+  var refersTo as Set of SchemaElement
+  // interfacedId IsContainer
+  var interfacedId as Set of ScopedId
+
+class NumericType extends SimpleType
+
+abstract class DefinedType extends NamedType
+
+class UniqueRule extends TypeElement
+  var position as Set of Integer
+  var domain as Set of EntityType
+  var keyComponent as Set of _Attribute
+
+class DomainRole extends Role
+  var rangeView as Set of InverseAttribute
+  var domain as Set of EntityType
+  // id IsContainer
+  var id as Set of ScopedId
+
+abstract class DomainConstraint
+  var domain as Set of AttributeType
+  // asserts IsContainer
+  var asserts as Set of Expression
+
+abstract class InstantiableType extends ParameterType
+  var fundamentalType as Set of InstantiableType
+
+class GeneralLISTType extends GeneralAggregationType
+
+abstract class NamedElement
+  var _namespace as Set of Scope
+  var documentation as Set of Remark
+  // id IsContainer
+  var id as Set of ScopedId
+
+abstract class _Attribute extends TypeElement
+  var isAbstract as Set of Boolean
+  var position as Set of Integer
+  var attributeType as Set of AttributeType
+  var ofEntity as Set of SingleEntityType
+  var owningEntity as Set of EntityType
+
+class BAGType extends ConcreteAggregationType
+
+class RealType extends NumericType
+  var precision as Set of Integer
+
+class LogicType extends SimpleType
+
+class GenericType extends GeneralizedType
+  var isEntity as Set of Boolean
+  var _constraint as Set of ActualTypeConstraint
+
+class StringType extends SimpleType
+  // stringLengthConstraint IsContainer
+  var stringLengthConstraint as Set of LengthConstraint
+
+abstract class AnonymousType extends ConcreteType
+  var specializes as Set of AnonymousType
+
+abstract class AlgorithmScope extends LocalScope
+  var commonElements as Set of CommonElement
+  var variables as Set of Variable
+
+abstract class Instance
+  var appearsInPopulation as Set of Population
+  var ofType as Set of DataType
+
+abstract class AttributeType
+  var role as Set of _Attribute
+  var constraints as Set of DomainConstraint
+
+class DerivedAttribute extends _Attribute
+  var derivation as Set of Expression
+
+class RangeRole extends Role
+  var domainView as Set of InvertibleAttribute
+  var range as Set of EntityType
+  // id IsContainer
+  var id as Set of ScopedId
+
+abstract class LocalElement extends NamedElement
+
+class Remark
+  var isTagged as Set of Boolean
+  var isTail as Set of Boolean
+  var text as Set of ExpressText
+  var describesSchema as Set of Schema
+  var appearsIn as Set of Scope
+  var describesElement as Set of NamedElement
+
+class SizeConstraint extends DomainConstraint
+  var bound as Set of Integer
+
+abstract class Role
+  var inRelationship as Set of Relationship
+  var ofEntity as Set of EntityType
+  var upperBound as Set of SizeConstraint
+  var lowerBound as Set of SizeConstraint
+
+class SETType extends ConcreteAggregationType
+
+class SpecializedType extends DefinedType
+  var underlyingType as Set of ConcreteType
+
+class GeneralARRAYType extends GeneralAggregationType
+  var isOptional as Set of Boolean
+  // hiIndex IsContainer
+  var hiIndex as Set of ArrayBound
+  // loIndex IsContainer
+  var loIndex as Set of ArrayBound
+
+class Relationship
+  var domain as Set of DomainRole
+  var roles as Set of Role
+  var basedOn as Set of InvertibleAttribute
+  var range as Set of RangeRole
+
+class LengthConstraint extends DomainConstraint
+  var maxLength as Set of Integer
+  var isFixed as Set of Boolean
+
+abstract class LocalScope extends Scope
+  var localElements as Set of LocalElement
+
+abstract class NamedType extends InstantiableType
+  var instantiates as Set of SelectType
+  var domainRules as Set of DomainRule
+
+class BinaryType extends SimpleType
+  // binaryLengthConstraint IsContainer
+  var binaryLengthConstraint as Set of LengthConstraint
+
+class ScopedId
+  var localName as Set of Identifier
+  var definingScope as Set of Scope
+
+abstract class AggregationType
+  var isUnique as Set of Boolean
+  var ordering as Set of OrderingKind
+  // lowerBound IsContainer
+  var lowerBound as Set of SizeConstraint
+  // upperBound IsContainer
+  var upperBound as Set of SizeConstraint
+
+abstract class Scope
+  // namedElements IsContainer
+  var namedElements as Set of NamedElement
+  var includesRemarks as Set of Remark
+
+abstract class ParameterType
+  var contains as Set of GeneralizedType
+
+class SelectType extends DefinedType
+  var isExtensible as Set of Boolean
+  var isEntity as Set of Boolean
+  var allowedTypes as Set of NamedType
+  var extension as Set of SelectType
+  var base as Set of SelectType
+  var selectList as Set of NamedType
+
+abstract class ActualType extends VariableType
+  var scope as Set of Algorithm
+
+class ExplicitAttribute extends _Attribute
+  var isOptional as Set of Boolean
+
+abstract class SimpleType extends AnonymousType
+  var id as Set of Keyword
+
+abstract class CommonElement extends SchemaElement
+  var localScope as Set of AlgorithmScope
+
+abstract class SchemaElement extends NamedElement
+  var referencedAs as Set of InterfacedElement
+  var referencedIn as Set of Schema
+  var definedIn as Set of Schema
+
+abstract class ConcreteAggregationType extends AnonymousType
+  var memberType as Set of InstantiableType
+
+class ARRAYType extends ConcreteAggregationType
+  var isOptional as Set of Boolean
+  // loIndex IsContainer
+  var loIndex as Set of ArrayBound
+  // hiIndex IsContainer
+  var hiIndex as Set of ArrayBound
+
+class ActualTypeConstraint
+  var label as Set of Identifier
+  var matchingType as Set of GenericType
+  var requiredType as Set of ActualDataType
+
+class FunctionResult extends Variable
+
+class _Function extends Algorithm
+  // result IsContainer
+  var result as Set of FunctionResult
+
+class InParameter extends Parameter
+  var variable as Set of InVariable
+
+class LocalVariable extends Variable
+  var initialValue as Set of Expression
+
+class ActualStructure extends GenericElement
+
+class ActualGenericType extends ActualType
+  var isEntity as Set of Boolean
+  var label as Set of Identifier
+  var refersTo as Set of ActualDataType
+
+class Statement
+  var text as Set of ExpressText
+  var inBlock as Set of StatementBlock
+  // bodyStatementsSkipStatement IsContainer
+  var bodyStatementsSkipStatement as Set of SkipStatement
+  // bodyStatementsEscapeStatement IsContainer
+  var bodyStatementsEscapeStatement as Set of EscapeStatement
+  var controlledBy as Set of RepeatStatement
+  var _implements as Set of Algorithm
+
+abstract class NamedVariable extends LocalElement
+  var variableType as Set of VariableType
+
+class InVariable extends Variable
+  var source as Set of InParameter
+
+class _Procedure extends Algorithm
+
+class ActualARRAYType extends ActualAggregationType
+  var isOptional as Set of Boolean
+  // hiIndex IsContainer
+  var hiIndex as Set of ArrayBound
+  // loIndex IsContainer
+  var loIndex as Set of ArrayBound
+
+class ActualSETType extends ActualAggregationType
+
+class ActualAGGREGATEType extends ActualType
+  var label as Set of Identifier
+  // upperBound IsContainer
+  var upperBound as Set of SizeConstraint
+  var refersTo as Set of ActualStructure
+  var memberType as Set of VariableType
+  // lowerBound IsContainer
+  var lowerBound as Set of SizeConstraint
+
+abstract class Parameter extends LocalElement
+  var _inout as Set of Boolean
+  var position as Set of Integer
+  // structureConstraints IsContainer
+  var structureConstraints as Set of ActualStructureConstraint
+  // typeConstraints IsContainer
+  var typeConstraints as Set of ActualTypeConstraint
+  var formalParameterType as Set of ParameterType
+
+class ActualStructureConstraint
+  var label as Set of Identifier
+  var matchingStructure as Set of AGGREGATEType
+  var requiredStructure as Set of ActualStructure
+
+abstract class Algorithm extends AlgorithmScope
+  // body IsContainer
+  var body as Set of Statement
+  var formalParameters as Set of Parameter
+
+abstract class ActualAggregationType extends ActualType
+  var memberType as Set of ActualType
+
+abstract class VARVariable
+
+class ActualLISTType extends ActualAggregationType
+
+abstract class Variable extends NamedVariable
+
+abstract class GenericElement extends LocalElement
+  var source as Set of Parameter
+  // label IsContainer
+  var label as Set of ScopedId
+
+class VARParameter extends Parameter
+
+class ActualDataType extends GenericType
+
+class ActualBAGType extends ActualAggregationType
+
+class AttributeValue
+  var actualValue as Set of Instance
+  var _attribute as Set of ExplicitAttribute
+
+class ARRAYValue extends AggregateValue
+  // memberSlot IsContainer
+  var memberSlot as Set of ArrayMember
+
+class RoleName extends StringValue
+  var refersTo as Set of _Attribute
+  // represents IsContainer
+  var represents as Set of ScopedId
+
+class EntityInstance extends TypedInstance
+  var id as Set of EntityName
+  var state as Set of EntityValue
+  var instanceOf as Set of EntityType
+
+class IntegerValue extends RealValue
+
+abstract class AggregateValue extends ConcreteValue
+
+class Constant extends CommonElement
+  var valueExpression as Set of Expression
+  var actualValue as Set of Instance
+  var dataType as Set of InstantiableType
+
+class LogicalValue extends SimpleValue
+
+abstract class TypedInstance extends Instance
+  var satisfiesType as Set of SelectType
+
+class ListMember
+  var position as Set of Integer
+  var memberValue as Set of Instance
+
+class BagMember
+  var count as Set of Integer
+  var memberValue as Set of Instance
+
+class SingleEntityValue
+  var equivalent as Set of PartialEntityValue
+  var ofType as Set of SingleEntityType
+  // properties IsContainer
+  var properties as Set of AttributeValue
+
+class Indeterminate extends Instance
+
+class SingleLeafInstance extends EntityInstance
+  var characterizingType as Set of EntityType
+
+class GenericAggregate extends LISTValue
+
+class BinaryValue extends SimpleValue
+
+class SpecializedValue extends TypedInstance
+  var fundamentalValue as Set of ConcreteValue
+
+class BAGValue extends AggregateValue
+  // memberSlot IsContainer
+  var memberSlot as Set of BagMember
+
+class EnumerationItem extends TypeElement
+  var position as Set of Integer
+  var declaredIn as Set of EnumerationType
+
+class EntityValue extends PartialEntityValue
+  var correspondsTo as Set of EntityType
+  var describes as Set of EntityInstance
+
+class SETValue extends AggregateValue
+  var memberValue as Set of Instance
+
+class ArrayMember
+  var index as Set of Integer
+  var memberValue as Set of Instance
+
+class Population
+  var compositionEntityInstance as Set of EntityInstance
+  var compositionInstance as Set of Instance
+  var governingSchema as Set of Schema
+
+class RealValue extends NumberValue
+
+class BooleanValue extends LogicalValue
+
+class LISTValue extends Instance
+  // memberSlot IsContainer
+  var memberSlot as Set of ListMember
+
+class StringValue extends SimpleValue
+
+class TypeName extends StringValue
+  var refersTo as Set of NamedType
+  // represents IsContainer
+  var represents as Set of ScopedId
+
+class PartialEntityValue extends Instance
+  // components IsContainer
+  var components as Set of SingleEntityValue
+
+class NumberValue extends SimpleValue
+
+class MultiLeafInstance extends EntityInstance
+
+abstract class SimpleValue extends ConcreteValue
+  var name as Set of String
+
+abstract class ConcreteValue extends Instance
+
+Main()

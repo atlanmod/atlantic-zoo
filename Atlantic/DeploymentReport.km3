@@ -1,0 +1,382 @@
+-- @name			System Definition Model DeploymentReport
+-- @version			0.1
+-- @domains			DSI, SDM Deployment Report Metamodel, XML 
+-- @authors			Albin Jossic (jossic.albin@gmail.com), Microsoft 
+-- @date			2005/07/05
+-- @extends			SDM.km3
+-- @description		This metamodel corresponds to the Deployment Report metamodel of the Microsoft SDM (System Definition Model). It is derived from the XML Schema "DeploymentReport.xsd" which is the metamodel for describing the error messages that may occur during the deployment s simulation on a model (that conforms to the SDM metamodel) designed in Visual Studio 2005 Beta2.
+-- @see				DeploymentReport.xsd, SDM.km3
+
+
+package DeploymentReport {
+	
+		-----------------------------------------------------------------------------------------------------------
+   		-- @comment Deployment Report element root
+		-----------------------------------------------------------------------------------------------------------
+			
+	---------------------------------------------------------------------------------------------------------------
+    -- @comment Deployment Report
+	---------------------------------------------------------------------------------------------------------------
+	class DeploymentReport {
+		reference import[0-*] : DeploymentImport ;
+		reference applications[0-1] : Applications ;
+		reference binding[0-1] : Binding ;
+		reference logicalServers[0-1] : LogicalServers ;
+		reference errors[0-1] : ErrorCollection ;
+	}
+	
+		
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Import
+	---------------------------------------------------------------------------------------------------------------
+	class DeploymentImport {
+		reference alias : SimpleName ;
+		reference identity container : ImportNamespaceIdentity oppositeOf import ;
+	}
+	
+	class ImportNamespaceIdentity extends NamespaceIdentity {
+		reference import : DeploymentImport oppositeOf identity ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Identity
+	---------------------------------------------------------------------------------------------------------------
+	class  NamespaceIdentity {
+		reference name : Path;
+		reference version [0-1] : FourPartVersionType;
+		reference publicKey [0-1] : PublicKeyType;
+		reference publicKeyToken [0-1] : PublicKeyTokenType;
+		reference culture [0-1] : CultureNeutral;
+		attribute platform [0-1] : Platform;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Applications
+	-- @comment Shows Applications by containment.
+	---------------------------------------------------------------------------------------------------------------
+	class Applications {
+		reference system[0-*] : OuterSystem ;
+		reference application[0-*] : Application ;
+	}
+	
+		
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment LogicalServers
+	-- @comment Shows Application Hosts by containment.
+	---------------------------------------------------------------------------------------------------------------
+	class LogicalServers {
+		reference zone[0-*] : Zone ;
+		reference logicalServer[0-*] : LogicalServer ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment OuterSystem
+	-- @comment Shows up in actual XML as System. Used for systems that contain Applications.
+	---------------------------------------------------------------------------------------------------------------
+	class OuterSystem {
+		reference system[0-*] : OuterSystem ;
+		reference application[0-*] : Application ;
+		attribute name : String ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Binding
+	-- @comment Shows Zones and ApplicationHosts by containment, and then Applications by hosting.
+	---------------------------------------------------------------------------------------------------------------
+	class Binding {
+		reference zone[0-*] : Zone ;
+		reference boundLogicalServer[0-*] : BoundLogicalServer ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Zone
+	---------------------------------------------------------------------------------------------------------------
+	class Zone {
+		reference zone[0-*] : Zone ;
+		reference boundLogicalServer[0-*] : BoundLogicalServer ;
+		reference logicalServer[0-*] : LogicalServer ;
+		attribute name : String ;
+	}
+	
+	
+		
+		-----------------------------------------------------------------------------------------------------------
+   		-- @comment Report
+		-----------------------------------------------------------------------------------------------------------
+			
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment ReportObject
+	---------------------------------------------------------------------------------------------------------------
+	class ReportObject {
+		reference sequence [0-*] container : SequenceReport oppositeOf report ;
+		attribute name : String ;
+		attribute definition : String ;
+		attribute "extends" : String ;
+        reference instanceId : Guid ;
+		attribute hostedOn[0-1] : String ;
+	}
+	
+	class SequenceReport{
+		reference report : ReportObject oppositeOf sequence ;
+		reference setting : Setting ;
+		reference system[0-*] : ReportSystem ;
+		reference resource[0-*] : ReportResource ;
+		reference endpoint[0-*] : ReportEndpoint ;
+	}
+		
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment BoundLogicalServer
+	---------------------------------------------------------------------------------------------------------------
+	class BoundLogicalServer {
+		reference setting[0-*] : Setting ;
+		reference application[0-*] : Application ;
+		attribute name : String ;
+		attribute definition : String ;
+		attribute "extends" : String ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment LogicalServer
+	---------------------------------------------------------------------------------------------------------------
+	class LogicalServer extends ReportObject {
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Application
+	---------------------------------------------------------------------------------------------------------------
+	class Application extends ReportObject {
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment System
+	---------------------------------------------------------------------------------------------------------------
+	class ReportSystem extends ReportObject {
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Resource
+	---------------------------------------------------------------------------------------------------------------
+	class ReportResource extends ReportObject {
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Endpoint
+	---------------------------------------------------------------------------------------------------------------
+	class ReportEndpoint extends ReportObject {
+	}
+		
+	
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment Settings
+		-----------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Setting
+	---------------------------------------------------------------------------------------------------------------
+	class Setting  {
+		reference value[0-*] : SettingInstanceValue ;
+		reference facet[0-*] : SettingFacet ;
+		reference settingAttributes : SettingAttributes ;
+	}
+	
+	class SettingFacet {
+		reference value[0-1] : SettingInstanceValue ;
+		reference settingAttributes : SettingAttributes ;
+	}
+	
+	class SettingInstanceValue {
+		attribute contents[0-*] : String ;
+		attribute null[0-1] : Boolean ;
+	}
+	
+	class SettingAttributes {
+		attribute name : String ;
+		attribute definition : String ;
+		attribute state [0-1] : SettingState ;
+		attribute fixed [0-1] : Boolean ;
+		attribute list [0-1] : Boolean ;
+		attribute null [0-1] : Boolean ;
+		attribute secure [0-1] : Boolean ;
+		attribute failedToSerialize [0-1] : Boolean ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment SettingValue 
+	---------------------------------------------------------------------------------------------------------------
+	class SettingValue {
+		attribute contents [0-*] : String ;
+		attribute Null[0-1] : Boolean ;
+		attribute Secure[0-1] : Boolean ;
+	}
+	
+	
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment Errors
+		-----------------------------------------------------------------------------------------------------------
+		
+	---------------------------------------------------------------------------------------------------------------
+    -- @comment ErrorCollection
+   	---------------------------------------------------------------------------------------------------------------
+	class ErrorCollection {
+		reference documentError[0-*] : DocumentError ;
+		reference documentResolutionError[0-*] : DocumentResolutionError ;
+		reference documentConstraintError[0-*] : DocumentConstraintError ;
+	}
+		
+	---------------------------------------------------------------------------------------------------------------
+    -- @comment DocumentError
+   	---------------------------------------------------------------------------------------------------------------
+	class DocumentError {
+		reference description[0-*] : Description ;
+		attribute Code : Integer ;
+		attribute Level : Integer ;
+		attribute File[0-1] : String ;
+	}
+
+	---------------------------------------------------------------------------------------------------------------
+    -- @comment Error
+   	---------------------------------------------------------------------------------------------------------------
+	class DocumentResolutionError extends DocumentError {
+		attribute Statement : String ;
+		
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+    -- @comment Constraint Error
+	---------------------------------------------------------------------------------------------------------------
+	class DocumentConstraintError extends DocumentError {
+		reference failedInput[0-*] : FailedInput ;
+		attribute constraintMember : String ;
+		attribute constraintDefinition : String ;
+		attribute targetInstancePath[0-1] : String ;
+		attribute ownerInstancePath[0-1] : String ;
+		attribute constraintErrorCode[0-1] : String ;
+		attribute constraintErrorMessage[0-1] : String ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+    -- @comment FailedInput
+	---------------------------------------------------------------------------------------------------------------
+	class FailedInput {
+		attribute contents [0-*] : String ;
+	}
+
+	---------------------------------------------------------------------------------------------------------------
+    -- @comment Description
+	---------------------------------------------------------------------------------------------------------------
+	class Description {
+		attribute contents [0-*] : String ;
+	}
+
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment SimpleType
+		-----------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Guid 
+	-- @comment pattern = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+	---------------------------------------------------------------------------------------------------------------
+	class Guid extends Element {}
+		
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment SimpleName 
+	-- @comment pattern = "[_\p{Ll}\p{Lu}\p{Lt}\p{Lm}\p{Lo}\p{Nl}]{1}[\w\p{Lm}\p{Nl}\p{Cf}\p{Mn}\p{Mc}]*"
+	---------------------------------------------------------------------------------------------------------------
+	class SimpleName extends Element {}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Path 
+	-- @comment pattern = "[_\p{Ll}\p{Lu}\p{Lt}\p{Lm}\p{Lo}\p{Nl}]{1}[\w\p{Lm}\p{Nl}\p{Cf}\p{Mn}\p{Mc}]*
+	-- @comment            (\.[_\p{Ll}\p{Lu}\p{Lt}\p{Lm}\p{Lo}\p{Nl}]{1}[\w\p{Lm}\p{Nl}\p{Cf}\p{Mn}\p{Mc}]*)*"
+	---------------------------------------------------------------------------------------------------------------
+	class Path extends Element {}
+		
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment FourPartVersionType type for version number
+	-- @comment pattern = "([0-9]{1,4}|[0-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])
+	-- @comment            (\.([0-9]{1,4}|[0-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])){3}"
+	---------------------------------------------------------------------------------------------------------------
+	class FourPartVersionType extends Element {}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment PublicKeyType public key for verifying signed docs
+	-- @comment pattern = "([0-9]|[a-f]|[A-F]){192,}"
+	---------------------------------------------------------------------------------------------------------------
+	class PublicKeyType extends Element {}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment PublicKeyTokenType 
+	-- @comment pattern = "([0-9]|[a-f]|[A-F]){16}"
+	---------------------------------------------------------------------------------------------------------------
+	class PublicKeyTokenType extends Element {}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Culture culture string
+	-- @comment pattern = "[a-z]{2,3}(-[A-Z]{2,3}(-[a-zA-Z]{4})?)?"
+	---------------------------------------------------------------------------------------------------------------
+	class Culture extends Element {}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment CultureNeutral culture string
+	-- @comment pattern = "[a-z]{2,3}(-[A-Z]{2,3}(-[a-zA-Z]{4})?)?"
+	-- @comment and value = {"*"|"neutral"}
+	---------------------------------------------------------------------------------------------------------------
+	class CultureNeutral extends Element {}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment ProcessorArchitectures 
+	---------------------------------------------------------------------------------------------------------------
+	enumeration ProcessorArchitectures {
+		literal x86 ;
+		literal ia64 ;
+		literal amd64 ;
+		literal wow64 ;
+		literal msil ;
+		literal shx ;
+		literal arm ;
+		literal data ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Platform 
+	---------------------------------------------------------------------------------------------------------------
+	enumeration Platform {
+		literal x86 ;
+		literal ia64 ;
+		literal amd64 ;
+		literal wow64 ;
+		literal msil ;
+		literal shx ;
+		literal arm ;
+		literal data ;
+		literal "*" ;
+		literal neutral ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment ConstraintEvaluation 
+	---------------------------------------------------------------------------------------------------------------
+	enumeration SettingState {
+		literal Set ;
+		literal NotSet ;
+		literal Error ;
+	}
+	
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment Basic Type
+		-----------------------------------------------------------------------------------------------------------
+			
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Element
+	---------------------------------------------------------------------------------------------------------------
+	class Element {
+		attribute value : String ;
+	}
+
+}
+
+package PrimitiveTypes {
+  datatype String ;
+  datatype Integer ;
+  datatype Boolean ;
+}	

@@ -1,0 +1,826 @@
+-- @name		WordprocessingMLStyles
+-- @version		1.2
+-- @domains		Microsoft Office Word, XML
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com)
+-- @date		2005/07/01
+-- @extends		WordprocessingMLTableElts 
+-- @description	This metamodel describes a subset of WordprocessingML, an XML dialect developed by Microsoft to represent the information in an Word document. This metamodel takes back in details the concepts expressed in the WordprocessingML metamodel who manages table elements, and adds the partial management of fonts and styles for a Word document.
+-- @see			office.xsd, wordnet.xsd; Microsoft Office 2003 XML Reference Schemas; http://www.microsoft.com/downloads/details.aspx?familyid=FE118952-3547-420A-A412-00A2662442D9&displaylang=en
+
+package WordprocessingMLStyles {
+
+-- @begin MS Office - Special Types definition
+
+	-- @comment The format for date/time fields is yyyy-mm-ddThh:mm:ssZ. (This format can be described as follows: a four-digit year, hyphen, two-digit month, hyphen, two-digit day, uppercase letter T, two-digit hour, colon, two-digit minute value, colon, two-digit seconds value, uppercase letter Z.).
+	class DateTimeType {
+		attribute year : Integer;
+		attribute month : Integer;
+		attribute day : Integer;
+		attribute hour : Integer;
+		attribute minute : Integer;
+		attribute second : Integer;	
+	}
+	
+	-- @comment The format for the version is n.nn.
+	class VersionType {
+		attribute n : Integer;
+		attribute nn : Integer;
+	}
+	
+	-- @comment Office manages four types of value : String, Float, DateTime and Boolean.
+	abstract class ValueType {}
+	
+	class StringValue extends ValueType {
+		attribute value : String;
+	}
+	
+	class FloatValue extends ValueType {
+		attribute value : Double;
+	}
+	
+	class DateTimeTypeValue extends ValueType {
+		reference value : DateTimeType;
+	}
+	
+	class BooleanValue extends ValueType {
+		attribute value : Boolean;
+	}
+	
+-- @end MS Office - Special Types definition
+
+
+-- @begin MS Office - Office Document Common Properties
+-- @comment This zone describes elements that are shared by Microsoft Office Word 2003 and Microsoft Office Excel 2003. They contain general document properties (author, createdate, etc.), document summary and statistics (word count, etc.), custom document properties and information related to smart tags that appear in a document.
+
+	-- @comment Defines the collection of standard document properties.
+	class DocumentPropertiesCollection {
+		reference dp_wordDocument : WordDocument oppositeOf wd_docProperties;
+	
+		-- @comment The title of a document. The title can be different from the file name. 
+		attribute title[0-1] : String;
+		-- @comment The subject of the document. This property may be used to group similar files.
+		attribute subject[0-1] : String;
+		-- @comment Keywords may be used when searching for the document.
+		attribute keywords[0-1] : String;
+		-- @comment The short description of the document. Comments may also be used when searching for the document. 
+		attribute description[0-1] : String;
+		-- @comment The category of the file. This property may be used to group similar files.
+		attribute category[0-1] : String;
+		-- @comment  The name of the person who first created the document. The name of the person who last saved the document is contained in the "lastAuthor" attribute. 
+		attribute author[0-1] : String;
+		-- @comment  The name of the person who last saved the document. The original author is contained in the "author" attribute. 
+		attribute lastAuthor[0-1] : String;
+		-- @comment The name of the author's manager. This property may be used in searches to group all the documents of authors having the same manager. 
+		attribute manager[0-1] : String;
+		-- @comment	 The author's employer. This property may be used in searches to group all of the documents from the same company. 
+		attribute company[0-1] : String;
+		-- @comment	The path or URL that is used for all hyperlinks with the same base address in a document. This property can be an Internet address (for example, http://www.microsoft.com), a path to a folder on your hard disk (for example, c:\personal\documents), or a path to a folder on a network (for example, \\exampleserver\public\documents). 
+		attribute hyperlinkBase[0-1] : String;
+		-- @comment	The number of times the document was saved. If no change was made since the document was last saved, this number is not updated in Word. 
+		attribute revision[0-1] : Integer;
+		-- @comment The viewing format of a document.
+		attribute presentationFormat[0-1] : String;
+		-- @comment A unique identification number for the document. 
+		attribute guid[0-1] : String;
+		-- @comment  The name of the application that last updated the document. Word and Excel do not update this element. 
+		attribute appName[0-1] : String;
+		-- @comment The version of the application used to create the document. Word and Excel update this element. 
+		reference version[0-1] container : VersionType;
+		-- @comment The number of minutes since it was created that the document was open for making changes (even if no changes are made). 
+		attribute totalTime[0-1] : Integer;
+		-- @comment The date and time that the document was last printed. Word omits this element if the document has not been printed.  
+		reference lastPrinted[0-1] container : DateTimeType;
+		-- @comment The date and time that the document was created. 
+		reference created[0-1] container : DateTimeType;
+		-- @comment The date and time that the document was last saved. 
+		reference lastSaved[0-1] container : DateTimeType;
+		-- @comment An estimate of the number of pages in the document. 
+		attribute pages[0-1] : Integer;
+		-- @comment  An estimate of the number of words in the document. 
+		attribute words[0-1] : Integer;
+		-- @comment An estimate of the number of characters in the document, not counting spaces.
+		attribute characters[0-1] : Integer;
+		-- @comment An estimate of the number of characters in the document, counting spaces. 
+		attribute charactersWithSpaces[0-1] : Integer;
+		-- @comment An estimate of the number of bytes in the document. 
+		attribute bytes[0-1] : Integer;
+		-- @comment An estimate of the number of lines in the document. 
+		attribute lines[0-1] : Integer;
+		-- @comment An estimate of the number of paragraphs in the document. 
+		attribute paragraphs[0-1] : Integer;
+	} 
+	
+	-- @comment Defines the collection of custom document properties.
+	class CustomDocumentPropertiesCollection {
+		reference cdp_wordDocument : WordDocument oppositeOf wd_customDocProperties;
+		
+		reference customDocumentProperties[1-*] container :  CustomDocumentProperty oppositeOf customDocumentProperty_cdpe;
+	} 
+
+	-- @comment A custom property is a name/value pair.
+	class CustomDocumentProperty {
+		reference customDocumentProperty_cdpe : CustomDocumentPropertiesCollection oppositeOf customDocumentProperties;
+		attribute name : String;
+		-- @comment Defines the value of the custom property in the correct type
+		reference value container : ValueType;
+	}
+
+	-- @comment Defines a smart tag used in the document.
+	class SmartTagType {
+		reference smartTagType_ste : SmartTagsCollection oppositeOf smartTagTypes;
+	
+		-- @comment Gets or sets the namespace Uniform Resource Identifier (URI) for a smart tag
+		attribute namespaceuri : String;
+		-- @comment Gets or sets the element name used for a smart tag
+		attribute name : String;
+		-- @comment Gets or sets the URL for a smart tag provided by the smart tag provider
+		attribute url[0-1] : String;
+	}
+	
+	-- @comment Defines a a collection of smart tags.
+	class SmartTagsCollection {
+		reference st_wordDocument : WordDocument oppositeOf wd_smartTags;
+		
+		reference smartTagTypes[*] container : SmartTagType oppositeOf smartTagType_ste;
+	}
+
+-- @end MS Office - Office Document Common Properties
+
+
+-- @begin MS Office - Word special types
+	
+		-- @comment Defines a property that uses a string.
+		class StringProperty extends StringType {}
+		
+		-- @comment Defines the string value type
+		class StringType {
+			-- @comment Gets or sets the value of a string.
+			attribute val : String;
+		}
+	
+		-- @comment Specifies the different break types.
+		enumeration BreakType {
+			literal bt_page;
+			literal bt_column;
+			literal bt_text_wrapping;
+		}
+		
+		-- @comment Specifies the different footnote/endnote values
+		enumeration NoteValue {
+			-- @comment Normal footnote/endnote.
+			literal ftn_normal;
+			-- @comment Separates document text from footnotes/endnotes.
+			literal ftn_separator;
+			-- @comment Is printed above footnotes/endnotes on the next page when footnotes/endnotes overflow onto the next page.
+			literal ftn_continuation_separator;
+			-- @comment A notice to let readers now that the footnotes/endnotes have continued on the next page.
+			literal ftn_continuation_notice;
+		}
+		
+		-- @comment Defines the two different values of the On/Off type.
+		enumeration OnOffType {
+			literal oot_on;
+			literal oot_off;
+		}
+		
+		-- @comment Defines a property that uses a field character type.
+		enumeration FldCharTypeProperty {
+			literal fctp_begin;
+			literal fctp_separate;
+			literal fctp_end;
+		}
+		
+		-- @comment Provides a hint to Word regarding which font to use for display.
+		enumeration HintType {
+			literal ht_default;
+			literal ht_fareast;
+			literal ht_cs;
+		}	
+		
+		-- @comment Defines the settings for the kind of style.
+		enumeration StyleKindValue {
+			literal skv_paragraph;
+			literal skv_character;
+			literal skv_table;
+			literal skv_list;
+		}
+		
+		-- @class Defines a property that uses an underline style.
+		class UnderlineProperty {
+			-- @comment Gets or sets an underline style.
+			attribute val[0-1] : UnderlineValues;
+			-- @comment Gets or sets an underline color (with its hexadecimal code).
+			attribute color[0-1] : String;
+		}
+		
+		-- @comment Defines an underline style.
+		enumeration UnderlineValues {
+			literal uv_single;
+			literal uv_words;
+			literal uv_double;
+			literal uv_thick;
+			literal uv_dotted;
+			literal uv_dotted_heavy;
+			literal uv_dash;
+			literal uv_dashed_heavy;
+			literal uv_dash_long;
+			literal uv_dash_long_heavy;
+			literal uv_dot_dash;
+			literal uv_dash_dot_heavy;
+			literal uv_dot_dot_dash;
+			literal uv_dash_dot_dot_heavy;
+			literal uv_wave;
+			literal uv_wavy_heavy;
+			literal uv_wavy_double;
+			literal uv_none;	
+		}
+		
+		-- @comment Defines a highlight-color value.
+		enumeration HighlightColorValues {
+			literal hcv_black;
+			literal hcv_blue;
+			literal hcv_cyan;
+			literal hcv_green;
+			literal hcv_magenta;
+			literal hcv_red;
+			literal hcv_yellow;
+			literal hcv_white;
+			literal hcv_dark_blue;
+			literal hcv_dark_cyan;
+			literal hcv_dark_green;
+			literal hcv_dark_magenta;
+			literal hcv_dark_red;
+			literal hcv_dark_yellow;
+			literal hcv_dark_gray;
+			literal hcv_light_gray;
+			literal hcv_none;
+		}
+		
+		-- @comment Defines the possible settings for vertical alignment of a run of text.
+		enumeration VerticalAlignRunType {
+			-- @comment Returns the text in this run to the baseline and returns it to the original font size.
+			literal vart_baseline;
+			-- @comment Raises the text in this run above the baseline and changes it to a smaller size, if a smaller size is available.
+			literal vart_superscript;
+			-- @comment Lowers the text in this run below the baseline and changes it to a smaller size, if a smaller size is available.
+			literal vart_subscript;
+		}
+		
+		-- @comment Defines a justification setting.
+		enumeration JustificationValue {
+			literal jv_left;
+			literal jv_center;
+			literal jv_right;
+			-- @comment Both left and right justified.
+			literal jv_both;
+		}
+		
+-- @end MS Office - Word special types
+	
+	
+-- @begin MS Office - Word Document Basic Definition
+	
+	-- @comment Defines a Microsoft Office Word 2003 document.
+	class WordDocument {
+		-- @comment Defines the general properties of the Office document
+		reference wd_smartTags[0-1] container : SmartTagsCollection oppositeOf st_wordDocument; 
+		reference wd_docProperties[0-1] container : DocumentPropertiesCollection oppositeOf dp_wordDocument;
+		reference wd_customDocProperties[0-1] container : CustomDocumentPropertiesCollection oppositeOf cdp_wordDocument;
+					
+		-- @comment Specifies whether to ignore an element and its contents. If a namespace is specified for the ignoreSubtree element's val attribute (val=uri), when Word encounters an element in this namespace, Word will ignore the element and all of its contents.
+		reference ignoreSubtree[0-1] container : StringProperty;
+		-- @comment Specifies whether to ignore an element, but process its contents. If a namespace is specified for the ignoreElements element's val attribute (val=uri), when Word encounters an element in this namespace, Word ignores only the element (all of the element's contents will be processed).
+		reference ignoreElements[0-1] container : StringProperty;		
+			
+		-- @comment Represents the font definitions.
+		reference fonts[0-1] container : FontsListElt oppositeOf fle_wordDocument;
+		-- @comment Represents the list definitions (for example, the Bullets and Numbering options).
+		reference lists[0-1] container : ListsElt oppositeOf le_wordDocument;
+		-- @comment Represents the style definitions.
+		reference styles[0-1] container : StylesElt oppositeOf se_wordDocument;	
+		-- @comment Represents the document properties.
+		reference docPr[0-1] container : DocPrElt oppositeOf dpe_wordDocument;		
+		
+		-- @comment Contains the body of the document.
+		reference body container : BodyElt oppositeOf be_wordDocument;		
+			
+		-- @comment Macros, HTML, embedded objects and OCX controls are not managed by this metamodel.
+	}
+
+	-- @comment Defines the document properties.
+	class DocPrElt {
+		reference dpe_wordDocument : WordDocument oppositeOf docPr;
+		-- to supplement if necessary...
+	}
+	
+	-- @comment Defines the body of the document.
+	class BodyElt{
+		reference be_wordDocument : WordDocument oppositeOf body;
+		
+		-- @comment Defines the elements contained in the body of the document.
+		reference blockLevelElts[*] ordered container : BlockLevelElt oppositeOf ble_bodyElt;
+		
+		-- @comment Represents the section properties for the very last section in the document.
+		reference sectPr[0-1] container : SectPrElt oppositeOf spe_bodyElt;	
+	}
+	
+	-- @comment Elements that can occur anywhere where we start a new block, such inside the body, comments, headers, textboxes, etc.
+	abstract class BlockLevelElt {
+		reference ble_bodyElt : BodyElt oppositeOf blockLevelElts;
+		reference ble_note : NoteElt oppositeOf n_blockLevelElts;
+		reference ble_tableCellElt : TableCellElt oppositeOf tce_content;	
+	}
+	
+	-- @comment Block level elements that can occur inside a cfChunk and other places.
+	abstract class BlockLevelChunkElt extends BlockLevelElt {}
+	
+	
+	-- @begin Detail of ParaElt
+	
+	-- @comment Defines a paragraph element; analogous to the HTML &lt;p&gt; tag.
+	class ParaElt extends BlockLevelChunkElt {
+		-- @comment Represents the paragraph properties.
+		reference pPr[0-1] container : ParaPrElt oppositeOf ppe_pElt;
+		
+		-- @comment Represents the content of a paragraph.
+		reference pContentElts[*] ordered container : ParaContentElt oppositeOf pce_pElt;
+	}
+	
+	-- @comment Defines a collection of paragraph settings.
+	class ParaPrElt {
+		reference ppe_pElt : ParaElt oppositeOf pPr;
+		reference ppe_styleElt : StyleElt oppositeOf se_pPr;
+		
+		-- @comment Represents paragraph style.
+		reference pStyle[0-1] container : StringProperty;
+		-- @comment Represents Keep with Next Paragraph option: Prevents a page break between this paragraph and the next.
+		attribute keepNext[0-1] : OnOffType;
+		-- @comment Represents Keep Lines Together option: Prevents a page break in this paragraph.
+		attribute keepLines[0-1] : OnOffType;
+		-- @comment Represents Page Break Before option: Forces a page break before this paragraph. 
+		attribute pageBreakBefore[0-1] : OnOffType;
+		-- @comment Prevents line numbers from appearing next to paragraph. This setting has no effect in documents or sections with no line numbers.
+		attribute supressLineNumbers[0-1] : OnOffType;
+		-- @comment Prevents automatic hyphenation.
+		attribute suppressAutoHyphens[0-1] : OnOffType;
+		-- @comment Specifies not to add space between paragraphs of the same style.
+		attribute contextualSpacing[0-1] : OnOffType;
+		-- @comment Sets the alignment and reading order for a paragraph to right-to-left.
+		attribute bidi[0-1] : OnOffType;
+		-- @comment Represents paragraph alignment.
+		attribute justification[0-1] : JustificationValue;
+
+		-- to supplement, if necessary, by adding the management of paragraph's borders, shadows...
+	}
+	
+	-- @comment Defines an element contained in a paragraph.
+	abstract class ParaContentElt {
+		reference  pce_pElt : ParaElt oppositeOf pContentElts;
+	}
+	
+	-- @comment Defines a run of content (text, picture, and so on) and groups run properties with this content.
+	class RunElt extends ParaContentElt {
+		-- @comment Represents properties of the contents of this run.
+		reference rPr[0-1] container : RunPrElt oppositeOf rpe_rElt;
+		
+		-- @comment Represents the content of this run.
+		reference rContentElts[*] ordered container : RunContentElt oppositeOf rce_rElt;
+	}
+	
+	-- @comment Defines a collection of settings of the contents of this run.
+	class RunPrElt {
+		reference rpe_rElt : RunElt oppositeOf rPr;
+		reference rpe_styleElt : StyleElt oppositeOf se_rPr;
+		
+		-- @comment Represents a character style for this run.
+		reference rStyle[0-1] container : StringProperty;
+		-- @comment Represents the fonts for this run.
+		reference rFonts[0-1] container : FontsElt oppositeOf fse_runPrElt;
+		-- @comment Sets Latin and Asian characters to bold.
+		attribute bold[0-1] : OnOffType;
+		-- @comment Sets complex scripts characters to bold.
+		attribute bold_cs[0-1] : OnOffType;
+		-- @comment Sets Latin and Asian characters to italic.
+		attribute italic[0-1] : OnOffType;
+		-- @comment Sets complex scripts characters to italic.
+		attribute italic_cs[0-1] : OnOffType;	
+		-- @comment Formats lowercase text as capital letters. Does not affect numbers, punctuation, non-alphabetic characters, or uppercase letters.
+		attribute capitals[0-1] : OnOffType;		
+		-- @comment Formats lowercase text as capital letters and reduces their size. Does not affect numbers, punctuation, non-alphabetic characters, or uppercase letters.
+		attribute smallCapitals[0-1] : OnOffType;	
+		-- @comment Draws a line through the text.
+		attribute strike[0-1] : OnOffType;
+		-- @comment Draws a double line through the text.
+		attribute doubleStrike[0-1] : OnOffType;
+		-- @comment Displays the inner and outer borders of each character.
+		attribute outline[0-1] : OnOffType;
+		-- @comment Adds a shadow behind the text, beneath and to the right of the text.
+		attribute shadow[0-1] : OnOffType;
+		-- @comment Makes text appear as if it is raised off the page in relief.
+		attribute emboss[0-1] : OnOffType;
+		-- @comment Makes selected text appear to be imprinted or pressed into page (also referred to as engrave).
+		attribute imprint[0-1] : OnOffType;
+		-- @comment Formats the text so that spelling and grammar errors are ignored in this run.
+		attribute noProof[0-1] : OnOffType;
+		-- @comment Prevents the text in this run from being displayed or printed.
+		attribute vanish[0-1] : OnOffType;
+		-- @comment Represents the special hidden property that makes text in this run always hidden.
+		attribute specVanish[0-1] : OnOffType;
+		-- @comment Sets the alignment and reading order for this run to right-to-left.
+		attribute rtl[0-1] : OnOffType;	
+		-- @comment Specifies if text in this run is complex scripts text (true or false).
+		attribute cs[0-1] : OnOffType;	
+		-- @comment Represents the underline formatting for this run.
+		reference underline[0-1] : UnderlineProperty;
+		-- @comment Specifies either an automatic color or a hexadecimal color code for this run.
+		attribute color[0-1] : String;	
+		-- @comment Marks text as highlighted so it stands out from the surrounding text.
+		attribute highlight[0-1] : HighlightColorValues;	
+		-- @comment Adjusts the vertical position of the text relative to the baseline and changes the font size if possible. To raise or lower the text without reducing the font size, use the position element.
+		attribute verticalAlign[0-1] : VerticalAlignRunType;
+		-- @comment Represents the languages for this run.
+		reference language[0-1] : LangElt oppositeOf le_runPrElt; 
+		
+		-- to supplement if necessary...
+	}
+	
+	-- @comment Defines language-related settings.
+	class LangElt {
+		reference le_runPrElt : RunPrElt oppositeOf language; 
+		-- @comment Values are the ISO-6391-letter code or the 4-digit hexadecimal code for a language.
+		
+		-- @comment Gets or sets Latin-language settings
+		attribute val[0-1] : String;
+		-- @comment Gets or sets complex-scripts language settings.
+		attribute bidi[0-1] : String;
+	}
+	
+	-- @comment Defines an element contained in a run.
+	abstract class RunContentElt {
+		reference  rce_rElt : RunElt oppositeOf rContentElts;
+	}
+	
+	-- @comment Represents a text-wrapping break.
+	class BreakElt extends RunContentElt {
+		-- @comment Specifies the break type.
+		attribute type[0-1] : BreakType;
+	}
+	
+	-- @comment Represents text content.
+	class Text extends RunContentElt, StringType {}
+	
+	-- @comment Represents revision-deleted text content. Using this element instead of the "Text" element does not make text revision-marked deleted. The delText element should be inside an Annotation Markup Language (AML) Word.Deletion block.
+	class DelText extends RunContentElt, StringType {}
+	
+	-- @comment Represents field instruction content.
+	class InstrText extends RunContentElt, StringType {}
+	
+	-- @comment Represents revision-deleted field-instruction content. Using this element instead of the instrText element does not make field-instruction text revision-marked deleted. The delInstrText element should be inside an Annotation Markup Language (AML) Word.Deletion block.
+	class DelInstrText extends RunContentElt, StringType {} 
+	
+	-- @comment Represents a nonbreaking hyphen 
+	class NoBreakHyphen extends RunContentElt {}
+	
+	-- @comment Represents a soft-hyphen (optional hyphen). 
+	class SoftHyphen extends RunContentElt {}
+	
+	-- @comment Represents an annotation reference mark.
+	class AnnotationRef extends RunContentElt {}
+				
+	-- @comment Represents a footnote reference mark.
+	class FootnoteRef extends RunContentElt {}
+			
+	-- @comment Represents an endnote reference mark.
+	class EndnoteRef extends RunContentElt {}
+				
+	-- @comment Represents a footnote or endnote separator mark.
+	class Separator extends RunContentElt {}
+			
+	-- @comment Represents a footnote or endnote continuation separator mark.
+	class ContinuationSeparator extends RunContentElt {}
+	
+	-- @comment Represents a page number at display time.
+	class PgNum extends RunContentElt {}
+	
+	-- @comment Specifies that this paragraph mark isn't a paragraph mark -- it's just a carriage return in the paragraph.
+	class Cr extends RunContentElt {}
+				
+	-- @comment Represents a footnote that appears at this point in the document. 
+	class Footnote extends RunContentElt, NoteElt {}
+	
+	-- @comment Represents a footnote that appears at this point in the document. 
+	class Endnote extends RunContentElt, NoteElt {}
+	
+	-- @comment Defines a note that appears at this point in the document. The contents of the footnote are in this element.
+	abstract class NoteElt {
+		-- @comment Represents the content of the footnote.
+		reference n_blockLevelElts[1-*] ordered container : BlockLevelElt oppositeOf ble_note;
+		-- @comment Gets or sets the note type. This attribute is required if this is a note separator.
+		attribute type[0-1] : NoteValue;
+		-- @comment Suppresses automatic insertion of an endnote reference character.
+		attribute suppressRef[0-1] : OnOffType;
+	}		
+		
+	-- @comment Represents a picture or other binary object that appears at this point in the document.	
+	class Picture extends RunContentElt, PictureType {}
+	
+	-- @comment Represents a symbol character.
+	class Symbol extends RunContentElt, SymElt {}
+	
+	-- @comment Defines a symbol character.
+	class SymElt {
+		-- @comment Gets or sets the symbol font.
+		reference font container : StringType;
+		-- @comment It is an hexadecimal number. Gets or sets the character code of the symbol.
+		reference char container : StringType;
+	}
+	
+	-- @comment Represents a tab character.
+	class Tab extends RunContentElt, TabElt {}
+	
+	-- @comment Represents a field-delimiting character
+	class FldChar extends RunContentElt, FldCharElt {}
+		
+	-- @comment Defines a field-delimiting character.
+	class FldCharElt {
+		-- @comment Represents field data.
+		reference fldData[0-1] container : StringType;
+		-- @comment Specifies whether this field-delimiting character begins a field definition, separates the field definition from the field instructions, or ends the field definition.
+		attribute fldCharType : FldCharTypeProperty;
+		-- @comment Gets or sets whether the field is locked from being recalculated.
+		attribute fldLock : OnOffType;
+	}
+	
+	-- @end Detail of ParaElt
+	
+	
+	-- @begin Detail of TableElt
+				
+	-- @comment Defines a table element, which is analogous to the HTML &lt;table&gt; tag.
+	class TableElt extends BlockLevelChunkElt {
+		-- @comment Defines the table-wide properties.
+		reference tblPr container : TablePrElt oppositeOf tpe_tblElt;
+		-- @comment Defines the grid for the table. All columns (including the space before and after a row) will reference this grid. All columns assume one grid unit unless otherwise stated. All before or after values assume zero grid units unless otherwise stated.
+		reference tblGrid container : TableGridElt oppositeOf tge_tblElt;
+		-- @comment Represents the contents of the table element.
+		reference tblContent[1-*] ordered container : TableContentElt oppositeOf tce_tblElt;	
+	}
+	
+	-- @comment Defines the table properties.
+	class TablePrElt {
+		reference tpe_tblElt : TableElt oppositeOf tblPr;
+		reference tpe_styleElt : StyleElt oppositeOf se_tblPr;
+		-- to supplement if necessary...
+	}
+	
+	-- @comment Defines a table grid.
+	class TableGridElt {
+		reference tge_tblElt : TableElt oppositeOf tblGrid;
+		-- to supplement...
+	}
+	
+	-- @comment Defines the contents of the table.
+	class TableContentElt {
+		reference tce_tblElt : TableElt oppositeOf tblContent;
+		
+		-- @comment Represents the table row data. 
+		reference tr[0-*] ordered container : RowElt oppositeOf re_tblContentElt;
+		
+		reference tce_runLevelElts[0-1] container : RunLevelElt oppositeOf rle_tblContentElt;
+	}
+	
+	-- @comment Defines a row in a table. 
+	class RowElt {
+		reference re_tblContentElt : TableContentElt oppositeOf tr;
+		
+		-- @comment Represents exceptions to the table properties, which generally apply to every row in the table. For example, a row can have its own set of table properties, which override the table-wide properties. These exceptions are found under this element. 
+		reference tblPrEx[0-1] container : TablePrExElt oppositeOf tpee_rowElt;
+		
+		-- @comment Represents the table row properties.
+		reference trPr[0-1] container : TableRowPrElt oppositeOf tpe_rowElt;
+		
+		-- @comment Represents the content of a table row.
+		reference rowContent[1-*] ordered container : RowContentElt oppositeOf rce_rowElt;
+	}
+	
+	-- @comment Defines specific exceptions to the table properties for a row.
+	class TablePrExElt {
+		reference tpee_rowElt : RowElt oppositeOf tblPrEx;
+		-- to supplement if necessary...
+	}
+	
+	-- @comment Defines the table row properties.
+	class TableRowPrElt {
+		reference tpe_rowElt : RowElt oppositeOf trPr;
+		reference trpe_styleElt : StyleElt oppositeOf se_trPr;
+		-- to supplement if necessary...
+	}
+	
+	-- @comment Defines the contents of a table row.
+	class RowContentElt {
+		reference rce_rowElt : RowElt oppositeOf rowContent;
+				
+		-- @comment Represents the table cell element; analogous to HTML &lt;td&gt; tag.
+		reference tc[*] ordered container : TableCellElt oppositeOf tce_rowContentElt;
+				
+		reference rce_runLevelElts[0-1] container : RunLevelElt oppositeOf rle_rowContentElt;
+	}
+	 
+	-- @comment Defines a table cell. Note that all table cells must terminate with a paragraph. That paragraph will get collapsed into the cell mark and will not be displayed unless there is content in that paragraph.
+	class TableCellElt {
+		reference tce_rowContentElt : RowContentElt oppositeOf tc;
+		
+		-- @comment Represents the table cell properties.
+		reference tcPr[0-1] container : TableCellPrElt oppositeOf tcpe_tableCellElt;
+		
+		-- @comment Represents the content of the table cell.
+		reference tce_content[1-*] ordered container : BlockLevelElt oppositeOf ble_tableCellElt;	
+	} 
+	
+	-- @comment Defines the table cell properties.
+	class TableCellPrElt {
+		reference tcpe_tableCellElt : TableCellElt oppositeOf tcPr;
+		reference tcpe_styleElt : StyleElt oppositeOf se_tcPr;
+		-- to supplement if necessary...
+	}
+	 
+	-- @end Detail of TableElt
+	
+-- @end MS Office - Word Document Basic Definition
+
+
+-- @begin MS Office - Word Document fonts and styles
+
+	-- @begin Detail of fonts
+	
+	-- @comment Defines a collection of fonts.
+	class FontsListElt {
+		reference fle_wordDocument : WordDocument oppositeOf fonts;
+		
+		-- @comment Represents the default fonts for this document.
+		reference defaultFonts[0-1] container : FontsElt oppositeOf fse_fontsListElt;
+		-- @comment Represents the fonts used in the document.
+		reference fonts[*] ordered container : FontElt oppositeOf fe_fontsListElt;
+	}
+	
+	-- @comment Defines the fonts for a run.
+	class FontsElt {
+		reference fse_fontsListElt : FontsListElt oppositeOf defaultFonts;
+		reference fse_runPrElt : RunPrElt oppositeOf rFonts;
+		
+		-- @comment Gets or sets a hint to Word as to which font to use for display. 
+		attribute hint : HintType;
+		-- @comment Gets or sets the ASCII font.
+		reference ascii container : StringType;
+		-- @comment Gets or sets the high ANSI font.
+		reference h_ansi container : StringType;
+		-- @comment Gets or sets the font used for East Asian characters.
+		reference fareast container : StringType;
+		-- @comment Gets or sets the font used for complex scripts.
+		reference cs container : StringType;
+	}
+	
+	-- @comment Defines a font.
+	class FontElt {
+		reference fe_fontsListElt : FontsListElt oppositeOf fonts;
+		
+		-- @comment Gets or sets the face name of this font.
+		reference name container : StringType;
+		-- @comment Represents the alternate name for the font.
+		reference altName[0-1] container : StringProperty;
+			
+		-- to supplement if necessary...
+	}
+	
+	-- @end Detail of fonts
+	
+	-- @begin Detail of styles
+	
+	-- @comment Defines a collection of styles.
+	class StylesElt {
+		reference se_wordDocument : WordDocument oppositeOf styles;
+		
+		-- @comment Represents the version of the built-in style names. If the name of a built-in style changes, this version number is incremented.
+		attribute versionOfBuiltInStylenames[0-1] : Double;			
+		-- @comment Represents the styles definitions.
+		reference styles[*] : StyleElt oppositeOf se_stylesElt;		
+	}
+
+	-- @comment Defines a document style.
+	class StyleElt {
+		reference se_stylesElt : StylesElt oppositeOf styles;		
+	
+		-- @comment Gets or sets the type of style.
+		attribute type[0-1] : StyleKindValue;
+		-- @comment Gets or sets the name used to refer to this style within XML. This name is unique within the file. This attribute is otherwise unused.
+		reference styleId[0-1] container : StringType;
+		-- @comment Specifies whether this style is the default for this type of style.
+		attribute default[0-1] : OnOffType;
+		-- @comment Represents the primary name of style. Built-in style names are converted to a language-independent form.	
+		reference name[0-1] container : StringProperty;
+		-- @comment Represents the secondary names of a style, separated by commas
+		reference aliases[0-1] container : StringProperty;	
+		-- @comment Represents the built-in style's unique numerical identifier.
+		attribute sti[0-1] : Double;	
+		-- @comment Represents the styleId (name of style) this style is based on.
+		reference basedOn[0-1] container : StringProperty;
+		-- @comment Represents the styleId name of the next-paragraph-style; used only for paragraph styles.
+		reference next[0-1] container : StringProperty;
+		-- @comment Represents the styleId of the linked style; used only for linked paragraph and character styles.
+		reference link[0-1] container : StringProperty;	
+		-- @comment Specifies whether this style can be automatically redefined when appropriate.
+		attribute autoRedefine[0-1] : OnOffType;
+		-- @comment Specifies whether to show this style to the user.
+		attribute hidden[0-1] : OnOffType;
+		-- @comment Specifies not to show this style to users unless they request to see it.
+		attribute semiHidden[0-1] : OnOffType;
+		-- @comment Restricts this style from use by the end user.
+		attribute locked[0-1] : OnOffType;
+		-- @comment Specifies whether this is another user's HTML threading personal style.
+		attribute personal[0-1] : OnOffType;
+		-- @comment Specifies whether this is another user's HTML threading compose style.
+		attribute personalCompose[0-1] : OnOffType;
+		-- @comment Specifies whether this is another user's HTML threading reply style.
+		attribute personalReply[0-1] : OnOffType;	
+		-- @comment The value is an hexadecimal number.	Represents the Revision Save ID for this style, which is a unique identifier used to track when the style was last changed.
+		reference rsid[0-1] container : StringType;
+			
+		-- @comment Represents the paragraph properties for the style, if any.
+		reference se_pPr[0-1] : ParaPrElt oppositeOf ppe_styleElt;
+		-- @comment Represents the character properties for the style, if any.
+		reference se_rPr[0-1] : RunPrElt oppositeOf rpe_styleElt;	
+		-- @comment Represents the table properties for the style.
+		reference se_tblPr[0-1] : TablePrElt oppositeOf tpe_styleElt;	
+		-- @comment Represents the row properties for the style.
+		reference se_trPr[0-1] : TableRowPrElt oppositeOf trpe_styleElt;		
+		-- @comment Represents the cell properties for the style.
+		reference se_tcPr[0-1] : TableCellPrElt oppositeOf tcpe_styleElt;	
+			
+		-- to supplement, if necessary, with the reference to the "tblStylePrElt". 
+	}
+	
+	-- @end Detail of styles
+	
+-- @begin MS Office - Word Document fonts and styles
+
+
+-- @begin Options not managed by this version
+
+	-- @comment Defines a collection of lists.
+	class ListsElt {
+		reference le_wordDocument : WordDocument oppositeOf lists;
+	}
+	
+	-- @comment Defines print settings for a section of the document.
+	class SectPrElt {
+		reference spe_bodyElt : BodyElt oppositeOf sectPr;	
+		-- to supplement if necessary...
+	}
+	
+	-- @comment Information about run-level elements' proofing tools and range protection permissions.
+	class RunLevelElt extends BlockLevelChunkElt {
+		reference rle_tblContentElt : TableContentElt oppositeOf tce_runLevelElts;
+		reference rle_rowContentElt : RowContentElt oppositeOf rce_runLevelElts;
+	}
+	
+	-- @comment Represents a context-free chunk - allows in-line definition of style sheet, font, and list items.
+	class CfChunk extends BlockLevelElt {}
+	
+	-- @comment Represents simple Word field (with plain text instructions). These fields are run-time calculated entities in Word (for example, page numbers).
+	class SimpleFieldElt extends ParaContentElt {
+		-- attribute fldSimple....
+	}
+	
+	-- @comment Represents a hyperlink element (analogous to HTML &lt;a href=...&gt; tag).
+	class HLinkElt extends ParaContentElt {
+		-- attribute hlink....
+	}
+	
+	-- @comment Represents a link from a master document to a subdocument.
+	class SubDocElt extends ParaContentElt {
+		-- to supplement...
+	}
+	
+	-- @comment Defines a picture.
+	class PictureType {
+		-- to supplement...
+	}
+	
+	-- @comment Defines a tab stop.
+	class TabElt {
+		-- to supplement...
+	}	
+	
+-- @end Options not managed by this version	
+
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

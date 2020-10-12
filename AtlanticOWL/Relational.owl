@@ -1,0 +1,92 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<rdf:RDF xmlns:rdf = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:rdfs = 'http://www.w3.org/2000/01/rdf-schema#' xmlns:xsd = 'http://www.w3.org/2001/XMLSchema#' xmlns:owl = 'http://www.w3.org/2002/07/owl#' xmlns = 'http://example.org/Relational#' xml:base = 'http://example.org/Relational'>
+  <owl:Ontology rdf:about = 'Relational'/>
+  <owl:Class rdf:ID = 'Table'>
+    <rdfs:label>Table</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Named'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Table.key'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Table.col'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Type'>
+    <rdfs:label>Type</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Named'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Named'>
+    <rdfs:label>Named</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Named.name'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Column'>
+    <rdfs:label>Column</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Named'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Column.keyOf'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Column.keyOf'/>
+        <owl:maxCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:maxCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Column.owner'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Column.type'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:DatatypeProperty rdf:ID = 'Named.name'>
+    <rdfs:domain rdf:resource = '#Named'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#string'/>
+  </owl:DatatypeProperty>
+  <owl:ObjectProperty rdf:ID = 'Column.type'>
+    <rdfs:domain rdf:resource = '#Column'/>
+    <rdfs:range rdf:resource = '#Type'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Column.owner'>
+    <rdfs:domain rdf:resource = '#Column'/>
+    <rdfs:range rdf:resource = '#Table'/>
+    <owl:inverseOf rdf:resource = '#Table.col'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Table.col'>
+    <rdfs:domain rdf:resource = '#Table'/>
+    <rdfs:range rdf:resource = '#Column'/>
+    <owl:inverseOf rdf:resource = '#Column.owner'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Column.keyOf'>
+    <rdfs:domain rdf:resource = '#Column'/>
+    <rdfs:range rdf:resource = '#Table'/>
+    <owl:inverseOf rdf:resource = '#Table.key'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Table.key'>
+    <rdfs:domain rdf:resource = '#Table'/>
+    <rdfs:range rdf:resource = '#Column'/>
+    <owl:inverseOf rdf:resource = '#Column.keyOf'/>
+  </owl:ObjectProperty>
+  <owl:FunctionalProperty rdf:about = '#Column.type'/>
+  <owl:FunctionalProperty rdf:about = '#Column.owner'/>
+  <owl:FunctionalProperty rdf:about = '#Named.name'/>
+</rdf:RDF>

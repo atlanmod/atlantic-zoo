@@ -1,0 +1,70 @@
+package Metamodel;
+
+package JAVA {
+  abstract class Modifier {
+    !unique !ordered attr String[1] visibility;
+    !unique !ordered attr String[1] state;
+    !unique !ordered attr String[1] name;
+  }
+
+  class Class extends Modifier {
+    !ordered ref Class superClass;
+    !ordered ref Interface[*]#implementedBy implement;
+    !ordered val Method[*]#~class methods;
+    !ordered val Field[*]#~class fields;
+  }
+
+  class Interface extends Modifier {
+    !ordered ref Interface[*] superInterface;
+    !ordered ref Class[*]#implement implementedBy;
+    !ordered val Method[*]#~interface abstractMethods;
+    !ordered val Field[*]#~interface constants;
+  }
+
+  class Method extends Modifier {
+    !unique !ordered attr Boolean[1] share;
+    !ordered ref Class[1]#methods ~class;
+    !ordered ref Interface[1]#abstractMethods ~interface;
+    !ordered ref Type resultOf;
+    !ordered val Parameter[*]#owner parameters;
+  }
+
+  class Field extends Modifier {
+    !unique !ordered attr Boolean[1] share;
+    !ordered ref Class[1]#fields ~class;
+    !ordered ref Interface[1]#constants ~interface;
+    !ordered val Value[1] value;
+    !ordered ref Type[1] typeOf;
+  }
+
+  class Value {
+  }
+
+  class Parameter {
+    !unique !ordered attr String[1] name;
+    !ordered ref Type typeOf;
+    !ordered ref Method[1]#parameters owner;
+  }
+
+  class Type {
+  }
+
+  class ReferenceType extends Type {
+    !ordered ref Class[1] reference;
+  }
+
+  class PrimitiveType extends Type {
+  }
+
+  class Int extends PrimitiveType {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+}
+

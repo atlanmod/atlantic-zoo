@@ -1,0 +1,396 @@
+class MultiplicityRange
+  var lower as Set of Integer
+  var upper as Set of Integer
+  var multiplicity as Set of Multiplicity
+
+class ComponentInstance extends Instance
+  var nodeInstance as Set of NodeInstance
+  var resident as Set of Instance
+
+abstract class _Namespace extends ModelElement
+  // ownedElement IsContainer
+  var ownedElement as Set of ModelElement
+
+class _Object extends Instance
+
+class AttributeLink extends ModelElement
+  var _attribute as Set of _Attribute
+  var value as Set of Instance
+  var instance as Set of Instance
+  var linkEnd as Set of LinkEnd
+
+class InteractionInstanceSet extends ModelElement
+  var participatingStimulus as Set of Stimulus
+  var interaction as Set of Interaction
+  var context as Set of CollaborationInstanceSet
+
+class Generalization extends Relationship
+  var discriminator as Set of String
+  var child as Set of GeneralizableElement
+  var parent as Set of GeneralizableElement
+  var powertype as Set of Classifier
+
+class SendAction extends Action
+  var signal as Set of Signal
+
+abstract class StructuralFeature extends Feature
+  var multiplicity as Set of Multiplicity
+  var changeability as Set of ChangeableKind
+  var targetScope as Set of ScopeKind
+  var ordering as Set of OrderingKind
+  var _type as Set of Classifier
+
+class Multiplicity
+  // range IsContainer
+  var range as Set of MultiplicityRange
+
+class ClassifierRole extends Classifier
+  var multiplicity as Set of Multiplicity
+  var conformingInstance as Set of Instance
+  var availableFeature as Set of Feature
+  var base as Set of Classifier
+  var availableContents as Set of ModelElement
+
+abstract class BehavioralFeature extends Feature
+  var isQuery as Set of Boolean
+  // parameter IsContainer
+  var parameter as Set of Parameter
+
+abstract class Relationship extends ModelElement
+
+class Association extends GeneralizableElement
+  // connection IsContainer
+  var connection as Set of AssociationEnd
+
+class ActionSequence extends Action
+  // action IsContainer
+  var action as Set of Action
+
+abstract class Instance extends ModelElement
+  var classifier as Set of Classifier
+  var linkEnd as Set of LinkEnd
+  // slot IsContainer
+  var slot as Set of AttributeLink
+  // ownedLink IsContainer
+  var ownedLink as Set of Link
+  var componentInstance as Set of ComponentInstance
+  // ownedInstance IsContainer
+  var ownedInstance as Set of Instance
+
+abstract class Action extends ModelElement
+  var recurrence as Set of IterationExpression
+  var target as Set of ObjectSetExpression
+  var isAsynchronous as Set of Boolean
+  var script as Set of ActionExpression
+  // actualArgument IsContainer
+  var actualArgument as Set of Argument
+  var actionSequence as Set of ActionSequence
+
+class Link extends ModelElement
+  var association as Set of Association
+  // connection IsContainer
+  var connection as Set of LinkEnd
+
+class Operation extends BehavioralFeature
+  var concurrency as Set of CallConcurrencyKind
+  var isRoot as Set of Boolean
+  var isLeaf as Set of Boolean
+  var isAbstract as Set of Boolean
+  var specification as Set of String
+
+class LinkObject extends _Object
+
+class Reception extends BehavioralFeature
+  var specification as Set of String
+  var isRoot as Set of Boolean
+  var isLeaf as Set of Boolean
+  var isAbstract as Set of Boolean
+  var signal as Set of Signal
+
+class ReturnAction extends Action
+
+abstract class GeneralizableElement extends ModelElement
+  var isRoot as Set of Boolean
+  var isLeaf as Set of Boolean
+  var isAbstract as Set of Boolean
+  var generalization as Set of Generalization
+
+class Argument extends ModelElement
+  var value as Set of Expression
+  var action as Set of Action
+
+class Interaction extends ModelElement
+  var context as Set of Collaboration
+  // message IsContainer
+  var message as Set of Message
+
+class Collaboration extends GeneralizableElement
+  var constrainingElement as Set of ModelElement
+  var representedClassifier as Set of Classifier
+  var representedOperation as Set of Operation
+  var usedCollaboration as Set of Collaboration
+  // interaction IsContainer
+  var interaction as Set of Interaction
+
+class Parameter extends ModelElement
+  var defaultValue as Set of Expression
+  var kind as Set of ParameterDirectionKind
+  var behavioralFeature as Set of BehavioralFeature
+  var _type as Set of Classifier
+
+class SubsystemInstance extends Instance
+
+class AssociationEnd extends ModelElement
+  var isNavigable as Set of Boolean
+  var ordering as Set of OrderingKind
+  var aggregation as Set of AggregationKind
+  var targetScope as Set of ScopeKind
+  var multiplicity as Set of Multiplicity
+  var changeability as Set of ChangeableKind
+  var participant as Set of Classifier
+  // qualifier IsContainer
+  var qualifier as Set of _Attribute
+  var association as Set of Association
+  var specification as Set of Classifier
+
+class ActionExpression extends Expression
+
+class IterationExpression extends Expression
+
+class CreateAction extends Action
+  var instantiation as Set of Classifier
+
+class TerminateAction extends Action
+
+class CallAction extends Action
+  var operation as Set of Operation
+
+class _Attribute extends StructuralFeature
+  var initialValue as Set of Expression
+  var associationEnd as Set of AssociationEnd
+
+class UninterpretedAction extends Action
+
+class BooleanExpression extends Expression
+
+class Expression
+  var language as Set of String
+  var body as Set of String
+
+class Signal extends Classifier
+
+class DataValue extends Instance
+
+class CollaborationInstanceSet extends ModelElement
+  var participatingInstance as Set of Instance
+  // interactionInstanceSet IsContainer
+  var interactionInstanceSet as Set of InteractionInstanceSet
+  var constrainingElement as Set of ModelElement
+  var participatingLink as Set of Link
+  var collaboration as Set of Collaboration
+
+class ObjectSetExpression extends Expression
+
+abstract class Element
+
+class LinkEnd extends ModelElement
+  var associationEnd as Set of AssociationEnd
+  var instance as Set of Instance
+  var link as Set of Link
+  // qualifiedValue IsContainer
+  var qualifiedValue as Set of AttributeLink
+
+class DestroyAction extends Action
+
+class Message extends ModelElement
+  var action as Set of Action
+  var activator as Set of Message
+  var conformingStimulus as Set of Stimulus
+  var interaction as Set of Interaction
+  var predecessor as Set of Message
+  var sender as Set of ClassifierRole
+  var receiver as Set of ClassifierRole
+  var communicationConnection as Set of AssociationRole
+
+class AssociationEndRole extends AssociationEnd
+  var collaborationMultiplicity as Set of Multiplicity
+  var base as Set of AssociationEnd
+  var availableQualifier as Set of _Attribute
+
+class _Exception extends Signal
+
+class Stimulus extends ModelElement
+  var receiver as Set of Instance
+  var communicationLink as Set of Link
+  var argument as Set of Instance
+  var dispatchAction as Set of Action
+  var sender as Set of Instance
+
+class AssociationRole extends Association
+  var multiplicity as Set of Multiplicity
+  var message as Set of Message
+  var conformingLink as Set of Link
+  var base as Set of Association
+
+abstract class Feature extends ModelElement
+  var ownerScope as Set of ScopeKind
+  var owner as Set of Classifier
+
+class NodeInstance extends Instance
+  var resident as Set of ComponentInstance
+
+abstract class Classifier extends GeneralizableElement
+  var powertypeRange as Set of Generalization
+  // feature IsContainer
+  var feature as Set of Feature
+
+abstract class ModelElement extends Element
+  var name as Set of String
+  var visibility as Set of VisibilityKind
+  var isSpecification as Set of Boolean
+  var _namespace as Set of _Namespace
+
+enum VisibilityKind
+  vk_public
+  vk_protected
+  vk_private
+  vk_package
+
+enum OrderingKind
+  ok_unordered
+  ok_ordered
+
+enum ParameterDirectionKind
+  pdk_in
+  pdk_inout
+  pdk_out
+  pdk_return
+
+enum AggregationKind
+  ak_none
+  ak_aggregate
+  ak_composite
+
+enum ScopeKind
+  sk_instance
+  sk_classifier
+
+enum CallConcurrencyKind
+  cck_sequential
+  cck_guarded
+  cck_concurrent
+
+enum ChangeableKind
+  ck_changeable
+  ck_frozen
+  ck_addOnly
+
+var MultiplicityRange_Universe as Set of MultiplicityRange
+
+var ComponentInstance_Universe as Set of ComponentInstance
+
+var _Namespace_Universe as Set of _Namespace
+
+var _Object_Universe as Set of _Object
+
+var AttributeLink_Universe as Set of AttributeLink
+
+var InteractionInstanceSet_Universe as Set of InteractionInstanceSet
+
+var Generalization_Universe as Set of Generalization
+
+var SendAction_Universe as Set of SendAction
+
+var StructuralFeature_Universe as Set of StructuralFeature
+
+var Multiplicity_Universe as Set of Multiplicity
+
+var ClassifierRole_Universe as Set of ClassifierRole
+
+var BehavioralFeature_Universe as Set of BehavioralFeature
+
+var Relationship_Universe as Set of Relationship
+
+var Association_Universe as Set of Association
+
+var ActionSequence_Universe as Set of ActionSequence
+
+var Instance_Universe as Set of Instance
+
+var Action_Universe as Set of Action
+
+var Link_Universe as Set of Link
+
+var Operation_Universe as Set of Operation
+
+var LinkObject_Universe as Set of LinkObject
+
+var Reception_Universe as Set of Reception
+
+var ReturnAction_Universe as Set of ReturnAction
+
+var GeneralizableElement_Universe as Set of GeneralizableElement
+
+var Argument_Universe as Set of Argument
+
+var Interaction_Universe as Set of Interaction
+
+var Collaboration_Universe as Set of Collaboration
+
+var Parameter_Universe as Set of Parameter
+
+var SubsystemInstance_Universe as Set of SubsystemInstance
+
+var AssociationEnd_Universe as Set of AssociationEnd
+
+var ActionExpression_Universe as Set of ActionExpression
+
+var IterationExpression_Universe as Set of IterationExpression
+
+var CreateAction_Universe as Set of CreateAction
+
+var TerminateAction_Universe as Set of TerminateAction
+
+var CallAction_Universe as Set of CallAction
+
+var _Attribute_Universe as Set of _Attribute
+
+var UninterpretedAction_Universe as Set of UninterpretedAction
+
+var BooleanExpression_Universe as Set of BooleanExpression
+
+var Expression_Universe as Set of Expression
+
+var Signal_Universe as Set of Signal
+
+var DataValue_Universe as Set of DataValue
+
+var CollaborationInstanceSet_Universe as Set of CollaborationInstanceSet
+
+var ObjectSetExpression_Universe as Set of ObjectSetExpression
+
+var Element_Universe as Set of Element
+
+var LinkEnd_Universe as Set of LinkEnd
+
+var DestroyAction_Universe as Set of DestroyAction
+
+var Message_Universe as Set of Message
+
+var AssociationEndRole_Universe as Set of AssociationEndRole
+
+var _Exception_Universe as Set of _Exception
+
+var Stimulus_Universe as Set of Stimulus
+
+var AssociationRole_Universe as Set of AssociationRole
+
+var Feature_Universe as Set of Feature
+
+var NodeInstance_Universe as Set of NodeInstance
+
+var Classifier_Universe as Set of Classifier
+
+var ModelElement_Universe as Set of ModelElement
+
+Main()

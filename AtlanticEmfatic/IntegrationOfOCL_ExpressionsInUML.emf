@@ -1,0 +1,56 @@
+package Metamodel;
+
+package OCLExpression {
+  class PreCondition extends Core.Constraint {
+  }
+
+  class PortCondition extends Core.Constraint {
+  }
+
+  class Invariant extends Core.Constraint {
+  }
+
+  class Guard extends Core.Constraint {
+  }
+
+  package Core {
+    abstract class ModelElement {
+      ref Constraint[+]#constrainedElement constraint;
+    }
+
+    class Constraint extends ModelElement {
+      ref ModelElement[+]#constraint constrainedElement;
+      !ordered ref DataTypes.BooleanExpression[1]#constraint body;
+    }
+
+  }
+
+  package DataTypes {
+    class Expression {
+      !ordered ref OCl.OCLExpression#owner body;
+    }
+
+    class BooleanExpression extends Expression {
+      !ordered val Core.Constraint#body constraint;
+    }
+
+  }
+
+  package OCl {
+    abstract class OCLExpression {
+      !ordered ref DataTypes.Expression#body owner;
+    }
+
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

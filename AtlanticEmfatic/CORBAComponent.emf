@@ -1,0 +1,82 @@
+package Metamodel;
+
+package CORBAComponent {
+  class InterfaceDef {
+  }
+
+  class OperationDef {
+  }
+
+  class ValueDef {
+  }
+
+  class ComponentDef extends InterfaceDef {
+    !unique !ordered attr Boolean[1] isBasic;
+    !ordered val ProvidesDef[*]#prd_home facets;
+    !ordered val UsesDef[*]#ud_home receptacles;
+    !ordered ref InterfaceDef[*] supports;
+    !ordered val EmitsDef[*]#ed_home emits;
+    !ordered val PublishesDef[*]#pud_home publishes;
+    !ordered val ConsumesDef[*]#cd_home consumes;
+  }
+
+  class ProvidesDef {
+    !ordered ref InterfaceDef[1] provides;
+    !ordered ref ComponentDef[1]#facets prd_home;
+  }
+
+  class UsesDef {
+    !unique !ordered attr Boolean[1] multiple;
+    !ordered ref InterfaceDef[1] uses;
+    !ordered ref ComponentDef[1]#receptacles ud_home;
+  }
+
+  class EventDef {
+    !ordered ref ValueDef[1] type;
+  }
+
+  class EmitsDef extends EventDef {
+    !ordered ref ComponentDef[1]#emits ed_home;
+  }
+
+  class PublishesDef extends EventDef {
+    !ordered ref ComponentDef[1]#publishes pud_home;
+  }
+
+  class ConsumesDef extends EventDef {
+    !ordered ref ComponentDef[1]#consumes cd_home;
+  }
+
+  class HomeDef extends InterfaceDef {
+    !ordered ref ComponentDef[1] manages;
+    !ordered val FactoryDef[*]#fa_home factories;
+    !ordered val FinderDef[*]#fi_home finders;
+    !ordered val PrimaryKeyDef#pkd_home key;
+  }
+
+  class FactoryDef extends OperationDef {
+    !ordered ref HomeDef[1]#factories fa_home;
+  }
+
+  class FinderDef extends OperationDef {
+    !ordered ref HomeDef[1]#finders fi_home;
+  }
+
+  class PrimaryKeyDef {
+    !ordered ref HomeDef[1]#key pkd_home;
+    !ordered ref ValueDef[1] type;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

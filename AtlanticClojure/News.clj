@@ -1,0 +1,5 @@
+( defstruct Element :title :description :link )
+( defstruct Newspaper :title :description :link )
+( defstruct News :newspaper :title :description :link )
+( defstruct Category :value )
+( defstruct Date :eDay :day :month :year :hours :minutes :seconds )

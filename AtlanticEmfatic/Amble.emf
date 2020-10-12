@@ -1,0 +1,82 @@
+package Metamodel;
+
+package Amble {
+  abstract class Element {
+    !unique !ordered attr String[1] name;
+  }
+
+  class Program extends Element {
+    !ordered val Process[*] processes;
+    !ordered val Network[*] networks;
+  }
+
+  class Process extends Element {
+    !unique !ordered attr Integer[1] minId;
+    !unique !ordered attr Integer[1] maxId;
+    !unique !ordered attr Integer[1] instancesNb;
+    !ordered val State[*] states;
+    !ordered val Transition[*] transitions;
+    !ordered val Action initial;
+    !ordered val Variable[*] variables;
+    !ordered ref Network[*] connectedTo;
+  }
+
+  class State extends Element {
+    !unique !ordered attr Boolean[1] isInitial;
+    !ordered ref Transition[*]#target incoming;
+    !ordered ref Transition[*]#source outgoing;
+  }
+
+  abstract class Transition {
+    !ordered val Guard guard;
+    !ordered val Action action;
+    !ordered ref State[1]#outgoing source;
+    !ordered ref State[1]#incoming target;
+  }
+
+  class Trans extends Transition {
+    !ordered ref Message[1] waitFor;
+  }
+
+  class Strans extends Transition {
+  }
+
+  class Transall extends Transition {
+    !ordered ref Message[1] waitFor;
+  }
+
+  class Guard extends Element {
+  }
+
+  class Action extends Element {
+  }
+
+  class Network extends Element {
+    !ordered val Channel[*] channels;
+  }
+
+  class Channel extends Element {
+    !ordered val Message[*] messages;
+    !ordered ref Process[1] source;
+    !ordered ref Process[1] target;
+  }
+
+  class Message extends Element {
+  }
+
+  class Variable extends Element {
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr String[1] initValue;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype String : "";
+
+  datatype Integer : "";
+
+}
+

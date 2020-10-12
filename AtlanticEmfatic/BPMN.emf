@@ -1,0 +1,264 @@
+package Metamodel;
+
+package bpmn {
+  class Activity extends Vertex, NamedBpmnObject {
+    !unique attr MessagingEdge[*] orderedMessages;
+    ref MessagingEdge[*]#target incomingMessages;
+    ref MessagingEdge[*]#source outgoingMessages;
+    ref Group[*]#activities groups;
+    !unique !ordered attr ActivityType activityType;
+    !ordered ref SubProcess#eventHandlers eventHandlerFor;
+    !ordered ref Lane#activities lane;
+    !unique !ordered attr Boolean looping;
+  }
+
+  enum ActivityType {
+    SubProcess = 0;
+    EventEndMultiple = 0;
+    EventEndMessage = 0;
+    EventIntermediateMessage = 0;
+    EventStartMultiple = 0;
+    EventIntermediateMultiple = 0;
+    GatewayParallel = 0;
+    EventStartTimer = 0;
+    EventStartEmpty = 0;
+    EventIntermediateCancel = 0;
+    EventEndError = 0;
+    EventStartRule = 0;
+    EventEndTerminate = 0;
+    EventStartLink = 0;
+    EventIntermediateLink = 0;
+    EventEndCancel = 0;
+    EventEndLink = 0;
+    EventIntermediateEmpty = 0;
+    EventIntermediateCompensation = 0;
+    Task = 0;
+    GatewayDataBasedExclusive = 0;
+    GatewayComplex = 0;
+    EventEndEmpty = 0;
+    EventIntermediateError = 0;
+    EventIntermediateTimer = 0;
+    EventEndCompensation = 0;
+    EventStartMessage = 0;
+    GatewayDataBasedInclusive = 0;
+    GatewayEventBasedExclusive = 0;
+    EventIntermediateRule = 0;
+  }
+
+  datatype ActivityTypeObject : "";
+
+  class Artifact extends Identifiable, NamedBpmnObject {
+    val Association[*]#source associations;
+    !ordered ref ArtifactsContainer#artifacts artifactsContainer;
+  }
+
+  class ArtifactsContainer extends NamedBpmnObject {
+    val Artifact[*]#artifactsContainer artifacts;
+  }
+
+  class Association {
+    !unique !ordered attr DirectionType direction;
+    !ordered ref Artifact#associations source;
+    !ordered ref IdentifiableNode#associations target;
+  }
+
+  class BpmnDiagram extends Identifiable, ArtifactsContainer {
+    val Pool[*]#bpmnDiagram pools;
+    val MessagingEdge[*]#bpmnDiagram messages;
+    !unique !ordered attr String author;
+    !unique !ordered attr String title;
+  }
+
+  class DataObject extends Artifact {
+  }
+
+  enum DirectionType {
+    Both = 0;
+    From = 0;
+    To = 0;
+    None = 0;
+  }
+
+  datatype DirectionTypeObject : "";
+
+  class Graph extends IdentifiableNode, ArtifactsContainer {
+    val Vertex[*]#graph vertices;
+    val SequenceEdge[*]#graph sequenceEdges;
+  }
+
+  class Group extends Artifact {
+    ref Activity[*]#groups activities;
+  }
+
+  class Identifiable {
+    !unique !ordered attr type.ID iD;
+  }
+
+  class IdentifiableNode extends Identifiable {
+    ref Association[*]#target associations;
+  }
+
+  class Lane extends Identifiable, NamedBpmnObject {
+    ref Activity[*]#lane activities;
+    !ordered ref Pool#lanes pool;
+  }
+
+  class MessagingEdge extends Identifiable, NamedBpmnObject {
+    !ordered ref BpmnDiagram#messages bpmnDiagram;
+    !ordered ref Activity#outgoingMessages source;
+    !ordered ref Activity#incomingMessages target;
+  }
+
+  class NamedBpmnObject {
+    !unique !ordered attr String documentation;
+    !unique !ordered attr String name;
+    !unique !ordered attr String ncname;
+  }
+
+  class Pool extends Graph, NamedBpmnObject {
+    val Lane[*]#pool lanes;
+    !ordered ref BpmnDiagram#pools bpmnDiagram;
+  }
+
+  class SequenceEdge extends Identifiable, NamedBpmnObject {
+    !ordered ref Graph#sequenceEdges graph;
+    !unique !ordered attr Boolean isDefault;
+    !ordered ref Vertex#outgoingEdges source;
+    !ordered ref Vertex#incomingEdges target;
+  }
+
+  class SubProcess extends Activity, Graph {
+    val Activity[*]#eventHandlerFor eventHandlers;
+    !unique !ordered attr Boolean isTransaction;
+  }
+
+  class TextAnnotation extends Artifact {
+  }
+
+  class Vertex extends IdentifiableNode {
+    ref SequenceEdge[*]#source outgoingEdges;
+    ref SequenceEdge[*]#target incomingEdges;
+    !ordered ref Graph#vertices graph;
+  }
+
+}
+
+package type {
+  datatype AnySimpleType : "";
+
+  datatype AnyURI : "";
+
+  datatype Base64Binary : "";
+
+  datatype Boolean : "";
+
+  datatype BooleanObject : "";
+
+  datatype Byte : "";
+
+  datatype ByteObject : "";
+
+  datatype Date : "";
+
+  datatype DateTime : "";
+
+  datatype Decimal : "";
+
+  datatype Double : "";
+
+  datatype DoubleObject : "";
+
+  datatype Duration : "";
+
+  datatype ENTITIES : "";
+
+  datatype ENTITIESBase : "";
+
+  datatype ENTITY : "";
+
+  datatype Float : "";
+
+  datatype FloatObject : "";
+
+  datatype GDay : "";
+
+  datatype GMonth : "";
+
+  datatype GMonthDay : "";
+
+  datatype GYear : "";
+
+  datatype GYearMonth : "";
+
+  datatype HexBinary : "";
+
+  datatype ID : "";
+
+  datatype IDREF : "";
+
+  datatype IDREFS : "";
+
+  datatype IDREFSBase : "";
+
+  datatype Int : "";
+
+  datatype Integer : "";
+
+  datatype IntObject : "";
+
+  datatype Language : "";
+
+  datatype Long : "";
+
+  datatype LongObject : "";
+
+  datatype Name : "";
+
+  datatype NCName : "";
+
+  datatype NegativeInteger : "";
+
+  datatype NMTOKEN : "";
+
+  datatype NMTOKENS : "";
+
+  datatype NMTOKENSBase : "";
+
+  datatype NonNegativeInteger : "";
+
+  datatype NonPositiveInteger : "";
+
+  datatype NormalizedString : "";
+
+  datatype NOTATION : "";
+
+  datatype PositiveInteger : "";
+
+  datatype QName : "";
+
+  datatype Short : "";
+
+  datatype ShortObject : "";
+
+  datatype String : "";
+
+  datatype Time : "";
+
+  datatype Token : "";
+
+  datatype UnsignedByte : "";
+
+  datatype UnsignedByteObject : "";
+
+  datatype UnsignedInt : "";
+
+  datatype UnsignedIntObject : "";
+
+  datatype UnsignedLong : "";
+
+  datatype UnsignedShort : "";
+
+  datatype UnsignedShortObject : "";
+
+}
+

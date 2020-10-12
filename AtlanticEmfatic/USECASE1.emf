@@ -1,0 +1,88 @@
+package Metamodel;
+
+package USECASE1 {
+  class Task {
+    !ordered ref Service[+]#task service;
+  }
+
+  class User {
+    !ordered ref UseCase[+]#user useCase;
+    !ordered ref Actor[*]#user actor;
+  }
+
+  class Actor {
+    !ordered ref UseCase[+]#actor useCase;
+    !ordered ref Goal[*]#actor goal;
+    !ordered ref User[*]#actor user;
+  }
+
+  class Goal {
+    !ordered ref Service[+]#goal service;
+    !ordered ref Actor[+]#goal actor;
+  }
+
+  class UseCase {
+    !ordered val Context#useCase context;
+    !ordered ref Service[*]#useCase service;
+    !ordered ref User[*]#useCase user;
+    !ordered ref Actor[*]#useCase actor;
+  }
+
+  class Service {
+    !ordered ref UseCase[+]#service useCase;
+    !ordered ref Goal[+]#service goal;
+    !ordered ref Task[+]#service task;
+  }
+
+  class Scenario {
+  }
+
+  class Context {
+    !ordered ref PreCondition[+]#context preCondition;
+    !ordered ref PostCondition[+]#context postCondition;
+    !ordered ref UseCase[+]#context useCase;
+  }
+
+  class PreCondition {
+    !ordered ref Context[*]#preCondition context;
+  }
+
+  class PostCondition {
+    !ordered ref Context[*]#postCondition context;
+  }
+
+  class Episode {
+    !ordered ref Event[*]#episode event;
+  }
+
+  class Event {
+    !ordered ref Episode[+]#event episode;
+  }
+
+  class Action extends Event {
+  }
+
+  class Responce extends Event {
+    !ordered val Parameter[*]#responce parameter;
+  }
+
+  class Stimilus extends Event {
+    !ordered val Parameter[*]#stimilus parameter;
+  }
+
+  class Parameter {
+    !ordered ref Stimilus[+]#parameter stimilus;
+    !ordered ref Responce[+]#parameter responce;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+}
+

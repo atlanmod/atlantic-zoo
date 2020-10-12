@@ -1,0 +1,45 @@
+package Metamodel;
+
+package SimpleRDBMS {
+  abstract class RModelElement {
+    !unique !ordered attr String[1] kind;
+    !unique !ordered attr String[1] name;
+  }
+
+  class Schema extends RModelElement {
+    !ordered val Table[*]#schema tables;
+  }
+
+  class Table extends RModelElement {
+    !ordered ref Schema[1]#tables schema;
+    !ordered val Column[*]#owner column;
+    !ordered val Key[*]#owner key;
+    !ordered val ForeignKey[*]#owner foreignKey;
+  }
+
+  class Column extends RModelElement {
+    !unique !ordered attr String[1] type;
+    !ordered ref Table[1]#column owner;
+    !ordered ref Key[*]#column key;
+    !ordered ref ForeignKey[*]#column foreignKey;
+  }
+
+  class Key extends RModelElement {
+    !ordered ref Table[1]#key owner;
+    !ordered ref Column[*]#key column;
+    !ordered ref ForeignKey[*]#refersTo refersToOpposite;
+  }
+
+  class ForeignKey extends RModelElement {
+    !ordered ref Column[*]#foreignKey column;
+    !ordered ref Table[1]#foreignKey owner;
+    !ordered ref Key[1]#refersToOpposite refersTo;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+}
+

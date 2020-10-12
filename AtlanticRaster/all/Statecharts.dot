@@ -1,0 +1,62 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_Statecharts"{
+labelloc=t
+color=black
+label=Statecharts
+ node[shape=record];
+BooleanExpression[label="{BooleanExpression|value : String| }"]
+;
+ node[shape=record];
+StateMachine[label="{StateMachine| | }"]
+;
+ node[shape=record];
+State[label="{State| | }"]
+ State->StateMachine[arrowhead=diamond,arrowtail=none,headlabel="state_container",taillabel="top[*]",group=StateMachine,minlen=2,constraint=true,]
+ State->Event[arrowhead=none,arrowtail=none,headlabel="deferrableEvents[*]",taillabel="targets[*]",group=Event,minlen=2,constraint=false,]
+ State->StateVertex[arrowhead=onormal,group=StateVertex,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompositeState[label="{CompositeState|isConcurrent : Boolean| }"]
+ CompositeState->State[arrowhead=onormal,group=State,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Transition[label="{Transition| | }"]
+ Transition->StateMachine[arrowhead=diamond,arrowtail=none,headlabel="transSM_container[0-1]",taillabel="transitions[*]",group=StateMachine,minlen=2,constraint=true,]
+ Transition->State[arrowhead=diamond,arrowtail=none,headlabel="transS_container[0-1]",taillabel="internalTransitions[*]",group=State,minlen=2,constraint=true,]
+ Transition->StateVertex[arrowhead=none,arrowtail=none,headlabel="source",taillabel="outgoing[*]",group=StateVertex,minlen=2,constraint=false,]
+;
+ node[shape=record];
+StateVertex[label="{StateVertex| | }"]
+ StateVertex->CompositeState[arrowhead=diamond,arrowtail=none,headlabel="sv_container[0-1]",taillabel="subVertexes[*]",group=CompositeState,minlen=2,constraint=true,]
+ StateVertex->Transition[arrowhead=none,arrowtail=none,headlabel="incoming[*]",taillabel="target",group=Transition,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Guard[label="{Guard| | }"]
+ Guard->Transition[arrowhead=diamond,arrowtail=none,headlabel="gua_container",taillabel="guard[0-1]",group=Transition,minlen=2,constraint=true,]
+ Guard->BooleanExpression[arrowhead=vee,arrowtail=none,headlabel="expression",group=BooleanExpression,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Event[label="{Event| | }"]
+ Event->Transition[arrowhead=diamond,arrowtail=none,headlabel="evt_container[*]",taillabel="trigger[0-1]",group=Transition,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

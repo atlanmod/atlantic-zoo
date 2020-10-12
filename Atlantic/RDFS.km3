@@ -1,0 +1,130 @@
+-- @name		RDFS
+-- @version		1
+-- @domains		rdf, rdfs
+-- @authors		Guillaume Hillairet (g.hillairet@gmail.com)
+-- @date		2006/06/07
+-- @description	This metamodel describes RDFS Graph, it is based on OMG ODM (Ontology Definition Metamodel) proposition for RDFS metamodel.
+-- @see			http://www.omg.org/ontology/, http://www.w3.org/TR/rdf-schema/
+
+package RDFS {
+	--@begin RDFS Resource
+	class Resource {
+		reference graph : Graph oppositeOf resources;
+		reference uriRef[*] container : URIReference oppositeOf resource;
+		
+		reference subjectStatement[*] : Statement oppositeOf subject;
+		reference objectStatement[*] : Statement oppositeOf object;
+		
+		reference label[*] container : PlainLiteral oppositeOf labeledResource;
+		reference type[1-*] : Class oppositeOf typedResource;
+		
+--		reference comment[*] container : PlainLiteral oppositeOf commentedResource;
+		reference seeAlso[*] : Resource oppositeOf referringResource;
+		reference referringResource[*] : Resource oppositeOf seeAlso;
+--		reference isDefinedBy[*] : Resource oppositeOf definedResource;
+--		reference definedResource[*] : Resource oppositeOf rdfsIsDefinedBy;
+				
+		reference member[*] : Resource oppositeOf "container";
+		reference "container"[*] : Resource oppositeOf member;
+		reference list[*] : List oppositeOf first;
+	}
+	
+	class Graph extends Resource {
+		reference graphName[0-1] container : URIReference oppositeOf namedGraph;
+		reference resources[*] container : Resource oppositeOf graph;
+	}
+	
+	--@begin RDFS Container
+	class List extends Resource {
+		reference first[0-1] : Resource oppositeOf list;
+		reference rest[0-1] : List oppositeOf originalList;
+		reference originalList[*] : List oppositeOf rest;
+	}
+	class Container extends Resource {}
+	class Alt extends Container {}
+	class Bag extends Container {}
+	class Seq extends Container {}	
+	--@end RDFS Container
+	
+	--@begin RDF Property
+	class Property extends Resource {
+		reference predicateStatement[*] : Statement oppositeOf predicate;
+		reference subPropertyOf[*] : Property oppositeOf superProperty;
+		reference superProperty[*] : Property oppositeOf subPropertyOf;
+		reference domain[*] : Class oppositeOf propertyForDomain;
+		reference range[*] : Class oppositeOf propertyForRange;
+	}
+	
+	class ContainerMembershipProperty{}
+	--@end RDF Property	
+	
+	class Statement extends Resource {
+		reference predicate[0-1] : Property oppositeOf predicateStatement;
+		reference object : Resource oppositeOf objectStatement;
+		reference subject : Resource oppositeOf subjectStatement;
+		
+		attribute isReifiedOnly : Boolean;
+		attribute isReified : Boolean;
+		reference nameForReification[*] : URIReference oppositeOf reifiedStatement;
+		
+	}
+	
+	class URIReferenceNode extends Resource {}
+	
+	class BlankNode extends Resource {
+		attribute nodeId[0-1] : String;
+	}
+	
+	--@begin RDFS Class
+	class Class extends Resource {
+		reference subClassOf[*] : Class oppositeOf superClass;
+		reference superClass[*] : Class oppositeOf subClassOf;
+		reference typedResource[*] : Resource oppositeOf type;
+		
+		reference propertyForDomain[*] : Property oppositeOf domain;
+		reference propertyForRange[*] : Property oppositeOf range;
+	}
+	
+	class Datatype extends Class {}
+	--@end RDFS Class
+	
+	--@begin RDFS Literal
+	class Literal extends Resource {
+		attribute lexicalForm : String;
+	}
+	
+	class PlainLiteral extends Literal {
+		attribute language[0-1] : String;
+		reference labeledResource : Resource oppositeOf label;
+--		reference commentedResource : Resource oppositeOf comment;
+	}
+	class TypedLiteral extends Literal {
+		reference datatypeURI : URIReference oppositeOf "literal";
+	}
+	
+	class RDFXMLLiteral extends TypedLiteral {}
+	--@end RDFS Literal	
+	--@end RDFS Resource	
+	
+	--@begin URI Reference
+	class URIReference {
+		reference uri[0-1] : UniformResourceIdentifier oppositeOf uriRef;
+		reference resource[0-1] : Resource oppositeOf uriRef;
+		reference "literal"[0-1] : TypedLiteral oppositeOf datatypeURI;
+		reference namedGraph[0-1] : Graph oppositeOf graphName;
+		
+		reference reifiedStatement[*] : Statement oppositeOf nameForReification;
+	}
+	
+	class UniformResourceIdentifier extends URIReference {
+		attribute name : String;
+		reference uriRef[*] : URIReference oppositeOf uri;
+	}
+	--@end URI Reference
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

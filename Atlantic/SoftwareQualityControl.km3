@@ -1,0 +1,110 @@
+-- @name		Software Quality Control 
+-- @version		1.1
+-- @domains		Software, Quality control, Software life cycle
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com)
+-- @date		2005/07/04
+-- @description	This metamodel describes a simple structure to manage software quality control and especially bug tracking. It is based on a simple Excel table representation.
+
+package SoftwareQualityControl {
+
+	-- @begin Controls' general information
+
+	-- @comment Defines the format for the dates (DD/MM/YY).
+	class DateType {
+		attribute day : Integer;
+		attribute month : Integer;
+		attribute year : Integer;
+	}
+
+	-- @comment Defines a sequence of controls. This is the root container.
+	class ControlsSequence {
+		reference controls[*] ordered container : Control oppositeOf c_controlsSequence;
+	}
+
+	-- @comment Defines a control (general information, type, details...)
+	class Control {
+		reference c_controlsSequence : ControlsSequence oppositeOf controls;
+
+		-- @comment The surname and name of the person who is responsible for this control.
+		attribute responsible : String;
+		-- @comment The name of the component which is concerned by this control.
+		attribute component : String;
+		-- @comment The name of the development phase during which the control takes place.
+		attribute developmentPhase : String;
+		-- @comment The scope of this control, for example "Exhaustive".
+		attribute scope : String;
+		-- @comment The date of this control (in the format : DD/MM/YY).
+		reference date container : DateType;
+		-- @comment The name of the specific element which is controlled.
+		attribute controlledElt[0-1] : String;
+		-- @comment The reference of this specific element.
+		attribute eltRef[0-1] : String;
+		-- @comment The author's name of this specific element.
+		attribute eltAuthor[0-1] : String;
+		-- @comment The form reference for this control.
+		attribute formRef[0-1] : String;
+
+		-- @comment The type of this control. The data contained in a "Control" element depends on the type of this control.
+		reference type container : ControlType oppositeOf ct_control;
+	}
+
+	-- @end Controls' general information
+
+
+	-- @begin Specific information for types of control 
+
+	-- @comment Defines the abstract concept of type of control. It exists several types of control. Each class which represents a type of control must inherit of this class.
+	abstract class ControlType {
+		reference ct_control : Control oppositeOf type;
+	}
+
+	-- @comment Defines a special control type which is bug tracking.
+	class BugTracking extends ControlType {
+		-- @comment Represents the different bugs tracked during the control.
+		reference bugs[*] ordered container : Bug oppositeOf b_bugTracking;
+	}
+	
+	-- @comment Defines a bug and the associated information.
+	class Bug {
+		reference b_bugTracking : BugTracking oppositeOf bugs;
+
+		-- @comment The bug identification number
+		attribute number : Integer;
+		-- @comment The version of the component from which the bug has been detected.
+		attribute componentVersion : String;
+		-- @comment The complete description of the bug.
+		attribute description : String;
+		-- @comment The current status of the bug
+		attribute status : BugStatusType;
+		-- @comment The name of the person who find the bug.
+		attribute originator : String;
+		-- @comment The name of the person who is responsible for this bug.
+		attribute responsible[0-1] : String;
+		-- @comment Special comments or possible answers to correct this bug.
+		attribute commentsAnswers[0-1] : String;
+		-- @comment The date when the bug has been indexed. 
+		attribute openDate : String;
+		-- @comment The date when the bug has been resolved.
+		attribute closeDate[0-1] : String;
+	}
+
+	-- @comment Defines the type of status for a bug.
+	enumeration BugStatusType {
+		literal bst_open;
+		literal bst_closed;
+		literal bst_skipped;
+	}
+
+	-- @end Specific information for types of control 
+
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

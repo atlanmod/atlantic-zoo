@@ -1,0 +1,31 @@
+-- @atlcompiler atl2004
+-- ******************************************************************************
+-- Copyright (c) 2010 INRIA. 
+-- All rights reserved. This program and the accompanying materials 
+-- are made available under the terms of the Eclipse Public License v1.0 
+-- which accompanies this distribution, and is available at
+-- http://www.eclipse.org/legal/epl-v10.html
+-- 
+-- Contributors: 
+-- 	INRIA - Initial implementation
+--  
+-- ******************************************************************************
+-- @ Author Jean-Sébastien Sottet email : jean-sebastien.sottet <at> inria.fr
+module GlobalTable; -- Module Template
+create OUT : Table refining IN : Table, toAdd : Table;
+
+
+rule TableToTable {	
+	from 
+	--	i : Table!Table	in IN
+		i : Table!Table	(
+			Table!Table.allInstancesFrom('IN')->includes(i)
+		)
+	to
+		o : Table!Table(
+			rows<-i.rows->union(Table!Table.allInstancesFrom('toAdd')->first().rows->subSequence(2,3))
+		)
+--	do {
+--		i.rows->size().debug('total');
+--	}
+}

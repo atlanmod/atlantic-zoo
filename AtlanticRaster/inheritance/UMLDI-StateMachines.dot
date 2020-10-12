@@ -1,0 +1,234 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_Core"{
+labelloc=t
+color=black
+label=Core
+ node[shape=record];
+Element[label="{/Element/| | }"]
+;
+ node[shape=record];
+ModelElement[label="{/ModelElement/|name[0-1] : String\nvisibility[0-1] : VisibilityKind\nisSpecification : Boolean| }"]
+ ModelElement->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GeneralizableElement[label="{/GeneralizableElement/|isRoot : Boolean\nisLeaf : Boolean\nisAbstract : Boolean| }"]
+ GeneralizableElement->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Namespace[label="{/Namespace/| | }"]
+ Namespace->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Classifier[label="{/Classifier/| | }"]
+ Classifier->GeneralizableElement[arrowhead=onormal,group=GeneralizableElement,minlen=2,constraint=true,]
+ Classifier->Namespace[arrowhead=onormal,group=Namespace,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Feature[label="{/Feature/|ownerScope : ScopeKind| }"]
+ Feature->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Relationship[label="{/Relationship/| | }"]
+ Relationship->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BehavioralFeature[label="{/BehavioralFeature/|isQuery : Boolean| }"]
+ BehavioralFeature->Feature[arrowhead=onormal,group=Feature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Operation[label="{Operation|concurrency[0-1] : CallConcurrencyKind\nisRoot : Boolean\nisLeaf : Boolean\nisAbstract : Boolean\nspecification[0-1] : String| }"]
+ Operation->BehavioralFeature[arrowhead=onormal,group=BehavioralFeature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parameter[label="{Parameter|defaultValue[0-1] : Expression\nkind : ParameterDirectionKind| }"]
+ Parameter->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Generalization[label="{Generalization|discriminator[0-1] : String| }"]
+ Generalization->Relationship[arrowhead=onormal,group=Relationship,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Common_Behavior"{
+labelloc=t
+color=black
+label=Common_Behavior
+ node[shape=record];
+Signal[label="{Signal| | }"]
+ Signal->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Action[label="{/Action/|recurrence[0-1] : IterationExpression\ntarget[0-1] : ObjectSetExpression\nisAsynchronous : Boolean\nscript[0-1] : ActionExpression| }"]
+ Action->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CreateAction[label="{CreateAction| | }"]
+ CreateAction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DestroyAction[label="{DestroyAction| | }"]
+ DestroyAction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UninterpretedAction[label="{UninterpretedAction| | }"]
+ UninterpretedAction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CallAction[label="{CallAction| | }"]
+ CallAction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SendAction[label="{SendAction| | }"]
+ SendAction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActionSequence[label="{ActionSequence| | }"]
+ ActionSequence->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Argument[label="{Argument|value : Expression| }"]
+ Argument->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Reception[label="{Reception|specification[0-1] : String\nisRoot : Boolean\nisLeaf : Boolean\nisAbstract : Boolean| }"]
+ Reception->BehavioralFeature[arrowhead=onormal,group=BehavioralFeature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReturnAction[label="{ReturnAction| | }"]
+ ReturnAction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TerminateAction[label="{TerminateAction| | }"]
+ TerminateAction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Exception[label="{Exception| | }"]
+ Exception->Signal[arrowhead=onormal,group=Signal,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_State_Machines"{
+labelloc=t
+color=black
+label=State_Machines
+ node[shape=record];
+StateMachine[label="{StateMachine| | }"]
+ StateMachine->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Event[label="{/Event/| | }"]
+ Event->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StateVertex[label="{/StateVertex/| | }"]
+ StateVertex->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+State[label="{/State/| | }"]
+ State->StateVertex[arrowhead=onormal,group=StateVertex,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TimeEvent[label="{TimeEvent|when : TimeExpression| }"]
+ TimeEvent->Event[arrowhead=onormal,group=Event,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CallEvent[label="{CallEvent| | }"]
+ CallEvent->Event[arrowhead=onormal,group=Event,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SignalEvent[label="{SignalEvent| | }"]
+ SignalEvent->Event[arrowhead=onormal,group=Event,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Transition[label="{Transition| | }"]
+ Transition->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompositeState[label="{CompositeState|isConcurrent : Boolean| }"]
+ CompositeState->State[arrowhead=onormal,group=State,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ChangeEvent[label="{ChangeEvent|changeExpression : BooleanExpression| }"]
+ ChangeEvent->Event[arrowhead=onormal,group=Event,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Guard[label="{Guard|expression : BooleanExpression| }"]
+ Guard->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Pseudostate[label="{Pseudostate|kind : PseudostateKind| }"]
+ Pseudostate->StateVertex[arrowhead=onormal,group=StateVertex,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleState[label="{SimpleState| | }"]
+ SimpleState->State[arrowhead=onormal,group=State,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SubmachineState[label="{SubmachineState| | }"]
+ SubmachineState->CompositeState[arrowhead=onormal,group=CompositeState,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SynchState[label="{SynchState|bound : Integer| }"]
+ SynchState->StateVertex[arrowhead=onormal,group=StateVertex,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StubState[label="{StubState|referenceState : String| }"]
+ StubState->StateVertex[arrowhead=onormal,group=StateVertex,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FinalState[label="{FinalState| | }"]
+ FinalState->State[arrowhead=onormal,group=State,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Data_Types"{
+labelloc=t
+color=black
+label=Data_Types
+ node[shape=record];
+Expression[label="{Expression|language[0-1] : String\nbody : String| }"]
+;
+ node[shape=record];
+BooleanExpression[label="{BooleanExpression| | }"]
+ BooleanExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ObjectSetExpression[label="{ObjectSetExpression| | }"]
+ ObjectSetExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActionExpression[label="{ActionExpression| | }"]
+ ActionExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IterationExpression[label="{IterationExpression| | }"]
+ IterationExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TimeExpression[label="{TimeExpression| | }"]
+ TimeExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Float[label="{&#171;DataType&#187;\nFloat|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+Long[label="{&#171;DataType&#187;\nLong|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

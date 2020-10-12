@@ -1,0 +1,421 @@
+-- @name		J2SE5
+-- @version		1.0
+-- @domains		Object-oriented programming, Java
+-- @authors		Fabien Giquel (fgiquel@mia-software.com)
+-- @date		2007/10/03
+-- @description	This metamodel describes all the structural concepts of Java 5 source code (from packages up to method  invocations and comments) and links between code elements (method invocations, variables usage, class inheritance, ...). The aim of this metamodel is to provide support in reverse-engineering Java applications or migrating existing applications to Java.
+
+package J2SE5 {
+
+			abstract class AbstractTypeDeclaration extends NamedElement, BodyDeclaration {
+				attribute originalFileContent unique : String;
+				reference "package" : PackageDeclaration oppositeOf ownedElements;
+				reference bodyDeclarations[*] container : BodyDeclaration;
+				reference superInterfaces[*] container : NamedElementRef;
+				reference commentsAfterBody[*] container : Comment;
+				reference imports[*] container : ImportDeclaration;
+				reference commentsBeforeBody[*] container : Comment;
+			}
+
+			class Annotation extends Expression {
+				reference type container : NamedElementRef;
+				reference values[*] container : AnnotationMemberValuePair;
+			}
+		
+			class AnnotationMemberValuePair extends ASTNode {
+				reference member container : NamedElementRef;
+				reference value container : Expression;
+			}
+			
+			class AnnotationTypeDeclaration extends AbstractTypeDeclaration {
+			}
+			
+			class AnnotationTypeMemberDeclaration extends NamedElement, BodyDeclaration {
+				reference type container : NamedElementRef;
+				reference default[0-1] container : Expression;
+			}
+
+			class AnonymousClassDeclaration extends ASTNode {
+				reference bodyDeclarations[*] container : BodyDeclaration;
+			}
+				
+			class ArrayAccess extends Expression {
+				reference index container : Expression;
+				reference array container : Expression;
+			}
+			
+			class ArrayCreation extends Expression {
+				reference dimensions[*] container : Expression;
+				reference initializer[0-1] container : ArrayInitializer;
+				reference type container : NamedElementRef;
+			}
+			
+			class ArrayInitializer extends Expression {
+				reference expressions[*] container : Expression;
+			}
+			
+			class ArrayLengthAccess extends Expression {
+				reference array container : Expression;
+			}
+
+			class AssertStatement extends Statement {
+				reference message[0-1] container : Expression;
+				reference expression container : Expression;
+			}
+
+			class Assignment extends Expression {
+				attribute operator unique : String;
+				reference rightHandSide container : Expression;
+				reference leftHandSide container : Expression;
+			}
+			
+			abstract class ASTNode {
+				reference comments[*] container : Comment;
+			}
+
+			abstract class BodyDeclaration extends ASTNode {
+				attribute modifiers unique : String;
+				reference annotations[*] container : Annotation;
+			}
+			
+			class Block extends Statement {
+				reference statements[*] container : Statement;
+			}
+			
+			class BlockComment extends Comment {
+			}
+			
+			class BreakStatement extends Statement {
+				reference label[0-1] container : NamedElementRef;
+			}	
+			
+			class CastExpression extends Expression {
+				reference type container : NamedElementRef;
+				reference expression container : Expression;
+			}
+			
+			class CatchClause extends ASTNode {
+				reference exception container : SingleVariableDeclaration;
+				reference body container : Block;
+			}
+			
+			class ClassInstanceCreation extends Expression {
+				reference arguments[*] container : Expression;
+				reference type container : NamedElementRef;
+				reference expression[0-1] container : Expression;
+				reference anonymousClassDeclaration[0-1] container : AnonymousClassDeclaration;
+			}
+			
+			abstract class Comment extends ASTNode {
+				attribute content unique : String;
+				attribute isEnclosedByParent unique : Boolean;
+				attribute isPrefixOfParent unique : Boolean;
+			}
+
+			class ConditionalExpression extends Expression {
+				reference elseExpression container : Expression;
+				reference thenExpression container : Expression;
+				reference expression container : Expression;
+			}
+
+			class ContinueStatement extends Statement {
+				reference label[0-1] container : NamedElementRef;
+			}
+			
+			class ConstructorInvocation extends Statement {
+				reference arguments[*] container : Expression;
+			}
+
+			class DoStatement extends Statement {
+				reference expression container : Expression;
+				reference body container : Statement;
+			}
+			
+			class EmptyStatement extends Statement {
+			}
+
+			class EnhancedForStatement extends Statement {
+				reference parameter container : SingleVariableDeclaration;
+				reference expression container : Expression;
+				reference body container : Statement;
+			}
+			
+			class EnumConstantDeclaration extends BodyDeclaration, NamedElement {
+				reference arguments[*] container : Expression;
+				reference anonymousClassDeclaration[0-1] container : AnonymousClassDeclaration;
+			}
+			
+			class EnumDeclaration extends AbstractTypeDeclaration {
+				reference enumConstants[*] container : EnumConstantDeclaration;
+			}
+			
+			abstract class Expression extends ASTNode {
+			}
+			
+			class ExpressionStatement extends Statement {
+				reference expression container : Expression;
+			}
+			
+			class FieldAccess extends Expression {
+				reference field container : NamedElementRef;
+				reference expression container : Expression;
+			}
+			
+			class FieldDeclaration extends BodyDeclaration, MultipleValuedNamedElement {
+				reference type container : NamedElementRef;
+			}
+
+			class ForStatement extends Statement {
+				reference body container : Statement;
+				reference expression[0-1] container : Expression;
+				reference initializers[*] container : Expression;
+				reference updaters[*] container : Expression;
+			}
+			
+			class InfixExpression extends Expression {
+				attribute operator unique : String;
+				reference extendedOperands[*] container : Expression;
+				reference rightOperand container : Expression;
+				reference leftOperand container : Expression;
+			}
+			
+			class IfStatement extends Statement {
+				reference expression container : Expression;
+				reference elseStatement[0-1] container : Statement;
+				reference thenStatement container : Statement;
+			}
+			
+			class ImportDeclaration extends ASTNode {
+				attribute static unique : Boolean;
+				reference importedElement container : NamedElementRef;
+			}
+			
+			class Initializer extends BodyDeclaration {
+				reference body container : Block;
+			}
+			
+			class InstanceofExpression extends Expression {
+				reference leftOperand container : Expression;
+				reference rightOperand container : NamedElementRef;
+			}
+		
+			class Javadoc extends Comment {
+				reference tags[*] container : TagElement;
+			}
+			
+			class LabeledStatement extends Statement, NamedElement {
+				reference body container : Statement;
+			}
+			
+			class LineComment extends Comment {
+			}
+			
+			class MemberRef extends ASTNode {
+				reference qualifier[0-1] container : NamedElementRef;
+				reference member container : NamedElementRef;
+			}
+			
+			class MethodDeclaration extends NamedElement, BodyDeclaration {
+				attribute extraArrayDimensions unique : Integer;
+				attribute constructor unique : Boolean;
+				attribute varargs unique : Boolean;
+				reference body[0-1] container : Block;
+				reference parameters[*] container : SingleVariableDeclaration;
+				reference typeParameters[*] container : TypeParameter;
+				reference thrownExceptions[*] container : NamedElementRef;
+				reference returnType container : NamedElementRef;
+			}
+			
+			class MethodInvocation extends Expression {
+				reference method container : NamedElementRef;
+				reference arguments[*] container : Expression;
+				reference expression[0-1] container : Expression;
+			}
+			
+			class MethodRef extends ASTNode {
+				reference qualifier[0-1] container : NamedElementRef;
+				reference parameters[*] container : MethodRefParameter;
+				reference method container : NamedElementRef;
+			}
+
+			class MethodRefParameter extends ASTNode {
+				attribute name unique : String;
+				attribute isVarargs unique : Boolean;
+				reference type[0-1] container : NamedElementRef;
+			}
+
+			class Model {
+				attribute name unique : String;
+				reference ownedElements[*] container : PackageDeclaration oppositeOf model;
+				reference orphanTypes[*] container : OrphanType;
+			}
+
+			abstract class MultipleValuedNamedElement extends ValuedNamedElement {
+				reference fragments[*] container : SingleVariableDeclaration;
+			}
+			
+			abstract class NamedElement {
+				attribute name unique : String;
+				attribute proxy unique : Boolean;
+			}
+			
+			class NamedElementRef extends Expression {
+				attribute extraArrayDimensions unique : Integer;
+				reference element[0-1] : NamedElement;
+				reference qualifier[0-1] container : NamedElementRef;
+			}
+			
+			class OrphanType extends NamedElement {
+				
+			}
+
+			class PackageDeclaration extends ASTNode, NamedElement {
+				reference model : Model oppositeOf ownedElements;
+				reference ownedElements[*] container : AbstractTypeDeclaration oppositeOf "package";
+			}
+
+			class ParameterizedType extends ASTNode, OrphanType {
+				reference typeArguments[*] container : NamedElementRef;
+				reference type container : NamedElementRef;
+			}
+			
+			class ParenthesizedExpression extends Expression {
+				reference expression container : Expression;
+			}
+			
+			class PostfixExpression extends Expression {
+				attribute operator unique : String;
+				reference operand container : Expression;
+			}
+			
+			class PrefixExpression extends Expression {
+				attribute operator unique : String;
+				reference operand container : Expression;
+			}
+			
+			class PrimitiveType extends ASTNode, OrphanType {
+			}
+
+			class ReturnStatement extends Statement {
+				reference expression[0-1] container : Expression;
+			}
+
+			class ThrowStatement extends Statement {
+				reference expression container : Expression;
+			}
+
+			class SingleVariableDeclaration extends ASTNode, ValuedNamedElement {
+				attribute modifiers unique : String;
+				attribute isVarargs unique : Boolean;
+				reference type container : NamedElementRef;
+			}
+			
+			abstract class Statement extends ASTNode {
+			}
+			
+			class SuperConstructorInvocation extends Statement {
+				reference arguments[*] container : Expression;
+				reference expression[0-1] container : Expression;
+			}
+
+			class SuperFieldAccess extends Expression {
+				reference qualifier[0-1] container : NamedElementRef;
+				reference field container : NamedElementRef;
+			}
+			
+			class SuperMethodInvocation extends Expression {
+				reference arguments[*] container : Expression;
+				reference qualifier[0-1] container : NamedElementRef;
+				reference method container : NamedElementRef;
+			}
+			
+			class SwitchCase extends Statement {
+				attribute expressionInitialized unique : Boolean;
+				reference expression[0-1] container : Expression;
+			}
+			
+			class SwitchStatement extends Statement {
+				reference statements[*] container : Statement;
+				reference expression container : Expression;
+			}
+			
+			class SynchronizedStatement extends Statement {
+				reference body container : Block;
+				reference expression container : Expression;
+			}
+			
+			class TagElement extends ASTNode {
+				attribute tagName unique : String;
+				reference fragments[*] container : ASTNode;
+			}
+			
+			class TextElement extends ASTNode {
+				attribute text unique : String;
+			}				
+			
+			class ThisExpression extends Expression {
+				reference qualifier[0-1] container : NamedElementRef;
+			}
+			
+			class TryStatement extends Statement {
+				reference finally[0-1] container : Block;
+				reference body container : Block;
+				reference catchClauses[*] container : CatchClause;
+			}
+
+			class TypeDeclaration extends AbstractTypeDeclaration {
+				attribute isInterface unique : Boolean;
+				reference typeParameters[*] container : TypeParameter;
+				reference superclass[0-1] container : NamedElementRef;
+			}
+			
+			class TypeDeclarationStatement extends Statement {
+				reference declaration container : AbstractTypeDeclaration;
+			}
+
+			class TypeLiteral extends Expression {
+				reference type container : NamedElementRef;
+			}
+			
+			class TypeParameter extends ASTNode, NamedElement {
+				reference bounds[*] container : NamedElementRef;
+			}
+			
+			class UnresolvedItem extends NamedElement, ASTNode {
+				
+			}
+			
+			abstract class ValuedNamedElement extends NamedElement {
+				attribute extraArrayDimensions unique : Integer;
+				reference initializer[0-1] container : Expression;
+			}
+
+			class VariableDeclarationExpression extends Expression, MultipleValuedNamedElement, ValuedNamedElement {
+				attribute modifiers unique : String;
+				reference type container : NamedElementRef;
+			}
+			
+			class VariableDeclarationStatement extends Statement, MultipleValuedNamedElement, ValuedNamedElement {
+				attribute modifiers unique : String;
+				reference type container : NamedElementRef;
+			}	
+			
+			class WildCardType extends OrphanType, ASTNode {
+				attribute isUpperBound unique : Boolean;
+				reference bound[0-1] container : NamedElementRef;
+			}
+			
+			class WhileStatement extends Statement {
+				reference expression container : Expression;
+				reference body container : Statement;
+			}
+}
+
+package PrimitiveType {
+
+	datatype String;
+
+	datatype Boolean;
+
+	datatype Integer;
+}

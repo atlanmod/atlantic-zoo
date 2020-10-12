@@ -1,0 +1,93 @@
+-- @name		CORBAComponent 
+-- @version		1.0
+-- @domains		Software engineering, software component, distributed computing
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/09
+-- @description	This metamodel describes a subset of CORBA (Common Object Request Broker Architecture) which is a standard for software componentry. The CORBA standard is created and controlled by the Object Management Group (OMG). It defines APIs, communication protocol, and object/service information models to enable heterogeneous applications written in various languages running on various platforms to interoperate. CORBA therefore provides platform and location transparency for sharing well-defined objects across a distributed computing platform. 
+-- @see			The OMG‘s CORBA Website, http://www.corba.org/
+
+package CORBAComponent {
+
+	-- @begin Base IDL (Interface Definition Language) Classes
+
+	class InterfaceDef {}
+	
+	class OperationDef {}
+	
+	class ValueDef {}
+	
+	-- @end Base IDL (Interface Definition Language) Classes
+
+
+	-- @begin Component Definition
+	
+	class ComponentDef extends InterfaceDef {
+		attribute isBasic : Boolean;
+		reference facets[*] container : ProvidesDef oppositeOf prd_home;
+		reference receptacles[*] container : UsesDef oppositeOf ud_home;
+		reference supports[*] : InterfaceDef;
+		reference emits[*] container : EmitsDef oppositeOf ed_home;
+		reference publishes[*] container : PublishesDef oppositeOf pud_home;
+		reference consumes[*] container : ConsumesDef oppositeOf cd_home;
+	}
+	
+	class ProvidesDef {
+		reference provides : InterfaceDef;
+		reference prd_home : ComponentDef oppositeOf facets;
+	}
+	
+	class UsesDef {
+		attribute multiple : Boolean;
+		reference uses : InterfaceDef;
+		reference ud_home : ComponentDef oppositeOf receptacles;
+	}
+	
+	class EventDef {
+		reference type : ValueDef;
+	}
+	
+	class EmitsDef extends EventDef {
+		reference ed_home : ComponentDef oppositeOf emits;
+	}
+	
+	class PublishesDef extends EventDef {
+		reference pud_home : ComponentDef oppositeOf publishes;
+	}
+	
+	class ConsumesDef extends EventDef {
+		reference cd_home : ComponentDef oppositeOf consumes;
+	}
+	
+	class HomeDef extends InterfaceDef {
+		reference manages : ComponentDef;
+		reference factories[*] container : FactoryDef oppositeOf fa_home;
+		reference finders[*] container : FinderDef oppositeOf fi_home;
+		reference key[0-1] container : PrimaryKeyDef oppositeOf pkd_home;
+	}
+	
+	class FactoryDef extends OperationDef {
+		reference fa_home : HomeDef oppositeOf factories;
+	}
+
+	class FinderDef extends OperationDef {
+		reference fi_home : HomeDef oppositeOf finders;
+	}
+	
+	class PrimaryKeyDef {
+		reference pkd_home : HomeDef oppositeOf key;
+		reference type : ValueDef;
+	}
+	
+	-- @end Component Definition
+	
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

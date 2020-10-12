@@ -1,0 +1,78 @@
+package Metamodel;
+
+package PetriNet {
+  abstract class LocatedElement {
+    !unique !ordered attr String[1] location;
+  }
+
+  abstract class NamedElement extends LocatedElement {
+    !unique !ordered attr String[1] name;
+  }
+
+  class PetriNet extends NamedElement {
+    !ordered val Element[*]#net elements;
+    !ordered val Arc[*]#net arcs;
+    !ordered ref Execution[*]#net execs;
+  }
+
+  abstract class Element extends NamedElement {
+    !ordered ref PetriNet[1]#elements net;
+  }
+
+  class Place extends Element {
+    !ordered ref TransitionToPlace[*]#to incomingArc;
+    !ordered ref PlaceToTransition[*]#from outgoingArc;
+  }
+
+  class Transition extends Element {
+    !ordered ref PlaceToTransition[+]#to incomingArc;
+    !ordered ref TransitionToPlace[+]#from outgoingArc;
+  }
+
+  abstract class Arc extends NamedElement {
+    !unique !ordered attr Integer[1] weight;
+    !ordered ref PetriNet[1]#arcs net;
+  }
+
+  class PlaceToTransition extends Arc {
+    !ordered ref Place[1]#outgoingArc from;
+    !ordered ref Transition[1]#incomingArc to;
+  }
+
+  class TransitionToPlace extends Arc {
+    !ordered ref Transition[1]#outgoingArc from;
+    !ordered ref Place[1]#incomingArc to;
+  }
+
+  class Execution {
+    !ordered ref PetriNet[1]#execs net;
+    !ordered val Marking[*]#exec markings;
+    !ordered val Movement[*]#exec movements;
+  }
+
+  class Token {
+    !ordered ref Place[1] placedAt;
+    !ordered ref Marking[1]#tokens marking;
+  }
+
+  class Marking {
+    !ordered ref Execution[1]#markings exec;
+    !ordered val Token[*]#marking tokens;
+  }
+
+  class Movement {
+    !ordered ref Execution[1]#movements exec;
+    !ordered ref Transition[1] fire;
+    !ordered ref Marking[1] source;
+    !ordered ref Marking[1] target;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+}
+

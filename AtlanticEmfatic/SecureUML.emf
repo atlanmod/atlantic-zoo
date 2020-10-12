@@ -1,0 +1,59 @@
+package Metamodel;
+
+package SecureUML {
+  class Group extends Subject {
+    !ordered val Subject[*]#group subjectGroup;
+  }
+
+  class User extends Subject {
+  }
+
+  class Subject {
+    !ordered ref Group[1]#subjectGroup group;
+    !ordered ref Role[*]#subjectAssignment role;
+  }
+
+  class Role {
+    !ordered val Role[*] roleHierarchy;
+    !ordered ref Subject[*]#role subjectAssignment;
+    !ordered ref Permission[*]#role permissionAssignment;
+  }
+
+  class Permission {
+    !ordered ref Role[*]#permissionAssignment role;
+    !ordered ref AuthorizationConstraint#permission constraintAssignment;
+    !ordered ref Action[+]#permission actionAssignment;
+  }
+
+  class AuthorizationConstraint {
+    !ordered ref Permission[*]#constraintAssignment permission;
+  }
+
+  class AtomicAction extends Action {
+  }
+
+  class CompositeAction extends Action {
+    !ordered val Action[*]#actionHyerarchy subordinatedAction;
+  }
+
+  class Action {
+    !ordered ref Permission[*]#actionAssignment permission;
+    !ordered ref Resource[1]#resourceAction resource;
+    !ordered ref CompositeAction[*]#subordinatedAction actionHyerarchy;
+  }
+
+  class Resource {
+    !ordered val Action[*]#resource resourceAction;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+}
+

@@ -1,0 +1,114 @@
+package Metamodel;
+
+package OCCAM {
+  class OCCAM_Program {
+    !ordered val OCCAM_Element[*] occam_Elements;
+    !ordered val File[*] files;
+  }
+
+  class OCCAM_Element {
+    !unique !ordered attr String name;
+  }
+
+  class Process extends OCCAM_Element {
+    !ordered val Declaration[1]#process declaration;
+    !ordered val Constructor[*]#process constructors;
+    !ordered ref DataType[*] parameters;
+    !ordered ref Library[*] libraries;
+    !ordered ref Channel[1] toChannel;
+  }
+
+  class Channel {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] type;
+    !ordered ref Server[1] toServer;
+    !ordered ref Process[1] toProcess;
+  }
+
+  class Action extends OCCAM_Element {
+    !ordered ref Constructor[1]#actions constructor;
+    !ordered ref While[1]#actions while;
+    !ordered ref If[1]#actions if;
+  }
+
+  class Assignment extends Action {
+  }
+
+  class Input extends Action {
+  }
+
+  class Output extends Action {
+  }
+
+  class Constructor extends OCCAM_Element {
+    !ordered ref Process[1]#constructors process;
+    !ordered val Action[*]#constructor actions;
+    !ordered val Buckel[*]#constructor buckels;
+    !ordered val Constructor[*] childrens;
+  }
+
+  class Buckel {
+    !ordered ref Constructor[1]#buckels constructor;
+  }
+
+  class If extends Buckel {
+    !ordered val Condition[*]#if conditions;
+    !ordered val Action[*]#if actions;
+  }
+
+  class While extends Buckel {
+    !ordered val Condition[*]#while conditions;
+    !ordered val Action[*]#while actions;
+  }
+
+  class Condition {
+    !unique !ordered attr String[1] elementRight;
+    !unique !ordered attr String[1] elementLeft;
+    !unique !ordered attr String[1] typeCondition;
+    !ordered ref If[1]#conditions if;
+    !ordered ref While[1]#conditions while;
+  }
+
+  class Sequential extends Constructor {
+  }
+
+  class Parallel extends Constructor {
+  }
+
+  class Alternative extends Constructor {
+  }
+
+  class DataType extends OCCAM_Element {
+    !unique !ordered attr String[1] dataType;
+  }
+
+  class Library {
+    !unique !ordered attr String[1] name;
+  }
+
+  class File {
+    !unique !ordered attr String[1] name;
+  }
+
+  class Server {
+    !unique !ordered attr String[1] name;
+    !ordered ref Channel[1] toChannel;
+  }
+
+  class Declaration {
+    !unique !ordered attr String[1] name;
+    !ordered ref Process[1]#declaration process;
+    !ordered val DataType[*] elements;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+}
+

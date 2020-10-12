@@ -1,0 +1,388 @@
+package Metamodel;
+
+package SpreadsheetMLPrintingSetup {
+  class DateTimeType {
+    !unique !ordered attr Integer[1] year;
+    !unique !ordered attr Integer[1] month;
+    !unique !ordered attr Integer[1] day;
+    !unique !ordered attr Integer[1] hour;
+    !unique !ordered attr Integer[1] minute;
+    !unique !ordered attr Integer[1] second;
+  }
+
+  class VersionType {
+    !unique !ordered attr Integer[1] n;
+    !unique !ordered attr Integer[1] nn;
+  }
+
+  abstract class ValueType {
+    !ordered ref Data[1]#value vt_data;
+  }
+
+  class StringValue extends ValueType {
+    !unique !ordered attr String[1] value;
+  }
+
+  class NumberValue extends ValueType {
+    !unique !ordered attr PrimitiveTypes.Double[1] value;
+  }
+
+  class DateTimeTypeValue extends ValueType {
+    !ordered val DateTimeType[1] value;
+  }
+
+  class BooleanValue extends ValueType {
+    !unique !ordered attr Boolean[1] value;
+  }
+
+  class ErrorValue extends ValueType {
+  }
+
+  class DocumentPropertiesCollection {
+    !ordered ref Workbook[1]#wb_docProperties dp_workbook;
+    !unique !ordered attr String title;
+    !unique !ordered attr String subject;
+    !unique !ordered attr String keywords;
+    !unique !ordered attr String description;
+    !unique !ordered attr String category;
+    !unique !ordered attr String author;
+    !unique !ordered attr String lastAuthor;
+    !unique !ordered attr String manager;
+    !unique !ordered attr String company;
+    !unique !ordered attr String hyperlinkBase;
+    !unique !ordered attr Integer revision;
+    !unique !ordered attr String presentationFormat;
+    !unique !ordered attr String guid;
+    !unique !ordered attr String appName;
+    !ordered val VersionType version;
+    !unique !ordered attr Integer totalTime;
+    !ordered val DateTimeType lastPrinted;
+    !ordered val DateTimeType created;
+    !ordered val DateTimeType lastSaved;
+    !unique !ordered attr Integer pages;
+    !unique !ordered attr Integer words;
+    !unique !ordered attr Integer characters;
+    !unique !ordered attr Integer charactersWithSpaces;
+    !unique !ordered attr Integer bytes;
+    !unique !ordered attr Integer lines;
+    !unique !ordered attr Integer paragraphs;
+  }
+
+  class CustomDocumentPropertiesCollection {
+    !ordered ref Workbook[1]#wb_customDocProperties cdp_workbook;
+    !ordered val CustomDocumentProperty[+]#customDocumentProperty_cdpe customDocumentProperties;
+  }
+
+  class CustomDocumentProperty {
+    !ordered ref CustomDocumentPropertiesCollection[1]#customDocumentProperties customDocumentProperty_cdpe;
+    !unique !ordered attr String[1] name;
+    !ordered val ValueType[1] value;
+  }
+
+  class SmartTagType {
+    !ordered ref SmartTagsCollection[1]#smartTagTypes smartTagType_ste;
+    !unique !ordered attr String[1] namespaceuri;
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String url;
+  }
+
+  class SmartTagsCollection {
+    !ordered ref Workbook[1]#wb_smartTags st_workbook;
+    !ordered ref Cell[1]#c_smartTags st_cell;
+    !ordered val SmartTagType[*]#smartTagType_ste smartTagTypes;
+  }
+
+  class Workbook {
+    !ordered val SmartTagsCollection#st_workbook wb_smartTags;
+    !ordered val DocumentPropertiesCollection#dp_workbook wb_docProperties;
+    !ordered val CustomDocumentPropertiesCollection#cdp_workbook wb_customDocProperties;
+    !ordered val ExcelWorkbook#ew_workbook wb_excelWorkbook;
+    !ordered val Worksheet[*]#ws_workbook wb_worksheets;
+  }
+
+  class Worksheet {
+    !ordered ref Workbook[1]#wb_worksheets ws_workbook;
+    !ordered val Table#t_worksheet ws_table;
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr Boolean protected;
+    !unique !ordered attr Boolean rightToLeft;
+    !ordered val WorksheetOptionsElt#wo_worksheet w_worksheetOptions;
+  }
+
+  abstract class StyledElement {
+  }
+
+  class Table extends StyledElement {
+    !ordered ref Worksheet[1]#ws_table t_worksheet;
+    val Column[*]#c_table t_cols;
+    val Row[*]#r_table t_rows;
+    !unique !ordered attr PrimitiveTypes.Double defaultColumnWidth;
+    !unique !ordered attr PrimitiveTypes.Double defaultRowHeight;
+    !unique !ordered attr Integer expandedColumnCount;
+    !unique !ordered attr Integer expandedRowCount;
+    !unique !ordered attr Integer leftCell;
+    !unique !ordered attr Integer topCell;
+    !unique !ordered attr Boolean fullColumns;
+    !unique !ordered attr Boolean fullRows;
+  }
+
+  abstract class TableElement extends StyledElement {
+    !unique !ordered attr Integer index;
+  }
+
+  abstract class ColOrRowElement extends TableElement {
+    !unique !ordered attr Boolean hidden;
+    !unique !ordered attr Integer span;
+  }
+
+  class Column extends ColOrRowElement {
+    !ordered ref Table[1]#t_cols c_table;
+    !unique !ordered attr Boolean autoFitWidth;
+    !unique !ordered attr PrimitiveTypes.Double width;
+  }
+
+  class Row extends ColOrRowElement {
+    !ordered ref Table[1]#t_rows r_table;
+    val Cell[*]#c_row r_cells;
+    !unique !ordered attr Boolean autoFitHeight;
+    !unique !ordered attr PrimitiveTypes.Double height;
+  }
+
+  class Cell extends TableElement {
+    !ordered val SmartTagsCollection[*]#st_cell c_smartTags;
+    !ordered ref Row[1]#r_cells c_row;
+    !unique !ordered attr String arrayRange;
+    !unique !ordered attr String formula;
+    !unique !ordered attr String hRef;
+    !unique !ordered attr PrimitiveTypes.Double mergeAcross;
+    !unique !ordered attr PrimitiveTypes.Double mergeDown;
+    !ordered val Data#d_cell c_data;
+    !ordered val Comment#c_cell c_comment;
+  }
+
+  class Comment {
+    !ordered ref Cell[1]#c_comment c_cell;
+    !ordered val Data[1]#d_comment com_data;
+    !unique !ordered attr String author;
+    !unique !ordered attr Boolean showAlways;
+  }
+
+  class Data {
+    !ordered ref Cell[1]#c_data d_cell;
+    !ordered ref Comment[1]#com_data d_comment;
+    !ordered val ValueType[1]#vt_data value;
+  }
+
+  class ExcelWorkbook {
+    !ordered ref Workbook[1]#wb_excelWorkbook ew_workbook;
+    !unique !ordered attr Integer selectedSheets;
+    !unique !ordered attr Boolean windowHidden;
+    !unique !ordered attr Boolean hideHorizontalScrollBar;
+    !unique !ordered attr Boolean hideVerticalScrollBar;
+    !unique !ordered attr Boolean hideWorkbookTabs;
+    !unique !ordered attr PrimitiveTypes.Double windowHeight;
+    !unique !ordered attr PrimitiveTypes.Double windowWidth;
+    !unique !ordered attr PrimitiveTypes.Double windowTopX;
+    !unique !ordered attr PrimitiveTypes.Double windowTopY;
+    !unique !ordered attr Integer activeSheet;
+    !unique !ordered attr String activeChart;
+    !unique !ordered attr Integer firstVisibleSheet;
+    !unique !ordered attr Boolean hidePivotTableFieldList;
+    !unique !ordered attr Boolean protectStructure;
+    !unique !ordered attr Boolean protectWindows;
+    !unique !ordered attr Boolean displayInkNotes;
+    !unique !ordered attr Boolean embedSaveSmartTags;
+    !unique !ordered attr String futureVer;
+    !unique !ordered attr Integer tabRatio;
+    !unique !ordered attr Boolean windowIconic;
+    !unique !ordered attr DisplayDrawingObjectsType displayDrawingObjects;
+    !unique !ordered attr Boolean createBackup;
+    !unique !ordered attr CalculationWorkbookType calculation;
+    !unique !ordered attr Boolean doNotCalculateBeforeSave;
+    !unique !ordered attr Boolean date1904;
+    !unique !ordered attr Boolean refModeR1C1;
+    !unique !ordered attr Boolean iteration;
+    !unique !ordered attr Integer maxIterations;
+    !unique !ordered attr PrimitiveTypes.Double maxChange;
+    !unique !ordered attr Boolean precisionAsDisplayed;
+    !unique !ordered attr Boolean doNotSaveLinkValues;
+    !unique !ordered attr Boolean noAutoRecover;
+    !unique !ordered attr Boolean acceptLabelsInFormulas;
+    !unique !ordered attr Boolean uncalced;
+  }
+
+  enum DisplayDrawingObjectsType {
+    ddot_displayShapes = 0;
+    ddot_placeHolders = 0;
+    ddot_hideAll = 0;
+  }
+
+  enum CalculationWorkbookType {
+    cwt_automaticCalculation = 0;
+    cwt_manualCalculation = 0;
+    cwt_semiAutomaticCalculation = 0;
+  }
+
+  class WorksheetOptionsElt {
+    !ordered ref Worksheet[1]#w_worksheetOptions wo_worksheet;
+    !unique !ordered attr Boolean fitToPage;
+    !unique !ordered attr Boolean doNotDisplayColHeaders;
+    !unique !ordered attr Boolean doNotDisplayRowHeaders;
+    !unique !ordered attr String gridlineColor;
+    !unique !ordered attr String name;
+    !unique !ordered attr ExcelWorksheetTypeType excelWorksheetType;
+    !unique !ordered attr Boolean intlMacro;
+    !unique !ordered attr Boolean unsynced;
+    !unique !ordered attr Boolean selected;
+    !unique !ordered attr String codeName;
+    !unique !ordered attr Boolean displayPageBreak;
+    !unique !ordered attr Boolean transitionExpressionEvaluation;
+    !unique !ordered attr Boolean transitionFormulaEntry;
+    !unique !ordered attr Integer zoom;
+    !unique !ordered attr Integer pageBreakZoom;
+    !unique !ordered attr Boolean showPageBreakZoom;
+    !unique !ordered attr Integer defaultRowHeight;
+    !unique !ordered attr Integer defaultColumnWidth;
+    !unique !ordered attr Integer standardWidth;
+    !unique !ordered attr VisibleType visible;
+    !unique !ordered attr Integer leftColumnVisible;
+    !unique !ordered attr Boolean displayRightToLeft;
+    !unique !ordered attr Integer gridlineColorIndex;
+    !unique !ordered attr Boolean displayFormulas;
+    !unique !ordered attr Boolean doNotDisplayGridlines;
+    !unique !ordered attr Boolean doNotDisplayHeadings;
+    !unique !ordered attr Boolean doNotDisplayOutline;
+    !unique !ordered attr Boolean applyAutomaticOutlineStyles;
+    !unique !ordered attr Boolean noSummaryRowsBelowDetail;
+    !unique !ordered attr Boolean noSummaryColumnsRightDetail;
+    !unique !ordered attr Boolean doNotDisplayZeros;
+    !unique !ordered attr Integer activeRow;
+    !unique !ordered attr Integer activeColumn;
+    !unique !ordered attr Boolean filterOn;
+    !unique !ordered attr String rangeSelection;
+    !unique !ordered attr Integer topRowVisible;
+    !unique !ordered attr Integer topRowBottomPane;
+    !unique !ordered attr Integer leftColumnRightPane;
+    !unique !ordered attr Integer activePane;
+    !unique !ordered attr Integer splitHorizontal;
+    !unique !ordered attr Integer splitVertical;
+    !unique !ordered attr Boolean freezePanes;
+    !unique !ordered attr Boolean frozenNoSplit;
+    !unique !ordered attr Integer tabColorIndex;
+    !unique !ordered attr Boolean protectContentst;
+    !unique !ordered attr Boolean protectObjects;
+    !unique !ordered attr Boolean protectScenarios;
+    !unique !ordered attr EnableSelectionType enableSelection;
+    !unique !ordered attr Boolean allowFormatCells;
+    !unique !ordered attr Boolean allowSizeCols;
+    !unique !ordered attr Boolean allowSizeRows;
+    !unique !ordered attr Boolean allowInsertCols;
+    !unique !ordered attr Boolean allowInsertRows;
+    !unique !ordered attr Boolean allowInsertHyperlinks;
+    !unique !ordered attr Boolean allowDeleteCols;
+    !unique !ordered attr Boolean allowDeleteRows;
+    !unique !ordered attr Boolean allowSort;
+    !unique !ordered attr Boolean allowFilter;
+    !unique !ordered attr Boolean allowUsePivotTables;
+    !ordered val PageSetup#ps_worksheetOptions wo_pageSetup;
+    !ordered val Print#p_worksheetOptions wo_print;
+  }
+
+  enum ExcelWorksheetTypeType {
+    ewt_Worksheet = 0;
+    ewt_Chart = 0;
+    ewt_Macro = 0;
+    ewt_Dialog = 0;
+  }
+
+  enum VisibleType {
+    vt_SheetVisible = 0;
+    vt_SheetHidden = 0;
+    vt_SheetVeryHidden = 0;
+  }
+
+  enum EnableSelectionType {
+    est_UnlockedCells = 0;
+    est_NoSelection = 0;
+  }
+
+  class PageSetup {
+    !ordered ref WorksheetOptionsElt[1]#wo_pageSetup ps_worksheetOptions;
+    !ordered val Layout#l_pageSetup ps_layout;
+    !ordered val Header#h_pageSetup ps_header;
+    !ordered val Footer#f_pageSetup ps_footer;
+    !ordered val PageMarginsInfo#pm_pageSetup ps_pageMargins;
+  }
+
+  class Layout {
+    !ordered ref PageSetup[1]#ps_layout l_pageSetup;
+    !unique !ordered attr OrientationType orientation;
+    !unique !ordered attr Boolean centerHorizontal;
+    !unique !ordered attr Boolean centerVertical;
+    !unique !ordered attr String startPageNumber;
+  }
+
+  enum OrientationType {
+    ot_Landscape = 0;
+    ot_Portrait = 0;
+  }
+
+  abstract class HeaderOrFooterElt {
+    !unique !ordered attr PrimitiveTypes.Double margin;
+    !unique !ordered attr String data;
+  }
+
+  class Header extends HeaderOrFooterElt {
+    !ordered ref PageSetup[1]#ps_header h_pageSetup;
+  }
+
+  class Footer extends HeaderOrFooterElt {
+    !ordered ref PageSetup[1]#ps_footer f_pageSetup;
+  }
+
+  class PageMarginsInfo {
+    !ordered ref PageSetup[1]#ps_pageMargins pm_pageSetup;
+    !unique !ordered attr PrimitiveTypes.Double left;
+    !unique !ordered attr PrimitiveTypes.Double right;
+    !unique !ordered attr PrimitiveTypes.Double top;
+    !unique !ordered attr PrimitiveTypes.Double bottom;
+  }
+
+  class Print {
+    !ordered ref WorksheetOptionsElt[1]#wo_print p_worksheetOptions;
+    !unique !ordered attr Integer fitWidth;
+    !unique !ordered attr Integer fitHeight;
+    !unique !ordered attr Boolean leftToRight;
+    !unique !ordered attr Boolean blackAndWhite;
+    !unique !ordered attr Boolean draftQuality;
+    !unique !ordered attr CommentsLayoutType commentsLayout;
+    !unique !ordered attr Integer scale;
+    !unique !ordered attr String printErrors;
+    !unique !ordered attr Boolean validPrinterInfo;
+    !unique !ordered attr Integer paperSizeIndex;
+    !unique !ordered attr Integer horizontalResolution;
+    !unique !ordered attr Integer verticalResolution;
+    !unique !ordered attr Boolean gridlines;
+    !unique !ordered attr Integer numberOfCopies;
+    !unique !ordered attr Boolean rowColHeadings;
+  }
+
+  enum CommentsLayoutType {
+    clt_InPlace = 0;
+    clt_PrintNone = 0;
+    clt_SheetEnd = 0;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

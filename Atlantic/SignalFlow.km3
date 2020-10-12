@@ -1,0 +1,85 @@
+-- @name		Signal Flow
+-- @version		1.0
+-- @authors		Youssef Srour (Srour.youssef@gmail.com)
+-- @date		2006/07/14
+-- @description	This metamodel describes Signal Flow.
+-- @see 		http://repository.escherinstitute.org/Plone/tools/suites/mic/great/
+
+package SignalFlow{
+
+-- Begin Class RootFolder
+	class RootFolder{
+		reference compoundComponent[*] container: CompoundComponent oppositeOf rootFolder;
+	}-- End class RootFolder
+
+-- Begin Class CompoundComponent
+	class CompoundComponent  extends BaseComponent{
+		reference rootFolder : RootFolder oppositeOf compoundComponent;
+		reference baseComponent[*] container: BaseComponent oppositeOf compoundComponent;
+		reference localPort[*] container: LocalPort oppositeOf compoundComponent;
+	}-- End class CompoundComponent
+
+-- Begin Class PrimitiveComponent
+	class PrimitiveComponent extends BaseComponent{
+		
+	}-- End class PrimitiveComponent
+
+-- Begin Class BaseComponent
+	class BaseComponent{
+		attribute name : String;
+		attribute position[0-1] : String;
+		
+		reference signal[*] container: Signal oppositeOf baseComponent;
+		reference outputPort[*] container: OutputPort oppositeOf baseComponent;
+		reference inputPort[*] container: InputPort oppositeOf baseComponent;
+		reference compoundComponent : CompoundComponent oppositeOf baseComponent;
+	}-- End class BaseComponent
+
+-- Begin Class InputPort
+	class InputPort extends PortBase{
+		reference baseComponent : BaseComponent oppositeOf inputPort;
+		
+	}-- End class InputPort
+
+-- Begin Class LocalPort
+	class LocalPort extends PortBase{
+		reference compoundComponent : CompoundComponent oppositeOf localPort;
+	}-- End class LocalPort
+
+-- Begin Class OutputPort
+	class OutputPort extends PortBase{
+		reference baseComponent : BaseComponent oppositeOf outputPort;
+	}-- End class OutputPort
+
+-- Begin Class PortBase
+	class PortBase{
+		attribute name : String;
+		attribute position[0-1] : String;
+		
+		reference associationPortBase_PortBasesrc : AssociationPortBase_PortBase oppositeOf srcPortBase; 
+		reference  associationPortBase_PortBasedst : AssociationPortBase_PortBase oppositeOf dstPortBase;
+		
+	}-- End class PortBase
+
+-- Begin Class Signal
+	class Signal{
+		attribute name : String;
+		attribute position[0-1] : String;
+		
+		reference baseComponent : BaseComponent oppositeOf signal;
+		reference  associationPortBase_PortBase : AssociationPortBase_PortBase oppositeOf signal;
+	}-- End class Signal
+	
+-- Begin Class_Association AssociationPortBase_PortBase
+	class AssociationPortBase_PortBase{		
+		reference srcPortBase[1-*] : PortBase oppositeOf associationPortBase_PortBasesrc;
+		reference dstPortBase[1-*] : PortBase oppositeOf associationPortBase_PortBasedst;
+		reference signal : Signal oppositeOf associationPortBase_PortBase;
+	}-- End Class_Association AssociationPortBase_PortBase
+
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+}

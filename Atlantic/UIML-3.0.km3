@@ -1,0 +1,531 @@
+-- @name		UIML-3.0
+-- @version		0.1
+-- @domains		User interface (UI)
+-- @authors		David Touzet
+-- @date		2006/02/21	
+-- @description	The design objective of the User Interface Markup Language (UIML) is to provide a vendor neutral, canonical representation of any user interface (UI) suitable for mapping to existing languages. UIML provides a highly device-independent method to describe a user interface.
+-- @see			http://www.uiml.org/specs/uiml3/DraftSpec.htm
+
+package UIML {
+	class UIML {
+		reference head[0-1] container : Header;
+		reference templates[*] container : Template;
+		reference interfaces[*] container : Interface;
+		reference peers[*] container : Peer;
+	}
+
+	class Header {
+		reference metas[*] container : MetaData;
+	}
+
+	class MetaData {
+		attribute name : String;
+		attribute content : String;
+	}
+}
+
+package Interface {
+	abstract class ExtensibleElement {
+	}
+
+	abstract class Source {
+	}
+
+	class LocalSource extends Source {
+		reference source : ExtensibleElement;
+	}
+
+	class RemoteSource extends Source {
+		attribute location : String;
+	}
+
+	class Interface extends ExtensibleElement {
+		attribute id[0-1] : String;
+		attribute how[0-1] : HowKind;
+		attribute export[0-1] : ExportKind;
+
+		reference source[0-1] : Source;
+		reference structure[*] container : Structure;
+		reference style[*] container : Style;
+		reference content[*] container : Content;
+		reference behavior[*] container : Behavior;
+	}
+
+	class Structure extends ExtensibleElement {
+		attribute id[0-1] : String;
+		attribute how[0-1] : HowKind;
+		attribute export[0-1] : ExportKind;
+
+		reference source[0-1] : Source;
+		reference parts[*] ordered container : Part;
+	}
+
+	class Part extends ExtensibleElement {
+		attribute id[0-1] : String;
+		attribute how[0-1] : HowKind;
+		attribute export[0-1] : ExportKind;
+		attribute "class"[0-1] : String;
+--		attribute where[0-1] : EWhere;
+		attribute wherePart[0-1] : String;
+
+		reference source[0-1] : Source;
+		reference style[0-1] container : Style;
+		reference content[0-1] container : Content;
+		reference behavior[0-1] container : Behavior;
+
+		-- peut-être désigner un parent commun et ordonner
+		reference parts[*] container : Part;
+		reference repeats[*] container : Repeat;
+	}
+
+	class Style extends ExtensibleElement {
+		attribute id[0-1] : String;
+		attribute how[0-1] : HowKind;
+		attribute export[0-1] : ExportKind;
+
+		reference source[0-1] : Source;		
+		reference properties[*] container : Property;
+	}
+
+	class Property extends ExtensibleElement {
+		attribute name[0-1] : String;
+		attribute how[0-1] : HowKind;
+		attribute export[0-1] : ExportKind;
+		attribute values[*] : String;
+
+--		attribute partName[0-1] : String;
+--		attribute partClass[0-1] : String;
+		reference parts[*] : Part;
+--		attribute eventName[0-1] : String;
+--		attribute eventClass[0-1] : String;
+		reference events[*] : Event;
+
+		reference source[0-1] : Source;
+		reference constants[*] container : Constant;
+		reference properties[*] container : Property;
+		reference references[*] container : Reference;
+		reference calls[*] container : Call;
+		reference iterators[*] container : Iterator;
+	}
+
+	class Content extends ExtensibleElement {
+		attribute id[0-1] : String;
+		attribute how[0-1] : HowKind;
+		attribute export[0-1] : ExportKind;
+
+		reference source[0-1] : Source;
+		reference constants[*] ordered container : Constant;
+	}
+
+	class Behavior extends ExtensibleElement {
+		attribute id[0-1] : String;
+		attribute how[0-1] : HowKind;
+		attribute export[0-1] : ExportKind;
+
+		reference source[0-1] : Source;
+		reference rules[*] ordered container : Rule;
+	}
+
+	class Repeat {
+		reference iterator container : Iterator;
+		reference parts[1-*] container : Part;
+	}
+
+	class Constant extends ExtensibleElement {
+		attribute id[0-1] : String;
+		attribute how[0-1] : HowKind;
+		attribute export[0-1] : ExportKind;
+		attribute model[0-1] : String;
+		attribute value[0-1] : String;
+
+		reference source[0-1] : Source;
+		reference constants[*] ordered container : Constant;
+	}
+
+	class Reference {
+--		attribute constantName[0-1] : String;
+--		attribute urlName[0-1] : String;
+		reference constant[0-1] : Constant;
+	}
+
+	class Rule extends ExtensibleElement {
+		attribute id[0-1] : String;
+		attribute how[0-1] : HowKind;
+		attribute export[0-1] : ExportKind;
+
+		reference source[0-1] : Source;
+		reference condition container : Condition;
+		reference action container : Action;
+	}
+
+	abstract class Condition {
+	}
+
+	class EventCondition extends Condition {
+		reference event container : Event;
+	}
+
+	class EqualCondition extends Condition {
+		reference equal container : Equal;
+	}
+
+	class OpCondition extends Condition {
+		reference op container : Operation;
+	}
+
+	class Action {
+	}
+
+	class Action_1 extends Action {
+		reference event[0-1] : Event;
+		
+		-- à ordonner - envisager un parent commun
+		reference properties[*] container : Property;
+		reference calls[*] container : Call;
+		reference restructures[*] container : Restructure;
+	}
+
+	class Action_2 extends Action { -- à revoir
+		reference whenTrue[0-1] : WhenTrue;
+		reference whenFalse[0-1] : WhenFalse;
+		reference byDefault[0-1] : ByDefault;
+	}
+
+	class Call {
+		attribute name[0-1] : String;
+		reference params[*] ordered container : Parameter;
+	}
+
+	abstract class Parameter {
+		attribute name[0-1] : String;
+	}
+
+	class PropertyParameter extends Parameter {
+		reference property : Property;
+	}
+
+	class ReferenceParameter extends Parameter {
+		reference "reference" : Reference;
+	}
+
+	class CallParameter extends Parameter {
+		reference call : Call;
+	}
+
+	class OperationParameter extends Parameter {
+		reference op : Operation;
+	}
+
+	class EventParameter extends Parameter {
+		reference event : Event;
+	}
+
+	class ConstantParameter extends Parameter {
+		reference constant : Constant;
+	}
+
+	class IteratorParameter extends Parameter {
+		reference iterator : Iterator;
+	}
+
+	abstract class Iterator {
+		attribute id : String;
+	}
+
+	class ConstantIterator extends Iterator {
+		reference constant container : Constant;
+	}
+
+	class PropertyIterator extends Iterator {
+		reference property container : Property;
+	}
+
+	class CallIterator extends Iterator {
+		reference call container : Call;
+	}
+
+	class TextIterator extends Iterator {
+		attribute value : Integer;
+	}
+
+	class Event {
+		attribute "class"[0-1] : String;
+
+--		attribute partName[0-1] : String;
+--		attribute partClass[0-1] : String;
+		reference parts[*] : Part;
+	}
+
+	abstract class Equal {
+		reference event : Event;
+	}
+
+	class EqualToConstant extends Equal {
+		reference constant : Constant;
+	}
+
+	class EqualToProperty extends Equal {
+		reference property : Property;
+	}
+
+	class EqualToReference extends Equal {
+		reference "reference" : Reference;
+	}
+
+	class EqualToOperation extends Equal {
+		reference op : Operation;
+	}
+
+	class Operation {
+		attribute name : String;
+
+		-- à ordonner - envisager un parent commun
+		reference constants[*] container : Constant;
+		reference properties[*] container : Property;
+		reference references[*] container : Reference;
+		reference calls[*] container : Call;
+		reference ops[*] container : Operation;
+		reference events[*] container : Event;
+	}
+
+	class Restructure extends ExtensibleElement {
+		attribute how[0-1] : HowKind;
+--		attribute where[0-1] : EWhere;
+
+--		attribute atPart[0-1] : String;
+		reference atPart[0-1] : Part;
+--		attribute wherePart[0-1] : String;
+		reference wherePart[0-1] : Part;
+
+		reference source[0-1] : Source;
+		reference template[0-1] container : Template;
+	}
+
+	class Branch {
+		-- à ordonner avec un parent commun
+		reference properties[*] container : Property;
+		reference calls[*] container : Call;
+		reference restructure[0-1] container : Restructure;
+		reference op[0-1] container : Operation;
+		reference equal[0-1] container : Equal;
+		reference event[0-1] container : Event;
+	}
+
+	class WhenTrue extends Branch {
+	}
+
+	class WhenFalse extends Branch {
+	}
+
+	class ByDefault extends Branch {
+	}
+
+	enumeration HowKind {
+		literal append;
+		literal cascade;
+		literal replace;
+		literal union;
+		literal delete;
+	}
+
+	enumeration ExportKind {
+		literal hidden;
+		literal optional;
+		literal required;
+	}
+
+	enumeration WhereKind {
+		literal first;
+		literal last;
+		literal before;
+		literal after;
+	}
+}
+
+package Peer {
+	class Peer extends ExtensibleElement {
+		attribute id[0-1] : String;
+		attribute how[0-1] : HowKind;
+		attribute export[0-1] : ExportKind;
+
+		reference source[0-1] : Source;
+		reference presentations[*] container : Presentation;
+		reference logics[*] container : Logic;
+	}
+
+	class Presentation extends ExtensibleElement {
+		attribute id[0-1] : String;
+		attribute how[0-1] : HowKind;
+		attribute export[0-1] : ExportKind;
+		attribute base : String;
+
+		reference source[0-1] : Source;
+		reference dClasses[*] container : DClass;
+	}
+
+	class Logic extends ExtensibleElement {
+		attribute id[0-1] : String;
+		attribute how[0-1] : HowKind;
+		attribute export[0-1] : ExportKind;
+
+		reference source[0-1] : Source;
+		reference dComponents[*] container : DComponent;
+	}
+
+	class DComponent extends ExtensibleElement {
+		attribute id : String;
+		attribute how[0-1] : HowKind;
+		attribute export[0-1] : ExportKind;
+		attribute mapsTo[0-1] : String;
+		attribute location[0-1] : String;
+
+		reference source[0-1] : Source;
+		reference dMethods[*] container : DMethod;
+	}
+
+	class DClass extends ExtensibleElement {
+		attribute id : String;
+		attribute how[0-1] : HowKind;
+		attribute export[0-1] : ExportKind;
+		attribute mapsTo : String;
+		attribute mapsType : String;
+--		attribute usedInTag : EUsedInTag;
+
+		reference source[0-1] : Source;
+		reference dMethods[*] container : DMethod;
+		reference dProperties[*] container : DProperty;
+		reference events[*] container : Event;
+		reference listeners[*] container : Listener;
+	}
+
+	class DProperty {
+		attribute id : String;
+		attribute mapsType : MapsTypeKind;
+		attribute mapsTo : String;
+		attribute returnType[0-1] : String;
+
+		reference dMethods[*] container : DMethod;
+		reference dParams[*] container : DParam;
+	}
+
+	class DMethod extends ExtensibleElement {
+		attribute id : String;
+		attribute how[0-1] : HowKind;
+		attribute export[0-1] : ExportKind;
+		attribute mapsTo : String;
+		attribute returnType[0-1] : String;
+
+		reference source[0-1] : Source;
+		reference dParams[*] ordered container : DParam;
+		reference script[0-1] container : Script;
+	}
+
+	class DParam {
+		attribute id[0-1] : String;
+		attribute type[0-1] : String;
+		attribute value : String;
+	}
+
+	class Script extends ExtensibleElement {
+		attribute id[0-1] : String;
+		attribute type[0-1] : String;
+		attribute how[0-1] : HowKind;
+		attribute export[0-1] : ExportKind;
+		attribute value : String;
+
+		attribute source[0-1] : String;
+	}
+
+	class Listener {
+		attribute "class"[0-1] : String;
+		attribute attacher[0-1] : String;
+	}
+
+	enumeration UsedInTagKind {
+		literal event;
+		literal listener;
+		literal part;
+	}
+
+	enumeration MapsTypeKind {
+		literal "attribute";
+		literal getMethod;
+		literal setMethod;
+		literal method;
+	}
+}
+
+package Template {
+	abstract class Template {
+		attribute id[0-1] : String;
+	}
+
+	class BehaviorTemplate extends Template {
+		reference behavior container : Behavior;
+	}
+
+	class DClassTemplate extends Template {
+		reference dClass container : DClass;
+	}
+
+	class DComponentTemplate extends Template {
+		reference dComponent container : DComponent;
+	}
+
+	class ConstantTemplate extends Template {
+		reference constant container : Constant;
+	}
+
+	class ContentTemplate extends Template {
+		reference content container : Content;
+	}
+
+	class InterfaceTemplate extends Template {
+		reference interface container : Interface;
+	}
+
+	class LogicTemplate extends Template {
+		reference logic container : Logic;
+	}
+
+	class PartTemplate extends Template {
+		reference part container : Part;
+	}
+
+	class PeerTemplate extends Template {
+		reference peer container : Peer;
+	}
+
+	class PresentationTemplate extends Template {
+		reference presentation container : Presentation;
+	}
+
+	class PropertyTemplate extends Template {
+		reference property container : Property;
+	}
+
+	class RestructureTemplate extends Template {
+		reference restructure container : Restructure;
+	}
+
+	class RuleTemplate extends Template {
+		reference rule container : Rule;
+	}
+
+	class ScriptTemplate extends Template {
+		reference script container : Script;
+	}
+
+	class StructureTemplate extends Template {
+		reference structure container : Structure;
+	}
+
+	class StyleTemplate extends Template {
+		reference style container : Style;
+	}
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+}

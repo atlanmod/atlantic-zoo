@@ -1,0 +1,61 @@
+package Metamodel;
+
+package Statecharts {
+  class BooleanExpression {
+    !unique !ordered attr String[1] value;
+  }
+
+  class StateMachine {
+    !ordered val Transition[*]#transSM_container transitions;
+    !ordered val State[*]#state_container top;
+  }
+
+  class State extends StateVertex {
+    !ordered ref StateMachine[1]#top state_container;
+    !ordered val Transition[*]#transS_container internalTransitions;
+    !ordered ref Event[*]#targets deferrableEvents;
+  }
+
+  class CompositeState extends State {
+    !ordered val StateVertex[*]#sv_container subVertexes;
+    !unique !ordered attr Boolean[1] isConcurrent;
+  }
+
+  class Transition {
+    !ordered ref StateMachine#transitions transSM_container;
+    !ordered ref State#internalTransitions transS_container;
+    !ordered val Event#evt_container trigger;
+    !ordered val Guard#gua_container guard;
+    !ordered ref StateVertex[1]#outgoing source;
+    !ordered ref StateVertex[1]#incoming target;
+  }
+
+  class StateVertex {
+    !ordered ref CompositeState#subVertexes sv_container;
+    !ordered ref Transition[*]#source outgoing;
+    !ordered ref Transition[*]#target incoming;
+  }
+
+  class Guard {
+    !ordered ref Transition[1]#guard gua_container;
+    !ordered ref BooleanExpression[1] expression;
+  }
+
+  class Event {
+    !ordered ref Transition[*]#trigger evt_container;
+    !ordered ref State[*]#deferrableEvents targets;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

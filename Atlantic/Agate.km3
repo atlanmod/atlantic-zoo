@@ -1,0 +1,564 @@
+-- @name		AGATE
+-- @version		1.1	
+-- @domains		Architecture Description, SoS (System of System), View, Viewpoint
+-- @authors		Albin Jossic (jossic.albin <at> gmail.com) 
+-- @date		2006/06/06	
+-- @description	A metamodel of AGATE (Atelier de Gestion de l Architecture des Systemes d Information). AGATE is a framework for Information systems architecture management. This framework was designed by the french DGA (D?l?gation G?n?rale pour l?Armement in english General delegation for the Armament). The currently version is 3.0. 
+-- @see			http://www.ixarm.com/Referentiel-AGATE
+
+
+--@begin package AGATE
+package AGATE {
+	
+	--@begin class Entity
+	abstract class Entity {}
+	--@end class Entity
+	
+	--@begin class Object
+	abstract class Object extends Entity {
+		attribute id : String;
+	}	
+	--@end class Object
+	
+	--@begin class AGATEObject
+	abstract class AGATEObject extends Object {
+		attribute notice : String;
+		attribute description : String;
+		attribute sensitivity : Integer;
+		attribute name : String;
+		attribute comment : String;
+		reference isValidIn : OperationalContext;
+		reference isAssociatedWith : Stake;
+	}	
+	--@end class AGATEObject
+	
+	--@begin class Objective
+	class Objective extends AGATEObject {
+		attribute type : String;
+		attribute priority : Integer;
+		attribute indicator : String;
+		attribute traceability : String;
+	}	
+	--@end class Objective
+	
+	--@begin class OperationalContext
+	class OperationalContext extends AGATEObject {}	
+	--@end class OperationalContext
+	
+	--@begin class Project
+	class Project extends AGATEObject {
+		reference moi : Role;
+		reference moa : Role;
+		reference director : Role;
+		reference defines[*] : ProjectContextElement;
+		reference associatedISs[*] : InformationSystem oppositeOf associatedProjects;
+	}	
+	--@end class Project
+	
+	--@begin class Standard
+	class Standard extends GenericStandard {
+		reference caracterizeIC[*] : InterfaceCharacteristic;
+		reference caracterizeTC[*] : TechnicalComponent;
+		reference caracterizeLC[*] : LogicalComponent;
+		reference caracterizeP[*] : Package;
+		reference caracterizeR[*] : Requirement;
+	}	
+	--@end class Standard
+	
+	--@begin class GenericStandard
+	abstract class GenericStandard extends AGATEObject {
+		reference composedOf[*] container : Standard;
+	}
+	--@end class GenericStandard
+	
+	--@begin class Threat
+	class Threat extends GenericThreat {
+		attribute nature : String;
+		attribute DCSSI : String;
+		reference clarifies[*] : Vulnerability;
+	}	
+	--@end class Threat
+	
+	--@begin class GenericThreat
+	abstract class GenericThreat extends AGATEObject {
+		reference composedBy[*] container : Threat;	
+	}
+	--@end class GenericThreat
+	
+	--@begin class Vulnerability
+	abstract class Vulnerability {
+		attribute level : Integer;
+		reference relatesTo : Entity;
+	}
+	--@end class Vulnerability 
+	
+	
+	
+	--@begin class TrafficClass
+	class TrafficClass extends AGATEObject {
+		reference traffic[*] : Traffic oppositeOf trafficClass;
+	}	
+	--@end class TrafficClass
+	
+	--@begin class InterfaceCharacteristic
+	abstract class InterfaceCharacteristic extends AGATEObject {
+		attribute type : String;
+	}	
+	--@end class InterfaceCharacteristic
+	
+	--@begin class ConfidentialityLevel
+	class ConfidentialityLevel extends InterfaceCharacteristic {}	
+	--@end class ConfidentialityLevel
+	
+	--@begin class Protocol
+	class Protocol extends InterfaceCharacteristic {
+		attribute isoLevel : Integer;
+	}	
+	--@end class Protocol
+	
+	--@begin class Flow
+	class Flow extends InterfaceCharacteristic {
+		attribute unit : String;
+	}	
+	--@end class Flow
+	
+	--@begin class Flow
+	class Other extends InterfaceCharacteristic {}	
+	--@end class Flow
+	
+	--@begin class ProjectContextElement
+	class ProjectContextElement extends AGATEObject {
+		attribute type : String;
+	}	
+	--@end class ProjectContextElement
+	
+	--@begin class DataClass
+	class DataClass extends AGATEObject {
+	}	
+	--@end class DataClass
+	
+	--@begin class Event
+	class Event extends AGATEObject {}	
+	--@end class Event
+	
+	--@begin class Risk
+	class Risk extends AGATEObject {
+		attribute disponibilityLevel : Integer;
+		attribute integrityLevel :Integer;
+		attribute confidencialityLevel : Integer;
+		reference isCoveredByCR : CountermeasureRequirement;
+		reference isCoveredByAO : ArchitectureObject;
+		reference isCoveredByMO : MADIOSObject;
+		reference isCoveredByDR : DomainRelation;
+		reference relatesToRO : ReusableObject;
+		reference relatesToCO : CommunicationObject;
+		reference isGeneratedBy : Threat;
+	}	
+	--@end class Risk
+	
+	--@begin class Stake
+	class Stake extends AGATEObject {
+		attribute type : String;
+		attribute relativeDate : String;
+		attribute unit : String;
+		attribute date : String;
+		reference events[*] container : Event;
+	}	
+	--@end class Stake
+	
+	--@begin class Requirement 
+	abstract class Requirement extends AGATEObject {
+		attribute criticality : Integer;
+		attribute priority : String;
+		attribute state : String;
+		reference isCoveredBy[*] : ArchitectureObject;
+		reference characterizes[*] : ArchitectureObject;	
+	}	
+	--@end class Requirement
+	
+	--@begin class CountermeasureRequirement
+	class CountermeasureRequirement extends Requirement {
+		attribute type : String;
+		attribute residualVulnerability : String;
+	}
+	--@end class CountermeasureRequirement
+	
+	--@begin class TechnicalRequirement
+	class TechnicalRequirement extends Requirement {}
+	--@end class TechnicalRequirement
+	
+	--@begin class PerformanceRequirement
+	class PerformanceRequirement extends Requirement {}
+	--@end class PerformanceRequirement
+	
+	--@begin class InteroperabilityRequirement
+	class InteroperabilityRequirement extends Requirement {}
+	--@end class InteroperabilityRequirement
+	
+	--@begin class OperationalRequirement
+	class OperationalRequirement extends Requirement {}
+	--@end class OperationalRequirement
+	
+	--@begin class SecurityRequirement 
+	class SecurityRequirement extends Requirement {}
+	--@end class SecurityRequirement
+	
+	--@begin class Means
+	abstract class Means extends AGATEObject {
+		reference isProvidedBy : OrganizationObject;
+	}	
+	--@end class Means
+	
+	--@begin class DomainRelation
+	abstract class DomainRelation extends AGATEObject {
+	}	
+	--@end class DomainRelation
+	
+	--@begin class HierarchicalRelation
+	class HierarchicalRelation extends DomainRelation {}	
+	--@end class HierarchicalRelation
+	
+	--@begin class FunctionalRelation
+	class FunctionalRelation extends DomainRelation {
+		reference necessaryObjectOF[0-1] : OperationalFunction;  
+		reference dependentObjectOF[0-1] : OperationalFunction;  
+		reference necessaryObjectOO[0-1] : OrganizationObject;  
+		reference dependentObjectOO[0-1] : OrganizationObject;  
+		reference necessaryObjectP : Package;  
+		reference dependentObjectP : Package;  
+	}	
+	--@end class FunctionalRelation
+	
+	--@begin class Dependence
+	class Dependence extends DomainRelation {
+		attribute type : String;
+		reference necessaryObjectS[0-1] : Service;  
+		reference dependentObjectS[0-1] : Service;
+		reference necessaryObjectLC[0-1] : LogicalComponent;  
+		reference dependentObjectLC[0-1] : LogicalComponent; 		
+		reference necessaryObjectP[0-1] : Package;  
+		reference dependentObjectP[0-1] : Package;   		
+		reference necessaryObjectC[0-1] : Center;  
+		reference dependentObjectC[0-1] : Center;   		
+		reference necessaryObjectIS[0-1] : InformationSystem;  
+		reference dependentObjectIS[0-1] : InformationSystem;     
+	}
+	--@end class Dependence
+	
+	--@begin class ArchitectureObject
+	abstract class ArchitectureObject extends AGATEObject {}	
+	--@end class ArchitectureObject
+	
+	--@begin class ReusableObject 
+	abstract class ReusableObject extends ArchitectureObject {
+		attribute membership : String;
+		attribute confidentialityLevel : Integer;
+		reference belongsTo[0-1] : Entity;
+		reference isAttachedToIS[0-1] : InformationSystem;
+		reference isAttachedToA[0-1] : Actor;
+		reference isA[0-1] : Means;
+	}	
+	--@end class ReusableObject
+	
+	--@begin class Site
+	--@comments a site can not be deployed on a center
+	class Site extends GenericSite {
+		attribute type : String;
+		attribute localization : String;
+		reference deployedObjects[*] container : ReusableObject;
+	}	
+	--@end class Site
+	
+	--@begin class GenericSite
+	abstract class GenericSite extends ReusableObject {
+		reference composedOf[*] container : Site;
+	}	
+	--@end class GenericSite
+	
+	--@begin class Package
+	class Package extends ReusableObject {
+		reference subPackage[*] container : Package;
+		reference time[*] : Role;
+		reference groupedObjects[*] container : ReusableObject;
+		reference isCoveredByLC : LogicalComponent;
+		reference isCoveredByTC : TechnicalComponent;
+		reference composedOf[*] : Interface;
+	}	
+	--@end class Package
+	
+	--@begin class Service
+	class Service extends ReusableObject {
+		attribute Statut : String;
+		reference isASpecializationOf : ReferenceService;
+		reference isCoveredBy : LogicalComponent;
+	}	
+	--@end class Service
+	
+	--@begin class TechnicalComponent 
+	class TechnicalComponent extends ReusableObject {
+		attribute type : String;
+		attribute cots : Boolean;
+		attribute editor : Boolean;
+		attribute constructor : Boolean;
+		attribute version : String;
+		attribute technology : String;
+		attribute definedExtension : String;
+		attribute statut : String;
+		reference composedOf[*] container : TechnicalComponent; 
+		reference isASpecializationOf : ReferenceTechnicalComponent;
+		reference interfaces[*] container : Interface;
+	}	
+	--@end class TechnicalComponent
+	
+	--@begin class LogicalComponent
+	class LogicalComponent extends ReusableObject {
+		attribute type : String;
+		attribute statut : String;
+		reference composedOf[*] container : LogicalComponent;
+		reference isASpecializationOf : ReferenceLogicalComponent;
+		reference interfaces[*] container : Interface;
+		reference isCoveredBy : TechnicalComponent;	
+	}	
+	--@end class LogicalComponent
+	
+	--@begin class OperationalFunction
+	class OperationalFunction extends ReusableObject {
+		reference composedOf[*] container : OperationalFunction;
+		reference isCoveredByP [*] : Package;
+		reference isCoveredByS [*] : Service;
+	}	
+	--@end class OperationalFunction
+	
+	--@begin class OrganizationObject
+	abstract class OrganizationObject extends ReusableObject {
+		reference time[*] : Role;
+		reference subordinate : HierarchicalRelation;
+		reference superior  : HierarchicalRelation;
+	}	
+	--@end class OrganizationObject
+	
+	--@begin class Center
+	class Center extends GenericCenter {
+		reference deployedObjects[*] container : ReusableObject;
+	}	
+	--@end class Center
+	
+	--@begin class GenericCenter
+	abstract class GenericCenter extends OrganizationObject {
+		reference centers[*] container : Center;
+	}	
+	--@end class GenericCenter
+	
+	--@begin class InformationSystem
+	class InformationSystem extends OrganizationObject {
+		attribute nature : String;
+		attribute version : String;
+		attribute membershipCountry : String;
+		attribute currentLocation : String;
+		attribute startServiceDate : String;
+		attribute stopServiceDate : String;
+		attribute isGeneric : Boolean;
+		attribute functionalDomain : String;
+		attribute type : String;
+		reference composedOf[*] container : InformationSystem;
+		reference associatedProjects[*] : Project oppositeOf associatedISs;
+		reference defines[*] container : Objective;
+		reference fulfills[*] : Role;
+		reference fixes[*] : OperationalContext;
+		reference usedBy[*] : Actor;
+		reference interfaces[*] container : Interface;
+	}	
+	--@end class InformationSystem
+	
+	--@begin class Role
+	class Role extends GenericRole {
+		attribute type : String;
+	}	
+	--@end class Role
+	
+	--@begin class GenericRole
+	abstract class GenericRole extends OrganizationObject {
+		reference roles[*] container : Role;
+	}	
+	--@end class GenericRole
+	
+	--@begin class Actor
+	class Actor extends GenericActor {}	
+	--@end class Actor
+	
+	--@begin class GenericActor
+	abstract class GenericActor extends OrganizationObject {
+		reference actors[*] container : Actor;
+	}	
+	--@end class GenericActor 
+	
+	--@begin class TelecomOperator
+	class TelecomOperator extends Actor {
+		attribute contractType : String;
+		reference interfaces[*] container : Interface;
+	}	
+	--@end class TelecomOperator
+	
+	--@begin class CommunicationObject
+	abstract class CommunicationObject extends ArchitectureObject {
+		attribute confidentialityLevel : Integer;
+		reference belongsTo[0-1] : Entity;
+	}	
+	--@end class CommunicationObject
+	
+	--@begin class Interface
+	class Interface extends CommunicationObject {
+		reference characteristics[*] container : InterfaceCharacteristic;
+		reference composedOf[*] container : Interface;
+	}	
+	--@end class Interface
+	
+	--@begin class Interconnection
+	class Interconnection extends CommunicationObject {
+		attribute linkType : String;
+		reference between[2-2] : Interface;
+	}	
+	--@end class Interconnection
+	
+	--@begin class InformationFlow
+	class InformationFlow extends CommunicationObject {
+		attribute priority : Integer;
+		attribute frequency : String;
+		attribute media : String;
+		attribute continuity : String;
+		attribute myContainer : String;
+		attribute time : String;
+		attribute availabilityRatio : String;
+		attribute integrity : Integer;
+		attribute interoperabilityLevel : Integer;
+		attribute mediumFlow : String;
+		attribute maximumFlow : String;
+		attribute duration : String;
+		attribute unitMediumFlow : String;
+		attribute averageEvent : String;
+		attribute maximumFlowOverOneDuration : String;
+		reference transports : Information;
+		reference receiverP : Package;
+		reference transmitterP : Package;
+		reference receiverOO : OrganizationObject;
+		reference transmitterOO : OrganizationObject;
+		reference receiverOF : OperationalFunction;
+		reference transmitterOF : OperationalFunction;		
+	}	
+	--@end class InformationFlow
+	
+	--@begin class Traffic
+	class Traffic extends CommunicationObject {
+		attribute sequence : String;
+		attribute type : String;
+		attribute interoperabilityLevel : Integer; 
+		reference trafficClass : TrafficClass oppositeOf traffic;
+		reference dataClass : DataClass;
+		reference receiverP[0-1] : Package;
+		reference transmitterP[0-1] : Package;
+		reference receiverIS[0-1] : InformationSystem;
+		reference transmitterIS[0-1] : InformationSystem;
+		reference receiverC[0-1] : Center;
+		reference transmitterC[0-1] : Center;
+		reference receiverTO[0-1] : TelecomOperator;
+		reference transmitterTO[0-1] : TelecomOperator;
+		reference receiverLC[0-1] : LogicalComponent;
+		reference transmitterLC[0-1] : LogicalComponent;
+		reference receiverTC[0-1] : TechnicalComponent;
+		reference transmitterTC[0-1] : TechnicalComponent;
+		
+	}	
+	--@end class Traffic
+	
+	--@begin class Information
+	class Information extends CommunicationObject {
+		attribute format : String;
+		attribute storageSupport : String;
+		attribute persistence : String;
+		reference DataType[0-1] : DataClass;
+	}	
+	--@end class Information
+	
+	--@begin class ReferenceObject
+	abstract class ReferenceObject extends Object {
+		attribute name : String;
+		attribute description : String;
+	}	
+	--@end class ReferenceObject
+	
+	--@begin class ReferenceTechnicalComponent
+	class ReferenceTechnicalComponent extends ReferenceObject {
+		reference composedOf[*] :  ReferenceTechnicalComponent;
+	}	
+	--@end class ReferenceTechnicalComponent
+	
+	--@begin class TechnicalComponentReferenceFrame
+	class TechnicalComponentReferenceFrame extends ReferenceObject {
+		reference composedOf[*] :  ReferenceTechnicalComponent;
+	}	
+	--@end class TechnicalComponentReferenceFrame
+	
+	--@begin class ReferenceLogicalComponent
+	class ReferenceLogicalComponent extends ReferenceObject {
+		reference composedOf[*] container : ReferenceLogicalComponent;
+	}	
+	--@end class ReferenceLogicalComponent
+	
+	--@begin class ReferenceService
+	class ReferenceService extends ReferenceObject {
+		reference composedOf[*] container : ReferenceObject;
+	}	
+	--@end class ReferenceService
+	
+	--@begin class ServiceReferenceFrame 
+	class ServiceReferenceFrame {
+		reference composedOfRS[*] container : ReferenceService;
+		reference composedOfRLC[*] container : ReferenceLogicalComponent;
+		
+	}
+	--@end class ServiceReferenceFrame
+	
+	--@begin class MADIOSObject
+	abstract class MADIOSObject extends Object {}	
+	--@end class MADIOSObject
+	
+	--@begin class Process
+	class Process extends MADIOSObject {
+		reference isCoveredByP [*] : Package;
+		reference isCoveredByS [*] : Service;
+	}	
+	--@end class Process
+	
+	--@begin class Procedure
+	class Procedure extends MADIOSObject {
+		reference isCoveredByP [*] : Package;
+		reference isCoveredByS [*] : Service;
+	}	
+	--@end class Procedure
+	
+	--@begin class Operation
+	class Operation extends MADIOSObject {
+		reference isCoveredByP [*] : Package;
+		reference isCoveredByS [*] : Service;
+	}	
+	--@end class Operation
+	
+	--@begin class Activity
+	class Activity extends MADIOSObject {
+		reference isCoveredByP [*] : Package;
+		reference isisCoveredByS [*] : Service;
+	}	
+	--@end class Activity
+}
+--@end package AGATE
+
+
+--@begin package PrimitiveTypes
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+	datatype Boolean;
+}
+--@end package PrimitiveTypes
+
+	

@@ -1,0 +1,48 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'MSProject'>
+    <Class name = 'MSPProject' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'resource' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MSProject::MSPResource' opposite = 'MSProject::MSPResource::project'/>
+      <Reference name = 'link' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MSProject::MSPLink' opposite = 'MSProject::MSPLink::project'/>
+      <Reference name = 'task' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MSProject::MSPTask' opposite = 'MSProject::MSPTask::project'/>
+    </Class>
+    <Class name = 'MSPTask' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'finishDate' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'MSProject::Date'/>
+      <Attribute name = 'startDate' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'MSProject::Date'/>
+      <Reference name = 'project' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MSProject::MSPProject' opposite = 'MSProject::MSPProject::task'/>
+      <Reference name = 'superTask' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MSProject::MSPTask' opposite = 'MSProject::MSPTask::subTask'/>
+      <Reference name = 'subTask' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MSProject::MSPTask' opposite = 'MSProject::MSPTask::superTask'/>
+      <Reference name = 'assignment' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MSProject::MSPAssignment' opposite = 'MSProject::MSPAssignment::task'/>
+      <Reference name = 'inLink' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MSProject::MSPLink' opposite = 'MSProject::MSPLink::succ'/>
+      <Reference name = 'outLink' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MSProject::MSPLink' opposite = 'MSProject::MSPLink::pred'/>
+    </Class>
+    <Class name = 'MSPLink' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'project' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MSProject::MSPProject' opposite = 'MSProject::MSPProject::link'/>
+      <Reference name = 'succ' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MSProject::MSPTask' opposite = 'MSProject::MSPTask::inLink'/>
+      <Reference name = 'pred' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MSProject::MSPTask' opposite = 'MSProject::MSPTask::outLink'/>
+    </Class>
+    <Class name = 'MSPAssignment' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'task' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MSProject::MSPTask' opposite = 'MSProject::MSPTask::assignment'/>
+      <Reference name = 'resource' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MSProject::MSPResource' opposite = 'MSProject::MSPResource::assignment'/>
+    </Class>
+    <Class name = 'MSPResource' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'cost' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+      <Reference name = 'project' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MSProject::MSPProject' opposite = 'MSProject::MSPProject::resource'/>
+      <Reference name = 'assignment' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MSProject::MSPAssignment' opposite = 'MSProject::MSPAssignment::resource'/>
+    </Class>
+    <Class name = 'MSPHumanResource' isAbstract = 'false' supertypes = 'MSProject::MSPResource'>
+      <Attribute name = 'email' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'MSPMachine' isAbstract = 'false' supertypes = 'MSProject::MSPResource'/>
+    <Class name = 'Date' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'day' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'month' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'year' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Integer'/>
+    <DataType name = 'Double'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

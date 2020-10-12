@@ -1,0 +1,164 @@
+package Metamodel;
+
+package ODPCV {
+  class EnvironmentContract {
+    !ordered ref Action[+]#constrainer_ec ec_to_a;
+    !ordered ref ComputationalTemplate[1]#ct_to_ec specifier_ec;
+  }
+
+  abstract class ComputationalTemplate {
+    !ordered ref EnvironmentContract[1]#specifier_ec ct_to_ec;
+    !ordered ref Behaviour[*]#specifier_bh ct_to_bh;
+  }
+
+  class ComputationalObject {
+    !ordered ref Interface[+]#owner_i co_to_i;
+    !ordered ref Behaviour[1]#owner_bh co_to_bh;
+    !ordered ref ComputationalObjectTemplate[1]#cot_to_co specifier_co;
+    !ordered val State[1]#st_to_co co_to_st;
+  }
+
+  class BindingObject extends ComputationalObject {
+  }
+
+  class ComputationalObjectTemplate extends ComputationalTemplate {
+    !ordered ref ComputationalObject[*]#specifier_co cot_to_co;
+    !ordered ref ComputationalInterfaceTemplate[*]#aggregate_provide part_provide;
+    !ordered ref ComputationalInterfaceTemplate[*]#aggregate_request part_request;
+  }
+
+  class ComputationalInterfaceTemplate extends ComputationalTemplate {
+    !ordered ref Interface[*]#specifier_i cit_to_i;
+    !ordered ref ComputationalObjectTemplate[*]#part_provide aggregate_provide;
+    !ordered ref ComputationalObjectTemplate[*]#part_request aggregate_request;
+    !ordered val InterfaceSignature[1]#intsig_to_cit cit_to_intsig;
+  }
+
+  abstract class Interface {
+    !ordered ref ComputationalObject[1]#co_to_i owner_i;
+    !ordered ref Binding#bd_to_i i_to_bd;
+    !ordered ref ComputationalInterfaceTemplate[1]#cit_to_i specifier_i;
+    !ordered val Interaction[+]#ina_to_i i_to_ina;
+  }
+
+  class Binding {
+    !ordered ref Interface[2..*]#i_to_bd bd_to_i;
+  }
+
+  class SignalInterface extends Interface {
+  }
+
+  class OperationInterface extends Interface {
+  }
+
+  class StreamInterface extends Interface {
+  }
+
+  abstract class InterfaceSignature {
+    !ordered ref ComputationalInterfaceTemplate[1]#cit_to_intsig intsig_to_cit;
+  }
+
+  class SignalInterfaceSignature extends InterfaceSignature {
+    val SignalSignature[*]#ssig_to_sgisig sgisig_to_ssig;
+  }
+
+  class OperationInterfaceSignature extends InterfaceSignature {
+    val AnnouncementSignature[*]#ansig_to_optisig optisig_to_ansig;
+    val InterrogationSignature[*]#intsig_to_optisig optisig_to_intsig;
+  }
+
+  class StreamInterfaceSignature extends InterfaceSignature {
+    val FlowSignature[*]#fsig_to_strisig strisig_to_fsig;
+  }
+
+  abstract class InteractionSignature {
+    !ordered ref ActionTemplate[1]#at_to_isig isig_to_at;
+    val Parameter[*]#param_to_isig isig_to_param;
+  }
+
+  class Parameter {
+    !ordered ref InteractionSignature[1]#isig_to_param param_to_isig;
+  }
+
+  class AnnouncementSignature extends InteractionSignature {
+    !ordered ref OperationInterfaceSignature[1]#optisig_to_ansig ansig_to_optisig;
+  }
+
+  class InterrogationSignature extends InteractionSignature {
+    !ordered ref OperationInterfaceSignature[1]#optisig_to_intsig intsig_to_optisig;
+    val TerminationSignature[+]#tersig_to_intsig intsig_to_tersig;
+  }
+
+  class TerminationSignature extends InteractionSignature {
+    !ordered ref InterrogationSignature[1]#intsig_to_tersig tersig_to_intsig;
+  }
+
+  class SignalSignature extends InteractionSignature {
+    !ordered ref SignalInterfaceSignature[1]#sgisig_to_ssig ssig_to_sgisig;
+  }
+
+  class FlowSignature extends InteractionSignature {
+    !ordered ref StreamInterfaceSignature[1]#strisig_to_fsig fsig_to_strisig;
+  }
+
+  class ActionTemplate {
+    !ordered ref Action[+]#specifier_a at_to_a;
+    !ordered val InteractionSignature[1]#isig_to_at at_to_isig;
+  }
+
+  class Behaviour {
+    !ordered ref ComputationalTemplate[1]#ct_to_bh specifier_bh;
+    !ordered ref ComputationalObject[1]#co_to_bh owner_bh;
+    val Action[+]#a_to_bh bh_to_a;
+  }
+
+  class Action {
+    !ordered ref EnvironmentContract[*]#ec_to_a constrainer_ec;
+    !ordered ref State[*]#changer changedState;
+    !ordered ref ActionTemplate[1]#at_to_a specifier_a;
+    !ordered ref Behaviour[1]#bh_to_a a_to_bh;
+  }
+
+  class State {
+    !ordered ref State[1]#endState startState;
+    !ordered ref State[1]#startState endState;
+    !ordered ref Action[*]#changedState changer;
+    !ordered ref ComputationalObject[1]#co_to_st st_to_co;
+  }
+
+  class InternalAction extends Action {
+  }
+
+  abstract class Interaction extends Action {
+    !ordered ref Interface[1]#i_to_ina ina_to_i;
+  }
+
+  class Flow extends Interaction {
+  }
+
+  class Signal extends Interaction {
+  }
+
+  abstract class Operation extends Interaction {
+    !ordered val Invocation[1]#inv_to_opt opt_to_inv;
+  }
+
+  class Announcement extends Operation {
+  }
+
+  class Interrogation extends Operation {
+    !ordered ref Termination#owner_ter int_to_ter;
+  }
+
+  class Invocation extends Interaction {
+    !ordered ref Termination[1]#ter_to_inv inv_to_ter;
+    !ordered ref Operation[1]#opt_to_inv inv_to_opt;
+  }
+
+  class Termination extends Interaction {
+    !ordered ref Interrogation[1]#int_to_ter owner_ter;
+    !ordered ref Invocation[1]#inv_to_ter ter_to_inv;
+  }
+
+}
+

@@ -1,0 +1,121 @@
+-- @name		ATOM
+-- @version		1.0
+-- @domains		
+-- @authors		David Touzet (david.touzet@univ-nantes.fr)
+-- @date		2005/11/01
+-- @description	This metamodel describes ATOM. Atom is an XML-based document format for the syndication of web content such as weblogs and news headlines, and an HTTP-based protocol for editing weblogs based on the format.
+-- @see			http://www.atomenabled.org/developers/syndication/
+-- @see			http://en.wikipedia.org/wiki/Atom_%28standard%29
+
+package ATOM {
+
+	class ATOM {
+		attribute title : String;
+		attribute id : String;
+		attribute subtitle[0-1] : String;
+		attribute rights[0-1] : String;
+		attribute icon[0-1] : String;
+		attribute logo[0-1] : String;
+
+		reference links[1-*] container : Link;
+		reference lastUpdate container : Date;
+		reference generator[0-1] container : Generator;
+		reference categories[*] container : Category;
+		reference authors[1-*] container : Author;
+		reference contibutors[*] container : Contributor;
+		reference entries[*] container : Entry oppositeOf atom;
+	}
+
+	class Entry {
+		attribute title : String;
+		attribute id : String;
+		attribute rights[0-1] : String;
+		attribute summary[0-1] : String;
+
+		reference links[1-*] container : Link;
+		reference source[0-1] container : Source;
+		reference published[0-1] container : Date;
+		reference lastUpdate container : Date;
+		reference content[0-1] container : Content;
+		reference categories[*] container : Category;
+		reference authors[1-*] container : Author;
+		reference contibutors[*] container : Contributor;
+		reference atom : ATOM oppositeOf entries;
+	}
+
+	class Source {
+		attribute id[0-1] : String;
+		attribute icon[0-1] : String;
+		attribute logo[0-1] : String;
+		attribute rights[0-1] : String;
+		attribute title[0-1] : String;
+		attribute subtitle[0-1] : String;
+
+		reference links[*] container : Link;
+		reference lastUpdate[0-1] container : Date;
+		reference generator[0-1] container : Generator;
+		reference contributors[*] container : Contributor;
+		reference categories[*] container : Category;
+		reference author[0-1] container : Author;
+	}
+
+	class Content {
+		attribute type[0-1] : String;
+	}
+
+	class InLineXHTMLContent extends Content {
+	}
+
+	class InLineOtherContent extends Content {
+	}
+
+	class OutOfLineContent extends Content {
+		attribute src : String;
+	}
+
+	class Generator {
+		attribute uri[0-1] : String;
+		attribute version[0-1] : String;
+	}
+
+	class Category {
+		attribute term : String;
+		attribute scheme[0-1] : String;
+		attribute label[0-1] : String;
+	}
+
+	class Link {
+		attribute href : String;
+		attribute rel[0-1] : String;
+		attribute type[0-1] : String;
+		attribute hreflang[0-1] : String;
+		attribute title[0-1] : String;
+		attribute lenght[0-1] : Integer;
+	}
+
+	class Person {
+		attribute name : String;
+		attribute uri[0-1] : String;
+		attribute email[0-1] : String;
+	}
+
+	class Author extends Person {
+	}
+
+	class Contributor extends Person {
+	}
+
+	class Date {
+		attribute day : Integer;
+		attribute month : Integer;
+		attribute year : Integer;
+		attribute hours : Integer;
+		attribute minutes : Integer;
+		attribute seconds : Integer;
+	}
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+}

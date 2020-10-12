@@ -1,0 +1,7 @@
+( defstruct QoSStatement :relation )
+( defstruct SingleQoSStatement :contraint :relation )
+( defstruct CoumpoundQoSStatement :statement :relation )
+( defstruct Parameter )
+( defstruct QoSContraint :qualification )
+( defstruct QualificationKind :value )
+( defstruct QoSCharacteristic )

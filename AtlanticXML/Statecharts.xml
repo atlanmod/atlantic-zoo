@@ -1,0 +1,48 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'Statecharts'>
+    <Class name = 'BooleanExpression' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'StateMachine' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'transitions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Statecharts::Transition' opposite = 'Statecharts::Transition::transSM_container'/>
+      <Reference name = 'top' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Statecharts::State' opposite = 'Statecharts::State::state_container'/>
+    </Class>
+    <Class name = 'State' isAbstract = 'false' supertypes = 'Statecharts::StateVertex'>
+      <Reference name = 'state_container' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Statecharts::StateMachine' opposite = 'Statecharts::StateMachine::top'/>
+      <Reference name = 'internalTransitions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Statecharts::Transition' opposite = 'Statecharts::Transition::transS_container'/>
+      <Reference name = 'deferrableEvents' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Statecharts::Event' opposite = 'Statecharts::Event::targets'/>
+    </Class>
+    <Class name = 'CompositeState' isAbstract = 'false' supertypes = 'Statecharts::State'>
+      <Reference name = 'subVertexes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Statecharts::StateVertex' opposite = 'Statecharts::StateVertex::sv_container'/>
+      <Attribute name = 'isConcurrent' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'Transition' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'transSM_container' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Statecharts::StateMachine' opposite = 'Statecharts::StateMachine::transitions'/>
+      <Reference name = 'transS_container' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Statecharts::State' opposite = 'Statecharts::State::internalTransitions'/>
+      <Reference name = 'trigger' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Statecharts::Event' opposite = 'Statecharts::Event::evt_container'/>
+      <Reference name = 'guard' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Statecharts::Guard' opposite = 'Statecharts::Guard::gua_container'/>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Statecharts::StateVertex' opposite = 'Statecharts::StateVertex::outgoing'/>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Statecharts::StateVertex' opposite = 'Statecharts::StateVertex::incoming'/>
+    </Class>
+    <Class name = 'StateVertex' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'sv_container' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Statecharts::CompositeState' opposite = 'Statecharts::CompositeState::subVertexes'/>
+      <Reference name = 'outgoing' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Statecharts::Transition' opposite = 'Statecharts::Transition::source'/>
+      <Reference name = 'incoming' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Statecharts::Transition' opposite = 'Statecharts::Transition::target'/>
+    </Class>
+    <Class name = 'Guard' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'gua_container' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Statecharts::Transition' opposite = 'Statecharts::Transition::guard'/>
+      <Reference name = 'expression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Statecharts::BooleanExpression' opposite = ''/>
+    </Class>
+    <Class name = 'Event' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'evt_container' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Statecharts::Transition' opposite = 'Statecharts::Transition::trigger'/>
+      <Reference name = 'targets' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Statecharts::State' opposite = 'Statecharts::State::deferrableEvents'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Double'/>
+  </Package>
+</Metamodel>

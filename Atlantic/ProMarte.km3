@@ -1,0 +1,857 @@
+-- @name		ProMarte a UML profile for MARTE
+-- @version		0.1	
+-- @domains		Architecture Description, Real-time embedded, SoS (System of System), View, Viewpoint
+-- @authors		Albin Jossic (jossic.albin <at> gmail.com) 
+-- @date		2006/06/06
+-- @description	A metamodel of MARTE. It comes from the ProMARTE specifaction a UML profile for MARTE dating from 14th November 2005. MARTE is the acronym for Modeling and Analysis of Real-Time and Embedded systems.
+-- @see			http://www.omg.org/cgi-bin/doc?realtime/2005-2-6
+-- @see			http://www.promarte.org/
+
+--@begin package Marte
+package MARTE {
+	
+	--@begin MARTE for TimeModels
+	--@begin BasicTimeModels package
+	--@begin class TimeBase
+	abstract class TimeBase {
+		attribute name : String;
+		reference instants[*] ordered container : Instant oppositeOf owner;
+	}
+	--@end class TimeBase
+	
+	--@begin class Instant
+	abstract class Instant {
+		attribute isBefore : Boolean;
+		reference owner : TimeBase oppositeOf instants;
+		reference timeValue : TimeValue oppositeOf denotedInstant;		
+	}
+	--@end class Instant
+	
+	--@begin class TimeValue
+	abstract class TimeValue {
+		reference denotedInstant[*] : Instant oppositeOf timeValue;	
+		reference ref : TimeBase;
+	}
+	--@end class TimeValue
+	
+	--@begin class TimeInterval
+	abstract class TimeInterval {
+		reference endValues[2-*] : TimeValue;
+		reference denotedInterval[*] : Interval oppositeOf timeInterval;
+	}
+	--@end class TimeInterval
+	
+	--@begin class Interval
+	abstract class Interval {
+		attribute includingMin : Boolean;
+		attribute includingMax : Boolean;
+		reference base : TimeBase;
+		reference timeInterval : TimeInterval oppositeOf denotedInterval;
+		reference instants[*] :  Instant;
+	}
+	--@end class Interval 
+	--@end BasicTimeModels package
+	
+	--@begin SingleTimeModel ? SingleTimeBase, SingleInstant, SingleInterval, SingleTimeValue, SingleTimeInterval
+	--@begin class SingleTimeBase
+	class SingleTimeBase extends TimeBase {
+		reference currentValue : SingleTimeValue;
+		reference maximumValue[0-1] : SingleTimeValue;
+		reference currentInstant : SingleInstant;
+	}
+	--@end class SingleTimeBase
+	
+	--@begin class SingleInstant
+	class SingleInstant extends Instant {
+		reference coPoint : CoincidencePoint oppositeOf coincidenceInstants;
+	}
+	-- @end class SingleInstant
+	
+	--@begin class SingleInterval
+	class SingleInterval extends Interval {
+		reference first : SingleInstant;
+		reference last : SingleInstant;
+		reference members[*] ordered : SingleInstant; 
+	}
+	--@end class SingleInterval
+	
+	--@begin class SingleTimeValue
+	class SingleTimeValue extends TimeValue {
+	}
+	--@end class SingleTimeValue
+	
+	--@begin class SingleTimeInterval
+	class SingleTimeInterval extends TimeInterval {
+		reference start : SingleTimeValue;
+		reference end : SingleTimeValue;
+	}
+	--@end class SingleTimeInterval
+	--@end SingleTimeModel ? SingleTimeBase, SingleInstant, SingleInterval, SingleTimeValue, SingleTimeInterval
+	
+	--@begin DiscreteTimeModels
+	--@begin class DiscreteTimeBase
+	--@comments from ULM::CommonBehaviors
+	class DiscreteTimeBase extends TimeBase {
+		reference refEvent : Event;
+	}
+	--@end class DiscreteTimeBase
+	
+	--@begin class DiscreteInstant
+	--@comments from ULM::CommonBehaviors
+	class DiscreteInstant extends Instant {
+		reference next[0-1] : DiscreteInstant oppositeOf previous;
+		reference previous[0-1] : DiscreteInstant oppositeOf next;
+		reference refOcc : EventOccurence;
+	}
+	--@end class DiscreteInstant
+	
+	--@begin class Event
+	abstract class Event {
+		reference occ[*] ordered container : EventOccurence;
+	}
+	--@end class Event
+	
+	--@begin class EventOccurence
+	abstract class EventOccurence {}
+	--@end class EventOccurence
+	--@end DiscreteTimeModels
+	
+	--@begin ContinuousTimeModel
+	--@begin class PhysicalTime
+	abstract class PhysicalTime {
+		reference physicalInstants[*] ordered container : PhysicalInstant;
+	}
+	--@end class PhysicalTime
+	
+	--@begin class PhysicalInstant
+	abstract class PhysicalInstant {
+		reference measurement[*] : MetricTimeValue;
+	}
+	--@end class PhysicalInstant
+	
+	--@begin class Duration
+	abstract class Duration {
+		reference start : PhysicalInstant;
+		reference end : PhysicalInstant;
+		reference measurement[*] : MetricTimeInterval;
+	}
+	--@end class Duration	
+	--@end ContinuousTimeModel
+	
+	--@begin MultipleTimeModels
+	--@begin class MultipleTimeBase
+	class MultipleTimeBase extends TimeBase {
+		reference bases[1-*] container : SingleTimeBase;
+	}
+	--@end class MultipleTimeBase
+	
+	--@begin class CoincidencePoint
+	class CoincidencePoint extends Instant {
+		reference coincidenceInstants[1-*] : SingleInstant oppositeOf coPoint;
+	}
+	--@end class CoincidencePoint
+	
+	--@begin class MultipleInterval
+	class MultipleInterval extends Interval {
+		reference first[1-*] : CoincidencePoint;
+		reference last[1-*] : CoincidencePoint;
+	}
+	--@end class MultipleInterval
+	
+	--@begin class MultipleTimeValue
+	class MultipleTimeValue extends TimeValue {
+		reference values[1-*] : SingleTimeValue;
+	}
+	--@end class MultipleTimeValue
+	--@end MultipleTimeModels
+	
+	--@begin MetricTimeModel
+	--@begin class MetricTimeValue
+	class MetricTimeValue extends DiscreteTimeValue {}
+	--@end class MetricTimeValue
+	
+	--@begin class DiscreteTimeValue
+	class DiscreteTimeValue extends TimeValue{}
+	--@end class DiscreteTimeValue
+	
+	--@begin class MetricTimeInterval
+	class MetricTimeInterval extends DiscreteTimeInterval {}
+	--@end class MetricTimeInterval
+	
+	--@begin class DiscreteTimeValue
+	class DiscreteTimeInterval extends TimeInterval{}
+	--@end class DiscreteTimeValue
+	--@end MetricTimeModel
+	
+	--@begin TimedEvents
+	--@begin class SimultaneousEventOccurrence
+	class SimultaneousEventOccurrence {
+		reference at : Instant;
+		reference occurence[2-*] : TimedEventOccurence;
+	}
+	--@end class SimultaneousEventOccurrence
+	
+	--@begin class TimedEvent
+	class TimedEvent {
+		reference timestamp[1-*] : MetricTimeValue;
+	}
+	--@end TimeEvent
+	
+	--@begin class TimedEventOccurence
+	class TimedEventOccurence extends EventOccurence {
+		reference at : Instant;
+		reference timestamp : TimeValue;
+	}
+	--@end class TimedEventOccurence
+	
+	--@begin class TimedAction
+	class TimedAction extends Scenario {
+		reference duration[*] : TimeInterval;
+		reference start[*] : TimeValue;
+		reference end[*] : TimeValue;
+	}
+	--@end class TimedAction
+	
+	--@begin class Delay
+	class Delay extends TimedAction {}
+	--@end class Delay
+	--@end TimeEvents
+	
+	--@begin TimingMechanisms
+	--@begin class TimingMechanism
+	class TimingMechanism {
+		attribute stability : String;
+		attribute drift : String;
+		attribute skew : String;
+		reference origin : TimedEvent;
+		reference resolution : MetricTimeInterval;
+		reference refClock : Clock;
+		
+		--@comments {"Start", "Pause", "Reset"}
+		attribute state : String;
+	}
+	--@end class TimingMechanism
+	
+	--@begin class Clock
+	class Clock extends DiscreteTimeBase, TimingMechanism {
+		reference accuracy : MetricTimeInterval;
+		reference offset : MetricTimeInterval;
+		reference generatedInterrupt[*] : ClockInterrupt;
+	}
+	--@end class Clock
+	
+	--@begin class Timer
+	class Timer extends TimingMechanism {
+		attribute isPeriodic : Boolean;
+		reference duration : MetricTimeValue;
+		reference genratedTimeOuts[*] : TimeOut;
+	}
+	--@end class Timer
+	
+	--@begin class TimeOut
+	class TimeOut{}
+	--@end class TimeOut
+	
+	--@begin class ClockInterrupt
+	class ClockInterrupt {
+	}
+	--@end class ClockInterrupt
+	--@end TimingMechanisms
+	--@end MARTE for TimeModels
+	
+	--@begin MARTE NFPs (Non-Functional Properties)
+	--@begin NFP Annotations
+	--@begin class System
+	class System {
+		reference dimension[*] :Quantity;
+	}
+	--@end class System
+	
+	--@begin class Model
+	class Model {
+		reference ownes[*] : ModelElement oppositeOf owner;
+	}
+	--@end class Model
+	
+	--@begin class AnnotatedModel
+	class AnnotatedModel extends Model {
+		reference conformsTo[1-*] : ModelingConcern oppositeOf annotedModel;
+		reference import[*] : NFPLibrary;
+	}
+	--@end class AnnotatedModel
+	
+	--@begin class ModelElement
+	class ModelElement {
+		reference owner : Model oppositeOf ownes;
+	}
+	--@end class ModelElement
+	
+	--@begin class AnnotatedModelElement
+	class AnnotatedModelElement extends ModelElement {
+		reference annotation[*] : NFP;
+	}
+	--@end class AnnotatedModelElement
+	
+	--@begin class NFP
+	class NFP{
+		reference measurementQuantity : Quantity;
+		reference storedBy[*] : NFPLibrary oppositeOf usedNFP;
+		reference groupedBy : NFPCategory oppositeOf setOf;
+	}
+	--@end class NFP
+	
+	--@begin class NFPLibrary
+	class NFPLibrary {
+		reference refersTo[*] : NFPLibrary;
+		reference usedNFP[*] : NFP oppositeOf storedBy;
+	}
+	--@end class NFPLibrary
+	
+	--@begin class NFPCategory
+	class NFPCategory {
+		reference setOf[1-*] container : NFP oppositeOf groupedBy;
+		reference ownes[*] : NFPCategory oppositeOf owner;
+		reference owner[0-1] : NFPCategory oppositeOf ownes;
+	}
+	--@end class NFPCategory
+	
+	--@begin class ModelingConcern
+	class ModelingConcern { 
+		reference relevantQuantity[*] : Quantity;
+		reference annotedModel : AnnotatedModel oppositeOf conformsTo;
+	}
+	--@end class ModelingConcern
+	
+	--@begin class AnalysisConcern
+	class AnalysisConcern extends ModelingConcern {}
+	--@end class AnalysisConcern
+	
+	--@begin class DesignConcern
+	class DesignConcern extends ModelingConcern {}
+	--@end class DesignConcern
+	
+	--@begin class Quantity
+	class Quantity {}
+	--@end class Quantity
+	
+	--@begin class BasicQuantity
+	class BasicQuantity {}
+	--@end class BasicQuantity
+	
+	--@begin class DerivedQuantity
+	class DerivedQuantity {}
+	--@end class DerivedQuantity
+	--@end NFP Annotations
+	
+	--@begin NFP Nature
+	--@begin class QualitativeNFP
+	class QualitativeNFP extends NFP {
+		reference parameter[*] : NFP;
+	}
+	--@end class QualitativeNFP
+	
+	--@begin class QuantitativeNFP
+	class QuantitativeNFP extends NFP {
+		reference sampleSet[*] container : Realization oppositeOf owner;
+		reference measure[*] container : Measure oppositeOf owner;
+	}
+	--@end class QuantitativeNFP
+	
+	--@begin class Realization
+	class Realization {
+		reference function[*] : Measure oppositeOf appliesTo;
+		reference owner : QuantitativeNFP oppositeOf sampleSet;
+	}
+	--@end class Realization
+	
+	--@begin class Measure
+	class Measure {
+		reference appliesTo[1-*] : Realization oppositeOf function;
+		reference owner : QuantitativeNFP oppositeOf measure;
+	}
+	--@end class Measure
+	--@end NFP Nature
+	
+	--@begin NFP core
+	--@begin class ComplexNFP
+	class ComplexNFP extends NFP {
+		reference parent[*] : ComplexNFP oppositeOf child;
+		reference child[*] : ComplexNFP oppositeOf parent;
+		reference ownes[1-*] container : BasicNFP oppositeOf dimensionOf;
+	}
+	--@end class ComplexNFP
+	
+	--@begin class BasicNFP
+	class BasicNFP {
+		attribute statisticalQualifier : StatisticalQualifierKinds;
+		attribute directon : DirectionKinds;
+		reference typedBy : NFPType;
+		reference valuedBy[*] : NFPValueSpecification;
+		reference dimensionOf[*] container : ComplexNFP oppositeOf ownes;
+	}
+	--@end class BasicNFP
+	--@end NFP core
+	
+	--@begin NFP Types
+	--@begin class NFPType
+	class NFPType {
+		attribute valueSpecificationLanguage : String;
+		attribute source[0-1] : SourceKinds;
+		reference constrainedSpec[*] : NFPValueSpecification oppositeOf constrainedBy;
+	}
+	--@end class NFP Type
+	
+	--@begin class NFPInstantType
+	class NFPInstantType extends NFPType {
+		attribute value : String;
+		attribute unit[0-1] : InstantUnitKinds;
+	}
+	--@end class NFPInstantType
+	
+	--@begin class NFPDurationType
+	class NFPurationType extends NFPType {
+		attribute value : String;
+		attribute unit[0-1] : DurationUnitKinds;
+	}
+	--@end class NFPDurationType
+	
+	--@begin class NFPRateType
+	class NFPRateType extends NFPType {
+		attribute value : String;
+		attribute unit[0-1] : RateUnitKinds;
+	}
+	--@end class NFPRateType
+	
+	--@begin class NFPProbabilityType
+	class NFPProbabilityType extends NFPType {
+		attribute value : String;
+		attribute unit[0-1] : ProbabilityUnitKinds;
+	}
+	--@end class NFPProbabilityType
+	
+	--@begin class NFPSizeType
+	class NFPSizeType extends NFPType {
+		attribute value : String;
+		attribute unit[0-1] : SizeUnitKinds;
+	}
+	--@end class NFPSizeType
+	--@end NFPTypes
+	
+	--@begin NFP Value Specifications
+	--@begin class NFPValueSpecification
+	class NFPValueSpecification {
+		reference constrainedBy[*] : NFPType oppositeOf constrainedSpec;
+		reference expression[0-1] : NFPExpression oppositeOf operand;
+	}
+	--@end class NFPValueSpecification
+	
+	--@begin class NFPConstant
+	class NFPConstant extends NFPValueSpecification {	
+		reference ownerList[0-1] : NFPListConstant oppositeOf listElements;
+	}
+	--@end class NFPConstant
+	
+	--@begin class NFPListConstant
+	class NFPListConstant extends NFPConstant {
+		reference listElements[*] ordered : NFPConstant oppositeOf ownerList;
+	}
+	--@end class NFPListConstant
+	
+	--@begin class NFPStringConstant
+	class NFPStringConstant extends NFPConstant {
+		attribute body : String;
+	}
+	--@end class NFPStringConstant
+	
+	--@begin class NFPIntegerConstant
+	class NFPIntegerConstant extends NFPConstant {
+		attribute body : Integer;
+	}
+	--@end class NFPIntegerConstant
+	
+	--@begin class NFPRealConstant
+	class NFPRealConstant extends NFPConstant {
+		attribute bodyBeforeComa : Integer;
+		attribute bodyAfterComa : Integer;
+	}
+	--@end class NFPRealConstant
+	
+	--@begin class NFPBooleanConstant
+	class NFPBooleanConstant extends NFPConstant {
+		attribute body : Boolean;
+	}
+	--@end class NFPBooleanConstant
+	
+	--@begin class NFPVariable
+	class NFPVariable extends NFPValueSpecification {
+		attribute varName : String;
+	}
+	--@end class NFPVariable
+	
+	--@begin class NFPExpression
+	class NFPExpression extends NFPValueSpecification {
+		attribute body[1-*] ordered : String;
+		reference operand[*] container : NFPValueSpecification oppositeOf expression;
+	}
+	--@end class NFPExpression
+	--@end NFP Value Specifications
+	
+	--@begin NFP Basic Types Library
+	--@begin enumeration SourceKinds
+	enumeration SourceKinds {
+		literal est;
+		literal meas;
+		literal req;
+		literal implicit;
+		literal calc;
+	}
+	--@end enumeration SourceKinds
+	
+	--@begin enumeration DirectionKinds
+	enumeration DirectionKinds {
+		literal increasing;
+		literal decreasing;
+		literal undefined;
+	}
+	--@end enumeration DirectionKinds
+	
+	--@begin enumeration StatisticalQualifierKinds
+	enumeration StatisticalQualifierKinds {
+		literal max;
+		literal min;
+		literal range;
+		literal mean;
+		literal variance;
+		literal standardDeviation;
+		literal percentil;
+		literal frequency;
+		literal moment;
+		literal distribution;
+		literal instantaneous;
+	}
+	--@end enumeration StatisticalQualifierKinds
+	
+	--@begin enumeration InstantUnitKinds
+	enumeration InstantUnitKinds {
+		literal TAI;
+		literal UT0;
+		literal UT1;
+		literal UTC;
+		literal TT;
+		literal TDB;
+		literal TCG;
+		literal TCB;
+		literal Sideral;
+		literal Local;
+	}
+	--@end enumeration InstantUnitKinds
+	
+	--@begin enumeration DurationUnitKinds
+	enumeration DurationUnitKinds {
+		literal ns;
+		literal us;
+		literal ms;
+		literal s;
+		literal min;
+		literal hrs;
+		literal dys;
+		literal wks;
+		literal mos;
+		literal yrs;
+	}
+	--@end enumeration DurationUnitKinds
+	
+	--@begin enumeration RateUnitKinds
+	enumeration RateUnitKinds {
+		literal kbs;
+		literal MIPS;
+	}
+	--@end enumeration RateUnitKinds
+	
+	--@begin enumeration ProbabilityUnitKinds
+	enumeration ProbabilityUnitKinds {
+		literal us;
+		literal s;
+	}
+	--@end enumeration ProbabilityUnitKinds
+	
+	--@begin enumeration SizeUnitKinds
+	enumeration SizeUnitKinds {
+		literal bits;
+		literal bytes;
+		literal Mb;
+		literal MB;
+	}
+	--@end enumeration SizeUnitKinds
+	--@end NFP Basic Types Library
+	--@end MARTE NFPs (Non-Functional Properties)
+	
+	--@begin MARTE CoreResourceModel
+	--@begin class Classifier
+	abstract class Classifier extends AnnotatedModelElement {
+		reference instances[*] : InstanceSpecification oppositeOf type;
+	}
+	--@end class Classifier
+	
+	--@begin class ResourceClassifier
+	abstract class ResourceClassifier extends Classifier {
+		reference offeredService[1-*] : ResourceServiceClassifier oppositeOf resType;
+	}
+	--@end class ResourceClassifier
+	
+	--@begin class ResourceServiceClassifier
+	abstract class  ResourceServiceClassifier extends Classifier {
+		reference resType : ResourceClassifier oppositeOf offeredService;
+	}
+	--@end class ResourceServiceClassifier
+	
+	--@begin class InstanceSpecification
+	abstract class InstanceSpecification extends AnnotatedModelElement {
+		reference type[1-*] : Classifier oppositeOf instances;
+	}
+	--@end class InstanceSpecification
+	
+	--@begin class ResourceInstanceSpecification
+	abstract class ResourceInstanceSpecification extends InstanceSpecification {
+		reference offeredServiceInstance[1-*] : ResourceServiceInstanceSpecification oppositeOf resintSpec;
+	}
+	--@end class ResourceInstanceSpecification
+	
+	--@begin class ResourceServiceInstanceSpecification
+	abstract class ResourceServiceInstanceSpecification extends InstanceSpecification {
+		reference resintSpec : ResourceInstanceSpecification oppositeOf offeredServiceInstance;
+	}
+	--@end class 
+	--@end MARTE CoreRessourceModel
+	
+	--@begin Marte Hardware execution platform
+	--@begin GlobalModel
+	--@begin class Hardware
+	class Hardware {
+		reference owner : Hardware oppositeOf containH;
+		reference containH[*] : Hardware oppositeOf owner;
+		reference containHL[*] : HardwareLibrary oppositeOf owner;
+		reference containHE[*] : HardwareEntity oppositeOf owner;
+		reference deploymentConfiguration[*] : HardwareDeployment oppositeOf owner;
+	}
+	--@end class Hardware
+	
+	--@begin class HardwareLibrary
+	class HardwareLibrary {
+		reference owner : Hardware oppositeOf containHL;
+	}
+	--@end class HardwareLibrary
+	
+	--@begin class HardwareEntity
+	class HardwareEntity {
+		reference owner : Hardware oppositeOf containHE;
+	}
+	--@end class HardwareEntity
+	
+	--@begin class HardwareDeployment
+	class HardwareDeployment {
+		reference owner : Hardware oppositeOf deploymentConfiguration;
+		reference contain[1-*] : HardwareEntityInstance oppositeOf owner;
+	}
+	--@end class HardwareDeployment
+	
+	--@begin InstanceModel
+	--@begin class HardwareEntityInstance
+	class HardwareEntityInstance {
+		reference owner : HardwareDeployment oppositeOf contain;
+	}
+	--@end class HardwareEntityInstance
+	
+	--@begin class ECUInstance
+	class ECUInstance extends HardwareEntityInstance {
+		reference composedOf[*] container : ECUGateInstance; 
+	}
+	--@end class ECUInstance
+	
+	--@begin class ChannelInstance
+	class ChannelInstance extends HardwareEntityInstance {
+		reference gateInstances[2-*] : ECUGateInstance oppositeOf channel; 
+	}
+	--@end class ChannelInstance
+	
+	--@begin class ECUGateInstance
+	class ECUGateInstance {
+		reference channel : ChannelInstance oppositeOf gateInstances; 
+	}
+	--@end class ECUGateInstance
+	--@end InstanceModel
+	
+	--@begin HardwareEntityTypes
+	--@begin class ECU
+	class ECU extends HardwareEntity {
+		reference contain[1-*] container : ECUGate oppositeOf owner;
+	}
+	--@end class ECU
+	
+	--@begin class ECUGate
+	class ECUGate {
+		reference owner : ECU oppositeOf contain;
+		reference kindOf : Channel oppositeOf specify;
+	}
+	--@end class ECUGate
+	
+	--@begin class Channel
+	class Channel {
+		reference specify[0-1] : ECUGate oppositeOf kindOf;		
+	}
+	--@end class Channel
+	--@end HardwareEntityTypes	
+	--@end Marte Hardware execution platform
+	
+	--@begin Generic Quantitative Analysis Modeling (GQAM)
+	--@begin GQAM Analysis Context
+	--@begin class AnalysisContext
+	class AnalysisContext {
+		reference global[*] : ComplexNFP;
+		reference workload[0-1] container : Workload;
+		reference behavior[0-1] container : Behavior;
+		reference usedResources[1-*] container : Resource;
+	}
+	--@end class AnalysisContext
+	--@end GQAM Analysis Context
+	
+	--@begin GQAM Workload
+	--@begin class Workload
+	class Workload {
+		reference transaction[1-*] : Transaction oppositeOf workload;
+	}
+	--@end class Workload
+	
+	--@begin class Transaction
+	class Transaction {
+		reference workload[1-*] : Workload oppositeOf transaction;
+		reference trigger[1-*] container : Trigger;
+		reference response container : Response;
+	}
+	--@end class Transaction
+	
+	--@begin class Trigger
+	class Trigger {
+		reference arrivalPattern : ComplexNFP;
+		reference effect[1-*] : Response oppositeOf cause;
+	}
+	--@end class Trigger
+	
+	--@begin class Response
+	class Response {
+		reference efficiency : ComplexNFP;
+		reference endToEndLatency : ComplexNFP;
+		reference cause[1-*] : Trigger oppositeOf effect;
+		reference behavior[1-*] : Scenario oppositeOf endToEndResponse;
+	}
+	--@end class Response
+	--@end GQAM Workload
+	
+	--@begin GQAM Behavior
+	--@begin class Behavior
+	class Behavior {
+		reference scenario[1-*] container : Scenario oppositeOf behavior;
+	}
+	--@end class Behavior
+	
+	--@begin class Scenario
+	class Scenario {
+		reference behavior[1-*] : Behavior oppositeOf scenario;
+		reference scenarionLatency[*] : ComplexNFP;
+		reference steps[1-*] ordered container : Step;
+		reference root : Step;
+		reference endToEndResponse : Response oppositeOf behavior;
+	}
+	--@end class Scenario
+	
+	--@begin class Step
+	class Step extends Scenario {
+		reference predecessor[*] : Step oppositeOf successor;
+		reference successor[*] : Step oppositeOf predecessor;
+		reference stepLatency[*] : ComplexNFP;
+		reference usedResourceService[*] : Service;				
+	}
+	--@end class Step
+	--@end GQAM Behavior
+	
+	--@begin GQAM Resource
+	--@begin class Resource
+	class Resource {}
+	--@end class Resource
+	
+	--@begin class BasicResource
+	class BasicResource extends Resource {}
+	--@end class BasicResource
+	
+	--@begin class StructuredResource
+	class StructuredResource extends Resource {
+		reference basicResource container : BasicResource;
+	}
+	--@end class StructuredResource
+	
+	--@begin class ProcessingResource
+	class ProcessingResource extends StructuredResource {
+		reference links[*] : Link;
+		reference components[1-*] : Component;
+	}
+	--@end class ProcessingResource
+	
+	--@begin class Link
+	class Link {}
+	--@end class Link
+	
+	--@begin class ProcessResource
+	class ProcessResource extends StructuredResource {
+		reference components[1-*] : Component oppositeOf process;
+	}
+	--@end class ProcessResource
+	
+	--@begin class Component
+	class Component {
+		reference process[1-*] : ProcessResource oppositeOf components;
+		reference interfaces[1-*] : Interface;
+	}
+	--@end class Component
+	
+	--@begin class StructuredComponent
+	class StructuredComponent extends Component {}
+	--@end class StructuredComponent
+	
+	--@begin class BasicComponent
+	class BasicComponent extends Component {}
+	--@end class BasicComponent
+	
+	--@begin class LogicalResource
+	class LogicalResource extends StructuredResource {}
+	--@end class LogicalResource
+	
+	--@begin class ServerResource
+	class ServerResource extends StructuredResource {
+		reference services[1-*] : Service oppositeOf resource;
+	}
+	--@end class ServerResource
+	
+	--@begin class Service
+	class Service {
+		reference resource : ServerResource oppositeOf services;
+		reference interface : Interface oppositeOf service;
+	}
+	--@end class Service
+	
+	--@begin class Interface
+	class Interface {
+		reference service : Service oppositeOf interface;
+	}
+	--@end class Interface
+	--@end GQAM Resource
+	--@end Generic Quantitative Analysis Modeling (GQAM)	
+}
+--@end package Marte
+
+--@begin package PrimitiveType
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+	datatype Boolean;
+}
+--@end packege PrimitiveType

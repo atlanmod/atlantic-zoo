@@ -1,0 +1,50 @@
+package Metamodel;
+
+package ActorConcept {
+  class Actor {
+    !ordered ref Dependency[*]#dependee dependencyE;
+    !ordered ref Dependency[*]#depender dependencyR;
+    !ordered ref Goal[*]#wanter goal;
+    !ordered ref Plan[*]#capableOf plan;
+    !ordered ref Resource[*]#use resource;
+  }
+
+  class Goal {
+    !ordered ref Actor[1]#goal wanter;
+    !ordered ref Plan[+]#isFulfilled plan;
+    !ordered ref Dependency[*]#WhyG dependencyWG;
+    !ordered ref Dependency[*]#goal dependencyG;
+  }
+
+  class SoftGoal extends Goal {
+  }
+
+  class HardGoal extends Goal {
+  }
+
+  class Dependency {
+    !ordered ref Actor[1]#dependencyE dependee;
+    !ordered ref Actor[1]#dependencyR depender;
+    !ordered ref Goal#dependencyG goal;
+    !ordered ref Goal#dependencyWG WhyG;
+    !ordered ref Resource#dependencyWR WhyR;
+    !ordered ref Resource#dependencyR resourceD;
+    !ordered ref Plan#dependencyWP WhyP;
+    !ordered ref Plan#dependencyP plan;
+  }
+
+  class Plan {
+    !ordered ref Goal[1]#plan isFulfilled;
+    !ordered ref Actor[1]#plan capableOf;
+    !ordered ref Dependency[*]#WhyP dependencyWP;
+    !ordered ref Dependency[*]#plan dependencyP;
+  }
+
+  class Resource {
+    !ordered ref Actor[1]#resource use;
+    !ordered ref Dependency[1]#WhyR dependencyWR;
+    !ordered ref Dependency[1]#resourceD dependencyR;
+  }
+
+}
+

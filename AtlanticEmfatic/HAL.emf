@@ -1,0 +1,253 @@
+package Metamodel;
+
+package HAL {
+  class HAL {
+    !ordered val Connexion[1] connexion;
+    !ordered val Entry[*] contents;
+  }
+
+  class Connexion {
+    !unique !ordered attr String[1] login;
+    !unique !ordered attr String[1] password;
+  }
+
+  abstract class Entry {
+    !ordered val AutLabType[1] autLab;
+    !ordered val TamponType[*] tampons;
+  }
+
+  abstract class Article extends Entry {
+    !ordered val MetaArtType[1] metaArt;
+  }
+
+  class ArticleRecent extends Article {
+    !ordered val DepotsType[1] fichiers;
+  }
+
+  class ArticleRetro extends Article {
+    !unique !ordered attr String[1] dateRedaction;
+    !ordered val AbstractDepot[1] fichiers;
+  }
+
+  class Notice extends Entry {
+    !ordered val MetaArtNoticeType[1] metaArtNotice;
+  }
+
+  abstract class ReferenceBiblioType {
+  }
+
+  abstract class ArtRevueType extends ReferenceBiblioType {
+    !unique !ordered attr String urldoi;
+    !unique !ordered attr String[1] journal;
+    !unique !ordered attr String[1] volume;
+    !unique !ordered attr String[1] page;
+    !unique !ordered attr String[1] annee;
+  }
+
+  abstract class WorkshopType extends ReferenceBiblioType {
+    !unique !ordered attr String urldoi;
+    !unique !ordered attr String[1] titconf;
+    !unique !ordered attr String ville;
+    !unique !ordered attr String[1] pays;
+    !unique !ordered attr String edcom;
+    !unique !ordered attr String[1] annee;
+    !unique !ordered attr String page;
+    !unique !ordered attr String edsci;
+    !unique !ordered attr String serie;
+  }
+
+  abstract class ArtOuvrageType extends ReferenceBiblioType {
+    !unique !ordered attr String urldoi;
+    !unique !ordered attr String[1] titouv;
+    !unique !ordered attr String edcom;
+    !unique !ordered attr String[1] annee;
+    !unique !ordered attr String edsci;
+    !unique !ordered attr String serie;
+  }
+
+  abstract class OuvrageType extends ReferenceBiblioType {
+    !unique !ordered attr String urldoi;
+    !unique !ordered attr String edcom;
+    !unique !ordered attr String[1] annee;
+    !unique !ordered attr String[1] page;
+  }
+
+  abstract class TheseType extends ReferenceBiblioType {
+    !unique !ordered attr String[1] orgthe;
+    !unique !ordered attr String[1] niveau;
+    !unique !ordered attr String[1] defencedate;
+    !unique !ordered attr String[1] directeur;
+    !unique !ordered attr String codirecteur;
+  }
+
+  abstract class BrevetType extends ReferenceBiblioType {
+    !unique !ordered attr String[1] datebrevet;
+    !unique !ordered attr String[1] numbrevet;
+    !unique !ordered attr String[1] page;
+    !unique !ordered attr String[1] pays;
+  }
+
+  abstract class AutreType extends ReferenceBiblioType {
+    !unique !ordered attr String urldoi;
+    !unique !ordered attr String annee;
+    !unique !ordered attr String[1] description;
+  }
+
+  class ArtRevue extends ArtRevueType {
+  }
+
+  class ArtJournal extends ArtRevueType {
+  }
+
+  class Workshop extends WorkshopType {
+  }
+
+  class Communication extends WorkshopType {
+  }
+
+  class Conference extends WorkshopType {
+  }
+
+  class ArtOuvrage extends ArtOuvrageType {
+  }
+
+  class Ouvrage extends OuvrageType {
+  }
+
+  class Brevet extends BrevetType {
+  }
+
+  class Autre extends AutreType {
+  }
+
+  class These extends TheseType {
+  }
+
+  abstract class MetaType {
+    !unique !ordered attr String[1] langue;
+    !unique !ordered attr String[1] title;
+    !unique !ordered attr String comment;
+    !unique !ordered attr String refInterne;
+    !unique !ordered attr String idext;
+    !unique !ordered attr Integer isEpj;
+    !unique !ordered attr String isEpl;
+    !unique !ordered attr String classification;
+    !unique !ordered attr String collaboration;
+    !unique !ordered attr String keyword;
+    !unique !ordered attr DateVisibleEnum datevisible;
+    !unique !ordered attr String financement;
+    !unique !ordered attr String researchteam;
+  }
+
+  class MetaArtType extends MetaType {
+    !unique !ordered attr String[1] domain;
+    !unique !ordered attr String[1] ~abstract;
+    !ordered val ReferenceBiblioType referenceBiblio;
+  }
+
+  class MetaArtNoticeType extends MetaType {
+    !unique !ordered attr String domain;
+    !unique !ordered attr String ~abstract;
+    !ordered val ReferenceBiblioType[1] referenceBiblio;
+  }
+
+  class AutLabType {
+    !ordered ref Auteur[+] auteurs;
+    !ordered ref Laboratoire[+] laboratoires;
+  }
+
+  class Auteur {
+    !unique !ordered attr String[1] nom;
+    !unique !ordered attr String[1] prenom;
+    !unique !ordered attr String autrePrenom;
+    !unique !ordered attr String email;
+    !unique !ordered attr String urlPerso;
+    !ordered ref Laboratoire lab;
+  }
+
+  class Laboratoire {
+    !unique !ordered attr Integer[1] ~id;
+    !ordered val AbstractMetaLab[1] metas;
+  }
+
+  abstract class AbstractMetaLab {
+  }
+
+  class MetaLab extends AbstractMetaLab {
+    !unique !ordered attr String[1] ~id;
+  }
+
+  class AffiliationType {
+    !unique !ordered attr String[*] institution;
+    !unique !ordered attr String[*] prive;
+    !unique !ordered attr String[*] ecole;
+    !unique !ordered attr String[*] universite;
+  }
+
+  class TamponType {
+    !unique !ordered attr String[1] ~id;
+  }
+
+  enum DateVisibleEnum {
+    15J = 0;
+    1M = 0;
+    3M = 0;
+    1A = 0;
+    2A = 0;
+    JAMAIS = 0;
+  }
+
+  abstract class AbstractDepot {
+    !unique !ordered attr String[1] nom;
+  }
+
+  class Depot extends AbstractDepot {
+    !unique !ordered attr FormatEnum[1] format;
+  }
+
+  enum FormatEnum {
+    PDF = 0;
+    TEX = 0;
+    DOC = 0;
+    RTF = 0;
+    TXT = 0;
+    PS = 0;
+    ANNEX = 0;
+  }
+
+  class DepotWeb extends AbstractDepot {
+    !unique !ordered attr FormatWebEnum[1] format;
+  }
+
+  enum FormatWebEnum {
+    XML = 0;
+    HTML = 0;
+    HTM = 0;
+  }
+
+  abstract class AbstractDepotType {
+  }
+
+  class DepotsType extends AbstractDepotType {
+    !ordered val AbstractDepot[+] depots;
+  }
+
+  class WebLink extends AbstractDepotType {
+    !unique !ordered attr String[1] identifiant;
+    !ordered val Server[1] server;
+  }
+
+  class Server {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

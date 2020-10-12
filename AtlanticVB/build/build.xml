@@ -1,0 +1,260 @@
+<!-- How to configure this ant script:
+	Run as->Ant Build...
+		Set:
+			- Base directory
+			- Run in same JRE
+			- Refresh
+
+			- ANTLR jar (?)
+			- ant contrib jar
+-->
+<project name="atlanticVB" default="transformAll" basedir=".">
+	<mkdir dir="./tmp"/>
+	<property name="sourcePath" value="../../org.eclipse.am3.zoos.atlantic/"/>
+	<property name="targetPath" value="../../AtlanticVB/"/>
+	<property name="projectPath" value="" />
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+	</taskdef>
+	
+	<target name="transformAll" depends="loadModels">
+
+		<!-- loop over all km3 models -->
+		<for param="e">
+		  <path>
+		    <fileset dir="${projectPath}../../Atlantic" includes="*.km3"/>
+		  </path>
+		  <sequential>
+		  	<!-- executes the transformations -->
+			<antcall target="condition" inheritall="true" inheritrefs="true">
+				<param name="sample" value="@{e}"/>
+			</antcall>
+		  </sequential>
+		</for>
+		
+	</target>
+
+	<target name="condition">
+	  	<basename property="name" file="${sample}" suffix=".km3"/>
+		<property name="sourceModel" value="${sourcePath}${name}.km3"/>
+		<property name="targetModel_old" value="${targetPath}class/${name}.zip"/>
+		
+		<uptodate property="isUpToDate" srcfile="${sourceModel}" targetfile="${targetModel_old}"/>
+		
+	  	<if>
+	  	 <not>
+			 <equals arg1="${isUpToDate}" arg2="true" />
+		 </not>
+		 <then>
+			<antcall target="transformOne" inheritall="true" inheritrefs="true">
+				<param name="name" value="${name}"/>
+				<param name="sourceModel" value="${sourceModel}"/>
+				<param name="sample" value="${sample}"/>
+			</antcall>
+		 </then>
+		</if>
+
+	</target>
+	
+	<!-- parameters: sample -->
+	<target name="transformOne">
+		<property name="targetModel" value="${targetPath}build/tmp/${name}"/>
+
+		<echo message="Transforming ${name}"/>		
+		<antcall target="VBClassZip" inheritall="true" inheritrefs="true">
+			<param name="targetModel" value="${targetModel}"/>
+			<param name="sample" value="${sample}"/>
+		</antcall>
+		<antcall target="VBInterfaceZip" inheritall="true" inheritrefs="true">
+			<param name="sample" value="${sample}"/>
+			<param name="targetModel" value="${targetModel}"/>
+		</antcall>
+	</target>
+
+	<target name="VBClassZip" depends="VBClass">
+	    <zip destfile="${targetPath}class/${name}.zip"
+    	    basedir="./tmp"
+    		includes="${name}.*"
+  		/>
+	    <delete>
+	      	<fileset dir="./tmp" includes="*"/>
+	 	</delete>
+	</target>
+
+	<target name="VBInterfaceZip" depends="VBInterface">
+	    <zip destfile="${targetPath}interface/${name}.zip"
+    	    basedir="./tmp"
+    		includes="${name}.*"
+  		/>
+	    <delete>
+	      	<fileset dir="./tmp" includes="*"/>
+	 	</delete>
+	</target>
+	
+	<target name="VBClass">
+	<!-- Load source model -->
+		<echo message="injection ${sample}"/>		
+		<am3.loadModel modelHandler="EMF" name="${sample}" metamodel="KM3" path="${sourceModel}">
+			<injector name="ebnf">
+				<param name="name" value="KM3"/>
+			</injector>			
+		</am3.loadModel>
+		
+		<!-- Transform KM3 metamodel into VB model -->
+		<am3.atl path="${targetPath}/build/KM3_2_VisualBasicClass.asm">
+			<inModel name="IN" model="${sample}"/>
+			<inModel name="KM3" model="KM3"/>
+			<inModel name="VB" model="VisualBasic"/>
+			<outModel name="OUT" model="targetVBc" metamodel="VisualBasic"/>
+		</am3.atl>
+
+		<!-- Extract and save VisualBasic Class model -->
+		<am3.saveModel model="targetVBc" path="${targetModel}.vb">
+			<extractor name="ebnf">
+				<param name="format" value="VisualBasic.tcs"/>
+				<param name="stringDelim" value="&quot;"/>
+				<param name="identEscStart" value=""/>
+				<param name="identEscEnd" value=""/>
+<!--
+				<param name="identEscStart" value="["/>
+				<param name="identEscEnd" value="]"/>
+-->
+				<param name="indentString" value="&#9;"/>
+				<param name="kwCheckIgnoreCase" value="true"/>
+			</extractor>
+		</am3.saveModel>
+		
+		<!-- Transform KM3 metamodel into VB class diagram model -->
+		<am3.atl path="${targetPath}/build/KM32VBClassesDiagramXML.asm">
+			<inModel name="IN" model="${sample}"/>
+			<inModel name="KM3" model="KM3"/>
+			<inModel name="XML" model="XML"/>
+			<outModel name="OUT" model="targetVBcd" metamodel="XML"/>
+		</am3.atl>
+
+		<!-- Extract and save VisualBasic Class model -->
+		<am3.saveModel model="targetVBcd" path="${targetModel}.cd">
+			<extractor name="xml">
+			</extractor>
+		</am3.saveModel>
+
+		<echo file="./tmp/${name}.vbproj" append="false"><![CDATA[<?xml version="1.0" encoding="utf-8"?>
+				<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+				    <OutputPath>bin\Debug\</OutputPath>
+				  </PropertyGroup>
+				  <PropertyGroup>
+				    <OutputType>Library</OutputType>
+				  </PropertyGroup>
+				  <ItemGroup>
+				    <Reference Include="System" />
+				  </ItemGroup>
+				  <ItemGroup>
+				    <Import Include="System" />
+				    <Import Include="System.Collections" />
+				    <Import Include="System.Collections.Generic" />
+				  </ItemGroup>
+				  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+							
+				  <ItemGroup>
+				    <Compile Include="${name}.vb" />
+				    <None Include="${name}.cd" />
+				  </ItemGroup>
+				</Project>
+			]]>
+		</echo>
+	</target>
+	<target name="VBInterface">
+	<!-- Load source model -->
+		<am3.loadModel modelHandler="EMF" name="${sample}" metamodel="KM3" path="${sourceModel}">
+			<injector name="ebnf">
+				<param name="name" value="KM3"/>
+			</injector>			
+		</am3.loadModel>
+
+		
+		<!-- Transform KM3 metamodel into VB model -->
+		<am3.atl path="${targetPath}/build/KM3_2_VisualBasicInterface.asm">
+			<inModel name="IN" model="${sample}"/>
+			<inModel name="KM3" model="KM3"/>
+			<inModel name="VB" model="VisualBasic"/>
+			<outModel name="OUT" model="targetVBc" metamodel="VisualBasic"/>
+		</am3.atl>
+
+		<!-- Extract and save VisualBasic Class model -->
+		<am3.saveModel model="targetVBc" path="${targetModel}.vb">
+			<extractor name="ebnf">
+				<param name="format" value="VisualBasic.tcs"/>
+				<param name="stringDelim" value="&quot;"/>
+				<param name="identEscStart" value="["/>
+				<param name="identEscEnd" value="]"/>
+				<param name="indentString" value="&#9;"/>
+				<param name="kwCheckIgnoreCase" value="true"/>
+			</extractor>
+		</am3.saveModel>
+		
+		<!-- Transform KM3 metamodel into VB class diagram model -->
+		<am3.atl path="${targetPath}/build/KM32VBInterfacesDiagramXML.asm">
+			<inModel name="IN" model="${sample}"/>
+			<inModel name="KM3" model="KM3"/>
+			<inModel name="XML" model="XML"/>
+			<outModel name="OUT" model="targetVBcd" metamodel="XML"/>
+		</am3.atl>
+
+		<!-- Extract and save VisualBasic Class model -->
+		<am3.saveModel model="targetVBcd" path="${targetModel}.cd">
+			<extractor name="xml">
+			</extractor>
+		</am3.saveModel>
+
+		<echo file="./tmp/${name}.vbproj" append="false"><![CDATA[<?xml version="1.0" encoding="utf-8"?>
+				<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+				    <OutputPath>bin\Debug\</OutputPath>
+				  </PropertyGroup>
+				  <PropertyGroup>
+				    <OutputType>Library</OutputType>
+				  </PropertyGroup>
+				  <ItemGroup>
+				    <Reference Include="System" />
+				  </ItemGroup>
+				  <ItemGroup>
+				    <Import Include="System" />
+				    <Import Include="System.Collections" />
+				    <Import Include="System.Collections.Generic" />
+				  </ItemGroup>
+				  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+							
+				  <ItemGroup>
+				    <Compile Include="${name}.vb" />
+				    <None Include="${name}.cd" />
+				  </ItemGroup>
+				</Project>
+			]]>
+		</echo>
+	</target>
+
+	<target name="loadModels">
+		<!-- Load ATL metamodel -->
+		<am3.loadModel modelHandler="EMF" name="ATL" metamodel="MOF" nsUri="http://www.eclipse.org/gmt/2005/ATL" />
+
+		<!-- Load KM3 metamodel -->
+		<am3.loadModel modelHandler="EMF" name="KM3" metamodel="MOF" nsUri="http://www.eclipse.org/gmt/2005/KM3" />
+		
+		<!-- Load TCS metamodel -->
+		<am3.loadModel modelHandler="EMF" name="TCS" metamodel="MOF" path="${targetPath}/build/TCS.ecore" />
+		
+		<!-- Load VisualBasic metamodel -->
+		<am3.loadModel modelHandler="EMF" name="VisualBasic" metamodel="MOF" path="${targetPath}/build/VisualBasic.ecore" />
+	
+		<!-- Load XML metamodel -->
+		<am3.loadModel modelHandler="EMF" name="XML" metamodel="MOF" path="${targetPath}/build/XML.ecore" />
+
+		<!-- Load VisualBasic.tcs model -->
+		<am3.loadModel modelHandler="EMF" name="VisualBasic.tcs" metamodel="TCS" path="${targetPath}/build/VisualBasic.tcs">
+			<injector name="ebnf">
+				<param name="name" value="TCS"/>
+			</injector>
+		</am3.loadModel>
+	</target>		
+</project>

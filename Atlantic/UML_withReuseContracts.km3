@@ -1,0 +1,49 @@
+-- @name 		UML with reuse contracts
+-- @domains 	UML
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/07/10
+-- @description This metamodel fragment describes UML metamodel with reuse contracts
+-- @see 		This metamodel fragment has been extracted from information available in the following article:
+-- @see 		Article "Supporting Disciplined Reuse and Evolution of UML Models"
+-- @see 		by Tom Mens, Carine Lucas, Patrick Steyaert
+-- @see 		Page 387, Section 3.6, Fig. 4 Extension of the UML metamodel with reuse contracts
+-- @see 		Lecture Notes in Computer Science 1618
+-- @see 		Jean Bézivin, Pierre-Alain Muller
+-- @see 		The Unified Modeling Language UML 98: Beyond the notation
+
+package UMLWithReuseContrats {
+
+	class ReuseContract extends Dependency {
+		reference supplier [1-1] : ProviderClause;
+		reference client [1-1] : ReuserClause;
+	}
+	
+	class Dependency {
+		reference owningDependency [0-1] : Dependency oppositeOf subDependency;
+		reference subDependency [*] container : Dependency oppositeOf owningDependency;
+	}
+	
+	class ProviderClause extends Package {}
+	
+	class Package {}
+
+	class ReuserClause extends Package {}
+	
+	class CompositeProvider extends ProviderClause {
+		reference subcontract [1-1] container : ReuseContract;
+	}
+	
+	class BasicProvider extends ProviderClause {}
+	
+	class CompositeReuser extends ReuserClause {
+		reference subreuser [*] ordered container : ReuserClause;
+	}
+	
+	class BasicReuser extends ReuserClause {}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

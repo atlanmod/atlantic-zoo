@@ -1,0 +1,212 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_ASM"{
+labelloc=t
+color=black
+label=ASM
+ node[shape=record];
+LocatedElement[label="{/LocatedElement/|location : String| }"]
+;
+ node[shape=record];
+XAsmFile[label="{/XAsmFile/| | }"]
+ XAsmFile->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XAsmSpec[label="{XAsmSpec| | }"]
+ XAsmSpec->Asm[arrowhead=vee,arrowtail=diamond,headlabel="Asm[1-*]",group=Asm,minlen=2,constraint=true,]
+ XAsmSpec->XAsmFile[arrowhead=onormal,group=XAsmFile,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Asm[label="{Asm|returnType[0-1] : String| }"]
+ Asm->Signature[arrowhead=vee,arrowtail=diamond,headlabel="signature",group=Signature,minlen=2,constraint=true,]
+ Asm->MetaInformation[arrowhead=vee,arrowtail=diamond,headlabel="metaInformation",group=MetaInformation,minlen=2,constraint=true,]
+ Asm->Body[arrowhead=vee,arrowtail=diamond,headlabel="body",group=Body,minlen=2,constraint=true,]
+ Asm->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Signature[label="{Signature|isMain : Boolean\nname : String| }"]
+ Signature->Argument[arrowhead=vee,arrowtail=diamond,headlabel="arguments[*]",group=Argument,minlen=2,constraint=true,]
+ Signature->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Argument[label="{Argument|type : String| }"]
+ Argument->VariableDecl[arrowhead=onormal,group=VariableDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Body[label="{Body| | }"]
+ Body->Declaration[arrowhead=vee,arrowtail=diamond,headlabel="declarations[*]{ordered}",group=Declaration,minlen=2,constraint=true,]
+ Body->Initialization[arrowhead=vee,arrowtail=diamond,headlabel="initialization[0-1]",group=Initialization,minlen=2,constraint=true,]
+ Body->Rule[arrowhead=vee,arrowtail=diamond,headlabel="rules[*]",group=Rule,minlen=2,constraint=true,]
+ Body->XAsmFile[arrowhead=onormal,group=XAsmFile,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MetaInformation[label="{MetaInformation|usedAs : AsmType| }"]
+ MetaInformation->Signature[arrowhead=vee,arrowtail=diamond,headlabel="usedAsIn[*]",group=Signature,minlen=2,constraint=true,]
+ MetaInformation->AccessUpdateFunction[arrowhead=vee,arrowtail=diamond,headlabel="accessUpdateFunctions[*]",group=AccessUpdateFunction,minlen=2,constraint=true,]
+ MetaInformation->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AccessUpdateFunction[label="{AccessUpdateFunction|type : AccessUpdateType| }"]
+ AccessUpdateFunction->Function[arrowhead=vee,arrowtail=diamond,headlabel="functions[1-*]",group=Function,minlen=2,constraint=true,]
+ AccessUpdateFunction->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Declaration[label="{/Declaration/| | }"]
+ Declaration->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Function[label="{Function|returnType : String\nisExternal : Boolean| }"]
+ Function->Parameter[arrowhead=vee,arrowtail=diamond,headlabel="parameters[*]",group=Parameter,minlen=2,constraint=true,]
+ Function->Term[arrowhead=vee,arrowtail=diamond,headlabel="initTerm[0-1]",group=Term,minlen=2,constraint=true,]
+ Function->Declaration[arrowhead=onormal,group=Declaration,minlen=2,constraint=true,]
+ Function->ElementDecl[arrowhead=onormal,group=ElementDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parameter[label="{Parameter|name : String\ntype : String| }"]
+ Parameter->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Universe[label="{Universe|name : String\ncontents[*] : String| }"]
+ Universe->Universe[arrowhead=vee,arrowtail=none,headlabel="superUniverses[*]",group=Universe,minlen=2,constraint=false,]
+ Universe->Declaration[arrowhead=onormal,group=Declaration,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Initialization[label="{Initialization| | }"]
+ Initialization->Rule[arrowhead=vee,arrowtail=diamond,headlabel="rules[1-*]",group=Rule,minlen=2,constraint=true,]
+ Initialization->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Term[label="{/Term/| | }"]
+ Term->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Constant[label="{/Constant/| | }"]
+ Constant->Term[arrowhead=onormal,group=Term,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FunctionOrVariableTerm[label="{FunctionOrVariableTerm| | }"]
+ FunctionOrVariableTerm->ElementDecl[arrowhead=vee,arrowtail=none,headlabel="declaration",group=ElementDecl,minlen=2,constraint=false,]
+ FunctionOrVariableTerm->Term[arrowhead=vee,arrowtail=diamond,headlabel="terms[*]",group=Term,minlen=2,constraint=true,]
+ FunctionOrVariableTerm->Term[arrowhead=onormal,group=Term,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperatorTerm[label="{OperatorTerm|opName : String| }"]
+ OperatorTerm->Term[arrowhead=vee,arrowtail=diamond,headlabel="leftExp",group=Term,minlen=2,constraint=true,]
+ OperatorTerm->Term[arrowhead=vee,arrowtail=diamond,headlabel="rightExp[0-1]",group=Term,minlen=2,constraint=true,]
+ OperatorTerm->Term[arrowhead=onormal,group=Term,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BooleanConstant[label="{BooleanConstant|value : Boolean| }"]
+ BooleanConstant->Constant[arrowhead=onormal,group=Constant,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IntegerConstant[label="{IntegerConstant|value : Integer| }"]
+ IntegerConstant->Constant[arrowhead=onormal,group=Constant,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StringConstant[label="{StringConstant|value : String| }"]
+ StringConstant->Constant[arrowhead=onormal,group=Constant,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UndefConstant[label="{UndefConstant| | }"]
+ UndefConstant->Constant[arrowhead=onormal,group=Constant,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Rule[label="{/Rule/|inSequence : Boolean| }"]
+ Rule->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SkipRule[label="{SkipRule| | }"]
+ SkipRule->Rule[arrowhead=onormal,group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AsmInvocation[label="{AsmInvocation|asmName : String| }"]
+ AsmInvocation->Term[arrowhead=vee,arrowtail=diamond,headlabel="arguments[*]",group=Term,minlen=2,constraint=true,]
+ AsmInvocation->Rule[arrowhead=onormal,group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UpdateRule[label="{UpdateRule| | }"]
+ UpdateRule->FunctionOrVariableTerm[arrowhead=vee,arrowtail=diamond,headlabel="function",group=FunctionOrVariableTerm,minlen=2,constraint=true,]
+ UpdateRule->Term[arrowhead=vee,arrowtail=diamond,headlabel="updateTerm",group=Term,minlen=2,constraint=true,]
+ UpdateRule->Rule[arrowhead=onormal,group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ChooseRule[label="{ChooseRule| | }"]
+ ChooseRule->VariableDecl[arrowhead=vee,arrowtail=diamond,headlabel="chooseId",group=VariableDecl,minlen=2,constraint=true,]
+ ChooseRule->Universe[arrowhead=vee,arrowtail=diamond,headlabel="inSet[0-1]",group=Universe,minlen=2,constraint=true,]
+ ChooseRule->Term[arrowhead=vee,arrowtail=diamond,headlabel="guard[0-1]",group=Term,minlen=2,constraint=true,]
+ ChooseRule->Rule[arrowhead=vee,arrowtail=diamond,headlabel="ifChoosenRules[1-*]",group=Rule,minlen=2,constraint=true,]
+ ChooseRule->Rule[arrowhead=vee,arrowtail=diamond,headlabel="ifNotChoosenRule[0-1]",group=Rule,minlen=2,constraint=true,]
+ ChooseRule->Rule[arrowhead=onormal,group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DoForallRule[label="{DoForallRule| | }"]
+ DoForallRule->VariableDecl[arrowhead=vee,arrowtail=diamond,headlabel="id",group=VariableDecl,minlen=2,constraint=true,]
+ DoForallRule->Universe[arrowhead=vee,arrowtail=diamond,headlabel="inSet[0-1]",group=Universe,minlen=2,constraint=true,]
+ DoForallRule->Term[arrowhead=vee,arrowtail=diamond,headlabel="condition[0-1]",group=Term,minlen=2,constraint=true,]
+ DoForallRule->Rule[arrowhead=vee,arrowtail=diamond,headlabel="doRule[1-*]",group=Rule,minlen=2,constraint=true,]
+ DoForallRule->Rule[arrowhead=onormal,group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConditionalRule[label="{ConditionalRule| | }"]
+ ConditionalRule->Term[arrowhead=vee,arrowtail=diamond,headlabel="condition",group=Term,minlen=2,constraint=true,]
+ ConditionalRule->Rule[arrowhead=vee,arrowtail=diamond,headlabel="thenRule[1-*]",group=Rule,minlen=2,constraint=true,]
+ ConditionalRule->Rule[arrowhead=vee,arrowtail=diamond,headlabel="elseRule[0-1]",group=Rule,minlen=2,constraint=true,]
+ ConditionalRule->ElseIf[arrowhead=vee,arrowtail=diamond,headlabel="elseIfRule[0-1]",group=ElseIf,minlen=2,constraint=true,]
+ ConditionalRule->Rule[arrowhead=onormal,group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ElseIf[label="{ElseIf| | }"]
+ ElseIf->Term[arrowhead=vee,arrowtail=diamond,headlabel="condition",group=Term,minlen=2,constraint=true,]
+ ElseIf->Rule[arrowhead=vee,arrowtail=diamond,headlabel="thenRule[1-*]",group=Rule,minlen=2,constraint=true,]
+ ElseIf->Rule[arrowhead=vee,arrowtail=diamond,headlabel="elseRule[0-1]",group=Rule,minlen=2,constraint=true,]
+ ElseIf->ElseIf[arrowhead=vee,arrowtail=diamond,headlabel="elseIfRule[0-1]",group=ElseIf,minlen=2,constraint=true,]
+ ElseIf->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExtendRule[label="{ExtendRule| | }"]
+ ExtendRule->Extension[arrowhead=vee,arrowtail=diamond,headlabel="extensions[1-*]",group=Extension,minlen=2,constraint=true,]
+ ExtendRule->Rule[arrowhead=vee,arrowtail=diamond,headlabel="rules[1-*]",group=Rule,minlen=2,constraint=true,]
+ ExtendRule->Rule[arrowhead=onormal,group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ElementDecl[label="{/ElementDecl/|name : String| }"]
+ ElementDecl->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VariableDecl[label="{VariableDecl| | }"]
+ VariableDecl->ElementDecl[arrowhead=onormal,group=ElementDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Extension[label="{Extension| | }"]
+ Extension->VariableDecl[arrowhead=vee,arrowtail=diamond,headlabel="elements[1-*]",group=VariableDecl,minlen=2,constraint=true,]
+ Extension->Universe[arrowhead=vee,arrowtail=diamond,headlabel="universe",group=Universe,minlen=2,constraint=true,]
+ Extension->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReturnRule[label="{ReturnRule| | }"]
+ ReturnRule->Term[arrowhead=vee,arrowtail=diamond,headlabel="term",group=Term,minlen=2,constraint=true,]
+ ReturnRule->Rule[arrowhead=onormal,group=Rule,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Enum"{
+labelloc=t
+color=black
+label=Enum
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+
+}
+}

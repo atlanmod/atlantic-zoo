@@ -1,0 +1,67 @@
+package Metamodel;
+
+package SoftwareQualityControl {
+  class DateType {
+    !unique !ordered attr Integer[1] day;
+    !unique !ordered attr Integer[1] month;
+    !unique !ordered attr Integer[1] year;
+  }
+
+  class ControlsSequence {
+    val Control[*]#c_controlsSequence controls;
+  }
+
+  class Control {
+    !ordered ref ControlsSequence[1]#controls c_controlsSequence;
+    !unique !ordered attr String[1] responsible;
+    !unique !ordered attr String[1] component;
+    !unique !ordered attr String[1] developmentPhase;
+    !unique !ordered attr String[1] scope;
+    !ordered val DateType[1] date;
+    !unique !ordered attr String controlledElt;
+    !unique !ordered attr String eltRef;
+    !unique !ordered attr String eltAuthor;
+    !unique !ordered attr String formRef;
+    !ordered val ControlType[1]#ct_control type;
+  }
+
+  abstract class ControlType {
+    !ordered ref Control[1]#type ct_control;
+  }
+
+  class BugTracking extends ControlType {
+    val Bug[*]#b_bugTracking bugs;
+  }
+
+  class Bug {
+    !ordered ref BugTracking[1]#bugs b_bugTracking;
+    !unique !ordered attr Integer[1] number;
+    !unique !ordered attr String[1] componentVersion;
+    !unique !ordered attr String[1] description;
+    !unique !ordered attr BugStatusType[1] status;
+    !unique !ordered attr String[1] originator;
+    !unique !ordered attr String responsible;
+    !unique !ordered attr String commentsAnswers;
+    !unique !ordered attr String[1] openDate;
+    !unique !ordered attr String closeDate;
+  }
+
+  enum BugStatusType {
+    bst_open = 0;
+    bst_closed = 0;
+    bst_skipped = 0;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

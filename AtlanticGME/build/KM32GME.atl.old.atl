@@ -1,0 +1,568 @@
+-- @atlcompiler atl2006
+module KM2GME; -- Module Template
+create OUT : MGA  from IN : KM3 ;
+
+-- @comment To generate GME id for Folders
+helper def: curIdFold : Integer = 0; 
+helper  def: createFoldId() : String =
+			'id-006a-' + thisModule.refSetValue('curIdFold', thisModule.curIdFold+1).curIdFold.toString();
+
+-- @comment To generate GME id for Models (ParadigmSheets)
+helper def: curIdModel : Integer = 0; 
+helper  def: createModelId() : String =
+			'id-0065-' + thisModule.refSetValue('curIdModel', thisModule.curIdModel+1).curIdModel.toString();
+
+-- @comment To generate GME id for FCO <> (Atom or Model)
+helper def: curIdAtom : Integer = 0; 
+helper def: createAtomId() : String =
+			'id-0066-' + thisModule.refSetValue('curIdAtom', thisModule.curIdAtom+1).curIdAtom.toString();
+-- @comment To generate GME id for FCO : {Atom, Model}
+helper def: atomMap : Map(KM3!ModelElement, String) = Map{};
+rule getAtomId(element : KM3!ModelElement) {
+	using {
+		id : String = thisModule.atomMap.get(element);
+	}
+	do {
+		if(id.oclIsUndefined()) {
+			thisModule.curIdAtom <- thisModule.curIdAtom + 1;
+			id <- 'id-0066-' + thisModule.curIdAtom.toString();
+			thisModule.atomMap <- thisModule.atomMap.including(element, id);
+		}
+		id;
+	}
+}
+-- @comment Link an atom which is inherited by some other classes
+helper def: inheritanceMap : Map(KM3!ModelElement, String) = Map{};
+rule getInheritanceId(element : KM3!ModelElement) {
+	using {
+		id : String = thisModule.inheritanceMap.get(element);
+	}
+	do {
+		if(id.oclIsUndefined()) {
+			thisModule.curIdAtom <- thisModule.curIdAtom + 1;
+			id <- 'id-0066-' + thisModule.curIdAtom.toString();
+			thisModule.inheritanceMap <- thisModule.inheritanceMap.including(element, id);
+		}
+		id;
+	}
+}
+
+-- @comment Generate GME id for Connection
+helper def: curIdConnection : Integer = 0; 
+helper  def: createConnectionId() : String =
+			'id-0068-' + thisModule.refSetValue('curIdConnection', thisModule.curIdConnection+1).curIdConnection.toString()
+	;
+-- @comment Facility for Inheritance rule attachment
+helper def: rootPackage : KM3!Package =
+	KM3!Package.allInstances()->select(e | e.name <> 'PrimitiveTypes')->first();
+
+-- @comment Facility for Inheritance rule attachment
+helper context KM3!Reference def: getCardinality() : String =
+	if self.upper = self.lower and self.lower = 1
+	then '1'
+	else
+		self.lower.toString() + '..' +
+			if self.upper < 0
+	--		if self.upper.debug('debug') < -1 -- @bug -1 not supported
+			then '*'
+		     else self.upper.toString()
+			endif
+	endif;
+
+helper def: aspectId : Integer = 'id-0069-00000001';
+
+rule Package {
+	from
+		p_km3 : KM3!Package (
+--			p_km3.name <> 'PrimitiveTypes' -- multiple packages
+			p_km3 = thisModule.rootPackage -- single package
+		)
+	to
+		p_mga : MGA!Project (
+			root_folder <-  f_mga,
+			name <- p_km3.name
+		),
+		f_mga : MGA!Folder (
+			models <- m_mga,
+			name <-  p_km3.name,
+			obj_id <- thisModule.createFoldId()
+		),
+		m_mga : MGA!Model(
+			fcos <- p_km3.contents,
+			name <- p_km3.name,
+			obj_id <- thisModule.createModelId(),
+			aspects <- Sequence{aspect}
+		),
+		aspect : MGA!Aspect(
+			obj_id <- thisModule.aspectId,
+			name <- 'Aspect',
+			type <- 'Aspect'
+		)
+}
+
+rule ClassWithoutChildren {
+	from
+		c_km3 : KM3!Class(
+			KM3!Class.allInstances()->select(daughter | 
+				daughter.supertypes->includes(c_km3)
+			)->isEmpty()
+		)
+		using {
+		-------
+		-- @comment Get the unique genered Atom id
+		atom_id : String = thisModule.getAtomId(c_km3);
+		-------
+		-- @comment Test if the entry KM3!Class have any container references in its structural feature. Help to determine the type of the genred Atom
+		c_km3_have_any_container_reference : Boolean =
+			c_km3.structuralFeatures->select(a | a.oclIsTypeOf(KM3!Reference))->select(a | a.isContainer)->isEmpty();
+		-------		
+		}
+	to
+		a_mga : MGA!Atom (
+			name <- c_km3.name,
+			type <- if c_km3_have_any_container_reference
+					then 'Model' --'Atom' test
+					else 'Model'
+					endif,
+			isAbstract <- c_km3.isAbstract,
+			obj_id <- atom_id
+		),
+				------ TODO (from 20090403): check that it should really be a plain Connection, which was abstract in the metamodel
+		connecting2Aspect : MGA!Connection (
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- 'HasAspect',
+			type <- 'HasAspect',
+			conn_points <- Sequence{asp_c1, asp_c2},
+			obj_id <- thisModule.createConnectionId()
+		),
+		asp_c1 : MGA!ConnPoint (
+			role <- 'src',
+			target <- thisModule.aspectId
+		),
+		asp_c2 : MGA!ConnPoint (
+			role <- 'dst',
+			target <- atom_id
+		)
+}
+
+rule ClassWithChildren {
+	from
+		c_km3 : KM3!Class(
+			KM3!Class.allInstances()->select(daughter | 
+				daughter.supertypes->includes(c_km3)
+			)->notEmpty()
+		)
+		using {
+		-------
+		-- @comment Get the unique genered Atom id
+		atom_id : String = thisModule.getAtomId(c_km3);
+		-------
+		-- @comment Test if the entry KM3!Class have any container references in its structural feature. Help to determine the type of the genred Atom
+		c_km3_have_any_container_reference : Boolean =
+			c_km3.structuralFeatures->select(a | a.oclIsTypeOf(KM3!Reference))->select(a | a.isContainer)->isEmpty();
+		-------	
+		-- @comment Get the unique genered InheritanceAtom id
+		inh_id : String = thisModule.getInheritanceId(c_km3);
+		-------
+		}
+	to
+		a_mga : MGA!Atom (
+			name <- c_km3.name,
+			type <- if c_km3_have_any_container_reference
+					then 'Model' -- 'Atom' test
+					else 'Model'
+					endif,
+			isAbstract <- c_km3.isAbstract,
+			obj_id <- atom_id
+		),
+		--------
+		i_mga : MGA!Atom (
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- 'inh_' + inh_id,
+			type <- 'Inheritance',
+			obj_id <- inh_id
+		),
+		-------
+		c1_mga : MGA!Inheritance (
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- 'BaseInheritance',
+			type <- 'BaseInheritance',
+			conn_points <- Sequence{c1_src, c1_dst},
+			obj_id <- thisModule.createConnectionId()
+		),
+		c1_src : MGA!ConnPoint (
+			role <- 'src',
+			target <- thisModule.getAtomId(c_km3)
+		),
+		c1_dst : MGA!ConnPoint (
+			role <- 'dst',
+			target <- inh_id
+		),
+		------
+		connecting2Aspect : MGA!Connection (
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- 'HasAspect',
+			type <- 'HasAspect',
+			conn_points <- Sequence{asp_c1, asp_c2},
+			obj_id <- thisModule.createConnectionId()
+		),
+		asp_c1 : MGA!ConnPoint (
+			role <- 'src',
+			target <- thisModule.aspectId
+		),
+		asp_c2 : MGA!ConnPoint (
+			role <- 'dst',
+			target <- atom_id
+		)
+}
+
+
+rule Inheritance {
+	from
+		-- @comment To make all the Connection between a class (daughter) and the Inheritance Atom create with the construction its mother class (mother). Use inheritanceMap
+		-- @comment {mother, daughter : (KM3!Class)² | daughter.supertypes(mother) }
+		mother : KM3!Class,
+		daughter : KM3!Class (
+			daughter.supertypes->includes(mother)
+		)
+	using {
+		inh_id : String = thisModule.getInheritanceId(mother);
+	}
+	to
+		-------
+		c2_mga : MGA!Inheritance (
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- 'DerivedInheritance',
+			type <- 'DerivedInheritance',
+			conn_points <- Sequence{c2_src, c2_dst},
+			obj_id <- thisModule.createConnectionId()
+		),
+		c2_src : MGA!ConnPoint (
+			role <- 'src',
+			target <- inh_id
+		),
+		c2_dst : MGA!ConnPoint (
+			role <- 'dst',
+			target <- thisModule.getAtomId(daughter)
+		)
+		-------
+}
+
+rule Composition {
+	from
+		r_km3 : KM3!Reference (
+			r_km3.isContainer
+		)
+	to
+		c_mga : MGA!Composition (
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- r_km3.name,
+			type <- 'Containment',
+			role_name <- r_km3.name,
+			cardinality <- r_km3.getCardinality(),
+			conn_points <- Sequence{c_contented, c_contaiment},
+			obj_id <- thisModule.createConnectionId()
+			
+		),
+		c_contented : MGA!ConnPoint (
+			role <- 'src',
+			target <- thisModule.getAtomId(r_km3.type)
+		),
+		c_contaiment : MGA!ConnPoint (
+			role <- 'dst',
+			target <- thisModule.getAtomId(r_km3.owner)
+		)
+}
+
+rule BoolAttribute {
+	from
+		a_km3 : KM3!Attribute 
+		(
+			a_km3.type.oclIsKindOf(KM3!DataType) and
+			a_km3.type.name = 'Boolean'
+		)
+	using {
+		BoolId : String = thisModule.getAtomId(a_km3);
+	}
+	to
+		b_mga : MGA!Bool (
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- a_km3.name,
+			type <- 'BooleanAttribute',
+			obj_id <- BoolId
+		),
+		----
+		conn : MGA!AttributeLink (
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- 'HasAttribute',
+			type <- 'HasAttribute',
+			conn_points <- Sequence{c_src, c_dst},
+			obj_id <- thisModule.createConnectionId()
+		),
+		c_src : MGA!ConnPoint (
+			role <- 'src',
+			target <- BoolId
+		),
+		c_dst : MGA!ConnPoint (
+			role <- 'dst',
+			target <- thisModule.getAtomId(a_km3.owner)
+		)
+}
+
+rule FieldAttribute {
+	from
+		a_km3 : KM3!Attribute (
+			a_km3.type.oclIsKindOf(KM3!DataType) and
+			a_km3.type.name <> 'Boolean'
+		)
+	using {
+		FieldId : String = thisModule.getAtomId(a_km3);
+	}
+	to
+		f_mga : MGA!Field (
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- a_km3.name,
+			type <- 'FieldAttribute',
+			obj_id <- FieldId,
+			data_type <- a_km3.type.name.toLower()
+		),
+		----
+		conn : MGA!AttributeLink (
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- 'HasAttribute',
+			type <- 'HasAttribute',
+			conn_points <- Sequence{c_src, c_dst},
+			obj_id <- thisModule.createConnectionId()
+		),
+		c_src : MGA!ConnPoint (
+			role <- 'src',
+			target <- FieldId
+		),
+		c_dst : MGA!ConnPoint (
+			role <- 'dst',
+			target <- thisModule.getAtomId(a_km3.owner)
+		)
+}
+
+rule EnumAttribute {
+	from
+		a_km3 : KM3!Enumeration
+	to
+		e_mga : MGA!Enum (
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- a_km3.name,
+			type <- 'EnumAttribute',
+			obj_id <- thisModule.getAtomId(a_km3),
+			menu_items <- a_km3.literals
+		)
+}
+
+rule EnumLiteral {
+	from
+		l_km3 : KM3!EnumLiteral
+	to
+		l_mga : MGA!Literal (
+			content <- l_km3.name
+		)
+}
+
+
+rule makeEnumLink {
+	from
+	e_km3 : KM3!Enumeration,
+	a_km3 : KM3!Attribute (
+			a_km3.type = e_km3
+		)
+	to
+		a_mga : MGA!AttributeLink (
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- 'HasAttribute',
+			type <- 'HasAttribute',
+			conn_points <- Sequence{c_src, c_dst},
+			obj_id <- thisModule.createConnectionId()
+		),
+		c_src : MGA!ConnPoint (
+			role <- 'src',
+			target <- thisModule.getAtomId(e_km3)
+		),
+		c_dst : MGA!ConnPoint (
+			role <- 'dst',
+			target <- thisModule.getAtomId(a_km3.owner)
+		)
+}
+
+helper def: assoMap : Map(KM3!Reference, Sequence(KM3!Reference)) = Map{};
+rule isAlreadyConsidered(ref1 : KM3!Reference, ref2 : KM3!Reference) {
+	do {
+		if (not thisModule.assoMap.get(ref2).oclIsUndefined()) {
+			if (thisModule.assoMap.get(ref2)->includes(ref1)) {
+				true;
+			}
+			else {
+				thisModule.assoMap <- thisModule.assoMap.including(ref1, Sequence{ref2});
+				false;
+			}
+		}
+		else  {
+			thisModule.assoMap <- thisModule.assoMap.including(ref1, Sequence{ref2});
+			false;
+		}
+	}
+}
+
+rule AssociationWithOpposite {
+	from
+		ref1 : KM3!Reference,
+		ref2 : KM3!Reference (
+			not ref1.isContainer
+			and not ref1.isContainer
+			and ref2 = ref1.opposite and ref1 = ref2.opposite
+			and not thisModule.isAlreadyConsidered(ref1, ref2)
+		)
+	using {
+		connId : String = thisModule.createAtomId();
+		S2CId : String = thisModule.createConnectionId();
+		C2DId : String = thisModule.createConnectionId();
+		assoClassId : String = thisModule.createAtomId();
+		Ass2ConnId : String = thisModule.createConnectionId();
+	}
+	to
+		Ass : MGA!Connector (
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- connId,
+			type <- 'Connector',
+			obj_id <- connId
+		),
+		AssoClass : MGA!ClassConnection (
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- assoClassId.split('-')->last(), --assoClassId,
+			type <- 'Connection',
+			obj_id <- assoClassId
+		),
+		Source2Conn : MGA!Association(
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- S2CId,
+			type <- 'SourceToConnector',
+			cardinality <- ref2.getCardinality(),
+			card_name <- 'src', -- ref2.name,
+			obj_id <- S2CId,
+			conn_points <- Sequence{S2C_cp1, S2C_cp2}
+		),
+		S2C_cp1 : MGA!ConnPoint (
+			role <- 'src',
+			target <- thisModule.getAtomId(ref1.owner)
+		),
+		S2C_cp2 : MGA!ConnPoint (
+			role <- 'dst',
+			target <- connId
+		),
+		Conn2Dest : MGA!Association (
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <-  C2DId,
+			type <- 'ConnectorToDestination',
+			cardinality <- ref1.getCardinality(),
+			card_name <- 'dst', --ref1.name,
+			obj_id <- C2DId,
+			conn_points <- Sequence{C2D_cp1, C2D_cp2}
+		),
+		C2D_cp1 : MGA!ConnPoint (
+			role <- 'src',
+			target <- connId
+		),
+		C2D_cp2 : MGA!ConnPoint (
+			role <- 'dst',
+			target <- thisModule.getAtomId(ref2.owner)
+		),
+		Ass2Conn : MGA!Connection (
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- Ass2ConnId,
+			type <- 'AssociationClass',
+			obj_id <- Ass2ConnId,
+			conn_points <- Sequence{A2C_cp1, A2C_cp2}
+		),
+		A2C_cp1 : MGA!ConnPoint (
+			role <- 'src',
+			target <- assoClassId
+		),
+		A2C_cp2 : MGA!ConnPoint (
+			role <- 'dst',
+			target <- connId
+		)		
+}
+
+rule AssociationWithoutOpposite {
+	from
+		ref : KM3!Reference (
+			ref.opposite.oclIsUndefined()
+			and not ref.isContainer
+		)
+	using {
+		connId : String = thisModule.createAtomId();
+		S2CId : String = thisModule.createConnectionId();
+		C2DId : String = thisModule.createConnectionId();
+		assoClassId : String = thisModule.createAtomId();
+		Ass2ConnId : String = thisModule.createConnectionId();
+	}
+	to
+		Ass : MGA!Connector (
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- connId,
+			type <- 'Connector',
+			obj_id <- connId
+		),
+		AssoClass : MGA!ClassConnection (
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- assoClassId.split('-')->last(),
+			type <- 'Connection',
+			obj_id <- assoClassId
+		),
+		Source2Conn : MGA!Association(
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- S2CId,
+			type <- 'SourceToConnector',
+			cardinality <- ref.getCardinality(),
+			card_name <- 'src', -- ref.name,
+			obj_id <- S2CId,
+			conn_points <- Sequence{S2C_cp1, S2C_cp2}
+		),
+		S2C_cp1 : MGA!ConnPoint (
+			role <- 'src',
+			target <- thisModule.getAtomId(ref.type)
+		),
+		S2C_cp2 : MGA!ConnPoint (
+			role <- 'dst',
+			target <- connId
+		),
+		Conn2Dest : MGA!Association (
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- C2DId,
+			type <- 'ConnectorToDestination',
+			cardinality <- '0..*',
+			card_name <- 'dst',
+			obj_id <- C2DId,
+			conn_points <- Sequence{C2D_cp1, C2D_cp2}
+		),
+		C2D_cp1 : MGA!ConnPoint (
+			role <- 'src',
+			target <- connId
+		),
+		C2D_cp2 : MGA!ConnPoint (
+			role <- 'dst',
+			target <- thisModule.getAtomId(ref.owner)
+		),
+		Ass2Conn : MGA!Connection (
+			model <- thisModule.resolveTemp(thisModule.rootPackage, 'm_mga'),
+			name <- Ass2ConnId,
+			type <- 'AssociationClass',
+			obj_id <- Ass2ConnId,
+			conn_points <- Sequence{A2C_cp1, A2C_cp2}
+		),
+		A2C_cp1 : MGA!ConnPoint (
+			role <- 'src',
+			target <- assoClassId
+		),
+		A2C_cp2 : MGA!ConnPoint (
+			role <- 'dst',
+			target <- connId
+		)		
+}

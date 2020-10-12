@@ -1,0 +1,77 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_CWMRelationalData"{
+labelloc=t
+color=black
+label=CWMRelationalData
+ node[shape=record];
+QueryExpression[label="{QueryExpression|expresssion : String| }"]
+;
+ node[shape=record];
+CheckConstraint[label="{CheckConstraint| | }"]
+ CheckConstraint->Table[arrowhead=none,arrowtail=none,headlabel="constrainedElements[*]",taillabel="table_constraints[*]",group=Table,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Column[label="{Column|precision : Integer\nscale : Integer\nisNullable : Boolean\nlength : Integer\ncollectionName : String\ncharacterSetName : String| }"]
+ Column->CheckConstraint[arrowhead=none,arrowtail=none,headlabel="column_constraints[*]",taillabel="constraintElements[*]",group=CheckConstraint,minlen=2,constraint=false,]
+ Column->SQLDataType[arrowhead=none,arrowtail=none,headlabel="type",taillabel="structuralFeatures[*]",group=SQLDataType,minlen=2,constraint=false,]
+ Column->ColumnSet[arrowhead=diamond,arrowtail=none,headlabel="owner[0-1]",taillabel="features[*]",group=ColumnSet,minlen=2,constraint=true,]
+ Column->NamedColumnSet[arrowhead=none,arrowtail=none,headlabel="optionScopeColumnSet[0-1]",taillabel="optionScopeColumn",group=NamedColumnSet,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ColumnSet[label="{ColumnSet| | }"]
+;
+ node[shape=record];
+NamedColumnSet[label="{NamedColumnSet| | }"]
+ NamedColumnSet->Trigger[arrowhead=none,arrowtail=none,headlabel="triggers[*]",taillabel="namedColumnSet",group=Trigger,minlen=2,constraint=false,]
+ NamedColumnSet->ColumnSet[arrowhead=onormal,group=ColumnSet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+QueryColumnSet[label="{QueryColumnSet| | }"]
+ QueryColumnSet->QueryExpression[arrowhead=vee,arrowtail=diamond,headlabel="query",group=QueryExpression,minlen=2,constraint=true,]
+ QueryColumnSet->ColumnSet[arrowhead=onormal,group=ColumnSet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Table[label="{Table|isTemporary : Boolean\ntemporaryScope : String\nisSystem : Boolean| }"]
+ Table->NamedColumnSet[arrowhead=onormal,group=NamedColumnSet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+View[label="{View|isReadOnly : Boolean\ncheckOption : Boolean| }"]
+ View->QueryExpression[arrowhead=vee,arrowtail=diamond,headlabel="queryExpression",group=QueryExpression,minlen=2,constraint=true,]
+ View->NamedColumnSet[arrowhead=onormal,group=NamedColumnSet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Trigger[label="{Trigger| | }"]
+;
+ node[shape=record];
+SQLDataType[label="{SQLDataType|typeNumber : Integer| }"]
+;
+ node[shape=record];
+SQLDistinctType[label="{SQLDistinctType|length : Integer\nprecision : Integer\nscale : Integer| }"]
+ SQLDistinctType->SQLSimpleType[arrowhead=none,arrowtail=none,headlabel="sqlSimpleType",taillabel="sqlDistinctTypes[*]",group=SQLSimpleType,minlen=2,constraint=false,]
+ SQLDistinctType->SQLDataType[arrowhead=onormal,group=SQLDataType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SQLSimpleType[label="{SQLSimpleType|characterMaximumLength : Integer\ncharacterOctetLength : Integer\nnumericPrecision : Integer\nnumericPrecisionRadix : Integer\nnumericScale : Integer\ndateTimePrecision : Integer| }"]
+ SQLSimpleType->SQLDataType[arrowhead=onormal,group=SQLDataType,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

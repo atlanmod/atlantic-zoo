@@ -1,0 +1,104 @@
+package Metamodel;
+
+package DTD {
+  enum Occurence {
+    zeroOrOne = 0;
+    zeroOrMore = 0;
+    oneOrMore = 0;
+    one = 0;
+  }
+
+  enum OtherAttributeTypeEnum {
+    cdata = 0;
+    ~id = 0;
+    idref = 0;
+    entityType = 0;
+    entities = 0;
+    nmtoken = 0;
+    nmtakens = 0;
+  }
+
+  abstract class TypeDescription {
+    !unique !ordered attr String[1] name;
+  }
+
+  class Notation extends TypeDescription {
+    !unique !ordered attr String[1] content;
+  }
+
+  class Entity extends TypeDescription {
+    !unique !ordered attr String[1] content;
+    !unique !ordered attr Boolean[1] isInternal;
+  }
+
+  abstract class Element extends TypeDescription {
+  }
+
+  class AnyElement extends Element {
+  }
+
+  class RestrictedElement extends Element {
+    !ordered val ElementContent content;
+  }
+
+  abstract class ElementContent {
+  }
+
+  class Mixed extends ElementContent {
+    !unique !ordered attr String[1] elements;
+  }
+
+  abstract class Children extends ElementContent {
+    !unique !ordered attr Occurence[1] occ;
+  }
+
+  class Sequence extends Children {
+    ref Children[2..*] children;
+  }
+
+  class Leaf extends Children {
+    !unique !ordered attr String[1] elementName;
+  }
+
+  class Choice extends Children {
+    !ordered ref Children[2..*] childrenChoice;
+  }
+
+  class AttributeList extends TypeDescription {
+    !ordered ref AttributeDescription[+]#attributeList containsAttributes;
+  }
+
+  abstract class AttributeDescription extends TypeDescription {
+    !ordered ref AttributeList[1]#containsAttributes attributeList;
+    !ordered val AttributeType[1] type;
+  }
+
+  class NoDefaultValue extends AttributeDescription {
+    !unique !ordered attr Boolean[1] isRequired;
+  }
+
+  class DefaultValue extends AttributeDescription {
+    !unique !ordered attr String[1] value;
+    !unique !ordered attr Boolean[1] isFixed;
+  }
+
+  abstract class AttributeType {
+  }
+
+  class Enumeration extends AttributeType {
+    !unique !ordered attr String[1] values;
+  }
+
+  class OtherAttributeType {
+    !unique !ordered attr OtherAttributeTypeEnum[1] type;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+}
+

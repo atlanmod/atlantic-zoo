@@ -1,0 +1,92 @@
+-- @name		DSLModel
+-- @version		1
+-- @domains		MDE, DSL models 
+-- @authors		Hillairet Guillaume (g.hillairet@gmail.com)
+-- @date		2005/07/05
+-- @description	This metamodel represents DSL models used by Visual Studio DSL Tools to represent models for a domain model. Those models are stored in an xml file. This metamodel captures informations about the logic domain but not about the graphical representation.
+-- @see			
+
+package DSLModel {
+	-- @begin Model's Elements
+	class Model {
+		attribute domainModel : String;
+		reference contents[*] ordered container : ModelElement;		
+	}
+
+	abstract class Element {
+		attribute type : String;
+		attribute id : String;
+	}
+
+	class ModelElement extends Element {	
+		reference parentLink : EmbeddingLink oppositeOf elements;
+		-- a Property is an Attribute in domain model
+		reference properties[*] container : Property oppositeOf owner;
+		-- a EmbeddingLink is an Embed relationship in domain model
+		reference embeddinglinks[*] container : EmbeddingLink oppositeOf owner;
+		-- a ReferenceLink is a Reference relationship in domain model
+		reference referencelinks[*] container : ReferenceLink oppositeOf owner;
+	}
+	
+	class ModelElementLink extends ModelElement {
+		reference links[*] : ReferenceLink oppositeOf modelElement;
+	}
+	-- @end Model's Elements
+	
+	-- @begin Links
+	
+	-- EmbeddingLink represents embedding relationships
+	class EmbeddingLink extends NamedElement {
+		reference owner[0-1] : ModelElement oppositeOf embeddinglinks;
+		reference elements[*] container : ModelElement oppositeOf parentLink;
+	}
+	
+	-- ReferenceLink represents reference relationships
+	class ReferenceLink extends Element {
+		reference owner[0-1] : ModelElement oppositeOf referencelinks;
+		reference modelElement : ModelElementLink oppositeOf links;
+		reference roles[2-2] container : Role oppositeOf owner;
+	}
+	-- @end Links
+	
+	abstract class NamedElement {
+		attribute name : String;
+	}
+	
+	class Property extends NamedElement {
+		reference owner : ModelElement oppositeOf properties;
+		reference value container : Value;
+	}
+
+	class Role extends NamedElement {
+		reference element : ModelElement;
+		reference owner : ReferenceLink oppositeOf roles;
+	}
+	
+	-- @begin Value
+	abstract class Value {}
+	
+	class IntegerValue extends Value {
+		attribute value : Integer;
+	}
+
+	class DoubleValue extends Value {
+		attribute value : Double;
+	}
+		
+	class BooleanValue extends Value {
+		attribute value : Boolean;
+	}
+	
+	class StringValue extends Value {
+		attribute value : String;
+	}	
+	-- @end Value
+	
+	package PrimitiveTypes {
+		datatype Boolean;
+		datatype Integer;
+		datatype String;
+		datatype Double;
+	}
+}

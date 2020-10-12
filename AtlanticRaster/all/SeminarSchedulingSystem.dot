@@ -1,0 +1,48 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_SeminarSchedulingSystem"{
+labelloc=t
+color=black
+label=SeminarSchedulingSystem
+ node[shape=record];
+SeminarSchedulingSystem[label="{SeminarSchedulingSystem| | }"]
+ SeminarSchedulingSystem->Presenter[arrowhead=none,arrowtail=none,headlabel="presenter[*]",taillabel="seminarSchedulingSystem",group=Presenter,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Presenter[label="{Presenter|name : String| }"]
+ Presenter->Seminar[arrowhead=none,arrowtail=none,headlabel="qualifiedFor[*]",taillabel="qualified[*]",group=Seminar,minlen=2,constraint=false,]
+ Presenter->Offering[arrowhead=none,arrowtail=none,headlabel="offering[*]{ordered}",taillabel="presenter[0-1]",group=Offering,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Seminar[label="{Seminar|title : String| }"]
+ Seminar->SeminarSchedulingSystem[arrowhead=none,arrowtail=none,headlabel="seminarSchedulingSystem",taillabel="seminar[*]",group=SeminarSchedulingSystem,minlen=2,constraint=false,]
+ Seminar->Offering[arrowhead=none,arrowtail=none,headlabel="offering[*]{ordered}",taillabel="seminar[0-1]",group=Offering,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Offering[label="{Offering|is_cancelled : Boolean| }"]
+ Offering->Date[arrowhead=vee,arrowtail=none,headlabel="date",group=Date,minlen=2,constraint=false,]
+ Offering->Attendee[arrowhead=none,arrowtail=none,headlabel="attendee[*]",taillabel="offering[*]",group=Attendee,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Date[label="{Date|year : Integer\nmonth : Integer\nday : Integer| }"]
+;
+ node[shape=record];
+Attendee[label="{Attendee|name : String| }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

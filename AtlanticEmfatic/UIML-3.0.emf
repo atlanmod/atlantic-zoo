@@ -1,0 +1,491 @@
+package Metamodel;
+
+package UIML {
+  class UIML {
+    !ordered val Header head;
+    !ordered val Template.Template[*] templates;
+    !ordered val Interface.Interface[*] interfaces;
+    !ordered val Peer.Peer[*] peers;
+  }
+
+  class Header {
+    !ordered val MetaData[*] metas;
+  }
+
+  class MetaData {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] content;
+  }
+
+}
+
+package Interface {
+  abstract class ExtensibleElement {
+  }
+
+  abstract class Source {
+  }
+
+  class LocalSource extends Source {
+    !ordered ref ExtensibleElement[1] source;
+  }
+
+  class RemoteSource extends Source {
+    !unique !ordered attr String[1] location;
+  }
+
+  class Interface extends ExtensibleElement {
+    !unique !ordered attr String ~id;
+    !unique !ordered attr HowKind how;
+    !unique !ordered attr ExportKind export;
+    !ordered ref Source source;
+    !ordered val Structure[*] structure;
+    !ordered val Style[*] style;
+    !ordered val Content[*] content;
+    !ordered val Behavior[*] behavior;
+  }
+
+  class Structure extends ExtensibleElement {
+    !unique !ordered attr String ~id;
+    !unique !ordered attr HowKind how;
+    !unique !ordered attr ExportKind export;
+    !ordered ref Source source;
+    val Part[*] parts;
+  }
+
+  class Part extends ExtensibleElement {
+    !unique !ordered attr String ~id;
+    !unique !ordered attr HowKind how;
+    !unique !ordered attr ExportKind export;
+    !unique !ordered attr String ~class;
+    !unique !ordered attr String wherePart;
+    !ordered ref Source source;
+    !ordered val Style style;
+    !ordered val Content content;
+    !ordered val Behavior behavior;
+    !ordered val Part[*] parts;
+    !ordered val Repeat[*] repeats;
+  }
+
+  class Style extends ExtensibleElement {
+    !unique !ordered attr String ~id;
+    !unique !ordered attr HowKind how;
+    !unique !ordered attr ExportKind export;
+    !ordered ref Source source;
+    !ordered val Property[*] properties;
+  }
+
+  class Property extends ExtensibleElement {
+    !unique !ordered attr String name;
+    !unique !ordered attr HowKind how;
+    !unique !ordered attr ExportKind export;
+    !unique !ordered attr String[*] values;
+    !ordered ref Part[*] parts;
+    !ordered ref Event[*] events;
+    !ordered ref Source source;
+    !ordered val Constant[*] constants;
+    !ordered val Property[*] properties;
+    !ordered val Reference[*] references;
+    !ordered val Call[*] calls;
+    !ordered val Iterator[*] iterators;
+  }
+
+  class Content extends ExtensibleElement {
+    !unique !ordered attr String ~id;
+    !unique !ordered attr HowKind how;
+    !unique !ordered attr ExportKind export;
+    !ordered ref Source source;
+    val Constant[*] constants;
+  }
+
+  class Behavior extends ExtensibleElement {
+    !unique !ordered attr String ~id;
+    !unique !ordered attr HowKind how;
+    !unique !ordered attr ExportKind export;
+    !ordered ref Source source;
+    val Rule[*] rules;
+  }
+
+  class Repeat {
+    !ordered val Iterator[1] iterator;
+    !ordered val Part[+] parts;
+  }
+
+  class Constant extends ExtensibleElement {
+    !unique !ordered attr String ~id;
+    !unique !ordered attr HowKind how;
+    !unique !ordered attr ExportKind export;
+    !unique !ordered attr String model;
+    !unique !ordered attr String value;
+    !ordered ref Source source;
+    val Constant[*] constants;
+  }
+
+  class Reference {
+    !ordered ref Constant constant;
+  }
+
+  class Rule extends ExtensibleElement {
+    !unique !ordered attr String ~id;
+    !unique !ordered attr HowKind how;
+    !unique !ordered attr ExportKind export;
+    !ordered ref Source source;
+    !ordered val Condition[1] condition;
+    !ordered val Action[1] action;
+  }
+
+  abstract class Condition {
+  }
+
+  class EventCondition extends Condition {
+    !ordered val Event[1] event;
+  }
+
+  class EqualCondition extends Condition {
+    !ordered val Equal[1] equal;
+  }
+
+  class OpCondition extends Condition {
+    !ordered val Operation[1] ~op;
+  }
+
+  class Action {
+  }
+
+  class Action_1 extends Action {
+    !ordered ref Event event;
+    !ordered val Property[*] properties;
+    !ordered val Call[*] calls;
+    !ordered val Restructure[*] restructures;
+  }
+
+  class Action_2 extends Action {
+    !ordered ref WhenTrue whenTrue;
+    !ordered ref WhenFalse whenFalse;
+    !ordered ref ByDefault byDefault;
+  }
+
+  class Call {
+    !unique !ordered attr String name;
+    val Parameter[*] params;
+  }
+
+  abstract class Parameter {
+    !unique !ordered attr String name;
+  }
+
+  class PropertyParameter extends Parameter {
+    !ordered ref Property[1] property;
+  }
+
+  class ReferenceParameter extends Parameter {
+    !ordered ref Reference[1] reference;
+  }
+
+  class CallParameter extends Parameter {
+    !ordered ref Call[1] call;
+  }
+
+  class OperationParameter extends Parameter {
+    !ordered ref Operation[1] ~op;
+  }
+
+  class EventParameter extends Parameter {
+    !ordered ref Event[1] event;
+  }
+
+  class ConstantParameter extends Parameter {
+    !ordered ref Constant[1] constant;
+  }
+
+  class IteratorParameter extends Parameter {
+    !ordered ref Iterator[1] iterator;
+  }
+
+  abstract class Iterator {
+    !unique !ordered attr String[1] ~id;
+  }
+
+  class ConstantIterator extends Iterator {
+    !ordered val Constant[1] constant;
+  }
+
+  class PropertyIterator extends Iterator {
+    !ordered val Property[1] property;
+  }
+
+  class CallIterator extends Iterator {
+    !ordered val Call[1] call;
+  }
+
+  class TextIterator extends Iterator {
+    !unique !ordered attr Integer[1] value;
+  }
+
+  class Event {
+    !unique !ordered attr String ~class;
+    !ordered ref Part[*] parts;
+  }
+
+  abstract class Equal {
+    !ordered ref Event[1] event;
+  }
+
+  class EqualToConstant extends Equal {
+    !ordered ref Constant[1] constant;
+  }
+
+  class EqualToProperty extends Equal {
+    !ordered ref Property[1] property;
+  }
+
+  class EqualToReference extends Equal {
+    !ordered ref Reference[1] reference;
+  }
+
+  class EqualToOperation extends Equal {
+    !ordered ref Operation[1] ~op;
+  }
+
+  class Operation {
+    !unique !ordered attr String[1] name;
+    !ordered val Constant[*] constants;
+    !ordered val Property[*] properties;
+    !ordered val Reference[*] references;
+    !ordered val Call[*] calls;
+    !ordered val Operation[*] ops;
+    !ordered val Event[*] events;
+  }
+
+  class Restructure extends ExtensibleElement {
+    !unique !ordered attr HowKind how;
+    !ordered ref Part atPart;
+    !ordered ref Part wherePart;
+    !ordered ref Source source;
+    !ordered val Template.Template template;
+  }
+
+  class Branch {
+    !ordered val Property[*] properties;
+    !ordered val Call[*] calls;
+    !ordered val Restructure restructure;
+    !ordered val Operation ~op;
+    !ordered val Equal equal;
+    !ordered val Event event;
+  }
+
+  class WhenTrue extends Branch {
+  }
+
+  class WhenFalse extends Branch {
+  }
+
+  class ByDefault extends Branch {
+  }
+
+  enum HowKind {
+    append = 0;
+    cascade = 0;
+    replace = 0;
+    union = 0;
+    delete = 0;
+  }
+
+  enum ExportKind {
+    hidden = 0;
+    optional = 0;
+    required = 0;
+  }
+
+  enum WhereKind {
+    first = 0;
+    last = 0;
+    before = 0;
+    after = 0;
+  }
+
+}
+
+package Peer {
+  class Peer extends Interface.ExtensibleElement {
+    !unique !ordered attr String ~id;
+    !unique !ordered attr Interface.HowKind how;
+    !unique !ordered attr Interface.ExportKind export;
+    !ordered ref Interface.Source source;
+    !ordered val Presentation[*] presentations;
+    !ordered val Logic[*] logics;
+  }
+
+  class Presentation extends Interface.ExtensibleElement {
+    !unique !ordered attr String ~id;
+    !unique !ordered attr Interface.HowKind how;
+    !unique !ordered attr Interface.ExportKind export;
+    !unique !ordered attr String[1] base;
+    !ordered ref Interface.Source source;
+    !ordered val DClass[*] dClasses;
+  }
+
+  class Logic extends Interface.ExtensibleElement {
+    !unique !ordered attr String ~id;
+    !unique !ordered attr Interface.HowKind how;
+    !unique !ordered attr Interface.ExportKind export;
+    !ordered ref Interface.Source source;
+    !ordered val DComponent[*] dComponents;
+  }
+
+  class DComponent extends Interface.ExtensibleElement {
+    !unique !ordered attr String[1] ~id;
+    !unique !ordered attr Interface.HowKind how;
+    !unique !ordered attr Interface.ExportKind export;
+    !unique !ordered attr String mapsTo;
+    !unique !ordered attr String location;
+    !ordered ref Interface.Source source;
+    !ordered val DMethod[*] dMethods;
+  }
+
+  class DClass extends Interface.ExtensibleElement {
+    !unique !ordered attr String[1] ~id;
+    !unique !ordered attr Interface.HowKind how;
+    !unique !ordered attr Interface.ExportKind export;
+    !unique !ordered attr String[1] mapsTo;
+    !unique !ordered attr String[1] mapsType;
+    !ordered ref Interface.Source source;
+    !ordered val DMethod[*] dMethods;
+    !ordered val DProperty[*] dProperties;
+    !ordered val Interface.Event[*] events;
+    !ordered val Listener[*] listeners;
+  }
+
+  class DProperty {
+    !unique !ordered attr String[1] ~id;
+    !unique !ordered attr MapsTypeKind[1] mapsType;
+    !unique !ordered attr String[1] mapsTo;
+    !unique !ordered attr String returnType;
+    !ordered val DMethod[*] dMethods;
+    !ordered val DParam[*] dParams;
+  }
+
+  class DMethod extends Interface.ExtensibleElement {
+    !unique !ordered attr String[1] ~id;
+    !unique !ordered attr Interface.HowKind how;
+    !unique !ordered attr Interface.ExportKind export;
+    !unique !ordered attr String[1] mapsTo;
+    !unique !ordered attr String returnType;
+    !ordered ref Interface.Source source;
+    val DParam[*] dParams;
+    !ordered val Script script;
+  }
+
+  class DParam {
+    !unique !ordered attr String ~id;
+    !unique !ordered attr String type;
+    !unique !ordered attr String[1] value;
+  }
+
+  class Script extends Interface.ExtensibleElement {
+    !unique !ordered attr String ~id;
+    !unique !ordered attr String type;
+    !unique !ordered attr Interface.HowKind how;
+    !unique !ordered attr Interface.ExportKind export;
+    !unique !ordered attr String[1] value;
+    !unique !ordered attr String source;
+  }
+
+  class Listener {
+    !unique !ordered attr String ~class;
+    !unique !ordered attr String attacher;
+  }
+
+  enum UsedInTagKind {
+    event = 0;
+    listener = 0;
+    part = 0;
+  }
+
+  enum MapsTypeKind {
+    attribute = 0;
+    getMethod = 0;
+    setMethod = 0;
+    method = 0;
+  }
+
+}
+
+package Template {
+  abstract class Template {
+    !unique !ordered attr String ~id;
+  }
+
+  class BehaviorTemplate extends Template {
+    !ordered val Interface.Behavior[1] behavior;
+  }
+
+  class DClassTemplate extends Template {
+    !ordered val Peer.DClass[1] dClass;
+  }
+
+  class DComponentTemplate extends Template {
+    !ordered val Peer.DComponent[1] dComponent;
+  }
+
+  class ConstantTemplate extends Template {
+    !ordered val Interface.Constant[1] constant;
+  }
+
+  class ContentTemplate extends Template {
+    !ordered val Interface.Content[1] content;
+  }
+
+  class InterfaceTemplate extends Template {
+    !ordered val Interface.Interface[1] ~interface;
+  }
+
+  class LogicTemplate extends Template {
+    !ordered val Peer.Logic[1] logic;
+  }
+
+  class PartTemplate extends Template {
+    !ordered val Interface.Part[1] part;
+  }
+
+  class PeerTemplate extends Template {
+    !ordered val Peer.Peer[1] peer;
+  }
+
+  class PresentationTemplate extends Template {
+    !ordered val Peer.Presentation[1] presentation;
+  }
+
+  class PropertyTemplate extends Template {
+    !ordered val Interface.Property[1] property;
+  }
+
+  class RestructureTemplate extends Template {
+    !ordered val Interface.Restructure[1] restructure;
+  }
+
+  class RuleTemplate extends Template {
+    !ordered val Interface.Rule[1] rule;
+  }
+
+  class ScriptTemplate extends Template {
+    !ordered val Peer.Script[1] script;
+  }
+
+  class StructureTemplate extends Template {
+    !ordered val Interface.Structure[1] structure;
+  }
+
+  class StyleTemplate extends Template {
+    !ordered val Interface.Style[1] style;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+}
+

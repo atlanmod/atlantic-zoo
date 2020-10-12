@@ -1,0 +1,58 @@
+package Metamodel;
+
+package FeatureDiagrams {
+  class Node {
+    !unique !ordered attr String[1] description;
+    !unique !ordered attr Boolean[1] preliminary;
+    !unique !ordered attr String[1] object;
+    !ordered val Attribute[*]#node attributes;
+    !ordered ref ORGroup[*]#no_src no_dst;
+    !ordered ref XORGroup[*]#nx_src nx_dst;
+    !ordered ref Child[*]#cn_src cn_dst;
+  }
+
+  class Attribute {
+    !unique !ordered attr String[1] description;
+    !unique !ordered attr Boolean[1] editable;
+    !unique !ordered attr Boolean[1] key;
+    !unique !ordered attr String[1] value;
+    !unique !ordered attr String[1] name;
+    !ordered ref Node[1]#attributes node;
+  }
+
+  class Root extends Node {
+  }
+
+  class Child extends Node {
+    !ordered ref Node[*]#cn_dst cn_src;
+    !ordered ref XORGroup[*]#cx_dst cx_src;
+    !ordered ref ORGroup[*]#co_dst co_src;
+  }
+
+  class XORGroup {
+    !unique !ordered attr Boolean[1] preliminary;
+    !unique !ordered attr String[1] name;
+    !ordered ref Node[*]#nx_dst nx_src;
+    !ordered ref Child[*]#cx_src cx_dst;
+  }
+
+  class ORGroup {
+    !unique !ordered attr Boolean[1] preliminary;
+    !unique !ordered attr String[1] name;
+    !ordered ref Node[*]#no_dst no_src;
+    !ordered ref Child[*]#co_src co_dst;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

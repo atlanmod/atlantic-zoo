@@ -1,0 +1,139 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_BusinessProcessModel"{
+labelloc=t
+color=black
+label=BusinessProcessModel
+ node[shape=record];
+Namespace[label="{/Namespace/| | }"]
+;
+ node[shape=record];
+Task[label="{/Task/| | }"]
+ Task->DataSet[arrowhead=vee,arrowtail=diamond,headlabel="containsDataSet[3-*]",group=DataSet,minlen=2,constraint=true,]
+ Task->ControlPoint[arrowhead=vee,arrowtail=diamond,headlabel="containsControlPoint[*]",group=ControlPoint,minlen=2,constraint=true,]
+ Task->TerminatorTask[arrowhead=none,arrowtail=none,headlabel="terminator[*]",taillabel="terminates[*]",group=TerminatorTask,minlen=2,constraint=false,]
+ Task->Namespace[arrowhead=onormal,group=Namespace,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataSet[label="{/DataSet/| | }"]
+ DataSet->DataElement[arrowhead=vee,arrowtail=diamond,headlabel="contains[*]",group=DataElement,minlen=2,constraint=true,]
+ DataSet->ControlFlow[arrowhead=vee,arrowtail=none,headlabel="source[*]",group=ControlFlow,minlen=2,constraint=false,]
+ DataSet->ControlPoint[arrowhead=vee,arrowtail=none,headlabel="triggers[*]",group=ControlPoint,minlen=2,constraint=false,]
+ DataSet->Namespace[arrowhead=onormal,group=Namespace,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parameter[label="{Parameter| | }"]
+;
+ node[shape=record];
+DataElement[label="{/DataElement/| | }"]
+ DataElement->DataFlow[arrowhead=vee,arrowtail=none,headlabel="sink",group=DataFlow,minlen=2,constraint=false,]
+ DataElement->DataFlow[arrowhead=vee,arrowtail=none,headlabel="source",group=DataFlow,minlen=2,constraint=false,]
+ DataElement->Parameter[arrowhead=onormal,group=Parameter,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ModelElement[label="{/ModelElement/| | }"]
+;
+ node[shape=record];
+Flow[label="{Flow| | }"]
+ Flow->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataFlow[label="{DataFlow| | }"]
+ DataFlow->Flow[arrowhead=onormal,group=Flow,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ControlFlow[label="{ControlFlow| | }"]
+ ControlFlow->Flow[arrowhead=onormal,group=Flow,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ControlPoint[label="{ControlPoint| | }"]
+ ControlPoint->ControlFlow[arrowhead=vee,arrowtail=none,headlabel="sink[*]",group=ControlFlow,minlen=2,constraint=false,]
+ ControlPoint->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Input[label="{Input| | }"]
+ Input->DataElement[arrowhead=onormal,group=DataElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Output[label="{Output| | }"]
+ Output->DataElement[arrowhead=onormal,group=DataElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OutputSet[label="{OutputSet| | }"]
+ OutputSet->Output[arrowhead=vee,arrowtail=diamond,headlabel="containsOutput[*]",group=Output,minlen=2,constraint=true,]
+ OutputSet->DataSet[arrowhead=onormal,group=DataSet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InputSet[label="{InputSet| | }"]
+ InputSet->Input[arrowhead=vee,arrowtail=diamond,headlabel="containsInput[*]",group=Input,minlen=2,constraint=true,]
+ InputSet->DataSet[arrowhead=onormal,group=DataSet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Exception[label="{Exception| | }"]
+ Exception->Output[arrowhead=onormal,group=Output,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleTask[label="{SimpleTask| | }"]
+ SimpleTask->Task[arrowhead=onormal,group=Task,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CoumpoundTask[label="{CoumpoundTask| | }"]
+ CoumpoundTask->Task[arrowhead=vee,arrowtail=diamond,headlabel="containsTask[*]",group=Task,minlen=2,constraint=true,]
+ CoumpoundTask->Flow[arrowhead=vee,arrowtail=diamond,headlabel="containsFlow[*]",group=Flow,minlen=2,constraint=true,]
+ CoumpoundTask->BusinessProcess[arrowhead=vee,arrowtail=none,headlabel="realizes",group=BusinessProcess,minlen=2,constraint=false,]
+ CoumpoundTask->Task[arrowhead=onormal,group=Task,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MutliTask[label="{MutliTask| | }"]
+ MutliTask->CoumpoundTask[arrowhead=onormal,group=CoumpoundTask,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InvokerTask[label="{InvokerTask| | }"]
+ InvokerTask->Task[arrowhead=none,arrowtail=none,headlabel="invokes[*]",taillabel="invoker[*]",group=Task,minlen=2,constraint=false,]
+ InvokerTask->SimpleTask[arrowhead=onormal,group=SimpleTask,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TerminatorTask[label="{TerminatorTask| | }"]
+ TerminatorTask->SimpleTask[arrowhead=onormal,group=SimpleTask,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ApplicationTask[label="{ApplicationTask| | }"]
+ ApplicationTask->SimpleTask[arrowhead=onormal,group=SimpleTask,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Decision[label="{Decision| | }"]
+ Decision->ApplicationTask[arrowhead=onormal,group=ApplicationTask,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Clock[label="{Clock| | }"]
+ Clock->ApplicationTask[arrowhead=onormal,group=ApplicationTask,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SendCommunication[label="{SendCommunication| | }"]
+ SendCommunication->ApplicationTask[arrowhead=onormal,group=ApplicationTask,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReceiveCommunication[label="{ReceiveCommunication| | }"]
+ ReceiveCommunication->ApplicationTask[arrowhead=onormal,group=ApplicationTask,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BusinessProcess[label="{BusinessProcess| | }"]
+ BusinessProcess->ApplicationTask[arrowhead=onormal,group=ApplicationTask,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

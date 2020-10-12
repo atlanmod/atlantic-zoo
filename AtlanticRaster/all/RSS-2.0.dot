@@ -1,0 +1,62 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_RSS"{
+labelloc=t
+color=black
+label=RSS
+ node[shape=record];
+RSS[label="{RSS|version : String| }"]
+;
+ node[shape=record];
+Channel[label="{Channel|title : String\nlink : String\ndescription : String\nlanguage[0-1] : String\ncopyright[0-1] : String\nmanagingEditor[0-1] : String\nwebmaster[0-1] : String\ngenerator[0-1] : String\ndocs[0-1] : String\nttl[0-1] : Integer\nrating[0-1] : String\nskipHours[*] : Integer\nskipDays[*] : DayKind| }"]
+ Channel->RSS[arrowhead=diamond,arrowtail=none,headlabel="rss",taillabel="channel",group=RSS,minlen=2,constraint=true,]
+ Channel->Date[arrowhead=vee,arrowtail=diamond,headlabel="pubDate[0-1]",group=Date,minlen=2,constraint=true,]
+ Channel->Date[arrowhead=vee,arrowtail=diamond,headlabel="lastBuildDate[0-1]",group=Date,minlen=2,constraint=true,]
+ Channel->Category[arrowhead=vee,arrowtail=diamond,headlabel="category[0-1]",group=Category,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Item[label="{Item|title : String\nlink : String\ndescription : String\nauthor[0-1] : String\ncomments[0-1] : String\nguid[0-1] : String| }"]
+ Item->Source[arrowhead=vee,arrowtail=diamond,headlabel="source[0-1]",group=Source,minlen=2,constraint=true,]
+ Item->Date[arrowhead=vee,arrowtail=diamond,headlabel="pubDate[0-1]",group=Date,minlen=2,constraint=true,]
+ Item->Enclosure[arrowhead=vee,arrowtail=diamond,headlabel="enclosure[0-1]",group=Enclosure,minlen=2,constraint=true,]
+ Item->Category[arrowhead=vee,arrowtail=diamond,headlabel="category[0-1]",group=Category,minlen=2,constraint=true,]
+ Item->Channel[arrowhead=diamond,arrowtail=none,headlabel="channel",taillabel="items[*]",group=Channel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Image[label="{Image|url : String\ntitle : String\nlink : String\ndescription[0-1] : String\nwidth[0-1] : Integer\nheight[0-1] : Integer| }"]
+ Image->Channel[arrowhead=diamond,arrowtail=none,headlabel="channel",taillabel="image[0-1]",group=Channel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TextInput[label="{TextInput|title : String\ndescription : String\nname : String\nlink : String| }"]
+ TextInput->Channel[arrowhead=diamond,arrowtail=none,headlabel="channel",taillabel="textInput[0-1]",group=Channel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Cloud[label="{Cloud|domain : String\nport : Integer\npath : String\nregisterProcedure : String\nprotocol : String| }"]
+ Cloud->Channel[arrowhead=diamond,arrowtail=none,headlabel="channel",taillabel="cloud[0-1]",group=Channel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Category[label="{Category|domain : String\nvalue : String| }"]
+;
+ node[shape=record];
+Enclosure[label="{Enclosure|url : String\nlenght : Integer\ntype : String| }"]
+;
+ node[shape=record];
+Source[label="{Source|url : String\nvalue : String| }"]
+;
+ node[shape=record];
+Date[label="{Date|eDay : DayKind\nday : Integer\nmonth : Integer\nyear : Integer\nhours : Integer\nminutes : Integer\nseconds : Integer| }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

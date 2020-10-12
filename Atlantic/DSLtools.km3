@@ -1,0 +1,88 @@
+-- @name		DSL
+-- @version		1.0
+-- @domains		DSL tools
+-- @authors		Hugo Brunelière
+-- @date		2006
+-- @description	a Microsoft DSL tools metamodel
+
+
+package DSL {
+
+	abstract class NamedElement {
+		attribute name : String;
+		attribute identity : String;
+	}
+
+	abstract class LoadedElement extends Namespace {
+		attribute isLoaded : Boolean;
+	}
+
+	abstract class Namespace extends NamedElement {
+		attribute namespace : String;
+	}
+
+	class DomainModel extends LoadedElement {
+		reference classifiers[*] container : Classifier oppositeOf domainModel;
+		reference types[*] container : Type;
+	}
+
+	abstract class Classifier extends LoadedElement {
+		attribute isAbstract : Boolean;
+		reference properties[*] container : ValueProperty oppositeOf owner;
+		reference superType[0-1] : Classifier oppositeOf subTypes;
+		reference subTypes[*] : Classifier oppositeOf superType;
+		reference domainModel : DomainModel oppositeOf classifiers;
+	}
+
+	class Class extends Classifier {
+		attribute isSerializationRoot : Boolean;
+	}
+
+	class Relationship extends Classifier {
+		attribute isEmbedding : Boolean;
+		reference roles[2-2] container : Role oppositeOf relation;
+	}
+
+	class Role extends NamedElement {
+		attribute min : Integer;
+		attribute max : Integer;
+		attribute isUnbounded : Boolean;
+		attribute accepts : String;
+		attribute isOrdered : Boolean;
+		attribute isNavigableFrom : Boolean;
+		attribute isPropertyGenerator : Boolean;
+		reference source : Classifier;
+		reference type : Classifier;
+		reference relation : Relationship oppositeOf roles;
+	}
+
+	class ValueProperty extends NamedElement {
+		reference owner : Classifier oppositeOf properties;
+		reference type : Type;
+	}
+
+	abstract class Type extends Namespace {
+		
+	}
+
+	class SimpleType extends Type {
+		
+	}
+
+	class EnumerationLiteral extends NamedElement {
+		attribute value : Integer;
+	}
+
+	class Enumeration extends Type {
+		reference literals[*] container : EnumerationLiteral;
+	}
+
+	package PrimitiveTypes {
+
+		datatype Boolean;
+
+		datatype Integer;
+
+		datatype String;
+	}
+}

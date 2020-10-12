@@ -1,0 +1,56 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_Make"{
+labelloc=t
+color=black
+label=Make
+ node[shape=record];
+Makefile[label="{Makefile|name : String| }"]
+ Makefile->Comment[arrowhead=vee,arrowtail=diamond,headlabel="comment[0-1]",group=Comment,minlen=2,constraint=true,]
+ Makefile->Element[arrowhead=vee,arrowtail=diamond,headlabel="elements[1-*]{ordered}",group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Element[label="{/Element/|name : String| }"]
+;
+ node[shape=record];
+Rule[label="{Rule| | }"]
+ Rule->Dependency[arrowhead=vee,arrowtail=diamond,headlabel="dependencies[*]{ordered}",group=Dependency,minlen=2,constraint=true,]
+ Rule->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Macro[label="{Macro|value : String| }"]
+ Macro->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ShellLine[label="{ShellLine|command : String\ndisplay : Boolean| }"]
+ ShellLine->Rule[arrowhead=diamond,arrowtail=none,headlabel="ruleShellLine",taillabel="shellLines[1-*]{ordered}",group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Comment[label="{Comment|text : String| }"]
+;
+ node[shape=record];
+Dependency[label="{/Dependency/| | }"]
+;
+ node[shape=record];
+RuleDep[label="{RuleDep| | }"]
+ RuleDep->Rule[arrowhead=vee,arrowtail=none,headlabel="ruledep",group=Rule,minlen=2,constraint=false,]
+ RuleDep->Dependency[arrowhead=onormal,group=Dependency,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FileDep[label="{FileDep|name : String| }"]
+ FileDep->Dependency[arrowhead=onormal,group=Dependency,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+
+}
+}

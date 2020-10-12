@@ -1,0 +1,60 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_HierarchicalSignalFlow"{
+labelloc=t
+color=black
+label=HierarchicalSignalFlow
+ node[shape=record];
+Port[label="{Port| | }"]
+ Port->Asso_Port_Signal[arrowhead=none,arrowtail=none,headlabel="asso_Port_Signalsrc",taillabel="src[1-*]",group=Asso_Port_Signal,minlen=2,constraint=false,]
+ Port->Asso_Port_Signal[arrowhead=none,arrowtail=none,headlabel="asso_Port_Signaldst",taillabel="dst[1-*]",group=Asso_Port_Signal,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Signal[label="{Signal| | }"]
+ Signal->Base[arrowhead=diamond,arrowtail=none,headlabel="base",taillabel="signal[*]",group=Base,minlen=2,constraint=true,]
+ Signal->Asso_Port_Signal[arrowhead=none,arrowtail=none,headlabel="asso_Port_Signal",taillabel="signal",group=Asso_Port_Signal,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Base[label="{Base| | }"]
+ Base->Compound[arrowhead=diamond,arrowtail=none,headlabel="compound",taillabel="base[*]",group=Compound,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Compound[label="{Compound| | }"]
+ Compound->Base[arrowhead=onormal,group=Base,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InputPort[label="{InputPort| | }"]
+ InputPort->Base[arrowhead=diamond,arrowtail=none,headlabel="base",taillabel="inputPort[*]",group=Base,minlen=2,constraint=true,]
+ InputPort->Port[arrowhead=onormal,group=Port,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OutputPort[label="{OutputPort| | }"]
+ OutputPort->Base[arrowhead=diamond,arrowtail=none,headlabel="base",taillabel="outputPort[*]",group=Base,minlen=2,constraint=true,]
+ OutputPort->Port[arrowhead=onormal,group=Port,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LocalPort[label="{LocalPort| | }"]
+ LocalPort->Compound[arrowhead=diamond,arrowtail=none,headlabel="compound",taillabel="localPort[*]",group=Compound,minlen=2,constraint=true,]
+ LocalPort->Port[arrowhead=onormal,group=Port,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Primitive[label="{Primitive| | }"]
+ Primitive->Base[arrowhead=onormal,group=Base,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Asso_Port_Signal[label="{Asso_Port_Signal| | }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

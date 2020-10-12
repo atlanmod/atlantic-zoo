@@ -1,0 +1,34 @@
+-- @name		ODP Technology Viewpoint
+-- @version		0.1
+-- @domains		
+-- @authors		José Raúl Romero Salguero (jrromero@uco.es)
+-- @date		2006/01/01
+-- @description	The Reference Model of Open Distributed Processing (RM-ODP) provides a general framework for the standardization of open distributed processing. RM-ODP defines five generic and complementary viewpoints on the system and its environment: enterprise, information, computational, engineering and technology. They divide the system design according to several areas of concerns, each one focusing on a specific aspect of the system, and allow different stakeholders to observe the system from different perspectives. In particular, the ODP technology viewpoint allows the description of the choice of technology applied in the implementation of an ODP system. The Technology Viewpoint Metamodel defines the ODP Technology Language, and conforms to ITU-T Rec. X.906 | ISO/IEC Committee Draft 19793 ("Use of UML for ODP systems specifications") a standard that defines how to use UML to represent the ODP viewpoint languages and concepts.
+-- @see			http://www.rm-odp.net/resources/UML4ODP_CD_v2.0/BAR-022_UML4ODP_CD_v2.0.pdf
+
+package ODPTV {
+ 	class TechnologyObject {
+ 		--- TO references to ImplementableStandards
+ 		reference implStandard [1-*] : ImplementableStandard oppositeOf techObject;
+ 		--- TO can reference to Implementations
+ 		reference toImplementation [0-*] : Implementation oppositeOf implProduct;
+ 	}
+ 	
+ 	class Implementation {
+ 		--- IMPL can reference to IXITs
+ 		reference implIXIT [0-*] : IXIT oppositeOf ixitImplementation;
+ 		--- IMPL references to TechnologyObjects
+ 		reference implProduct [1-*] : TechnologyObject oppositeOf toImplementation;
+ 	}
+ 	
+ 	class IXIT {
+ 		--- IXIT can reference to Implementations
+ 		reference ixitImplementation [0-*] : Implementation oppositeOf implIXIT;
+ 	}
+ 	
+ 	class ImplementableStandard {
+ 		--- ImplementableStandard references to TechnologyObjects
+ 		reference techObject [1-*] : TechnologyObject oppositeOf implStandard;
+ 	}
+
+ }

@@ -1,0 +1,476 @@
+-- @name		XPDL
+-- @version		0.1
+-- @domains		XML, Business Process
+-- @authors		David Touzet, Freddy Allilaire
+-- @date		2006/02/21	
+-- @description	XML Process Definition Language (XPDL) is a format standardized by the WfMC to interchange Business Process definitions between different workflow products like modeling tools and workflow engines.
+-- @see			http://www.wfmc.org/standards/XPDL.htm
+-- @see			http://en.wikipedia.org/wiki/XPDL
+
+package XPDL {
+	abstract class Element {
+		attribute id : String;
+		attribute name[0-1] : String;
+	}
+
+	class Package extends Element {
+--		reference packageHeader container : PackageHeader;
+--		reference redefinableHeader[0-1] container : RedifinableHeader;
+--		reference conformanceClass[0-1] container : ConformanceClass;
+		reference script[0-1] container : Script;
+		reference externalPackages[*] container : ExternalPackage;
+		reference typeDeclarations[*] container : TypeDeclaration;
+		reference participants[*] container : Participant;
+		reference applications[*] container : Application;
+		reference dataFields[*] container : DataField;
+--		reference partnerLinkTypes[*] container : PartnerLinkType;
+		reference pools[*] container : Pool;
+		reference messageFlows[*] container : MessageFlow;
+		reference associations[*] container : Association;
+		reference artifacts[*] container : Artifact;
+		reference workflowProcesses[*] container : Process;
+	}
+
+	class MessageFlow extends Element {
+		-- 1 source et 1 target dvt être déclarés
+		reference targetActivity[0-1] : Activity;
+		reference sourceActivity[0-1] : Activity;
+		reference targetPool[0-1] : Pool;
+		reference sourcePool[0-1] : Pool;
+		reference object[0-1] container : Object;
+--		reference connectorGraphicsInfos[*] container : ConnectorGraphicsInfo;
+	}
+
+	class Association extends Element {
+		attribute associationDirection[0-1] : AssociationDirectionKind;
+
+		-- 1 source & 1 target must be declared (among graphical objects)
+		reference targetArtifact[0-1] : Artifact;
+		reference sourceArtifact[0-1] : Artifact;
+		reference targetPool[0-1] : Pool;
+		reference sourcePool[0-1] : Pool;
+		reference targetActivity[0-1] : Activity;
+		reference sourceActivity[0-1] : Activity;
+		reference object[0-1] container : Object;
+--		reference connectorGraphicsInfos[*] container : ConnectorGraphicsInfo;
+	}
+
+	class Pool extends Element {
+		attribute orientation[0-1] : OrientationKind;
+		attribute boundaryVisible : Boolean;
+
+		reference lanes[*] container : Lane;
+		reference object[0-1] container : Object;
+--		reference nodeGraphicsInfos[*] container : NodeGraphicsInfo;
+		reference participant[0-1] : Participant;
+		reference process[0-1] : Process;
+	}
+
+	class Lane extends Element {
+		reference object[0-1] container : Object;
+--		reference nodeGraphicsInfos[*] container : NodeGraphicsInfo;
+		reference parentLane[0-1] : Lane;
+		reference parentPool[0-1] : Pool;
+	}
+
+	class Participant extends Element {
+--		reference participantType container : ParticipantType;
+--		reference description[0-1] container : Description;
+--		reference extendedReference[0-1] container : ExtendedReference;
+--		reference extendedAttributes[*] container : ExtendedAttribute;
+	}
+
+	class Artifact extends Element {
+		attribute textAnnotation[0-1] : String;
+		attribute group[0-1] : String;
+
+		reference object[0-1] container : Object;
+		reference dataObject[0-1] container : DataObject;
+--		reference nodeGraphicsInfos[*] container : NodeGraphicsInfo;
+	}
+
+	class DataObject extends Artifact {
+		attribute state[0-1] : String;
+		attribute requiredForStart : Boolean;
+		attribute producedAtCompletion : Boolean;
+
+		reference dataFields[*] container : DataField;
+	}
+
+	class Group extends Artifact {
+	}
+
+	class Annotation extends Artifact {
+	}
+
+	class TypeDeclaration extends Element {
+--		reference dataType container : DataType;
+--		reference description[0-1] container : Description;
+--		reference extendedAttributes[*] container : ExtendedAttribute;
+	}
+
+	class Application extends Element {
+--		reference type[0-1] container : ApplicationType;
+--		reference description[0-1] container : Description;
+--		reference extendedAttributes[*] container : ExtendedAttribute;
+	}
+
+	class ParametrizedApplication extends Application {
+--		reference formalParameters[*] container : FormalParameter;
+	}
+
+	class ReferencedApplication extends Application {
+		reference externalReference[0-1] container : ExternalReference;
+	}
+
+	class Activity extends Element {
+		attribute isStartActivity[0-1] : Boolean;
+		attribute status[0-1] : StatusKind;
+		attribute startMode : ModeKind;
+		attribute finishMode : ModeKind;
+		attribute startQuantity[0-1] : Integer;
+		attribute isATransaction[0-1] : Boolean;
+
+--		reference description[0-1] container : Description;
+--		reference limit[0-1] container : Limit;
+--		reference transaction[0-1] container : Transaction;
+--		reference performer[0-1] container : Performer;
+--		reference performers[*] container : Performer;
+--		reference priority[0-1] container : Priority;
+--		reference deadlines[*] container : Deadline;
+--		reference simulationInfo[0-1] container : SimulationInformation;
+--		reference icon[0-1] container : Icon;
+--		reference documentation[0-1] container : Documentation;
+--		reference transitionRestrictions[*] container : TransitionRestriction;
+--		reference extendedAttributes[*] container : ExtendedAttribute;
+		reference dataFields[*] container : DataField;
+--		reference inputSets[*] container : InputSet;
+--		reference outputSets[*] container : OutputSet;
+--		reference ioRules[*] container : IORule;
+--		reference loop[0-1] container : Loop;
+--		reference assignements[*] container : Assignement;
+		reference object[0-1] container : Object;
+--		reference nodeGraphicsInfos[*] container : NodeGraphicsInfo;
+	}
+
+	abstract class Task extends Activity {
+	}
+
+	class TaskService extends Task {
+		attribute implementation[0-1] : ImplementationKind;
+
+--		reference messageIn container : MessageType;
+--		reference messageOut container : MessageType;
+--		reference webServiceOperation[0-1] container : WebServiceOperation;
+--		reference webServiceFaultCatch[*] container : WebServiceFaultCatch;
+	}
+
+	class TaskReceive extends Task {
+		attribute instantiate : Boolean;
+		attribute implementation[0-1] : ImplementationKind;
+
+--		reference message container : MessageType;
+--		reference webServiceOperation[0-1] container : WebServiceOperation;
+	}
+
+	class TaskManual extends Task {
+--		reference performers[*] container : Performer;
+	}
+
+	class TaskReference extends Task {
+		reference taskRef : Task;
+	}
+
+	class TaskScript extends Task {
+		reference script container : Script;
+	}
+
+	class TaskSend extends Task {
+		attribute implementation[0-1] : ImplementationKind;
+
+--		reference message container : MessageType;
+--		reference webServiceOperation[0-1] container : WebServiceOperation;
+--		reference webServiceFaultCatch[*] container : WebServiceFaultCatch;
+	}
+
+	class TaskUser extends Task {
+		attribute implementation[0-1] : ImplementationKind;
+
+--		reference performers[*] container : Performer;
+--		reference messageIn container : MessageType;
+--		reference messageOut container : MessageType;
+--		reference webServiceOperation[0-1] container : WebServiceOperation;
+	}
+
+	class TaskApplication extends Task {
+--		reference actualParameters[*] container : FormalParameter;
+--		reference dataMappings[*] container : DataMapping;
+--		reference description[0-1] container : Description;
+		reference packageRef[0-1] : Package;
+	}
+
+	class Route extends Activity {
+		attribute gatewayType[0-1] : GatewayTypeKind;
+		attribute instantiate[0-1] : Boolean;
+		attribute markerVisiable[0-1] : Boolean;
+	}
+
+	class SubFlow extends Activity {
+		attribute execution[0-1] : ExecutionKind;
+		attribute instanceDataField[0-1] : String;
+
+--		reference dataMappings[*] container : DataMapping;
+--		reference actualParameters[*] container : FormalParameter;
+		reference packageRef[0-1] : Package;
+		reference startActivitySet[0-1] : ActivitySet;
+		reference startActivity[0-1] : Activity;
+	}
+
+	class BlockActivity extends Activity {
+		reference activitySet : ActivitySet;
+		reference startActivity[0-1] : Activity;
+	}
+
+	abstract class Event extends Activity {
+		attribute triggerKind : TriggerKind;
+		attribute implementation[0-1] : ImplementationKind;
+
+		reference trigger[0-1] container : Trigger;
+	}
+
+	abstract class Trigger {
+	}
+
+	class ResultCompensation extends Trigger {
+		reference activity[0-1] : Activity;
+	}
+
+	class ResultError extends Trigger {
+		attribute errorCode : String;
+	}
+
+	class ResultMultiple extends Trigger {
+--		reference triggerResultMessage[0-1] container : TriggerResultMessage;
+--		reference triggerResultLink[0-1] container : TriggerResultLink;
+--		reference triggerCompensation[0-1] container : TriggerCompensation;
+--		reference triggerError[0-1] container : TriggerError;
+	}
+
+	class TriggerResultLink extends Trigger {
+--		reference link : Link;
+		reference processRef : Process;
+	}
+
+	class TriggerResultMessage extends Trigger {
+--		reference message container : MessageType;
+--		reference webServiceOperation[0-1] container : WebServiceOperation;
+	}
+
+	class TriggerIntermediateMultiple extends Trigger {
+--		reference triggerResultMessage[0-1] container : TriggerResultMessage;
+--		reference triggerTimer[0-1] container : TriggerTimer;
+--		reference triggerError[0-1] container : TriggerError;
+--		reference triggerCompensation[0-1] container : TriggerCompensation;
+--		reference triggerRule[0-1] container : TriggerRule;
+--		reference triggerResultLink[0-1] container : TriggerResultLink;
+	}
+
+	class TriggerMultiple extends Trigger {
+--		reference triggerResultMessage[0-1] container : TriggerResultMessage;
+--		reference triggerTimer[0-1] container : TriggerTimer;
+--		reference triggerRule[0-1] container : TriggerRule;
+--		reference triggerResultLink[0-1] container : TriggerResultLink;
+	}
+
+	class TriggerRule extends Trigger {
+		attribute ruleName : String;
+	}
+
+	class TriggerTimer extends Trigger {
+		attribute timeDate[0-1] : String;
+		attribute timeCycle[0-1] : String;
+	}
+
+	class StartEvent extends Event {
+	}
+
+	class IntermediateEvent extends Event {
+		reference target[0-1] : Activity;
+	}
+
+	class EndEvent extends Event {
+	}
+
+	class Gateway extends Route {
+	}
+
+	class Process extends Element {
+		attribute accessLevel[0-1] : AccessLevelKind;
+		attribute processType[0-1] : ProcessTypeKind;
+		attribute status[0-1] : StatusKind;
+		attribute suppressJoinFailure[0-1] : Boolean;
+		attribute enableInstanceCompensation[0-1] : Boolean;
+		attribute adHoc[0-1] : Boolean;
+		attribute adHocOrdering[0-1] : AdHocOrderingKind;
+		attribute adHocCompletionCondition[0-1] : String;
+
+--		reference processHeader container : ProcessHeader;
+--		reference redefinableHeader container[0-1] : RedefinableHeader;
+--		reference formalParameters[*] container : FormalParameter;
+		reference participant[*] container : Participant;
+		reference applications[*] container : Application;
+		reference dataField container : DataField;
+		reference activitySets[*] container : ActivitySet;
+		reference activities[*] container : Activity;
+		reference transitions[*] container : Transition;
+--		reference extendedAttributes[*] container : ExtendedAttribute;
+--		reference assignements[*] container : Assignement;
+--		reference partnerLinks[*] container : PartnerLink;
+		reference object[0-1] container : Object;
+		reference defaultStartActivitySet[0-1] : ActivitySet;
+		reference defaultStartActivity[0-1] : Activity;
+	}
+
+	class Transition extends Element {
+		attribute quantity[0-1] : Integer;
+
+--		reference condition[0-1] container : Condition;
+--		reference description[0-1] container : Description;
+--		reference extendedAttributes[*] container : ExtendedAttribute;
+--		reference assignements[*] container : Assignement;
+		reference object[0-1] container : Object;
+--		reference connectorGraphicsInfos[*] container : ConnectorGraphicsInfo;
+		reference to : Activity;
+		reference from : Activity;
+	}
+
+	class ActivitySet extends Element {
+		attribute adHoc[0-1] : Boolean;
+		attribute adHocOrdering[0-1] : AdHocOrderingKind;
+		attribute adHocCompletionCondition[0-1] : String;
+
+		reference defaultStartActivity[0-1] : Activity;
+		reference activities[*] container : Activity;
+		reference transitions[*] container : Transition;
+		reference object[0-1] container : Object;
+	}
+
+	class ExternalReference {
+		attribute xref[0-1] : String;
+		attribute location : String;
+		attribute namespace[0-1] : String;
+	}
+
+	class Object extends Element {
+		reference categories[*] container : Category;
+--		reference documentation[0-1] container : Documentation;
+	}
+
+	class ExternalPackage extends Element {
+		attribute href : String;
+	}
+
+	class Category extends Element {
+	}
+
+	class DataField extends Element {
+		attribute isArray[0-1] : Boolean;
+		attribute correlation[0-1] : Boolean;
+
+		reference dataType container : TypeDeclaration;
+--		reference initialValue[0-1] container : ExpressionType;
+--		reference lenght[0-1] container : Lenght;
+--		reference description[0-1] container : Description;
+--		reference extendedAttributes[*] container : ExtendedAttribute;
+	}
+
+	class Script {
+		attribute type : String;
+		attribute version[0-1] : String;
+		attribute grammar[0-1] : String;
+	}
+}
+
+package DataTypes {
+	enumeration AssociationDirectionKind {
+		literal None;
+		literal To;
+		literal From;
+		literal Both;
+	}
+
+	enumeration OrientationKind {
+		literal Horizontal;
+		literal Vertical;
+	}
+
+	enumeration AccessLevelKind {
+		literal Public;
+		literal Private;
+	}
+
+	enumeration ProcessTypeKind {
+		literal None;
+		literal Private;
+		literal Abstract;
+		literal Collaboration;
+	}
+
+	enumeration StatusKind {
+		literal None;
+		literal Ready;
+		literal Active;
+		literal Cancelled;
+		literal Aborting;
+		literal Aborted;
+		literal Completing;
+		literal Completed;
+	}
+
+	enumeration AdHocOrderingKind {
+		literal Sequential;
+		literal Parallel;
+	}
+
+	enumeration ModeKind {
+		literal Automatic;
+		literal Manual;
+	}
+
+	enumeration GatewayTypeKind {
+		literal Xor;
+		literal Or;
+		literal Complex;
+		literal And;
+	}
+
+	enumeration ExecutionKind {
+		literal Asynchr;
+		literal Synchr;
+	}
+
+	enumeration TriggerKind {
+		literal None;
+		literal Message;
+		literal Timer;
+		literal Rule;
+		literal Link;
+		literal Error;
+		literal Cancel;
+		literal Compensation;
+		literal Terminate;
+		literal Multiple;
+	}
+
+	enumeration ImplementationKind {
+		literal WebService;
+		literal Other;
+		literal Unspecified;
+	}
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+	datatype Boolean;
+}

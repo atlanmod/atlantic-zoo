@@ -1,0 +1,60 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_MTRANS"{
+labelloc=t
+color=black
+label=MTRANS
+ node[shape=record];
+MetaClass[label="{MetaClass| | }"]
+;
+ node[shape=record];
+MetaModel[label="{MetaModel| | }"]
+;
+ node[shape=record];
+Module[label="{Module|name : String\nmode : String| }"]
+ Module->MetaModel[arrowhead=vee,arrowtail=none,headlabel="metaDest[*]",group=MetaModel,minlen=2,constraint=false,]
+ Module->MetaModel[arrowhead=vee,arrowtail=none,headlabel="metaSource[*]",group=MetaModel,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Rule[label="{Rule|isAbstract : Boolean\nisEntryPoint : Boolean\nname : String| }"]
+ Rule->Module[arrowhead=diamond,arrowtail=none,headlabel="module",taillabel="rules[1-*]",group=Module,minlen=2,constraint=true,]
+ Rule->MetaClass[arrowhead=vee,arrowtail=none,headlabel="target[0-1]",group=MetaClass,minlen=2,constraint=false,]
+ Rule->MetaClass[arrowhead=vee,arrowtail=none,headlabel="source[0-1]",group=MetaClass,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Inheritance[label="{Inheritance| | }"]
+ Inheritance->Rule[arrowhead=diamond,arrowtail=none,headlabel="rule",taillabel="inheritances[*]",group=Rule,minlen=2,constraint=true,]
+ Inheritance->Rule[arrowhead=vee,arrowtail=none,headlabel="inheritedRules[*]",group=Rule,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Expression[label="{Expression|operator : String| }"]
+ Expression->Inheritance[arrowhead=diamond,arrowtail=none,headlabel="inheritance",taillabel="expressions[*]",group=Inheritance,minlen=2,constraint=true,]
+ Expression->Rule[arrowhead=diamond,arrowtail=none,headlabel="rule",taillabel="guard[0-1]",group=Rule,minlen=2,constraint=true,]
+ Expression->Instruction[arrowhead=diamond,arrowtail=none,headlabel="instruction",taillabel="body",group=Instruction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Section[label="{Section|kind : String| }"]
+ Section->Rule[arrowhead=diamond,arrowtail=none,headlabel="rule",taillabel="sections[1-*]",group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Instruction[label="{Instruction| | }"]
+ Instruction->Section[arrowhead=diamond,arrowtail=none,headlabel="section",taillabel="instructions[1-*]",group=Section,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Variable[label="{Variable|name : String| }"]
+ Variable->Rule[arrowhead=diamond,arrowtail=none,headlabel="rule",taillabel="declaration[0-1]",group=Rule,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

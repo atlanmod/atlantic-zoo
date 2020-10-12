@@ -1,0 +1,167 @@
+package Metamodel;
+
+package CADM {
+  class Element {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] content;
+  }
+
+  class Architecture extends Element {
+    !ordered val Architecture[*] isAssociatedWith;
+    !ordered val Mission[*]#isCitedBy missions;
+    !ordered ref FunctionalArea[*] isFocusOf;
+    !ordered ref Organization[*] uses;
+  }
+
+  class Organization extends Element {
+    !ordered ref Organization[*] isAssociatedWith;
+    !ordered val SoftwareItem[*]#isSourceFor softwareItems;
+    !ordered ref InformationAsset[*] owns;
+    !ordered ref Node[*] includes;
+    !ordered ref Capability[*] performsTo;
+    !ordered ref Requirement[*] hasRequirement;
+    !ordered ref MissionArea[*] hasMissionArea;
+    !ordered ref System[*] associatedSystems;
+    !ordered ref FunctionalArea[*] isProponentOf;
+  }
+
+  class Guidance extends Element {
+    !ordered val Guidance[*] isAssocitatedWith;
+    !ordered ref Architecture[*] isImplementedBy;
+    !ordered ref Document[*] isSpecifiedIn;
+    !ordered ref InformationAsset[*] providesAuthorityFor;
+    !ordered ref MissionArea[*] defines;
+  }
+
+  class Document extends Element {
+    !ordered val Document[*] isAssociatedWith;
+    !ordered ref Architecture[1] describesArchitecture;
+    !ordered ref System[*] describesSystem;
+    !ordered ref Agreement[*] isSpecifiedUsing;
+    !ordered ref InformationAsset[*] cites;
+  }
+
+  class Action extends Element {
+    !ordered val Task[1] mayBeA;
+    !ordered val Action[*] isAssociatedWith;
+    !ordered ref ActivityModel[*] involvedIn;
+  }
+
+  class Agreement extends Element {
+    !ordered val Agreement[*] isAssociatedWith;
+    !ordered ref Agreement[*] isCitedBy;
+    !ordered ref InformationAsset[*] appliesTo;
+    !ordered ref Guidance[*] implements;
+  }
+
+  class Standard extends Agreement {
+  }
+
+  class Task extends Element {
+    !ordered val Task[*] isAssociatedWith;
+    !ordered ref Node[*] isPerformedBy;
+    !ordered ref System[*] isPerformedUsing;
+    !ordered ref Requirement[*] specifies;
+  }
+
+  class InformationAsset extends Element {
+    !ordered val InformationAsset[*] isAssociatedWith;
+  }
+
+  class ConceptualDataModel extends InformationAsset {
+  }
+
+  class ActivityModel extends InformationAsset {
+  }
+
+  class Node {
+    !ordered ref Node[*] isAssociatedWith;
+    !ordered ref Architecture[*] describes;
+    !ordered ref Facility[*] hasServicesProvidedBy;
+    !ordered ref ActivityModel[*] involvedIn;
+    !ordered ref InformationAsset[*] uses;
+    !ordered ref InfoExchRequirement[*] involves;
+    !ordered ref Network[*] isParticipedInBy;
+    !ordered ref System[*] supports;
+  }
+
+  class Network extends Element {
+    !ordered val Network[*] isAssociatedWith;
+    !ordered ref Document[*] isDescribedIn;
+    !ordered ref Standard[*] compliesWith;
+    !ordered ref Organization[*] has;
+    !ordered ref Capability[*] performsTo;
+  }
+
+  class Requirement extends Guidance {
+    !ordered ref Architecture[*] mayBeSatifiedBy;
+    !ordered ref InformationAsset[*] isSpecifiedUsing;
+    !ordered ref MaterielItem[*] specifiesNeedFor;
+    !ordered ref MissionArea[*] cites;
+  }
+
+  class InfoExchRequirement extends Requirement {
+    !ordered ref Document[*] isCitedIn;
+    !ordered ref InformationAsset[*] isSpecifiedInInfos;
+  }
+
+  class ExchangeNeedLineReq extends Requirement {
+  }
+
+  class MissionArea extends Element {
+    !ordered ref Task[*] supports;
+  }
+
+  class System extends Element {
+    !ordered ref System[*] isAssociatedWith;
+    !ordered ref Architecture[*] citedIn;
+    !ordered ref Standard[*] compliesWith;
+    !ordered ref InformationAsset[*] isDescribedBy;
+    !ordered ref MaterielItem[*] uses;
+    !ordered ref Network[*] operatesUsing;
+    !ordered ref Capability[*] performsTo;
+    !ordered ref Organization[*] associatedOrganization;
+    !ordered ref Requirement[*] appliesTo;
+  }
+
+  class Mission extends Element {
+    !ordered ref Architecture[1]#missions isCitedBy;
+    !ordered ref Task[*] requires;
+    !ordered ref Organization[*] isAssigned;
+    !ordered ref FunctionalArea[*] mayCite;
+  }
+
+  class FunctionalArea extends Element {
+    !ordered ref FunctionalArea[*] isPartOf;
+    !ordered ref System[*] supports;
+    !ordered ref MissionArea[*] cites;
+  }
+
+  class Capability extends Element {
+    !ordered ref Requirement[*] specifiesRequired;
+  }
+
+  class MaterielItem extends Element {
+    !ordered val MaterielItem[*] establishedAs;
+    !ordered ref Standard[*] conformsTo;
+    !ordered ref Capability[*] performsTo;
+  }
+
+  class EquipmentType extends MaterielItem {
+  }
+
+  class SoftwareItem extends MaterielItem {
+    !ordered ref EquipmentType[*] uses;
+    !ordered ref Organization[1]#softwareItems isSourceFor;
+  }
+
+  class Facility extends Element {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+}
+

@@ -1,0 +1,40 @@
+package Metamodel;
+
+package RelationalDBContent {
+  abstract class NamedElement {
+    !unique !ordered attr String[1] name;
+  }
+
+  class DataBase extends NamedElement {
+    !unique !ordered attr String[1] SGBDname;
+    !ordered val Table[*]#database tables;
+  }
+
+  class Table extends NamedElement {
+    !ordered ref DataBase[1]#tables database;
+    val Tuple[*]#owner tuples;
+  }
+
+  class Tuple {
+    !ordered ref Table[1]#tuples owner;
+    val TupleElement[*]#tuple elements;
+  }
+
+  class TupleElement {
+    !ordered ref Tuple[1]#elements tuple;
+    !unique !ordered attr String value;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

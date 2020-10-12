@@ -1,0 +1,61 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_ControllerUML"{
+labelloc=t
+color=black
+label=ControllerUML
+ node[shape=record];
+ControllerAttribute[label="{ControllerAttribute| | }"]
+;
+ node[shape=record];
+Controller[label="{Controller| | }"]
+ Controller->ControllerAttribute[arrowhead=none,arrowtail=none,headlabel="controllerAttribute[*]",taillabel="controller",group=ControllerAttribute,minlen=2,constraint=false,]
+ Controller->StateMachine[arrowhead=vee,arrowtail=diamond,headlabel="behavior",group=StateMachine,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StateMachine[label="{StateMachine| | }"]
+ StateMachine->State[arrowhead=vee,arrowtail=diamond,headlabel="states[*]",group=State,minlen=2,constraint=true,]
+;
+ node[shape=record];
+State[label="{State| | }"]
+ State->State[arrowhead=diamond,arrowtail=none,headlabel="theContainer[0-1]",taillabel="substates[*]",group=State,minlen=2,constraint=true,]
+ State->StateTransition[arrowhead=none,arrowtail=none,headlabel="incoming[*]",taillabel="target",group=StateTransition,minlen=2,constraint=false,]
+;
+ node[shape=record];
+SubControllerState[label="{SubControllerState| | }"]
+ SubControllerState->Controller[arrowhead=vee,arrowtail=none,headlabel="controller",group=Controller,minlen=2,constraint=false,]
+ SubControllerState->State[arrowhead=onormal,group=State,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ViewState[label="{ViewState| | }"]
+ ViewState->State[arrowhead=onormal,group=State,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StateTransition[label="{StateTransition| | }"]
+ StateTransition->State[arrowhead=diamond,arrowtail=none,headlabel="source",taillabel="outGoing[*]",group=State,minlen=2,constraint=true,]
+ StateTransition->Event[arrowhead=vee,arrowtail=none,headlabel="trigger",group=Event,minlen=2,constraint=false,]
+ StateTransition->StateMachineAction[arrowhead=vee,arrowtail=diamond,headlabel="effect[0-1]",group=StateMachineAction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StateMachineAction[label="{StateMachineAction| | }"]
+;
+ node[shape=record];
+Event[label="{Event| | }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

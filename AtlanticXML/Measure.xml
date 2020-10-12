@@ -1,0 +1,60 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'Measure'>
+    <Enumeration name = 'ModelKind'>
+      <EnumLiteral name = 'KM3'/>
+      <EnumLiteral name = 'UML2'/>
+    </Enumeration>
+    <Class name = 'RootMeasureSet' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'modelType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Measure::ModelKind'/>
+      <Reference name = 'categories' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Measure::Category' opposite = 'Measure::Category::root'/>
+      <Reference name = 'measureSets' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Measure::MeasureSet' opposite = 'Measure::MeasureSet::root'/>
+    </Class>
+    <Class name = 'Category' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'desc' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'metrics' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Measure::Metric' opposite = 'Measure::Metric::category'/>
+      <Reference name = 'root' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Measure::RootMeasureSet' opposite = 'Measure::RootMeasureSet::categories'/>
+    </Class>
+    <Class name = 'Metric' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'desc' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'preferredValue' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'category' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Measure::Category' opposite = 'Measure::Category::metrics'/>
+    </Class>
+    <Enumeration name = 'ElementKind'>
+      <EnumLiteral name = 'metamodel'/>
+      <EnumLiteral name = 'model'/>
+      <EnumLiteral name = 'package'/>
+      <EnumLiteral name = 'interface'/>
+      <EnumLiteral name = 'class'/>
+    </Enumeration>
+    <Class name = 'MeasureSet' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'elementName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'elementType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Measure::ElementKind'/>
+      <Reference name = 'measures' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Measure::Measure' opposite = 'Measure::Measure::owner'/>
+      <Reference name = 'root' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Measure::RootMeasureSet' opposite = 'Measure::RootMeasureSet::measureSets'/>
+      <Reference name = 'subsets' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Measure::MeasureSet' opposite = 'Measure::MeasureSet::parent'/>
+      <Reference name = 'parent' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Measure::MeasureSet' opposite = 'Measure::MeasureSet::subsets'/>
+    </Class>
+    <Class name = 'Measure' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'metric' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Measure::Metric' opposite = ''/>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Measure::MeasureSet' opposite = 'Measure::MeasureSet::measures'/>
+    </Class>
+    <Class name = 'IntegerMeasure' isAbstract = 'false' supertypes = 'Measure::Measure'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'DoubleMeasure' isAbstract = 'false' supertypes = 'Measure::Measure'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+    </Class>
+    <Class name = 'PercentageMeasure' isAbstract = 'false' supertypes = 'Measure::Measure'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'Double'/>
+  </Package>
+</Metamodel>

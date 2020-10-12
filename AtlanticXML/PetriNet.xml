@@ -1,0 +1,36 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'PetriNet'>
+    <Class name = 'Element' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'PetriNet' isAbstract = 'false' supertypes = 'PetriNet::Element'>
+      <Reference name = 'places' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PetriNet::Place' opposite = ''/>
+      <Reference name = 'transitions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PetriNet::Transition' opposite = ''/>
+      <Reference name = 'arcs' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PetriNet::Arc' opposite = ''/>
+    </Class>
+    <Class name = 'Place' isAbstract = 'false' supertypes = 'PetriNet::Element'>
+      <Reference name = 'incoming' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::TransToPlaceArc' opposite = 'PetriNet::TransToPlaceArc::target'/>
+      <Reference name = 'outgoing' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::PlaceToTransArc' opposite = 'PetriNet::PlaceToTransArc::source'/>
+    </Class>
+    <Class name = 'Transition' isAbstract = 'false' supertypes = 'PetriNet::Element'>
+      <Reference name = 'incoming' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::PlaceToTransArc' opposite = 'PetriNet::PlaceToTransArc::target'/>
+      <Reference name = 'outgoing' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::TransToPlaceArc' opposite = 'PetriNet::TransToPlaceArc::source'/>
+    </Class>
+    <Class name = 'Arc' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'weight' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'PlaceToTransArc' isAbstract = 'false' supertypes = 'PetriNet::Arc'>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::Place' opposite = 'PetriNet::Place::outgoing'/>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::Transition' opposite = 'PetriNet::Transition::incoming'/>
+    </Class>
+    <Class name = 'TransToPlaceArc' isAbstract = 'false' supertypes = 'PetriNet::Arc'>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::Transition' opposite = 'PetriNet::Transition::outgoing'/>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::Place' opposite = 'PetriNet::Place::incoming'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Integer'/>
+  </Package>
+</Metamodel>

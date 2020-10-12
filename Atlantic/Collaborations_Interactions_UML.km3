@@ -1,0 +1,89 @@
+-- @name 		Collaborations and Interactions in UML Metamodel
+-- @domains 	UML
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/07/10
+-- @description This metamodel fragment describes collaborations and interactions in UML metamodel
+-- @see 		This metamodel fragment has been extracted from information available in the following article:
+-- @see 		Article "Supporting Disciplined Reuse and Evolution of UML Models"
+-- @see 		by Tom mens, Carine Lucas, Patrick Steyaert
+-- @see 		Page 384, Section 3.3, Fig. 3 Collaborations and Interactions in UML Metamodel
+-- @see 		Lecture Notes in Computer Science 1618
+-- @see 		Jean Bézivin, Pierre-Alain Muller
+-- @see 		The Unified Modeling Language UML 98: Beyond the notation
+
+package ExtendedUMLCorePackage {
+
+	class Package extends ProviderClause {
+	}
+	
+	class ProviderClause {
+		reference ownedEltColl container : CollaborationPackage;
+		reference ownedEltInt [*] : InteractionPackage oppositeOf providerClause;
+	}
+	
+	class CollaborationPackage {
+		reference ownedElt : Collaboration;
+	}
+	
+	class Collaboration {
+		reference interaction [*] container : Interaction oppositeOf context;
+		reference ownedEltAss container : AssociationRole;
+		reference ownedEltClass container : ClassifierRole;
+	}
+	
+	class InteractionPackage {
+		reference providerClause : ProviderClause oppositeOf ownedEltInt;
+		reference ownedElt : Interaction;
+	}
+	
+	class Interaction {
+		reference context : Collaboration oppositeOf interaction;
+		reference message [1-*] container : Message oppositeOf interaction;
+	}
+	
+	class AssociationRole {
+		reference connection [2-2] container : AssociationEndRole oppositeOf associationRole;
+	}
+
+	class ClassifierRole {
+		reference associationEndRole [*] container : AssociationEndRole oppositeOf type;
+		reference receiverMess : Message oppositeOf receiver;
+		reference senderMess : Message oppositeOf sender;
+		reference availableFeature [*] container : Operation oppositeOf classifierRole;
+		reference base [1-1] : Interface oppositeOf classifierRole;
+	}
+	
+	class AssociationEndRole {
+		reference associationRole : AssociationRole oppositeOf connection;
+		reference type : ClassifierRole oppositeOf associationEndRole;
+	}
+	
+	class Message {
+		reference message [*] : Message oppositeOf activator;
+		reference activator [0-1] : Message oppositeOf message;
+		reference interaction [*] : Interaction oppositeOf message; 
+		reference receiver : ClassifierRole oppositeOf receiverMess;
+		reference sender : ClassifierRole oppositeOf senderMess;
+		reference specification : Request oppositeOf message;
+	}
+	
+	class Request {
+		reference message [*] : Message oppositeOf specification;
+	}
+	
+	class Operation extends Request {
+		reference classifierRole [*] : ClassifierRole oppositeOf availableFeature;
+		reference owner [1-1] : Interface oppositeOf feature;
+	}
+	
+	class Interface {
+		reference classifierRole [*] : ClassifierRole oppositeOf base;
+		reference feature [*] container : Operation oppositeOf owner;
+	}	
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

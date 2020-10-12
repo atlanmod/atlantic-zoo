@@ -1,0 +1,318 @@
+abstract class LocatedElement
+  var location as Set of String
+  var commentsBefore as Set of String
+  var commentsAfter as Set of String
+
+class Root extends LocatedElement
+  // expressions IsContainer
+  var expressions as Set of Expression
+
+abstract class Expression extends LocatedElement
+
+class Integ extends Expression
+  var val as Set of Integer
+
+class Floa extends Expression
+  var val as Set of Double
+
+class Str extends Expression
+  var val as Set of String
+
+abstract class Ident extends Expression
+
+class ValidIdentifier extends Ident
+  var val as Set of String
+
+class SlotName extends Ident
+  var val as Set of String
+
+class JessVariable extends Ident
+  var val as Set of String
+
+class TemplateExpression extends Expression
+  // templateName IsContainer
+  var templateName as Set of ValidIdentifier
+  // firstSlot IsContainer
+  var firstSlot as Set of SlotOp
+  // slotOp IsContainer
+  var slotOp as Set of SlotOp
+
+class SlotOp extends LocatedElement
+  // slotIdent IsContainer
+  var slotIdent as Set of SlotName
+  // _operator IsContainer
+  var _operator as Set of ValidIdentifier
+  // exp IsContainer
+  var exp as Set of Expression
+
+abstract class DefinitionExp extends Expression
+
+class GlobalDefinition extends DefinitionExp
+  // varDef IsContainer
+  var varDef as Set of VarDefinition
+
+class VarDefinition extends LocatedElement
+  // jessVar IsContainer
+  var jessVar as Set of JessVariable
+  // _eq IsContainer
+  var _eq as Set of ValidIdentifier
+  // expression IsContainer
+  var expression as Set of Expression
+
+class FunctionDefinition extends DefinitionExp
+  // funcName IsContainer
+  var funcName as Set of ValidIdentifier
+  // parameters IsContainer
+  var parameters as Set of JessVariable
+  // expressions IsContainer
+  var expressions as Set of Expression
+
+class AdviceDefinition extends DefinitionExp
+  var direction as Set of Advice
+  // op IsContainer
+  var op as Set of Ident
+  // advice IsContainer
+  var advice as Set of Expression
+
+class UnDefAdvice extends DefinitionExp
+  // op IsContainer
+  var op as Set of Expression
+
+class FactDefinition extends DefinitionExp
+  // factName IsContainer
+  var factName as Set of ValidIdentifier
+  // documentation IsContainer
+  var documentation as Set of Str
+  // fact IsContainer
+  var fact as Set of Expression
+
+class RuleDefinition extends DefinitionExp
+  // ruleName IsContainer
+  var ruleName as Set of ValidIdentifier
+  // documentation IsContainer
+  var documentation as Set of Str
+  // declare IsContainer
+  var declare as Set of DeclareRule
+  // conditions IsContainer
+  var conditions as Set of Expression
+  // functionCall IsContainer
+  var functionCall as Set of UseFuncExp
+
+class DeclareRule extends LocatedElement
+  // salience IsContainer
+  var salience as Set of Expression
+  // nodeIndexHash IsContainer
+  var nodeIndexHash as Set of Expression
+  // autoFocus IsContainer
+  var autoFocus as Set of ValidIdentifier
+  // noLoop IsContainer
+  var noLoop as Set of ValidIdentifier
+
+class ModuleDefinition extends DefinitionExp
+  // moduleName IsContainer
+  var moduleName as Set of ValidIdentifier
+  // documentation IsContainer
+  var documentation as Set of Str
+
+class QueryDefinition extends DefinitionExp
+  // queryName IsContainer
+  var queryName as Set of ValidIdentifier
+  // documentation IsContainer
+  var documentation as Set of Str
+  // declare IsContainer
+  var declare as Set of DeclareVar
+  // expressions IsContainer
+  var expressions as Set of Expression
+
+class DeclareVar extends LocatedElement
+  // _var IsContainer
+  var _var as Set of JessVariable
+  // node IsContainer
+  var node as Set of Expression
+  // max IsContainer
+  var max as Set of Expression
+
+class TemplateDefinition extends DefinitionExp
+  // templateName IsContainer
+  var templateName as Set of ValidIdentifier
+  // inherits IsContainer
+  var inherits as Set of ValidIdentifier
+  // documentation IsContainer
+  var documentation as Set of Str
+  // declareBloc IsContainer
+  var declareBloc as Set of DeclareBloc
+  // slotDef IsContainer
+  var slotDef as Set of ASlotDef
+
+class DeclareBloc extends LocatedElement
+  // slotSpecific IsContainer
+  var slotSpecific as Set of ValidIdentifier
+  // backchainReaction IsContainer
+  var backchainReaction as Set of ValidIdentifier
+  // fromClass IsContainer
+  var fromClass as Set of ValidIdentifier
+  // includeVariable IsContainer
+  var includeVariable as Set of ValidIdentifier
+  // order IsContainer
+  var order as Set of ValidIdentifier
+
+class ASlotDef extends LocatedElement
+  // slotName IsContainer
+  var slotName as Set of SlotName
+  // optionals IsContainer
+  var optionals as Set of SlotOptions
+
+class SlotDef extends ASlotDef
+
+class MultiSlotDef extends ASlotDef
+
+class SlotOptions extends LocatedElement
+  // _type IsContainer
+  var _type as Set of ValidIdentifier
+  // def IsContainer
+  var def as Set of Expression
+  // defaultDyn IsContainer
+  var defaultDyn as Set of Expression
+  // allowedValues IsContainer
+  var allowedValues as Set of Expression
+
+abstract class UseFuncExp extends Expression
+
+class WhileExp extends UseFuncExp
+  var hasDo as Set of Boolean
+  // boolExp IsContainer
+  var boolExp as Set of Expression
+  // actions IsContainer
+  var actions as Set of Expression
+
+class ForExp extends UseFuncExp
+  // initializer IsContainer
+  var initializer as Set of Expression
+  // condition IsContainer
+  var condition as Set of Expression
+  // increment IsContainer
+  var increment as Set of Expression
+  // expressions IsContainer
+  var expressions as Set of Expression
+
+class ForeachExp extends UseFuncExp
+  // _var IsContainer
+  var _var as Set of JessVariable
+  // list IsContainer
+  var list as Set of Expression
+  // expressions IsContainer
+  var expressions as Set of Expression
+
+class FuncCall extends UseFuncExp
+  // funcName IsContainer
+  var funcName as Set of ValidIdentifier
+  // funcParam IsContainer
+  var funcParam as Set of Expression
+
+class EngineExp extends UseFuncExp
+
+class ExitExp extends UseFuncExp
+
+class IfExpression extends UseFuncExp
+  // ifthen IsContainer
+  var ifthen as Set of ConditionAction
+  // elifthen IsContainer
+  var elifthen as Set of ElifConditionAction
+  // _else IsContainer
+  var _else as Set of Expression
+
+class ConditionAction extends LocatedElement
+  // condition IsContainer
+  var condition as Set of Expression
+  // actions IsContainer
+  var actions as Set of Expression
+
+class ElifConditionAction extends LocatedElement
+  // condAct IsContainer
+  var condAct as Set of ConditionAction
+
+enum Advice
+  before
+  after
+
+var LocatedElement_Universe as Set of LocatedElement
+
+var Root_Universe as Set of Root
+
+var Expression_Universe as Set of Expression
+
+var Integ_Universe as Set of Integ
+
+var Floa_Universe as Set of Floa
+
+var Str_Universe as Set of Str
+
+var Ident_Universe as Set of Ident
+
+var ValidIdentifier_Universe as Set of ValidIdentifier
+
+var SlotName_Universe as Set of SlotName
+
+var JessVariable_Universe as Set of JessVariable
+
+var TemplateExpression_Universe as Set of TemplateExpression
+
+var SlotOp_Universe as Set of SlotOp
+
+var DefinitionExp_Universe as Set of DefinitionExp
+
+var GlobalDefinition_Universe as Set of GlobalDefinition
+
+var VarDefinition_Universe as Set of VarDefinition
+
+var FunctionDefinition_Universe as Set of FunctionDefinition
+
+var AdviceDefinition_Universe as Set of AdviceDefinition
+
+var UnDefAdvice_Universe as Set of UnDefAdvice
+
+var FactDefinition_Universe as Set of FactDefinition
+
+var RuleDefinition_Universe as Set of RuleDefinition
+
+var DeclareRule_Universe as Set of DeclareRule
+
+var ModuleDefinition_Universe as Set of ModuleDefinition
+
+var QueryDefinition_Universe as Set of QueryDefinition
+
+var DeclareVar_Universe as Set of DeclareVar
+
+var TemplateDefinition_Universe as Set of TemplateDefinition
+
+var DeclareBloc_Universe as Set of DeclareBloc
+
+var ASlotDef_Universe as Set of ASlotDef
+
+var SlotDef_Universe as Set of SlotDef
+
+var MultiSlotDef_Universe as Set of MultiSlotDef
+
+var SlotOptions_Universe as Set of SlotOptions
+
+var UseFuncExp_Universe as Set of UseFuncExp
+
+var WhileExp_Universe as Set of WhileExp
+
+var ForExp_Universe as Set of ForExp
+
+var ForeachExp_Universe as Set of ForeachExp
+
+var FuncCall_Universe as Set of FuncCall
+
+var EngineExp_Universe as Set of EngineExp
+
+var ExitExp_Universe as Set of ExitExp
+
+var IfExpression_Universe as Set of IfExpression
+
+var ConditionAction_Universe as Set of ConditionAction
+
+var ElifConditionAction_Universe as Set of ElifConditionAction
+
+Main()

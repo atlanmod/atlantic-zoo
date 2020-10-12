@@ -1,0 +1,753 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tcs="http://www.eclipse.org/gmt/tcs/2007/TCS">
+  <tcs:ConcreteSyntax location="2:1-501:2" name="AsmL" lexer="&#xD;&#xA;&#x9;&#x9;class ASMLexer extends Lexer;&#x9;&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;options {&#xD;&#xA;&#x9;&#x9;&#x9;k = 2;&#xD;&#xA;&#x9;&#x9;&#x9;charVocabulary = '\0' .. '\u00FF';&#xD;&#xA;&#x9;&#x9;&#x9;testLiterals = false;&#xD;&#xA;&#x9;&#x9;}&#x9;&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;{&#xD;&#xA;&#x9;&#x9;&#x9;protected Token makeToken(int t) {&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;org.atl.engine.injectors.ebnf.LocationToken ret = null;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;tokenObjectClass = org.atl.engine.injectors.ebnf.LocationToken.class;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;ret = (org.atl.engine.injectors.ebnf.LocationToken)super.makeToken(t);&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;ret.setEndLine(getLine());&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;ret.setEndColumn(getColumn());&#x9;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;return ret;&#xD;&#xA;&#x9;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;}&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;protected&#xD;&#xA;&#x9;&#x9;NL&#xD;&#xA;&#x9;&#x9;&#x9;:&#x9;(&#x9;'\r' '\n'&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;|&#x9;'\n' '\r'&#x9;//Improbable&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;|&#x9;'\r'&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;|&#x9;'\n'&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;)&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;{newline();}&#xD;&#xA;&#x9;&#x9;&#x9;;&#x9;&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;WS&#xD;&#xA;&#x9;&#x9;&#x9;:&#x9;(&#x9;' '&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;|&#x9;'\t'&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;|&#x9;NL&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;)&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;{ $setType(Token.SKIP); }&#xD;&#xA;&#x9;&#x9;&#x9;;&#x9;&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;COMMENT&#xD;&#xA;&#x9;&#x9;&#x9;:&#x9;&quot;--&quot;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;(~(&#x9;'\r'&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;|&#x9;'\n'&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;))*&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;({LA(1) != EOF_CHAR}? NL)?&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;{ $setType(Token.SKIP); }&#xD;&#xA;&#x9;&#x9;&#x9;;&#x9;&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;protected&#xD;&#xA;&#x9;&#x9;DIGIT&#xD;&#xA;&#x9;&#x9;&#x9;:&#x9;'0'..'9'&#xD;&#xA;&#x9;&#x9;&#x9;;&#x9;&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;protected&#xD;&#xA;&#x9;&#x9;ALPHA&#xD;&#xA;&#x9;&#x9;&#x9;:&#x9;'a'..'z'&#xD;&#xA;&#x9;&#x9;&#x9;|&#x9;'A'..'Z'&#xD;&#xA;&#x9;&#x9;&#x9;|&#x9;'_'&#xD;&#xA;&#x9;&#x9;&#x9;//For Unicode compatibility (from 0000 to 00ff)&#xD;&#xA;&#x9;&#x9;&#x9;|&#x9;'\u00C0' .. '\u00D6'&#xD;&#xA;&#x9;&#x9;&#x9;|&#x9;'\u00D8' .. '\u00F6'&#xD;&#xA;&#x9;&#x9;&#x9;|&#x9;'\u00F8' .. '\u00FF'&#xD;&#xA;&#x9;&#x9;&#x9;;&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;protected&#xD;&#xA;&#x9;&#x9;SNAME&#xD;&#xA;&#x9;&#x9;&#x9;options {&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;testLiterals = true;&#xD;&#xA;&#x9;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#x9;:&#x9;(ALPHA) (ALPHA | DIGIT)*&#xD;&#xA;&#x9;&#x9;&#x9;;&#x9;&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;NAME&#xD;&#xA;&#x9;&#x9;&#x9;:&#x9;s:SNAME {if(s.getType() != SNAME) $setType(s.getType());}&#xD;&#xA;&#x9;&#x9;&#x9;{&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;if($getText.equals(&quot;true&quot;)) $setType(BOOLEAN);&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;if($getText.equals(&quot;false&quot;)) $setType(BOOLEAN);&#xD;&#xA;&#x9;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#x9;;&#x9;&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;INT&#xD;&#xA;&#x9;&#x9;&#x9;:&#x9;(DIGIT)+&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;(('.' DIGIT)=> '.' (DIGIT)+ {$setType(FLOAT);})?&#xD;&#xA;&#x9;&#x9;&#x9;;&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;protected&#xD;&#xA;&#x9;&#x9;ESC&#xD;&#xA;&#x9;&#x9;&#x9;:&#x9;'\\'!&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;(&#x9;'n' {$setText(&quot;\n&quot;);}&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;|&#x9;'r' {$setText(&quot;\r&quot;);}&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;|&#x9;'t' {$setText(&quot;\t&quot;);}&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;|&#x9;'b' {$setText(&quot;\b&quot;);}&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;|&#x9;'f' {$setText(&quot;\f&quot;);}&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;|&#x9;'&quot;' {$setText(&quot;\&quot;&quot;);}&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;|&#x9;'\'' {$setText(&quot;\'&quot;);}&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;|&#x9;'\\' {$setText(&quot;\\&quot;);}&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;|&#x9;(&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;('0'..'3')&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;(&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;options {&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;warnWhenFollowAmbig = false;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;:&#x9;('0'..'7')&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;(&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;options {&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;warnWhenFollowAmbig = false;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;:&#x9;'0'..'7'&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;)?&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;)?&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;|&#x9;('4'..'7')&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;(&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;options {&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;warnWhenFollowAmbig = false;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;:&#x9;('0'..'7')&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;)?&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;)&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;{&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;s&#x9;String s = $getText;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;int i;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;int ret = 0;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;String ans; &#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;for (i=0; i&lt;s.length(); ++i)&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ret = ret*8 + s.charAt(i) - '0';&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;ans = String.valueOf((char) ret);&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;$setText(ans);&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#x9;)&#xD;&#xA;&#x9;&#x9;;&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;STRING&#xD;&#xA;&#x9;&#x9;&#x9;:&#x9;'\&quot;'!&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;(&#x9;ESC&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;|&#x9;'\n' {newline();}&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;|&#x9;~('\\'|'\&quot;'|'\n')&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;)*&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;'\&quot;'!&#xD;&#xA;&#x9;&#x9;&#x9;;&#xD;&#xA;&#x9;">
+    <commentsBefore>--@begin AsmL TCS</commentsBefore>
+    <commentsAfter>--@end AsmL TCS</commentsAfter>
+    <templates xsi:type="tcs:PrimitiveTemplate" location="5:2-6:21" name="identifier" typeName="String" isDefault="true" tokenName="NAME" value="%token%">
+      <commentsBefore>--@begin primitive template</commentsBefore>
+    </templates>
+    <templates xsi:type="tcs:PrimitiveTemplate" location="8:2-10:50" name="stringSymbol" typeName="String" tokenName="STRING" value="%token%" serializer="''' + %value%.toCString() + '''"/>
+    <templates xsi:type="tcs:PrimitiveTemplate" location="12:2-13:38" name="integerSymbol" typeName="Integer" isDefault="true" tokenName="INT" value="Integer.valueOf(%token%)"/>
+    <templates xsi:type="tcs:PrimitiveTemplate" location="15:2-16:37" name="floatSymbol" typeName="Double" isDefault="true" tokenName="FLOAT" value="Double.valueOf(%token%)"/>
+    <templates xsi:type="tcs:PrimitiveTemplate" location="18:2-19:38" name="booleanSymbol" typeName="Boolean" isDefault="true" tokenName="BOOLEAN" value="Boolean.valueOf(%token%)">
+      <commentsAfter>--@end primitive template</commentsAfter>
+      <commentsAfter>--@begin root element AsmL File</commentsAfter>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="23:2-30:4" name="AsmLFile" isMain="true">
+      <commentsBefore>--@end primitive template</commentsBefore>
+      <commentsBefore>--@begin root element AsmL File</commentsBefore>
+      <commentsAfter>--@end root element AsmL File</commentsAfter>
+      <commentsAfter>--@begin AsmL elements</commentsAfter>
+      <commentsAfter>--@begin Namespace</commentsAfter>
+      <templateSequence location="24:5-29:63">
+        <elements xsi:type="tcs:Block" location="24:5-26:64">
+          <blockSequence location="25:5-25:13">
+            <elements xsi:type="tcs:Property" location="25:5-25:13" name="elements"/>
+          </blockSequence>
+          <blockArgs xsi:type="tcs:IndentIncrBArg" location="26:7-26:21" value="0"/>
+          <blockArgs xsi:type="tcs:NbNLBArg" location="26:23-26:31" value="2"/>
+          <blockArgs xsi:type="tcs:StartNLBArg" location="26:33-26:48"/>
+          <blockArgs xsi:type="tcs:EndNLBArg" location="26:50-26:63"/>
+        </elements>
+        <elements xsi:type="tcs:Block" location="27:4-29:63">
+          <blockSequence location="28:5-28:9">
+            <elements xsi:type="tcs:Property" location="28:5-28:9" name="main"/>
+          </blockSequence>
+          <blockArgs xsi:type="tcs:IndentIncrBArg" location="29:7-29:21" value="0"/>
+          <blockArgs xsi:type="tcs:NbNLBArg" location="29:23-29:31" value="2"/>
+          <blockArgs xsi:type="tcs:StartNLBArg" location="29:33-29:47" value="true"/>
+          <blockArgs xsi:type="tcs:EndNLBArg" location="29:49-29:62"/>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="35:2-37:4" name="Namespace">
+      <commentsBefore>--@end root element AsmL File</commentsBefore>
+      <commentsBefore>--@begin AsmL elements</commentsBefore>
+      <commentsBefore>--@begin Namespace</commentsBefore>
+      <commentsAfter>--@end Namespace</commentsAfter>
+      <commentsAfter>--@begin Structure</commentsAfter>
+      <templateSequence location="36:5-36:21">
+        <elements xsi:type="tcs:LiteralRef" location="36:5-36:16" referredLiteral="/1"/>
+        <elements xsi:type="tcs:Property" location="36:17-36:21" name="name"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="41:2-49:4" name="Structure">
+      <commentsBefore>--@end Namespace</commentsBefore>
+      <commentsBefore>--@begin Structure</commentsBefore>
+      <templateSequence location="42:6-48:5">
+        <elements xsi:type="tcs:LiteralRef" location="42:6-42:17" referredLiteral="/2"/>
+        <elements xsi:type="tcs:Property" location="42:18-42:22" name="name"/>
+        <elements xsi:type="tcs:ConditionalElement" location="43:4-43:66">
+          <condition xsi:type="tcs:AndExp" location="43:5-43:34">
+            <expressions xsi:type="tcs:IsDefinedExp" location="43:5-43:34" propertyName="superStructureName"/>
+          </condition>
+          <thenSequence location="43:37-43:65">
+            <elements xsi:type="tcs:LiteralRef" location="43:37-43:46" referredLiteral="/3"/>
+            <elements xsi:type="tcs:Property" location="43:47-43:65" name="superStructureName"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="tcs:ConditionalElement" location="44:4-48:5">
+          <condition xsi:type="tcs:AndExp" location="44:5-44:25">
+            <expressions xsi:type="tcs:IsDefinedExp" location="44:5-44:25" propertyName="varOrCase"/>
+          </condition>
+          <thenSequence location="45:5-47:22">
+            <elements xsi:type="tcs:Block" location="45:5-47:22">
+              <blockSequence location="46:6-46:15">
+                <elements xsi:type="tcs:Property" location="46:6-46:15" name="varOrCase"/>
+              </blockSequence>
+              <blockArgs xsi:type="tcs:EndNLBArg" location="47:8-47:21"/>
+            </elements>
+          </thenSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="51:2-58:4" name="Case">
+      <commentsAfter>--@end Structure</commentsAfter>
+      <commentsAfter>--@begin Enumeration</commentsAfter>
+      <templateSequence location="52:6-57:5">
+        <elements xsi:type="tcs:LiteralRef" location="52:6-52:12" referredLiteral="/4"/>
+        <elements xsi:type="tcs:Property" location="52:13-52:17" name="name"/>
+        <elements xsi:type="tcs:ConditionalElement" location="53:4-57:5">
+          <condition xsi:type="tcs:AndExp" location="53:5-53:25">
+            <expressions xsi:type="tcs:IsDefinedExp" location="53:5-53:25" propertyName="variables"/>
+          </condition>
+          <thenSequence location="54:5-56:22">
+            <elements xsi:type="tcs:Block" location="54:5-56:22">
+              <blockSequence location="55:6-55:15">
+                <elements xsi:type="tcs:Property" location="55:6-55:15" name="variables"/>
+              </blockSequence>
+              <blockArgs xsi:type="tcs:EndNLBArg" location="56:8-56:21"/>
+            </elements>
+          </thenSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="62:2-69:4" name="Enumeration">
+      <commentsBefore>--@end Structure</commentsBefore>
+      <commentsBefore>--@begin Enumeration</commentsBefore>
+      <templateSequence location="63:6-68:5">
+        <elements xsi:type="tcs:LiteralRef" location="63:6-63:12" referredLiteral="/5"/>
+        <elements xsi:type="tcs:Property" location="63:13-63:17" name="name"/>
+        <elements xsi:type="tcs:ConditionalElement" location="64:4-68:5">
+          <condition xsi:type="tcs:AndExp" location="64:5-64:27">
+            <expressions xsi:type="tcs:IsDefinedExp" location="64:5-64:27" propertyName="enumerators"/>
+          </condition>
+          <thenSequence location="65:5-67:22">
+            <elements xsi:type="tcs:Block" location="65:5-67:22">
+              <blockSequence location="66:6-66:17">
+                <elements xsi:type="tcs:Property" location="66:6-66:17" name="enumerators"/>
+              </blockSequence>
+              <blockArgs xsi:type="tcs:EndNLBArg" location="67:8-67:21"/>
+            </elements>
+          </thenSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="71:2-73:4" name="Enumerator">
+      <commentsAfter>--@end Enumeration</commentsAfter>
+      <commentsAfter>--@begin Class</commentsAfter>
+      <templateSequence location="72:6-72:41">
+        <elements xsi:type="tcs:Property" location="72:6-72:10" name="name"/>
+        <elements xsi:type="tcs:ConditionalElement" location="72:11-72:41">
+          <condition xsi:type="tcs:AndExp" location="72:12-72:28">
+            <expressions xsi:type="tcs:IsDefinedExp" location="72:12-72:28" propertyName="value"/>
+          </condition>
+          <thenSequence location="72:31-72:40">
+            <elements xsi:type="tcs:LiteralRef" location="72:31-72:34" referredLiteral="/0/@symbols.20"/>
+            <elements xsi:type="tcs:Property" location="72:35-72:40" name="value"/>
+          </thenSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="77:2-84:4" name="Class">
+      <commentsBefore>--@end Enumeration</commentsBefore>
+      <commentsBefore>--@begin Class</commentsBefore>
+      <commentsAfter>--@end Class</commentsAfter>
+      <commentsAfter>--@end AsmL elements</commentsAfter>
+      <commentsAfter>--@begin Functions</commentsAfter>
+      <commentsAfter>--@begin Method and Procedure</commentsAfter>
+      <templateSequence location="78:6-83:5">
+        <elements xsi:type="tcs:ConditionalElement" location="78:6-78:31">
+          <condition xsi:type="tcs:AndExp" location="78:7-78:17">
+            <expressions xsi:type="tcs:BooleanPropertyExp" location="78:7-78:17" propertyName="isAbstract"/>
+          </condition>
+          <thenSequence location="78:20-78:30">
+            <elements xsi:type="tcs:LiteralRef" location="78:20-78:30" referredLiteral="/6"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="tcs:LiteralRef" location="78:32-78:39" referredLiteral="/7"/>
+        <elements xsi:type="tcs:Property" location="78:40-78:44" name="name"/>
+        <elements xsi:type="tcs:ConditionalElement" location="78:45-78:99">
+          <condition xsi:type="tcs:AndExp" location="78:46-78:71">
+            <expressions xsi:type="tcs:IsDefinedExp" location="78:46-78:71" propertyName="superClassName"/>
+          </condition>
+          <thenSequence location="78:74-78:98">
+            <elements xsi:type="tcs:LiteralRef" location="78:74-78:83" referredLiteral="/3"/>
+            <elements xsi:type="tcs:Property" location="78:84-78:98" name="superClassName"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="tcs:ConditionalElement" location="79:4-83:5">
+          <condition xsi:type="tcs:AndExp" location="79:5-79:27">
+            <expressions xsi:type="tcs:IsDefinedExp" location="79:5-79:27" propertyName="varOrMethod"/>
+          </condition>
+          <thenSequence location="80:5-82:22">
+            <elements xsi:type="tcs:Block" location="80:5-82:22">
+              <blockSequence location="81:6-81:17">
+                <elements xsi:type="tcs:Property" location="81:6-81:17" name="varOrMethod"/>
+              </blockSequence>
+              <blockArgs xsi:type="tcs:EndNLBArg" location="82:8-82:21"/>
+            </elements>
+          </thenSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="90:2-99:4" name="Method">
+      <commentsBefore>--@end Class</commentsBefore>
+      <commentsBefore>--@end AsmL elements</commentsBefore>
+      <commentsBefore>--@begin Functions</commentsBefore>
+      <commentsBefore>--@begin Method and Procedure</commentsBefore>
+      <templateSequence location="91:6-98:5">
+        <elements xsi:type="tcs:ConditionalElement" location="91:6-91:31">
+          <condition xsi:type="tcs:AndExp" location="91:7-91:17">
+            <expressions xsi:type="tcs:BooleanPropertyExp" location="91:7-91:17" propertyName="isAbstract"/>
+          </condition>
+          <thenSequence location="91:20-91:30">
+            <elements xsi:type="tcs:LiteralRef" location="91:20-91:30" referredLiteral="/6"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="tcs:Property" location="92:4-92:8" name="name"/>
+        <elements xsi:type="tcs:LiteralRef" location="92:9-92:12" referredLiteral="/0/@symbols.2"/>
+        <elements xsi:type="tcs:ConditionalElement" location="92:13-92:68">
+          <condition xsi:type="tcs:AndExp" location="92:14-92:35">
+            <expressions xsi:type="tcs:IsDefinedExp" location="92:14-92:35" propertyName="parameters"/>
+          </condition>
+          <thenSequence location="92:39-92:67">
+            <elements xsi:type="tcs:Property" location="92:39-92:67" name="parameters">
+              <propertyArgs xsi:type="tcs:SeparatorPArg" location="92:51-92:66">
+                <separatorSequence location="92:63-92:66">
+                  <elements xsi:type="tcs:LiteralRef" location="92:63-92:66" referredLiteral="/0/@symbols.1"/>
+                </separatorSequence>
+              </propertyArgs>
+            </elements>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="tcs:LiteralRef" location="92:69-92:72" referredLiteral="/0/@symbols.3"/>
+        <elements xsi:type="tcs:ConditionalElement" location="93:4-93:45">
+          <condition xsi:type="tcs:AndExp" location="93:5-93:26">
+            <expressions xsi:type="tcs:IsDefinedExp" location="93:5-93:26" propertyName="returnType"/>
+          </condition>
+          <thenSequence location="93:29-93:44">
+            <elements xsi:type="tcs:LiteralRef" location="93:29-93:33" referredLiteral="/8"/>
+            <elements xsi:type="tcs:Property" location="93:34-93:44" name="returnType"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="tcs:ConditionalElement" location="94:4-98:5">
+          <condition xsi:type="tcs:AndExp" location="94:5-94:20">
+            <expressions xsi:type="tcs:IsDefinedExp" location="94:5-94:20" propertyName="body"/>
+          </condition>
+          <thenSequence location="95:5-97:22">
+            <elements xsi:type="tcs:Block" location="95:5-97:22">
+              <blockSequence location="96:6-96:10">
+                <elements xsi:type="tcs:Property" location="96:6-96:10" name="body"/>
+              </blockSequence>
+              <blockArgs xsi:type="tcs:EndNLBArg" location="97:8-97:21"/>
+            </elements>
+          </thenSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="101:2-103:4" name="Parameter">
+      <commentsAfter>--@end Method and Procedure</commentsAfter>
+      <commentsAfter>--@begin Main Method </commentsAfter>
+      <templateSequence location="102:5-102:19">
+        <elements xsi:type="tcs:Property" location="102:5-102:9" name="name"/>
+        <elements xsi:type="tcs:LiteralRef" location="102:10-102:14" referredLiteral="/8"/>
+        <elements xsi:type="tcs:Property" location="102:15-102:19" name="type"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="107:2-119:4" name="Main">
+      <commentsBefore>--@end Method and Procedure</commentsBefore>
+      <commentsBefore>--@begin Main Method </commentsBefore>
+      <templateSequence location="108:6-118:5">
+        <elements xsi:type="tcs:LiteralRef" location="108:6-108:14" referredLiteral="/9"/>
+        <elements xsi:type="tcs:ConditionalElement" location="109:4-113:5">
+          <condition xsi:type="tcs:AndExp" location="109:5-109:31">
+            <expressions xsi:type="tcs:IsDefinedExp" location="109:5-109:31" propertyName="initialisations"/>
+          </condition>
+          <thenSequence location="110:5-112:22">
+            <elements xsi:type="tcs:Block" location="110:5-112:22">
+              <blockSequence location="111:6-111:21">
+                <elements xsi:type="tcs:Property" location="111:6-111:21" name="initialisations"/>
+              </blockSequence>
+              <blockArgs xsi:type="tcs:EndNLBArg" location="112:8-112:21"/>
+            </elements>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="tcs:ConditionalElement" location="114:4-118:5">
+          <condition xsi:type="tcs:AndExp" location="114:5-114:20">
+            <expressions xsi:type="tcs:IsDefinedExp" location="114:5-114:20" propertyName="body"/>
+          </condition>
+          <thenSequence location="115:5-117:22">
+            <elements xsi:type="tcs:Block" location="115:5-117:22">
+              <blockSequence location="116:6-116:10">
+                <elements xsi:type="tcs:Property" location="116:6-116:10" name="body"/>
+              </blockSequence>
+              <blockArgs xsi:type="tcs:EndNLBArg" location="117:8-117:21"/>
+            </elements>
+          </thenSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="121:2-123:4" name="Initially">
+      <commentsAfter>--@end Main Method </commentsAfter>
+      <commentsAfter>--@end Functions </commentsAfter>
+      <commentsAfter>--@begin Variable </commentsAfter>
+      <templateSequence location="122:6-122:28">
+        <elements xsi:type="tcs:LiteralRef" location="122:6-122:17" referredLiteral="/10"/>
+        <elements xsi:type="tcs:Property" location="122:18-122:20" name="id"/>
+        <elements xsi:type="tcs:LiteralRef" location="122:21-122:24" referredLiteral="/0/@symbols.20"/>
+        <elements xsi:type="tcs:Property" location="122:25-122:28" name="val"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="128:2-131:4" name="VarDeclaration">
+      <commentsBefore>--@end Main Method </commentsBefore>
+      <commentsBefore>--@end Functions </commentsBefore>
+      <commentsBefore>--@begin Variable </commentsBefore>
+      <commentsAfter>--@end Variable</commentsAfter>
+      <commentsAfter>--@begin Types</commentsAfter>
+      <templateSequence location="129:5-130:18">
+        <elements xsi:type="tcs:ConditionalElement" location="129:5-129:27">
+          <condition xsi:type="tcs:AndExp" location="129:6-129:16">
+            <expressions xsi:type="tcs:BooleanPropertyExp" location="129:6-129:16" propertyName="isConstant"/>
+          </condition>
+          <thenSequence location="129:19-129:26">
+            <elements xsi:type="tcs:LiteralRef" location="129:19-129:26" referredLiteral="/11"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="tcs:ConditionalElement" location="129:28-129:51">
+          <condition xsi:type="tcs:AndExp" location="129:29-129:42">
+            <expressions xsi:type="tcs:BooleanPropertyExp" location="129:29-129:42" propertyName="isDeclaration"/>
+          </condition>
+          <thenSequence location="129:45-129:50">
+            <elements xsi:type="tcs:LiteralRef" location="129:45-129:50" referredLiteral="/12"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="tcs:Property" location="130:4-130:8" name="name"/>
+        <elements xsi:type="tcs:LiteralRef" location="130:9-130:13" referredLiteral="/8"/>
+        <elements xsi:type="tcs:Property" location="130:14-130:18" name="type"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="135:2-137:4" name="NamedType">
+      <commentsBefore>--@end Variable</commentsBefore>
+      <commentsBefore>--@begin Types</commentsBefore>
+      <templateSequence location="136:5-136:26">
+        <elements xsi:type="tcs:Property" location="136:5-136:9" name="name"/>
+        <elements xsi:type="tcs:ConditionalElement" location="136:10-136:26">
+          <condition xsi:type="tcs:AndExp" location="136:11-136:19">
+            <expressions xsi:type="tcs:BooleanPropertyExp" location="136:11-136:19" propertyName="withNull"/>
+          </condition>
+          <thenSequence location="136:22-136:25">
+            <elements xsi:type="tcs:LiteralRef" location="136:22-136:25" referredLiteral="/13"/>
+          </thenSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="139:2-141:4" name="MapType">
+      <templateSequence location="140:5-140:34">
+        <elements xsi:type="tcs:LiteralRef" location="140:5-140:10" referredLiteral="/14"/>
+        <elements xsi:type="tcs:LiteralRef" location="140:11-140:15" referredLiteral="/15"/>
+        <elements xsi:type="tcs:Property" location="140:16-140:22" name="ofType"/>
+        <elements xsi:type="tcs:LiteralRef" location="140:23-140:27" referredLiteral="/16"/>
+        <elements xsi:type="tcs:Property" location="140:28-140:34" name="toType"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="143:2-146:4" name="TupletType">
+      <templateSequence location="144:6-145:21">
+        <elements xsi:type="tcs:LiteralRef" location="144:6-144:9" referredLiteral="/0/@symbols.2"/>
+        <elements xsi:type="tcs:Property" location="144:10-144:33" name="types">
+          <propertyArgs xsi:type="tcs:SeparatorPArg" location="144:17-144:32">
+            <separatorSequence location="144:29-144:32">
+              <elements xsi:type="tcs:LiteralRef" location="144:29-144:32" referredLiteral="/0/@symbols.1"/>
+            </separatorSequence>
+          </propertyArgs>
+        </elements>
+        <elements xsi:type="tcs:LiteralRef" location="144:34-144:37" referredLiteral="/0/@symbols.3"/>
+        <elements xsi:type="tcs:ConditionalElement" location="145:5-145:21">
+          <condition xsi:type="tcs:AndExp" location="145:6-145:14">
+            <expressions xsi:type="tcs:BooleanPropertyExp" location="145:6-145:14" propertyName="withNull"/>
+          </condition>
+          <thenSequence location="145:17-145:20">
+            <elements xsi:type="tcs:LiteralRef" location="145:17-145:20" referredLiteral="/13"/>
+          </thenSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="148:2-150:4" name="SetType">
+      <templateSequence location="149:5-149:18">
+        <elements xsi:type="tcs:LiteralRef" location="149:5-149:10" referredLiteral="/17"/>
+        <elements xsi:type="tcs:LiteralRef" location="149:11-149:15" referredLiteral="/15"/>
+        <elements xsi:type="tcs:Property" location="149:16-149:18" name="of"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="152:2-154:4" name="SeqType">
+      <commentsAfter>--@end Types</commentsAfter>
+      <commentsAfter>--&#x9;--@begin Term  &#x9;</commentsAfter>
+      <commentsAfter>--&#x9;template Term abstract operatored;</commentsAfter>
+      <commentsAfter>--&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;template VarTerm</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;: name</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;template MapTerm</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;:&quot;todo&quot;</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--</commentsAfter>
+      <commentsAfter>--&#x9;template TupletTerm</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;: &quot;(&quot; terms{separator = &quot;,&quot;} &quot;)&quot;</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--&#x9;--@end Term  </commentsAfter>
+      <commentsAfter>--&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;--@begin Body</commentsAfter>
+      <commentsAfter>--&#x9;template Body </commentsAfter>
+      <commentsAfter>--&#x9;&#x9;:&#x9;[rules]{indentIncr = 0}</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--&#x9;--@end Body</commentsAfter>
+      <commentsAfter>--</commentsAfter>
+      <commentsAfter>--&#x9;--@begin InWhereHolds</commentsAfter>
+      <commentsAfter>--&#x9;template InWhereHolds</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;: &#x9;var </commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;&quot;in&quot; in </commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;(isDefined(where)?&quot;where&quot; where) </commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;(isDefined(holds)? &quot;holds&quot; holds)</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--&#x9;--@begin InWhereHolds</commentsAfter>
+      <commentsAfter>--&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;--@begin Rules</commentsAfter>
+      <commentsAfter>--&#x9;template Rule abstract;</commentsAfter>
+      <commentsAfter>--&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;--@begin Steps&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;template Step </commentsAfter>
+      <commentsAfter>--&#x9;&#x9;: &#x9;&quot;Step&quot; (isDefined(name)? name &quot;:&quot;)</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;[(isDefined(body)?body)]{startNL = false}</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;template StepUntilFixPoint</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;: &#x9;&quot;step&quot; &quot;until&quot; &quot;fixpoint&quot; </commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;[(isDefined(body)?body)]{startNL = false}</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;template StepExpression abstract;</commentsAfter>
+      <commentsAfter>--&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;template StepWhile</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;: &#x9;&quot;step&quot; &quot;while&quot; expression</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;template StepUntil</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;:&#x9;&quot;step&quot; &quot;until&quot; expression</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;template StepForEach</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;: &#x9;&quot;step&quot; &quot;foreach&quot; expressions{separator = &quot;,&quot;}</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--&#x9;--@end Steps</commentsAfter>
+      <commentsAfter>--&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;template ReturnRule</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;: &#x9;&quot;return&quot; term </commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--</commentsAfter>
+      <commentsAfter>--&#x9;template MethodInvocation</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;: &#x9;called</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;template AddRule</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;: &#x9;&quot;add&quot; val &quot;to&quot; set</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;template RemoveRule</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;:&#x9;&quot;remove&quot; val &quot;from&quot; set</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;--@begin update rules</commentsAfter>
+      <commentsAfter>--&#x9;template UpdateRule abstract;</commentsAfter>
+      <commentsAfter>--&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;template UpdateVarRule</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;: &#x9;updateVar &quot;:=&quot; term </commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;template UpdateFieldRule</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;: &#x9;path{ separator = &quot;.&quot;} &quot;:=&quot; term </commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;template UpdateMapRule</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;:&#x9;updateMap &quot;(&quot; parameters { separator = &quot;)[&quot; } &quot;)&quot; &quot;:=&quot; term </commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;--@begin update rules</commentsAfter>
+      <commentsAfter>--&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;template ChooseRule context</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;:&#x9;&quot;choose&quot; expressions{separator=&quot;,&quot;}</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;[ifChoosenRules]</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;(isDefined(ifNotChoosenRule) ? &quot;ifnone&quot; [ ifNotChoosenRule ])</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;template ConditionalRule</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;:&#x9;&quot;if&quot; condition &quot;then&quot;</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;[ thenRule ]{startNL = false}</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;(isDefined(elseRule) ? &quot;else&quot; [ elseRule ])</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;(isDefined(elseIfRule) ? [ elseIfRule ])</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;&#x9;&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;template ElseIf</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;:&#x9;&quot;elseif&quot; condition &quot;then&quot; </commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;[ thenRule ]{startNL = false}</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;(isDefined(elseRule) ? &quot;else&quot; [ elseRule ])</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;(isDefined(elseIfRule) ? [ elseIfRule ])</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;&#x9;&#x9;</commentsAfter>
+      <commentsAfter>--</commentsAfter>
+      <commentsAfter>--&#x9;template DoForallRule context</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;:&#x9;&quot;forall&quot; expressions{ separator = &quot;,&quot; }</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;doRule</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--&#x9;--@end Rules</commentsAfter>
+      <commentsAfter>--@begin Constant</commentsAfter>
+      <templateSequence location="153:5-153:18">
+        <elements xsi:type="tcs:LiteralRef" location="153:5-153:10" referredLiteral="/18"/>
+        <elements xsi:type="tcs:LiteralRef" location="153:11-153:15" referredLiteral="/15"/>
+        <elements xsi:type="tcs:Property" location="153:16-153:18" name="of"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="277:2-277:29" name="Constant" isAbstract="true">
+      <commentsBefore>--@end Types</commentsBefore>
+      <commentsBefore>--&#x9;--@begin Term  &#x9;</commentsBefore>
+      <commentsBefore>--&#x9;template Term abstract operatored;</commentsBefore>
+      <commentsBefore>--&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;template VarTerm</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;: name</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;</commentsBefore>
+      <commentsBefore>--&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;template MapTerm</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;:&quot;todo&quot;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;</commentsBefore>
+      <commentsBefore>--</commentsBefore>
+      <commentsBefore>--&#x9;template TupletTerm</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;: &quot;(&quot; terms{separator = &quot;,&quot;} &quot;)&quot;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;</commentsBefore>
+      <commentsBefore>--&#x9;--@end Term  </commentsBefore>
+      <commentsBefore>--&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;--@begin Body</commentsBefore>
+      <commentsBefore>--&#x9;template Body </commentsBefore>
+      <commentsBefore>--&#x9;&#x9;:&#x9;[rules]{indentIncr = 0}</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;</commentsBefore>
+      <commentsBefore>--&#x9;--@end Body</commentsBefore>
+      <commentsBefore>--</commentsBefore>
+      <commentsBefore>--&#x9;--@begin InWhereHolds</commentsBefore>
+      <commentsBefore>--&#x9;template InWhereHolds</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;: &#x9;var </commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;&quot;in&quot; in </commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;(isDefined(where)?&quot;where&quot; where) </commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;(isDefined(holds)? &quot;holds&quot; holds)</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;</commentsBefore>
+      <commentsBefore>--&#x9;--@begin InWhereHolds</commentsBefore>
+      <commentsBefore>--&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;--@begin Rules</commentsBefore>
+      <commentsBefore>--&#x9;template Rule abstract;</commentsBefore>
+      <commentsBefore>--&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;--@begin Steps&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;template Step </commentsBefore>
+      <commentsBefore>--&#x9;&#x9;: &#x9;&quot;Step&quot; (isDefined(name)? name &quot;:&quot;)</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;[(isDefined(body)?body)]{startNL = false}</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;</commentsBefore>
+      <commentsBefore>--&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;template StepUntilFixPoint</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;: &#x9;&quot;step&quot; &quot;until&quot; &quot;fixpoint&quot; </commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;[(isDefined(body)?body)]{startNL = false}</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;template StepExpression abstract;</commentsBefore>
+      <commentsBefore>--&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;template StepWhile</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;: &#x9;&quot;step&quot; &quot;while&quot; expression</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;template StepUntil</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;:&#x9;&quot;step&quot; &quot;until&quot; expression</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;template StepForEach</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;: &#x9;&quot;step&quot; &quot;foreach&quot; expressions{separator = &quot;,&quot;}</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;</commentsBefore>
+      <commentsBefore>--&#x9;--@end Steps</commentsBefore>
+      <commentsBefore>--&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;template ReturnRule</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;: &#x9;&quot;return&quot; term </commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;</commentsBefore>
+      <commentsBefore>--</commentsBefore>
+      <commentsBefore>--&#x9;template MethodInvocation</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;: &#x9;called</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;template AddRule</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;: &#x9;&quot;add&quot; val &quot;to&quot; set</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;</commentsBefore>
+      <commentsBefore>--&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;template RemoveRule</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;:&#x9;&quot;remove&quot; val &quot;from&quot; set</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;--@begin update rules</commentsBefore>
+      <commentsBefore>--&#x9;template UpdateRule abstract;</commentsBefore>
+      <commentsBefore>--&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;template UpdateVarRule</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;: &#x9;updateVar &quot;:=&quot; term </commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;template UpdateFieldRule</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;: &#x9;path{ separator = &quot;.&quot;} &quot;:=&quot; term </commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;template UpdateMapRule</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;:&#x9;updateMap &quot;(&quot; parameters { separator = &quot;)[&quot; } &quot;)&quot; &quot;:=&quot; term </commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;--@begin update rules</commentsBefore>
+      <commentsBefore>--&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;template ChooseRule context</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;:&#x9;&quot;choose&quot; expressions{separator=&quot;,&quot;}</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;[ifChoosenRules]</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;(isDefined(ifNotChoosenRule) ? &quot;ifnone&quot; [ ifNotChoosenRule ])</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;</commentsBefore>
+      <commentsBefore>--&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;template ConditionalRule</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;:&#x9;&quot;if&quot; condition &quot;then&quot;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;[ thenRule ]{startNL = false}</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;(isDefined(elseRule) ? &quot;else&quot; [ elseRule ])</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;(isDefined(elseIfRule) ? [ elseIfRule ])</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;&#x9;&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;template ElseIf</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;:&#x9;&quot;elseif&quot; condition &quot;then&quot; </commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;[ thenRule ]{startNL = false}</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;(isDefined(elseRule) ? &quot;else&quot; [ elseRule ])</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;(isDefined(elseIfRule) ? [ elseIfRule ])</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;&#x9;&#x9;</commentsBefore>
+      <commentsBefore>--</commentsBefore>
+      <commentsBefore>--&#x9;template DoForallRule context</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;:&#x9;&quot;forall&quot; expressions{ separator = &quot;,&quot; }</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;doRule</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;</commentsBefore>
+      <commentsBefore>--&#x9;--@end Rules</commentsBefore>
+      <commentsBefore>--@begin Constant</commentsBefore>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="279:2-281:4" name="StringConstant">
+      <templateSequence location="280:6-280:9">
+        <commentsAfter>--{as = stringSymbol}</commentsAfter>
+        <elements xsi:type="tcs:Property" location="280:6-280:9" name="val">
+          <commentsAfter>--{as = stringSymbol}</commentsAfter>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="283:2-285:4" name="IntegerConstant">
+      <templateSequence location="284:5-284:8">
+        <elements xsi:type="tcs:Property" location="284:5-284:8" name="val"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="287:2-289:4" name="BooleanConstant">
+      <templateSequence location="288:5-288:8">
+        <elements xsi:type="tcs:Property" location="288:5-288:8" name="val"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="291:2-293:4" name="NullConstant">
+      <commentsAfter>--@end Constant</commentsAfter>
+      <commentsAfter>-- &#x9;--@begin rule operator</commentsAfter>
+      <commentsAfter>-- &#x9;operatorTemplate Operator(operators =</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;&#x9;opNot opMinus1</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;&#x9;opStar opSlash opMod</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;&#x9;opPlus opMinus2</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;&#x9;opEq opGt opLt opGe opLe opNe</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;&#x9;opAnd opOr</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;, source = leftExp, storeOpTo = opName, storeRightTo = rightExp)</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--&#x9;--@end rule operator</commentsAfter>
+      <commentsAfter>--@begin grammar for operator</commentsAfter>
+      <templateSequence location="292:5-292:11">
+        <elements xsi:type="tcs:LiteralRef" location="292:5-292:11" referredLiteral="/19"/>
+      </templateSequence>
+    </templates>
+    <symbols location="309:4-309:16" name="excl" operators="/0/@operatorLists.0/@priorities.0/@operators.0" value="!"/>
+    <symbols location="310:4-310:39" name="coma" literalRefs="/0/@templates.12/@templateSequence/@elements.3/@thenSequence/@elements.0/@propertyArgs.0/@separatorSequence/@elements.0 /0/@templates.19/@templateSequence/@elements.1/@propertyArgs.0/@separatorSequence/@elements.0" value=",">
+      <spaces>leftNone</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="311:4-311:28" name="lparen" literalRefs="/0/@templates.12/@templateSequence/@elements.2 /0/@templates.19/@templateSequence/@elements.0" value="(">
+      <spaces>leftNone</spaces>
+    </symbols>
+    <symbols location="312:4-312:30" name="rparen" literalRefs="/0/@templates.12/@templateSequence/@elements.4 /0/@templates.19/@templateSequence/@elements.2" value=")">
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="313:4-313:30" name="lcurly" value="{">
+      <spaces>leftSpace</spaces>
+    </symbols>
+    <symbols location="314:4-314:17" name="rcurly" value="}"/>
+    <symbols location="315:4-315:16" name="semi" value=";"/>
+    <symbols location="316:4-316:41" name="colon" value=":">
+      <commentsAfter>-- operator symbols</commentsAfter>
+      <spaces>leftSpace</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="319:4-319:16" name="minus" operators="/0/@operatorLists.0/@priorities.0/@operators.1 /0/@operatorLists.0/@priorities.2/@operators.1" value="-">
+      <commentsBefore>-- operator symbols</commentsBefore>
+    </symbols>
+    <symbols location="320:4-320:16" name="star" operators="/0/@operatorLists.0/@priorities.1/@operators.0" value="*"/>
+    <symbols location="321:4-321:17" name="slash" operators="/0/@operatorLists.0/@priorities.1/@operators.1" value="/"/>
+    <symbols location="322:4-322:16" name="plus" operators="/0/@operatorLists.0/@priorities.2/@operators.0" value="+"/>
+    <symbols location="323:4-323:17" name="mod" operators="/0/@operatorLists.0/@priorities.1/@operators.2" value="mod"/>
+    <symbols location="324:4-324:15" name="gt" operators="/0/@operatorLists.0/@priorities.3/@operators.1" value=">"/>
+    <symbols location="325:4-325:43" name="minusgt" value="->">
+      <spaces>leftSpace</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="326:4-326:43" name="gtminus" value="&lt;-">
+      <spaces>leftSpace</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="327:4-327:39" name="lt" operators="/0/@operatorLists.0/@priorities.3/@operators.2" value="&lt;">
+      <spaces>leftSpace</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="328:4-328:16" name="ge" operators="/0/@operatorLists.0/@priorities.3/@operators.3" value=">="/>
+    <symbols location="329:4-329:16" name="le" operators="/0/@operatorLists.0/@priorities.3/@operators.4" value="&lt;="/>
+    <symbols location="330:4-330:16" name="ne" operators="/0/@operatorLists.0/@priorities.3/@operators.5" value="!="/>
+    <symbols location="331:4-331:15" name="eq" operators="/0/@operatorLists.0/@priorities.3/@operators.0" literalRefs="/0/@templates.10/@templateSequence/@elements.1/@thenSequence/@elements.0 /0/@templates.15/@templateSequence/@elements.2" value="="/>
+    <symbols location="332:4-332:19" name="coloneq" value=":="/>
+    <operatorLists location="334:2-358:3">
+      <priorities location="335:3-338:4" value="0">
+        <operators location="336:4-336:20" name="opNot" arity="1" literal="/0/@symbols.0">
+          <commentsAfter>-- no corresponding symbol => symbol is the keyword defined by the quoted string (which is also the name)</commentsAfter>
+        </operators>
+        <operators location="337:4-337:24" name="opMinus1" arity="1" literal="/0/@symbols.8">
+          <commentsBefore>-- no corresponding symbol => symbol is the keyword defined by the quoted string (which is also the name)</commentsBefore>
+        </operators>
+      </priorities>
+      <priorities location="339:3-343:4" value="1">
+        <operators location="340:4-340:21" name="opStar" arity="2" literal="/0/@symbols.9"/>
+        <operators location="341:4-341:23" name="opSlash" arity="2" literal="/0/@symbols.10"/>
+        <operators location="342:4-342:21" name="opMod" arity="2" literal="/0/@symbols.12"/>
+      </priorities>
+      <priorities location="344:3-347:4" value="2">
+        <operators location="345:4-345:21" name="opPlus" arity="2" literal="/0/@symbols.11"/>
+        <operators location="346:4-346:24" name="opMinus2" arity="2" literal="/0/@symbols.8"/>
+      </priorities>
+      <priorities location="348:3-357:4" value="3">
+        <operators location="349:4-349:17" name="opEq" arity="2" literal="/0/@symbols.20"/>
+        <operators location="350:4-350:17" name="opGt" arity="2" literal="/0/@symbols.13"/>
+        <operators location="351:4-351:17" name="opLt" arity="2" literal="/0/@symbols.16"/>
+        <operators location="352:4-352:17" name="opGe" arity="2" literal="/0/@symbols.17"/>
+        <operators location="353:4-353:17" name="opLe" arity="2" literal="/0/@symbols.18"/>
+        <operators location="354:4-354:17" name="opNe" arity="2" literal="/0/@symbols.19"/>
+        <operators location="355:4-355:21" name="opAnd" arity="2" literal="/20"/>
+        <operators location="356:4-356:19" name="opOr" arity="2" literal="/21"/>
+      </priorities>
+    </operatorLists>
+  </tcs:ConcreteSyntax>
+  <tcs:Keyword location="36:5-36:16" literalRefs="/0/@templates.6/@templateSequence/@elements.0" value="namespace"/>
+  <tcs:Keyword location="42:6-42:17" literalRefs="/0/@templates.7/@templateSequence/@elements.0" value="structure"/>
+  <tcs:Keyword location="43:37-43:46" literalRefs="/0/@templates.7/@templateSequence/@elements.2/@thenSequence/@elements.0 /0/@templates.11/@templateSequence/@elements.3/@thenSequence/@elements.0" value="extends"/>
+  <tcs:Keyword location="52:6-52:12" literalRefs="/0/@templates.8/@templateSequence/@elements.0" value="case"/>
+  <tcs:Keyword location="63:6-63:12" literalRefs="/0/@templates.9/@templateSequence/@elements.0" value="enum"/>
+  <tcs:Keyword location="78:20-78:30" literalRefs="/0/@templates.11/@templateSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.12/@templateSequence/@elements.0/@thenSequence/@elements.0" value="abstract"/>
+  <tcs:Keyword location="78:32-78:39" literalRefs="/0/@templates.11/@templateSequence/@elements.1" value="class"/>
+  <tcs:Keyword location="93:29-93:33" literalRefs="/0/@templates.12/@templateSequence/@elements.5/@thenSequence/@elements.0 /0/@templates.13/@templateSequence/@elements.1 /0/@templates.16/@templateSequence/@elements.3" value="as"/>
+  <tcs:Keyword location="108:6-108:14" literalRefs="/0/@templates.14/@templateSequence/@elements.0" value="Main()"/>
+  <tcs:Keyword location="122:6-122:17" literalRefs="/0/@templates.15/@templateSequence/@elements.0" value="initially"/>
+  <tcs:Keyword location="129:19-129:26" literalRefs="/0/@templates.16/@templateSequence/@elements.0/@thenSequence/@elements.0" value="const"/>
+  <tcs:Keyword location="129:45-129:50" literalRefs="/0/@templates.16/@templateSequence/@elements.1/@thenSequence/@elements.0" value="var"/>
+  <tcs:Keyword location="136:22-136:25" literalRefs="/0/@templates.17/@templateSequence/@elements.1/@thenSequence/@elements.0 /0/@templates.19/@templateSequence/@elements.3/@thenSequence/@elements.0" value="?"/>
+  <tcs:Keyword location="140:5-140:10" literalRefs="/0/@templates.18/@templateSequence/@elements.0" value="Map"/>
+  <tcs:Keyword location="140:11-140:15" literalRefs="/0/@templates.18/@templateSequence/@elements.1 /0/@templates.20/@templateSequence/@elements.1 /0/@templates.21/@templateSequence/@elements.1" value="of"/>
+  <tcs:Keyword location="140:23-140:27" literalRefs="/0/@templates.18/@templateSequence/@elements.3" value="to"/>
+  <tcs:Keyword location="149:5-149:10" literalRefs="/0/@templates.20/@templateSequence/@elements.0" value="Set"/>
+  <tcs:Keyword location="153:5-153:10" literalRefs="/0/@templates.21/@templateSequence/@elements.0" value="Seq"/>
+  <tcs:Keyword location="292:5-292:11" literalRefs="/0/@templates.26/@templateSequence/@elements.0" value="null"/>
+  <tcs:Keyword location="355:12-355:17" operators="/0/@operatorLists.0/@priorities.3/@operators.6" value="and"/>
+  <tcs:Keyword location="356:11-356:15" operators="/0/@operatorLists.0/@priorities.3/@operators.7" value="or"/>
+</xmi:XMI>

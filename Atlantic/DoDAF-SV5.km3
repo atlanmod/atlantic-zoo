@@ -1,0 +1,271 @@
+-- @name			DoDAF-SV5
+-- @version		0.1	
+-- @domains		Architecture Description, SoS (System of System)
+-- @authors		Albin Jossic (jossic.albin <at> gmail.com) 
+-- @date			2006/06/26	
+-- @description	A Metamodel of DoDAF (Department of Defense Architecture Framework). This metamodel is a model for DoDAF SV5 (Structural View) "Operational Activity to Systems Function Traceability Matrix". This DoDAF part is in correlation with OV5 and SV4 parts with the aim to provide a traceability matrix. This matrix has two axes. The first one represents the capabilities and operation activities from an OV5 model. The second one represents systems and their system functions. Each matrix elements represents the level of the relationship between Operational Activities and System Functions. They are three level: "red" means functionality planned but no developed, "yellow" means partial functionality provided or full but system has not been yet fielded, and "green" means full functionality provided and system has been fielded.
+-- @see			http://www.defenselink.mil/nii/global_Info_grid.html
+-- @see			http://www.defenselink.mil/nii/doc/DoDAF_v1_Volume_II.pdf
+-- @see			Tailoring DODAF to Support a Service Oriented Architecture, Fatma Dandashi, Huei-Wan Ang, Christopher Bashioum Mitre Corp. 12-7-2004
+-- @see 			"Recommended Practice for Architectural description of Softwrare-Intensive Systems", IEEE Std 1471-2000, IEEE, 2000.
+-- @see			IEEE1471ConceptualModel.km3 and IEEE1471ViewpointM2.km3
+-- @see			DoDAF.km3
+-- @see			DoDAF-OV5.km3
+-- @see			DoDAF-SV4.km3
+
+--@comments PA = Process Activity
+--@comments AM = Activity Model
+--@comments IE = Information Element
+
+--@begin package DoDAF-SV5
+package DoDAF {
+
+	--@begin class Element
+	--@comments this class is not a part of DoDAF
+	abstract class Element {
+		attribute name : String;
+		attribute description : String;
+		attribute view : String;
+	}	
+	--@end class Element
+	
+	--@begin class DoDAF-SV5 Operational Activity to System Function Traceability Matrix
+	--@comments it is the root of the composition tree
+	class DoDAFModel extends Element {
+		reference document[*] container : Document;
+		reference sftm[*] container : SystemFunctionTraceabilityMatrix;
+		reference sd[*] container : SystemDocument;
+		reference am[*] container : AM;
+		reference system[*] container : System;
+		reference task[*] container : Task;
+		reference capability[*] container : Capability;
+		reference capabilityDocument[*] container : CapabilityDocument;
+		reference systemCapability[*] container : SystemCapability;
+	}
+	--@begin class DoDAF-SV5 Operational Activity to System Function Traceability Matrix
+	
+	
+	--@begin CADM ER Operational Activity to System Function Traceability Matrix
+	--@begin class Document
+	class Document extends Element {
+		attribute type : String;
+		reference cites[*] : CapabilityDocument;
+		reference describes[*] : SystemDocument;
+		reference records[*] container : ArchitectureDocument;
+		reference isThePrimaryReferenceFor[*] container : PA;
+	}
+	--@end class Document
+	
+	--@begin class SystemFunctionTraceabilityMatrix SV5
+	class SystemFunctionTraceabilityMatrix extends Document {
+		reference isDefinedBy[*] container : SystemFunctionTraceabilityElement;
+	}
+	--@end class SystemFunctionTraceabilityMatrix
+	
+	--@begin class SystemFunctionTraceabilityElement
+	--@comments System Function of a System Supports
+	--@comments Operational Activity for a Capabiltity
+	class SystemFunctionTraceabilityElement extends Element {
+		reference systemFunction[0-1] : SystemFunction oppositeOf isCitedFor;
+		reference operationalActivity[0-1] : Task oppositeOf isCitedFor;
+		reference systemProcessActivity[0-1] : SystemPA oppositeOf mayBeCitedFor;
+		reference system[0-1] : System;
+		reference capability[0-1] : Capability;
+		attribute supportStatusCode : SupportStatusCode;
+	}
+	--@end class SystemFunctionTraceabilityElement
+	
+	--@begin class SystemDocument
+	class SystemDocument extends Element {}
+	--@end class SystemDocument
+	
+	--@begin class ArchitectureDocument
+	class ArchitectureDocument extends Element {}
+	--@end class ArchitectureDocument
+	
+	--@begin Process Activity
+	--@begin class ProcessActivity
+	class PA extends Element {
+		reference isParentFor[*] : PA oppositeOf isChildFor;
+		reference isChildFor[*] : PA oppositeOf isParentFor;
+		reference correspondsTo[*] : PATask;
+		reference isIncludedIn[*] : AMPA;
+		reference isAssignedTo[*] : SystemPA;
+		reference isSupportedBy[*] container : SoftwareApplicationProcedurePA;
+		reference isTheConsumerFor[*] container : PAExchangeRequirement;
+		reference isTheProducerFor[*] container : PAExchangeRequirement;
+	}
+	--@end class ProcessActivity
+	
+	--@begin class SystemFunction
+	class SystemFunction extends PA {
+		reference isCitedFor[*] : SystemFunctionTraceabilityElement oppositeOf systemFunction;
+	}
+	--@end class SystemFunction
+	
+	--@begin class System Process Activity
+	class SystemPA extends Element {
+		reference mayBeCitedFor[*] : SystemFunctionTraceabilityElement oppositeOf systemProcessActivity;
+		reference provides[*] container : SystemCapability;
+		reference enables[*] container : SystemOperationalCapabilityTask;
+	}
+	--@end class System Process Activity
+	
+	--@begin class SoftwareApplicationProcedureProcessActivity
+	class SoftwareApplicationProcedurePA extends Element {}
+	--@end class SoftwareApplicationProcedureProcessActivity
+	--@end Process Activity
+	
+	--@begin Activity Model
+	--@begin class ActivityModel
+	class AM extends InformationAsset {
+		attribute type : String;
+		reference isCitedBy[*] container : PATask; 
+		reference includes[*] container : AMPA;
+	}
+	--@end class ActivityModel
+	--@end Activity Model
+	
+	--@begin class InformationAsset
+	abstract class InformationAsset extends Element {
+	}
+	--@end class InformationAsset
+	
+	
+	--@begin class ActivityModelProcessActivity
+	class AMPA extends Element {
+		reference isOrdinateOf[*] : AMPA oppositeOf isSubordinateOf;
+		reference isSubordinateOf[*] : AMPA oppositeOf isOrdinateOf;
+	}
+	--@end class ActivityModelProcessActivity
+	
+	--@begin class System
+	class System extends Element {
+		reference isDesignedToProvide[*] container : SystemPA;
+		reference isDescribedBy[*] : SystemDocument;
+		reference performs[*] : SystemCapability;
+		reference isUsedToAccomplish[*] : SystemOperationalCapabilityTask;
+	}
+	--@end class System
+	
+	--@begin Task
+	--@begin class Task
+	class Task extends Element {
+		attribute levelIdentifier : String;
+		attribute references : String;
+		attribute cost : String;
+		reference correspondsTo[*] : PATask;
+		reference isSupportedBy[*] : ArchitectureTask;
+		reference isTheSourceOfNeedFor[*] container : InformationExchangeRequirement;
+		reference isTheDestinationOfNeedFor[*] container : InformationExchangeRequirement;
+		reference isCitedFor[*] : SystemFunctionTraceabilityElement oppositeOf operationalActivity;		
+	}
+	--@end class Task
+	
+	--@begin class Architecture Task
+	class ArchitectureTask extends Element {}
+	--@end class Architecture Task
+	
+	--@begin class OperationalCapabilityTask
+	class OperationalCapabilityTask extends Task {
+		reference isAccomplishedA : SystemOperationalCapabilityTask;
+	}
+	--@end class OperationalCapabilityTask	
+	
+	--@begin class SystemOperationalCapabilityTask
+	class SystemOperationalCapabilityTask extends Task {}
+	--@end class SystemOperationalCapabilityTask
+	
+	--@begin class PATask
+	class PATask extends Task {}
+	--@end class PATask	
+	--@end Task
+	
+	--@begin Capability
+	--@begin class Capability
+	class Capability extends Element {
+		reference isPerformedBy[*] : SystemCapability;
+		reference isOrdinateFor[*] : Capability;
+		reference isSubordinateOf[*] : Capability;
+		reference isPerformedByNC[*] : NetworkCapability;
+		reference isPerformedByNLC[*] : NodeLinkCapability;
+		reference isPerformedBySC[*] : SystemCapability;
+		reference isCitedInCD[*] : CapabilityDocument;
+		reference isUsedInMICN[*] : MaterielItemCapabilityNorm;
+		reference isUsedInOTCN[*] : OrganizationTypeCapabilityNorm;
+		reference isAttainedFor[*] : RequiredInformationTechnologyCapability;
+	}
+	--@end class Capability
+	
+	--@begin class CapabilityDocument
+	class CapabilityDocument extends Element {
+		reference isCitedIn[*] : Capability;
+	}
+	--@end class CapabilityDocument
+	
+	--@begin class SystemCapability
+	class SystemCapability extends Element {
+		reference isCitedIn[*] : Capability;
+	}
+	--@end class SystemCapability
+	
+	--@begin class NetworkCapability
+	class NetworkCapability extends Capability {}
+	--@end class NetworkCapability
+	
+	--@begin class NodeLinkCapability
+	class NodeLinkCapability extends Capability {}
+	--@end class NodeLinkCapability
+	
+	--@begin class MaterielItemCapabilityNorm
+	class MaterielItemCapabilityNorm extends Capability {}
+	--@end class MaterielItemCapabilityNorm
+	
+	--@begin class OrganizationTypeCapabilityNorm
+	class OrganizationTypeCapabilityNorm extends Capability {}
+	--@end class OrganizationTypeCapabilityNorm
+	
+	--@begin class RequiredInformationTechnologyCapability
+	class RequiredInformationTechnologyCapability extends Capability {}
+	--@end class RequiredInformationTechnologyCapability
+	--@end Capability
+	
+	--@begin Requirement
+	--@begin class Information Technology Requirement
+	class InformationTechnologyRequirement extends Element {
+		reference specifies[*] : RequiredInformationTechnologyCapability;		
+	}
+	--@end class Information Technology Requirement
+	
+	--@begin class Information Exchange Requirement
+	class InformationExchangeRequirement extends InformationTechnologyRequirement {}
+	--@end class Information Exchange Requirement
+	
+	--@begin class ProcessActivityExchangeRequirement
+	class PAExchangeRequirement extends InformationTechnologyRequirement {
+		reference isCitedIn[*] container : InformationExchangeRequirement;
+	}
+	--@end class ProcessActivityExchangeRequirement
+	--@end Requirement
+		
+	--@end CADM ER Operational Activity to System Function Traceability Matrix
+	
+	--@begin enumeration SupportStatusCode
+	--@comments define the level of the relationship between Operational Activities and System Functions
+	--@comments "red" means functionality planned but no developed
+	--@comments "yellow" means partial functionality provided or full but system has not been yet fielded
+	--@comments "green" means full functionality provided and system has been fielded
+	enumeration SupportStatusCode {
+		literal "red";
+		literal "yellow";
+		literal "green";
+	}
+	--@end enumeration SupportStatusCode
+}
+--@begin package DoDAF-SV5
+
+--@begin package PrimitiveTypes
+package PrimitiveTypes {
+	datatype String;
+}
+--@end package PrimitiveTypes

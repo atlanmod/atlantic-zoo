@@ -1,0 +1,67 @@
+-- @name 		OCL Types
+-- @domains 	OCL
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/07/10
+-- @description This metamodel describes OCL Types
+-- @see 		This metamodel has been extracted from information available in the following article:
+-- @see 		Article "A Metamodel for OCL"
+-- @see 		by Mark Richters and Martin Gogolla
+-- @see 		Page 161, Section 3, Fig. 4 Metamodel for OCL Types
+-- @see 		Lecture Notes in Computer Science 1723
+-- @see 		Robert France, Bernhard Rumpe (Eds.)
+-- @see 		The Unified Modeling Language UML 99: Beyond the standard
+
+package OCLTypes {
+	abstract class Type {
+		reference supertype [*] : Type oppositeOf subtype;
+		reference subtype  [*] : Type oppositeOf supertype;
+		reference collectionType [*] container : CollectionType oppositeOf elementType;
+	}
+
+	abstract class BasicType extends Type {
+	}
+	
+	class InstanceType extends Type {
+		reference classifier [1-1] container : Classifier oppositeOf instanceType;
+	}
+	
+	class EnumType extends Type {
+		reference enumLiteral [1-*] container : EnumLiteral oppositeOf enumType;
+	}
+	
+	class OclAnyType extends Type {}
+	
+	class OclTypeType extends Type {}
+	
+	abstract class CollectionType extends Type {
+		reference elementType : Type oppositeOf collectionType;
+	}
+	
+	class IntegerType extends BasicType {}
+	
+	class RealType extends BasicType {}
+	
+	class StringType extends BasicType {}
+	
+	class BooleanType extends BasicType {}
+	
+	class Classifier {
+		reference instanceType [0-1] : InstanceType oppositeOf classifier;
+	}
+	
+	class EnumLiteral {
+		reference enumType [0-1] : EnumType oppositeOf enumLiteral;
+	}
+	
+	class SetType extends CollectionType {}
+	
+	class SequenceType extends CollectionType {}
+	
+	class BagType extends CollectionType {}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

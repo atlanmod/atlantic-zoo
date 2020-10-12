@@ -1,0 +1,1072 @@
+-- @name		XHTML
+-- @version		1.0
+-- @domains		HTML, XML
+-- @authors		Pierrick Guyard (pierrick.guyard@gmail.com)
+-- @date		2005/06/23
+-- @description	This metamodel partially describes the Extensible HyperText Markup Language version 1.0 strict (XHTML). It is based on the W3C DTD named xhtml1-strict.dtd. This specification defines the Second Edition of XHTML 1.0, a reformulation of HTML 4 as an XML 1.0 application, and three DTDs corresponding to the ones defined by HTML 4. The semantics of the elements and their attributes are defined in the W3C Recommendation for HTML 4. These semantics provide the foundation for future extensibility of XHTML. Compatibility with existing HTML user agents is possible by following a small set of guidelines.
+-- @see			http://www.w3.org/1999/xhtml, http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd
+
+package XHTML {
+
+	-- @begin representation of imported names
+	
+	abstract class ValuedElement {
+		attribute value : String;
+	}
+	
+	class CDATA extends ValuedElement {}
+	
+	class PCDATA extends ValuedElement {}
+	
+	class NMTOKEN extends ValuedElement {}
+	
+	class IDREF extends ValuedElement {}
+	
+	class IDREFS {
+		reference idrefs[*] : IDREF;
+	}
+	
+	class ID extends ValuedElement {}
+	
+	class EMPTY {}
+	
+	----
+	
+	-- @comment media type
+	class ContentType extends CDATA {}
+
+	-- @comment list of media type
+	class ContentTypes {
+		reference contentTypes[2-*] container : ContentType;
+	}
+	
+	-- @comment character encoding
+	class Charset extends CDATA {}
+
+	-- @comment list of character encoding
+	class Charsets {
+		reference charsets[2-*] container : Charset;
+	}
+	
+	-- @comment language code
+	class LanguageCode extends NMTOKEN {}
+	
+	-- @comment single character
+	class Character extends CDATA {}
+	
+	-- @comment one or more digits
+	class Number extends CDATA {}
+	
+	-- @comment space-separated list of link types
+	class LinkTypes extends CDATA {}
+
+	-- @comment single or comma-separated list of media descriptor
+	class MediaDesc extends CDATA {}
+	
+	-- @comment Uniform Resource Identifier
+	class URI extends CDATA {}
+	
+	-- @comment single or comma-separated list of media descriptor
+	class UriList {
+		reference uris[2-*] : URI;
+	}
+	
+	-- @comment date and time information : ISO date format
+	class Datetime extends CDATA {}
+	
+	-- @comment script expression
+	class ScriptExpression extends CDATA {}
+	
+	-- @comment style sheet data
+	class StyleSheet extends CDATA {}
+	
+	-- @comment used for title etc.
+	class Text extends CDATA {}
+	
+	-- @comment nn for pixels or nn% for percentage length
+	class Length extends CDATA {}
+	
+	-- @comment pixel, percentage, or relative
+	class MultiLength extends CDATA {}
+	
+	-- @comment integer representing length in pixels
+	class Pixels extends CDATA {}
+	
+		-- @begin image maps
+		
+		enumeration Shape {
+			literal rect;
+			literal circle;
+			literal poly;
+			literal "default";
+		}
+		
+		-- @ comment list of lengths
+		class Coords {
+			reference lengths[2-*] container : Length;
+		}
+		
+		-- @end image maps
+			
+	-- @end representation of imported names
+	
+	
+	-- @begin generic attributes
+	
+	-- @comment core attributes common to most elements
+	abstract class CoreAttrs {
+		-- @comment document-wide unique id
+		reference id[0-1] container : ID;
+		-- @comment space separated list of classes
+		reference "class"[0-1] container : CDATA;
+		-- @comment associated style info
+		reference style[0-1] container : StyleSheet;
+		-- @comment advisory title/amplification
+		reference title[0-1] container : Text;
+	}
+	
+	-- @comment direction of text
+	enumeration Direction {
+	    -- @comment left to right
+		literal ltr;
+	    -- @comment right to left
+		literal rtl;
+	}
+	
+	-- @comment internationalization attributes
+	abstract class I18n {
+		-- @comment language code (backwards compatible)
+		reference lang[0-1] container : LanguageCode;
+		-- @comment language code (as per XML 1.0 spec)
+		reference "xml:lang"[0-1] container : LanguageCode;
+		-- @comment direction for weak/neutral text
+		attribute dir[0-1] : Direction;
+	}
+	
+	-- @comment attributes for common UI events
+	abstract class Events {
+		-- @comment a pointer button was clicked
+		reference onclick[0-1] container : ScriptExpression;
+		-- @comment a pointer button was double clicked
+		reference ondblclick[0-1] container : ScriptExpression;
+		-- @comment a pointer button was pressed down
+		reference onmousedown[0-1] container : ScriptExpression;
+		-- @comment a pointer button was released
+		reference onmouseup[0-1] container : ScriptExpression;
+		-- @comment a pointer was moved out of the element
+		reference onmouseover[0-1] container : ScriptExpression;
+		-- @comment a pointer was moved onto the element
+		reference onmousemove[0-1] container : ScriptExpression;
+		-- @comment a pointer was moved away from the element
+		reference onmouseout[0-1] container : ScriptExpression;
+		-- @comment a key was pressed and released
+		reference onkeypress[0-1] container : ScriptExpression;
+		-- @comment a key was pressed down
+		reference onkeydown[0-1] container : ScriptExpression;
+		-- @comment a key was released
+		reference onkeyup[0-1] container : ScriptExpression;
+	}
+
+	abstract class Attrs extends CoreAttrs, I18n, Events{}
+
+	-- @comment attributes for elements that can get the focus
+	abstract class Focus {
+		-- @comment accessibility key character
+		reference accesskey[0-1] container : Character;
+		-- @comment position in tabbing order
+		reference tabindex[0-1] container : Number;
+		-- @comment the element got the focus
+		reference onfocus[0-1] container : ScriptExpression;
+		-- @comment the element lost the focus
+		reference onblur[0-1] container : ScriptExpression;
+	}
+
+	-- @end generic attributes
+	
+	
+	
+	-- @begin Text elements
+	
+	abstract class Specialpre extends Special, PreContent {
+		-- extended by br span bdo map
+	}
+	
+	abstract class Special extends inline, ButtonContent {
+		-- extended by object img + Special
+	}
+	
+	abstract class Fontstyle extends inline, AContent, PreContent, ButtonContent {
+		-- extended by tt i b big small
+	}
+	
+	abstract class Phrase extends inline, AContent, PreContent, ButtonContent {
+		-- extended by em strong dfn code q samp kbd var cite abbr acronym sub sup
+	}
+	
+	abstract class Inlineforms extends inline, AContent, PreContent {
+		-- extended by input select textarea label button
+	}
+	
+	abstract class Miscinline extends Misc, Inline, AContent, PreContent {
+		-- extended by ins del script
+	}
+
+	abstract class Misc extends Block, Flow, FormContent, ButtonContent, ObjectElement, MapElementContent, FieldsetElement {
+		-- extended by noscript + Miscinline
+	}
+
+
+	abstract class inline extends Inline {
+		-- extended by a + special fontstyle phrase inline forms
+	}
+
+	abstract class Inline extends Flow, ObjectElement, FieldsetElement {
+		-- extended by inline + misc inline
+		reference pcdataInline[*] container : PCDATA;
+	}
+	
+	-- @end Text elements
+	
+	
+	-- @begin Block level elements
+
+	abstract class Heading extends block, ButtonContent {
+		-- extended by h1 h2 h3 h4 h5 h6
+	}
+	
+	abstract class Lists extends block, ButtonContent {
+		-- extended by ul ol dl
+	}
+	
+	abstract class Blocktext extends block, ButtonContent {
+		-- extended by pre hr blockquote address
+	}
+
+	abstract class block extends Block, Flow, FormContent, ObjectElement, MapElementContent, FieldsetElement {
+    	-- extended by p div fieldset table + heading lists blocktext
+	}
+	
+	abstract class Block {
+		-- extended by Form + block Misc		
+	}
+
+	-- @comment Flow elemnets mixes block and inline and is used for list items etc.
+	abstract class Flow {
+		-- extended by form + block inline misc
+		reference pcdataFlow[*] container : PCDATA;
+	}
+
+	-- @end Block level elements
+	
+	
+	-- @begin content models for exclusion
+	
+	-- @comment a content use Inline; excluding A	
+	abstract class AContent {
+		-- extended by special fontstyle phrase inlineforms miscinline
+		reference pcdataAContent[*] container : PCDATA;
+	}	
+
+	-- @comment pre content uses inline element excluding big, small, sup or sup
+	abstract class PreContent {
+		-- extended by a + fontstyle phrase specialpre miscinline inlineforms
+		reference pcdataPreContent[*] container : PCDATA;
+	}
+
+	-- @comment form content uses bloc element excluding form	
+	abstract class FormContent {
+		-- extended by block misc
+	}
+
+	-- @comment button content uses flow elements but excludes a, form and form controls
+	abstract class ButtonContent {
+		-- extended by  p div table + heading lists blocktext special fontstyle phrase misc
+		reference pcdataButtonContent[*] container : PCDATA;
+	}
+
+	-- @end content models for exclusion
+	
+	
+	-- @begin document structure
+
+	-- @comment the namespace URI designates the document profile
+	class Html {
+		reference i18n container : I18n;
+		reference id[0-1] container : ID;
+		-- @comment fixed value 'http://www.w3.org/1999/xhtml'
+		reference xmlns container : URI;		
+		reference head container : Head oppositeOf html;
+		reference body container : Body oppositeOf html;
+	
+	}
+	
+	-- @end document structure
+	
+	
+	-- @begin document head
+	
+	abstract class HeadMisc {
+		-- extended by script, style, meta, link, object
+	}
+	
+	-- @comment content model is head misc combined with a single title and an optional base element in any order
+	class Head {
+		reference i18n container : I18n;
+		reference id[0-1] container : ID;
+		reference profile[0-1] container : URI;
+		reference headmisc[*] container : HeadMisc;
+		reference headelement container : HeadElement;
+		reference html : Html oppositeOf head;
+	}
+		-- @begin head element
+	abstract class HeadElement {	
+	}
+	
+	class TitleHeadElement extends HeadElement {
+		reference title container : Title;
+		reference headmisc[*] container : HeadMisc;
+		reference baseTitleHeadElement[1-*] container : BaseTitleHeadElement;
+	}
+	
+	class BaseTitleHeadElement {
+		reference base container : Base;
+		reference headmisc[*] container : HeadMisc;
+	}
+	
+	class BaseHeadElement extends HeadElement {
+		reference base container : Base;
+		reference headmisc[*] container : HeadMisc;
+		reference titleBaseHeadElement[1-*] container : TitleBaseHeadElement;
+	}
+
+	class TitleBaseHeadElement {
+		reference title container : Title;
+		reference headmisc[*] container : HeadMisc;
+	}
+
+	-- @comment The title element is not considered part of the flow of text. It should be displayed, for example as the page header or window title. Exactly one title is required per document.
+	class Title extends PCDATA {
+		reference i18n container : I18n;
+		reference id[0-1] container : ID;
+	}
+
+	-- @comment document base URI
+	class Base extends EMPTY {
+		reference href container : URI;
+		reference id[0-1] container : ID;
+	}
+	
+		-- @end head element
+	
+	-- @comment generic metainformation
+	class Meta extends EMPTY, HeadMisc {
+		reference i18n container : I18n;
+		reference id[0-1] container : ID;
+		reference httpequiv[0-1] container : CDATA;
+		reference name[0-1] container : CDATA;
+		reference content[0-1] container : CDATA;
+		reference scheme[0-1] container : CDATA;
+	}
+  
+  
+  -- @comment Relationship values can be used in principle: a) for document specific toolbars/menus when used with the link element in document head e.g. start, contents, previous, next, index, end, help  b) to link to a separate style sheet (rel="stylesheet")  c) to make a link to a script (rel="script")  d) by stylesheets to control how collections of html nodes are rendered into printed documents  e) to make a link to a printable version of this document e.g. a PostScript or PDF version (rel="alternate" media="print")
+	class Link extends EMPTY, Attrs, HeadMisc {
+		reference charset[0-1] container : Charset;
+		reference href[0-1] container : URI;
+		reference hreflang[0-1] container : LanguageCode;
+		reference type[0-1] container : ContentType;
+		reference rel[0-1] container : LinkTypes;
+		reference rev[0-1] container : LinkTypes;
+		reference media[0-1] container : MediaDesc;
+	}
+  
+  
+  -- @comment style info, which may include CDATA sections
+	class Style extends PCDATA, HeadMisc {
+		reference i18n container: I18n;
+		reference id[0-1] container: ID;
+		reference type container: ContentType;
+		reference media[0-1] container: MediaDesc;
+		reference title[0-1] container: Text;
+		-- @comment fixed value 'preserve'
+		attribute "xml:space" : String; 
+	}
+	
+	
+	-- @comment script statements, which may include CDATA sections
+	class Script extends PCDATA, Miscinline, HeadMisc {
+		reference id[0-1] container: ID;
+		reference charset[0-1] container: Charset;
+		reference type container: ContentType;
+		reference src[0-1] container: URI;
+		attribute defer[0-1] : String;
+		-- @comment fixed value 'preserve'
+		attribute "xml:space" : String;
+	}
+
+	-- @comment alternate content container for non script-based rendering
+	class Noscript extends Attrs, Misc {
+		reference block container : Block;
+	}
+	
+	-- @end document head
+	
+	
+	-- @begin Document Body
+	
+	class Body extends Attrs {
+		reference bodyElements[*] container : Block;
+		reference onload[0-1] container : ScriptExpression;
+		reference onunload[0-1] container : ScriptExpression;
+		reference html : Html oppositeOf body;
+	}
+	
+	
+	-- @comment generic language/style container
+	class Div extends Attrs, block, ButtonContent {
+		reference divElements[*] container : Flow;
+	}
+  
+  	-- @end Document Body
+  	
+  	
+  	-- @comment Paragraphs
+  	class P extends Attrs, block, ButtonContent {
+  		reference pElements[*] container : Inline;
+  	}
+ 	
+
+  	
+  	-- @begin Headings
+
+	-- @comment  There are six levels of headings from h1 (the most important) to h6 (the least important).
+
+	class H1 extends Attrs, Heading {
+		reference h1Elements[*] container : Inline;
+	}
+	
+	class H2 extends Attrs, Heading {
+		reference h2Elements[*] container : Inline;
+	}
+	
+	class H3 extends Attrs, Heading {
+		reference h3Elements[*] container : Inline;
+	}
+	
+	class H4 extends Attrs, Heading {
+		reference h4Elements[*] container : Inline;
+	}
+	
+	class H5 extends Attrs, Heading {
+		reference h5Elements[*] container : Inline;
+	}
+	
+	class H6 extends Attrs, Heading {
+		reference h6Elements[*] container : Inline;
+	}
+
+  	-- @end Headings
+  	
+  	
+  	-- @begin Lists
+  	
+	-- @comment Unordered list
+	class Ul extends Attrs, Lists {
+		reference li[1-*] container : Li;
+	}
+	
+	-- @comment Ordered (numbered) list
+	class Ol extends Attrs, Lists {
+		reference li[1-*] container : Li;
+	}
+
+	-- @comment list item
+	class Li extends Attrs {
+		reference liElements[*] container : Flow;
+	}
+
+		-- @begin definition lists - dt for term, dd for its definition
+
+	class Dl extends Attrs, Lists {
+		reference dlElements[1-*] container : DlElement;
+	}
+	
+	abstract class DlElement extends Attrs {		
+	}
+	
+	class Dt extends DlElement {
+		reference dtElements[*] container : Inline;
+	}
+
+	class Dd extends DlElement {
+		reference ddElements[*] container : Flow;
+	}
+  
+	  	-- @end definition lists - dt for term, dd for its definition
+  
+   	-- @end Lists
+  	
+  	
+  	-- @comment Address: information on author
+	class Address extends Attrs, Blocktext {
+		reference addressElements[*] container : Inline;
+	}
+
+  	-- @comment Horizontal Rule
+	class Hr extends EMPTY, Attrs, Blocktext {}
+	
+	-- @comment Preformatted Text
+	class Pre extends Attrs, Blocktext {
+		reference preElements[*] container : PreContent;
+		-- @comment fixed value 'preserve'
+		attribute "xml:space" : String;
+	}
+	
+	-- @comment Block-like Quotes
+	class Blockquote extends Attrs, Blocktext {
+		reference blockquoteElements[*] container : Block;
+		reference cite[0-1] container : URI;
+	}
+	
+	
+	
+	-- @begin Inserted/Deleted Text
+
+	-- @comment ins/del are allowed in block and inline content, but its inappropriate to include block content within an ins element occurring in inline content.
+	class Ins extends Attrs, Miscinline {
+		reference flowelement[*] container : Flow;
+		reference cite[0-1] container : URI;
+		reference datetime[0-1] container : Datetime;
+	}
+
+	class Del extends Attrs, Miscinline {
+		reference flowelement[*] container : Flow;
+		reference cite[0-1] container : URI;
+		reference datetime[0-1] container : Datetime;
+	}
+  	-- @end Inserted/Deleted Text
+ 
+	-- @comment The Anchor Element: content is inline element except that anchors shouldn't be nested
+	class A extends Attrs, Focus, inline, PreContent {
+		reference acontent[*] container : AContent;
+		reference charset[0-1] container : Charset;
+		reference type[0-1] container : ContentType;
+		reference name[0-1] container : NMTOKEN;
+		reference href[0-1] container : URI;
+		reference hreflang[0-1] container : LanguageCode;
+		reference rel[0-1] container : LinkTypes;
+		reference rev[0-1] container : LinkTypes;
+		-- @comment default value "rect"
+		attribute shape : Shape;
+		reference coords[0-1] container : Coords;
+	}
+  	
+  	-- @begin Inline Elements
+
+	-- @comment generic language/style container
+	class Span extends Attrs, Specialpre {
+		reference spanElements[*] : Inline;
+	}
+
+	-- @comment I18N BiDi over-ride
+	class Bdo extends CoreAttrs, Events, Specialpre {
+		reference bdoElements[*] container : Inline;
+		reference lang[0-1] container : LanguageCode;
+		reference "xml:lang"[0-1] container : LanguageCode;
+		attribute dir : Direction;
+	}
+
+	-- @comment forced line break
+	class Br extends EMPTY, CoreAttrs, Specialpre {}
+
+	-- @comment emphasis
+	class Em extends Attrs, Phrase {
+		reference emElements[*] container : Inline;
+	}
+	
+	-- @comment strong emphasis
+	class Strong extends Attrs, Phrase {
+		reference strongElements[*] container : Inline;
+	}
+
+	-- @comment definitional
+	class Dfn extends Attrs, Phrase {
+		reference dfnElements[*] container : Inline;
+	}
+
+	-- @comment program code
+	class Code extends Attrs, Phrase {
+		reference codeElements[*] container : Inline;
+	}
+
+	-- @comment sample
+	class Samp extends Attrs, Phrase {
+		reference sampElements[*] container : Inline;
+	}
+	
+	-- @comment something user would type
+	class Kbd extends Attrs, Phrase {
+		reference kbdElements[*] container : Inline;
+	}
+	
+	-- @comment variable
+	class Var extends Attrs, Phrase {
+		reference varElements[*] container : Inline;
+	}
+	
+	-- @comment citation
+	class Cite extends Attrs, Phrase {
+		reference citeElements[*] container : Inline;
+	}
+	
+	-- @comment abbreviation
+	class Abbr extends Attrs, Phrase {
+		reference abbrElements[*] container : Inline;
+	}
+	
+	-- @comment acronym
+	class Acronym extends Attrs, Phrase {
+		reference acronymElements[*] container : Inline;
+	}
+
+	-- @comment inlined quote
+	class Q extends Attrs, Phrase {
+		reference qElements[*] container : Inline;
+		reference cite[0-1] container : URI;
+	}
+
+	-- @comment subscript
+	class Sub extends Attrs, Phrase {
+		reference subElements[*] container : Inline;
+	}
+
+	-- @comment superscript
+	class Sup extends Attrs, Phrase {
+		reference supElements[*] container : Inline;
+	}
+
+	-- @comment fixed pitch font
+	class Tt extends Attrs, Fontstyle {
+		reference ttElements[*] container : Inline;
+	}
+
+	-- @comment italic font
+	class I extends Attrs, Fontstyle {
+		reference iElements[*] container : Inline;
+	}
+	
+	-- @comment bold font
+	class B extends Attrs, Fontstyle {
+		reference bElements[*] container : Inline;
+	}
+	
+	-- @comment bigger font
+	class Big extends Attrs, Fontstyle {
+		reference bigElements[*] container : Inline;
+	}
+	
+	-- @comment smaller font
+	class Small extends Attrs, Fontstyle {
+		reference smallElements[*] container : Inline;
+	}
+
+   	-- @end Inline Elements
+  
+  
+  
+  
+	-- @begin Object
+	
+	abstract class ObjectElement {
+		reference objectpcdata [*] container : PCDATA;
+		-- extended by param form + block inline misc
+	}
+
+	-- @comment object is used to embed objects as part of HTML pages. param elements should precede other content. Parameters can also be expressed as attribute/value pairs on the object element itself when brevity is desired.
+	class Object extends Attrs, Special, HeadMisc {
+		reference objectelement[*] container : ObjectElement;
+  		attribute declare[0-1] : Boolean;
+	  	reference classid[0-1] container : URI;
+	  	reference codebase[0-1] container : URI;
+	  	reference data[0-1] container : URI;
+	  	reference type[0-1] container : ContentType;
+	  	reference codetype[0-1] container : ContentType;
+	  	reference archive[0-1] container : UriList;
+	  	reference standby[0-1] container : Text;
+	  	reference height[0-1] container : Length;
+	  	reference width[0-1] container : Length;
+	  	reference usemap[0-1] container : URI;
+	  	reference name[0-1] container : NMTOKEN;
+	  	reference tabindex[0-1] container : Number;
+	}
+
+	enumeration ValueType {
+		literal "data";
+		literal "ref";
+		literal "object";
+	}
+
+	-- @comment param is used to supply a named property value. In XML it would seem natural to follow RDF and support an abbreviated syntax where the param elements are replaced by attribute value pairs on the object start tag.
+	class Param extends EMPTY, ObjectElement {
+		reference id [0-1] container : ID;
+		reference name [0-1] container : CDATA;
+		reference value [0-1] container : CDATA;
+		-- @comment default value "data"
+		attribute valuetype : ValueType;
+		reference type [0-1] container : ContentType;	
+	}  
+    -- @end Object
+    
+    
+    -- @begin Images
+
+	-- @comment To avoid accessibility problems for people who aren't able to see the image, you should provide a text description using the alt and longdesc attributes. In addition, avoid the use of server-side image maps.
+	
+	class Img extends EMPTY, Attrs, Special {
+		reference src container : URI;
+		reference alt container : Text;
+		reference longdesc[0-1] container : URI;
+		reference height[0-1] container : Length;
+		reference width[0-1] container : Length;
+		reference usemap[0-1] container : URI;
+		attribute ismap[0-1] : Boolean;
+	}
+	-- @comment usemap points to a map element which may be in this document or an external document, although the latter is not widely supported
+
+    -- @end Images
+    
+    
+    -- @begin Client-side image maps
+
+	class MapContent {
+		reference mapElements[1-*] container : MapElement;
+	}
+	
+	abstract class MapElement {
+		-- extended by area + MapElementContent
+	}
+	
+	abstract class MapElementContent {
+		-- extended by form + block misc
+	}
+
+	-- @comment These can be placed in the same document or grouped in a separate document although this isn't yet widely supported
+	class Map extends I18n, Events, Specialpre {
+		reference mapelement container : MapContent;
+		reference id  container : ID;
+		reference "class"[0-1]  container : CDATA;
+		reference style[0-1]  container : StyleSheet;
+		reference title[0-1]  container : Text;
+		reference name[0-1]  container : NMTOKEN;
+	}
+
+	class Area extends EMPTY, Attrs, Focus, MapElement {
+		-- @comment default value "rect"
+  		attribute shape : Shape;
+  		reference coords[0-1] container : Coords;
+  		reference href[0-1] container : URI;
+  		attribute nohref[0-1] : Boolean;
+  		reference alt container : Text;
+	}
+  
+    -- @end Client-side image maps
+    
+    
+    -- @begin Forms
+    
+    enumeration FomeMethod {
+    	literal get;
+    	literal post;
+    }
+    
+    -- @comment forms shouldn't be nested
+	class Form extends Attrs, Block, ObjectElement, MapElementContent, FieldsetElement {
+		reference formelement[*] container : FormContent;
+		reference action container : URI;
+		-- @comment default value "get"
+  		attribute method : FomeMethod;
+		-- @comment default value "application/x-www-form-urlencoded"
+		reference enctype container : ContentType;
+  		reference onsubmit[0-1] container : ScriptExpression;
+		reference onreset[0-1] container : ScriptExpression;
+		reference accept[0-1] container : ContentTypes;
+		reference "accept-charset"[0-1] container : Charsets;
+	}
+
+	-- @ comment Each label must not contain more than ONE field. Label elements shouldn't be nested.
+	class Label extends Attrs, Inlineforms {
+		reference labelelements[*] container : Inline;
+		reference for container : IDREF;
+  		reference accesskey[0-1] container : Character;
+  		reference onfocus[0-1] container : ScriptExpression;
+  		reference onblur[0-1] container : ScriptExpression;
+	}  
+ 
+	enumeration InputType {
+  		literal text;
+ 	 	literal password;
+ 	 	literal checkbox;
+ 	 	literal radio;
+	  	literal submit;
+ 	 	literal reset;
+  	  	literal file;
+ 	   	literal hidden;
+	    literal image;
+		literal button;
+	}
+
+	-- @comment form control : the name attribute is required for all but submit & reset
+	class Input extends EMPTY, Attrs, Focus, Inlineforms { 
+		-- @comment default value "text"
+  		attribute type : InputType;
+  		reference name[0-1] container : CDATA;
+  		reference value[0-1] container : CDATA;
+  		attribute checked[0-1] : Boolean;
+  		attribute disabled[0-1] : Boolean;
+  		attribute readonly[0-1] : Boolean;
+  		reference size[0-1] container : CDATA;
+  		reference maxlength[0-1] container : Number;
+  		reference src[0-1] container : URI;
+  		reference alt[0-1] container : CDATA;
+  		reference usemap[0-1] container : URI;
+  		reference onselect[0-1] container : ScriptExpression;
+  		reference onchange[0-1] container : ScriptExpression;
+  		reference accept[0-1] container : ContentTypes;
+	}
+ 
+	-- @comment option selector
+	class Select extends Attrs, Inlineforms {
+		reference selectelement[1-*] container : SelectElement;
+		reference name[0-1] container : CDATA;
+  		reference size[0-1] container : Number;
+		attribute multiple[0-1] : Boolean;
+  		attribute disabled[0-1] : Boolean;
+		reference tabindex[0-1] container : Number;
+		reference onfocus[0-1] container : ScriptExpression;
+		reference onblur[0-1] container : ScriptExpression;
+		reference onchange[0-1] container : ScriptExpression;
+	}
+
+	abstract class SelectElement {
+	}
+
+	-- @comment option group
+	class Optgroup extends SelectElement, Attrs {
+		reference options[1-*] container : Option;
+		attribute disabled[0-1] : Boolean;
+		reference label container : Text;
+	}
+
+	-- @comment selectable choice
+	class Option extends SelectElement, PCDATA, Attrs {
+		attribute selected[0-1] : Boolean;
+		attribute disabled[0-1] : Boolean;
+		reference label[0-1] container : Text;
+		reference optionvalue[0-1] container : CDATA ;
+	}
+	
+	-- @comment multi-line text field -->
+	class Textarea extends PCDATA, Attrs, Focus, Inlineforms {
+		reference name[0-1] container : CDATA ;
+		reference rows container : Number;
+		reference cols container : Number;
+		attribute disabled[0-1] : Boolean;
+		attribute readonly[0-1] : Boolean;
+		reference onselect[0-1] container : ScriptExpression;
+		reference onchange[0-1] container : ScriptExpression;
+	}
+
+	abstract class FieldsetElement {
+		reference fieldsetpcdata[*] container : PCDATA;
+		-- extended by legend form + block inline misc
+	}
+
+	-- @comment The fieldset element is used to group form fields. Only one legend element should occur in the content and if present should only be preceded by whitespace.
+	class Fieldset extends Attrs, block {
+		reference fieldsetelements[*] container : FieldsetElement;
+	}
+
+	-- @comment fieldset label
+	class Legend extends Attrs, FieldsetElement {
+		reference legendelement[*] container : Inline;     
+		reference accesskey[0-1] container : Character;
+	}
+	
+	enumeration ButtonType {
+		literal button;
+		literal submit;
+		literal reset;
+		
+	}
+	
+	-- @comment push button : content is flow element excluding a, form and form controls
+	class Button extends Attrs, Focus, Inlineforms {
+		reference buttoncontent[*] container : ButtonContent;
+		reference name[0-1] container : CDATA;
+		reference value[0-1] container : CDATA;
+		-- @comment default value "submit"
+		attribute type : ButtonType;
+		attribute disabled[0-1] : Boolean;
+	}	
+	
+	-- @begin Forms
+	
+	
+	
+	
+	-- @begin Tables
+
+	-- @comment  The border attribute sets the thickness of the frame around the table. The default units are screen pixels. The frame attribute specifies which parts of the frame around the table should be rendered. The values are not the same as CALS to avoid a name clash with the valign attribute.
+	enumeration TFrame {
+		literal void;
+		literal above;
+		literal below;
+		literal hsides;
+		literal lhs;
+		literal rhs;
+		literal vsides;
+		literal box;
+		literal border;
+	}
+
+	-- @comment The rules attribute defines which rules to draw between cells: If rules is absent then assume: "none" if border is absent or border="0" otherwise "all"
+	enumeration TRules {
+		literal none;
+		literal groups;
+		literal rows;
+		literal cols;
+		literal all;
+	}
+  
+  
+  	enumeration CellHAlign {
+  		literal left;
+  		literal center;
+  		literal right;
+  		literal justify;
+  		literal char;
+  	}
+  	
+	-- @comment horizontal alignment attributes for cell contents char alignment char, e.g. char=':' charoff offset for alignment char
+	abstract class Cellhalign {
+		attribute align[0-1] : CellHAlign;
+		reference char[0-1] container : Character;
+		reference charoff[0-1] container : Length;
+	}
+
+	enumeration CellVAlign {
+		literal top;
+		literal middle;
+		literal bottom;
+		literal baseline;
+	}
+
+	-- @comment vertical alignment attributes for cell contents
+	abstract class Cellvalign {
+		attribute valign[0-1] : CellVAlign;
+	}
+
+	class Table extends Attrs, block, ButtonContent {
+		reference caption[1-*] container : Caption;
+		reference colelement container : ColElement;
+		reference thead container : Thead;
+		reference tfoot container : Tfoot;
+		reference tableelement container : TableElement;
+		reference summary[0-1] container : Text;
+		reference width[0-1] container : Length;
+		reference border[0-1] container : Pixels;
+		attribute frame[0-1] : TFrame;
+		attribute rules[0-1] : TRules;
+		reference cellspacing[0-1] container : Length;
+		reference cellpadding[0-1] container : Length;
+    }
+    
+    class ColElement {
+    	reference cols[*] container : Col;
+    	reference colgroup[*] container : Colgroup;
+    }
+    
+    class TableElement {
+    	reference tbody[1-*] container : Tbody;
+    	reference tr[1-*] container : Tr;
+    }
+    
+	class Caption extends Attrs {
+		reference captionelement[*] container : Inline;
+	}
+
+    -- @comment Use thead to duplicate headers when breaking table across page boundaries, or for static headers when tbody sections are rendered in scrolling panel.
+	class Thead extends Attrs, Cellhalign, Cellvalign {
+		reference tr[1-*] container : Tr;
+	}
+
+    -- @comment Use tfoot to duplicate footers when breaking table across page boundaries, or for static footers when tbody sections are rendered in scrolling panel.
+	class Tfoot extends Attrs, Cellhalign, Cellvalign {
+		reference tr[1-*] container : Tr;
+	}
+    -- @comment Use multiple tbody sections when rules are needed between groups of table rows.	
+	class Tbody extends Attrs, Cellhalign, Cellvalign {
+		reference tr[1-*] container : Tr;
+	}
+	
+	-- @comment colgroup groups a set of col elements. It allows you to group several semantically related columns together.
+	class Colgroup extends Attrs, Cellhalign, Cellvalign {
+		reference cols[*] container : Col;
+		reference span container: Number; -- @comment default value "1"
+ 		reference width[0-1] container : MultiLength;
+	}
+	
+	-- @comment col elements define the alignment properties for cells in one or more columns. The width attribute specifies the width of the columns, e.g. : width=64 width in screen pixels, width=0.5* relative width of 0.5. The span attribute causes the attributes of one col element to apply to more than one column.
+	class Col extends EMPTY, Attrs, Cellhalign, Cellvalign {
+		reference span container : Number; -- @comment default value "1"
+ 		reference width[0-1] container : MultiLength;	
+	}
+
+	class Tr extends Attrs, Cellhalign, Cellvalign {
+		reference trelements[1-*] container : TrElement;
+	}
+	
+	abstract class TrElement {
+	}
+	
+	-- @comment Scope is simpler than headers attribute for common tables
+	enumeration Scope {
+		literal row;
+		literal col;
+		literal rowgroup;
+		literal colgroup;
+	}
+
+	-- @comment th is for headers
+	class Th extends TrElement, Attrs, Cellvalign, Cellhalign {
+		reference thelement[*] container : Flow;
+		reference abbr[0-1] container : Text;
+		reference axis[0-1] container : CDATA;
+		reference headers[0-1] container : IDREFS;
+		attribute scope[0-1] : Scope;
+--		reference scope[0-1] container : Scope;
+		reference rowspan container : Number; -- @comment default value "1"
+		reference colspan container : Number; -- @comment default value "1"
+	}
+
+	-- @comment td for data and for cells acting as both
+	class Td extends TrElement, Attrs, Cellvalign, Cellhalign {
+		reference tdelement[*] container : Flow;
+		reference abbr[0-1] container : Text;
+		reference axis[0-1] container : CDATA;
+		reference headers[0-1] container : IDREFS;
+		attribute scope[0-1] : Scope;
+--		reference scope[0-1] container : Scope;
+		reference rowspan container : Number; -- @comment default value "1"
+		reference colspan container : Number; -- @comment default value "1"
+	}	
+	
+	-- @end Tables	
+    
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+	datatype Boolean;
+}

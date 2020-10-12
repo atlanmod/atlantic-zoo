@@ -1,0 +1,358 @@
+-- @name	AsmL
+-- @version	1.0
+-- @domains	Microsoft DotNET
+-- @authors	Albin Jossic (albin.jossic <at> gmail.com)[1] ;[1] ATLAS team (Nantes, France)
+-- @date	2006/04/12
+-- @description	Abstract State Machine Language
+
+--@begin package AsmL
+package AsmL {
+	
+	abstract class LocatedElement {
+		attribute location : String;
+		attribute commentsBefore[*] ordered : String;
+		attribute commentsAfter[*] ordered : String;
+	}
+	
+	class Body extends LocatedElement {
+	 	reference rules[*] ordered container : Rule oppositeOf ownerBody;
+	}
+	
+	class InWhereHolds extends LocatedElement {
+		reference var container : Term;
+		reference in container : Term;
+		reference where[0-1] container : Term;
+		reference holds[0-1] container : Term;
+	}
+	
+	--@begin AsmL root element
+	class AsmLFile extends LocatedElement {
+		-- AsmLElement : Namespace Structure Function Variable Class
+		reference elements[*] ordered container : AsmLElement oppositeOf file;
+		reference main container : Main oppositeOf mainFile;
+	}
+	
+	abstract class AsmLElement extends LocatedElement {
+		reference file : AsmLFile oppositeOf elements;
+	}
+	--@end AsmL root element
+	
+	--@begin Declaration
+	--@begin Variable
+	class VarDeclaration extends AsmLElement, VarOrCase, VarOrMethod {
+		attribute isConstant : Boolean;
+		attribute isDeclaration : Boolean; 
+		attribute isLocal : Boolean;
+		attribute name : String;
+		reference type container : Type oppositeOf ownerDeclaration;
+		--attribute val[0-1] : String; 
+	}
+	--@end Variable
+	
+	--@begin Namespace
+	class Namespace extends AsmLElement {
+		attribute name : String;		
+	}
+	--@end Namespace
+	
+	--@begin Structure 
+	class Structure extends AsmLElement {
+		attribute name : String;
+		reference varOrCase[*] ordered container : VarOrCase oppositeOf ownerStructure;
+		attribute superStructureName[0-1] : String; 
+	}
+	
+	abstract class VarOrCase extends LocatedElement {
+		reference ownerStructure : Structure oppositeOf varOrCase;
+	}
+	
+	class Case extends VarOrCase {
+		attribute name : String;
+		reference variables[*] ordered container : VarDeclaration;
+	}
+	--@end Structure
+	
+	--@begin Class
+	class Class extends AsmLElement { 
+		attribute name : String;
+		attribute isAbstract : Boolean;
+		attribute superClassName[0-1] : String; 
+		reference varOrMethod[*] ordered container : VarOrMethod oppositeOf ownerClass;
+	}
+	
+	class VarOrMethod extends LocatedElement {
+		reference ownerClass : Class oppositeOf varOrMethod;
+	}
+	--@end Class
+	
+	--@begin Enumeration
+	class Enumeration extends AsmLElement {
+		attribute name : String; 
+		reference enumerators[*] ordered container : Enumerator;
+	}
+	
+	class Enumerator extends LocatedElement {
+		attribute name : String;
+		reference value[0-1] container : Term;
+	}
+	--@end Enumeration
+	--@end Declaration
+	
+	--@begin Function
+	abstract class Function extends AsmLElement { 
+		attribute name : String;
+		reference body container : Body;
+	}
+	
+	--@begin Method and Procedure
+	class Method extends Function, VarOrMethod {
+		attribute isAbstract[0-1] : Boolean;
+		attribute isShared[0-1] : Boolean;
+		attribute isEntryPoint[0-1] : Boolean;
+		attribute isOverride[0-1] : Boolean;
+		reference returnType[0-1] container : Type oppositeOf ownerMethod;
+		reference parameters[*] ordered container : Parameter oppositeOf ownerMethod;
+	}
+	
+	class Parameter extends LocatedElement {
+		attribute name : String;
+		reference type container : Type oppositeOf ownerParameter;
+		reference ownerMethod : Method oppositeOf parameters;
+	}
+	--@end Method and Procedure
+	
+	--@begin Main
+	class Main extends Function {
+		reference mainFile : AsmLFile oppositeOf main;
+		reference initialisations[*] ordered container : Initially;
+	}
+	
+	class Initially extends LocatedElement {
+		reference id container : VarTerm;
+		reference val container : Term;
+	}
+	--@end Main
+	--@end Function
+
+	-- @begin  Rule 
+	abstract class Rule extends LocatedElement {
+		reference ownerBody : Body oppositeOf rules;
+	}
+	
+	class SkipRule extends Rule {}
+	
+	--@begin Step
+	abstract class Step extends Rule {
+		attribute name[0-1] : String;
+	}
+	
+	class StepUntilFixPoint extends Step {}
+	
+	abstract class StepExpression extends Step {
+		reference expression container : Term;
+	}
+	
+	class StepWhile extends StepExpression {}
+	
+	class StepUntil extends StepExpression {}
+	
+	class StepForEach extends Step {
+		reference expressions[*] container : InWhereHolds;
+	}
+	--@end Step 
+	
+	class MethodInvocation extends Rule {
+		reference called container : MethodCallTerm;
+	}
+	
+	--@begin update rules
+	abstract class UpdateRule extends Rule {
+		reference term container : Term;
+	}
+	
+	class UpdateVarRule extends UpdateRule {
+		reference updateVar container : Term; 
+	}
+	
+	class UpdateFieldRule extends UpdateRule {
+		reference path[2-*] ordered container : VarTerm;
+	}
+	
+	--example phoneNumber("Bob")("Home"):= 0240195199
+	class UpdateMapRule extends UpdateRule {
+		reference updateMap container : VarTerm;
+		reference parameters[1-*] ordered container : Term;
+	}
+	--@end update rules
+	
+	class ChooseRule extends Rule {
+		reference expressions[*] container : InWhereHolds;
+		reference ifChoosenRules container : Body;
+		reference ifNotChoosenRule[0-1] container: Body;
+	}
+	
+	class ForallRule extends Rule {
+		reference expressions[*] container : InWhereHolds;
+		reference doRule container : Body;
+	}
+	
+	--@begin conditional rule
+	class ConditionalRule extends Rule {
+		reference condition container : Term;
+		reference thenRule container :  Body;
+		reference elseRule[0-1] container : Body;
+		reference elseIfRule[0-1] container : ElseIf;
+	}
+	
+	class ElseIf  extends ConditionalRule {}
+	--@end conditional rule
+	
+	class ReturnRule extends Rule {
+		reference term container : Term;
+	}
+	
+	class AddRule extends Rule {
+		reference val container : Term;
+		reference set container : VarTerm; 
+	}
+	
+	class RemoveRule extends Rule {
+		reference val container : Term;
+		reference set container : VarTerm; 
+	}
+	-- @end  Rule 
+	
+	--@begin Type
+	abstract class Type extends AsmLElement {
+		attribute withNull : Boolean;
+		reference ownerDeclaration [0-1] : VarDeclaration oppositeOf type;
+		reference ownerMethod [0-1] : Method oppositeOf returnType;
+		reference ownerParameter [0-1] : Parameter oppositeOf type;
+	}
+	
+	class NamedType extends Type {
+		attribute name : String;
+	}
+		
+	class MapType extends Type {
+		reference ofType container : Type;
+		reference toType container : Type;	
+	}
+	
+	class TupletType extends Type {
+		reference types[2-*] ordered container : Type;
+	}
+	
+	class SetType extends Type {
+		reference of container : Type;
+	}
+	
+	class SequenceType extends Type {
+		reference of container : Type;
+	}
+	--@end Type
+	
+	--@begin Terms
+	abstract class Term extends LocatedElement {}-- ici faire tout les oppositeOf nécessaires
+	
+	class VarTerm extends Term {
+		attribute name : String;
+	}
+	
+	class Operator extends Term {
+		attribute opName : String;
+		reference leftExp container : Term;
+		reference rightExp[0-1] container : Term;
+	}
+	
+	class MapTerm extends Term {
+		reference ofTerm container : Term;
+		reference toTerm container : Term;
+		attribute separator: String;
+	}
+	
+	class TulpletTerm extends Term {
+		reference terms[2-*] ordered container : Term;
+	}
+	
+	--@begin Method Call
+	class MethodCallTerm extends Term {
+		attribute name : String;
+		reference parameters[*] ordered container : Term;
+	}
+	
+	class NewInstance extends MethodCallTerm {}
+	--@end Method Call
+	
+	--@begin Predicate
+	class PredicateTerm extends Term {
+		reference expressions[*] container : InWhereHolds;
+	}
+	
+	class ForAllTerm extends PredicateTerm {}
+	
+	class ExistsTerm extends PredicateTerm {
+		attribute isUnique : Boolean;
+	}
+		
+	class AnyIn extends PredicateTerm {	}
+	--@end Predicate
+	
+	--@begin Set "{}"
+	abstract class SetTerm extends Term {}
+	
+	class EnumerateSet extends SetTerm {
+		reference vals[*] container : Term;
+	}
+	
+	class RangeSet extends SetTerm {
+		reference minval container : Term;
+		reference maxval container : Term;
+	}
+	
+	class AlgorithmSet extends SetTerm {
+		reference expressions[*] container : InWhereHolds;
+	}
+	--@end Set
+	
+	--@begin Sequence "[]"
+	abstract class SequenceTerm extends Term {}
+	
+	class EnumerateSequence extends SequenceTerm {
+		reference vals[*] ordered container : Term;
+	}
+	
+	class RangeSequence extends SequenceTerm {
+		reference minval container : Term;
+		reference maxval container : Term;
+	}
+	--@end Sequence
+	
+	-- @begin Constants
+	abstract class Constant extends Term {}
+	
+	class BooleanConstant extends Constant {
+		attribute val : Boolean;
+	}
+
+	class IntegerConstant extends Constant {
+		attribute val : Integer;
+	}
+
+	class StringConstant extends Constant {
+		attribute val : String;
+	}
+	
+	class NullConstant extends Constant {}
+	-- @end Constants
+	--@end Terms
+}
+--@end package AsmL
+
+--@begin Primitive Type
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+	datatype Boolean;
+}
+--@end Primitive Type

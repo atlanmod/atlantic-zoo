@@ -1,0 +1,54 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'MTRANS'>
+    <Class name = 'MetaClass' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'MetaModel' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Module' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'mode' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'metaDest' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MTRANS::MetaModel' opposite = ''/>
+      <Reference name = 'metaSource' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MTRANS::MetaModel' opposite = ''/>
+      <Reference name = 'rules' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MTRANS::Rule' opposite = 'MTRANS::Rule::module'/>
+    </Class>
+    <Class name = 'Rule' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'isAbstract' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isEntryPoint' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'module' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MTRANS::Module' opposite = 'MTRANS::Module::rules'/>
+      <Reference name = 'target' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MTRANS::MetaClass' opposite = ''/>
+      <Reference name = 'source' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MTRANS::MetaClass' opposite = ''/>
+      <Reference name = 'declaration' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'MTRANS::Variable' opposite = 'MTRANS::Variable::rule'/>
+      <Reference name = 'sections' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MTRANS::Section' opposite = 'MTRANS::Section::rule'/>
+      <Reference name = 'guard' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'MTRANS::Expression' opposite = 'MTRANS::Expression::rule'/>
+      <Reference name = 'inheritances' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MTRANS::Inheritance' opposite = 'MTRANS::Inheritance::rule'/>
+    </Class>
+    <Class name = 'Inheritance' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'rule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MTRANS::Rule' opposite = 'MTRANS::Rule::inheritances'/>
+      <Reference name = 'expressions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MTRANS::Expression' opposite = 'MTRANS::Expression::inheritance'/>
+      <Reference name = 'inheritedRules' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'MTRANS::Rule' opposite = ''/>
+    </Class>
+    <Class name = 'Expression' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'operator' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'inheritance' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MTRANS::Inheritance' opposite = 'MTRANS::Inheritance::expressions'/>
+      <Reference name = 'rule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MTRANS::Rule' opposite = 'MTRANS::Rule::guard'/>
+      <Reference name = 'instruction' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MTRANS::Instruction' opposite = 'MTRANS::Instruction::body'/>
+    </Class>
+    <Class name = 'Section' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'kind' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'rule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MTRANS::Rule' opposite = 'MTRANS::Rule::sections'/>
+      <Reference name = 'instructions' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MTRANS::Instruction' opposite = 'MTRANS::Instruction::section'/>
+    </Class>
+    <Class name = 'Instruction' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'body' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'MTRANS::Expression' opposite = 'MTRANS::Expression::instruction'/>
+      <Reference name = 'section' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MTRANS::Section' opposite = 'MTRANS::Section::instructions'/>
+    </Class>
+    <Class name = 'Variable' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'rule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MTRANS::Rule' opposite = 'MTRANS::Rule::declaration'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

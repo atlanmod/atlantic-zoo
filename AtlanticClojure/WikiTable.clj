@@ -1,0 +1,5 @@
+( defstruct LocatedElement )
+( defstruct Table :border :style :class )
+( defstruct Caption :content )
+( defstruct Row )
+( defstruct Cell :isHeading :align :style :content )

@@ -1,0 +1,45 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_TaskUsiXML"{
+labelloc=t
+color=black
+label=TaskUsiXML
+ node[shape=record];
+Task[label="{Task|id : String\nname : String\ncategory : String\nfrequency : Integer\nimportance : Integer\nstructurationLevel : Integer\ncomplexityLevel : Integer\ncriticity : Integer\ncentrality : Integer\nterminationValue : String\ntaskType : String\ntaskItem : String| }"]
+ Task->Task[arrowhead=diamond,arrowtail=none,headlabel="decomposedTask[0-1]",taillabel="decompositionTasks{ordered}",group=Task,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Operator[label="{/Operator/|id : String\nname : String| }"]
+;
+ node[shape=record];
+BinaryOperator[label="{BinaryOperator|type : BinaryType| }"]
+ BinaryOperator->Task[arrowhead=none,arrowtail=none,headlabel="leftTask",taillabel="rightOperator",group=Task,minlen=2,constraint=false,]
+ BinaryOperator->Task[arrowhead=none,arrowtail=none,headlabel="rightTask",taillabel="leftOperator",group=Task,minlen=2,constraint=false,]
+ BinaryOperator->Operator[arrowhead=onormal,group=Operator,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UnaryOperator[label="{UnaryOperator|UnaryType : UnaryType| }"]
+ UnaryOperator->Task[arrowhead=none,arrowtail=none,headlabel="decoratedTask",taillabel="decoration",group=Task,minlen=2,constraint=false,]
+ UnaryOperator->Operator[arrowhead=onormal,group=Operator,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FiniteInteration[label="{FiniteInteration|interation : Integer| }"]
+ FiniteInteration->UnaryOperator[arrowhead=onormal,group=UnaryOperator,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

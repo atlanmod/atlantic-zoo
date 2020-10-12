@@ -1,0 +1,96 @@
+-- ******************************************************************************
+-- Copyright (c) 2010 INRIA. 
+-- All rights reserved. This program and the accompanying materials 
+-- are made available under the terms of the Eclipse Public License v1.0 
+-- which accompanies this distribution, and is available at
+-- http://www.eclipse.org/legal/epl-v10.html
+-- 
+-- Contributors: 
+-- 	INRIA - Initial implementation
+--  @author : Jean-Sébastien Sottet
+-- ******************************************************************************
+-- 
+-- @name		GANTT
+-- @version		1.0
+-- @domains		Project Management
+-- @author 		Jean-Sébastien Sottet( jean-sebasiten.sottet <at> inria <dot> fr )
+-- @date		2010/02/08
+-- @description	GANTT-chart metamodel (notably used by the ganttproject tool)
+
+package Gantt {
+
+	class Project {
+		attribute name : String;
+		attribute company : String;
+		attribute viewDate : Date;
+		attribute viewIndex : Date;
+		attribute ganttDividerLocation : Integer;
+		attribute ressourceDividerLocation : Integer;
+		attribute webLink : String;
+		reference tasks container : Tasks;
+		reference ressources[*] ordered container : Ressource;
+		reference allocations[*] ordered container : Allocation;
+	}
+	
+	class Tasks {
+		attribute color : String;
+		reference tasks[*] ordered container : Task;
+	}
+	
+	class Task {
+		attribute id : String;
+		attribute name : String; 
+		attribute meeting : Boolean;
+		attribute color : String ;
+		attribute expand : Boolean;
+		attribute complete : Integer;
+		attribute duration : Integer;
+		attribute priority : Integer;
+		attribute start : Date;
+		reference depends[*] ordered container : Depend;
+	}
+	
+	class Depend {
+		attribute id : String;
+		attribute type : Integer;
+		attribute difference : Integer;
+		attribute hardness : String;
+		reference task : Task;
+	}
+	
+	class Ressource {
+		attribute Id : String;
+		attribute name : String;
+		attribute fonction: String;
+		attribute contact : String;
+		attribute phone : String;
+	}
+	
+	class Date {
+		attribute year : Integer;
+		attribute month : Integer;
+		attribute day : Integer;
+	}
+	
+	class Allocation {
+		attribute taskId : String;
+		attribute ressourceId : String;
+		attribute name : String;
+		attribute function : String;
+		attribute responsible : Boolean;
+		attribute load : Integer;
+	}
+	
+	class Vacation {
+	}
+	class Description {
+	}
+	class Previous{
+	}
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+	datatype Boolean;
+}

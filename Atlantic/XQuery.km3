@@ -1,0 +1,106 @@
+-- @name		XQuery 
+-- @version		1.1
+-- @domains		XML
+-- @authors		Peter Rosendal (peter.rosenthal@univ-nantes.fr)
+-- @date		2005/06/13	
+-- @description	This metamodel describes a query language called XQuery, which is designed to be broadly applicable across many types of XML data sources. It contains also parts of the XML metamodel (Node, ElementNode, AttributeNode and TextNode). An XQueryProgram is composed of ExecutableExpressions which can be FLWOR expressions, function calls (FunctionCall) and function declarations (FunctionDeclaration). The main class is FLWOR, it represents FLWOR expressions which are composed of For, Let, Where, Order by and Return statements. For is composed of an XPath expression representing the value stored by the variable defined by the var attribute. Let is also composed of an XPath expression representing the value stored by the variable defined by the var attribute. Where is composed of a boolean XPath expression used to do a selection on the variables of the For statements. OrderBy is composed of an XPath expression defining how to order the output. Return is composed of Expressions representing the output data. Expression is the superclass of ExecutableExpressions, (XML-) Nodes and ReturnXPath expressions. The Node class and its sub classes are the same as those of the XML metamodel. There are two different XPath classes. In the ReturnXPath class the corresponding String expression (value) has to be put between braces, in the XPath class the expression is without braces.
+-- @see			www.w3.org/TR/xquery/
+ 
+package XQuery {
+
+	class XQueryProgram {
+		reference expressions[*] ordered container : ExecutableExpression oppositeOf xQueryProgram;
+	}
+
+ 	class Expression {
+		reference parentNode[0-1] : ElementNode oppositeOf nodes;
+		reference returnEx : Return oppositeOf expressions;
+
+ 	}
+
+ 	class ExecutableExpression extends Expression {
+		reference xQueryProgram : XQueryProgram oppositeOf expressions;
+		reference functionDeclaration : FunctionDeclaration oppositeOf expression; 
+ 	}
+
+
+ 	class Node extends Expression {
+		attribute name : String;
+ 	}
+ 
+ 	class FLWOR extends ExecutableExpression {
+		reference for container : For oppositeOf flwor;
+		reference let container : Let oppositeOf flwor;
+		reference where container : Where oppositeOf flwor;
+		reference orderBy container : OrderBy oppositeOf flwor;
+		reference return container : Return oppositeOf flwor;
+ 	}
+
+ 	class FunctionCall extends ExecutableExpression {
+		attribute name : String;
+		reference parameters[*] container : XPath oppositeOf functionCall; --[*] added
+ 	}
+
+ 	class FunctionDeclaration extends ExecutableExpression {
+		attribute name : String;
+		reference expression[1-*] container : ExecutableExpression oppositeOf functionDeclaration;
+ 	}
+
+ 	class ElementNode extends Node {
+		reference nodes[*] container : Expression oppositeOf parentNode; 
+ 	}
+
+ 	class AttributeNode extends Node {
+		attribute value : String;
+ 	}
+
+ 	class TextNode extends ElementNode {
+ 	}
+
+ 	class ReturnXPath extends Expression {
+		attribute value : String;
+ 	} 
+
+ 	class XPath extends ReturnXPath {
+ 		reference functionCall : FunctionCall oppositeOf parameters;  
+ 		reference for : For oppositeOf expression;
+ 		reference let : Let oppositeOf expression; 		
+ 	}
+
+ 	class BooleanExp extends XPath{
+ 		reference where : Where oppositeOf expression;
+ 	}
+
+ 	class For {
+		attribute var : String;
+		reference flwor : FLWOR oppositeOf for;
+		reference expression container : XPath oppositeOf for; 
+ 	}
+
+ 	class Let {
+		attribute var : String;
+		reference flwor : FLWOR oppositeOf let;
+		reference expression container : XPath oppositeOf let;
+ 	}
+
+ 	class Where {
+		reference flwor : FLWOR oppositeOf where;
+		reference expression container : BooleanExp oppositeOf where;
+ 	}
+
+ 	class OrderBy {
+		reference flwor container : FLWOR oppositeOf orderBy;
+ 	}
+
+ 	class Return {
+		reference flwor : FLWOR oppositeOf return;
+		reference expressions[*] container : Expression oppositeOf returnEx;
+ 	}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}
+

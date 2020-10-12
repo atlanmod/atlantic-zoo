@@ -1,0 +1,69 @@
+package Metamodel;
+
+package UseCases {
+  class Classifier {
+    !ordered ref Instance[*]#classifier instance;
+  }
+
+  class Instance {
+    !ordered ref Classifier[+]#instance classifier;
+  }
+
+  class Actor extends Classifier {
+  }
+
+  class UseCase extends Classifier {
+    !unique !ordered attr String[*] extensionPoint;
+    !ordered ref Include[1]#addition includeAddition;
+    !ordered ref Include[1]#base includeBase;
+    !ordered ref Extend[1]#extension extendExtension;
+    !ordered ref Extend[1]#base extendBase;
+    !ordered ref ExtensionPoint[*]#useCase extensionPoints;
+  }
+
+  class UseCaseInstance extends Instance {
+  }
+
+  abstract class RelationShip {
+  }
+
+  class Include extends RelationShip {
+    !ordered ref UseCase[1]#includeAddition addition;
+    !ordered ref UseCase[1]#includeBase base;
+  }
+
+  class Extend extends RelationShip {
+    !ordered ref BooleanExpression[1] condition;
+    !ordered ref UseCase[1]#extendExtension extension;
+    !ordered ref UseCase[1]#extendBase base;
+    ref ExtensionPoint[+]#extend extensionPoint;
+  }
+
+  class BooleanExpression {
+    !unique !ordered attr String[1] value;
+  }
+
+  abstract class ModelElement {
+  }
+
+  class ExtensionPoint extends ModelElement {
+    !ordered ref LocationReference[1] location;
+    !ordered ref Extend[*]#extensionPoint extend;
+    !ordered ref UseCase[*]#extensionPoints useCase;
+  }
+
+  class LocationReference {
+    !unique !ordered attr String[1] value;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

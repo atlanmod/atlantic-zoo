@@ -1,0 +1,97 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'ClassicModels'>
+    <Class name = 'AddressInfo' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'phone' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'addressLine1' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'addressLine2' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'city' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'state' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'postalCode' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'country' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Date' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'year' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'month' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'day' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'ClassicModels' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'offices' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ClassicModels::Office' opposite = 'ClassicModels::Office::officeOwner'/>
+      <Reference name = 'productLines' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ClassicModels::ProductLine' opposite = 'ClassicModels::ProductLine::productLineOwner'/>
+      <Reference name = 'customers' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ClassicModels::Customer' opposite = 'ClassicModels::Customer::customerOwner'/>
+    </Class>
+    <Class name = 'ProductLine' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'productLineOwner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ClassicModels::ClassicModels' opposite = 'ClassicModels::ClassicModels::productLines'/>
+      <Reference name = 'products' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ClassicModels::Product' opposite = 'ClassicModels::Product::productLine'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'textDescription' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'htmlDescription' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Product' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'productLine' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ClassicModels::ProductLine' opposite = 'ClassicModels::ProductLine::products'/>
+      <Attribute name = 'code' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'scale' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'vendor' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'description' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'quantityInStock' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'buyPrice' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+      <Attribute name = 'MSRP' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+    </Class>
+    <Class name = 'Office' isAbstract = 'false' supertypes = 'ClassicModels::AddressInfo'>
+      <Reference name = 'officeOwner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ClassicModels::ClassicModels' opposite = 'ClassicModels::ClassicModels::offices'/>
+      <Attribute name = 'code' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'employees' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ClassicModels::Employee' opposite = 'ClassicModels::Employee::office'/>
+      <Attribute name = 'territory' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Employee' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'office' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ClassicModels::Office' opposite = 'ClassicModels::Office::employees'/>
+      <Attribute name = 'number' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'employeeCustomers' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ClassicModels::Customer' opposite = 'ClassicModels::Customer::salesRepEmployee'/>
+      <Attribute name = 'lastName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'firstName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'extension' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'email' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'reportsTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ClassicModels::Employee' opposite = ''/>
+      <Attribute name = 'jobTitle' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Customer' isAbstract = 'false' supertypes = 'ClassicModels::AddressInfo'>
+      <Reference name = 'customerOwner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ClassicModels::ClassicModels' opposite = 'ClassicModels::ClassicModels::customers'/>
+      <Attribute name = 'number' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'orders' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ClassicModels::Order' opposite = 'ClassicModels::Order::customer'/>
+      <Reference name = 'payments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ClassicModels::Payment' opposite = 'ClassicModels::Payment::customer'/>
+      <Reference name = 'salesRepEmployee' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ClassicModels::Employee' opposite = 'ClassicModels::Employee::employeeCustomers'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'contactLastName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'contactFirstName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'creditLimit' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+    </Class>
+    <Class name = 'Payment' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'customer' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ClassicModels::Customer' opposite = 'ClassicModels::Customer::payments'/>
+      <Attribute name = 'checkNumber' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'date' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ClassicModels::Date' opposite = ''/>
+      <Attribute name = 'amount' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+    </Class>
+    <Class name = 'Order' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'customer' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ClassicModels::Customer' opposite = 'ClassicModels::Customer::orders'/>
+      <Reference name = 'orderDetails' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ClassicModels::OrderDetail' opposite = 'ClassicModels::OrderDetail::order'/>
+      <Attribute name = 'number' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'date' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ClassicModels::Date' opposite = ''/>
+      <Reference name = 'requiredDate' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ClassicModels::Date' opposite = ''/>
+      <Reference name = 'shippedDate' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ClassicModels::Date' opposite = ''/>
+      <Attribute name = 'status' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'comments' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'OrderDetail' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'order' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ClassicModels::Order' opposite = 'ClassicModels::Order::orderDetails'/>
+      <Reference name = 'product' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ClassicModels::Product' opposite = ''/>
+      <Attribute name = 'quantityOrdered' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'priceEach' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'Double'/>
+  </Package>
+</Metamodel>

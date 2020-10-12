@@ -1,0 +1,193 @@
+package Metamodel;
+
+package Bugzilla {
+  enum ErrorType {
+    et_null = 0;
+    et_NotFound = 0;
+    et_NotPermitted = 0;
+    et_InvalidBugId = 0;
+  }
+
+  enum SeverityType {
+    st_null = 0;
+    st_blocker = 0;
+    st_critical = 0;
+    st_major = 0;
+    st_normal = 0;
+    st_minor = 0;
+    st_trivial = 0;
+    st_enhancement = 0;
+  }
+
+  enum StatusType {
+    st_null = 0;
+    st_UNCONFIRMED = 0;
+    st_NEW = 0;
+    st_ASSIGNED = 0;
+    st_REOPENED = 0;
+    st_RESOLVED = 0;
+    st_VERIFIED = 0;
+    st_CLOSED = 0;
+  }
+
+  enum OperatingSystemType {
+    ost_null = 0;
+    ost_all = 0;
+    ost_Windows 3.1 = 0;
+    ost_Windows 95 = 0;
+    ost_Windows 98 = 0;
+    ost_Windows ME = 0;
+    ost_Windows 2000 = 0;
+    ost_Windows NT = 0;
+    ost_Windows XP = 0;
+    ost_Windows Vista = 0;
+    ost_Windows Server 2003 = 0;
+    ost_MacSystem 7 = 0;
+    ost_MacSystem 7.5 = 0;
+    ost_MacSystem 7.6.1 = 0;
+    ost_MacSystem 8.0 = 0;
+    ost_MacSystem 8.5 = 0;
+    ost_MacSystem 8.6 = 0;
+    ost_MacSystem 9.x = 0;
+    ost_Mac OS X 10.0 = 0;
+    ost_Mac OS X 10.1 = 0;
+    ost_Mac OS X 10.2 = 0;
+    ost_Mac OS X 10.3 = 0;
+    ost_Linux = 0;
+    ost_BDS/OS = 0;
+    ost_FreeBSD = 0;
+    ost_NetBSD = 0;
+    ost_OpenBSD = 0;
+    ost_AIX = 0;
+    ost_BeOS = 0;
+    ost_HP-UX = 0;
+    ost_IRIX = 0;
+    ost_Neutrino = 0;
+    ost_OpenVMS = 0;
+    ost_OS/2 = 0;
+    ost_OSF/1 = 0;
+    ost_Solaris = 0;
+    ost_SunOS = 0;
+    ost_other = 0;
+  }
+
+  enum PriorityType {
+    pt_null = 0;
+    pt_P1 = 0;
+    pt_P2 = 0;
+    pt_P3 = 0;
+    pt_P4 = 0;
+    pt_P5 = 0;
+  }
+
+  enum ReportedPlatformType {
+    rpt_null = 0;
+    rpt_all = 0;
+    rpt_DEC = 0;
+    rpt_HP = 0;
+    rpt_Macintosh = 0;
+    rpt_PC = 0;
+    rpt_SGI = 0;
+    rpt_Sun = 0;
+    rpt_other = 0;
+  }
+
+  enum ResolutionType {
+    rt_null = 0;
+    rt_FIXED = 0;
+    rt_INVALID = 0;
+    rt_WONTFIX = 0;
+    rt_LATER = 0;
+    rt_REMIND = 0;
+    rt_DUPLICATE = 0;
+    rt_WORKSFORME = 0;
+    rt_MOVED = 0;
+  }
+
+  class BugzillaRoot {
+    !unique !ordered attr String[1] version;
+    !unique !ordered attr String[1] urlbase;
+    !unique !ordered attr String[1] maintainer;
+    !unique !ordered attr String exporter;
+    val Bug[+]#bug_bugzillaRoot bugs;
+  }
+
+  class Bug {
+    !ordered ref BugzillaRoot[1]#bugs bug_bugzillaRoot;
+    !unique !ordered attr ErrorType error;
+    !unique !ordered attr String[1] bug_id;
+    !unique !ordered attr String[1] exporter;
+    !unique !ordered attr String[1] urlbase;
+    !unique !ordered attr StatusType[1] bug_status;
+    !unique !ordered attr ResolutionType resolution;
+    !unique !ordered attr String[1] product;
+    !unique !ordered attr PriorityType[1] priority;
+    !unique !ordered attr String[1] version;
+    !unique !ordered attr ReportedPlatformType[1] rep_platform;
+    !unique !ordered attr String[1] assigned_to;
+    !unique !ordered attr String[1] delta_ts;
+    !unique !ordered attr String[1] component;
+    !unique !ordered attr String[1] reporter;
+    !unique !ordered attr String target_milestone;
+    !unique !ordered attr SeverityType[1] bug_severity;
+    !unique !ordered attr String[1] creation_ts;
+    !unique !ordered attr String qa_contact;
+    !unique !ordered attr String status_whiteboard;
+    !unique !ordered attr OperatingSystemType[1] op_sys;
+    !unique !ordered attr String bug_file_loc;
+    !unique !ordered attr String short_desc;
+    val Keywords[*] keywords;
+    val Dependson[*] dependson;
+    val Blocks[*] blocks;
+    val Cc[*] cc;
+    val LongDesc[*] long_desc;
+    val Attachment[*] attachment;
+  }
+
+  abstract class StringElt {
+    !unique !ordered attr String[1] value;
+  }
+
+  class Keywords extends StringElt {
+  }
+
+  class Dependson extends StringElt {
+  }
+
+  class Blocks extends StringElt {
+  }
+
+  class Cc extends StringElt {
+  }
+
+  class LongDesc {
+    !unique !ordered attr Boolean[1] isPrivate;
+    !unique !ordered attr String[1] who;
+    !unique !ordered attr String[1] bug_when;
+    !unique !ordered attr String[1] thetext;
+  }
+
+  class Attachment {
+    !unique !ordered attr Boolean[1] isObsolete;
+    !unique !ordered attr Boolean[1] isPatch;
+    !unique !ordered attr Boolean[1] isPrivate;
+    !unique !ordered attr String[1] ~id;
+    !unique !ordered attr String[1] date;
+    !unique !ordered attr String[1] desc;
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr String[1] data;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

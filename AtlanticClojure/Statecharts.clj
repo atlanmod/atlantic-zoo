@@ -1,0 +1,8 @@
+( defstruct BooleanExpression :value )
+( defstruct StateMachine )
+( defstruct State :state_container )
+( defstruct CompositeState :isConcurrent :state_container )
+( defstruct Transition :source :target )
+( defstruct StateVertex )
+( defstruct Guard :gua_container :expression )
+( defstruct Event )

@@ -1,0 +1,54 @@
+package Metamodel;
+
+package WfMC {
+  class WorkflowProcessDefinition {
+    !ordered val WorkflowParticipantSpecification[*]#processDefinition participantSpecificatons;
+    !ordered val WorkflowRelevantData[*]#processDefinition revelantDatas;
+    !ordered val WorkflowApplicationDeclaration[*]#processDefinition applicationDeclarations;
+    !ordered val WorkflowProcessActivity[*]#processDefinition processActivities;
+    !ordered val TransitionInformation[*]#processDefinition transitionInformations;
+  }
+
+  class WorkflowApplicationDeclaration {
+    !ordered ref WorkflowProcessDefinition[1]#applicationDeclarations processDefinition;
+    !ordered ref WorkflowProcessActivity[*]#applicationDeclarations processActivities;
+    !ordered ref WorkflowRelevantData[*]#applicationDeclarations revelantDatas;
+  }
+
+  class WorkflowRelevantData {
+    !ordered ref WorkflowProcessDefinition[1]#revelantDatas processDefinition;
+    !ordered ref WorkflowApplicationDeclaration[*]#revelantDatas applicationDeclarations;
+    !ordered ref WorkflowProcessActivity[*]#revelantDatas processActivities;
+    !ordered ref WorkflowParticipantSpecification[*]#revelantDatas participantSpecifications;
+    !ordered ref TransitionInformation[*]#revelantDatas transitionInformations;
+  }
+
+  class WorkflowParticipantSpecification {
+    !ordered ref WorkflowProcessDefinition[1]#participantSpecificatons processDefinition;
+    !ordered ref WorkflowRelevantData[*]#participantSpecifications revelantDatas;
+    !ordered ref WorkflowProcessActivity[*]#participantSpecifications processActivities;
+  }
+
+  class WorkflowProcessActivity {
+    !ordered ref WorkflowProcessDefinition[1]#processActivities processDefinition;
+    !ordered ref WorkflowApplicationDeclaration[*]#processActivities applicationDeclarations;
+    !ordered ref WorkflowRelevantData[*]#processActivities revelantDatas;
+    !ordered ref WorkflowParticipantSpecification[*]#processActivities participantSpecifications;
+    !ordered ref TransitionInformation[1]#to_processActivity to_transitionInformation;
+    !ordered ref TransitionInformation[1]#from_processActivity from_transitionInformation;
+  }
+
+  class TransitionInformation {
+    !ordered ref WorkflowProcessDefinition[1]#transitionInformations processDefinition;
+    !ordered ref WorkflowRelevantData[*]#transitionInformations revelantDatas;
+    !ordered ref WorkflowProcessActivity[1]#to_transitionInformation to_processActivity;
+    !ordered ref WorkflowProcessActivity[1]#from_transitionInformation from_processActivity;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+}
+

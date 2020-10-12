@@ -1,0 +1,257 @@
+-- @name			DoDAF-OV5
+-- @version		0.1	
+-- @domains		Architecture Description, SoS (System of System)
+-- @authors		Albin Jossic (jossic.albin <at> gmail.com) 
+-- @date			2006/06/26
+-- @description	A Metamodel of DoDAF (Department of Defense Architecture Framework). This metamodel describes DoDAF OV5 (Operational View) Operational Activity Model. DoDAF AV5 is designed to represent capabilities and operations activities.
+-- @see			http://www.defenselink.mil/nii/global_Info_grid.html
+-- @see			http://www.defenselink.mil/nii/doc/DoDAF_v1_Volume_II.pdf
+-- @see			Tailoring DODAF to Support a Service Oriented Architecture, Fatma Dandashi, Huei-Wan Ang, Christopher Bashioum Mitre Corp. 12-7-2004
+-- @see 			"Recommended Practice for Architectural description of Softwrare-Intensive Systems", IEEE Std 1471-2000, IEEE, 2000.
+-- @see			IEEE1471ConceptualModel.km3 and IEEE1471ViewpointM2.km3
+-- @see			DoDAF.km3
+-- @see			DoDAF-SV4.km3
+-- @see			DoDAF-SV5.km3
+
+--@comments PA = Process Activity
+--@comments AM = Activity Model
+--@comments IE = Information Element
+
+--@begin package DoDAF-OV5
+package DoDAF {
+
+	--@begin class Element
+	--@comments this class is not a part of DoDAF
+	abstract class Element {
+		attribute name : String;
+		attribute description : String;
+		attribute view : String;
+	}	
+	--@end class Element
+	
+	--@begin class DoDAF-OV5 OperationActivity
+	--@comments it is the root of the composition tree
+	class DoDAFModel extends Element {
+		reference document[*] container : Document;
+		reference am[*] container : AM;
+		reference task[*] container : Task;
+		reference iaDocument[*] container : InformationAssetDocument;
+		reference amSpecification[*] container : AMSpecification;
+		reference doscr[*] container : DOSCR;
+		reference organizationType[*] container : OrganizationType;
+	}
+	--@begin class DoDAF-OV5 OperationActivity
+	
+	--@begin CADM ER Operational Activity Model
+	
+	--@begin class Document
+	class Document extends Element {
+		attribute type : String;
+		reference cites[*] : InformationAssetDocument;
+		reference records[*] container : ArchitectureDocument;
+		reference isTheReferenceFor[*] container : IE;
+		reference isThePrimaryReferenceFor[*] container : PA;
+	}
+	--@end class Document
+	
+	--@begin class ActivityModelSpecification
+	class AMSpecification extends Document {
+		reference isSpecifiedUsing[*] container : AMSpecificationElement;
+	}
+	--@end class ActivityModelSpecification
+	
+	--@begin class ActivityModelSpecificationElement
+	class AMSpecificationElement extends Element {
+		reference subject[0-1] : PAExchangeRequirement oppositeOf isTheSubjectOf;
+	}
+	--@end class ActivityModelSpecificationElement
+	
+	--@begin class ProcessActivityExchangeRequirement
+	class PAExchangeRequirement extends Element {
+		reference isTheSubjectOf[*] : AMSpecificationElement oppositeOf subject;
+	}
+	--@end class ProcessActivityExchangeRequirement
+	
+	--@begin class ArchitectureDocument
+	class ArchitectureDocument extends Element {}
+	--@end class ArchitectureDocument
+	
+	--@begin class InformationElement
+	class IE extends Element {
+		reference isAssociatedWith[*] : AMIERole;
+		reference isOrdinateOf[*] : IE oppositeOf isSubordinateOf;
+		reference isSubordinateOf[*] : IE oppositeOf isOrdinateOf;
+	}
+	--@end class InformationElement
+	
+	--@begin Activity Model Information Element Role 
+	--@begin class ActivityModelInformationElementRole
+	class AMIERole extends Element {
+		reference defines[*] : AMPA;
+	}
+	--@end class ActivityModelInformationElementRole
+	
+	--@begin class Control
+	class Control extends AMIERole {
+		attribute source : String;
+		attribute destination : String;
+	}
+	--@end class Control
+	
+	--@begin class Input
+	class Input extends AMIERole {
+		reference isTheInputThatIsDefinedBy[*] : Output;
+		attribute source : String;
+		attribute destination : String;
+		attribute information : String;
+	}
+	--@end class Input
+	
+	--@begin class Output 
+	class Output extends AMIERole {
+		attribute source : String;
+		attribute destination : String;
+		attribute information : String;
+	}
+	--@end class Output
+	
+	--@begin class Mechanism
+	class Mechanism extends AMIERole {
+		attribute source : String;
+		attribute destination : String;
+		attribute resourceType : String;
+	}
+	--@end class Mechanism
+	
+	--@begin class Mechanism System
+	class MechanismSystem extends Mechanism {}
+	--@end class Mechanism System
+	
+	--@begin class Mechanism Reference
+	class MechanismReference extends Mechanism {}
+	--@end class Mechanism Reference
+	
+	--@begin class Mechanism Facility
+	class MechanismFacility extends Mechanism {}
+	--@end class Mechanism Facility
+	--@begin Activity Model Information Element Role 
+	
+	--@begin class InformationAssetDocument
+	class InformationAssetDocument extends Element {}
+	--@end class InformationAssetDocument
+	
+	--@begin class ActivityModelProcessActivity
+	class AMPA extends Element {
+		reference isOrdinateOf[*] : AMPA oppositeOf isSubordinateOf;
+		reference isSubordinateOf[*] : AMPA oppositeOf isOrdinateOf;
+		reference defines[*] container : AMIERole;
+	}
+	--@end class ActivityModelProcessActivity
+	
+	--@begin class ProcessActivityCapability
+	class PACapability extends Element {}
+	--@end class ProcessActivityCapability
+	
+	--@begin class ProcessActivity
+	class PA extends Element {
+		reference isTheProducerFor[*] container : PAExchangeRequirement;
+		reference isTheConsumerFor[*] container : PAExchangeRequirement;
+		reference isParentFor[*] : PA oppositeOf isChildFor;
+		reference isChildFor[*] : PA oppositeOf isParentFor;
+		reference has[*] container : PACapability;
+		reference isIncludedIn[*] : AMPA;
+		reference correspondsTo[*] : PATask;		
+	}
+	--@end class ProcessActivity
+	
+	--@begin class ActivityModel
+	class AM extends InformationAsset {
+		attribute type : String;
+		reference specifies[*] : AMSpecification;
+		reference includes[*] container : AMPA;
+		reference paTask[*] : PATask;
+	}
+	--@end class ActivityModel
+	
+	--@begin class InformationAsset
+	abstract class InformationAsset extends Element {
+		reference isDescribedUsing[*] container : PACapability;
+		reference isCitedIn[*] : InformationAssetDocument;
+	}
+	--@end class InformationAsset
+	
+	--@begin class Task
+	class Task extends Element {
+		attribute levelIdentifier : String;
+		attribute references : String;
+		attribute cost : String;
+	}
+	--@end class Task
+	
+	--@begin class PATask
+	class PATask extends Task {
+		reference isCitedBy : InformationAsset;
+	}
+	--@end class PATask
+	
+	--@begin class Organization
+	class Organization extends Element {
+		reference type : OrganizationType oppositeOf isTheTypeOf;
+		reference supplies[*] : InformationAsset;
+		reference providesStewardshipFor[*] : InformationAsset;
+		reference owns[*] : InformationAsset;
+		reference develops[*] : IE;
+		reference isCitedAs[*] : MechanismReference;		
+	}
+	--@end class Organization
+	
+	--@begin class OrganizationType
+	class OrganizationType extends Element {
+		reference isTheTypeOf[*] container : Organization oppositeOf type;
+		reference isCitedAs[*] container : MechanismReference;			
+	}
+	--@end class OrganizationType
+	
+	--@begin class OperationalRole
+	class OperationalRole extends Element {
+		reference isCitedAs[*] container : MechanismReference;
+	}
+	--@end class OperationalRole
+	
+	--@begin class Occupation
+	class Occupation extends Element {
+		reference mayBeCitedForOR[*] container : OperationalRole;
+		reference mayBeCitedForPT[*] container : PersonType;
+	}
+	--@end class Occupation
+	
+	--@begin class PersonType
+	class PersonType extends Element {
+		reference mayBeCitedFor[*] container : OperationalRole;
+		reference can[*] container : Skill;
+	}
+	--@end class PersonType
+	
+	--@begin class Skill
+	class Skill extends Element {
+		reference mayBeCitedFor[*] container : OperationalRole;
+	}
+	--@end class Skill
+	
+	--@begin class DefenseOccupationalSpecialityCrossReference
+	class DOSCR extends Element {
+		reference mayBeAn container : Occupation;
+		reference appliesTo[*] container : PersonType;
+		reference mayBeCitedFor[*] container : OperationalRole;
+	}
+	--@end class DefenseOccupationalSpecialityCrossReference
+	
+	--@end CADM ER Operational Activity Model
+}
+--@end package DoDAF-OV5
+
+--@begin package PrimitiveTypes
+package PrimitiveTypes {
+	datatype String;
+}
+--@end package PrimitiveTypes

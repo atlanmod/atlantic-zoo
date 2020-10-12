@@ -1,0 +1,54 @@
+package Metamodel;
+
+package RequisitePro {
+  abstract class DescribedElt {
+    !unique !ordered attr String[1] description;
+  }
+
+  abstract class NamedElt {
+    !unique !ordered attr String[1] name;
+  }
+
+  abstract class ContainerElt extends NamedElt, DescribedElt {
+    !ordered val ContainedElt[*]#~package content;
+    !ordered val Package[*]#parentPackage packages;
+  }
+
+  class Project extends ContainerElt {
+  }
+
+  class Package extends ContainerElt {
+    !ordered ref ContainerElt[1]#packages parentPackage;
+  }
+
+  abstract class ContainedElt {
+    !ordered ref ContainerElt[1]#content ~package;
+  }
+
+  abstract class TypedElt {
+    !unique !ordered attr String[1] type;
+  }
+
+  class Document extends DescribedElt, NamedElt, ContainedElt, TypedElt {
+  }
+
+  class Attribute extends TypedElt {
+    !unique !ordered attr String[1] value;
+  }
+
+  class Requirement extends NamedElt, ContainedElt, TypedElt {
+    !unique !ordered attr String[1] text;
+    !ordered val Attribute[*] attributes;
+    !ordered ref Document[1] location;
+    !ordered ref Requirement#children parent;
+    !ordered ref Requirement[*]#parent children;
+    !ordered ref Requirement[*] coverLink;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+}
+

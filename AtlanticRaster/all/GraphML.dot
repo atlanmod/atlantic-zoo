@@ -1,0 +1,82 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_GraphML"{
+labelloc=t
+color=black
+label=GraphML
+ node[shape=record];
+LocatedElement[label="{/LocatedElement/|location[0-1] : String\ncommentsBefore[*] : String\ncommentsAfter[*] : String| }"]
+;
+ node[shape=record];
+Root[label="{Root| | }"]
+ Root->Key[arrowhead=vee,arrowtail=diamond,headlabel="keys[*]{ordered}",group=Key,minlen=2,constraint=true,]
+ Root->Graph[arrowhead=vee,arrowtail=diamond,headlabel="graphs[*]{ordered}",group=Graph,minlen=2,constraint=true,]
+ Root->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Element[label="{Element|id : String| }"]
+ Element->Data[arrowhead=vee,arrowtail=diamond,headlabel="datas[*]{ordered}",group=Data,minlen=2,constraint=true,]
+ Element->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Key[label="{Key|for : ElemType\nattrName : String\ntype : AttrType\ndefValue : String| }"]
+ Key->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Graph[label="{Graph|edgeDefault : EdgeType| }"]
+ Graph->Element[arrowhead=vee,arrowtail=diamond,headlabel="contents[*]{ordered}",group=Element,minlen=2,constraint=true,]
+ Graph->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Edge[label="{Edge| | }"]
+ Edge->Node[arrowhead=vee,arrowtail=none,headlabel="source",group=Node,minlen=2,constraint=false,]
+ Edge->Node[arrowhead=vee,arrowtail=none,headlabel="target",group=Node,minlen=2,constraint=false,]
+ Edge->Port[arrowhead=vee,arrowtail=none,headlabel="sourceport",group=Port,minlen=2,constraint=false,]
+ Edge->Port[arrowhead=vee,arrowtail=none,headlabel="targetport",group=Port,minlen=2,constraint=false,]
+ Edge->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+HyperEdge[label="{HyperEdge| | }"]
+ HyperEdge->EndPoint[arrowhead=vee,arrowtail=diamond,headlabel="endpoints[*]{ordered}",group=EndPoint,minlen=2,constraint=true,]
+ HyperEdge->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Node[label="{Node| | }"]
+ Node->Graph[arrowhead=vee,arrowtail=diamond,headlabel="subgraph",group=Graph,minlen=2,constraint=true,]
+ Node->Port[arrowhead=vee,arrowtail=diamond,headlabel="ports[*]{ordered}",group=Port,minlen=2,constraint=true,]
+ Node->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Port[label="{Port|name : String| }"]
+ Port->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EndPoint[label="{EndPoint| | }"]
+ EndPoint->Node[arrowhead=vee,arrowtail=none,headlabel="node",group=Node,minlen=2,constraint=false,]
+ EndPoint->Port[arrowhead=vee,arrowtail=none,headlabel="port",group=Port,minlen=2,constraint=false,]
+ EndPoint->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Data[label="{Data|key : String\nvalue : String| }"]
+ Data->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+double[label="{&#171;DataType&#187;\ndouble|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

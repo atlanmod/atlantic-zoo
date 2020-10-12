@@ -1,0 +1,51 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_QoSStatement"{
+labelloc=t
+color=black
+label=QoSStatement
+ node[shape=record];
+QoSStatement[label="{QoSStatement| | }"]
+ QoSStatement->CoumpoundQoSStatement[arrowhead=diamond,arrowtail=none,headlabel="relation",taillabel="statement[2-*]",group=CoumpoundQoSStatement,minlen=2,constraint=true,]
+ QoSStatement->Parameter[arrowhead=vee,arrowtail=diamond,headlabel="parameter[*]{ordered}",group=Parameter,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SingleQoSStatement[label="{SingleQoSStatement| | }"]
+ SingleQoSStatement->QoSContraint[arrowhead=vee,arrowtail=diamond,headlabel="contraint",group=QoSContraint,minlen=2,constraint=true,]
+ SingleQoSStatement->QoSStatement[arrowhead=onormal,group=QoSStatement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CoumpoundQoSStatement[label="{CoumpoundQoSStatement| | }"]
+ CoumpoundQoSStatement->QoSStatement[arrowhead=onormal,group=QoSStatement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parameter[label="{Parameter| | }"]
+;
+ node[shape=record];
+QoSContraint[label="{QoSContraint| | }"]
+ QoSContraint->QualificationKind[arrowhead=vee,arrowtail=none,headlabel="qualification",group=QualificationKind,minlen=2,constraint=false,]
+;
+ node[shape=record];
+QualificationKind[label="{QualificationKind|value : String| }"]
+ QualificationKind->QoSCharacteristic[arrowhead=onormal,group=QoSCharacteristic,minlen=2,constraint=true,]
+;
+ node[shape=record];
+QoSCharacteristic[label="{QoSCharacteristic| | }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

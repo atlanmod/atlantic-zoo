@@ -1,0 +1,236 @@
+package Metamodel;
+
+package PNML {
+  abstract class IdedElement {
+    !unique !ordered attr String[1] ~id;
+  }
+
+  class URI {
+    !unique !ordered attr String[1] value;
+  }
+
+  class Color {
+  }
+
+  class AnyElement {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] text;
+  }
+
+  enum RotationType {
+    rtvertical = 0;
+    rthorizontal = 0;
+    rtdiagonal = 0;
+  }
+
+  enum ShapeType {
+    shtline = 0;
+    shtcurve = 0;
+  }
+
+  enum StyleType {
+    sttsolid = 0;
+    sttdash = 0;
+    sttdot = 0;
+  }
+
+  enum DecorationType {
+    dtunderligne = 0;
+    dtoverligne = 0;
+    dtlinethrough = 0;
+  }
+
+  enum AlignType {
+    atleft = 0;
+    atcenter = 0;
+    atright = 0;
+  }
+
+  class PNMLDocument {
+    !ordered val URI[1] xmlns;
+    !ordered val NetElement[+]#document nets;
+  }
+
+  class NetElement extends IdedElement {
+    !ordered val URI[1] type;
+    !ordered ref PNMLDocument[1]#nets document;
+    !ordered val NetContent[*]#net contents;
+    !ordered val ToolSpecific[*]#net tools;
+    !ordered val NetGraphics#net netgraphics;
+    !ordered val Name#net name;
+  }
+
+  abstract class NetContent {
+    !ordered ref NetElement[1]#contents net;
+    !ordered val Name#netcontent name;
+    !ordered ref Page#contents page;
+  }
+
+  class ToolSpecific {
+    !unique !ordered attr String[1] tool;
+    !unique !ordered attr String[1] version;
+    !ordered val AnyElement[*] anyelement;
+    !ordered ref NetElement#tools net;
+    !ordered ref Arc#tools arc;
+    !ordered ref Node#tools node;
+    !ordered ref Page#tools page;
+  }
+
+  abstract class LabeledElement {
+    !ordered val Label[*]#namedelement labels;
+    !ordered val AnnotationGraphics#namedelement annotationgraphics;
+  }
+
+  class Label {
+    !unique !ordered attr String[1] text;
+    !ordered ref LabeledElement[1]#labels namedelement;
+  }
+
+  class Name extends LabeledElement {
+    !ordered ref NetElement#name net;
+    !ordered ref NetContent#name netcontent;
+  }
+
+  class Inscription extends LabeledElement {
+    !ordered ref Arc[1]#inscription arc;
+  }
+
+  class InitialMarking extends LabeledElement {
+    !ordered ref Place[1]#initialmarking place;
+  }
+
+  abstract class NetContentElement extends NetContent {
+    !ordered val Node[1]#netcontentelement node;
+  }
+
+  class Arc extends NetContent, IdedElement {
+    !ordered ref NetContentElement[1] source;
+    !ordered ref NetContentElement[1] target;
+    !ordered val ToolSpecific[*]#arc tools;
+    !ordered val EdgeGraphics#arc edgegraphics;
+    !ordered val Inscription#arc inscription;
+  }
+
+  class Page extends NetContent, IdedElement {
+    !ordered val NetContent[*]#page contents;
+    !ordered val ToolSpecific[*]#page tools;
+    !ordered val PageGraphics#page pagegraphics;
+  }
+
+  abstract class Reference extends Node {
+    !ordered val Node[1] ~ref;
+  }
+
+  class ReferencePlace extends NetContent, Reference {
+  }
+
+  class ReferenceTransition extends NetContent, Reference {
+  }
+
+  class Node extends IdedElement {
+    !ordered val NetContentElement[1]#node netcontentelement;
+    !ordered val ToolSpecific[*]#node tools;
+    !ordered val NodeGraphics#node nodegraphics;
+  }
+
+  class Place extends NetContentElement {
+    !ordered val InitialMarking#place initialmarking;
+  }
+
+  class Transition extends NetContentElement {
+  }
+
+  abstract class Graphics {
+  }
+
+  class NetGraphics extends Graphics {
+    !ordered ref NetElement[1]#netgraphics net;
+  }
+
+  class NodeGraphics extends Graphics {
+    !ordered ref Node[1]#nodegraphics node;
+    !ordered val Position[1]#nodegraphics position;
+    !ordered val Dimension#nodegraphics dimension;
+    !ordered val Fill#nodegraphics fill;
+    !ordered val Line#nodegraphics line;
+  }
+
+  class EdgeGraphics extends Graphics {
+    !ordered ref Arc[1]#edgegraphics arc;
+    !ordered val Position[*]#edgegraphics position;
+    !ordered val Fill#edgegraphics fill;
+    !ordered val Line#edgegraphics line;
+  }
+
+  class AnnotationGraphics extends Graphics {
+    !ordered ref LabeledElement[1]#annotationgraphics namedelement;
+    !ordered val Offset[1]#annotationgraphics offset;
+    !ordered val Font#annotationgraphics font;
+    !ordered val Fill#annotationgraphics fill;
+    !ordered val Line#annotationgraphics line;
+  }
+
+  class PageGraphics extends Graphics {
+    !ordered ref Page[1]#pagegraphics page;
+  }
+
+  abstract class Coordinate {
+    !unique !ordered attr Integer[1] x;
+    !unique !ordered attr Integer[1] y;
+  }
+
+  class Position extends Coordinate {
+    !ordered ref NodeGraphics#position nodegraphics;
+    !ordered ref EdgeGraphics#position edgegraphics;
+  }
+
+  class Offset extends Coordinate {
+    !ordered ref AnnotationGraphics[1]#offset annotationgraphics;
+  }
+
+  class Dimension {
+    !unique !ordered attr Integer[1] width;
+    !unique !ordered attr Integer[1] height;
+    !ordered ref NodeGraphics[1]#dimension nodegraphics;
+  }
+
+  class Fill {
+    !unique !ordered attr RotationType gradientrotation;
+    !ordered val Color interiorcolor;
+    !ordered val Color gradientcolor;
+    !ordered val URI image;
+    !ordered ref NodeGraphics#fill nodegraphics;
+    !ordered ref EdgeGraphics#fill edgegraphics;
+    !ordered ref AnnotationGraphics#fill annotationgraphics;
+  }
+
+  class Line {
+    !ordered val Color color;
+    !unique !ordered attr Integer width;
+    !unique !ordered attr ShapeType shape;
+    !unique !ordered attr StyleType style;
+    !ordered ref NodeGraphics#line nodegraphics;
+    !ordered ref EdgeGraphics#line edgegraphics;
+    !ordered ref AnnotationGraphics#line annotationgraphics;
+  }
+
+  class Font {
+    !unique !ordered attr String family;
+    !unique !ordered attr String style;
+    !unique !ordered attr String weight;
+    !unique !ordered attr String size;
+    !unique !ordered attr DecorationType decoration;
+    !unique !ordered attr AlignType align;
+    !unique !ordered attr Integer rotation;
+    !ordered ref AnnotationGraphics[1]#font annotationgraphics;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

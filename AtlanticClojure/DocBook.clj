@@ -1,0 +1,6 @@
+( defstruct DocBook :books )
+( defstruct Book :articles )
+( defstruct TitledElement :title )
+( defstruct Article :sections_1 :title )
+( defstruct Sect1 :paras :title )
+( defstruct Para :content )

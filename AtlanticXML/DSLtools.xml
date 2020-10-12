@@ -1,0 +1,62 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'DSL'>
+    <Class name = 'NamedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'identity' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'LoadedElement' isAbstract = 'true' supertypes = 'DSL::Namespace'>
+      <Attribute name = 'isLoaded' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'Namespace' isAbstract = 'true' supertypes = 'DSL::NamedElement'>
+      <Attribute name = 'namespace' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'DomainModel' isAbstract = 'false' supertypes = 'DSL::LoadedElement'>
+      <Reference name = 'classifiers' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DSL::Classifier' opposite = 'DSL::Classifier::domainModel'/>
+      <Reference name = 'types' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DSL::Type' opposite = ''/>
+    </Class>
+    <Class name = 'Classifier' isAbstract = 'true' supertypes = 'DSL::LoadedElement'>
+      <Attribute name = 'isAbstract' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'properties' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DSL::ValueProperty' opposite = 'DSL::ValueProperty::owner'/>
+      <Reference name = 'superType' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DSL::Classifier' opposite = 'DSL::Classifier::subTypes'/>
+      <Reference name = 'subTypes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DSL::Classifier' opposite = 'DSL::Classifier::superType'/>
+      <Reference name = 'domainModel' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DSL::DomainModel' opposite = 'DSL::DomainModel::classifiers'/>
+    </Class>
+    <Class name = 'Class' isAbstract = 'false' supertypes = 'DSL::Classifier'>
+      <Attribute name = 'isSerializationRoot' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'Relationship' isAbstract = 'false' supertypes = 'DSL::Classifier'>
+      <Attribute name = 'isEmbedding' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'roles' lower = '2' upper = '2' isOrdered = 'false' isContainer = 'true' type = 'DSL::Role' opposite = 'DSL::Role::relation'/>
+    </Class>
+    <Class name = 'Role' isAbstract = 'false' supertypes = 'DSL::NamedElement'>
+      <Attribute name = 'min' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'max' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'isUnbounded' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'accepts' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'isOrdered' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isNavigableFrom' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isPropertyGenerator' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DSL::Classifier' opposite = ''/>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DSL::Classifier' opposite = ''/>
+      <Reference name = 'relation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DSL::Relationship' opposite = 'DSL::Relationship::roles'/>
+    </Class>
+    <Class name = 'ValueProperty' isAbstract = 'false' supertypes = 'DSL::NamedElement'>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DSL::Classifier' opposite = 'DSL::Classifier::properties'/>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DSL::Type' opposite = ''/>
+    </Class>
+    <Class name = 'Type' isAbstract = 'true' supertypes = 'DSL::Namespace'/>
+    <Class name = 'SimpleType' isAbstract = 'false' supertypes = 'DSL::Type'/>
+    <Class name = 'EnumerationLiteral' isAbstract = 'false' supertypes = 'DSL::NamedElement'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'Enumeration' isAbstract = 'false' supertypes = 'DSL::Type'>
+      <Reference name = 'literals' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DSL::EnumerationLiteral' opposite = ''/>
+    </Class>
+    <Package name = 'PrimitiveTypes'>
+      <DataType name = 'Boolean'/>
+      <DataType name = 'Integer'/>
+      <DataType name = 'String'/>
+    </Package>
+  </Package>
+</Metamodel>

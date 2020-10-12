@@ -1,0 +1,61 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'DSLModel'>
+    <Class name = 'Model' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'domainModel' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'contents' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'DSLModel::ModelElement' opposite = ''/>
+    </Class>
+    <Class name = 'Element' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ModelElement' isAbstract = 'false' supertypes = 'DSLModel::Element'>
+      <Reference name = 'parentLink' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DSLModel::EmbeddingLink' opposite = 'DSLModel::EmbeddingLink::elements'/>
+      <Reference name = 'properties' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DSLModel::Property' opposite = 'DSLModel::Property::owner'/>
+      <Reference name = 'embeddinglinks' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DSLModel::EmbeddingLink' opposite = 'DSLModel::EmbeddingLink::owner'/>
+      <Reference name = 'referencelinks' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DSLModel::ReferenceLink' opposite = 'DSLModel::ReferenceLink::owner'/>
+    </Class>
+    <Class name = 'ModelElementLink' isAbstract = 'false' supertypes = 'DSLModel::ModelElement'>
+      <Reference name = 'links' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DSLModel::ReferenceLink' opposite = 'DSLModel::ReferenceLink::modelElement'/>
+    </Class>
+    <Class name = 'EmbeddingLink' isAbstract = 'false' supertypes = 'DSLModel::NamedElement'>
+      <Reference name = 'owner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DSLModel::ModelElement' opposite = 'DSLModel::ModelElement::embeddinglinks'/>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DSLModel::ModelElement' opposite = 'DSLModel::ModelElement::parentLink'/>
+    </Class>
+    <Class name = 'ReferenceLink' isAbstract = 'false' supertypes = 'DSLModel::Element'>
+      <Reference name = 'owner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DSLModel::ModelElement' opposite = 'DSLModel::ModelElement::referencelinks'/>
+      <Reference name = 'modelElement' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DSLModel::ModelElementLink' opposite = 'DSLModel::ModelElementLink::links'/>
+      <Reference name = 'roles' lower = '2' upper = '2' isOrdered = 'false' isContainer = 'true' type = 'DSLModel::Role' opposite = 'DSLModel::Role::owner'/>
+    </Class>
+    <Class name = 'NamedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Property' isAbstract = 'false' supertypes = 'DSLModel::NamedElement'>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DSLModel::ModelElement' opposite = 'DSLModel::ModelElement::properties'/>
+      <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'DSLModel::Value' opposite = ''/>
+    </Class>
+    <Class name = 'Role' isAbstract = 'false' supertypes = 'DSLModel::NamedElement'>
+      <Reference name = 'element' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DSLModel::ModelElement' opposite = ''/>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DSLModel::ReferenceLink' opposite = 'DSLModel::ReferenceLink::roles'/>
+    </Class>
+    <Class name = 'Value' isAbstract = 'true' supertypes = ''/>
+    <Class name = 'IntegerValue' isAbstract = 'false' supertypes = 'DSLModel::Value'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'DoubleValue' isAbstract = 'false' supertypes = 'DSLModel::Value'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+    </Class>
+    <Class name = 'BooleanValue' isAbstract = 'false' supertypes = 'DSLModel::Value'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'StringValue' isAbstract = 'false' supertypes = 'DSLModel::Value'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Package name = 'PrimitiveTypes'>
+      <DataType name = 'Boolean'/>
+      <DataType name = 'Integer'/>
+      <DataType name = 'String'/>
+      <DataType name = 'Double'/>
+    </Package>
+  </Package>
+</Metamodel>

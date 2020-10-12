@@ -1,0 +1,545 @@
+abstract class LocatedElement
+  var location as Set of String
+  var commentsBefore as Set of String
+  var commentsAfter as Set of String
+
+class Unit extends LocatedElement
+  var name as Set of String
+  // libraries IsContainer
+  var libraries as Set of LibraryRef
+
+class Library extends Unit
+  // helpers IsContainer
+  var helpers as Set of Helper
+
+class Query extends Unit
+  // body IsContainer
+  var body as Set of OclExpression
+  // helpers IsContainer
+  var helpers as Set of Helper
+
+class Module extends Unit
+  var isRefining as Set of Boolean
+  // inModels IsContainer
+  var inModels as Set of OclModel
+  // outModels IsContainer
+  var outModels as Set of OclModel
+  // elements IsContainer
+  var elements as Set of ModuleElement
+
+abstract class ModuleElement extends LocatedElement
+  var module as Set of Module
+
+class Helper extends ModuleElement
+  var query as Set of Query
+  var library as Set of Library
+  // definition IsContainer
+  var definition as Set of OclFeatureDefinition
+
+abstract class Rule extends ModuleElement
+  var name as Set of String
+  // outPattern IsContainer
+  var outPattern as Set of OutPattern
+  // actionBlock IsContainer
+  var actionBlock as Set of ActionBlock
+  // variables IsContainer
+  var variables as Set of RuleVariableDeclaration
+
+class MatchedRule extends Rule
+  var isAbstract as Set of Boolean
+  var isRefining as Set of Boolean
+  var isNoDefault as Set of Boolean
+  // inPattern IsContainer
+  var inPattern as Set of InPattern
+  var children as Set of MatchedRule
+  var superRule as Set of MatchedRule
+
+class LazyMatchedRule extends MatchedRule
+  var isUnique as Set of Boolean
+
+class CalledRule extends Rule
+  var isEntrypoint as Set of Boolean
+  var isEndpoint as Set of Boolean
+  // parameters IsContainer
+  var parameters as Set of Parameter
+
+class InPattern extends LocatedElement
+  // elements IsContainer
+  var elements as Set of InPatternElement
+  var rule as Set of MatchedRule
+  // filter IsContainer
+  var filter as Set of OclExpression
+
+class OutPattern extends LocatedElement
+  var rule as Set of Rule
+  // elements IsContainer
+  var elements as Set of OutPatternElement
+
+abstract class PatternElement extends VariableDeclaration
+
+abstract class InPatternElement extends PatternElement
+  var mapsTo as Set of OutPatternElement
+  var inPattern as Set of InPattern
+  var models as Set of OclModel
+
+class SimpleInPatternElement extends InPatternElement
+
+abstract class OutPatternElement extends PatternElement
+  var outPattern as Set of OutPattern
+  var sourceElement as Set of InPatternElement
+  // bindings IsContainer
+  var bindings as Set of Binding
+  var model as Set of OclModel
+
+class SimpleOutPatternElement extends OutPatternElement
+  // reverseBindings IsContainer
+  var reverseBindings as Set of OclExpression
+
+class ForEachOutPatternElement extends OutPatternElement
+  // collection IsContainer
+  var collection as Set of OclExpression
+  // iterator IsContainer
+  var iterator as Set of Iterator
+
+class Binding extends LocatedElement
+  var propertyName as Set of String
+  var isAssignment as Set of Boolean
+  // value IsContainer
+  var value as Set of OclExpression
+  var outPatternElement as Set of OutPatternElement
+
+class RuleVariableDeclaration extends VariableDeclaration
+  var rule as Set of Rule
+
+class LibraryRef extends LocatedElement
+  var name as Set of String
+  var unit as Set of Unit
+
+class ActionBlock extends LocatedElement
+  var rule as Set of Rule
+  // statements IsContainer
+  var statements as Set of Statement
+
+abstract class Statement extends LocatedElement
+
+class ExpressionStat extends Statement
+  // expression IsContainer
+  var expression as Set of OclExpression
+
+class BindingStat extends Statement
+  var propertyName as Set of String
+  var isAssignment as Set of Boolean
+  // source IsContainer
+  var source as Set of OclExpression
+  // value IsContainer
+  var value as Set of OclExpression
+
+class IfStat extends Statement
+  // condition IsContainer
+  var condition as Set of OclExpression
+  // thenStatements IsContainer
+  var thenStatements as Set of Statement
+  // elseStatements IsContainer
+  var elseStatements as Set of Statement
+
+class ForStat extends Statement
+  // iterator IsContainer
+  var iterator as Set of Iterator
+  // collection IsContainer
+  var collection as Set of OclExpression
+  // statements IsContainer
+  var statements as Set of Statement
+
+abstract class OclExpression extends LocatedElement
+  // _type IsContainer
+  var _type as Set of OclType
+  var ifExp3 as Set of IfExp
+  var appliedProperty as Set of PropertyCallExp
+  var collection as Set of CollectionExp
+  var letExp as Set of LetExp
+  var loopExp as Set of LoopExp
+  var parentOperation as Set of OperationCallExp
+  var initializedVariable as Set of VariableDeclaration
+  var ifExp2 as Set of IfExp
+  var owningOperation as Set of Operation
+  var ifExp1 as Set of IfExp
+  var owningAttribute as Set of _Attribute
+
+class VariableExp extends OclExpression
+  var referredVariable as Set of VariableDeclaration
+
+class SuperExp extends OclExpression
+
+abstract class PrimitiveExp extends OclExpression
+
+class StringExp extends PrimitiveExp
+  var stringSymbol as Set of String
+
+class BooleanExp extends PrimitiveExp
+  var booleanSymbol as Set of Boolean
+
+abstract class NumericExp extends PrimitiveExp
+
+class RealExp extends NumericExp
+  var realSymbol as Set of Double
+
+class IntegerExp extends NumericExp
+  var integerSymbol as Set of Integer
+
+abstract class CollectionExp extends OclExpression
+  // elements IsContainer
+  var elements as Set of OclExpression
+
+class BagExp extends CollectionExp
+
+class OrderedSetExp extends CollectionExp
+
+class SequenceExp extends CollectionExp
+
+class SetExp extends CollectionExp
+
+class TupleExp extends OclExpression
+  // tuplePart IsContainer
+  var tuplePart as Set of TuplePart
+
+class TuplePart extends VariableDeclaration
+  var tuple as Set of TupleExp
+
+class MapExp extends OclExpression
+  // elements IsContainer
+  var elements as Set of MapElement
+
+class MapElement extends LocatedElement
+  var _map as Set of MapExp
+  // key IsContainer
+  var key as Set of OclExpression
+  // value IsContainer
+  var value as Set of OclExpression
+
+class EnumLiteralExp extends OclExpression
+  var name as Set of String
+
+class OclUndefinedExp extends OclExpression
+
+abstract class PropertyCallExp extends OclExpression
+  // source IsContainer
+  var source as Set of OclExpression
+
+class NavigationOrAttributeCallExp extends PropertyCallExp
+  var name as Set of String
+
+class OperationCallExp extends PropertyCallExp
+  var operationName as Set of String
+  // arguments IsContainer
+  var arguments as Set of OclExpression
+
+class OperatorCallExp extends OperationCallExp
+
+class CollectionOperationCallExp extends OperationCallExp
+
+abstract class LoopExp extends PropertyCallExp
+  // body IsContainer
+  var body as Set of OclExpression
+  // iterators IsContainer
+  var iterators as Set of Iterator
+
+class IterateExp extends LoopExp
+  // result IsContainer
+  var result as Set of VariableDeclaration
+
+class IteratorExp extends LoopExp
+  var name as Set of String
+
+class LetExp extends OclExpression
+  // variable IsContainer
+  var variable as Set of VariableDeclaration
+  // in_ IsContainer
+  var in_ as Set of OclExpression
+
+class IfExp extends OclExpression
+  // thenExpression IsContainer
+  var thenExpression as Set of OclExpression
+  // condition IsContainer
+  var condition as Set of OclExpression
+  // elseExpression IsContainer
+  var elseExpression as Set of OclExpression
+
+class VariableDeclaration extends LocatedElement
+  var id as Set of String
+  var varName as Set of String
+  // _type IsContainer
+  var _type as Set of OclType
+  // initExpression IsContainer
+  var initExpression as Set of OclExpression
+  var letExp as Set of LetExp
+  var baseExp as Set of IterateExp
+  var variableExp as Set of VariableExp
+
+class Iterator extends VariableDeclaration
+  var loopExpr as Set of LoopExp
+
+class Parameter extends VariableDeclaration
+  var operation as Set of Operation
+
+class CollectionType extends OclType
+  // elementType IsContainer
+  var elementType as Set of OclType
+
+class OclType extends OclExpression
+  var name as Set of String
+  var definitions as Set of OclContextDefinition
+  var oclExpression as Set of OclExpression
+  var operation as Set of Operation
+  var mapType2 as Set of MapType
+  var _attribute as Set of _Attribute
+  var mapType as Set of MapType
+  var collectionTypes as Set of CollectionType
+  var tupleTypeAttribute as Set of TupleTypeAttribute
+  var variableDeclaration as Set of VariableDeclaration
+
+abstract class _Primitive extends OclType
+
+class StringType extends _Primitive
+
+class BooleanType extends _Primitive
+
+abstract class NumericType extends _Primitive
+
+class IntegerType extends NumericType
+
+class RealType extends NumericType
+
+class BagType extends CollectionType
+
+class OrderedSetType extends CollectionType
+
+class SequenceType extends CollectionType
+
+class SetType extends CollectionType
+
+class OclAnyType extends OclType
+
+class TupleType extends OclType
+  // attributes IsContainer
+  var attributes as Set of TupleTypeAttribute
+
+class TupleTypeAttribute extends LocatedElement
+  var name as Set of String
+  // _type IsContainer
+  var _type as Set of OclType
+  var tupleType as Set of TupleType
+
+class OclModelElement extends OclType
+  var model as Set of OclModel
+
+class MapType extends OclType
+  // _valueType IsContainer
+  var _valueType as Set of OclType
+  // keyType IsContainer
+  var keyType as Set of OclType
+
+class OclFeatureDefinition extends LocatedElement
+  // feature IsContainer
+  var feature as Set of OclFeature
+  // context_ IsContainer
+  var context_ as Set of OclContextDefinition
+
+class OclContextDefinition extends LocatedElement
+  var definition as Set of OclFeatureDefinition
+  // context_ IsContainer
+  var context_ as Set of OclType
+
+abstract class OclFeature extends LocatedElement
+  var definition as Set of OclFeatureDefinition
+
+class _Attribute extends OclFeature
+  var name as Set of String
+  // initExpression IsContainer
+  var initExpression as Set of OclExpression
+  // _type IsContainer
+  var _type as Set of OclType
+
+class Operation extends OclFeature
+  var name as Set of String
+  // parameters IsContainer
+  var parameters as Set of Parameter
+  // returnType IsContainer
+  var returnType as Set of OclType
+  // body IsContainer
+  var body as Set of OclExpression
+
+class OclModel extends LocatedElement
+  var name as Set of String
+  var metamodel as Set of OclModel
+  var elements as Set of OclModelElement
+  var model as Set of OclModel
+
+var LocatedElement_Universe as Set of LocatedElement
+
+var Unit_Universe as Set of Unit
+
+var Library_Universe as Set of Library
+
+var Query_Universe as Set of Query
+
+var Module_Universe as Set of Module
+
+var ModuleElement_Universe as Set of ModuleElement
+
+var Helper_Universe as Set of Helper
+
+var Rule_Universe as Set of Rule
+
+var MatchedRule_Universe as Set of MatchedRule
+
+var LazyMatchedRule_Universe as Set of LazyMatchedRule
+
+var CalledRule_Universe as Set of CalledRule
+
+var InPattern_Universe as Set of InPattern
+
+var OutPattern_Universe as Set of OutPattern
+
+var PatternElement_Universe as Set of PatternElement
+
+var InPatternElement_Universe as Set of InPatternElement
+
+var SimpleInPatternElement_Universe as Set of SimpleInPatternElement
+
+var OutPatternElement_Universe as Set of OutPatternElement
+
+var SimpleOutPatternElement_Universe as Set of SimpleOutPatternElement
+
+var ForEachOutPatternElement_Universe as Set of ForEachOutPatternElement
+
+var Binding_Universe as Set of Binding
+
+var RuleVariableDeclaration_Universe as Set of RuleVariableDeclaration
+
+var LibraryRef_Universe as Set of LibraryRef
+
+var ActionBlock_Universe as Set of ActionBlock
+
+var Statement_Universe as Set of Statement
+
+var ExpressionStat_Universe as Set of ExpressionStat
+
+var BindingStat_Universe as Set of BindingStat
+
+var IfStat_Universe as Set of IfStat
+
+var ForStat_Universe as Set of ForStat
+
+var OclExpression_Universe as Set of OclExpression
+
+var VariableExp_Universe as Set of VariableExp
+
+var SuperExp_Universe as Set of SuperExp
+
+var PrimitiveExp_Universe as Set of PrimitiveExp
+
+var StringExp_Universe as Set of StringExp
+
+var BooleanExp_Universe as Set of BooleanExp
+
+var NumericExp_Universe as Set of NumericExp
+
+var RealExp_Universe as Set of RealExp
+
+var IntegerExp_Universe as Set of IntegerExp
+
+var CollectionExp_Universe as Set of CollectionExp
+
+var BagExp_Universe as Set of BagExp
+
+var OrderedSetExp_Universe as Set of OrderedSetExp
+
+var SequenceExp_Universe as Set of SequenceExp
+
+var SetExp_Universe as Set of SetExp
+
+var TupleExp_Universe as Set of TupleExp
+
+var TuplePart_Universe as Set of TuplePart
+
+var MapExp_Universe as Set of MapExp
+
+var MapElement_Universe as Set of MapElement
+
+var EnumLiteralExp_Universe as Set of EnumLiteralExp
+
+var OclUndefinedExp_Universe as Set of OclUndefinedExp
+
+var PropertyCallExp_Universe as Set of PropertyCallExp
+
+var NavigationOrAttributeCallExp_Universe as Set of NavigationOrAttributeCallExp
+
+var OperationCallExp_Universe as Set of OperationCallExp
+
+var OperatorCallExp_Universe as Set of OperatorCallExp
+
+var CollectionOperationCallExp_Universe as Set of CollectionOperationCallExp
+
+var LoopExp_Universe as Set of LoopExp
+
+var IterateExp_Universe as Set of IterateExp
+
+var IteratorExp_Universe as Set of IteratorExp
+
+var LetExp_Universe as Set of LetExp
+
+var IfExp_Universe as Set of IfExp
+
+var VariableDeclaration_Universe as Set of VariableDeclaration
+
+var Iterator_Universe as Set of Iterator
+
+var Parameter_Universe as Set of Parameter
+
+var CollectionType_Universe as Set of CollectionType
+
+var OclType_Universe as Set of OclType
+
+var _Primitive_Universe as Set of _Primitive
+
+var StringType_Universe as Set of StringType
+
+var BooleanType_Universe as Set of BooleanType
+
+var NumericType_Universe as Set of NumericType
+
+var IntegerType_Universe as Set of IntegerType
+
+var RealType_Universe as Set of RealType
+
+var BagType_Universe as Set of BagType
+
+var OrderedSetType_Universe as Set of OrderedSetType
+
+var SequenceType_Universe as Set of SequenceType
+
+var SetType_Universe as Set of SetType
+
+var OclAnyType_Universe as Set of OclAnyType
+
+var TupleType_Universe as Set of TupleType
+
+var TupleTypeAttribute_Universe as Set of TupleTypeAttribute
+
+var OclModelElement_Universe as Set of OclModelElement
+
+var MapType_Universe as Set of MapType
+
+var OclFeatureDefinition_Universe as Set of OclFeatureDefinition
+
+var OclContextDefinition_Universe as Set of OclContextDefinition
+
+var OclFeature_Universe as Set of OclFeature
+
+var _Attribute_Universe as Set of _Attribute
+
+var Operation_Universe as Set of Operation
+
+var OclModel_Universe as Set of OclModel
+
+Main()

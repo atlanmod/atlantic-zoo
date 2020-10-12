@@ -1,0 +1,291 @@
+-- @name		BPMN
+-- @version		1.1
+-- @domains		business process
+-- @authors		Frédéric Jouault (frederic.jouault@univ-nantes.fr), Freddy Allilaire (freddy.allilaire@univ-nantes.fr)
+-- @date		2007/03/06
+-- @description	This metamodel was semi-automatically derived from the BPMN metamodel used by the BPMN editor that Intalio contributed to Eclipse.
+-- @see			http://www.eclipse.org/stp/bpmn/index.php
+package bpmn {
+
+	class Activity extends Vertex, NamedBpmnObject {
+		attribute orderedMessages[*] ordered : MessagingEdge;
+		reference incomingMessages[*] ordered : MessagingEdge oppositeOf target;
+		reference outgoingMessages[*] ordered : MessagingEdge oppositeOf source;
+		reference groups[*] ordered : Group oppositeOf activities;
+		attribute activityType[0-1] : ActivityType;
+		reference eventHandlerFor[0-1] : SubProcess oppositeOf eventHandlers;
+		reference lane[0-1] : Lane oppositeOf activities;
+		attribute looping[0-1] : Boolean;
+	}
+
+	enumeration ActivityType {
+		literal SubProcess;
+		literal EventEndMultiple;
+		literal EventEndMessage;
+		literal EventIntermediateMessage;
+		literal EventStartMultiple;
+		literal EventIntermediateMultiple;
+		literal GatewayParallel;
+		literal EventStartTimer;
+		literal EventStartEmpty;
+		literal EventIntermediateCancel;
+		literal EventEndError;
+		literal EventStartRule;
+		literal EventEndTerminate;
+		literal EventStartLink;
+		literal EventIntermediateLink;
+		literal EventEndCancel;
+		literal EventEndLink;
+		literal EventIntermediateEmpty;
+		literal EventIntermediateCompensation;
+		literal Task;
+		literal GatewayDataBasedExclusive;
+		literal GatewayComplex;
+		literal EventEndEmpty;
+		literal EventIntermediateError;
+		literal EventIntermediateTimer;
+		literal EventEndCompensation;
+		literal EventStartMessage;
+		literal GatewayDataBasedInclusive;
+		literal GatewayEventBasedExclusive;
+		literal EventIntermediateRule;
+	}
+
+	datatype ActivityTypeObject;
+
+	class Artifact extends Identifiable, NamedBpmnObject {
+		reference associations[*] ordered container : Association oppositeOf source;
+		reference artifactsContainer[0-1] : ArtifactsContainer oppositeOf artifacts;
+	}
+
+	class ArtifactsContainer extends NamedBpmnObject {
+		reference artifacts[*] ordered container : Artifact oppositeOf artifactsContainer;
+	}
+
+	class Association {
+		attribute direction[0-1] : DirectionType;
+		reference source[0-1] : Artifact oppositeOf associations;
+		reference target[0-1] : IdentifiableNode oppositeOf associations;
+	}
+
+	class BpmnDiagram extends Identifiable, ArtifactsContainer {
+		reference pools[*] ordered container : Pool oppositeOf bpmnDiagram;
+		reference messages[*] ordered container : MessagingEdge oppositeOf bpmnDiagram;
+		attribute author[0-1] : String;
+		attribute title[0-1] : String;
+	}
+
+	class DataObject extends Artifact {
+		
+	}
+
+	enumeration DirectionType {
+		literal Both;
+		literal From;
+		literal To;
+		literal None;
+	}
+
+	datatype DirectionTypeObject;
+
+	class Graph extends IdentifiableNode, ArtifactsContainer {
+		reference vertices[*] ordered container : Vertex oppositeOf graph;
+		reference sequenceEdges[*] ordered container : SequenceEdge oppositeOf graph;
+	}
+
+	class Group extends Artifact {
+		reference activities[*] ordered : Activity oppositeOf groups;
+	}
+
+	class Identifiable {
+		attribute iD[0-1] : ID;
+	}
+
+	class IdentifiableNode extends Identifiable {
+		reference associations[*] ordered : Association oppositeOf target;
+	}
+
+	class Lane extends Identifiable, NamedBpmnObject {
+		reference activities[*] ordered : Activity oppositeOf lane;
+		reference pool[0-1] : Pool oppositeOf lanes;
+	}
+
+	class MessagingEdge extends Identifiable, NamedBpmnObject {
+		reference bpmnDiagram[0-1] : BpmnDiagram oppositeOf messages;
+		reference source[0-1] : Activity oppositeOf outgoingMessages;
+		reference target[0-1] : Activity oppositeOf incomingMessages;
+	}
+
+	class NamedBpmnObject {
+		attribute documentation[0-1] : String;
+		attribute name[0-1] : String;
+		attribute ncname[0-1] : String;
+	}
+
+	class Pool extends Graph, NamedBpmnObject {
+		reference lanes[*] ordered container : Lane oppositeOf pool;
+		reference bpmnDiagram[0-1] : BpmnDiagram oppositeOf pools;
+	}
+
+	class SequenceEdge extends Identifiable, NamedBpmnObject {
+		reference graph[0-1] : Graph oppositeOf sequenceEdges;
+		attribute isDefault[0-1] : Boolean;
+		reference source[0-1] : Vertex oppositeOf outgoingEdges;
+		reference target[0-1] : Vertex oppositeOf incomingEdges;
+	}
+
+	class SubProcess extends Activity, Graph {
+		reference eventHandlers[*] ordered container : Activity oppositeOf eventHandlerFor;
+		attribute isTransaction[0-1] : Boolean;
+	}
+
+	class TextAnnotation extends Artifact {
+		
+	}
+
+	class Vertex extends IdentifiableNode {
+		reference outgoingEdges[*] ordered : SequenceEdge oppositeOf source;
+		reference incomingEdges[*] ordered : SequenceEdge oppositeOf target;
+		reference graph[0-1] : Graph oppositeOf vertices;
+	}
+}
+
+package type {
+
+--	class AnyType {
+--		attribute mixed[*] ordered : ;
+--		attribute any[*] ordered : ;
+--		attribute anyAttribute[*] ordered : ;
+--	}
+--
+--	class SimpleAnyType extends AnyType {
+--		attribute rawValue[0-1] : String;
+--		attribute value[0-1] : AnySimpleType;
+--		reference instanceType : ;
+--	}
+--
+--	class XMLTypeDocumentRoot {
+--		attribute mixed[*] ordered : ;
+--		reference xMLNSPrefixMap[*] ordered container : ;
+--		reference xSISchemaLocation[*] ordered container : ;
+--		attribute cDATA[0--2] ordered : String;
+--		attribute comment[0--2] ordered : String;
+--		attribute text[0--2] ordered : String;
+--	}
+
+	datatype AnySimpleType;
+
+	datatype AnyURI;
+
+	datatype Base64Binary;
+
+	datatype Boolean;
+
+	datatype BooleanObject;
+
+	datatype Byte;
+
+	datatype ByteObject;
+
+	datatype Date;
+
+	datatype DateTime;
+
+	datatype Decimal;
+
+	datatype Double;
+
+	datatype DoubleObject;
+
+	datatype Duration;
+
+	datatype ENTITIES;
+
+	datatype ENTITIESBase;
+
+	datatype ENTITY;
+
+	datatype Float;
+
+	datatype FloatObject;
+
+	datatype GDay;
+
+	datatype GMonth;
+
+	datatype GMonthDay;
+
+	datatype GYear;
+
+	datatype GYearMonth;
+
+	datatype HexBinary;
+
+	datatype ID;
+
+	datatype IDREF;
+
+	datatype IDREFS;
+
+	datatype IDREFSBase;
+
+	datatype Int;
+
+	datatype Integer;
+
+	datatype IntObject;
+
+	datatype Language;
+
+	datatype Long;
+
+	datatype LongObject;
+
+	datatype Name;
+
+	datatype NCName;
+
+	datatype NegativeInteger;
+
+	datatype NMTOKEN;
+
+	datatype NMTOKENS;
+
+	datatype NMTOKENSBase;
+
+	datatype NonNegativeInteger;
+
+	datatype NonPositiveInteger;
+
+	datatype NormalizedString;
+
+	datatype NOTATION;
+
+	datatype PositiveInteger;
+
+	datatype QName;
+
+	datatype Short;
+
+	datatype ShortObject;
+
+	datatype String;
+
+	datatype Time;
+
+	datatype Token;
+
+	datatype UnsignedByte;
+
+	datatype UnsignedByteObject;
+
+	datatype UnsignedInt;
+
+	datatype UnsignedIntObject;
+
+	datatype UnsignedLong;
+
+	datatype UnsignedShort;
+
+	datatype UnsignedShortObject;
+}

@@ -1,0 +1,264 @@
+-- @name		Requirement
+-- @version		1.0
+-- @authors		Brahim Loukil (Brahim-Khalil.Loukil <at> univ-nantes.fr)
+-- @date		2008
+-- @description	A requirement metamodel.
+
+package Requirement {
+
+	class Model {
+		reference "abstract"[0-1] container : AbstractDocument;
+		reference description[0-1] container : ProductDescription;
+	}
+
+	package AbstractDocument {
+
+		class Purpose {
+			attribute id[0-1] : String;
+			attribute version[0-1] : String;
+			attribute release[0-1] : String;
+			attribute description[0-1] : String;
+		}
+
+		class IntendedAudience {
+			attribute readers[0-1] : READERS_KIND;
+		}
+
+		enumeration READERS_KIND {
+			literal Developer;
+			literal ProjectManager;
+			literal MarketingStaff;
+			literal User;
+			literal Tester;
+			literal DocumentationWriter;
+		}
+
+		class Scope {
+			attribute description[0-1] : String;
+			reference problem[0-1] container : BusinessProblem;
+			reference mission[0-1] container : ProjectMission;
+			reference background[0-1] container : BusinessBackground;
+			reference goals[*] ordered container : ProjectObjective;
+		}
+
+		class Reference {
+			attribute title[0-1] : String;
+			attribute author[0-1] : String;
+			attribute version[0-1] : Integer;
+			attribute date[0-1] : Date;
+			attribute location[0-1] : String;
+		}
+
+		class Information {
+			attribute body[0-1] : String;
+		}
+
+		class AbstractDocument {
+			reference intendedAudience[0-1] container : IntendedAudience;
+			reference references[*] ordered container : Reference;
+			reference purpose[0-1] container : Purpose;
+			reference scope[0-1] container : Scope;
+		}
+
+		class BusinessBackground {
+			attribute overview[0-1] : String;
+		}
+
+		class BusinessProblem {
+			attribute problem[0-1] : String;
+		}
+
+		class ProjectMission {
+			attribute mission[0-1] : String;
+		}
+
+		abstract class ProjectObjective {
+			attribute title[0-1] : String;
+			attribute description[0-1] : String;
+		}
+
+		class BusinessObjective extends ProjectObjective {
+			
+		}
+
+		class TechnicalObjective extends ProjectObjective {
+			
+		}
+
+		class BusinessCase extends ProjectObjective {
+			
+		}
+	}
+
+	package ProductDescription {
+
+		class ProductDescription {
+			reference ownedRequirement[*] ordered container : AbstractRequirement;
+			reference constraints[*] ordered : Constraint;
+			reference characteristics[*] ordered : Characteristic;
+			reference userDocumentation[0-1] : UserDocumentation;
+			reference perspective[0-1] : Perspective;
+			reference operatingEnvironment[0-1] : OperatingEnvironment;
+		}
+
+		class Perspective extends Information {
+			
+		}
+
+		class Characteristic extends Information {
+			attribute priority[0-1] : Priority;
+		}
+
+		enumeration Priority {
+			literal low;
+			literal medium;
+			literal high;
+		}
+
+		class OperatingEnvironment {
+			reference hardwarePlatform[*] ordered container : HardwarePlatform;
+			reference operatingSystem[*] ordered container : OperatingSystem;
+		}
+
+		class HardwarePlatform extends Information {
+			
+		}
+
+		class OperatingSystem extends Information {
+			
+		}
+
+		class Constraint extends Information {
+			
+		}
+
+		class UserDocumentation extends Information {
+			attribute format[0-1] : Format;
+			attribute standard[0-1] : String;
+		}
+
+		class SystemFeature extends Feature {
+			reference conditions[*] ordered container : Condition;
+			reference flows[*] ordered container : EventFlow;
+		}
+
+		class EventFlow {
+			reference elements[*] ordered container : SequentialElement;
+			attribute name[0-1] : String;
+		}
+
+		abstract class AbstractRequirement {
+			attribute seq_number[0-1] : Integer;
+			attribute description[0-1] : String;
+			attribute priority[0-1] : Priority;
+			reference simpleFeatures[*] ordered container : SimpleFeature;
+		}
+
+		class functionalRequirement extends AbstractRequirement {
+			reference systemFeatures[*] ordered container : SystemFeature;
+		}
+
+		class Condition {
+			
+		}
+
+		class PreCondition extends Condition {
+			
+		}
+
+		class PostCondition extends Condition {
+			
+		}
+
+		class SafetyRequirement extends AbstractRequirement {
+			
+		}
+
+		class PerformanceRequirement extends AbstractRequirement {
+			
+		}
+
+		class SecurityRequirement extends AbstractRequirement {
+			
+		}
+
+		class SoftwareQuality extends AbstractRequirement {
+			
+		}
+
+		enumeration Format {
+			literal Word;
+			literal PDF;
+			literal Excel;
+			literal PPT;
+		}
+
+		class Action extends SequentialElement {
+			
+		}
+
+		abstract class SequentialElement extends Information {
+			attribute step[0-1] : Integer;
+		}
+
+		class Response extends SequentialElement {
+			
+		}
+
+		class Stimulus extends SequentialElement {
+			
+		}
+
+		class DesignConstraintRequirement extends functionalRequirement {
+			
+		}
+
+		class BusinessRuleRequirement extends functionalRequirement {
+			
+		}
+
+		class BusinessAutomationRequirement extends functionalRequirement {
+			
+		}
+
+		class UIRequirement extends functionalRequirement {
+			
+		}
+
+		class GeneralRequirement extends functionalRequirement {
+			
+		}
+
+		class InstallationRequirement extends functionalRequirement {
+			
+		}
+
+		class MigrationRequirement extends functionalRequirement {
+			
+		}
+
+		class OperationalRequirement extends functionalRequirement {
+			
+		}
+
+		class SimpleFeature extends Feature {
+			
+		}
+
+		abstract class Feature {
+			attribute name[0-1] : String;
+			attribute short_description[0-1] : String;
+			attribute priority[0-1] : Priority;
+			attribute cost[0-1] : Double;
+			attribute risk[0-1] : String;
+		}
+	}
+}
+
+package PrimitiveTypes {
+    datatype String;
+    datatype Integer;
+    datatype Date;
+    datatype Double;
+}
+

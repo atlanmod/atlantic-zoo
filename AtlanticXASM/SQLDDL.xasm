@@ -1,0 +1,93 @@
+universe SQLDDL_LocatedElement
+
+	function location(a : SQLDDL_LocatedElement, b : String) -> Bool
+
+	function commentsBefore(a : SQLDDL_LocatedElement, b : String) -> Bool
+
+	function commentsAfter(a : SQLDDL_LocatedElement, b : String) -> Bool
+
+	universe SQLDDL_NamedElement < SQLDDL_LocatedElement
+
+	function name(a : SQLDDL_NamedElement, b : String) -> Bool
+
+	universe SQLDDL_Database < SQLDDL_NamedElement
+
+	function tables(a : SQLDDL_Database, b : SQLDDL_Table) -> Bool
+
+	function order(a : SQLDDL_Database, b : SQLDDL_Table) -> Integer
+
+	universe SQLDDL_Table < SQLDDL_NamedElement
+
+	function database(a : SQLDDL_Table, b : SQLDDL_Database) -> Bool
+
+	function referencedBy(a : SQLDDL_Table, b : SQLDDL_ForeignKey) -> Bool
+
+	function elements(a : SQLDDL_Table, b : SQLDDL_TableElement) -> Bool
+
+	function parameters(a : SQLDDL_Table, b : SQLDDL_Parameter) -> Bool
+
+	function order(a : SQLDDL_Table, b : SQLDDL_TableElement) -> Integer
+
+	function order(a : SQLDDL_Table, b : SQLDDL_Parameter) -> Integer
+
+	universe SQLDDL_TableElement < SQLDDL_LocatedElement
+
+	function table(a : SQLDDL_TableElement, b : SQLDDL_Table) -> Bool
+
+	universe SQLDDL_Column < SQLDDL_TableElement
+
+	function referencedBy(a : SQLDDL_Column, b : SQLDDL_ForeignKey) -> Bool
+
+	function name(a : SQLDDL_Column, b : String) -> Bool
+
+	function type(a : SQLDDL_Column, b : SQLDDL_Type) -> Bool
+
+	function canBeNull(a : SQLDDL_Column, b : Boolean) -> Bool
+
+	function default(a : SQLDDL_Column, b : SQLDDL_Value) -> Bool
+
+	function keys(a : SQLDDL_Column, b : SQLDDL_Key) -> Bool
+
+	universe SQLDDL_Key < SQLDDL_TableElement
+
+	function isUnique(a : SQLDDL_Key, b : Boolean) -> Bool
+
+	function name(a : SQLDDL_Key, b : String) -> Bool
+
+	function columns(a : SQLDDL_Key, b : SQLDDL_Column) -> Bool
+
+	function order(a : SQLDDL_Key, b : SQLDDL_Column) -> Integer
+
+	universe SQLDDL_SimpleKey < SQLDDL_Key
+
+	universe SQLDDL_PrimaryKey < SQLDDL_Key
+
+	universe SQLDDL_ForeignKey < SQLDDL_Key
+
+	function referencedTable(a : SQLDDL_ForeignKey, b : SQLDDL_Table) -> Bool
+
+	function referencedColumns(a : SQLDDL_ForeignKey, b : SQLDDL_Column) -> Bool
+
+	universe SQLDDL_Type < SQLDDL_NamedElement
+
+	function length(a : SQLDDL_Type, b : Integer) -> Bool
+
+	function isUnsigned(a : SQLDDL_Type, b : Boolean) -> Bool
+
+	universe SQLDDL_Parameter < SQLDDL_NamedElement
+
+	function table(a : SQLDDL_Parameter, b : SQLDDL_Table) -> Bool
+
+	function value(a : SQLDDL_Parameter, b : SQLDDL_Value) -> Bool
+
+	universe SQLDDL_Value < SQLDDL_LocatedElement
+
+	universe SQLDDL_IntegerVal < SQLDDL_Value
+
+	function value(a : SQLDDL_IntegerVal, b : Integer) -> Bool
+
+	universe SQLDDL_NullVal < SQLDDL_Value
+
+	universe SQLDDL_StringVal < SQLDDL_Value
+
+	function value(a : SQLDDL_StringVal, b : String) -> Bool

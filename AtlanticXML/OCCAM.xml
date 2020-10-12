@@ -1,0 +1,83 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'OCCAM'>
+    <Class name = 'OCCAM_Program' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'occam_Elements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'OCCAM::OCCAM_Element' opposite = ''/>
+      <Reference name = 'files' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'OCCAM::File' opposite = ''/>
+    </Class>
+    <Class name = 'OCCAM_Element' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Process' isAbstract = 'false' supertypes = 'OCCAM::OCCAM_Element'>
+      <Reference name = 'declaration' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'OCCAM::Declaration' opposite = 'OCCAM::Declaration::process'/>
+      <Reference name = 'constructors' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'OCCAM::Constructor' opposite = 'OCCAM::Constructor::process'/>
+      <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'OCCAM::DataType' opposite = ''/>
+      <Reference name = 'libraries' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'OCCAM::Library' opposite = ''/>
+      <Reference name = 'toChannel' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCCAM::Channel' opposite = ''/>
+    </Class>
+    <Class name = 'Channel' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'toServer' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCCAM::Server' opposite = ''/>
+      <Reference name = 'toProcess' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCCAM::Process' opposite = ''/>
+    </Class>
+    <Class name = 'Action' isAbstract = 'false' supertypes = 'OCCAM::OCCAM_Element'>
+      <Reference name = 'constructor' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCCAM::Constructor' opposite = 'OCCAM::Constructor::actions'/>
+      <Reference name = 'while' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCCAM::While' opposite = 'OCCAM::While::actions'/>
+      <Reference name = 'if' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCCAM::If' opposite = 'OCCAM::If::actions'/>
+    </Class>
+    <Class name = 'Assignment' isAbstract = 'false' supertypes = 'OCCAM::Action'/>
+    <Class name = 'Input' isAbstract = 'false' supertypes = 'OCCAM::Action'/>
+    <Class name = 'Output' isAbstract = 'false' supertypes = 'OCCAM::Action'/>
+    <Class name = 'Constructor' isAbstract = 'false' supertypes = 'OCCAM::OCCAM_Element'>
+      <Reference name = 'process' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCCAM::Process' opposite = 'OCCAM::Process::constructors'/>
+      <Reference name = 'actions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'OCCAM::Action' opposite = 'OCCAM::Action::constructor'/>
+      <Reference name = 'buckels' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'OCCAM::Buckel' opposite = 'OCCAM::Buckel::constructor'/>
+      <Reference name = 'childrens' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'OCCAM::Constructor' opposite = ''/>
+    </Class>
+    <Class name = 'Buckel' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'constructor' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCCAM::Constructor' opposite = 'OCCAM::Constructor::buckels'/>
+    </Class>
+    <Class name = 'If' isAbstract = 'false' supertypes = 'OCCAM::Buckel'>
+      <Reference name = 'conditions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'OCCAM::Condition' opposite = 'OCCAM::Condition::if'/>
+      <Reference name = 'actions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'OCCAM::Action' opposite = 'OCCAM::Action::if'/>
+    </Class>
+    <Class name = 'While' isAbstract = 'false' supertypes = 'OCCAM::Buckel'>
+      <Reference name = 'conditions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'OCCAM::Condition' opposite = 'OCCAM::Condition::while'/>
+      <Reference name = 'actions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'OCCAM::Action' opposite = 'OCCAM::Action::while'/>
+    </Class>
+    <Class name = 'Condition' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'elementRight' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'elementLeft' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'typeCondition' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'if' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCCAM::If' opposite = 'OCCAM::If::conditions'/>
+      <Reference name = 'while' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCCAM::While' opposite = 'OCCAM::While::conditions'/>
+    </Class>
+    <Class name = 'Sequential' isAbstract = 'false' supertypes = 'OCCAM::Constructor'/>
+    <Class name = 'Parallel' isAbstract = 'false' supertypes = 'OCCAM::Constructor'/>
+    <Class name = 'Alternative' isAbstract = 'false' supertypes = 'OCCAM::Constructor'/>
+    <Class name = 'DataType' isAbstract = 'false' supertypes = 'OCCAM::OCCAM_Element'>
+      <Attribute name = 'dataType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Library' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'File' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Server' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'toChannel' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCCAM::Channel' opposite = ''/>
+    </Class>
+    <Class name = 'Declaration' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'process' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCCAM::Process' opposite = 'OCCAM::Process::declaration'/>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'OCCAM::DataType' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+  </Package>
+</Metamodel>

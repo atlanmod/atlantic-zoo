@@ -1,0 +1,74 @@
+package Metamodel;
+
+package SPEM {
+  class ArtifactUsageName {
+    !unique !ordered attr Boolean[1] isInput;
+    !unique !ordered attr Boolean[1] isOutput;
+    !unique !ordered attr Boolean[1] hasWorkPerArtifact;
+    !ordered ref ArtifactKind[1]#artifactUsageNames artifactKind;
+    !ordered ref WorkDefinition[1]#artifactUsageNames workDefinition;
+  }
+
+  class ProcessDefinitionElement {
+    !ordered ref Guidance[*]#processDefinitionElements guidances;
+    !ordered ref ProcessComponent[*]#processDefinitionElements processComponents;
+  }
+
+  class Guidance extends ProcessDefinitionElement {
+    !ordered ref ProcessDefinitionElement[+]#guidances processDefinitionElements;
+  }
+
+  class ArtifactKind extends ProcessDefinitionElement {
+    !ordered ref ArtifactUsageName[*]#artifactKind artifactUsageNames;
+    !ordered ref RoleKind#artifactKinds responsible;
+  }
+
+  class WorkItem extends ProcessDefinitionElement {
+  }
+
+  class RoleKind extends ProcessDefinitionElement {
+    !ordered ref ArtifactKind[*]#responsible artifactKinds;
+  }
+
+  class Condition extends ProcessDefinitionElement {
+  }
+
+  class ProcessComponent extends ProcessDefinitionElement {
+    !ordered ref ProcessDefinitionElement[*]#processComponents processDefinitionElements;
+  }
+
+  class Goal extends Condition {
+    !ordered ref WorkDefinition[1]#goal workDefinition;
+  }
+
+  class Precondition extends Condition {
+    !ordered ref WorkDefinition[1]#precondition workDefinition;
+  }
+
+  class WorkDefinition extends WorkItem {
+    !ordered val ArtifactUsageName[*]#workDefinition artifactUsageNames;
+    !ordered val Goal#workDefinition goal;
+    !ordered val Precondition#workDefinition precondition;
+  }
+
+  class ActivityKind extends WorkDefinition {
+    !ordered ref RoleKind[+] performer;
+    !ordered ref RoleKind[*] assistant;
+  }
+
+  class Iteration extends WorkDefinition {
+  }
+
+  class Phase extends WorkDefinition {
+  }
+
+  class Lifecycle extends WorkDefinition {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+}
+

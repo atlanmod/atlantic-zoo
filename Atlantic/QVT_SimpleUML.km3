@@ -1,0 +1,51 @@
+-- @name		SimpleUML
+-- @version		0.2
+-- @domains		UML
+-- @authors		Ivan Kurtev (ivan.kurtev@univ-nantes.fr)
+-- @description	The metamodel used in the example provided in the last QVT submission.
+
+
+package SimpleUML {
+
+  abstract class UMLModelElement{
+    attribute kind : String;
+    attribute name : String;
+  }
+  
+  class Attribute extends UMLModelElement{
+    reference owner : Class oppositeOf "attribute";
+    reference type : Classifier oppositeOf typeOpposite;
+  }
+  
+  class Package extends UMLModelElement{
+    reference elements[*] container : PackageElement oppositeOf namespace;
+  }
+  
+  abstract class PackageElement extends UMLModelElement{
+    reference namespace[1-1] : Package oppositeOf elements;
+  }
+  
+  abstract class Classifier extends PackageElement{
+    reference typeOpposite[*] : Attribute oppositeOf type;
+  }
+  
+  class Class extends Classifier{
+    reference "attribute"[*] container : Attribute oppositeOf owner;
+    reference general[*] : Class oppositeOf generalOpposite;
+    reference generalOpposite[*] : Class oppositeOf general;
+    reference reverse[*] : Association oppositeOf source;
+    reference forward[*] : Association oppositeOf destination;
+  }
+  
+  class PrimitiveDataType extends Classifier {}
+  
+  class Association extends PackageElement {
+    reference source[1-1] : Class oppositeOf reverse;
+    reference destination[1-1] : Class oppositeOf forward;
+  }
+  
+}
+
+package PrimitiveTypes {
+  datatype String;
+}

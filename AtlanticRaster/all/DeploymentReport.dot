@@ -1,0 +1,191 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_DeploymentReport"{
+labelloc=t
+color=black
+label=DeploymentReport
+ node[shape=record];
+DeploymentReport[label="{DeploymentReport| | }"]
+ DeploymentReport->DeploymentImport[arrowhead=vee,arrowtail=none,headlabel="import[*]",group=DeploymentImport,minlen=2,constraint=false,]
+ DeploymentReport->Applications[arrowhead=vee,arrowtail=none,headlabel="applications[0-1]",group=Applications,minlen=2,constraint=false,]
+ DeploymentReport->Binding[arrowhead=vee,arrowtail=none,headlabel="binding[0-1]",group=Binding,minlen=2,constraint=false,]
+ DeploymentReport->LogicalServers[arrowhead=vee,arrowtail=none,headlabel="logicalServers[0-1]",group=LogicalServers,minlen=2,constraint=false,]
+ DeploymentReport->ErrorCollection[arrowhead=vee,arrowtail=none,headlabel="errors[0-1]",group=ErrorCollection,minlen=2,constraint=false,]
+;
+ node[shape=record];
+DeploymentImport[label="{DeploymentImport| | }"]
+ DeploymentImport->SimpleName[arrowhead=vee,arrowtail=none,headlabel="alias",group=SimpleName,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ImportNamespaceIdentity[label="{ImportNamespaceIdentity| | }"]
+ ImportNamespaceIdentity->DeploymentImport[arrowhead=diamond,arrowtail=none,headlabel="import",taillabel="identity",group=DeploymentImport,minlen=2,constraint=true,]
+ ImportNamespaceIdentity->NamespaceIdentity[arrowhead=onormal,group=NamespaceIdentity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NamespaceIdentity[label="{NamespaceIdentity|platform[0-1] : Platform| }"]
+ NamespaceIdentity->Path[arrowhead=vee,arrowtail=none,headlabel="name",group=Path,minlen=2,constraint=false,]
+ NamespaceIdentity->FourPartVersionType[arrowhead=vee,arrowtail=none,headlabel="version[0-1]",group=FourPartVersionType,minlen=2,constraint=false,]
+ NamespaceIdentity->PublicKeyType[arrowhead=vee,arrowtail=none,headlabel="publicKey[0-1]",group=PublicKeyType,minlen=2,constraint=false,]
+ NamespaceIdentity->PublicKeyTokenType[arrowhead=vee,arrowtail=none,headlabel="publicKeyToken[0-1]",group=PublicKeyTokenType,minlen=2,constraint=false,]
+ NamespaceIdentity->CultureNeutral[arrowhead=vee,arrowtail=none,headlabel="culture[0-1]",group=CultureNeutral,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Applications[label="{Applications| | }"]
+ Applications->OuterSystem[arrowhead=vee,arrowtail=none,headlabel="system[*]",group=OuterSystem,minlen=2,constraint=false,]
+ Applications->Application[arrowhead=vee,arrowtail=none,headlabel="application[*]",group=Application,minlen=2,constraint=false,]
+;
+ node[shape=record];
+LogicalServers[label="{LogicalServers| | }"]
+ LogicalServers->Zone[arrowhead=vee,arrowtail=none,headlabel="zone[*]",group=Zone,minlen=2,constraint=false,]
+ LogicalServers->LogicalServer[arrowhead=vee,arrowtail=none,headlabel="logicalServer[*]",group=LogicalServer,minlen=2,constraint=false,]
+;
+ node[shape=record];
+OuterSystem[label="{OuterSystem|name : String| }"]
+ OuterSystem->OuterSystem[arrowhead=vee,arrowtail=none,headlabel="system[*]",group=OuterSystem,minlen=2,constraint=false,]
+ OuterSystem->Application[arrowhead=vee,arrowtail=none,headlabel="application[*]",group=Application,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Binding[label="{Binding| | }"]
+ Binding->Zone[arrowhead=vee,arrowtail=none,headlabel="zone[*]",group=Zone,minlen=2,constraint=false,]
+ Binding->BoundLogicalServer[arrowhead=vee,arrowtail=none,headlabel="boundLogicalServer[*]",group=BoundLogicalServer,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Zone[label="{Zone|name : String| }"]
+ Zone->Zone[arrowhead=vee,arrowtail=none,headlabel="zone[*]",group=Zone,minlen=2,constraint=false,]
+ Zone->BoundLogicalServer[arrowhead=vee,arrowtail=none,headlabel="boundLogicalServer[*]",group=BoundLogicalServer,minlen=2,constraint=false,]
+ Zone->LogicalServer[arrowhead=vee,arrowtail=none,headlabel="logicalServer[*]",group=LogicalServer,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ReportObject[label="{ReportObject|name : String\ndefinition : String\nextends : String\nhostedOn[0-1] : String| }"]
+ ReportObject->Guid[arrowhead=vee,arrowtail=none,headlabel="instanceId",group=Guid,minlen=2,constraint=false,]
+;
+ node[shape=record];
+SequenceReport[label="{SequenceReport| | }"]
+ SequenceReport->ReportObject[arrowhead=diamond,arrowtail=none,headlabel="report",taillabel="sequence[*]",group=ReportObject,minlen=2,constraint=true,]
+ SequenceReport->Setting[arrowhead=vee,arrowtail=none,headlabel="setting",group=Setting,minlen=2,constraint=false,]
+ SequenceReport->ReportSystem[arrowhead=vee,arrowtail=none,headlabel="system[*]",group=ReportSystem,minlen=2,constraint=false,]
+ SequenceReport->ReportResource[arrowhead=vee,arrowtail=none,headlabel="resource[*]",group=ReportResource,minlen=2,constraint=false,]
+ SequenceReport->ReportEndpoint[arrowhead=vee,arrowtail=none,headlabel="endpoint[*]",group=ReportEndpoint,minlen=2,constraint=false,]
+;
+ node[shape=record];
+BoundLogicalServer[label="{BoundLogicalServer|name : String\ndefinition : String\nextends : String| }"]
+ BoundLogicalServer->Setting[arrowhead=vee,arrowtail=none,headlabel="setting[*]",group=Setting,minlen=2,constraint=false,]
+ BoundLogicalServer->Application[arrowhead=vee,arrowtail=none,headlabel="application[*]",group=Application,minlen=2,constraint=false,]
+;
+ node[shape=record];
+LogicalServer[label="{LogicalServer| | }"]
+ LogicalServer->ReportObject[arrowhead=onormal,group=ReportObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Application[label="{Application| | }"]
+ Application->ReportObject[arrowhead=onormal,group=ReportObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReportSystem[label="{ReportSystem| | }"]
+ ReportSystem->ReportObject[arrowhead=onormal,group=ReportObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReportResource[label="{ReportResource| | }"]
+ ReportResource->ReportObject[arrowhead=onormal,group=ReportObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReportEndpoint[label="{ReportEndpoint| | }"]
+ ReportEndpoint->ReportObject[arrowhead=onormal,group=ReportObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Setting[label="{Setting| | }"]
+ Setting->SettingInstanceValue[arrowhead=vee,arrowtail=none,headlabel="value[*]",group=SettingInstanceValue,minlen=2,constraint=false,]
+ Setting->SettingFacet[arrowhead=vee,arrowtail=none,headlabel="facet[*]",group=SettingFacet,minlen=2,constraint=false,]
+ Setting->SettingAttributes[arrowhead=vee,arrowtail=none,headlabel="settingAttributes",group=SettingAttributes,minlen=2,constraint=false,]
+;
+ node[shape=record];
+SettingFacet[label="{SettingFacet| | }"]
+ SettingFacet->SettingInstanceValue[arrowhead=vee,arrowtail=none,headlabel="value[0-1]",group=SettingInstanceValue,minlen=2,constraint=false,]
+ SettingFacet->SettingAttributes[arrowhead=vee,arrowtail=none,headlabel="settingAttributes",group=SettingAttributes,minlen=2,constraint=false,]
+;
+ node[shape=record];
+SettingInstanceValue[label="{SettingInstanceValue|contents[*] : String\nnull[0-1] : Boolean| }"]
+;
+ node[shape=record];
+SettingAttributes[label="{SettingAttributes|name : String\ndefinition : String\nstate[0-1] : SettingState\nfixed[0-1] : Boolean\nlist[0-1] : Boolean\nnull[0-1] : Boolean\nsecure[0-1] : Boolean\nfailedToSerialize[0-1] : Boolean| }"]
+;
+ node[shape=record];
+SettingValue[label="{SettingValue|contents[*] : String\nNull[0-1] : Boolean\nSecure[0-1] : Boolean| }"]
+;
+ node[shape=record];
+ErrorCollection[label="{ErrorCollection| | }"]
+ ErrorCollection->DocumentError[arrowhead=vee,arrowtail=none,headlabel="documentError[*]",group=DocumentError,minlen=2,constraint=false,]
+ ErrorCollection->DocumentResolutionError[arrowhead=vee,arrowtail=none,headlabel="documentResolutionError[*]",group=DocumentResolutionError,minlen=2,constraint=false,]
+ ErrorCollection->DocumentConstraintError[arrowhead=vee,arrowtail=none,headlabel="documentConstraintError[*]",group=DocumentConstraintError,minlen=2,constraint=false,]
+;
+ node[shape=record];
+DocumentError[label="{DocumentError|Code : Integer\nLevel : Integer\nFile[0-1] : String| }"]
+ DocumentError->Description[arrowhead=vee,arrowtail=none,headlabel="description[*]",group=Description,minlen=2,constraint=false,]
+;
+ node[shape=record];
+DocumentResolutionError[label="{DocumentResolutionError|Statement : String| }"]
+ DocumentResolutionError->DocumentError[arrowhead=onormal,group=DocumentError,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DocumentConstraintError[label="{DocumentConstraintError|constraintMember : String\nconstraintDefinition : String\ntargetInstancePath[0-1] : String\nownerInstancePath[0-1] : String\nconstraintErrorCode[0-1] : String\nconstraintErrorMessage[0-1] : String| }"]
+ DocumentConstraintError->FailedInput[arrowhead=vee,arrowtail=none,headlabel="failedInput[*]",group=FailedInput,minlen=2,constraint=false,]
+ DocumentConstraintError->DocumentError[arrowhead=onormal,group=DocumentError,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FailedInput[label="{FailedInput|contents[*] : String| }"]
+;
+ node[shape=record];
+Description[label="{Description|contents[*] : String| }"]
+;
+ node[shape=record];
+Guid[label="{Guid| | }"]
+ Guid->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleName[label="{SimpleName| | }"]
+ SimpleName->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Path[label="{Path| | }"]
+ Path->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FourPartVersionType[label="{FourPartVersionType| | }"]
+ FourPartVersionType->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PublicKeyType[label="{PublicKeyType| | }"]
+ PublicKeyType->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PublicKeyTokenType[label="{PublicKeyTokenType| | }"]
+ PublicKeyTokenType->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Culture[label="{Culture| | }"]
+ Culture->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CultureNeutral[label="{CultureNeutral| | }"]
+ CultureNeutral->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Element[label="{Element|value : String| }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+
+}
+}

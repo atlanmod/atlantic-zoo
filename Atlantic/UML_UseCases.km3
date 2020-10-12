@@ -1,0 +1,77 @@
+-- @name		Use Cases
+-- @version 	1.0
+-- @domains 	UML
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/07/10
+-- @description This metamodel fragment describes UML Use Cases
+-- @see 		This metamodel fragment has been extracted from information available in the following article:
+-- @see 		Article "Digging into Use Case RelationShips"
+-- @see 		by Gonzalo Genova, Juan Llorens, and Victor Quintana
+-- @see 		Page 119, Section 2.2, Fig. 4. Metamodel of use cases, extracted from UML Semantics Specifications v1.4 p.2-135
+-- @see 		Lecture Notes in Computer Science 2460
+-- @see 		Jean Marc Jezequel, Heinrich Hussman, Stephen Cook 
+-- @see 		UML 2002 - The Unified Modeling Language
+
+package UseCases {
+
+	class Classifier {
+--		reference realization : Classifier oppositeOf  realization;
+--		reference specification : Classifier oppositeOf specification;
+		reference instance[*] : Instance oppositeOf classifier;
+	}
+	
+	class Instance {
+		reference classifier[1-*] : Classifier oppositeOf instance;
+	}
+	
+	class Actor extends Classifier {
+	}
+	
+	class UseCase extends Classifier {
+		attribute extensionPoint[*] : String;
+		reference includeAddition : Include oppositeOf addition;
+		reference includeBase : Include oppositeOf base;
+		reference extendExtension : Extend oppositeOf extension;
+		reference extendBase : Extend oppositeOf base;
+		reference extensionPoints[*] : ExtensionPoint oppositeOf useCase;
+	}
+	
+	class UseCaseInstance extends Instance {
+	}
+	
+	abstract class RelationShip { }
+	
+	class Include extends RelationShip {
+		reference addition : UseCase oppositeOf includeAddition;
+		reference base : UseCase oppositeOf includeBase;
+	}
+	
+	class Extend extends RelationShip {
+		reference condition : BooleanExpression;
+		reference extension : UseCase oppositeOf extendExtension;
+		reference base : UseCase oppositeOf extendBase;
+		reference extensionPoint[1-*] ordered : ExtensionPoint oppositeOf extend;
+	}
+	
+	class BooleanExpression {
+		attribute value : String;
+	}
+	
+	abstract class ModelElement { }
+	
+	class ExtensionPoint extends ModelElement {
+		reference location : LocationReference;
+		reference extend[*] : Extend oppositeOf extensionPoint;
+		reference useCase[*] : UseCase oppositeOf extensionPoints;
+	}	
+	
+	class LocationReference {
+		attribute value : String;
+	}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

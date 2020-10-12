@@ -1,0 +1,6 @@
+( defstruct FCMSource )
+( defstruct EAISource )
+( defstruct FCMSink )
+( defstruct EAISink )
+( defstruct EAIResource )
+( defstruct EAIQueue :maxLength :name )

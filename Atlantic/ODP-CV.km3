@@ -1,0 +1,229 @@
+-- @name		ODP Computational Viewpoint
+-- @version		0.1
+-- @domains		
+-- @authors		José Raúl Romero Salguero (jrromero@uco.es)
+-- @date		2005/12/01
+-- @description	The Reference Model of Open Distributed Processing (RM-ODP) provides a general framework for the standardization of open distributed processing. RM-ODP defines five generic and complementary viewpoints on the system and its environment: enterprise, information, computational, engineering and technology. They divide the system design according to several areas of concerns, each one focusing on a specific aspect of the system, and allow different stakeholders to observe the system from different perspectives. In particular, the ODP computational viewpoint describes the functionality of the system and its environment in terms of computational objects that interact at interfaces. The Computational Viewpoint Metamodel defines the ODP Computational Language, and conforms to ITU-T Rec. X.906 | ISO/IEC Committee Draft 19793 ("Use of UML for ODP systems specifications") a standard that defines how to use UML to represent the ODP viewpoint languages and concepts.
+-- @see			http://www.rm-odp.net/resources/UML4ODP_CD_v2.0/BAR-022_UML4ODP_CD_v2.0.pdf
+
+package ODPCV {
+	class EnvironmentContract {
+		--- EC references to Actions
+		reference ec_to_a [1-*] : Action oppositeOf constrainer_ec;
+		--- EC references to one ComputationalTemplate
+		reference specifier_ec : ComputationalTemplate oppositeOf ct_to_ec;
+	}
+
+	abstract class ComputationalTemplate {
+		--- CT references to one EnvironmentContract
+		reference ct_to_ec : EnvironmentContract oppositeOf specifier_ec;	
+		--- CT can reference to Behaviours
+		reference ct_to_bh [0-*] : Behaviour oppositeOf specifier_bh;	
+	}
+	
+	class ComputationalObject {
+		--- CO references to Interfaces
+		reference co_to_i [1-*] : Interface oppositeOf owner_i;
+		--- CO references to one Behaviour
+		reference co_to_bh : Behaviour oppositeOf owner_bh;
+		--- CO references to one ComputationalObjectTemplate
+		reference specifier_co : ComputationalObjectTemplate oppositeOf cot_to_co;
+		--- CO aggregates one State
+		reference co_to_st container : State oppositeOf st_to_co;
+	}
+	
+	class BindingObject extends ComputationalObject {
+	}
+	
+	class ComputationalObjectTemplate extends ComputationalTemplate {
+		--- COT can reference to ComputationalObjects
+		reference cot_to_co[0-*] : ComputationalObject oppositeOf specifier_co;
+		--- COT can reference to CompuationalInterfaceTemplates
+		--- 'provide' or 'request' depends on the causality:
+		--- 	provides a service:		producer (stream), responder (signal), server (operation)
+		---		requests a service:		consumer (stream), initiator (signal), client (operation)
+		reference part_provide[0-*] : ComputationalInterfaceTemplate oppositeOf aggregate_provide;
+		reference part_request[0-*] : ComputationalInterfaceTemplate oppositeOf aggregate_request;
+	}
+	
+	class ComputationalInterfaceTemplate extends ComputationalTemplate {
+		--- CIT can reference to Interfaces
+		reference cit_to_i[0-*] : Interface oppositeOf specifier_i;
+		--- CIT references to ComputationalObjectTemplates
+		--- 'provide' or 'request' depends on the causality:
+		--- 	provides a service:		producer (stream), responder (signal), server (operation)
+		---		requests a service:		consumer (stream), initiator (signal), client (operation)
+		reference aggregate_provide[0-*] : ComputationalObjectTemplate oppositeOf part_provide;
+		reference aggregate_request[0-*] : ComputationalObjectTemplate oppositeOf part_request;
+		--- CIT aggreagates one InterfaceSignature
+		reference cit_to_intsig container : InterfaceSignature oppositeOf intsig_to_cit;
+	}
+
+	abstract class Interface {
+		--- I references to one ComputationalObject
+		reference owner_i : ComputationalObject oppositeOf co_to_i;
+		--- I can reference to one Binding
+		reference i_to_bd[0-1] : Binding oppositeOf bd_to_i;
+		--- I references to one ComputationalInterfaceTemplate
+		reference specifier_i : ComputationalInterfaceTemplate oppositeOf cit_to_i;
+		--- I aggregates Interactions 
+		reference i_to_ina [1-*] container : Interaction oppositeOf ina_to_i;
+	}
+
+	class Binding {
+		--- BD references to Interfaces
+		reference bd_to_i[2-*] : Interface oppositeOf i_to_bd;
+	}
+
+	class SignalInterface extends Interface {
+	}
+
+	class OperationInterface extends Interface {
+	}
+
+	class StreamInterface extends Interface {
+	}
+
+	abstract class InterfaceSignature {
+		--- INTSIG references to one ComputationalInterfaceTemplate
+		reference intsig_to_cit : ComputationalInterfaceTemplate oppositeOf cit_to_intsig;
+	}
+
+	class SignalInterfaceSignature extends InterfaceSignature {
+		--- SGISIG can aggregate SignalSignatures
+		reference sgisig_to_ssig [0-*] ordered container : SignalSignature oppositeOf ssig_to_sgisig;
+	}
+
+	class OperationInterfaceSignature extends InterfaceSignature {
+		--- OPTISIG can aggregate AnnouncementSignatures
+		reference optisig_to_ansig [0-*] ordered container : AnnouncementSignature oppositeOf ansig_to_optisig;
+		--- OPTISIG can aggregate InterrogationSignatures
+		reference optisig_to_intsig [0-*] ordered container : InterrogationSignature oppositeOf intsig_to_optisig;
+	}
+
+	class StreamInterfaceSignature extends InterfaceSignature {
+		--- STRISIG can aggregate FlowSignatures
+		reference strisig_to_fsig [0-*] ordered container : FlowSignature oppositeOf fsig_to_strisig;
+	}
+
+	abstract class InteractionSignature {
+		--- ISIG references to one ActionTemplate
+		reference isig_to_at : ActionTemplate oppositeOf at_to_isig;
+		--- ISIG can aggregate Parameters
+		reference isig_to_param [0-*] ordered container : Parameter oppositeOf param_to_isig;
+	}
+
+	class Parameter {
+		--- PARAM references to one InteractionSignature
+		reference param_to_isig : InteractionSignature oppositeOf isig_to_param;
+	}
+
+	class AnnouncementSignature extends InteractionSignature {
+		--- ANSIG references to one OperationInterfaceSignature
+		reference ansig_to_optisig : OperationInterfaceSignature oppositeOf optisig_to_ansig;
+	}
+
+	class InterrogationSignature extends InteractionSignature {
+		--- INTSIG references to one OperationInterfaceSignature
+		reference intsig_to_optisig : OperationInterfaceSignature oppositeOf optisig_to_intsig;
+		--- INTSIG aggregates TerminationSignatures
+		reference intsig_to_tersig [1-*] ordered container : TerminationSignature oppositeOf tersig_to_intsig;
+	}
+
+	class TerminationSignature extends InteractionSignature {
+		--- TERSIG references to one InterrogationSignature
+		reference tersig_to_intsig : InterrogationSignature oppositeOf intsig_to_tersig;
+	}
+
+	class SignalSignature extends InteractionSignature {
+		--- SSIG references to one SignalInterfaceSignature
+		reference ssig_to_sgisig : SignalInterfaceSignature oppositeOf sgisig_to_ssig;
+	}
+
+	class FlowSignature extends InteractionSignature {
+		--- FSIG references to one StreamInterfaceSignature
+		reference fsig_to_strisig : StreamInterfaceSignature oppositeOf strisig_to_fsig;
+	}
+
+	class ActionTemplate {
+		--- AT references to Actions
+		reference at_to_a[1-*] : Action oppositeOf specifier_a;
+		--- AT aggregates one InteractionSignature
+		reference at_to_isig container : InteractionSignature oppositeOf isig_to_at;
+	}
+
+	class Behaviour {
+		--- BH references to one ComputationalTemplate
+		reference specifier_bh : ComputationalTemplate oppositeOf ct_to_bh;	
+		--- BH references to one ComputationalObject
+		reference owner_bh : ComputationalObject oppositeOf co_to_bh;
+		--- BH aggregates Actions
+		reference bh_to_a[1-*] ordered container : Action oppositeOf a_to_bh;
+	}
+	
+	class Action {
+		--- A can reference to EnvironmentContracts
+		reference constrainer_ec [0-*] : EnvironmentContract oppositeOf ec_to_a;
+		--- A can reference to States
+		reference changedState[0-*] : State oppositeOf changer;
+		--- A references to one ActionTemplate
+		reference specifier_a : ActionTemplate oppositeOf at_to_a;
+		--- A references to one Behaviour
+		reference a_to_bh : Behaviour oppositeOf bh_to_a;
+	}
+	
+	class State {
+		--- ST references to one State
+		reference startState : State oppositeOf endState;
+		--- ST references to one State
+		reference endState : State oppositeOf startState;
+		--- ST can reference to Actions
+		reference changer[0-*] : Action oppositeOf changedState;
+		--- ST references to one ComputationalObject
+		reference st_to_co : ComputationalObject oppositeOf co_to_st;
+	}
+	
+	class InternalAction extends Action {
+	}
+	
+	abstract class Interaction extends Action {
+		--- INA references to one Interface
+		reference ina_to_i : Interface oppositeOf i_to_ina;
+	}
+	
+	class Flow extends Interaction {
+		--- 'refinement' dependencies are not considered in this KM3
+		--- 		Flow (0..1) 		to 		Signal (1..*)
+		---		Signal (0,2,4) 		to		Operation (0,1)
+	}
+	
+	class Signal extends Interaction {
+	}
+	
+	abstract class Operation extends Interaction {
+		--- OPT aggregates one Invocation
+		reference opt_to_inv container : Invocation oppositeOf inv_to_opt;
+	}
+	
+	class Announcement extends Operation {
+	}
+	
+	class Interrogation extends Operation {
+		--- INT may reference to one Termination
+		reference int_to_ter[0-1] : Termination oppositeOf owner_ter;
+	}
+	
+	class Invocation extends Interaction {
+		--- INV references to one Termination
+		reference inv_to_ter : Termination oppositeOf ter_to_inv;
+		--- INV references to one Operation
+		reference inv_to_opt : Operation oppositeOf opt_to_inv;
+	}
+	
+	class Termination extends Interaction {
+		--- TER references to one Interrogation
+		reference owner_ter : Interrogation oppositeOf int_to_ter;
+		--- TER references to one Invocation
+		reference ter_to_inv : Invocation oppositeOf inv_to_ter;
+	}
+}

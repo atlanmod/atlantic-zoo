@@ -1,0 +1,383 @@
+abstract class LocatedElement
+  var location as Set of String
+  var commentsBefore as Set of String
+  var commentsAfter as Set of String
+
+class ACG extends LocatedElement
+  var metamodel as Set of String
+  var startsWith as Set of String
+  // elements IsContainer
+  var elements as Set of ACGElement
+
+abstract class ACGElement extends LocatedElement
+  var acg as Set of ACG
+
+class _Function extends ACGElement
+  var context as Set of String
+  var name as Set of String
+  // parameters IsContainer
+  var parameters as Set of Parameter
+  // body IsContainer
+  var body as Set of Expression
+
+class _Attribute extends ACGElement
+  var context as Set of String
+  var name as Set of String
+  // body IsContainer
+  var body as Set of Expression
+
+class Parameter extends VariableDecl
+
+abstract class Node extends ACGElement
+  var element as Set of String
+  var mode as Set of String
+  // guard IsContainer
+  var guard as Set of Expression
+
+class ASMNode extends Node
+  // name IsContainer
+  var name as Set of Expression
+
+class CodeNode extends Node
+
+class SimpleNode extends Node
+
+abstract class StatementBlock extends LocatedElement
+  // statements IsContainer
+  var statements as Set of Statement
+
+abstract class Statement extends LocatedElement
+
+abstract class CompoundStat extends Statement
+
+class ForEachStat extends CompoundStat
+  // iterator IsContainer
+  var iterator as Set of VariableDecl
+  // collection IsContainer
+  var collection as Set of Expression
+
+class OnceStat extends CompoundStat
+
+class VariableStat extends CompoundStat
+  // definition IsContainer
+  var definition as Set of Expression
+  // name IsContainer
+  var name as Set of Expression
+
+class OperationStat extends CompoundStat
+  // context IsContainer
+  var context as Set of Expression
+  // name IsContainer
+  var name as Set of Expression
+
+class ConditionalStat extends CompoundStat
+  // condition IsContainer
+  var condition as Set of Expression
+  // elseStatements IsContainer
+  var elseStatements as Set of Statement
+
+class LetStat extends CompoundStat
+  // variable IsContainer
+  var variable as Set of VariableDecl
+  // value IsContainer
+  var value as Set of Expression
+
+class AnalyzeStat extends CompoundStat
+  var mode as Set of String
+  // target IsContainer
+  var target as Set of Expression
+
+class ReportStat extends Statement
+  var severity as Set of Severity
+  // message IsContainer
+  var message as Set of Expression
+
+class FieldStat extends Statement
+  // name IsContainer
+  var name as Set of Expression
+  // _type IsContainer
+  var _type as Set of Expression
+
+class ParamStat extends Statement
+  // name IsContainer
+  var name as Set of Expression
+  // _type IsContainer
+  var _type as Set of Expression
+
+abstract class EmitStat extends Statement
+
+class LabelStat extends EmitStat
+  var name as Set of String
+  // id IsContainer
+  var id as Set of Expression
+
+class NewStat extends EmitStat
+
+class DupStat extends EmitStat
+
+class DupX1Stat extends EmitStat
+
+class PopStat extends EmitStat
+
+class SwapStat extends EmitStat
+
+class IterateStat extends EmitStat
+
+class EndIterateStat extends EmitStat
+
+class GetAsmStat extends EmitStat
+
+class FindMEStat extends EmitStat
+
+class PushTStat extends EmitStat
+
+class PushFStat extends EmitStat
+
+abstract class EmitWithOperandStat extends EmitStat
+  // operand IsContainer
+  var operand as Set of Expression
+
+class PushStat extends EmitWithOperandStat
+
+class PushIStat extends EmitWithOperandStat
+
+class PushDStat extends EmitWithOperandStat
+
+class LoadStat extends EmitWithOperandStat
+
+class StoreStat extends EmitWithOperandStat
+
+class CallStat extends EmitWithOperandStat
+
+class PCallStat extends EmitWithOperandStat
+
+class SuperCallStat extends EmitWithOperandStat
+
+class GetStat extends EmitWithOperandStat
+
+class SetStat extends EmitWithOperandStat
+
+abstract class EmitWithLabelRefStat extends EmitStat
+  var label as Set of LabelStat
+
+class IfStat extends EmitWithLabelRefStat
+
+class GotoStat extends EmitWithLabelRefStat
+
+class VariableDecl extends LocatedElement
+  var name as Set of String
+
+abstract class Expression extends LocatedElement
+
+class VariableExp extends Expression
+  var variable as Set of VariableDecl
+
+class SelfExp extends Expression
+
+class LastExp extends Expression
+
+class IfExp extends Expression
+  // condition IsContainer
+  var condition as Set of Expression
+  // thenExp IsContainer
+  var thenExp as Set of Expression
+  // elseExp IsContainer
+  var elseExp as Set of Expression
+
+class IsAExp extends Expression
+  var _type as Set of String
+  // source IsContainer
+  var source as Set of Expression
+
+class LetExp extends Expression
+  // variable IsContainer
+  var variable as Set of VariableDecl
+  // value IsContainer
+  var value as Set of Expression
+  // _in IsContainer
+  var _in as Set of Expression
+
+abstract class PropertyCallExp extends Expression
+  var name as Set of String
+  // source IsContainer
+  var source as Set of Expression
+
+class NavigationExp extends PropertyCallExp
+
+class IteratorExp extends PropertyCallExp
+  // iterator IsContainer
+  var iterator as Set of VariableDecl
+  // body IsContainer
+  var body as Set of Expression
+
+class OperationCallExp extends PropertyCallExp
+  // arguments IsContainer
+  var arguments as Set of Expression
+
+class OperatorCallExp extends OperationCallExp
+
+abstract class LiteralExp extends Expression
+
+class OclUndefinedExp extends LiteralExp
+
+abstract class CollectionExp extends LiteralExp
+  // elements IsContainer
+  var elements as Set of Expression
+
+class SequenceExp extends CollectionExp
+
+class BooleanExp extends LiteralExp
+  var value as Set of Boolean
+
+class IntegerExp extends LiteralExp
+  var value as Set of Integer
+
+class StringExp extends LiteralExp
+  var value as Set of String
+
+enum Severity
+  critic
+  error
+  warning
+
+var LocatedElement_Universe as Set of LocatedElement
+
+var ACG_Universe as Set of ACG
+
+var ACGElement_Universe as Set of ACGElement
+
+var _Function_Universe as Set of _Function
+
+var _Attribute_Universe as Set of _Attribute
+
+var Parameter_Universe as Set of Parameter
+
+var Node_Universe as Set of Node
+
+var ASMNode_Universe as Set of ASMNode
+
+var CodeNode_Universe as Set of CodeNode
+
+var SimpleNode_Universe as Set of SimpleNode
+
+var StatementBlock_Universe as Set of StatementBlock
+
+var Statement_Universe as Set of Statement
+
+var CompoundStat_Universe as Set of CompoundStat
+
+var ForEachStat_Universe as Set of ForEachStat
+
+var OnceStat_Universe as Set of OnceStat
+
+var VariableStat_Universe as Set of VariableStat
+
+var OperationStat_Universe as Set of OperationStat
+
+var ConditionalStat_Universe as Set of ConditionalStat
+
+var LetStat_Universe as Set of LetStat
+
+var AnalyzeStat_Universe as Set of AnalyzeStat
+
+var ReportStat_Universe as Set of ReportStat
+
+var FieldStat_Universe as Set of FieldStat
+
+var ParamStat_Universe as Set of ParamStat
+
+var EmitStat_Universe as Set of EmitStat
+
+var LabelStat_Universe as Set of LabelStat
+
+var NewStat_Universe as Set of NewStat
+
+var DupStat_Universe as Set of DupStat
+
+var DupX1Stat_Universe as Set of DupX1Stat
+
+var PopStat_Universe as Set of PopStat
+
+var SwapStat_Universe as Set of SwapStat
+
+var IterateStat_Universe as Set of IterateStat
+
+var EndIterateStat_Universe as Set of EndIterateStat
+
+var GetAsmStat_Universe as Set of GetAsmStat
+
+var FindMEStat_Universe as Set of FindMEStat
+
+var PushTStat_Universe as Set of PushTStat
+
+var PushFStat_Universe as Set of PushFStat
+
+var EmitWithOperandStat_Universe as Set of EmitWithOperandStat
+
+var PushStat_Universe as Set of PushStat
+
+var PushIStat_Universe as Set of PushIStat
+
+var PushDStat_Universe as Set of PushDStat
+
+var LoadStat_Universe as Set of LoadStat
+
+var StoreStat_Universe as Set of StoreStat
+
+var CallStat_Universe as Set of CallStat
+
+var PCallStat_Universe as Set of PCallStat
+
+var SuperCallStat_Universe as Set of SuperCallStat
+
+var GetStat_Universe as Set of GetStat
+
+var SetStat_Universe as Set of SetStat
+
+var EmitWithLabelRefStat_Universe as Set of EmitWithLabelRefStat
+
+var IfStat_Universe as Set of IfStat
+
+var GotoStat_Universe as Set of GotoStat
+
+var VariableDecl_Universe as Set of VariableDecl
+
+var Expression_Universe as Set of Expression
+
+var VariableExp_Universe as Set of VariableExp
+
+var SelfExp_Universe as Set of SelfExp
+
+var LastExp_Universe as Set of LastExp
+
+var IfExp_Universe as Set of IfExp
+
+var IsAExp_Universe as Set of IsAExp
+
+var LetExp_Universe as Set of LetExp
+
+var PropertyCallExp_Universe as Set of PropertyCallExp
+
+var NavigationExp_Universe as Set of NavigationExp
+
+var IteratorExp_Universe as Set of IteratorExp
+
+var OperationCallExp_Universe as Set of OperationCallExp
+
+var OperatorCallExp_Universe as Set of OperatorCallExp
+
+var LiteralExp_Universe as Set of LiteralExp
+
+var OclUndefinedExp_Universe as Set of OclUndefinedExp
+
+var CollectionExp_Universe as Set of CollectionExp
+
+var SequenceExp_Universe as Set of SequenceExp
+
+var BooleanExp_Universe as Set of BooleanExp
+
+var IntegerExp_Universe as Set of IntegerExp
+
+var StringExp_Universe as Set of StringExp
+
+Main()

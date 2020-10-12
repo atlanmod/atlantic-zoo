@@ -1,0 +1,199 @@
+universe ASM_LocatedElement
+
+	function location(a : ASM_LocatedElement, b : String) -> Bool
+
+	universe ASM_XAsmFile < ASM_LocatedElement
+
+	universe ASM_XAsmSpec < ASM_XAsmFile
+
+	function Asm(a : ASM_XAsmSpec, b : ASM_Asm) -> Bool
+
+	universe ASM_Asm < ASM_LocatedElement
+
+	function signature(a : ASM_Asm, b : ASM_Signature) -> Bool
+
+	function returnType(a : ASM_Asm, b : String) -> Bool
+
+	function metaInformation(a : ASM_Asm, b : ASM_MetaInformation) -> Bool
+
+	function body(a : ASM_Asm, b : ASM_Body) -> Bool
+
+	universe ASM_Signature < ASM_LocatedElement
+
+	function isMain(a : ASM_Signature, b : Boolean) -> Bool
+
+	function name(a : ASM_Signature, b : String) -> Bool
+
+	function arguments(a : ASM_Signature, b : ASM_Argument) -> Bool
+
+	universe ASM_Argument < ASM_VariableDecl
+
+	function type(a : ASM_Argument, b : String) -> Bool
+
+	universe ASM_Body < ASM_XAsmFile
+
+	function declarations(a : ASM_Body, b : ASM_Declaration) -> Bool
+
+	function initialization(a : ASM_Body, b : ASM_Initialization) -> Bool
+
+	function rules(a : ASM_Body, b : ASM_Rule) -> Bool
+
+	function order(a : ASM_Body, b : ASM_Declaration) -> Integer
+
+	universe ASM_MetaInformation < ASM_LocatedElement
+
+	function usedAsIn(a : ASM_MetaInformation, b : ASM_Signature) -> Bool
+
+	function usedAs(a : ASM_MetaInformation, b : ASM_AsmType) -> Bool
+
+	function accessUpdateFunctions(a : ASM_MetaInformation, b : ASM_AccessUpdateFunction) -> Bool
+
+	universe ASM_AccessUpdateFunction < ASM_LocatedElement
+
+	function type(a : ASM_AccessUpdateFunction, b : ASM_AccessUpdateType) -> Bool
+
+	function functions(a : ASM_AccessUpdateFunction, b : ASM_Function) -> Bool
+
+	universe ASM_Declaration < ASM_LocatedElement
+
+	universe ASM_Function < ASM_Declaration ASM_ElementDecl
+
+	function parameters(a : ASM_Function, b : ASM_Parameter) -> Bool
+
+	function returnType(a : ASM_Function, b : String) -> Bool
+
+	function initTerm(a : ASM_Function, b : ASM_Term) -> Bool
+
+	function isExternal(a : ASM_Function, b : Boolean) -> Bool
+
+	universe ASM_Parameter < ASM_LocatedElement
+
+	function name(a : ASM_Parameter, b : String) -> Bool
+
+	function type(a : ASM_Parameter, b : String) -> Bool
+
+	universe ASM_Universe < ASM_Declaration
+
+	function name(a : ASM_Universe, b : String) -> Bool
+
+	function contents(a : ASM_Universe, b : String) -> Bool
+
+	function superUniverses(a : ASM_Universe, b : ASM_Universe) -> Bool
+
+	universe ASM_Initialization < ASM_LocatedElement
+
+	function rules(a : ASM_Initialization, b : ASM_Rule) -> Bool
+
+	universe ASM_Term < ASM_LocatedElement
+
+	universe ASM_Constant < ASM_Term
+
+	universe ASM_FunctionOrVariableTerm < ASM_Term
+
+	function declaration(a : ASM_FunctionOrVariableTerm, b : ASM_ElementDecl) -> Bool
+
+	function terms(a : ASM_FunctionOrVariableTerm, b : ASM_Term) -> Bool
+
+	universe ASM_OperatorTerm < ASM_Term
+
+	function opName(a : ASM_OperatorTerm, b : String) -> Bool
+
+	function leftExp(a : ASM_OperatorTerm, b : ASM_Term) -> Bool
+
+	function rightExp(a : ASM_OperatorTerm, b : ASM_Term) -> Bool
+
+	universe ASM_BooleanConstant < ASM_Constant
+
+	function value(a : ASM_BooleanConstant, b : Boolean) -> Bool
+
+	universe ASM_IntegerConstant < ASM_Constant
+
+	function value(a : ASM_IntegerConstant, b : Integer) -> Bool
+
+	universe ASM_StringConstant < ASM_Constant
+
+	function value(a : ASM_StringConstant, b : String) -> Bool
+
+	universe ASM_UndefConstant < ASM_Constant
+
+	universe ASM_Rule < ASM_LocatedElement
+
+	function inSequence(a : ASM_Rule, b : Boolean) -> Bool
+
+	universe ASM_SkipRule < ASM_Rule
+
+	universe ASM_AsmInvocation < ASM_Rule
+
+	function asmName(a : ASM_AsmInvocation, b : String) -> Bool
+
+	function arguments(a : ASM_AsmInvocation, b : ASM_Term) -> Bool
+
+	universe ASM_UpdateRule < ASM_Rule
+
+	function function_(a : ASM_UpdateRule, b : ASM_FunctionOrVariableTerm) -> Bool
+
+	function updateTerm(a : ASM_UpdateRule, b : ASM_Term) -> Bool
+
+	universe ASM_ChooseRule < ASM_Rule
+
+	function chooseId(a : ASM_ChooseRule, b : ASM_VariableDecl) -> Bool
+
+	function inSet(a : ASM_ChooseRule, b : ASM_Universe) -> Bool
+
+	function guard(a : ASM_ChooseRule, b : ASM_Term) -> Bool
+
+	function ifChoosenRules(a : ASM_ChooseRule, b : ASM_Rule) -> Bool
+
+	function ifNotChoosenRule(a : ASM_ChooseRule, b : ASM_Rule) -> Bool
+
+	universe ASM_DoForallRule < ASM_Rule
+
+	function id(a : ASM_DoForallRule, b : ASM_VariableDecl) -> Bool
+
+	function inSet(a : ASM_DoForallRule, b : ASM_Universe) -> Bool
+
+	function condition(a : ASM_DoForallRule, b : ASM_Term) -> Bool
+
+	function doRule(a : ASM_DoForallRule, b : ASM_Rule) -> Bool
+
+	universe ASM_ConditionalRule < ASM_Rule
+
+	function condition(a : ASM_ConditionalRule, b : ASM_Term) -> Bool
+
+	function thenRule(a : ASM_ConditionalRule, b : ASM_Rule) -> Bool
+
+	function elseRule(a : ASM_ConditionalRule, b : ASM_Rule) -> Bool
+
+	function elseIfRule(a : ASM_ConditionalRule, b : ASM_ElseIf) -> Bool
+
+	universe ASM_ElseIf < ASM_LocatedElement
+
+	function condition(a : ASM_ElseIf, b : ASM_Term) -> Bool
+
+	function thenRule(a : ASM_ElseIf, b : ASM_Rule) -> Bool
+
+	function elseRule(a : ASM_ElseIf, b : ASM_Rule) -> Bool
+
+	function elseIfRule(a : ASM_ElseIf, b : ASM_ElseIf) -> Bool
+
+	universe ASM_ExtendRule < ASM_Rule
+
+	function extensions(a : ASM_ExtendRule, b : ASM_Extension) -> Bool
+
+	function rules(a : ASM_ExtendRule, b : ASM_Rule) -> Bool
+
+	universe ASM_ElementDecl < ASM_LocatedElement
+
+	function name(a : ASM_ElementDecl, b : String) -> Bool
+
+	universe ASM_VariableDecl < ASM_ElementDecl
+
+	universe ASM_Extension < ASM_LocatedElement
+
+	function elements(a : ASM_Extension, b : ASM_VariableDecl) -> Bool
+
+	function universe_(a : ASM_Extension, b : ASM_Universe) -> Bool
+
+	universe ASM_ReturnRule < ASM_Rule
+
+	function term(a : ASM_ReturnRule, b : ASM_Term) -> Bool

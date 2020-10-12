@@ -1,0 +1,68 @@
+package Metamodel;
+
+package MTRANS {
+  class MetaClass {
+  }
+
+  class MetaModel {
+  }
+
+  class Module {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] mode;
+    !ordered ref MetaModel[*] metaDest;
+    !ordered ref MetaModel[*] metaSource;
+    !ordered val Rule[+]#module rules;
+  }
+
+  class Rule {
+    !unique !ordered attr Boolean[1] isAbstract;
+    !unique !ordered attr Boolean[1] isEntryPoint;
+    !unique !ordered attr String[1] name;
+    !ordered ref Module[1]#rules module;
+    !ordered ref MetaClass target;
+    !ordered ref MetaClass source;
+    !ordered val Variable#rule declaration;
+    !ordered val Section[+]#rule sections;
+    !ordered val Expression#rule guard;
+    !ordered val Inheritance[*]#rule inheritances;
+  }
+
+  class Inheritance {
+    !ordered ref Rule[1]#inheritances rule;
+    !ordered val Expression[*]#inheritance expressions;
+    !ordered ref Rule[*] inheritedRules;
+  }
+
+  class Expression {
+    !unique !ordered attr String[1] operator;
+    !ordered ref Inheritance[1]#expressions inheritance;
+    !ordered ref Rule[1]#guard rule;
+    !ordered ref Instruction[1]#body instruction;
+  }
+
+  class Section {
+    !unique !ordered attr String[1] kind;
+    !ordered ref Rule[1]#sections rule;
+    !ordered val Instruction[+]#section instructions;
+  }
+
+  class Instruction {
+    !ordered val Expression[1]#instruction body;
+    !ordered ref Section[1]#instructions section;
+  }
+
+  class Variable {
+    !unique !ordered attr String[1] name;
+    !ordered ref Rule[1]#declaration rule;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype String : "";
+
+}
+

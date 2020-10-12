@@ -1,0 +1,65 @@
+-- @name		News
+-- @version		0.1
+-- @domains		News
+-- @authors		Freddy Allilaire
+-- @date		2006/02/03
+-- @description	News describes a generic metamodel representing the notion of news.
+-- @see			
+
+package News {
+
+	abstract class Element {
+		attribute title : String;
+		attribute description : String;
+		attribute link : String;
+	}
+
+	class Newspaper extends Element {
+		attribute language[0-1] : String;
+		attribute copyright[0-1] : String;
+
+		reference pubDate[0-1] container : Date;
+		reference category[0-1] container : Category;
+		reference news[*] container : News oppositeOf newspaper;
+	}
+
+	class News extends Element {
+		attribute author[0-1] : String;
+		attribute comments[0-1] : String;
+
+		reference pubDate[0-1] container : Date;
+		reference category[0-1] container : Category;
+		reference newspaper : Newspaper oppositeOf news;
+	}
+
+	class Category {
+		attribute value : String;
+	}
+
+	class Date {
+		attribute eDay : DayKind;
+		attribute day : Integer;
+		attribute month : Integer;
+		attribute year : Integer;
+		attribute hours : Integer;
+		attribute minutes : Integer;
+		attribute seconds : Integer;
+	}
+
+	enumeration DayKind {
+		literal Monday;
+		literal Tuesday;
+		literal Wednesday;
+		literal Thursday;
+		literal Friday;
+		literal Saturday;
+		literal Sunday;
+	}
+
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+	datatype Boolean;
+}

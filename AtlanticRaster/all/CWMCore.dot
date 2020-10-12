@@ -1,0 +1,89 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_CWMCore"{
+labelloc=t
+color=black
+label=CWMCore
+ node[shape=record];
+BooleanExpression[label="{BooleanExpression|expresssion : String| }"]
+;
+ node[shape=record];
+ModelElement[label="{ModelElement|name : String\nvisibility : VisibilityKind| }"]
+ ModelElement->Dependency[arrowhead=none,arrowtail=none,headlabel="clientDependencies[*]",taillabel="clients[1-*]",group=Dependency,minlen=2,constraint=false,]
+ ModelElement->Dependency[arrowhead=none,arrowtail=none,headlabel="supplierDependencies[*]",taillabel="suppliers[1-*]",group=Dependency,minlen=2,constraint=false,]
+ ModelElement->NameSpace[arrowhead=diamond,arrowtail=none,headlabel="namespace[0-1]",taillabel="ownedElements[*]",group=NameSpace,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Dependency[label="{Dependency|kind : String| }"]
+ Dependency->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Constraint[label="{Constraint| | }"]
+ Constraint->BooleanExpression[arrowhead=vee,arrowtail=diamond,headlabel="body",group=BooleanExpression,minlen=2,constraint=true,]
+ Constraint->ModelElement[arrowhead=none,arrowtail=none,headlabel="constrainedElements[*]",taillabel="contraints[*]",group=ModelElement,minlen=2,constraint=false,]
+ Constraint->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Feature[label="{Feature| | }"]
+ Feature->Classifier[arrowhead=diamond,arrowtail=none,headlabel="owner[0-1]",taillabel="features[*]{ordered}",group=Classifier,minlen=2,constraint=true,]
+ Feature->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StructuralFeature[label="{StructuralFeature| | }"]
+ StructuralFeature->Classifier[arrowhead=vee,arrowtail=none,headlabel="type",group=Classifier,minlen=2,constraint=false,]
+ StructuralFeature->Feature[arrowhead=onormal,group=Feature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Attribute[label="{Attribute| | }"]
+ Attribute->StructuralFeature[arrowhead=onormal,group=StructuralFeature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NameSpace[label="{NameSpace| | }"]
+ NameSpace->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Classifier[label="{Classifier| | }"]
+ Classifier->NameSpace[arrowhead=onormal,group=NameSpace,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Package[label="{Package| | }"]
+ Package->ModelElement[arrowhead=none,arrowtail=none,headlabel="importedElements[*]",taillabel="importers[*]",group=ModelElement,minlen=2,constraint=false,]
+ Package->NameSpace[arrowhead=onormal,group=NameSpace,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Class[label="{Class| | }"]
+ Class->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Datatype[label="{Datatype| | }"]
+ Datatype->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Subsystem[label="{Subsystem| | }"]
+ Subsystem->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+ Subsystem->Package[arrowhead=onormal,group=Package,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Model[label="{Model| | }"]
+ Model->Package[arrowhead=onormal,group=Package,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

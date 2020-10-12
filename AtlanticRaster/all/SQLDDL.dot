@@ -1,0 +1,95 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_SQLDDL"{
+labelloc=t
+color=black
+label=SQLDDL
+ node[shape=record];
+LocatedElement[label="{/LocatedElement/|location : String\ncommentsBefore[*] : String\ncommentsAfter[*] : String| }"]
+;
+ node[shape=record];
+NamedElement[label="{/NamedElement/|name : String| }"]
+ NamedElement->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Database[label="{Database| | }"]
+ Database->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Table[label="{Table| | }"]
+ Table->Database[arrowhead=diamond,arrowtail=none,headlabel="database",taillabel="tables[*]{ordered}",group=Database,minlen=2,constraint=true,]
+ Table->ForeignKey[arrowhead=none,arrowtail=none,headlabel="referencedBy[*]",taillabel="referencedTable",group=ForeignKey,minlen=2,constraint=false,]
+ Table->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TableElement[label="{/TableElement/| | }"]
+ TableElement->Table[arrowhead=diamond,arrowtail=none,headlabel="table",taillabel="elements[*]{ordered}",group=Table,minlen=2,constraint=true,]
+ TableElement->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Column[label="{Column|name : String\ncanBeNull : Boolean| }"]
+ Column->ForeignKey[arrowhead=none,arrowtail=none,headlabel="referencedBy[*]",taillabel="referencedColumns[1-*]",group=ForeignKey,minlen=2,constraint=false,]
+ Column->Type[arrowhead=vee,arrowtail=diamond,headlabel="type",group=Type,minlen=2,constraint=true,]
+ Column->Value[arrowhead=vee,arrowtail=diamond,headlabel="default[0-1]",group=Value,minlen=2,constraint=true,]
+ Column->TableElement[arrowhead=onormal,group=TableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Key[label="{/Key/|isUnique : Boolean\nname[0-1] : String| }"]
+ Key->Column[arrowhead=none,arrowtail=none,headlabel="columns[1-*]{ordered}",taillabel="keys[*]",group=Column,minlen=2,constraint=false,]
+ Key->TableElement[arrowhead=onormal,group=TableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleKey[label="{SimpleKey| | }"]
+ SimpleKey->Key[arrowhead=onormal,group=Key,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PrimaryKey[label="{PrimaryKey| | }"]
+ PrimaryKey->Key[arrowhead=onormal,group=Key,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ForeignKey[label="{ForeignKey| | }"]
+ ForeignKey->Key[arrowhead=onormal,group=Key,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Type[label="{Type|length[0-2] : Integer\nisUnsigned : Boolean| }"]
+ Type->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parameter[label="{Parameter| | }"]
+ Parameter->Table[arrowhead=diamond,arrowtail=none,headlabel="table",taillabel="parameters[*]{ordered}",group=Table,minlen=2,constraint=true,]
+ Parameter->Value[arrowhead=vee,arrowtail=diamond,headlabel="value[0-1]",group=Value,minlen=2,constraint=true,]
+ Parameter->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Value[label="{/Value/| | }"]
+ Value->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IntegerVal[label="{IntegerVal|value : Integer| }"]
+ IntegerVal->Value[arrowhead=onormal,group=Value,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NullVal[label="{NullVal| | }"]
+ NullVal->Value[arrowhead=onormal,group=Value,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StringVal[label="{StringVal|value : String| }"]
+ StringVal->Value[arrowhead=onormal,group=Value,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

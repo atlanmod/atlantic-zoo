@@ -1,0 +1,100 @@
+-- ******************************************************************************
+-- Copyright (c) 2010 INRIA. 
+-- All rights reserved. This program and the accompanying materials 
+-- are made available under the terms of the Eclipse Public License v1.0 
+-- which accompanies this distribution, and is available at
+-- http://www.eclipse.org/legal/epl-v10.html
+-- 
+-- Contributors: 
+-- 	INRIA - Initial implementation
+--  Jean-Sébastien Sottet - jean-sebastien.sottet <at> inria.fr
+-- ******************************************************************************
+-- XAML package made for Perspective Assembly, for the 3D visualization part
+
+-- @name		XAML-Perspective
+-- @version		1.0
+-- @domains		3D Visualization
+-- @author 		Jean-Sébastien Sottet( jean-sebasiten.sottet <at> inria <dot> fr )
+-- @date		2010/01/30
+-- @description	XAML-Perspective is a subset of XAML for 3 dimensions using the Perspective API (available under MSPL license). The Perspective API provides an easier way to design 3D objects with XAML.
+--				It provides, notably, a complete toolset for changing camera position as well as a library of basic 2D and 3D objects (cubes, cylinders, etc.)
+
+package XAML {
+
+	class Page {
+		reference xmlns[*] container : NameSpace;
+		attribute title : String;
+		reference graphContainer container : GraphicalContainer; -- Warning There is different type of other container such as Grid
+		reference pageResources container : PageResource;
+	}
+	
+	class NameSpace {
+		attribute namespace : String;
+		attribute identifier : String;
+	}
+	
+	
+	class PageResource{
+		reference dictionaries[*] container : ResourceDictionary;	
+	}
+	
+	abstract class GraphicalContainer {
+	
+	}
+	
+	abstract class WinFXElement { -- example x:Name
+		reference namespace : NameSpace;
+	}
+	
+	abstract class PerspectiveElement { --used for adding the namespace example : <p:Workshop3D>
+		reference namespace : NameSpace;
+	}
+	class ResourceDictionary {
+		attribute source : String;
+	}
+	
+	class Grid extends GraphicalContainer {
+		reference object3D[*] container : Object3D;
+	}
+	
+	abstract class Object3D {
+	}
+	
+	class Workshop3D extends Object3D, PerspectiveElement {
+		reference elements3D[*] container : Element3D;
+	}
+	
+	class Element3D {
+	
+	}
+	
+	class UI3Delement extends Element3D {
+		attribute transform : String; -- it is a reference to a xaml ressource Transform="{StaticResource ModelTransform}"
+		attribute material : String; -- it is a reference to a xaml ressource ex : Material="{StaticResource Color}"
+		reference name container : Name;
+	}
+	
+	class XyzAxis3D extends Element3D, PerspectiveElement {
+		attribute length : Double;
+	}
+	
+	class Box3D extends UI3Delement, PerspectiveElement {
+	
+	}
+	
+	class Square3D extends UI3Delement, PerspectiveElement{
+		
+	}
+	
+	class Name extends WinFXElement {
+		attribute name : String;
+	}
+	
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+	datatype Integer;
+	datatype Double;
+}

@@ -1,0 +1,107 @@
+package Metamodel;
+
+package COBOL {
+  enum COBOLUsageValue {
+    cuv_binary = 0;
+    cuv_dbcs = 0;
+    cuv_double = 0;
+    cuv_display = 0;
+    cuv_float = 0;
+    cuv_index = 0;
+    cuv_objectReference = 0;
+    cuv_packedDecimal = 0;
+    cuv_pointer = 0;
+    cuv_procedurePointer = 0;
+  }
+
+  enum COBOLInitialValueKind {
+    civk_string_value = 0;
+    civk_low_value = 0;
+    civk_high_value = 0;
+    civk_zero_value = 0;
+    civk_quotes = 0;
+    civk_null = 0;
+    civk_all_literal = 0;
+  }
+
+  class COBOLElement {
+    !unique !ordered attr String[1] level;
+    !unique !ordered attr Boolean[1] refined;
+    !unique !ordered attr String[1] name;
+    !ordered ref COBOLClassifier[1]#typedElements sharedType;
+    !ordered ref COBOLComposedType#elements group;
+    !ordered ref COBOLElementInitialValue[*] initial;
+    !ordered val COBOL88Element[*] contains;
+    !ordered ref COBOLSourceText[1] source;
+    !ordered val COBOLFixedLengthArray array;
+  }
+
+  class COBOLClassifier {
+    !unique !ordered attr Boolean[1] typeded;
+    !unique !ordered attr String[1] name;
+    !ordered ref COBOLElement[*]#sharedType typedElements;
+  }
+
+  class COBOLSimpleType extends COBOLClassifier {
+    !unique !ordered attr COBOLUsageValue[1] usageValue;
+    !unique !ordered attr String[1] pictureString;
+    !unique !ordered attr Boolean[1] usage;
+  }
+
+  class COBOLComposedType extends COBOLClassifier {
+    !ordered val COBOLElement[*]#group elements;
+  }
+
+  class COBOLElementInitialValue {
+    !unique !ordered attr String[1] initVal;
+    !unique !ordered attr COBOLInitialValueKind[1] valueKind;
+  }
+
+  class COBOL88Element {
+    !unique !ordered attr String[1] name;
+    !ordered val COBOL88ElementValue[+] has;
+  }
+
+  class COBOL88ElementValue {
+    !unique !ordered attr String[1] lowerLimit;
+    !unique !ordered attr String[1] upperLimit;
+    !unique !ordered attr Boolean[1] range;
+  }
+
+  class COBOLRedefiningElement extends COBOLElement {
+    !ordered ref COBOLElement[1] redefines;
+  }
+
+  class COBOL66Element {
+    !unique !ordered attr String[1] name;
+    !ordered ref COBOLElement end;
+    !ordered ref COBOLElement[1] start;
+  }
+
+  class COBOLSourceText {
+    !unique !ordered attr String[1] source;
+    !unique !ordered attr String[1] fileName;
+  }
+
+  class COBOLFixedLengthArray {
+    !unique !ordered attr Integer[1] maxUpper;
+  }
+
+  class COBOLVariableLengthArray extends COBOLFixedLengthArray {
+    !unique !ordered attr Integer[1] minUpper;
+    !ordered ref COBOLElement[1] dependingOn;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

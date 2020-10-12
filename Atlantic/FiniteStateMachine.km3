@@ -1,0 +1,55 @@
+-- @name		Finite State Machine
+-- @version		1.0
+-- @authors		Youssef Srour (Srour.youssef@gmail.com)
+-- @date		2006/07/14
+-- @description	This metamodel describes the concepts of a finite state machine.
+-- @see 		http://repository.escherinstitute.org/Plone/tools/suites/mic/great/
+
+package FSM{
+		
+-- Begin Class MgaObject
+	class MgaObject{
+		attribute name[0-1] : String;
+		attribute position[0-1] : String;
+	}-- End class MgaObject
+	
+-- Begin Class Transition
+	class Transition extends MgaObject{
+		reference stateMachine : StateMachine oppositeOf transition;
+		reference associationStateState : AssociationStateState oppositeOf transition;
+	}-- End class Transition
+	
+-- Begin Class State
+	class State  extends MgaObject{
+		reference stateMachine : StateMachine oppositeOf state;
+		reference associationStateStatedst[1-*] : AssociationStateState oppositeOf dstTransition;
+		reference associationStateStatesrc[1-*] : AssociationStateState oppositeOf srcTransition;
+	}-- End class State
+	
+-- Begin Class StateMachine
+	class StateMachine  extends MgaObject{
+		reference rootFolder : RootFolder oppositeOf stateMachine;
+		reference state[*] container: State oppositeOf stateMachine;
+		reference transition[*] container: Transition oppositeOf stateMachine;
+	}-- End class StateMachine
+
+-- Begin Class RootFolder
+	class RootFolder{
+		attribute name[0-1] : String;
+		
+		reference rootFolders[*] container: RootFolder;
+		reference stateMachine[*] container: StateMachine oppositeOf rootFolder;
+	}-- End class RootFolder
+
+-- Begin Class-Association StateState
+	class AssociationStateState{
+		reference transition : Transition oppositeOf associationStateState;
+		reference dstTransition[1-*] : State oppositeOf associationStateStatedst;
+		reference srcTransition[1-*] : State oppositeOf associationStateStatesrc;
+	}-- End Class-Association StateState
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+}

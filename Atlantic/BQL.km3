@@ -1,0 +1,54 @@
+-- @name		BQL (Bibtex Query Language)
+-- @version		0.2
+-- @domains		Bibtex Query Language
+-- @authors		Guillaume Hillairet (g.hillairet@gmail.com)
+-- @date		2006/06/22
+-- @description	This metamodel is used to express query over Bibtex models. It uses a textual syntax to simplify the writing of querys. This metamodel is used in the Bibtex Management project.
+-- @see			http://wiki.eclipse.org/index.php/AMMA
+
+package BQL {
+	
+	abstract class LocatedElement {
+		attribute location : String;
+		attribute commentsBefore[*] ordered : String;
+		attribute commentsAfter[*] ordered : String;
+	}
+	
+	--@begin Query
+	class Query {
+		reference entries[*] container : Entry;
+		reference predicates[*] container : Predicate;
+	}
+	--@end Query
+
+	--@begin Entry
+	class Entry extends LocatedElement {
+		attribute name : String;
+		attribute type : String;
+		attribute allFields : Boolean;
+		reference fields[1-*] container : Field oppositeOf entry;
+		reference predicate[0-1] : Predicate oppositeOf entry;
+	}
+	--@end Entry
+	
+	class Field {
+		attribute name : String;
+		reference entry : Entry oppositeOf fields;
+	}
+	
+	class Predicate {
+		reference entry : Entry oppositeOf predicate;
+		reference expression[1-*] container :  Expression;
+	}
+	--@begin Expressions
+	class Expression {
+		attribute field : String;
+		attribute value : String;
+	}
+	--@end Expressions
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+}

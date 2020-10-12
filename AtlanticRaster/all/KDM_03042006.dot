@@ -1,0 +1,1351 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_Structure"{
+labelloc=t
+color=black
+label=Structure
+ node[shape=record];
+Subsystem[label="{Subsystem| | }"]
+ Subsystem->StructureGroup[arrowhead=onormal,group=StructureGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Layer[label="{Layer| | }"]
+ Layer->StructureGroup[arrowhead=onormal,group=StructureGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StructureModel[label="{StructureModel| | }"]
+ StructureModel->StructureElement[arrowhead=vee,arrowtail=diamond,headlabel="structureElement[*]",group=StructureElement,minlen=2,constraint=true,]
+ StructureModel->KDMModel[arrowhead=onormal,group=KDMModel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StructureGroup[label="{StructureGroup| | }"]
+ StructureGroup->CodeResource[arrowhead=vee,arrowtail=none,headlabel="codeElement[*]",group=CodeResource,minlen=2,constraint=false,]
+ StructureGroup->StructureElement[arrowhead=onormal,group=StructureElement,minlen=2,constraint=true,]
+ StructureGroup->KDMGroup[arrowhead=onormal,group=KDMGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StructureElement[label="{/StructureElement/| | }"]
+ StructureElement->StructureGroup[arrowhead=none,arrowtail=none,headlabel="structureGroup[*]",taillabel="structureElement[*]",group=StructureGroup,minlen=2,constraint=false,]
+ StructureElement->KDMEntity[arrowhead=onormal,group=KDMEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Component[label="{Component| | }"]
+ Component->StructureGroup[arrowhead=onormal,group=StructureGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SoftwareSystem[label="{SoftwareSystem| | }"]
+ SoftwareSystem->StructureGroup[arrowhead=onormal,group=StructureGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StructureContainer[label="{StructureContainer| | }"]
+ StructureContainer->StructureElement[arrowhead=vee,arrowtail=diamond,headlabel="structureElement[*]",group=StructureElement,minlen=2,constraint=true,]
+ StructureContainer->StructureElement[arrowhead=onormal,group=StructureElement,minlen=2,constraint=true,]
+ StructureContainer->KDMContainer[arrowhead=onormal,group=KDMContainer,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Platform"{
+labelloc=t
+color=black
+label=Platform
+ node[shape=record];
+PlatformElement[label="{/PlatformElement/| | }"]
+ PlatformElement->KDMEntity[arrowhead=onormal,group=KDMEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PlatformGroup[label="{PlatformGroup| | }"]
+ PlatformGroup->PlatformElement[arrowhead=onormal,group=PlatformElement,minlen=2,constraint=true,]
+ PlatformGroup->KDMGroup[arrowhead=onormal,group=KDMGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PlatformModel[label="{PlatformModel| | }"]
+ PlatformModel->PlatformRelationship[arrowhead=vee,arrowtail=diamond,headlabel="relation[*]",group=PlatformRelationship,minlen=2,constraint=true,]
+ PlatformModel->KDMModel[arrowhead=onormal,group=KDMModel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Requires[label="{Requires| | }"]
+ Requires->DeployedComponent[arrowhead=vee,arrowtail=none,headlabel="from",group=DeployedComponent,minlen=2,constraint=false,]
+ Requires->TechnologyRelationship[arrowhead=onormal,group=TechnologyRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ResourceProvider[label="{ResourceProvider| | }"]
+ ResourceProvider->PlatformElement[arrowhead=onormal,group=PlatformElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TechnologyRelationship[label="{/TechnologyRelationship/| | }"]
+ TechnologyRelationship->PlatformRelationship[arrowhead=onormal,group=PlatformRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompliesTo[label="{CompliesTo| | }"]
+ CompliesTo->ResourceInstance[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outComplies[*]",group=ResourceInstance,minlen=2,constraint=false,]
+ CompliesTo->InterfaceRelationship[arrowhead=onormal,group=InterfaceRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PlatformPart[label="{PlatformPart| | }"]
+ PlatformPart->ResourceType[arrowhead=vee,arrowtail=diamond,headlabel="resourceType[*]",group=ResourceType,minlen=2,constraint=true,]
+ PlatformPart->PlatformContainer[arrowhead=onormal,group=PlatformContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ResourceElement[label="{ResourceElement| | }"]
+ ResourceElement->ResourceInstance[arrowhead=vee,arrowtail=diamond,headlabel="instance[*]",group=ResourceInstance,minlen=2,constraint=true,]
+ ResourceElement->PlatformContainer[arrowhead=onormal,group=PlatformContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ResourceType[label="{ResourceType| | }"]
+ ResourceType->ResourceElement[arrowhead=vee,arrowtail=diamond,headlabel="binding[*]",group=ResourceElement,minlen=2,constraint=true,]
+ ResourceType->ResourceInstance[arrowhead=vee,arrowtail=diamond,headlabel="instance[*]",group=ResourceInstance,minlen=2,constraint=true,]
+ ResourceType->ResourceDefinition[arrowhead=vee,arrowtail=diamond,headlabel="definition[*]",group=ResourceDefinition,minlen=2,constraint=true,]
+ ResourceType->PlatformContainer[arrowhead=onormal,group=PlatformContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ResourceInstance[label="{ResourceInstance| | }"]
+ ResourceInstance->BindsTo[arrowhead=none,arrowtail=none,headlabel="outBinds[*]",taillabel="from",group=BindsTo,minlen=2,constraint=false,]
+ ResourceInstance->BindsResource[arrowhead=none,arrowtail=none,headlabel="outResource[*]",taillabel="from",group=BindsResource,minlen=2,constraint=false,]
+ ResourceInstance->PlatformElement[arrowhead=onormal,group=PlatformElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BindsTo[label="{BindsTo| | }"]
+ BindsTo->CodeResource[arrowhead=vee,arrowtail=none,headlabel="to",group=CodeResource,minlen=2,constraint=false,]
+ BindsTo->ResourceRelationship[arrowhead=onormal,group=ResourceRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PlatformContainer[label="{/PlatformContainer/| | }"]
+ PlatformContainer->PlatformElement[arrowhead=onormal,group=PlatformElement,minlen=2,constraint=true,]
+ PlatformContainer->KDMContainer[arrowhead=onormal,group=KDMContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Provides[label="{Provides| | }"]
+ Provides->PlatformElement[arrowhead=none,arrowtail=none,headlabel="to",taillabel="inProvides[*]",group=PlatformElement,minlen=2,constraint=false,]
+ Provides->ResourceProvider[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outProvides[*]",group=ResourceProvider,minlen=2,constraint=false,]
+ Provides->TechnologyRelationship[arrowhead=onormal,group=TechnologyRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NamingResource[label="{NamingResource| | }"]
+ NamingResource->ResourceType[arrowhead=onormal,group=ResourceType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MarshalledResource[label="{MarshalledResource| | }"]
+ MarshalledResource->ResourceType[arrowhead=onormal,group=ResourceType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MessagingResource[label="{MessagingResource| | }"]
+ MessagingResource->ResourceType[arrowhead=onormal,group=ResourceType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataResource[label="{DataResource| | }"]
+ DataResource->ResourceType[arrowhead=onormal,group=ResourceType,minlen=2,constraint=true,]
+ DataResource->StorableElement[arrowhead=onormal,group=StorableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExecutionResource[label="{ExecutionResource| | }"]
+ ExecutionResource->ResourceType[arrowhead=onormal,group=ResourceType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExternalActor[label="{ExternalActor| | }"]
+ ExternalActor->PlatformElement[arrowhead=onormal,group=PlatformElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExternalRelations[label="{/ExternalRelations/| | }"]
+ ExternalRelations->PlatformRelationship[arrowhead=onormal,group=PlatformRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Uses[label="{Uses| | }"]
+ Uses->ResourceInstance[arrowhead=none,arrowtail=none,headlabel="to",taillabel="inUses[*]",group=ResourceInstance,minlen=2,constraint=false,]
+ Uses->ExternalActor[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outUses[*]",group=ExternalActor,minlen=2,constraint=false,]
+ Uses->ExternalRelations[arrowhead=onormal,group=ExternalRelations,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataPortResource[label="{DataPortResource| | }"]
+ DataPortResource->ResourceType[arrowhead=onormal,group=ResourceType,minlen=2,constraint=true,]
+ DataPortResource->StorableElement[arrowhead=onormal,group=StorableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DynamicData[label="{DynamicData| | }"]
+ DynamicData->ResourceType[arrowhead=onormal,group=ResourceType,minlen=2,constraint=true,]
+ DynamicData->StorableElement[arrowhead=onormal,group=StorableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataManager[label="{DataManager| | }"]
+ DataManager->ResourceType[arrowhead=onormal,group=ResourceType,minlen=2,constraint=true,]
+ DataManager->StorableElement[arrowhead=onormal,group=StorableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PlatformRelationship[label="{/PlatformRelationship/| | }"]
+ PlatformRelationship->KDMRelationship[arrowhead=onormal,group=KDMRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PlatformService[label="{PlatformService| | }"]
+ PlatformService->ActionElement[arrowhead=onormal,group=ActionElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MarshalledCall[label="{MarshalledCall| | }"]
+ MarshalledCall->PlatformService[arrowhead=onormal,group=PlatformService,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Registration[label="{Registration| | }"]
+ Registration->PlatformService[arrowhead=onormal,group=PlatformService,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Activation[label="{Activation| | }"]
+ Activation->PlatformService[arrowhead=onormal,group=PlatformService,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AsynchCall[label="{AsynchCall| | }"]
+ AsynchCall->PlatformService[arrowhead=onormal,group=PlatformService,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UsesResource[label="{UsesResource| | }"]
+ UsesResource->ResourceRelationship[arrowhead=onormal,group=ResourceRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ResourceRelationship[label="{/ResourceRelationship/| | }"]
+ ResourceRelationship->PlatformRelationship[arrowhead=onormal,group=PlatformRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BindsResource[label="{BindsResource| | }"]
+ BindsResource->ResourceInstance[arrowhead=none,arrowtail=none,headlabel="to",taillabel="inResource[*]",group=ResourceInstance,minlen=2,constraint=false,]
+ BindsResource->ResourceRelationship[arrowhead=onormal,group=ResourceRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ResourceDefinition[label="{ResourceDefinition| | }"]
+ ResourceDefinition->CodeResource[arrowhead=vee,arrowtail=none,headlabel="element[*]",group=CodeResource,minlen=2,constraint=false,]
+ ResourceDefinition->KDMGroup[arrowhead=onormal,group=KDMGroup,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Build"{
+labelloc=t
+color=black
+label=Build
+ node[shape=record];
+Image[label="{Image| | }"]
+ Image->BuildResource[arrowhead=onormal,group=BuildResource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BuildDescription[label="{BuildDescription| | }"]
+ BuildDescription->BuildResource[arrowhead=onormal,group=BuildResource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DependsOn[label="{DependsOn| | }"]
+ DependsOn->BuildRelationship[arrowhead=onormal,group=BuildRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SymbolicLink[label="{SymbolicLink| | }"]
+ SymbolicLink->LinksTo[arrowhead=none,arrowtail=none,headlabel="outLinksTo[*]",taillabel="from",group=LinksTo,minlen=2,constraint=false,]
+ SymbolicLink->BuildResource[arrowhead=onormal,group=BuildResource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LinksTo[label="{LinksTo| | }"]
+ LinksTo->BuildElement[arrowhead=none,arrowtail=none,headlabel="to",taillabel="inLinksTo[*]",group=BuildElement,minlen=2,constraint=false,]
+ LinksTo->BuildRelationship[arrowhead=onormal,group=BuildRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BuildGroup[label="{BuildGroup| | }"]
+ BuildGroup->BuildElement[arrowhead=none,arrowtail=none,headlabel="buildElement[*]",taillabel="buildGroup[*]",group=BuildElement,minlen=2,constraint=false,]
+ BuildGroup->BuildElement[arrowhead=onormal,group=BuildElement,minlen=2,constraint=true,]
+ BuildGroup->KDMGroup[arrowhead=onormal,group=KDMGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BuildElement[label="{/BuildElement/| | }"]
+ BuildElement->TransformsInto[arrowhead=none,arrowtail=none,headlabel="inTransformsInto[*]",taillabel="to",group=TransformsInto,minlen=2,constraint=false,]
+ BuildElement->DependsOn[arrowhead=none,arrowtail=none,headlabel="inDependsOn[*]",taillabel="to",group=DependsOn,minlen=2,constraint=false,]
+ BuildElement->DependsOn[arrowhead=none,arrowtail=none,headlabel="outDependsOn[*]",taillabel="from",group=DependsOn,minlen=2,constraint=false,]
+ BuildElement->KDMEntity[arrowhead=onormal,group=KDMEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TransformsInto[label="{TransformsInto| | }"]
+ TransformsInto->BuildElement[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outTransformsInto[*]",group=BuildElement,minlen=2,constraint=false,]
+ TransformsInto->BuildRelationship[arrowhead=onormal,group=BuildRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SourceFile[label="{SourceFile|language : String| }"]
+ SourceFile->BuildResource[arrowhead=onormal,group=BuildResource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BuildResource[label="{BuildResource|version : String\npath : String| }"]
+ BuildResource->Module[arrowhead=vee,arrowtail=none,headlabel="codeElement[*]",group=Module,minlen=2,constraint=false,]
+ BuildResource->BuildElement[arrowhead=onormal,group=BuildElement,minlen=2,constraint=true,]
+ BuildResource->KDMGroup[arrowhead=onormal,group=KDMGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BuildRelationship[label="{/BuildRelationship/| | }"]
+ BuildRelationship->KDMRelationship[arrowhead=onormal,group=KDMRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BuildContainer[label="{BuildContainer| | }"]
+ BuildContainer->BuildElement[arrowhead=vee,arrowtail=diamond,headlabel="buildElement[*]",group=BuildElement,minlen=2,constraint=true,]
+ BuildContainer->BuildElement[arrowhead=onormal,group=BuildElement,minlen=2,constraint=true,]
+ BuildContainer->KDMContainer[arrowhead=onormal,group=KDMContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BuildModel[label="{BuildModel| | }"]
+ BuildModel->BuildElement[arrowhead=vee,arrowtail=diamond,headlabel="buildElement[*]",group=BuildElement,minlen=2,constraint=true,]
+ BuildModel->BuildRelationship[arrowhead=vee,arrowtail=diamond,headlabel="relation[*]",group=BuildRelationship,minlen=2,constraint=true,]
+ BuildModel->KDMModel[arrowhead=onormal,group=KDMModel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Directory[label="{Directory|path : String| }"]
+ Directory->BuildContainer[arrowhead=onormal,group=BuildContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BuildComponent[label="{BuildComponent| | }"]
+ BuildComponent->BuildResource[arrowhead=onormal,group=BuildResource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IntermediateFile[label="{IntermediateFile| | }"]
+ IntermediateFile->BuildResource[arrowhead=onormal,group=BuildResource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Origin[label="{Origin| | }"]
+ Origin->BuildElement[arrowhead=onormal,group=BuildElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Tool[label="{Tool| | }"]
+ Tool->BuildElement[arrowhead=onormal,group=BuildElement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Core"{
+labelloc=t
+color=black
+label=Core
+ node[shape=record];
+KDMEntity[label="{/KDMEntity/|name : String|createAggregation(otherEntity : KDMEntity)\ndeleteAggregation(aggregation : KDMAggregatedRelationship)\n}"]
+ KDMEntity->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+KDMContainer[label="{/KDMContainer/| | }"]
+ KDMContainer->KDMEntity[arrowhead=onormal,group=KDMEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Element[label="{/Element/| | }"]
+ Element->Attribute[arrowhead=vee,arrowtail=diamond,headlabel="attribute[*]",group=Attribute,minlen=2,constraint=true,]
+ Element->Annotation[arrowhead=vee,arrowtail=diamond,headlabel="annotation[*]",group=Annotation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ModelElement[label="{/ModelElement/| | }"]
+ ModelElement->Stereotype[arrowhead=none,arrowtail=none,headlabel="stereotype[0-1]",taillabel="extendedElement[*]",group=Stereotype,minlen=2,constraint=false,]
+ ModelElement->TaggedValue[arrowhead=vee,arrowtail=diamond,headlabel="taggedValue[*]",group=TaggedValue,minlen=2,constraint=true,]
+ ModelElement->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+KDMRelationship[label="{/KDMRelationship/| | }"]
+ KDMRelationship->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+KDMAggregatedRelationship[label="{KDMAggregatedRelationship|density : String| }"]
+ KDMAggregatedRelationship->KDMRelationship[arrowhead=vee,arrowtail=none,headlabel="relation[*]",group=KDMRelationship,minlen=2,constraint=false,]
+ KDMAggregatedRelationship->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Attribute[label="{Attribute|tag : String\nvalue : String| }"]
+ Attribute->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Annotation[label="{Annotation|note : String| }"]
+ Annotation->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+KDMGroup[label="{/KDMGroup/| | }"]
+ KDMGroup->KDMEntity[arrowhead=onormal,group=KDMEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+KDMExtensionFamily[label="{KDMExtensionFamily|name : String| }"]
+ KDMExtensionFamily->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TagDefinition[label="{TagDefinition|tag : String\ntype : String| }"]
+ TagDefinition->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TaggedValue[label="{TaggedValue|value : String| }"]
+ TaggedValue->TagDefinition[arrowhead=vee,arrowtail=none,headlabel="tag",group=TagDefinition,minlen=2,constraint=false,]
+ TaggedValue->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Stereotype[label="{Stereotype|baseClass : String\nname : String| }"]
+ Stereotype->KDMExtensionFamily[arrowhead=diamond,arrowtail=none,headlabel="family",taillabel="stereotype[*]",group=KDMExtensionFamily,minlen=2,constraint=true,]
+ Stereotype->TagDefinition[arrowhead=vee,arrowtail=diamond,headlabel="tag[*]",group=TagDefinition,minlen=2,constraint=true,]
+ Stereotype->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_UI"{
+labelloc=t
+color=black
+label=UI
+ node[shape=record];
+Screen[label="{Screen| | }"]
+ Screen->Display[arrowhead=onormal,group=Display,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Report[label="{Report| | }"]
+ Report->Display[arrowhead=onormal,group=Display,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UIModel[label="{UIModel| | }"]
+ UIModel->UIRelationship[arrowhead=vee,arrowtail=diamond,headlabel="relation[*]",group=UIRelationship,minlen=2,constraint=true,]
+ UIModel->UIElement[arrowhead=vee,arrowtail=diamond,headlabel="uiElement[*]",group=UIElement,minlen=2,constraint=true,]
+ UIModel->KDMModel[arrowhead=onormal,group=KDMModel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UIElement[label="{UIElement| | }"]
+ UIElement->UIGroup[arrowhead=none,arrowtail=none,headlabel="uiGroup[*]",taillabel="uiElement[*]",group=UIGroup,minlen=2,constraint=false,]
+ UIElement->KDMEntity[arrowhead=onormal,group=KDMEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UIContainer[label="{UIContainer| | }"]
+ UIContainer->UsesLayout[arrowhead=none,arrowtail=none,headlabel="inUsesLayout[*]",taillabel="to",group=UsesLayout,minlen=2,constraint=false,]
+ UIContainer->UIEvent[arrowhead=vee,arrowtail=diamond,headlabel="event[*]",group=UIEvent,minlen=2,constraint=true,]
+ UIContainer->UIElement[arrowhead=vee,arrowtail=diamond,headlabel="uiElement[*]",group=UIElement,minlen=2,constraint=true,]
+ UIContainer->UIElement[arrowhead=onormal,group=UIElement,minlen=2,constraint=true,]
+ UIContainer->KDMContainer[arrowhead=onormal,group=KDMContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UsesLayout[label="{UsesLayout| | }"]
+ UsesLayout->UIRelationship[arrowhead=onormal,group=UIRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DisplayUnit[label="{DisplayUnit| | }"]
+ DisplayUnit->UIElement[arrowhead=onormal,group=UIElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VariableDisplayUnit[label="{VariableDisplayUnit| | }"]
+ VariableDisplayUnit->DisplayUnit[arrowhead=onormal,group=DisplayUnit,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FixedDisplayUnit[label="{FixedDisplayUnit| | }"]
+ FixedDisplayUnit->DisplayUnit[arrowhead=onormal,group=DisplayUnit,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UsesImage[label="{UsesImage| | }"]
+ UsesImage->Image[arrowhead=vee,arrowtail=none,headlabel="to",group=Image,minlen=2,constraint=false,]
+ UsesImage->DisplayUnit[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outImage[*]",group=DisplayUnit,minlen=2,constraint=false,]
+ UsesImage->UIRelationship[arrowhead=onormal,group=UIRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DisplaysData[label="{DisplaysData| | }"]
+ DisplaysData->StorableElement[arrowhead=vee,arrowtail=none,headlabel="to",group=StorableElement,minlen=2,constraint=false,]
+ DisplaysData->VariableDisplayUnit[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outDisplay[*]",group=VariableDisplayUnit,minlen=2,constraint=false,]
+ DisplaysData->UIRelationship[arrowhead=onormal,group=UIRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Displays[label="{Displays| | }"]
+ Displays->CallableElement[arrowhead=vee,arrowtail=none,headlabel="from",group=CallableElement,minlen=2,constraint=false,]
+ Displays->UIElement[arrowhead=none,arrowtail=none,headlabel="to",taillabel="inDisplays[*]",group=UIElement,minlen=2,constraint=false,]
+ Displays->UIRelationship[arrowhead=onormal,group=UIRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Display[label="{Display| | }"]
+ Display->UsesLayout[arrowhead=none,arrowtail=none,headlabel="outUsesLayout[*]",taillabel="from",group=UsesLayout,minlen=2,constraint=false,]
+ Display->UIContainer[arrowhead=onormal,group=UIContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UIFlow[label="{UIFlow| | }"]
+ UIFlow->Display[arrowhead=none,arrowtail=none,headlabel="to",taillabel="inUIFlow[*]",group=Display,minlen=2,constraint=false,]
+ UIFlow->Display[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outUIFlow[*]",group=Display,minlen=2,constraint=false,]
+ UIFlow->UIRelationship[arrowhead=onormal,group=UIRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Renders[label="{Renders| | }"]
+ Renders->Display[arrowhead=none,arrowtail=none,headlabel="to",taillabel="inRenders[*]",group=Display,minlen=2,constraint=false,]
+ Renders->Trigger[arrowhead=vee,arrowtail=none,headlabel="from",group=Trigger,minlen=2,constraint=false,]
+ Renders->UIRelationship[arrowhead=onormal,group=UIRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UIRelationship[label="{/UIRelationship/| | }"]
+ UIRelationship->KDMRelationship[arrowhead=onormal,group=KDMRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UIGroup[label="{UIGroup| | }"]
+ UIGroup->UIElement[arrowhead=onormal,group=UIElement,minlen=2,constraint=true,]
+ UIGroup->KDMGroup[arrowhead=onormal,group=KDMGroup,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+ node[shape=record];
+Float[label="{&#171;DataType&#187;\nFloat|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+Long[label="{&#171;DataType&#187;\nLong|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+} subgraph "cluster_Action"{
+labelloc=t
+color=black
+label=Action
+ node[shape=record];
+ActionElement[label="{ActionElement| | }"]
+ ActionElement->Calls[arrowhead=none,arrowtail=none,headlabel="outCalls[*]",taillabel="from",group=Calls,minlen=2,constraint=false,]
+ ActionElement->UsesPrototype[arrowhead=none,arrowtail=none,headlabel="outUsesPrototype[*]",taillabel="from",group=UsesPrototype,minlen=2,constraint=false,]
+ ActionElement->Writes[arrowhead=none,arrowtail=none,headlabel="outWrites[*]",taillabel="from",group=Writes,minlen=2,constraint=false,]
+ ActionElement->UsesCallable[arrowhead=none,arrowtail=none,headlabel="outUsesCallable[*]",taillabel="from",group=UsesCallable,minlen=2,constraint=false,]
+ ActionElement->Destroys[arrowhead=none,arrowtail=none,headlabel="outDestroys[*]",taillabel="from",group=Destroys,minlen=2,constraint=false,]
+ ActionElement->EntryFlow[arrowhead=none,arrowtail=none,headlabel="inEntry[*]",taillabel="to",group=EntryFlow,minlen=2,constraint=false,]
+ ActionElement->ControlFlow[arrowhead=none,arrowtail=none,headlabel="outFlow[*]",taillabel="from",group=ControlFlow,minlen=2,constraint=false,]
+ ActionElement->Reads[arrowhead=none,arrowtail=none,headlabel="outReads[*]",taillabel="from",group=Reads,minlen=2,constraint=false,]
+ ActionElement->ActionGroup[arrowhead=none,arrowtail=none,headlabel="actionGroup[*]",taillabel="actionElement[*]",group=ActionGroup,minlen=2,constraint=false,]
+ ActionElement->CodeElement[arrowhead=onormal,group=CodeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ControlFlow[label="{ControlFlow| | }"]
+ ControlFlow->ActionElement[arrowhead=none,arrowtail=none,headlabel="to",taillabel="inFlow[*]",group=ActionElement,minlen=2,constraint=false,]
+ ControlFlow->FlowRelationship[arrowhead=onormal,group=FlowRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UsesCallable[label="{UsesCallable| | }"]
+ UsesCallable->CallableElement[arrowhead=vee,arrowtail=none,headlabel="to",group=CallableElement,minlen=2,constraint=false,]
+ UsesCallable->CallableRelationship[arrowhead=onormal,group=CallableRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Calls[label="{Calls| | }"]
+ Calls->CallableElement[arrowhead=vee,arrowtail=none,headlabel="to",group=CallableElement,minlen=2,constraint=false,]
+ Calls->CallableRelationship[arrowhead=onormal,group=CallableRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Creates[label="{Creates| | }"]
+ Creates->StorableElement[arrowhead=vee,arrowtail=none,headlabel="to",group=StorableElement,minlen=2,constraint=false,]
+ Creates->ActionElement[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outCreates[*]",group=ActionElement,minlen=2,constraint=false,]
+ Creates->DataRelationship[arrowhead=onormal,group=DataRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Reads[label="{Reads| | }"]
+ Reads->StorableElement[arrowhead=vee,arrowtail=none,headlabel="to",group=StorableElement,minlen=2,constraint=false,]
+ Reads->DataRelationship[arrowhead=onormal,group=DataRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UsesData[label="{UsesData| | }"]
+ UsesData->StorableElement[arrowhead=vee,arrowtail=none,headlabel="to",group=StorableElement,minlen=2,constraint=false,]
+ UsesData->ActionElement[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outUsesData[*]",group=ActionElement,minlen=2,constraint=false,]
+ UsesData->DataRelationship[arrowhead=onormal,group=DataRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Writes[label="{Writes| | }"]
+ Writes->StorableElement[arrowhead=vee,arrowtail=none,headlabel="to",group=StorableElement,minlen=2,constraint=false,]
+ Writes->DataRelationship[arrowhead=onormal,group=DataRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Destroys[label="{Destroys| | }"]
+ Destroys->StorableElement[arrowhead=vee,arrowtail=none,headlabel="to",group=StorableElement,minlen=2,constraint=false,]
+ Destroys->DataRelationship[arrowhead=onormal,group=DataRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataRelationship[label="{/DataRelationship/| | }"]
+ DataRelationship->ActionRelationship[arrowhead=onormal,group=ActionRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CallableRelationship[label="{/CallableRelationship/| | }"]
+ CallableRelationship->ActionRelationship[arrowhead=onormal,group=ActionRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UsesPrototype[label="{UsesPrototype| | }"]
+ UsesPrototype->PrototypeUnit[arrowhead=vee,arrowtail=none,headlabel="to",group=PrototypeUnit,minlen=2,constraint=false,]
+ UsesPrototype->PrototypeRelationship[arrowhead=onormal,group=PrototypeRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ImportDirective[label="{ImportDirective| | }"]
+ ImportDirective->Imports[arrowhead=none,arrowtail=none,headlabel="outImports[*]",taillabel="from",group=Imports,minlen=2,constraint=false,]
+ ImportDirective->ActionElement[arrowhead=onormal,group=ActionElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Imports[label="{Imports| | }"]
+ Imports->CodeResource[arrowhead=vee,arrowtail=none,headlabel="to",group=CodeResource,minlen=2,constraint=false,]
+ Imports->ImportRelationship[arrowhead=onormal,group=ImportRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UsesType[label="{UsesType| | }"]
+ UsesType->ActionElement[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outUsesType[*]",group=ActionElement,minlen=2,constraint=false,]
+ UsesType->TypeElement[arrowhead=vee,arrowtail=none,headlabel="to",group=TypeElement,minlen=2,constraint=false,]
+ UsesType->TypeRelationship[arrowhead=onormal,group=TypeRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Expands[label="{Expands| | }"]
+ Expands->MacroUnit[arrowhead=vee,arrowtail=none,headlabel="to",group=MacroUnit,minlen=2,constraint=false,]
+ Expands->ActionElement[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outExpands[*]",group=ActionElement,minlen=2,constraint=false,]
+ Expands->MacroRelationship[arrowhead=onormal,group=MacroRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ImportRelationship[label="{/ImportRelationship/| | }"]
+ ImportRelationship->ActionRelationship[arrowhead=onormal,group=ActionRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MacroRelationship[label="{/MacroRelationship/| | }"]
+ MacroRelationship->ActionRelationship[arrowhead=onormal,group=ActionRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FlowRelationship[label="{/FlowRelationship/| | }"]
+ FlowRelationship->ActionRelationship[arrowhead=onormal,group=ActionRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActionRelationship[label="{/ActionRelationship/| | }"]
+ ActionRelationship->KDMRelationship[arrowhead=onormal,group=KDMRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EntryFlow[label="{EntryFlow| | }"]
+ EntryFlow->CallableElement[arrowhead=vee,arrowtail=none,headlabel="from",group=CallableElement,minlen=2,constraint=false,]
+ EntryFlow->FlowRelationship[arrowhead=onormal,group=FlowRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Flow[label="{Flow| | }"]
+ Flow->ControlFlow[arrowhead=onormal,group=ControlFlow,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TrueFlow[label="{TrueFlow| | }"]
+ TrueFlow->ControlFlow[arrowhead=onormal,group=ControlFlow,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FalseFlow[label="{FalseFlow| | }"]
+ FalseFlow->ControlFlow[arrowhead=onormal,group=ControlFlow,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GuardedFlow[label="{GuardedFlow| | }"]
+ GuardedFlow->ControlFlow[arrowhead=onormal,group=ControlFlow,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Initializes[label="{Initializes| | }"]
+ Initializes->StorableElement[arrowhead=vee,arrowtail=none,headlabel="to",group=StorableElement,minlen=2,constraint=false,]
+ Initializes->ActionElement[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outInitializes[*]",group=ActionElement,minlen=2,constraint=false,]
+ Initializes->DataRelationship[arrowhead=onormal,group=DataRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Invokes[label="{Invokes| | }"]
+ Invokes->NamedTypeUnit[arrowhead=vee,arrowtail=none,headlabel="to",group=NamedTypeUnit,minlen=2,constraint=false,]
+ Invokes->ActionElement[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outInvokes[*]",group=ActionElement,minlen=2,constraint=false,]
+ Invokes->CallableRelationship[arrowhead=onormal,group=CallableRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActionGroup[label="{ActionGroup| | }"]
+ ActionGroup->ActionElement[arrowhead=onormal,group=ActionElement,minlen=2,constraint=true,]
+ ActionGroup->KDMGroup[arrowhead=onormal,group=KDMGroup,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_kdm"{
+labelloc=t
+color=black
+label=kdm
+ node[shape=record];
+KDMModelRoot[label="{/KDMModelRoot/| | }"]
+ KDMModelRoot->RuntimeModel[arrowhead=vee,arrowtail=diamond,headlabel="runtimeModel[*]",group=RuntimeModel,minlen=2,constraint=true,]
+ KDMModelRoot->UIModel[arrowhead=vee,arrowtail=diamond,headlabel="uiModel[*]",group=UIModel,minlen=2,constraint=true,]
+ KDMModelRoot->EventModel[arrowhead=vee,arrowtail=diamond,headlabel="eventModel[*]",group=EventModel,minlen=2,constraint=true,]
+ KDMModelRoot->BuildModel[arrowhead=vee,arrowtail=diamond,headlabel="buildModel[*]",group=BuildModel,minlen=2,constraint=true,]
+ KDMModelRoot->DataModel[arrowhead=vee,arrowtail=diamond,headlabel="dataModel[*]",group=DataModel,minlen=2,constraint=true,]
+ KDMModelRoot->StructureModel[arrowhead=vee,arrowtail=diamond,headlabel="structureModel[*]",group=StructureModel,minlen=2,constraint=true,]
+ KDMModelRoot->BehaviorModel[arrowhead=vee,arrowtail=diamond,headlabel="behaviorModel[*]",group=BehaviorModel,minlen=2,constraint=true,]
+ KDMModelRoot->ConceptualModel[arrowhead=vee,arrowtail=diamond,headlabel="conceptualModel[*]",group=ConceptualModel,minlen=2,constraint=true,]
+ KDMModelRoot->CodeModel[arrowhead=vee,arrowtail=diamond,headlabel="codeModel[*]",group=CodeModel,minlen=2,constraint=true,]
+ KDMModelRoot->PlatformModel[arrowhead=vee,arrowtail=diamond,headlabel="platformModel[*]",group=PlatformModel,minlen=2,constraint=true,]
+ KDMModelRoot->KDMFramework[arrowhead=onormal,group=KDMFramework,minlen=2,constraint=true,]
+;
+ node[shape=record];
+KDMRoot[label="{KDMRoot| | }"]
+ KDMRoot->KDMSegment[arrowhead=vee,arrowtail=diamond,headlabel="segment[*]",group=KDMSegment,minlen=2,constraint=true,]
+ KDMRoot->KDMModelRoot[arrowhead=onormal,group=KDMModelRoot,minlen=2,constraint=true,]
+;
+ node[shape=record];
+KDMFramework[label="{/KDMFramework/|name : String| }"]
+ KDMFramework->Audit[arrowhead=vee,arrowtail=diamond,headlabel="audit[*]",group=Audit,minlen=2,constraint=true,]
+ KDMFramework->KDMExtensionFamily[arrowhead=vee,arrowtail=diamond,headlabel="extension[*]",group=KDMExtensionFamily,minlen=2,constraint=true,]
+ KDMFramework->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+KDMModel[label="{/KDMModel/| | }"]
+ KDMModel->KDMFramework[arrowhead=onormal,group=KDMFramework,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Audit[label="{Audit|description : String\nduthor : String\ndate : String| }"]
+ Audit->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+KDMSegment[label="{KDMSegment| | }"]
+ KDMSegment->KDMModelRoot[arrowhead=onormal,group=KDMModelRoot,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Runtime"{
+labelloc=t
+color=black
+label=Runtime
+ node[shape=record];
+RuntimeElement[label="{/RuntimeElement/| | }"]
+ RuntimeElement->KDMEntity[arrowhead=onormal,group=KDMEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RuntimeModel[label="{RuntimeModel| | }"]
+ RuntimeModel->RuntimeRelation[arrowhead=vee,arrowtail=diamond,headlabel="relation[*]",group=RuntimeRelation,minlen=2,constraint=true,]
+ RuntimeModel->RuntimeElement[arrowhead=vee,arrowtail=diamond,headlabel="runtimeElement[*]",group=RuntimeElement,minlen=2,constraint=true,]
+ RuntimeModel->KDMModel[arrowhead=onormal,group=KDMModel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RuntimeContainer[label="{/RuntimeContainer/| | }"]
+ RuntimeContainer->RuntimeElement[arrowhead=onormal,group=RuntimeElement,minlen=2,constraint=true,]
+ RuntimeContainer->KDMContainer[arrowhead=onormal,group=KDMContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Process[label="{Process| | }"]
+ Process->Thread[arrowhead=vee,arrowtail=diamond,headlabel="thread[*]",group=Thread,minlen=2,constraint=true,]
+ Process->DeployedComponent[arrowhead=vee,arrowtail=diamond,headlabel="component[*]",group=DeployedComponent,minlen=2,constraint=true,]
+ Process->RunnableElement[arrowhead=onormal,group=RunnableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Thread[label="{Thread| | }"]
+ Thread->RunnableElement[arrowhead=onormal,group=RunnableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RuntimeRelation[label="{/RuntimeRelation/| | }"]
+ RuntimeRelation->KDMRelationship[arrowhead=onormal,group=KDMRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Machine[label="{Machine| | }"]
+ Machine->DeployedComponent[arrowhead=vee,arrowtail=diamond,headlabel="component[*]",group=DeployedComponent,minlen=2,constraint=true,]
+ Machine->DeployedResource[arrowhead=vee,arrowtail=diamond,headlabel="resource[*]",group=DeployedResource,minlen=2,constraint=true,]
+ Machine->RuntimeContainer[arrowhead=onormal,group=RuntimeContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DeployedSoftwareSystem[label="{DeployedSoftwareSystem| | }"]
+ DeployedSoftwareSystem->SoftwareSystem[arrowhead=vee,arrowtail=none,headlabel="system",group=SoftwareSystem,minlen=2,constraint=false,]
+ DeployedSoftwareSystem->RuntimeGroup[arrowhead=onormal,group=RuntimeGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DeployedComponent[label="{DeployedComponent| | }"]
+ DeployedComponent->DeployedSoftwareSystem[arrowhead=none,arrowtail=none,headlabel="deployment",taillabel="component[*]",group=DeployedSoftwareSystem,minlen=2,constraint=false,]
+ DeployedComponent->CodeAssembly[arrowhead=vee,arrowtail=none,headlabel="component[*]",group=CodeAssembly,minlen=2,constraint=false,]
+ DeployedComponent->RuntimeGroup[arrowhead=onormal,group=RuntimeGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LoadingService[label="{LoadingService| | }"]
+ LoadingService->RuntimeService[arrowhead=onormal,group=RuntimeService,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SpawningService[label="{SpawningService| | }"]
+ SpawningService->RuntimeService[arrowhead=onormal,group=RuntimeService,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Loads[label="{Loads| | }"]
+ Loads->DeployedComponent[arrowhead=none,arrowtail=none,headlabel="to",taillabel="inLoads[*]",group=DeployedComponent,minlen=2,constraint=false,]
+ Loads->LoadingService[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outLoads[*]",group=LoadingService,minlen=2,constraint=false,]
+ Loads->RuntimeRelation[arrowhead=onormal,group=RuntimeRelation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RuntimeGroup[label="{RuntimeGroup| | }"]
+ RuntimeGroup->RuntimeElement[arrowhead=none,arrowtail=none,headlabel="runtimeElement[*]",taillabel="runtimeGroup[*]",group=RuntimeElement,minlen=2,constraint=false,]
+ RuntimeGroup->RuntimeElement[arrowhead=onormal,group=RuntimeElement,minlen=2,constraint=true,]
+ RuntimeGroup->KDMGroup[arrowhead=onormal,group=KDMGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RuntimeService[label="{RuntimeService| | }"]
+ RuntimeService->ActionElement[arrowhead=onormal,group=ActionElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Spawns[label="{Spawns| | }"]
+ Spawns->SpawningService[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outSpawns[*]",group=SpawningService,minlen=2,constraint=false,]
+ Spawns->RuntimeRelation[arrowhead=onormal,group=RuntimeRelation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RunnableElement[label="{/RunnableElement/| | }"]
+ RunnableElement->Spawns[arrowhead=none,arrowtail=none,headlabel="inSpawns[*]",taillabel="to",group=Spawns,minlen=2,constraint=false,]
+ RunnableElement->RuntimeContainer[arrowhead=onormal,group=RuntimeContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DeployedResource[label="{DeployedResource| | }"]
+ DeployedResource->ResourceInstance[arrowhead=vee,arrowtail=none,headlabel="instance[*]",group=ResourceInstance,minlen=2,constraint=false,]
+ DeployedResource->ResourceProvider[arrowhead=vee,arrowtail=none,headlabel="provider[*]",group=ResourceProvider,minlen=2,constraint=false,]
+ DeployedResource->ResourceElement[arrowhead=vee,arrowtail=none,headlabel="element[*]",group=ResourceElement,minlen=2,constraint=false,]
+ DeployedResource->RuntimeGroup[arrowhead=onormal,group=RuntimeGroup,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Source"{
+labelloc=t
+color=black
+label=Source
+ node[shape=record];
+SourceRef[label="{SourceRef|language : String\nsnippet : String| }"]
+ SourceRef->SourceRegion[arrowhead=vee,arrowtail=diamond,headlabel="region[*]{ordered}",group=SourceRegion,minlen=2,constraint=true,]
+ SourceRef->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SourceRegion[label="{SourceRegion|startLine : String\nstartPosition : String\nendLine : String\nendPosition : String\nlanguage : String\npath : String| }"]
+ SourceRegion->SourceFile[arrowhead=vee,arrowtail=none,headlabel="file[0-1]",group=SourceFile,minlen=2,constraint=false,]
+ SourceRegion->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Code"{
+labelloc=t
+color=black
+label=Code
+ node[shape=record];
+CodeElement[label="{/CodeElement/| | }"]
+ CodeElement->KDMEntity[arrowhead=onormal,group=KDMEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PrototypeRelationship[label="{/PrototypeRelationship/| | }"]
+ PrototypeRelationship->CodeRelationship[arrowhead=onormal,group=CodeRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CallableElement[label="{CallableElement|isExternal : Boolean| }"]
+ CallableElement->CodeElement[arrowhead=vee,arrowtail=diamond,headlabel="codeElement[*]",group=CodeElement,minlen=2,constraint=true,]
+ CallableElement->CodeContainer[arrowhead=onormal,group=CodeContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PrototypeUnit[label="{PrototypeUnit| | }"]
+ PrototypeUnit->CodeResource[arrowhead=onormal,group=CodeResource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PrototypedBy[label="{PrototypedBy| | }"]
+ PrototypedBy->PrototypeUnit[arrowhead=none,arrowtail=none,headlabel="to",taillabel="inPrototypedBy[*]",group=PrototypeUnit,minlen=2,constraint=false,]
+ PrototypedBy->PrototypeRelationship[arrowhead=onormal,group=PrototypeRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MethodUnit[label="{MethodUnit| | }"]
+ MethodUnit->CallableElement[arrowhead=onormal,group=CallableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CodeAssembly[label="{CodeAssembly| | }"]
+ CodeAssembly->Module[arrowhead=onormal,group=Module,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MacroUnit[label="{MacroUnit| | }"]
+ MacroUnit->CodeElement[arrowhead=vee,arrowtail=diamond,headlabel="codeElement[*]",group=CodeElement,minlen=2,constraint=true,]
+ MacroUnit->CodeContainer[arrowhead=onormal,group=CodeContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CodeGroup[label="{CodeGroup| | }"]
+ CodeGroup->CodeResource[arrowhead=none,arrowtail=none,headlabel="codeElement[*]",taillabel="codeGroup[*]",group=CodeResource,minlen=2,constraint=false,]
+ CodeGroup->CodeResource[arrowhead=onormal,group=CodeResource,minlen=2,constraint=true,]
+ CodeGroup->KDMGroup[arrowhead=onormal,group=KDMGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CallableUnit[label="{CallableUnit| | }"]
+ CallableUnit->CallableElement[arrowhead=onormal,group=CallableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TemplateUnit[label="{TemplateUnit| | }"]
+ TemplateUnit->TemplateParameter[arrowhead=vee,arrowtail=diamond,headlabel="parameter[*]",group=TemplateParameter,minlen=2,constraint=true,]
+ TemplateUnit->CodeResource[arrowhead=vee,arrowtail=diamond,headlabel="templateElement[*]",group=CodeResource,minlen=2,constraint=true,]
+ TemplateUnit->CodeContainer[arrowhead=onormal,group=CodeContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TemplateParameter[label="{TemplateParameter| | }"]
+ TemplateParameter->CodeResource[arrowhead=onormal,group=CodeResource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TemplateInstance[label="{TemplateInstance| | }"]
+ TemplateInstance->CodeResource[arrowhead=vee,arrowtail=diamond,headlabel="instance[*]",group=CodeResource,minlen=2,constraint=true,]
+ TemplateInstance->CodeContainer[arrowhead=onormal,group=CodeContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Instantiates[label="{Instantiates| | }"]
+ Instantiates->TemplateUnit[arrowhead=none,arrowtail=none,headlabel="to",taillabel="inInstantiates[*]",group=TemplateUnit,minlen=2,constraint=false,]
+ Instantiates->TemplateInstance[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outInstantiates[*]",group=TemplateInstance,minlen=2,constraint=false,]
+ Instantiates->TemplateRelationship[arrowhead=onormal,group=TemplateRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BlockUnit[label="{BlockUnit| | }"]
+ BlockUnit->CallableElement[arrowhead=onormal,group=CallableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConstructorUnit[label="{ConstructorUnit| | }"]
+ ConstructorUnit->CallableElement[arrowhead=onormal,group=CallableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InstanceOf[label="{InstanceOf| | }"]
+ InstanceOf->CodeResource[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outInstanceOf[*]",group=CodeResource,minlen=2,constraint=false,]
+ InstanceOf->CodeResource[arrowhead=none,arrowtail=none,headlabel="to",taillabel="inInstanceOf[*]",group=CodeResource,minlen=2,constraint=false,]
+ InstanceOf->TemplateRelationship[arrowhead=onormal,group=TemplateRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CodeContainer[label="{/CodeContainer/| | }"]
+ CodeContainer->CodeResource[arrowhead=onormal,group=CodeResource,minlen=2,constraint=true,]
+ CodeContainer->KDMContainer[arrowhead=onormal,group=KDMContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompilationUnit[label="{CompilationUnit| | }"]
+ CompilationUnit->Module[arrowhead=onormal,group=Module,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CodeModel[label="{CodeModel| | }"]
+ CodeModel->CodeElement[arrowhead=vee,arrowtail=diamond,headlabel="codeElement[*]",group=CodeElement,minlen=2,constraint=true,]
+ CodeModel->ActionRelationship[arrowhead=vee,arrowtail=diamond,headlabel="actionRelation[*]",group=ActionRelationship,minlen=2,constraint=true,]
+ CodeModel->CodeRelationship[arrowhead=vee,arrowtail=diamond,headlabel="codeRelation[*]",group=CodeRelationship,minlen=2,constraint=true,]
+ CodeModel->KDMModel[arrowhead=onormal,group=KDMModel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperatorUnit[label="{OperatorUnit| | }"]
+ OperatorUnit->CallableElement[arrowhead=onormal,group=CallableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TemplateRelationship[label="{/TemplateRelationship/| | }"]
+ TemplateRelationship->CodeRelationship[arrowhead=onormal,group=CodeRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ArrayUnit[label="{ArrayUnit| | }"]
+ ArrayUnit->DerivedTypeElement[arrowhead=onormal,group=DerivedTypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BooleanUnit[label="{BooleanUnit| | }"]
+ BooleanUnit->PredefinedTypeElement[arrowhead=onormal,group=PredefinedTypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CharUnit[label="{CharUnit| | }"]
+ CharUnit->PredefinedTypeElement[arrowhead=onormal,group=PredefinedTypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ClassUnit[label="{ClassUnit|isAbstract : Boolean\nisInterface : Boolean| }"]
+ ClassUnit->TypeElement[arrowhead=vee,arrowtail=diamond,headlabel="member[*]",group=TypeElement,minlen=2,constraint=true,]
+ ClassUnit->ConstructorUnit[arrowhead=vee,arrowtail=diamond,headlabel="constructor[*]",group=ConstructorUnit,minlen=2,constraint=true,]
+ ClassUnit->MethodUnit[arrowhead=vee,arrowtail=diamond,headlabel="method[*]",group=MethodUnit,minlen=2,constraint=true,]
+ ClassUnit->OperatorUnit[arrowhead=vee,arrowtail=diamond,headlabel="operator[*]",group=OperatorUnit,minlen=2,constraint=true,]
+ ClassUnit->TypeContainer[arrowhead=onormal,group=TypeContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompositeUnit[label="{CompositeUnit| | }"]
+ CompositeUnit->CompositeTypeElement[arrowhead=onormal,group=CompositeTypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EnumeratedLiteral[label="{EnumeratedLiteral| | }"]
+ EnumeratedLiteral->TypeElement[arrowhead=onormal,group=TypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EnumeratedUnit[label="{EnumeratedUnit| | }"]
+ EnumeratedUnit->TypeContainer[arrowhead=onormal,group=TypeContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Extends[label="{Extends| | }"]
+ Extends->TypeElement[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outExtends[*]",group=TypeElement,minlen=2,constraint=false,]
+ Extends->TypeRelationship[arrowhead=onormal,group=TypeRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FixedPointUnit[label="{FixedPointUnit| | }"]
+ FixedPointUnit->PredefinedTypeElement[arrowhead=onormal,group=PredefinedTypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FloatUnit[label="{FloatUnit| | }"]
+ FloatUnit->PredefinedTypeElement[arrowhead=onormal,group=PredefinedTypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+HasType[label="{HasType| | }"]
+ HasType->TypeRelationship[arrowhead=onormal,group=TypeRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ImplementationOf[label="{ImplementationOf| | }"]
+ ImplementationOf->InterfaceRelationship[arrowhead=onormal,group=InterfaceRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Implements[label="{Implements| | }"]
+ Implements->InterfaceRelationship[arrowhead=onormal,group=InterfaceRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IntegerUnit[label="{IntegerUnit| | }"]
+ IntegerUnit->PredefinedTypeElement[arrowhead=onormal,group=PredefinedTypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Interface[label="{Interface| | }"]
+ Interface->TypeElement[arrowhead=vee,arrowtail=diamond,headlabel="signature[*]",group=TypeElement,minlen=2,constraint=true,]
+ Interface->Implements[arrowhead=none,arrowtail=none,headlabel="inImplements[*]",taillabel="to",group=Implements,minlen=2,constraint=false,]
+ Interface->CompliesTo[arrowhead=vee,arrowtail=none,headlabel="inComplies[*]",group=CompliesTo,minlen=2,constraint=false,]
+ Interface->TypeElement[arrowhead=vee,arrowtail=diamond,headlabel="type[*]",group=TypeElement,minlen=2,constraint=true,]
+ Interface->KDMGroup[arrowhead=onormal,group=KDMGroup,minlen=2,constraint=true,]
+ Interface->TypeContainer[arrowhead=onormal,group=TypeContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InterfaceRelationship[label="{/InterfaceRelationship/| | }"]
+ InterfaceRelationship->CodeRelationship[arrowhead=onormal,group=CodeRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PointerUnit[label="{PointerUnit| | }"]
+ PointerUnit->DerivedTypeElement[arrowhead=onormal,group=DerivedTypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PredefinedTypeElement[label="{PredefinedTypeElement| | }"]
+ PredefinedTypeElement->SimpleTypeElement[arrowhead=onormal,group=SimpleTypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NamedTypeUnit[label="{NamedTypeUnit| | }"]
+ NamedTypeUnit->SimpleTypeElement[arrowhead=onormal,group=SimpleTypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RefinementUnit[label="{RefinementUnit| | }"]
+ RefinementUnit->DerivedTypeElement[arrowhead=onormal,group=DerivedTypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Signature[label="{Signature| | }"]
+ Signature->ImplementationOf[arrowhead=none,arrowtail=none,headlabel="inImplementation[*]",taillabel="to",group=ImplementationOf,minlen=2,constraint=false,]
+ Signature->TypeElement[arrowhead=vee,arrowtail=diamond,headlabel="return[0-1]",group=TypeElement,minlen=2,constraint=true,]
+ Signature->TypeElement[arrowhead=vee,arrowtail=diamond,headlabel="parameter[*]{ordered}",group=TypeElement,minlen=2,constraint=true,]
+ Signature->TypeContainer[arrowhead=onormal,group=TypeContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StorableElement[label="{/StorableElement/| | }"]
+ StorableElement->KDMEntity[arrowhead=onormal,group=KDMEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StringUnit[label="{StringUnit| | }"]
+ StringUnit->PredefinedTypeElement[arrowhead=onormal,group=PredefinedTypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TypeElement[label="{/TypeElement/|kind : InstanceKind| }"]
+ TypeElement->Extends[arrowhead=none,arrowtail=none,headlabel="inExtends[*]",taillabel="to",group=Extends,minlen=2,constraint=false,]
+ TypeElement->HasType[arrowhead=none,arrowtail=none,headlabel="inHasType[*]",taillabel="to",group=HasType,minlen=2,constraint=false,]
+ TypeElement->CodeResource[arrowhead=onormal,group=CodeResource,minlen=2,constraint=true,]
+ TypeElement->StorableElement[arrowhead=onormal,group=StorableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TypeRelationship[label="{/TypeRelationship/| | }"]
+ TypeRelationship->CodeRelationship[arrowhead=onormal,group=CodeRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UnionUnit[label="{UnionUnit| | }"]
+ UnionUnit->CompositeTypeElement[arrowhead=onormal,group=CompositeTypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CodeRelationship[label="{/CodeRelationship/| | }"]
+ CodeRelationship->KDMRelationship[arrowhead=onormal,group=KDMRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TypeContainer[label="{/TypeContainer/| | }"]
+ TypeContainer->TypeElement[arrowhead=onormal,group=TypeElement,minlen=2,constraint=true,]
+ TypeContainer->CodeContainer[arrowhead=onormal,group=CodeContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompositeTypeElement[label="{CompositeTypeElement| | }"]
+ CompositeTypeElement->TypeElement[arrowhead=vee,arrowtail=diamond,headlabel="field[*]",group=TypeElement,minlen=2,constraint=true,]
+ CompositeTypeElement->TypeContainer[arrowhead=onormal,group=TypeContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DerivedTypeElement[label="{DerivedTypeElement| | }"]
+ DerivedTypeElement->TypeElement[arrowhead=vee,arrowtail=diamond,headlabel="baseType",group=TypeElement,minlen=2,constraint=true,]
+ DerivedTypeElement->TypeContainer[arrowhead=onormal,group=TypeContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NamespaceUnit[label="{NamespaceUnit| | }"]
+ NamespaceUnit->CodeResource[arrowhead=onormal,group=CodeResource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VisibleIn[label="{VisibleIn| | }"]
+ VisibleIn->CodeResource[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outVisible[*]",group=CodeResource,minlen=2,constraint=false,]
+ VisibleIn->PrototypeRelationship[arrowhead=onormal,group=PrototypeRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CommentUnit[label="{CommentUnit| | }"]
+ CommentUnit->TypeElement[arrowhead=onormal,group=TypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SharedUnit[label="{SharedUnit| | }"]
+ SharedUnit->CompilationUnit[arrowhead=onormal,group=CompilationUnit,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DecimalUnit[label="{DecimalUnit| | }"]
+ DecimalUnit->PredefinedTypeElement[arrowhead=onormal,group=PredefinedTypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DateUnit[label="{DateUnit| | }"]
+ DateUnit->PredefinedTypeElement[arrowhead=onormal,group=PredefinedTypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TimeUnit[label="{TimeUnit| | }"]
+ TimeUnit->PredefinedTypeElement[arrowhead=onormal,group=PredefinedTypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleTypeElement[label="{SimpleTypeElement| | }"]
+ SimpleTypeElement->TypeElement[arrowhead=onormal,group=TypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CodeResource[label="{/CodeResource/| | }"]
+ CodeResource->HasType[arrowhead=none,arrowtail=none,headlabel="outHasType[*]",taillabel="from",group=HasType,minlen=2,constraint=false,]
+ CodeResource->PrototypedBy[arrowhead=none,arrowtail=none,headlabel="outPrototypedBy[*]",taillabel="from",group=PrototypedBy,minlen=2,constraint=false,]
+ CodeResource->ImplementationOf[arrowhead=none,arrowtail=none,headlabel="outImplementation[*]",taillabel="from",group=ImplementationOf,minlen=2,constraint=false,]
+ CodeResource->Implements[arrowhead=none,arrowtail=none,headlabel="outInterface[*]",taillabel="from",group=Implements,minlen=2,constraint=false,]
+ CodeResource->VisibleIn[arrowhead=none,arrowtail=none,headlabel="inVisible[*]",taillabel="to",group=VisibleIn,minlen=2,constraint=false,]
+ CodeResource->CodeElement[arrowhead=onormal,group=CodeElement,minlen=2,constraint=true,]
+ CodeResource->ProgramElement[arrowhead=onormal,group=ProgramElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Module[label="{/Module/| | }"]
+ Module->CodeElement[arrowhead=vee,arrowtail=diamond,headlabel="codeElement[*]",group=CodeElement,minlen=2,constraint=true,]
+ Module->CodeContainer[arrowhead=onormal,group=CodeContainer,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Conceptual"{
+labelloc=t
+color=black
+label=Conceptual
+ node[shape=record];
+ConceptualModel[label="{ConceptualModel| | }"]
+ ConceptualModel->ConceptualElement[arrowhead=vee,arrowtail=diamond,headlabel="conceptualElement[*]",group=ConceptualElement,minlen=2,constraint=true,]
+ ConceptualModel->KDMModel[arrowhead=onormal,group=KDMModel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConceptualElement[label="{/ConceptualElement/| | }"]
+ ConceptualElement->ConceptualGroup[arrowhead=none,arrowtail=none,headlabel="conceptualGroup[*]",taillabel="conceptualElement[*]",group=ConceptualGroup,minlen=2,constraint=false,]
+ ConceptualElement->KDMGroup[arrowhead=onormal,group=KDMGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TermUnit[label="{TermUnit| | }"]
+ TermUnit->ConceptualGroup[arrowhead=onormal,group=ConceptualGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FactUnit[label="{FactUnit| | }"]
+ FactUnit->ConceptualGroup[arrowhead=onormal,group=ConceptualGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConceptualContainer[label="{ConceptualContainer| | }"]
+ ConceptualContainer->ConceptualElement[arrowhead=vee,arrowtail=diamond,headlabel="conceptualElement[*]",group=ConceptualElement,minlen=2,constraint=true,]
+ ConceptualContainer->ConceptualElement[arrowhead=onormal,group=ConceptualElement,minlen=2,constraint=true,]
+ ConceptualContainer->KDMContainer[arrowhead=onormal,group=KDMContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConceptualGroup[label="{ConceptualGroup| | }"]
+ ConceptualGroup->ProgramElement[arrowhead=vee,arrowtail=none,headlabel="definition[*]",group=ProgramElement,minlen=2,constraint=false,]
+ ConceptualGroup->ConceptualElement[arrowhead=onormal,group=ConceptualElement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Behavior"{
+labelloc=t
+color=black
+label=Behavior
+ node[shape=record];
+BehaviorGroup[label="{BehaviorGroup| | }"]
+ BehaviorGroup->ActionElement[arrowhead=vee,arrowtail=none,headlabel="actionElement[*]{ordered}",group=ActionElement,minlen=2,constraint=false,]
+ BehaviorGroup->KDMGroup[arrowhead=onormal,group=KDMGroup,minlen=2,constraint=true,]
+ BehaviorGroup->BehaviorElement[arrowhead=onormal,group=BehaviorElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BehaviorUnit[label="{BehaviorUnit| | }"]
+ BehaviorUnit->BehaviorGroup[arrowhead=onormal,group=BehaviorGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ScenarioUnit[label="{ScenarioUnit| | }"]
+ ScenarioUnit->BehaviorGroup[arrowhead=onormal,group=BehaviorGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RuleUnit[label="{RuleUnit| | }"]
+ RuleUnit->BehaviorGroup[arrowhead=onormal,group=BehaviorGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BehaviorModel[label="{BehaviorModel| | }"]
+ BehaviorModel->BehaviorElement[arrowhead=vee,arrowtail=diamond,headlabel="behaviorElement[*]",group=BehaviorElement,minlen=2,constraint=true,]
+ BehaviorModel->KDMModel[arrowhead=onormal,group=KDMModel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BehaviorElement[label="{/BehaviorElement/| | }"]
+ BehaviorElement->BehaviorGroup[arrowhead=none,arrowtail=none,headlabel="behaviorGroup[*]",taillabel="behaviorElement[*]",group=BehaviorGroup,minlen=2,constraint=false,]
+ BehaviorElement->KDMEntity[arrowhead=onormal,group=KDMEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BehaviorContainer[label="{BehaviorContainer| | }"]
+ BehaviorContainer->BehaviorElement[arrowhead=vee,arrowtail=diamond,headlabel="behaviorElement[*]",group=BehaviorElement,minlen=2,constraint=true,]
+ BehaviorContainer->BehaviorElement[arrowhead=onormal,group=BehaviorElement,minlen=2,constraint=true,]
+ BehaviorContainer->KDMContainer[arrowhead=onormal,group=KDMContainer,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Data"{
+labelloc=t
+color=black
+label=Data
+ node[shape=record];
+DataModel[label="{DataModel| | }"]
+ DataModel->DataRelation[arrowhead=vee,arrowtail=diamond,headlabel="relation[*]",group=DataRelation,minlen=2,constraint=true,]
+ DataModel->DataElement[arrowhead=vee,arrowtail=diamond,headlabel="dataElement[*]",group=DataElement,minlen=2,constraint=true,]
+ DataModel->KDMModel[arrowhead=onormal,group=KDMModel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataContainer[label="{/DataContainer/| | }"]
+ DataContainer->KDMContainer[arrowhead=onormal,group=KDMContainer,minlen=2,constraint=true,]
+ DataContainer->DataElement[arrowhead=onormal,group=DataElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataElement[label="{/DataElement/| | }"]
+ DataElement->StorableElement[arrowhead=onormal,group=StorableElement,minlen=2,constraint=true,]
+ DataElement->ProgramElement[arrowhead=onormal,group=ProgramElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataGroup[label="{DataGroup| | }"]
+ DataGroup->DataElement[arrowhead=none,arrowtail=none,headlabel="dataElement[*]",taillabel="dataGroup[*]",group=DataElement,minlen=2,constraint=false,]
+ DataGroup->DataElement[arrowhead=onormal,group=DataElement,minlen=2,constraint=true,]
+ DataGroup->KDMGroup[arrowhead=onormal,group=KDMGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UniqueKey[label="{UniqueKey| | }"]
+ UniqueKey->DataGroup[arrowhead=onormal,group=DataGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Index[label="{Index| | }"]
+ Index->DataGroup[arrowhead=onormal,group=DataGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+KeyRelation[label="{KeyRelation| | }"]
+ KeyRelation->ReferenceKey[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outKey[*]",group=ReferenceKey,minlen=2,constraint=false,]
+ KeyRelation->UniqueKey[arrowhead=none,arrowtail=none,headlabel="to",taillabel="inKey[*]",group=UniqueKey,minlen=2,constraint=false,]
+ KeyRelation->DataRelation[arrowhead=onormal,group=DataRelation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReferenceKey[label="{ReferenceKey| | }"]
+ ReferenceKey->DataGroup[arrowhead=onormal,group=DataGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataRelation[label="{/DataRelation/| | }"]
+ DataRelation->KDMRelationship[arrowhead=onormal,group=KDMRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Catalog[label="{Catalog| | }"]
+ Catalog->DBSchema[arrowhead=vee,arrowtail=diamond,headlabel="schema[*]",group=DBSchema,minlen=2,constraint=true,]
+ Catalog->DataContainer[arrowhead=onormal,group=DataContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DBSchema[label="{DBSchema| | }"]
+ DBSchema->DBTrigger[arrowhead=vee,arrowtail=diamond,headlabel="trigger[*]",group=DBTrigger,minlen=2,constraint=true,]
+ DBSchema->Index[arrowhead=vee,arrowtail=diamond,headlabel="index[*]",group=Index,minlen=2,constraint=true,]
+ DBSchema->StoredProcedure[arrowhead=vee,arrowtail=diamond,headlabel="procedure[*]",group=StoredProcedure,minlen=2,constraint=true,]
+ DBSchema->ColumnSet[arrowhead=vee,arrowtail=diamond,headlabel="columnSet[*]",group=ColumnSet,minlen=2,constraint=true,]
+ DBSchema->DataContainer[arrowhead=onormal,group=DataContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Table[label="{Table| | }"]
+ Table->ColumnSet[arrowhead=onormal,group=ColumnSet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+View[label="{View| | }"]
+ View->ColumnSet[arrowhead=onormal,group=ColumnSet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Query[label="{Query| | }"]
+ Query->ActionElement[arrowhead=onormal,group=ActionElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RecordFile[label="{RecordFile| | }"]
+ RecordFile->CompositeTypeElement[arrowhead=vee,arrowtail=diamond,headlabel="record[*]",group=CompositeTypeElement,minlen=2,constraint=true,]
+ RecordFile->Index[arrowhead=vee,arrowtail=diamond,headlabel="index[*]",group=Index,minlen=2,constraint=true,]
+ RecordFile->DataContainer[arrowhead=onormal,group=DataContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ColumnSet[label="{ColumnSet| | }"]
+ ColumnSet->PredefinedTypeElement[arrowhead=vee,arrowtail=diamond,headlabel="column[*]{ordered}",group=PredefinedTypeElement,minlen=2,constraint=true,]
+ ColumnSet->DataContainer[arrowhead=onormal,group=DataContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DBTrigger[label="{DBTrigger| | }"]
+ DBTrigger->EventElement[arrowhead=onormal,group=EventElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ProgramElement[label="{/ProgramElement/| | }"]
+ ProgramElement->KDMEntity[arrowhead=onormal,group=KDMEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StoredProcedure[label="{StoredProcedure| | }"]
+ StoredProcedure->CallableElement[arrowhead=onormal,group=CallableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XMLSchema[label="{XMLSchema| | }"]
+ XMLSchema->XMLElement[arrowhead=vee,arrowtail=diamond,headlabel="xmlElement[*]",group=XMLElement,minlen=2,constraint=true,]
+ XMLSchema->DataContainer[arrowhead=onormal,group=DataContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XMLElement[label="{/XMLElement/| | }"]
+ XMLElement->DataContainer[arrowhead=onormal,group=DataContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XMLComplexType[label="{/XMLComplexType/| | }"]
+ XMLComplexType->SimpleTypeElement[arrowhead=vee,arrowtail=diamond,headlabel="attributes[*]",group=SimpleTypeElement,minlen=2,constraint=true,]
+ XMLComplexType->XMLElement[arrowhead=vee,arrowtail=diamond,headlabel="element[*]",group=XMLElement,minlen=2,constraint=true,]
+ XMLComplexType->XMLElement[arrowhead=onormal,group=XMLElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XMLAll[label="{XMLAll| | }"]
+ XMLAll->XMLComplexType[arrowhead=onormal,group=XMLComplexType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XMLSeq[label="{XMLSeq| | }"]
+ XMLSeq->XMLComplexType[arrowhead=onormal,group=XMLComplexType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XMLChoice[label="{XMLChoice| | }"]
+ XMLChoice->XMLComplexType[arrowhead=onormal,group=XMLComplexType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XMLOccurs[label="{XMLOccurs| | }"]
+ XMLOccurs->XMLComplexType[arrowhead=onormal,group=XMLComplexType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XMLGroup[label="{XMLGroup| | }"]
+ XMLGroup->XMLComplexType[arrowhead=onormal,group=XMLComplexType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XMLAny[label="{XMLAny| | }"]
+ XMLAny->XMLElement[arrowhead=onormal,group=XMLElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XMLRestriction[label="{XMLRestriction| | }"]
+ XMLRestriction->SimpleTypeElement[arrowhead=vee,arrowtail=diamond,headlabel="type",group=SimpleTypeElement,minlen=2,constraint=true,]
+ XMLRestriction->XMLElement[arrowhead=onormal,group=XMLElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XMLSimpleType[label="{XMLSimpleType| | }"]
+ XMLSimpleType->SimpleTypeElement[arrowhead=vee,arrowtail=diamond,headlabel="type",group=SimpleTypeElement,minlen=2,constraint=true,]
+ XMLSimpleType->XMLElement[arrowhead=onormal,group=XMLElement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Event"{
+labelloc=t
+color=black
+label=Event
+ node[shape=record];
+EventModel[label="{EventModel| | }"]
+ EventModel->EventRelationship[arrowhead=vee,arrowtail=diamond,headlabel="relation[*]",group=EventRelationship,minlen=2,constraint=true,]
+ EventModel->EventElement[arrowhead=vee,arrowtail=diamond,headlabel="eventElement[*]",group=EventElement,minlen=2,constraint=true,]
+ EventModel->KDMModel[arrowhead=onormal,group=KDMModel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EventElement[label="{/EventElement/| | }"]
+ EventElement->KDMEntity[arrowhead=onormal,group=KDMEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Trigger[label="{Trigger| | }"]
+ Trigger->EventElement[arrowhead=onormal,group=EventElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Triggers[label="{Triggers| | }"]
+ Triggers->EventRelationship[arrowhead=onormal,group=EventRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EventRelationship[label="{/EventRelationship/| | }"]
+ EventRelationship->KDMRelationship[arrowhead=onormal,group=KDMRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Message[label="{Message| | }"]
+ Message->EventElement[arrowhead=onormal,group=EventElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EventGroup[label="{EventGroup| | }"]
+ EventGroup->EventElement[arrowhead=none,arrowtail=none,headlabel="eventElement[*]",taillabel="eventGroup[*]",group=EventElement,minlen=2,constraint=false,]
+ EventGroup->EventElement[arrowhead=onormal,group=EventElement,minlen=2,constraint=true,]
+ EventGroup->KDMGroup[arrowhead=onormal,group=KDMGroup,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EventContainer[label="{EventContainer| | }"]
+ EventContainer->EventElement[arrowhead=vee,arrowtail=diamond,headlabel="eventElement[*]",group=EventElement,minlen=2,constraint=true,]
+ EventContainer->EventElement[arrowhead=onormal,group=EventElement,minlen=2,constraint=true,]
+ EventContainer->KDMContainer[arrowhead=onormal,group=KDMContainer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+HasSignature[label="{HasSignature| | }"]
+ HasSignature->EventElement[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outHasSignature[*]",group=EventElement,minlen=2,constraint=false,]
+ HasSignature->Signature[arrowhead=vee,arrowtail=none,headlabel="to",group=Signature,minlen=2,constraint=false,]
+ HasSignature->TypeRelationship[arrowhead=onormal,group=TypeRelationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UIEvent[label="{UIEvent| | }"]
+ UIEvent->EventElement[arrowhead=onormal,group=EventElement,minlen=2,constraint=true,]
+;
+
+}
+}

@@ -1,0 +1,94 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'UEML'>
+    <Class name = 'UEMLObject' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'has' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Geometry' opposite = 'UEML::Geometry::object'/>
+      <Reference name = 'model' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::UEMLModel' opposite = 'UEML::UEMLModel::contains'/>
+    </Class>
+    <Class name = 'UEMLModel' isAbstract = 'false' supertypes = 'UEML::UEMLObject'>
+      <Reference name = 'contains' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'UEML::UEMLObject' opposite = 'UEML::UEMLObject::model'/>
+    </Class>
+    <Class name = 'Geometry' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'object' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::UEMLObject' opposite = 'UEML::UEMLObject::has'/>
+    </Class>
+    <Class name = 'Port' isAbstract = 'false' supertypes = 'UEML::UEMLObject'/>
+    <Class name = 'Flow' isAbstract = 'false' supertypes = 'UEML::UEMLObject'>
+      <Reference name = 'associationConnector' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::AssociationConnector' opposite = 'UEML::AssociationConnector::classAssociation'/>
+    </Class>
+    <Class name = 'Activity' isAbstract = 'false' supertypes = 'UEML::UEMLObject'>
+      <Reference name = 'resourceRole' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UEML::ResourceRole' opposite = 'UEML::ResourceRole::in'/>
+      <Reference name = 'parent' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Process' opposite = 'UEML::Process::child'/>
+      <Reference name = 'hasOutput' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::OutputPort' opposite = 'UEML::OutputPort::activity'/>
+    </Class>
+    <Class name = 'Object' isAbstract = 'false' supertypes = 'UEML::UEMLObject'>
+      <Reference name = 'ioFlow' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::IOFlow' opposite = 'UEML::IOFlow::carries'/>
+    </Class>
+    <Class name = 'InformationObject' isAbstract = 'false' supertypes = 'UEML::Object'>
+      <Reference name = 'controlFlow' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::ControlFlow' opposite = 'UEML::ControlFlow::carries'/>
+    </Class>
+    <Class name = 'Resource' isAbstract = 'false' supertypes = 'UEML::Object'>
+      <Reference name = 'carries' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::ResourceFlow' opposite = 'UEML::ResourceFlow::resourceCarries'/>
+      <Reference name = 'plays' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UEML::ResourceRole' opposite = 'UEML::ResourceRole::resourcePlays'/>
+    </Class>
+    <Class name = 'MaterialResource' isAbstract = 'false' supertypes = 'UEML::Resource'/>
+    <Class name = 'HumanResource' isAbstract = 'false' supertypes = 'UEML::Resource'/>
+    <Class name = 'ResourceFlow' isAbstract = 'false' supertypes = 'UEML::Flow'>
+      <Reference name = 'resourceCarries' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Resource' opposite = 'UEML::Resource::carries'/>
+    </Class>
+    <Class name = 'IOFlow' isAbstract = 'false' supertypes = 'UEML::Flow'>
+      <Reference name = 'carries' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Object' opposite = 'UEML::Object::ioFlow'/>
+    </Class>
+    <Class name = 'ControlFlow' isAbstract = 'false' supertypes = 'UEML::Flow'>
+      <Reference name = 'carries' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UEML::InformationObject' opposite = 'UEML::InformationObject::controlFlow'/>
+    </Class>
+    <Class name = 'TriggerFlow' isAbstract = 'false' supertypes = 'UEML::ControlFlow'/>
+    <Class name = 'ConstraintFlow' isAbstract = 'false' supertypes = 'UEML::ControlFlow'/>
+    <Class name = 'ResourceRole' isAbstract = 'false' supertypes = 'UEML::Port'>
+      <Reference name = 'resourcePlays' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Resource' opposite = 'UEML::Resource::plays'/>
+      <Reference name = 'roleQualifier' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::RoleType' opposite = ''/>
+      <Reference name = 'in' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Activity' opposite = 'UEML::Activity::resourceRole'/>
+    </Class>
+    <Class name = 'RoleType' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Anchor' isAbstract = 'false' supertypes = 'UEML::Port'>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::AssociationConnector' opposite = 'UEML::AssociationConnector::origin'/>
+      <Reference name = 'origin' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::AssociationConnector' opposite = 'UEML::AssociationConnector::target'/>
+    </Class>
+    <Class name = 'OutputPort' isAbstract = 'false' supertypes = 'UEML::Anchor'>
+      <Reference name = 'activity' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Activity' opposite = 'UEML::Activity::hasOutput'/>
+    </Class>
+    <Class name = 'InputPort' isAbstract = 'false' supertypes = 'UEML::Anchor'/>
+    <Class name = 'ConnectionOperator' isAbstract = 'false' supertypes = 'UEML::Anchor'/>
+    <Class name = 'AssociationConnector' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'origin' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Anchor' opposite = 'UEML::Anchor::target'/>
+      <Reference name = 'target' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Anchor' opposite = 'UEML::Anchor::origin'/>
+      <Reference name = 'classAssociation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Flow' opposite = 'UEML::Flow::associationConnector'/>
+    </Class>
+    <Class name = 'Process' isAbstract = 'false' supertypes = 'UEML::Activity'>
+      <Reference name = 'child' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'UEML::Activity' opposite = 'UEML::Activity::parent'/>
+      <Reference name = 'fulfills' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Contract' opposite = 'UEML::Contract::process'/>
+      <Reference name = 'realises' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Service' opposite = 'UEML::Service::process'/>
+    </Class>
+    <Class name = 'Service' isAbstract = 'false' supertypes = 'UEML::Resource'>
+      <Reference name = 'process' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Process' opposite = 'UEML::Process::realises'/>
+    </Class>
+    <Class name = 'Agent' isAbstract = 'false' supertypes = 'UEML::Resource'>
+      <Reference name = 'obliger' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Commitment' opposite = 'UEML::Commitment::agentO'/>
+      <Reference name = 'claimer' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Commitment' opposite = 'UEML::Commitment::agentC'/>
+      <Reference name = 'has_parties' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Contract' opposite = 'UEML::Contract::agent'/>
+    </Class>
+    <Class name = 'Contract' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'process' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Process' opposite = 'UEML::Process::fulfills'/>
+      <Reference name = 'agent' lower = '2' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Agent' opposite = 'UEML::Agent::has_parties'/>
+      <Reference name = 'collection_of' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'UEML::Commitment' opposite = 'UEML::Commitment::contract'/>
+    </Class>
+    <Class name = 'Task' isAbstract = 'false' supertypes = 'UEML::Activity'>
+      <Reference name = 'fulfills' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Commitment' opposite = 'UEML::Commitment::task'/>
+    </Class>
+    <Class name = 'Commitment' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'task' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Task' opposite = 'UEML::Task::fulfills'/>
+      <Reference name = 'agentO' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Agent' opposite = 'UEML::Agent::obliger'/>
+      <Reference name = 'agentC' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Agent' opposite = 'UEML::Agent::claimer'/>
+      <Reference name = 'contract' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UEML::Contract' opposite = 'UEML::Contract::collection_of'/>
+    </Class>
+  </Package>
+</Metamodel>

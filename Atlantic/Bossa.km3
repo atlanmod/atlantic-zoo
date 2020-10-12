@@ -1,0 +1,705 @@
+-- @name		Bossa 1.0
+-- @version		1.1
+-- @authors		SROUR Youssef (srour.youssef@gmail.com)
+-- @date		2006/07/31
+-- @description	This metamodel describes Bossa. Bossa is a kernel-level event-based framework to facilitate the implementation and integration of new scheduling policies.
+-- @see 		http://www.emn.fr/x-info/bossa/grammar3.pdf
+-- @see			http://www.emn.fr/x-info/bossa/
+
+package Bossa {
+
+-- Begin class BossaProgramm
+	class BossaProgramm {
+		reference scheduler container : Scheduler;
+	}-- End Class BossaProgramm
+
+-- Begin class Schduler
+-- A scheduler is a Bossa programm it is contains, a handlers
+-- an interfaces, a functions and a declaration
+-- A scheduler may be a normal sceduler or a virtual scheduler
+	abstract class Scheduler {
+		attribute defaultAtt : Boolean;
+		attribute high_Res : Boolean;
+		attribute low_Res : Boolean;		
+		attribute id : String;
+		
+		reference handlerDef container : HandlerDef oppositeOf scheduler;
+		reference interfaceDef container : InterfaceDef oppositeOf scheduler;
+		reference functionDef container : FunctionDef oppositeOf scheduler;
+	}-- End class Scheduler
+
+-- Begin class NormalSchduler
+-- Normal scheduler contains a scheduler declaration
+	class NormalScheduler extends Scheduler {
+		reference schedulerDecl container : SchedulerDecl;
+	}-- End class NormalSchduler
+
+-- Begin class VirtualScheduler
+-- Virtual scheduler contains a vscheduler declaration
+	class VirtualScheduler extends Scheduler {
+		reference vschedulerDecl container : VSchdulerDecl;
+	}-- End class VirtualScheduler
+	
+-- Begin class AbstractSchedulerDecl
+	abstract class AbstractSchedulerDecl {		
+		reference constDef [*] container : ConstDef;-- constante data type
+		reference typeDef [*] container : TypeDef;-- data type
+		reference funDecl [*] container : FunDecl oppositeOf abstractSchedulerDecl;-- function
+		reference valDecl [*] container : ValDecl oppositeOf abstractSchedulerDecl;
+		reference stateDef container : StateDef oppositeOf abstractSchedulerDecl;-- states
+		reference orderDef [0-1] container : OrderDef oppositeOf abstractSchedulerDecl;
+		reference admissionDef [0-1] container : AdmissionDef oppositeOf abstractSchedulerDecl;
+		reference traceDef [0-1] container : TraceDef oppositeOf abstractSchedulerDecl;
+	}-- End class AbstractSchedulerDecl
+	
+-- Begin class SchdulerDecl
+	class SchedulerDecl extends AbstractSchedulerDecl {
+		reference processDef container : ProcessDef;
+	}-- End class SchdulerDecl
+
+-- Begin class VSchdulerDecl
+	class VSchdulerDecl extends AbstractSchedulerDecl {
+		reference schedulerDef container : SchedulerDef;
+	}-- End class VSchdulerDecl
+
+-- Begin class ConstDef
+	class ConstDef {
+		attribute id : String; -- the name of the constante
+		reference expr container : Expression;
+		reference bossaTypeExpr container: BossaTypeExpr;
+	}-- End class ConstDef
+
+-- Begin class TypeDef
+	class TypeDef {
+		reference enumRang container : EnumRange;
+	}-- End class TypeDef
+
+-- Begin class EnumRange
+	class EnumRange {
+		reference enumDef [0-1] container : EnumDef;
+		reference rangeDef [0-1] container : RangeDef;
+	}-- End class EnumRange
+
+-- Begin class EnumDef
+	class EnumDef {
+		attribute theIds [1-*] : String;
+		--reference theIds [*] container : BagId;
+	}-- End class EnumDef
+
+-- Begin class BagId
+	class BagId {
+		attribute theValue : String;
+	}-- End class BagId
+
+-- Begin class RangeDef
+	class RangeDef {
+		reference expr[2-2] container : Expression;
+	}-- End class RangeDef
+
+-- Begin class ProcessDef
+	class ProcessDef {
+		reference processVarDecl [1-*] container : ProcessVarDecl oppositeOf processDef;
+	}-- End class ProcessDef
+	
+-- Begin class SchedulerDef
+	class SchedulerDef {
+		reference processVarDecl [1-*] container : ProcessVarDecl oppositeOf schedulerDef;
+	}-- End class SchedulerDef
+
+-- Begin class ProcessVarDecl
+	class ProcessVarDecl {
+		attribute id : String;
+		reference processDef : ProcessDef oppositeOf processVarDecl;
+		reference schedulerDef : SchedulerDef oppositeOf processVarDecl;
+	}-- End class ProcessVarDecl
+
+-- Begin class Timer_ProcessVarDecl
+	class Timer_ProcessVarDecl extends ProcessVarDecl {		
+			
+	}-- End class Timer_ProcessVarDecl
+
+-- Begin class System_ProcessVarDecl
+	class System_ProcessVarDecl extends ProcessVarDecl {
+		attribute system : Boolean;		
+		reference typeExpr container : TypeExpr;
+	}-- End class System_ProcessVarDecl
+
+-- Begin class System_ProcessVarDecl
+	class Normal_ProcessVarDecl extends ProcessVarDecl {		
+		reference typeExpr container : TypeExpr;
+	}-- End class System_ProcessVarDecl
+	
+-- Begin class HandlerDef
+	class HandlerDef {
+		attribute id : String;
+		reference scheduler : Scheduler oppositeOf handlerDef;
+		reference onHandlerDef [1-*] container : OnHandlerDef;
+	}-- End class HandlerDef
+	
+-- Begin class InterfaceDef
+	class InterfaceDef {
+		reference composantOfInterFunc [1-*] container : ComposantOfInterFunc;
+		reference scheduler : Scheduler oppositeOf interfaceDef;
+	}-- End class InterfaceDef
+
+-- Begin class FunctionDef
+	class FunctionDef {
+		reference composantOfInterFunc [1-*] container : ComposantOfInterFunc;
+		reference scheduler : Scheduler oppositeOf functionDef;
+	}-- End class FunctionDef
+	
+-- Begin class Expression
+	abstract class Expression {
+
+	}-- End class Expression
+
+-- Begin class Integer_Expression
+	class Integer_Expression extends Expression {
+		attribute theValue : Integer;
+	}-- End class Integer_Expression
+
+-- Begin class Id_Expression
+	class Id_Expression extends Expression {
+		attribute id : String;
+	}-- End class Id_Expression
+
+-- Begin class State_Expression
+	class State_Expression extends Expression {
+		attribute theValue : String;
+	}-- End class State_Expression
+
+-- Begin class True_Expression
+	class True_Expression extends Expression {
+		
+	}-- End class True_Expression
+
+-- Begin class False_Expression
+	class False_Expression extends Expression {
+		
+	}-- End class False_Expression
+
+-- Begin class Unop_Expression
+	class Unop_Expression extends Expression {
+		reference unop container : Unop;
+		reference expr container : Expression;
+	}-- End class Unop_Expression
+
+-- Begin class Etoile_Expression
+	class Etoile_Expression extends Expression {
+		reference expr container : Expression;
+	}-- End class Etoile_Expression
+
+-- Begin class ExpId_Expression
+	class ExpId_Expression extends Expression {
+		attribute id : String;
+		reference expr container : Expression;
+	}-- End class ExpId_Expression
+
+-- Begin class Select_Expression
+	class Select_Expression extends Expression {
+	
+	}-- End class Select_Expression
+
+-- Begin class FnName_Expression
+	class FnName_Expression extends Expression {
+		reference expr [*] container : Expression;
+	}-- End class FnName_Expression
+
+-- Begin class Empty_Expression
+	class Empty_Expression extends Expression {
+		reference classState container : ClassState;		
+	}-- End class Empty_Expression
+
+-- Begin class SRCOnSched_Expression
+	class SRCOnSched_Expression extends Expression {
+		
+	}-- End class SRCOnSched_Expression
+
+-- Begin class SchedulerOf_Expression
+	class SchedulerOf_Expression extends Expression {
+		reference expr container : Expression;
+	}-- End class SchedulerOf_Expression
+
+-- Begin class In_Expression
+	class In_Expression extends Expression {
+		attribute in : Boolean;
+		reference expr container : Expression;
+		reference classState container : ClassState;
+	}-- End class In_Expression
+
+-- Begin class Parenthese_Expression
+	class Parenthese_Expression extends Expression {
+		reference expr container : Expression;
+	}-- End class Parenthese_Expression
+
+-- Begin class Binop_Expression
+	class Binop_Expression extends Expression {
+		reference id_Expression container : Id_Expression;
+		reference compo_Binop_Expression container : Compo_Binop_Expression;
+	}-- End class Binop_Expression
+
+-- Begin class Compo_Binop_Expression
+	class Compo_Binop_Expression{
+		reference binop container : Binop;
+		reference id_Expression container : Id_Expression;
+	}-- End class Compo_Binop_Expression
+
+-- Begin class ValDecl
+	class ValDecl {
+		attribute id : String;
+		reference abstractSchedulerDecl : AbstractSchedulerDecl oppositeOf valDecl;
+	}-- End class ValDecl
+
+-- Begin class Normal_ValDecl
+	class Normal_ValDecl extends ValDecl{
+		reference nonProcType [0-1] container : NonProcType;
+	}-- End class Normal_ValDecl
+
+-- Begin class System_ValDecl
+	class System_ValDecl extends ValDecl {
+		reference nonProcType [0-1] container : NonProcType;
+	}-- End class System_ValDecl
+
+-- Begin class Timer_ValDecl
+	class Timer_ValDecl extends ValDecl {
+		
+	}-- End class Timer_ValDecl
+
+-- Begin class FunDecl
+	class FunDecl {
+		reference parameterTypes [0-1] container : ParameterType;
+		reference nonProcType [0-1] container : NonProcType;
+		reference abstractSchedulerDecl : AbstractSchedulerDecl oppositeOf funDecl;
+	}-- End class FunDecl
+		
+-- Begin class StateDef
+	class StateDef {
+		reference classNameStorage [1-*] container : ClassNameStorage;
+		reference abstractSchedulerDecl : AbstractSchedulerDecl oppositeOf stateDef;
+	}-- End class StateDef
+
+-- Begin class ClassNameStorage
+	class ClassNameStorage {
+		attribute id : String;
+		reference className container : ClassName;
+		reference storage [0-1] container : Storage;
+	}-- End class ClassNameStorage
+	
+-- Begin class OrderDef
+	class OrderDef {
+		reference keyCritDecl container : KeyCritDecls;
+		reference critDecls container : CritDecls;
+		reference abstractSchedulerDecl : AbstractSchedulerDecl oppositeOf orderDef;
+	}-- End class OrderDef
+	
+-- Begin class AdmissionDef
+	class AdmissionDef {
+		reference valDef [*] container : ValDef;
+		reference admCrit container : AdmCrit;
+		reference attachDetach [0-1] container : AttachDetach;
+		reference abstractSchedulerDecl : AbstractSchedulerDecl oppositeOf admissionDef;
+	}-- End class AdmissionDef
+	
+-- Begin class TraceDef
+	class TraceDef {
+		reference traceEvent [0-1] container : TraceEvent;
+		reference traceExpr [0-1] container : TraceExpr;
+		reference traceTest [0-1] container : TraceTest;
+		reference abstractSchedulerDecl : AbstractSchedulerDecl oppositeOf traceDef;
+	}-- End class TraceDef
+
+-- Begin class TypeExpr
+	class TypeExpr {
+		attribute id [0-1] : String; 
+		reference bossaTypeExpr [0-1] container : BossaTypeExpr;
+	}-- End class TypeExpr
+	
+-- Begin class TypeOrVoid
+	class TypeOrVoid {
+		attribute isVoid : Boolean;
+		reference typeExpr [0-1] container : TypeExpr; 
+	}-- End class TypeOrVoid
+		
+-- Begin class ParameterType
+	class ParameterType {
+		reference typeExpr [1-*] container : TypeExpr;
+	}-- End class ParameterType
+	
+-- Begin class Storage
+	abstract class Storage {
+		
+	}-- End class Storage
+
+-- Begin class Process_Storage
+	class Process_Storage extends Storage{
+		
+	}-- End class Process_Storage
+
+-- Begin class Scheduler_Storage
+	class Scheduler_Storage extends Storage{		
+		reference stateVisibility [0-1] container : StateVisibility;		 
+	}-- End class Scheduler_Storage
+
+-- Begin class Queue_Storage
+	class Queue_Storage extends Storage{
+		reference stateVisibility [0-1] container : StateVisibility;
+		reference queueType[0-1] container : QueueType; 
+	}-- End class Queue_Storage
+
+-- Begin class KeyCritDecls
+	class KeyCritDecls {
+		reference compoKeyCritDecls [1-*] container : CompoKeyCritDecls;
+	}-- End class KeyCritDecls
+	
+-- Begin class CompoKeyCritDecls
+	class CompoKeyCritDecls {
+		reference critDecl container : CritDecl;
+	}-- End class CompoKeyCritDecls
+
+-- Begin class CritDecls
+	class CritDecls {
+		reference critDecl [1-*] container : CritDecl;
+	}-- End class CritDecls
+		
+-- Begin class CritDecls
+	abstract class CritDecl {
+		reference critop container : Critop;
+	}-- End class CritDecls
+
+-- Begin class CritDeclWhithId
+	class CritDeclWhithId extends CritDecl {
+		attribute id :String;
+		
+	}-- End class CritDeclWhithId
+
+-- Begin class CritDeclWhithoutId
+	class CritDeclWhithoutId  extends CritDecl {
+		reference expr [2-3] container : Expression;
+	}-- End class CritDeclWhithoutId
+		
+-- Begin class ValDef
+	class ValDef {
+		attribute id : String;
+		reference typeExpr container : TypeExpr;
+		reference expr container : Expression;
+	}-- End class ValDef
+	
+-- Begin class AdmCrit
+	class AdmCrit {
+		reference paramVarDecl [*] container : ParamVarDecl;
+		reference expr container : Expression; 
+	}-- End class AdmCrit
+	
+-- Begin class AttachDetach
+	class AttachDetach {
+		reference procParam1 container : ProcParam;
+		reference procParam2 container : ProcParam;
+		reference seqStmt1 container : SeqStmt;
+		reference seqStmt2 container : SeqStmt;
+	}-- End class AttachDetach
+	
+-- Begin class ParamVarDecl
+	class ParamVarDecl {
+		attribute id : String;
+		reference typeExpr container : TypeExpr;
+	}-- End class ParamVarDecl
+	
+-- Begin class SeqStmt
+	class SeqStmt {
+		reference valDef [*] container : ValDef;
+		reference stmt [*] container : Statment;
+	}-- End class SeqStmt
+	
+-- Begin class TraceEvent
+	class TraceEvent {
+		reference eventName [1-*] container : EventName;
+	}-- End class TraceEvent
+	
+-- Begin class TraceExpr
+	class TraceExpr {
+		attribute id [1-*] : String;
+	}-- End class TraceExpr
+	
+-- Begin class TraceTest
+	class TraceTest {
+		reference expr container : Expression;
+	}-- End class TraceTest
+	
+-- Begin class ProcParam
+	class ProcParam {
+		attribute id : String;
+		attribute process : Boolean;
+		attribute scheduler : Boolean;
+	}-- End class ProcParam
+	
+-- Begin class Statment
+	abstract class Statment {
+		
+	}-- End class Statment
+	
+-- Begin class IfStmt
+	class IfStmt extends Statment {
+		reference expr container : Expression;
+		reference seqStmt [1-2] container : SeqStmt;--the second "seqStmt" exists if "else" exists
+	}-- End class IfStmt
+	
+-- Begin class ForStmt
+	abstract class ForStmt extends Statment {
+		
+	}-- End class ForStmt
+
+-- Begin class ForStmt
+	class ForeachForStmt extends ForStmt {
+		attribute id : String;
+		attribute isIn : Boolean;
+		reference classState [*] container : ClassState;
+		reference seqStmt container : SeqStmt; 
+	}-- End class ForStmt
+
+-- Begin class ForStmt
+	class ForEachIncreasingForStmt extends ForStmt {
+		attribute id : String;
+		reference seqStmt container : SeqStmt; 
+	}-- End class ForStmt
+
+-- Begin class ForStmt
+	class ForEachDecreasingForStmt extends ForStmt {
+		attribute id : String;
+		reference seqStmt container : SeqStmt; 
+	}-- End class ForStmt
+	
+-- Begin class ReturnStmt
+	class ReturnStmt extends Statment {
+		reference expr [0-1] container : Expression;
+	}-- End class ReturnStat
+	
+-- Begin class SwitchStmt
+	class SwitchStmt extends Statment {
+		reference locExpr container : LocExpr;
+		reference composantOfSwitchStmt [*] container : ComposantOfSwitchStmt;
+	}-- End class SwitchStmt
+	
+-- Begin class AssignStmt
+	class AssignStmt extends Statment {
+		reference locExpr container : LocExpr;
+		reference assignUnop [0-1] container : AssignUnop;
+		reference assignBinop [0-1] container : AssignBinop;
+		reference expr [0-1] container : Expression;
+		
+	}-- End class AssignStmt
+	
+-- Begin class MoveStmt
+	abstract class MoveStmt extends Statment {
+		attribute isHead : Boolean;
+		attribute isTail : Boolean;
+		reference moveExpr container : MoveExpr;
+	}-- End class MoveStmt
+
+-- Begin class NormalMoveStmt
+	class NormalMoveStmt extends MoveStmt {
+		reference stateRef container : StateRef; 
+	}-- End class NormalMoveStmt
+
+-- Begin class ForwardMoveStmt
+	class ForwardMoveStmt extends MoveStmt {
+		
+	}-- End class ForwardMoveStmt
+
+-- Begin class NormalMoveStmt
+	class StateRef {
+		attribute stateRef : String; 
+	}-- End class NormalMoveStmt
+	
+-- Begin class DefrStmt
+	class DeferStmt extends Statment {
+		attribute deferStmt : String;
+	}-- End class DefrStmt
+	
+-- Begin class PrimStmt
+	class PrimStmt extends Statment {
+		reference expr [*] container : Expression;
+	}-- End class PrimStmt
+	
+-- Begin class ErrorStmt
+	class ErrorStmt extends Statment {
+		attribute errorType : String;
+	}-- End class ErrorStmt
+	
+-- Begin class BreakStmt
+	class BreakStmt extends Statment {
+		
+	}-- End class BreakStmt
+
+-- Begin class LocExpr
+	class LocExpr {
+		attribute stateName : String;
+		attribute id [*] : String;
+	}-- End class LocExpr
+
+-- Begin class MoveExpr
+	abstract class MoveExpr {
+		
+	}-- End class MoveExpr
+
+-- Begin class Select_MoveExpr
+	class Select_MoveExpr extends MoveExpr {
+		
+	}-- End class Select_MoveExpr
+
+-- Begin class SatateName_MoveExpr
+	class SatateName_MoveExpr extends MoveExpr {
+		
+	}-- End class SatateName_MoveExpr
+
+-- Begin class ID_MoveExpr
+	class ID_MoveExpr extends MoveExpr {
+		attribute id : String;
+	}-- End class ID_MoveExpr
+
+-- Begin class IDSource_MoveExpr
+	class IDSource_MoveExpr extends MoveExpr {
+		attribute id : String;
+	}-- End class IDSource_MoveExpr
+
+-- Begin class IDTarget_MoveExpr
+	class IDTarget_MoveExpr extends MoveExpr {
+		attribute id : String;
+	}-- End class IDTarget_MoveExpr
+		
+-- Begin class ClassState
+	class ClassState {
+		attribute state : Boolean;
+		reference className [0-1] container : ClassName;
+	}-- End class ClassState
+
+-- Begin class OnHandlerDef
+	class OnHandlerDef {
+		reference eventName [*] container : EventName;
+		reference seqStmt container : SeqStmt;
+	}-- End class OnHandlerDef
+
+-- Begin class EventName
+	class EventName {
+		attribute eventNameLeft : String;
+		attribute eventNameRight : String;
+	}-- End class EventName
+
+
+-- Begin class ComposantOfSwitchStmt
+	class ComposantOfSwitchStmt {
+		reference classState [1-*] container : ClassState;
+		reference seqStmt container : SeqStmt;
+	}-- End class ComposantOfSwitchStmt
+
+-- Begin class ComposantOfInterFunc
+	class ComposantOfInterFunc {
+		attribute id : String;
+		reference typeOrVoid container : TypeOrVoid; 
+		reference paramVarDecl [*] container : ParamVarDecl;
+		reference seqStmt container : SeqStmt;
+	}-- End class ComposantOfInterFunc
+
+-- Begin class BossaTypeExpr
+	class BossaTypeExpr {
+		attribute bossaTypeExpr : String;
+	}-- End enumeration BossaTypeExpr
+	
+-- Begin class QueueType
+	abstract class QueueType {
+		
+	}-- End class QueueType
+
+-- Begin class Normal_QueueType
+	class Normal_QueueType extends QueueType {
+		
+	}-- End class Normal_QueueType
+
+-- Begin class Fifo_QueueType
+	class Fifo_QueueType extends QueueType {
+		
+	}-- End class Fifo_QueueType
+	
+-- Begin class Lifo_QueueType
+	class Lifo_QueueType extends QueueType {
+		
+	}-- End class Lifo_QueueType
+			
+-- Begin class Critop
+	class Critop {
+		attribute lowest : Boolean;
+		attribute highest : Boolean;
+	}-- End class Critop
+	
+-- Begin class StateVisibility
+	class StateVisibility {
+		attribute public [0-1] : Boolean; 
+		attribute private [0-1] : Boolean;
+	}-- End class StateVisibility
+
+-- Begin class ClassName
+	class ClassName {
+		attribute className : String;
+	}-- End class ClassName
+
+-- Begin class NonProcType
+	class NonProcType {
+		attribute system : Boolean;
+		attribute struct : Boolean;
+		attribute id : Boolean;
+		attribute nonProcType : String;
+	}-- End class NonProcType
+
+-- Begin class Unop
+	class Unop {
+		attribute plus : Boolean;--"+"
+		attribute minus : Boolean;--"-"
+		attribute excl : Boolean;--"!"
+		attribute tild : Boolean;--"~"
+	}-- End class Unop
+
+-- Begin class enumeration
+	class Binop {
+		attribute plus : Boolean;--"+"
+		attribute minus : Boolean;--"-"
+		attribute star : Boolean;--"*"
+		attribute slash : Boolean;--"/"
+		attribute percentage : Boolean;--"%"
+		attribute doubleAnd : Boolean;--"&&"
+		attribute doubleVerticalBar : Boolean;--"||"
+		attribute and : Boolean;--"&"
+		attribute eq : Boolean;--"="
+		attribute ne : Boolean;--"!="
+		attribute lt : Boolean;--"<"
+		attribute gt : Boolean;--">"
+		attribute le : Boolean;--"<="
+		attribute ge : Boolean;--">="
+		attribute doubleLt : Boolean;--"<<"
+		attribute doubleGt : Boolean;--">>"		
+	}-- End class class
+
+-- Begin class AssignUnop
+	class AssignUnop {
+		attribute doublePlus : Boolean;--"++"
+		attribute doubleMoins : Boolean;--"--"
+	}-- End class AssignUnop
+
+-- Begin class AssignBinop
+	class AssignBinop {
+		attribute affect : Boolean;--"=="
+		attribute plusEqual : Boolean;--"+="
+		attribute moinsEqual : Boolean;--"-="
+		attribute starEqual : Boolean;--"*="
+		attribute slashEqual : Boolean;--"\="
+		attribute percentageEqual : Boolean;--"%="
+		attribute andEqual : Boolean;--"&="
+		attribute orEqual : Boolean;--"|="
+		attribute doubleLtEqual : Boolean;--"<<="
+		attribute doubleGtEqual : Boolean;--">>="		
+	}-- End class AssignBinop
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+	datatype Integer;
+}

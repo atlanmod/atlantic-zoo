@@ -1,0 +1,48 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_WfMC"{
+labelloc=t
+color=black
+label=WfMC
+ node[shape=record];
+WorkflowProcessDefinition[label="{WorkflowProcessDefinition| | }"]
+;
+ node[shape=record];
+WorkflowApplicationDeclaration[label="{WorkflowApplicationDeclaration| | }"]
+ WorkflowApplicationDeclaration->WorkflowProcessDefinition[arrowhead=diamond,arrowtail=none,headlabel="processDefinition",taillabel="applicationDeclarations[*]",group=WorkflowProcessDefinition,minlen=2,constraint=true,]
+ WorkflowApplicationDeclaration->WorkflowProcessActivity[arrowhead=none,arrowtail=none,headlabel="processActivities[*]",taillabel="applicationDeclarations[*]",group=WorkflowProcessActivity,minlen=2,constraint=false,]
+ WorkflowApplicationDeclaration->WorkflowRelevantData[arrowhead=none,arrowtail=none,headlabel="revelantDatas[*]",taillabel="applicationDeclarations[*]",group=WorkflowRelevantData,minlen=2,constraint=false,]
+;
+ node[shape=record];
+WorkflowRelevantData[label="{WorkflowRelevantData| | }"]
+ WorkflowRelevantData->WorkflowProcessDefinition[arrowhead=diamond,arrowtail=none,headlabel="processDefinition",taillabel="revelantDatas[*]",group=WorkflowProcessDefinition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+WorkflowParticipantSpecification[label="{WorkflowParticipantSpecification| | }"]
+ WorkflowParticipantSpecification->WorkflowProcessDefinition[arrowhead=diamond,arrowtail=none,headlabel="processDefinition",taillabel="participantSpecificatons[*]",group=WorkflowProcessDefinition,minlen=2,constraint=true,]
+ WorkflowParticipantSpecification->WorkflowRelevantData[arrowhead=none,arrowtail=none,headlabel="revelantDatas[*]",taillabel="participantSpecifications[*]",group=WorkflowRelevantData,minlen=2,constraint=false,]
+ WorkflowParticipantSpecification->WorkflowProcessActivity[arrowhead=none,arrowtail=none,headlabel="processActivities[*]",taillabel="participantSpecifications[*]",group=WorkflowProcessActivity,minlen=2,constraint=false,]
+;
+ node[shape=record];
+WorkflowProcessActivity[label="{WorkflowProcessActivity| | }"]
+ WorkflowProcessActivity->WorkflowProcessDefinition[arrowhead=diamond,arrowtail=none,headlabel="processDefinition",taillabel="processActivities[*]",group=WorkflowProcessDefinition,minlen=2,constraint=true,]
+ WorkflowProcessActivity->WorkflowRelevantData[arrowhead=none,arrowtail=none,headlabel="revelantDatas[*]",taillabel="processActivities[*]",group=WorkflowRelevantData,minlen=2,constraint=false,]
+ WorkflowProcessActivity->TransitionInformation[arrowhead=none,arrowtail=none,headlabel="to_transitionInformation",taillabel="to_processActivity",group=TransitionInformation,minlen=2,constraint=false,]
+;
+ node[shape=record];
+TransitionInformation[label="{TransitionInformation| | }"]
+ TransitionInformation->WorkflowProcessDefinition[arrowhead=diamond,arrowtail=none,headlabel="processDefinition",taillabel="transitionInformations[*]",group=WorkflowProcessDefinition,minlen=2,constraint=true,]
+ TransitionInformation->WorkflowRelevantData[arrowhead=none,arrowtail=none,headlabel="revelantDatas[*]",taillabel="transitionInformations[*]",group=WorkflowRelevantData,minlen=2,constraint=false,]
+ TransitionInformation->WorkflowProcessActivity[arrowhead=none,arrowtail=none,headlabel="from_processActivity",taillabel="from_transitionInformation",group=WorkflowProcessActivity,minlen=2,constraint=false,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

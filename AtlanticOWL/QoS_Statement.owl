@@ -1,0 +1,94 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<rdf:RDF xmlns:rdf = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:rdfs = 'http://www.w3.org/2000/01/rdf-schema#' xmlns:xsd = 'http://www.w3.org/2001/XMLSchema#' xmlns:owl = 'http://www.w3.org/2002/07/owl#' xmlns = 'http://example.org/QoSStatement#' xml:base = 'http://example.org/QoSStatement'>
+  <owl:Ontology rdf:about = 'QoSStatement'/>
+  <owl:Class rdf:ID = 'Parameter'>
+    <rdfs:label>Parameter</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID = 'QoSContraint'>
+    <rdfs:label>QoSContraint</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#QoSContraint.qualification'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'QualificationKind'>
+    <rdfs:label>QualificationKind</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#QoSCharacteristic'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#QualificationKind.value'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'CoumpoundQoSStatement'>
+    <rdfs:label>CoumpoundQoSStatement</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#QoSStatement'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#CoumpoundQoSStatement.statement'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>2</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'QoSCharacteristic'>
+    <rdfs:label>QoSCharacteristic</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID = 'QoSStatement'>
+    <rdfs:label>QoSStatement</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#QoSStatement.relation'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#QoSStatement.parameter'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'SingleQoSStatement'>
+    <rdfs:label>SingleQoSStatement</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#QoSStatement'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#SingleQoSStatement.contraint'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:DatatypeProperty rdf:ID = 'QualificationKind.value'>
+    <rdfs:domain rdf:resource = '#QualificationKind'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#string'/>
+  </owl:DatatypeProperty>
+  <owl:ObjectProperty rdf:ID = 'CoumpoundQoSStatement.statement'>
+    <rdfs:domain rdf:resource = '#CoumpoundQoSStatement'/>
+    <rdfs:range rdf:resource = '#QoSStatement'/>
+    <owl:inverseOf rdf:resource = '#QoSStatement.relation'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'SingleQoSStatement.contraint'>
+    <rdfs:domain rdf:resource = '#SingleQoSStatement'/>
+    <rdfs:range rdf:resource = '#QoSContraint'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'QoSContraint.qualification'>
+    <rdfs:domain rdf:resource = '#QoSContraint'/>
+    <rdfs:range rdf:resource = '#QualificationKind'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'QoSStatement.parameter'>
+    <rdfs:domain rdf:resource = '#QoSStatement'/>
+    <rdfs:range rdf:resource = '#Parameter'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'QoSStatement.relation'>
+    <rdfs:domain rdf:resource = '#QoSStatement'/>
+    <rdfs:range rdf:resource = '#CoumpoundQoSStatement'/>
+    <owl:inverseOf rdf:resource = '#CoumpoundQoSStatement.statement'/>
+  </owl:ObjectProperty>
+  <owl:FunctionalProperty rdf:about = '#SingleQoSStatement.contraint'/>
+  <owl:FunctionalProperty rdf:about = '#QoSStatement.relation'/>
+  <owl:FunctionalProperty rdf:about = '#QoSContraint.qualification'/>
+  <owl:FunctionalProperty rdf:about = '#QualificationKind.value'/>
+</rdf:RDF>

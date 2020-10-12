@@ -1,0 +1,188 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_PNML"{
+labelloc=t
+color=black
+label=PNML
+ node[shape=record];
+IdedElement[label="{/IdedElement/|id : String| }"]
+;
+ node[shape=record];
+URI[label="{URI|value : String| }"]
+;
+ node[shape=record];
+Color[label="{Color| | }"]
+;
+ node[shape=record];
+AnyElement[label="{AnyElement|name : String\ntext : String| }"]
+;
+ node[shape=record];
+PNMLDocument[label="{PNMLDocument| | }"]
+ PNMLDocument->URI[arrowhead=vee,arrowtail=diamond,headlabel="xmlns",group=URI,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NetElement[label="{NetElement| | }"]
+ NetElement->URI[arrowhead=vee,arrowtail=diamond,headlabel="type",group=URI,minlen=2,constraint=true,]
+ NetElement->PNMLDocument[arrowhead=diamond,arrowtail=none,headlabel="document",taillabel="nets[1-*]",group=PNMLDocument,minlen=2,constraint=true,]
+ NetElement->IdedElement[arrowhead=onormal,group=IdedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NetContent[label="{/NetContent/| | }"]
+ NetContent->NetElement[arrowhead=diamond,arrowtail=none,headlabel="net",taillabel="contents[*]",group=NetElement,minlen=2,constraint=true,]
+ NetContent->Page[arrowhead=diamond,arrowtail=none,headlabel="page[0-1]",taillabel="contents[*]",group=Page,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ToolSpecific[label="{ToolSpecific|tool : String\nversion : String| }"]
+ ToolSpecific->AnyElement[arrowhead=vee,arrowtail=diamond,headlabel="anyelement[*]",group=AnyElement,minlen=2,constraint=true,]
+ ToolSpecific->NetElement[arrowhead=diamond,arrowtail=none,headlabel="net[0-1]",taillabel="tools[*]",group=NetElement,minlen=2,constraint=true,]
+ ToolSpecific->Arc[arrowhead=diamond,arrowtail=none,headlabel="arc[0-1]",taillabel="tools[*]",group=Arc,minlen=2,constraint=true,]
+ ToolSpecific->Node[arrowhead=diamond,arrowtail=none,headlabel="node[0-1]",taillabel="tools[*]",group=Node,minlen=2,constraint=true,]
+ ToolSpecific->Page[arrowhead=diamond,arrowtail=none,headlabel="page[0-1]",taillabel="tools[*]",group=Page,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LabeledElement[label="{/LabeledElement/| | }"]
+;
+ node[shape=record];
+Label[label="{Label|text : String| }"]
+ Label->LabeledElement[arrowhead=diamond,arrowtail=none,headlabel="namedelement",taillabel="labels[*]",group=LabeledElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Name[label="{Name| | }"]
+ Name->NetElement[arrowhead=diamond,arrowtail=none,headlabel="net[0-1]",taillabel="name[0-1]",group=NetElement,minlen=2,constraint=true,]
+ Name->NetContent[arrowhead=diamond,arrowtail=none,headlabel="netcontent[0-1]",taillabel="name[0-1]",group=NetContent,minlen=2,constraint=true,]
+ Name->LabeledElement[arrowhead=onormal,group=LabeledElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Inscription[label="{Inscription| | }"]
+ Inscription->Arc[arrowhead=diamond,arrowtail=none,headlabel="arc",taillabel="inscription[0-1]",group=Arc,minlen=2,constraint=true,]
+ Inscription->LabeledElement[arrowhead=onormal,group=LabeledElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InitialMarking[label="{InitialMarking| | }"]
+ InitialMarking->Place[arrowhead=diamond,arrowtail=none,headlabel="place",taillabel="initialmarking[0-1]",group=Place,minlen=2,constraint=true,]
+ InitialMarking->LabeledElement[arrowhead=onormal,group=LabeledElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NetContentElement[label="{/NetContentElement/| | }"]
+ NetContentElement->NetContent[arrowhead=onormal,group=NetContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Arc[label="{Arc| | }"]
+ Arc->NetContentElement[arrowhead=vee,arrowtail=none,headlabel="source",group=NetContentElement,minlen=2,constraint=false,]
+ Arc->NetContentElement[arrowhead=vee,arrowtail=none,headlabel="target",group=NetContentElement,minlen=2,constraint=false,]
+ Arc->NetContent[arrowhead=onormal,group=NetContent,minlen=2,constraint=true,]
+ Arc->IdedElement[arrowhead=onormal,group=IdedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Page[label="{Page| | }"]
+ Page->NetContent[arrowhead=onormal,group=NetContent,minlen=2,constraint=true,]
+ Page->IdedElement[arrowhead=onormal,group=IdedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Reference[label="{/Reference/| | }"]
+ Reference->Node[arrowhead=vee,arrowtail=diamond,headlabel="ref",group=Node,minlen=2,constraint=true,]
+ Reference->Node[arrowhead=onormal,group=Node,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReferencePlace[label="{ReferencePlace| | }"]
+ ReferencePlace->NetContent[arrowhead=onormal,group=NetContent,minlen=2,constraint=true,]
+ ReferencePlace->Reference[arrowhead=onormal,group=Reference,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReferenceTransition[label="{ReferenceTransition| | }"]
+ ReferenceTransition->NetContent[arrowhead=onormal,group=NetContent,minlen=2,constraint=true,]
+ ReferenceTransition->Reference[arrowhead=onormal,group=Reference,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Node[label="{Node| | }"]
+ Node->NetContentElement[arrowhead=diamond,arrowtail=diamond,headlabel="netcontentelement",taillabel="node",group=NetContentElement,minlen=2,constraint=true,]
+ Node->IdedElement[arrowhead=onormal,group=IdedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Place[label="{Place| | }"]
+ Place->NetContentElement[arrowhead=onormal,group=NetContentElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Transition[label="{Transition| | }"]
+ Transition->NetContentElement[arrowhead=onormal,group=NetContentElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Graphics[label="{/Graphics/| | }"]
+;
+ node[shape=record];
+NetGraphics[label="{NetGraphics| | }"]
+ NetGraphics->NetElement[arrowhead=diamond,arrowtail=none,headlabel="net",taillabel="netgraphics[0-1]",group=NetElement,minlen=2,constraint=true,]
+ NetGraphics->Graphics[arrowhead=onormal,group=Graphics,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NodeGraphics[label="{NodeGraphics| | }"]
+ NodeGraphics->Node[arrowhead=diamond,arrowtail=none,headlabel="node",taillabel="nodegraphics[0-1]",group=Node,minlen=2,constraint=true,]
+ NodeGraphics->Graphics[arrowhead=onormal,group=Graphics,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EdgeGraphics[label="{EdgeGraphics| | }"]
+ EdgeGraphics->Arc[arrowhead=diamond,arrowtail=none,headlabel="arc",taillabel="edgegraphics[0-1]",group=Arc,minlen=2,constraint=true,]
+ EdgeGraphics->Graphics[arrowhead=onormal,group=Graphics,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnotationGraphics[label="{AnnotationGraphics| | }"]
+ AnnotationGraphics->LabeledElement[arrowhead=diamond,arrowtail=none,headlabel="namedelement",taillabel="annotationgraphics[0-1]",group=LabeledElement,minlen=2,constraint=true,]
+ AnnotationGraphics->Graphics[arrowhead=onormal,group=Graphics,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PageGraphics[label="{PageGraphics| | }"]
+ PageGraphics->Page[arrowhead=diamond,arrowtail=none,headlabel="page",taillabel="pagegraphics[0-1]",group=Page,minlen=2,constraint=true,]
+ PageGraphics->Graphics[arrowhead=onormal,group=Graphics,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Coordinate[label="{/Coordinate/|x : Integer\ny : Integer| }"]
+;
+ node[shape=record];
+Position[label="{Position| | }"]
+ Position->NodeGraphics[arrowhead=diamond,arrowtail=none,headlabel="nodegraphics[0-1]",taillabel="position",group=NodeGraphics,minlen=2,constraint=true,]
+ Position->EdgeGraphics[arrowhead=diamond,arrowtail=none,headlabel="edgegraphics[0-1]",taillabel="position[*]",group=EdgeGraphics,minlen=2,constraint=true,]
+ Position->Coordinate[arrowhead=onormal,group=Coordinate,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Offset[label="{Offset| | }"]
+ Offset->AnnotationGraphics[arrowhead=diamond,arrowtail=none,headlabel="annotationgraphics",taillabel="offset",group=AnnotationGraphics,minlen=2,constraint=true,]
+ Offset->Coordinate[arrowhead=onormal,group=Coordinate,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Dimension[label="{Dimension|width : Integer\nheight : Integer| }"]
+ Dimension->NodeGraphics[arrowhead=diamond,arrowtail=none,headlabel="nodegraphics",taillabel="dimension[0-1]",group=NodeGraphics,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Fill[label="{Fill|gradientrotation[0-1] : RotationType| }"]
+ Fill->Color[arrowhead=vee,arrowtail=diamond,headlabel="interiorcolor[0-1]",group=Color,minlen=2,constraint=true,]
+ Fill->Color[arrowhead=vee,arrowtail=diamond,headlabel="gradientcolor[0-1]",group=Color,minlen=2,constraint=true,]
+ Fill->URI[arrowhead=vee,arrowtail=diamond,headlabel="image[0-1]",group=URI,minlen=2,constraint=true,]
+ Fill->NodeGraphics[arrowhead=diamond,arrowtail=none,headlabel="nodegraphics[0-1]",taillabel="fill[0-1]",group=NodeGraphics,minlen=2,constraint=true,]
+ Fill->EdgeGraphics[arrowhead=diamond,arrowtail=none,headlabel="edgegraphics[0-1]",taillabel="fill[0-1]",group=EdgeGraphics,minlen=2,constraint=true,]
+ Fill->AnnotationGraphics[arrowhead=diamond,arrowtail=none,headlabel="annotationgraphics[0-1]",taillabel="fill[0-1]",group=AnnotationGraphics,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Line[label="{Line|width[0-1] : Integer\nshape[0-1] : ShapeType\nstyle[0-1] : StyleType| }"]
+ Line->Color[arrowhead=vee,arrowtail=diamond,headlabel="color[0-1]",group=Color,minlen=2,constraint=true,]
+ Line->NodeGraphics[arrowhead=diamond,arrowtail=none,headlabel="nodegraphics[0-1]",taillabel="line[0-1]",group=NodeGraphics,minlen=2,constraint=true,]
+ Line->EdgeGraphics[arrowhead=diamond,arrowtail=none,headlabel="edgegraphics[0-1]",taillabel="line[0-1]",group=EdgeGraphics,minlen=2,constraint=true,]
+ Line->AnnotationGraphics[arrowhead=diamond,arrowtail=none,headlabel="annotationgraphics[0-1]",taillabel="line[0-1]",group=AnnotationGraphics,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Font[label="{Font|family[0-1] : String\nstyle[0-1] : String\nweight[0-1] : String\nsize[0-1] : String\ndecoration[0-1] : DecorationType\nalign[0-1] : AlignType\nrotation[0-1] : Integer| }"]
+ Font->AnnotationGraphics[arrowhead=diamond,arrowtail=none,headlabel="annotationgraphics",taillabel="font[0-1]",group=AnnotationGraphics,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

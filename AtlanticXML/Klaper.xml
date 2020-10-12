@@ -1,0 +1,84 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'Klaper'>
+    <Class name = 'Resource' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'capacity' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'schedulingPolicy' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'description' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'acquire' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Klaper::Acquire' opposite = 'Klaper::Acquire::resource'/>
+      <Reference name = 'release' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Klaper::Release' opposite = 'Klaper::Release::resource'/>
+    </Class>
+    <Class name = 'Service' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'formalParams' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'speedAttr' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'failAttr' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'description' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'behavior' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Klaper::Behavior' opposite = 'Klaper::Behavior::service'/>
+      <Reference name = 'behaviorUsed' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Klaper::Behavior' opposite = 'Klaper::Behavior::usedService'/>
+      <Reference name = 'serviceCall' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Klaper::ServiceCall' opposite = 'Klaper::ServiceCall::calledService'/>
+    </Class>
+    <Class name = 'Behavior' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'stepn' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Klaper::Step' opposite = 'Klaper::Step::nestedBehavior'/>
+      <Reference name = 'stepb' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Klaper::Step' opposite = 'Klaper::Step::behavior'/>
+      <Reference name = 'service' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Klaper::Service' opposite = 'Klaper::Service::behavior'/>
+      <Reference name = 'usedService' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Klaper::Service' opposite = 'Klaper::Service::behaviorUsed'/>
+      <Reference name = 'workLoad' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Klaper::WorkLoad' opposite = 'Klaper::WorkLoad::behavior'/>
+    </Class>
+    <Class name = 'WorkLoad' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'workLoadType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'arrivalProcess' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'population' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'initialResource' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'behavior' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Klaper::Behavior' opposite = 'Klaper::Behavior::workLoad'/>
+    </Class>
+    <Class name = 'Step' isAbstract = 'false' supertypes = 'Klaper::Behavior'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'repetition' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'internalExecTime' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'internalFailProb' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'completionModel' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'serviceCall' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Klaper::ServiceCall' opposite = 'Klaper::ServiceCall::step'/>
+      <Reference name = 'predecessor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Klaper::Step' opposite = 'Klaper::Step::successor'/>
+      <Reference name = 'successor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Klaper::Step' opposite = 'Klaper::Step::predecessor'/>
+      <Reference name = 'behavior' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Klaper::Behavior' opposite = 'Klaper::Behavior::stepb'/>
+      <Reference name = 'nestedBehavior' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Klaper::Behavior' opposite = 'Klaper::Behavior::stepn'/>
+    </Class>
+    <Class name = 'Start' isAbstract = 'false' supertypes = 'Klaper::Step'/>
+    <Class name = 'End' isAbstract = 'false' supertypes = 'Klaper::Step'/>
+    <Class name = 'Control' isAbstract = 'false' supertypes = 'Klaper::Step'/>
+    <Class name = 'InternalActivity' isAbstract = 'false' supertypes = 'Klaper::Step'/>
+    <Class name = 'ServiceCall' isAbstract = 'false' supertypes = 'Klaper::Step'>
+      <Attribute name = 'resourceType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'serviceName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'isSynch' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'actualParam' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'Klaper::ActualParam' opposite = 'Klaper::ActualParam::serviceCall'/>
+      <Reference name = 'step' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Klaper::Step' opposite = 'Klaper::Step::serviceCall'/>
+      <Reference name = 'calledService' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Klaper::Service' opposite = 'Klaper::Service::serviceCall'/>
+    </Class>
+    <Class name = 'ActualParam' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'serviceCall' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Klaper::ServiceCall' opposite = 'Klaper::ServiceCall::actualParam'/>
+    </Class>
+    <Class name = 'Branch' isAbstract = 'false' supertypes = 'Klaper::Control'>
+      <Attribute name = 'branchProbs' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Fork' isAbstract = 'false' supertypes = 'Klaper::Control'/>
+    <Class name = 'Join' isAbstract = 'false' supertypes = 'Klaper::Control'/>
+    <Class name = 'Acquire' isAbstract = 'false' supertypes = 'Klaper::Control'>
+      <Attribute name = 'resourceUnits' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'resource' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Klaper::Resource' opposite = 'Klaper::Resource::acquire'/>
+    </Class>
+    <Class name = 'Release' isAbstract = 'false' supertypes = 'Klaper::Control'>
+      <Attribute name = 'resourceUnits' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'resource' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Klaper::Resource' opposite = 'Klaper::Resource::release'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+  </Package>
+</Metamodel>

@@ -1,0 +1,40 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'MySQL'>
+    <Class name = 'NamedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'DataBase' isAbstract = 'false' supertypes = 'MySQL::NamedElement'>
+      <Reference name = 'tables' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MySQL::Table' opposite = 'MySQL::Table::database'/>
+    </Class>
+    <Class name = 'Table' isAbstract = 'false' supertypes = 'MySQL::NamedElement'>
+      <Reference name = 'columns' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'MySQL::Column' opposite = 'MySQL::Column::table'/>
+      <Reference name = 'database' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MySQL::DataBase' opposite = 'MySQL::DataBase::tables'/>
+    </Class>
+    <Class name = 'Column' isAbstract = 'false' supertypes = 'MySQL::NamedElement'>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'isPrimaryKey' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'null' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'defaultValue' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'comment' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'table' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MySQL::Table' opposite = 'MySQL::Table::columns'/>
+    </Class>
+    <Class name = 'IntegerColumn' isAbstract = 'false' supertypes = 'MySQL::Column'>
+      <Attribute name = 'isAutoIncrement' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'EnumColumn' isAbstract = 'false' supertypes = 'MySQL::Column'>
+      <Reference name = 'enumSet' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'MySQL::EnumSet' opposite = ''/>
+    </Class>
+    <Class name = 'EnumSet' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'enumItems' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MySQL::EnumItem' opposite = 'MySQL::EnumItem::enumSet'/>
+    </Class>
+    <Class name = 'EnumItem' isAbstract = 'false' supertypes = 'MySQL::NamedElement'>
+      <Reference name = 'enumSet' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MySQL::EnumSet' opposite = 'MySQL::EnumSet::enumItems'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

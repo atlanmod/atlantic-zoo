@@ -1,0 +1,55 @@
+-- @name		JAVA
+-- @version		1.1
+-- @domains		Object-oriented programming, Java
+-- @authors		Frédéric Jouault (frederic.jouault@univ-nantes.fr)
+-- @date		2005/03/18	
+-- @description	This simplified metamodel of Java consists principally of JavaElements which all have a name. A JavaClass has Methods and Fields and belongs to a Package. Methods, Fields and JavaClasses are subclasses of Modifiers and therefore indicate whether they are public, static or final. JavaClasses and Methods declare with the isAbstract attribute whether they are abstract or not. PrimitiveTypes and JavaClasses are Types. A Method has a Type as return Type and parameters of certain Types. A Field has also a Type.
+
+package JAVA {
+	abstract class JavaElement {
+		attribute name : String;
+	}
+
+	abstract class ClassFeature extends JavaElement {
+		attribute isFinal : Boolean;
+	}
+
+	abstract class ClassMember extends ClassFeature {
+		reference owner : JavaClass oppositeOf members;
+		reference type : JavaClass oppositeOf typedElements;
+		attribute isStatic : Boolean;
+		attribute isPublic : Boolean;
+	}
+
+	class Field extends ClassMember {}
+
+	class JavaClass extends ClassFeature {
+		reference members[*] container : ClassMember oppositeOf owner;
+		reference "package" : Package oppositeOf classes;
+		reference typedElements[*] : ClassMember oppositeOf type;
+		reference parameters[*] : FeatureParameter oppositeOf type;
+		attribute isAbstract : Boolean;
+		attribute isStatic : Boolean;
+		attribute isPublic : Boolean;
+	}
+
+	class Method extends ClassMember {
+		reference parameters[*] ordered container : FeatureParameter oppositeOf method;
+	}
+
+	class Package extends JavaElement {
+		reference classes[*] container : JavaClass oppositeOf "package";
+	}
+
+	class PrimitiveType extends JavaClass {}
+
+	class FeatureParameter extends ClassFeature {
+		reference type : JavaClass oppositeOf parameters;
+		reference method : Method oppositeOf parameters;	
+	}
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+}

@@ -1,0 +1,116 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_OCCAM"{
+labelloc=t
+color=black
+label=OCCAM
+ node[shape=record];
+OCCAM_Program[label="{OCCAM_Program| | }"]
+ OCCAM_Program->OCCAM_Element[arrowhead=vee,arrowtail=diamond,headlabel="occam_Elements[*]",group=OCCAM_Element,minlen=2,constraint=true,]
+ OCCAM_Program->File[arrowhead=vee,arrowtail=diamond,headlabel="files[*]",group=File,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OCCAM_Element[label="{OCCAM_Element|name[0-1] : String| }"]
+;
+ node[shape=record];
+Process[label="{Process| | }"]
+ Process->DataType[arrowhead=vee,arrowtail=none,headlabel="parameters[*]",group=DataType,minlen=2,constraint=false,]
+ Process->Library[arrowhead=vee,arrowtail=none,headlabel="libraries[*]",group=Library,minlen=2,constraint=false,]
+ Process->Channel[arrowhead=vee,arrowtail=none,headlabel="toChannel",group=Channel,minlen=2,constraint=false,]
+ Process->OCCAM_Element[arrowhead=onormal,group=OCCAM_Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Channel[label="{Channel|name : String\ntype : String| }"]
+ Channel->Server[arrowhead=vee,arrowtail=none,headlabel="toServer",group=Server,minlen=2,constraint=false,]
+ Channel->Process[arrowhead=vee,arrowtail=none,headlabel="toProcess",group=Process,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Action[label="{Action| | }"]
+ Action->Constructor[arrowhead=diamond,arrowtail=none,headlabel="constructor",taillabel="actions[*]",group=Constructor,minlen=2,constraint=true,]
+ Action->While[arrowhead=diamond,arrowtail=none,headlabel="while",taillabel="actions[*]",group=While,minlen=2,constraint=true,]
+ Action->If[arrowhead=diamond,arrowtail=none,headlabel="if",taillabel="actions[*]",group=If,minlen=2,constraint=true,]
+ Action->OCCAM_Element[arrowhead=onormal,group=OCCAM_Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Assignment[label="{Assignment| | }"]
+ Assignment->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Input[label="{Input| | }"]
+ Input->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Output[label="{Output| | }"]
+ Output->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Constructor[label="{Constructor| | }"]
+ Constructor->Process[arrowhead=diamond,arrowtail=none,headlabel="process",taillabel="constructors[*]",group=Process,minlen=2,constraint=true,]
+ Constructor->Constructor[arrowhead=vee,arrowtail=diamond,headlabel="childrens[*]",group=Constructor,minlen=2,constraint=true,]
+ Constructor->OCCAM_Element[arrowhead=onormal,group=OCCAM_Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Buckel[label="{Buckel| | }"]
+ Buckel->Constructor[arrowhead=diamond,arrowtail=none,headlabel="constructor",taillabel="buckels[*]",group=Constructor,minlen=2,constraint=true,]
+;
+ node[shape=record];
+If[label="{If| | }"]
+ If->Buckel[arrowhead=onormal,group=Buckel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+While[label="{While| | }"]
+ While->Buckel[arrowhead=onormal,group=Buckel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Condition[label="{Condition|elementRight : String\nelementLeft : String\ntypeCondition : String| }"]
+ Condition->If[arrowhead=diamond,arrowtail=none,headlabel="if",taillabel="conditions[*]",group=If,minlen=2,constraint=true,]
+ Condition->While[arrowhead=diamond,arrowtail=none,headlabel="while",taillabel="conditions[*]",group=While,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Sequential[label="{Sequential| | }"]
+ Sequential->Constructor[arrowhead=onormal,group=Constructor,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parallel[label="{Parallel| | }"]
+ Parallel->Constructor[arrowhead=onormal,group=Constructor,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Alternative[label="{Alternative| | }"]
+ Alternative->Constructor[arrowhead=onormal,group=Constructor,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataType[label="{DataType|dataType : String| }"]
+ DataType->OCCAM_Element[arrowhead=onormal,group=OCCAM_Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Library[label="{Library|name : String| }"]
+;
+ node[shape=record];
+File[label="{File|name : String| }"]
+;
+ node[shape=record];
+Server[label="{Server|name : String| }"]
+ Server->Channel[arrowhead=vee,arrowtail=none,headlabel="toChannel",group=Channel,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Declaration[label="{Declaration|name : String| }"]
+ Declaration->Process[arrowhead=diamond,arrowtail=none,headlabel="process",taillabel="declaration",group=Process,minlen=2,constraint=true,]
+ Declaration->DataType[arrowhead=vee,arrowtail=diamond,headlabel="elements[*]",group=DataType,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

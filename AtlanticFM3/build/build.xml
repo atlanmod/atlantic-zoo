@@ -1,0 +1,100 @@
+<project name="KM32Clojure" default="transformAll" basedir=".">
+
+	<property name="sourcePath" value="../../org.eclipse.am3.zoos.atlantic/"/>
+	<property name="targetPath" value="/org.eclipse.am3.zoos.atlanticFM3/"/>
+	<property name="projectPath" value="" />
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+	</taskdef>
+	
+	<target name="transformAll" depends="loadModels">
+
+		<!-- loop over all km3 models -->
+		<for param="e">
+		  <path>
+		    <fileset dir="C:/atlantic-zoos/Atlantic/" includes="*.km3"/>
+		  </path>
+		  <sequential>
+		  	<!-- executes the transformations -->
+			<antcall target="condition" inheritall="true" inheritrefs="true">
+				<param name="sample" value="@{e}"/>
+			</antcall>
+		  </sequential>
+		</for>
+	</target>
+
+	<target name="condition">
+	  	<basename property="name" file="${sample}" suffix=".km3"/>
+		<property name="sourceModel" value="${sourcePath}${name}.km3"/>
+		<property name="targetModel" value="${targetPath}${name}.mse"/>
+		
+		<uptodate property="isUpToDate" srcfile="${sourceModel}" targetfile="${targetModel}"/>
+		
+	  	<if>
+	  	 <not>
+			 <equals arg1="${isUpToDate}" arg2="true" />
+		 </not>
+		 <then>
+			<antcall target="transformOne" inheritall="true" inheritrefs="true">
+				<param name="name" value="${name}"/>
+				<param name="sourceModel" value="${sourceModel}"/>
+				<param name="targetModel" value="${targetModel}"/>
+			</antcall>
+		 </then>
+		</if>
+
+	</target>
+	
+	<target name="transformOne">
+		<!--property name="targetModel" value="${targetPath}build/tmp/${name}.graphml"/-->
+
+		<echo message="********************************"/>
+		<echo message="*** Transforming  ${name}.km3 ***"/>
+		<echo message="--------------------------------"/>
+		
+		<am3.loadModel modelHandler="EMF" name="${sample}" metamodel="KM3" path="${sourceModel}">
+			<injector name="ebnf">
+				<param name="name" value="KM3"/>
+			</injector>			
+		</am3.loadModel>
+
+		<am3.atl path="/org.eclipse.am3.zoos.atlanticFM3/build/km32fm3.asm">
+				<inModel name="IN" model="${sample}"/>
+				<inModel name="KM3" model="KM3"/>
+				<inModel name="FM3" model="FM3"/>
+				<outModel name="OUT" model="out" metamodel="FM3"/>
+		</am3.atl>
+
+
+		<!-- Saving mse Syntax model -->
+		<am3.saveModel model="out" path="${targetModel}">
+			<extractor name="ebnf">
+				<param name="format" value="fm3.tcs"/>
+				<param name="indentString" value="&#9;"/>
+				<param name="identEsc" value=""/>
+				<param name="stringDelim" value="'"/>
+				<param name="decimalFormat" value="0.##############"/>
+				<param name="serializeComments" value="true"/>
+			</extractor>
+		</am3.saveModel>
+
+		<echo message="--------- END ${name}.km3 ---------"/>
+
+	</target>
+
+	<target name="loadModels">
+		
+		<!-- Loading TCS metamodel -->
+		<am3.loadModel modelHandler="EMF" name="TCS" metamodel="MOF" path="/org.eclipse.am3.zoos.atlanticFM3/build/TCS.ecore"/>
+
+		<!-- Loading clojureSyntax.tcs model -->
+		<am3.loadModel modelHandler="EMF" name="fm3.tcs" metamodel="TCS" path="/org.eclipse.am3.zoos.atlanticFM3/build/fm3.tcs.xmi"/>
+			
+		<!-- Load KM3 metamodel -->
+		<am3.loadModel modelHandler="EMF" name="KM3" metamodel="MOF" nsUri="http://www.eclipse.org/gmt/2005/KM3" />
+
+		<!-- Load MGA metamodel -->
+		<am3.loadModel modelHandler="EMF" name="FM3" metamodel="MOF" path="/org.eclipse.am3.zoos.atlanticFM3/build/fm3.ecore" />
+
+	</target>
+</project>

@@ -1,0 +1,60 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_JAVA"{
+labelloc=t
+color=black
+label=JAVA
+ node[shape=record];
+JavaElement[label="{/JavaElement/|name : String| }"]
+;
+ node[shape=record];
+ClassFeature[label="{/ClassFeature/|isFinal : Boolean| }"]
+ ClassFeature->JavaElement[arrowhead=onormal,group=JavaElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ClassMember[label="{/ClassMember/|isStatic : Boolean\nisPublic : Boolean| }"]
+ ClassMember->JavaClass[arrowhead=diamond,arrowtail=none,headlabel="owner",taillabel="members[*]",group=JavaClass,minlen=2,constraint=true,]
+ ClassMember->JavaClass[arrowhead=none,arrowtail=none,headlabel="type",taillabel="typedElements[*]",group=JavaClass,minlen=2,constraint=false,]
+ ClassMember->ClassFeature[arrowhead=onormal,group=ClassFeature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Field[label="{Field| | }"]
+ Field->ClassMember[arrowhead=onormal,group=ClassMember,minlen=2,constraint=true,]
+;
+ node[shape=record];
+JavaClass[label="{JavaClass|isAbstract : Boolean\nisStatic : Boolean\nisPublic : Boolean| }"]
+ JavaClass->Package[arrowhead=diamond,arrowtail=none,headlabel="package",taillabel="classes[*]",group=Package,minlen=2,constraint=true,]
+ JavaClass->FeatureParameter[arrowhead=none,arrowtail=none,headlabel="parameters[*]",taillabel="type",group=FeatureParameter,minlen=2,constraint=false,]
+ JavaClass->ClassFeature[arrowhead=onormal,group=ClassFeature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Method[label="{Method| | }"]
+ Method->ClassMember[arrowhead=onormal,group=ClassMember,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Package[label="{Package| | }"]
+ Package->JavaElement[arrowhead=onormal,group=JavaElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PrimitiveType[label="{PrimitiveType| | }"]
+ PrimitiveType->JavaClass[arrowhead=onormal,group=JavaClass,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FeatureParameter[label="{FeatureParameter| | }"]
+ FeatureParameter->Method[arrowhead=diamond,arrowtail=none,headlabel="method",taillabel="parameters[*]{ordered}",group=Method,minlen=2,constraint=true,]
+ FeatureParameter->ClassFeature[arrowhead=onormal,group=ClassFeature,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+
+}
+}

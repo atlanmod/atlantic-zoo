@@ -1,0 +1,317 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_SysML"{
+labelloc=t
+color=black
+label=SysML
+ node[shape=record];
+Entity[label="{/Entity/| | }"]
+;
+ node[shape=record];
+NamedElement[label="{/NamedElement/|name : String| }"]
+ NamedElement->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Dependency[label="{Dependency| | }"]
+ Dependency->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Conform[label="{Conform| | }"]
+ Conform->Viewpoint[arrowhead=vee,arrowtail=none,headlabel="target",group=Viewpoint,minlen=2,constraint=false,]
+ Conform->View[arrowhead=vee,arrowtail=none,headlabel="source",group=View,minlen=2,constraint=false,]
+ Conform->Dependency[arrowhead=onormal,group=Dependency,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Package[label="{Package| | }"]
+ Package->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+View[label="{View| | }"]
+ View->Viewpoint[arrowhead=vee,arrowtail=none,headlabel="conformsTo",group=Viewpoint,minlen=2,constraint=false,]
+ View->Package[arrowhead=onormal,group=Package,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Class[label="{Class|name : String| }"]
+ Class->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Viewpoint[label="{Viewpoint|stakeholders[*] : String\npurpose : String\nconcerns[*] : String\nlanguages[*] : String\nmethods[*] : String| }"]
+ Viewpoint->Class[arrowhead=onormal,group=Class,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Comment[label="{Comment|content : String| }"]
+ Comment->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Rationale[label="{Rationale| | }"]
+ Rationale->Comment[arrowhead=onormal,group=Comment,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Problem[label="{Problem| | }"]
+ Problem->Comment[arrowhead=onormal,group=Comment,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Block[label="{Block|isEncapsulated : Boolean| }"]
+ Block->Class[arrowhead=onormal,group=Class,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConstraintBlock[label="{ConstraintBlock| | }"]
+ ConstraintBlock->Block[arrowhead=onormal,group=Block,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Property[label="{Property| | }"]
+ Property->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BlockProperty[label="{BlockProperty| | }"]
+ BlockProperty->Property[arrowhead=onormal,group=Property,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConstraintProperty[label="{ConstraintProperty| | }"]
+ ConstraintProperty->BlockProperty[arrowhead=onormal,group=BlockProperty,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DistributedProperty[label="{DistributedProperty| | }"]
+ DistributedProperty->BlockProperty[arrowhead=onormal,group=BlockProperty,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataType[label="{DataType| | }"]
+ DataType->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ValueType[label="{ValueType| | }"]
+ ValueType->Unit[arrowhead=vee,arrowtail=none,headlabel="unit[0-1]",group=Unit,minlen=2,constraint=false,]
+ ValueType->Dimension[arrowhead=vee,arrowtail=none,headlabel="dimension[0-1]",group=Dimension,minlen=2,constraint=false,]
+ ValueType->DataType[arrowhead=onormal,group=DataType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Unit[label="{Unit| | }"]
+ Unit->ValueType[arrowhead=onormal,group=ValueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Dimension[label="{Dimension| | }"]
+ Dimension->ValueType[arrowhead=onormal,group=ValueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConnectorEnd[label="{ConnectorEnd| | }"]
+ ConnectorEnd->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NestedConnectorEnd[label="{NestedConnectorEnd| | }"]
+ NestedConnectorEnd->Property[arrowhead=vee,arrowtail=diamond,headlabel="propertyPath[2-*]{ordered}",group=Property,minlen=2,constraint=true,]
+ NestedConnectorEnd->ConnectorEnd[arrowhead=onormal,group=ConnectorEnd,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Port[label="{Port|isBehavior : Boolean| }"]
+ Port->Property[arrowhead=onormal,group=Property,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FlowPort[label="{FlowPort|isAtomic : Boolean\ndirection[0-1] : FlowDirection\nisConjugated[0-1] : Boolean| }"]
+ FlowPort->Port[arrowhead=onormal,group=Port,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FlowProperty[label="{FlowProperty|direction[0-1] : FlowDirection| }"]
+ FlowProperty->Property[arrowhead=onormal,group=Property,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Interface[label="{Interface| | }"]
+ Interface->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FlowSpecification[label="{FlowSpecification| | }"]
+ FlowSpecification->FlowProperty[arrowhead=vee,arrowtail=diamond,headlabel="ownedFlowProperty[*]",group=FlowProperty,minlen=2,constraint=true,]
+ FlowSpecification->Interface[arrowhead=onormal,group=Interface,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Classifier[label="{Classifier| | }"]
+ Classifier->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InformationItem[label="{InformationItem| | }"]
+ InformationItem->Classifier[arrowhead=vee,arrowtail=none,headlabel="represented[*]",group=Classifier,minlen=2,constraint=false,]
+ InformationItem->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InformationFlow[label="{InformationFlow| | }"]
+ InformationFlow->Classifier[arrowhead=vee,arrowtail=none,headlabel="conveyed[1-*]",group=Classifier,minlen=2,constraint=false,]
+ InformationFlow->NamedElement[arrowhead=vee,arrowtail=none,headlabel="source[1-*]",group=NamedElement,minlen=2,constraint=false,]
+ InformationFlow->NamedElement[arrowhead=vee,arrowtail=none,headlabel="target[1-*]",group=NamedElement,minlen=2,constraint=false,]
+ InformationFlow->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ItemFlow[label="{ItemFlow| | }"]
+ ItemFlow->BlockProperty[arrowhead=vee,arrowtail=none,headlabel="itemProperty[0-1]",group=BlockProperty,minlen=2,constraint=false,]
+ ItemFlow->InformationFlow[arrowhead=onormal,group=InformationFlow,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parameter[label="{Parameter| | }"]
+ Parameter->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActivityEdge[label="{ActivityEdge| | }"]
+ ActivityEdge->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ParameterSet[label="{ParameterSet| | }"]
+ ParameterSet->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Optional[label="{Optional| | }"]
+ Optional->Parameter[arrowhead=onormal,group=Parameter,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Rate[label="{Rate| | }"]
+ Rate->InstanceSpecification[arrowhead=vee,arrowtail=none,headlabel="instance",group=InstanceSpecification,minlen=2,constraint=false,]
+ Rate->Parameter[arrowhead=onormal,group=Parameter,minlen=2,constraint=true,]
+ Rate->ActivityEdge[arrowhead=onormal,group=ActivityEdge,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InstanceSpecification[label="{InstanceSpecification| | }"]
+ InstanceSpecification->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Continous[label="{Continous| | }"]
+ Continous->Rate[arrowhead=onormal,group=Rate,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Discrete[label="{Discrete| | }"]
+ Discrete->Rate[arrowhead=onormal,group=Rate,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Probability[label="{Probability| | }"]
+ Probability->ValueSpecification[arrowhead=vee,arrowtail=none,headlabel="probability",group=ValueSpecification,minlen=2,constraint=false,]
+ Probability->ActivityEdge[arrowhead=onormal,group=ActivityEdge,minlen=2,constraint=true,]
+ Probability->ParameterSet[arrowhead=onormal,group=ParameterSet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ValueSpecification[label="{ValueSpecification| | }"]
+ ValueSpecification->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Behavior[label="{Behavior| | }"]
+ Behavior->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Operation[label="{Operation| | }"]
+ Operation->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ControlOperation[label="{ControlOperation| | }"]
+ ControlOperation->Behavior[arrowhead=onormal,group=Behavior,minlen=2,constraint=true,]
+ ControlOperation->Operation[arrowhead=onormal,group=Operation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ObjectNode[label="{ObjectNode| | }"]
+ ObjectNode->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NoBuffer[label="{NoBuffer| | }"]
+ NoBuffer->ObjectNode[arrowhead=onormal,group=ObjectNode,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Overwrite[label="{Overwrite| | }"]
+ Overwrite->ObjectNode[arrowhead=onormal,group=ObjectNode,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Abstraction[label="{Abstraction| | }"]
+ Abstraction->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Allocate[label="{Allocate| | }"]
+ Allocate->Abstraction[arrowhead=onormal,group=Abstraction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Allocated[label="{Allocated| | }"]
+ Allocated->NamedElement[arrowhead=vee,arrowtail=none,headlabel="allocatedFrom[*]",group=NamedElement,minlen=2,constraint=false,]
+ Allocated->NamedElement[arrowhead=vee,arrowtail=none,headlabel="allocatedTo[*]",group=NamedElement,minlen=2,constraint=false,]
+ Allocated->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActivityPartition[label="{ActivityPartition| | }"]
+ ActivityPartition->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AllocateActivityPartition[label="{AllocateActivityPartition| | }"]
+ AllocateActivityPartition->ActivityPartition[arrowhead=onormal,group=ActivityPartition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Trace[label="{Trace| | }"]
+ Trace->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DeriveReqt[label="{DeriveReqt| | }"]
+ DeriveReqt->Trace[arrowhead=onormal,group=Trace,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Verify[label="{Verify| | }"]
+ Verify->Trace[arrowhead=onormal,group=Trace,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Copy[label="{Copy| | }"]
+ Copy->Trace[arrowhead=onormal,group=Trace,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Realization[label="{Realization| | }"]
+ Realization->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Satisfy[label="{Satisfy| | }"]
+ Satisfy->Realization[arrowhead=onormal,group=Realization,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Requirement[label="{Requirement|text : String\nid : String| }"]
+ Requirement->Requirement[arrowhead=vee,arrowtail=none,headlabel="derived[*]",group=Requirement,minlen=2,constraint=false,]
+ Requirement->Requirement[arrowhead=vee,arrowtail=none,headlabel="derivedFrom[*]",group=Requirement,minlen=2,constraint=false,]
+ Requirement->NamedElement[arrowhead=vee,arrowtail=none,headlabel="satisfiedBy[*]",group=NamedElement,minlen=2,constraint=false,]
+ Requirement->NamedElement[arrowhead=vee,arrowtail=none,headlabel="refinedBy[*]",group=NamedElement,minlen=2,constraint=false,]
+ Requirement->NamedElement[arrowhead=vee,arrowtail=none,headlabel="tracedTo[*]",group=NamedElement,minlen=2,constraint=false,]
+ Requirement->TestCase[arrowhead=vee,arrowtail=none,headlabel="verifiedBy[*]",group=TestCase,minlen=2,constraint=false,]
+ Requirement->Requirement[arrowhead=vee,arrowtail=none,headlabel="master",group=Requirement,minlen=2,constraint=false,]
+ Requirement->Class[arrowhead=onormal,group=Class,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TestCase[label="{TestCase| | }"]
+ TestCase->Behavior[arrowhead=onormal,group=Behavior,minlen=2,constraint=true,]
+ TestCase->Operation[arrowhead=onormal,group=Operation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RequirementRelated[label="{RequirementRelated| | }"]
+ RequirementRelated->Requirement[arrowhead=vee,arrowtail=none,headlabel="verifies[*]",group=Requirement,minlen=2,constraint=false,]
+ RequirementRelated->Requirement[arrowhead=vee,arrowtail=none,headlabel="tracedFrom[*]",group=Requirement,minlen=2,constraint=false,]
+ RequirementRelated->Requirement[arrowhead=vee,arrowtail=none,headlabel="satisfies[*]",group=Requirement,minlen=2,constraint=false,]
+ RequirementRelated->Requirement[arrowhead=vee,arrowtail=none,headlabel="refines[*]",group=Requirement,minlen=2,constraint=false,]
+ RequirementRelated->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BasicInterval[label="{BasicInterval|min : Integer\nmax : Integer| }"]
+ BasicInterval->DistributedProperty[arrowhead=onormal,group=DistributedProperty,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Interval[label="{Interval| | }"]
+ Interval->BasicInterval[arrowhead=onormal,group=BasicInterval,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Uniform[label="{Uniform| | }"]
+ Uniform->BasicInterval[arrowhead=onormal,group=BasicInterval,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Normal[label="{Normal|mean : Integer\nstandardDeviation : Integer| }"]
+ Normal->DistributedProperty[arrowhead=onormal,group=DistributedProperty,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+
+}
+}

@@ -1,0 +1,988 @@
+-- @name		SpreadsheetMLStyles
+-- @version		1.2
+-- @domains		Microsoft Office Excel, XML
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com)
+-- @date		2005/07/01
+-- @extends 	SpreadsheetMLPrintingSetup 
+-- @description	This metamodel describes a quite complete subset of SpreadsheetML, an XML dialect developed by Microsoft to represent the information in an Excel spreadsheet. This metamodel takes back in details the concepts expressed in the SpreadsheetML metamodel who manages printing setup, and adds the management of default or user-defined styles and named ranges.
+-- @see			office.xsd, excelss.xsd, excel.xsd; Microsoft Office 2003 XML Reference Schemas; http://www.microsoft.com/downloads/details.aspx?familyid=FE118952-3547-420A-A412-00A2662442D9&displaylang=en
+
+package SpreadsheetMLStyles {
+
+-- @begin MS Office - Special Types definition
+
+	-- @comment The format for date/time fields is yyyy-mm-ddThh:mm:ssZ. (This format can be described as follows: a four-digit year, hyphen, two-digit month, hyphen, two-digit day, uppercase letter T, two-digit hour, colon, two-digit minute value, colon, two-digit seconds value, uppercase letter Z.).
+	class DateTimeType {
+		attribute year : Integer;
+		attribute month : Integer;
+		attribute day : Integer;
+		attribute hour : Integer;
+		attribute minute : Integer;
+		attribute second : Integer;	
+	}
+	
+	-- @comment The format for the version is n.nn.
+	class VersionType {
+		attribute n : Integer;
+		attribute nn : Integer;
+	}
+	
+	-- @comment Office manages five types of value : String, Number, DateTime, Boolean and Error.
+	abstract class ValueType {
+		reference vt_data : Data oppositeOf value;
+	}
+	
+	class StringValue extends ValueType {
+		attribute value : String;
+	}
+	
+	class NumberValue extends ValueType {
+		attribute value : Double;
+	}
+	
+	class DateTimeTypeValue extends ValueType {
+		reference value container : DateTimeType;
+	}
+	
+	class BooleanValue extends ValueType {
+		attribute value : Boolean;
+	}
+	
+	class ErrorValue extends ValueType {}
+	
+-- @end MS Office - Special Types definition
+
+
+-- @begin MS Office - Office Document Common Properties
+-- @comment This zone describes elements that are shared by Microsoft Office Word 2003 and Microsoft Office Excel 2003. They contain general document properties (author, createdate, etc.), document summary and statistics (word count, etc.), custom document properties and information related to smart tags that appear in a document.
+
+	-- @comment Defines the collection of standard document properties.
+	class DocumentPropertiesCollection {
+		reference dp_workbook : Workbook oppositeOf wb_docProperties;
+	
+		-- @comment The title of a document. The title can be different from the file name. 
+		attribute title[0-1] : String;
+		-- @comment The subject of the document. This property may be used to group similar files.
+		attribute subject[0-1] : String;
+		-- @comment Keywords may be used when searching for the document.
+		attribute keywords[0-1] : String;
+		-- @comment The short description of the document. Comments may also be used when searching for the document. 
+		attribute description[0-1] : String;
+		-- @comment The category of the file. This property may be used to group similar files.
+		attribute category[0-1] : String;
+		-- @comment  The name of the person who first created the document. The name of the person who last saved the document is contained in the "lastAuthor" attribute. 
+		attribute author[0-1] : String;
+		-- @comment  The name of the person who last saved the document. The original author is contained in the "author" attribute. 
+		attribute lastAuthor[0-1] : String;
+		-- @comment The name of the author's manager. This property may be used in searches to group all the documents of authors having the same manager. 
+		attribute manager[0-1] : String;
+		-- @comment	 The author's employer. This property may be used in searches to group all of the documents from the same company. 
+		attribute company[0-1] : String;
+		-- @comment	The path or URL that is used for all hyperlinks with the same base address in a document. This property can be an Internet address (for example, http://www.microsoft.com), a path to a folder on your hard disk (for example, c:\personal\documents), or a path to a folder on a network (for example, \\exampleserver\public\documents). 
+		attribute hyperlinkBase[0-1] : String;
+		-- @comment	The number of times the document was saved. If no change was made since the document was last saved, this number is not updated in Word. 
+		attribute revision[0-1] : Integer;
+		-- @comment The viewing format of a document.
+		attribute presentationFormat[0-1] : String;
+		-- @comment A unique identification number for the document. 
+		attribute guid[0-1] : String;
+		-- @comment  The name of the application that last updated the document. Word and Excel do not update this element. 
+		attribute appName[0-1] : String;
+		-- @comment The version of the application used to create the document. Word and Excel update this element. 
+		reference version[0-1] container : VersionType;
+		-- @comment The number of minutes since it was created that the document was open for making changes (even if no changes are made). 
+		attribute totalTime[0-1] : Integer;
+		-- @comment The date and time that the document was last printed. Word omits this element if the document has not been printed.  
+		reference lastPrinted[0-1] container : DateTimeType;
+		-- @comment The date and time that the document was created. 
+		reference created[0-1] container : DateTimeType;
+		-- @comment The date and time that the document was last saved. 
+		reference lastSaved[0-1] container : DateTimeType;
+		-- @comment An estimate of the number of pages in the document. 
+		attribute pages[0-1] : Integer;
+		-- @comment  An estimate of the number of words in the document. 
+		attribute words[0-1] : Integer;
+		-- @comment An estimate of the number of characters in the document, not counting spaces.
+		attribute characters[0-1] : Integer;
+		-- @comment An estimate of the number of characters in the document, counting spaces. 
+		attribute charactersWithSpaces[0-1] : Integer;
+		-- @comment An estimate of the number of bytes in the document. 
+		attribute bytes[0-1] : Integer;
+		-- @comment An estimate of the number of lines in the document. 
+		attribute lines[0-1] : Integer;
+		-- @comment An estimate of the number of paragraphs in the document. 
+		attribute paragraphs[0-1] : Integer;
+	} 
+	
+	-- @comment Defines the collection of custom document properties.
+	class CustomDocumentPropertiesCollection {
+		reference cdp_workbook : Workbook oppositeOf wb_customDocProperties;
+		
+		reference customDocumentProperties[1-*] container :  CustomDocumentProperty oppositeOf customDocumentProperty_cdpe;
+	} 
+
+	-- @comment A custom property is a name/value pair.
+	class CustomDocumentProperty {
+		reference customDocumentProperty_cdpe : CustomDocumentPropertiesCollection oppositeOf customDocumentProperties;
+		attribute name : String;
+		-- @comment Defines the value of the custom property in the correct type
+		reference value container : ValueType;
+	}
+
+	-- @comment Defines a smart tag used in the document.
+	class SmartTagType {
+		reference smartTagType_ste : SmartTagsCollection oppositeOf smartTagTypes;
+	
+		-- @comment Gets or sets the namespace Uniform Resource Identifier (URI) for a smart tag
+		attribute namespaceuri : String;
+		-- @comment Gets or sets the element name used for a smart tag
+		attribute name : String;
+		-- @comment Gets or sets the URL for a smart tag provided by the smart tag provider
+		attribute url[0-1] : String;
+	}
+	
+	-- @comment Defines a a collection of smart tags.
+	class SmartTagsCollection {
+		reference st_workbook : Workbook oppositeOf wb_smartTags;
+		reference st_cell : Cell oppositeOf c_smartTags;
+		
+		reference smartTagTypes[*] container : SmartTagType oppositeOf smartTagType_ste;
+	}
+	
+-- @end MS Office - Office Document Common Properties
+
+
+-- @begin MS Office - Excel workbook basic definition
+	
+	-- @comment Defines a workbook that will contain one or more Worksheet elements.
+	class Workbook {
+		-- @comment Defines the general properties of the Office document
+		reference wb_smartTags[0-1] container : SmartTagsCollection oppositeOf st_workbook; 
+		reference wb_docProperties[0-1] container : DocumentPropertiesCollection oppositeOf dp_workbook;
+		reference wb_customDocProperties[0-1] container : CustomDocumentPropertiesCollection oppositeOf cdp_workbook;
+		
+		-- @comment Defines th specific properties of an Excel workbook
+		reference wb_excelWorkbook[0-1] container : ExcelWorkbook oppositeOf ew_workbook;	
+		
+		-- @comment Defines styles for an Exel workbook
+		reference wb_styles[0-1] container : StylesCollection oppositeOf s_workbook;
+		
+		-- @comment Defines the collection of named ranges within a workbook.
+		reference wb_names[0-1] container : NamesType oppositeOf nt_workbook;
+					
+		-- @comment At least one instance of the Worksheet element is required for a valid spreadsheet but the XML schema permit having no instance.
+		reference wb_worksheets[*] ordered container : Worksheet oppositeOf ws_workbook;
+	}
+
+	-- @comment Defines a worksheet within the current workbook.
+	class Worksheet {
+		reference ws_workbook : Workbook oppositeOf wb_worksheets;
+		
+		-- @comment Only one instance of a Table element is valid for a single worksheet. 
+		reference ws_table[0-1] container : Table oppositeOf t_worksheet;
+		
+		-- @comment Specifies the name of a worksheet. This value must be unique within the list of worksheet names of a given workbook.
+		attribute name : String;
+		-- @comment Default value is False. Specifies whether a worksheet is protected. When protection is not enabled for a worksheet, protection settings for individual cells have no effect.
+		attribute protected[0-1] : Boolean;
+		-- @comment Default value is False. Specifies whether the worksheet window displays information from left to right or from right to left. If this attribute is set to display from right to left, column A in a worksheet is the first column on the right.
+		attribute rightToLeft[0-1] : Boolean;
+		
+		-- @comment Determines the properties of a worksheet.
+		reference w_worksheetOptions[0-1] container : WorksheetOptionsElt oppositeOf wo_worksheet;
+		
+		-- @comment Fields "Watches", "DataTable", "PageBreaks", "AutoFilter", "Sorting", "DataValidation", "PivotTable", "Conditional Formatting" and "QueryTable" are not treated in this version.
+		-- @comment See the following versions	
+	}
+	
+	-- @comment Defines an element that can have a particular style (and especially a user-defined style). 
+	abstract class StyledElement {	
+		-- @comment Contains a reference to an ID attribute previously defined in a Style element. Used to apply that defined style to a worksheet's element.	
+		reference styleID[0-1] : StyleType oppositeOf st_styledElement;
+	}
+	
+	-- @comment Defines the table to contain the cells that constitute a worksheet.
+	class Table extends StyledElement {
+		reference t_worksheet :  Worksheet oppositeOf ws_table;
+		
+		-- @comment A table contains columns and rows.
+		reference t_cols[*] ordered container : Column oppositeOf c_table;
+		reference t_rows[*] ordered container : Row oppositeOf r_table;
+		
+		-- @comment Specifies the default width in points of columns in a table. This value must be greater than zero.
+		attribute defaultColumnWidth[0-1] : Double;
+		-- @comment Specifies the default height in points of rows in a table. This value must be greater than zero.
+		attribute defaultRowHeight[0-1] : Double;
+		-- @comment Specifies the total number of columns in a table. This attribute must have a value that is equal to the actual number of columns in the table for the document to be valid.
+		attribute expandedColumnCount[0-1] : Integer;
+		-- @comment Specifies the total number of rows in a table. This attribute must have a value that is equal to the actual number of rows in the table for the document to be valid.
+		attribute expandedRowCount[0-1] : Integer;
+		-- @comment Specifies the index of the column in a spreadsheet that defines the first column of a table. This value must be greater than zero.
+		attribute leftCell[0-1] : Integer;
+		-- @comment Specifies the index of the row in a spreadsheet that defines the top row of a table. This value must be greater than zero.
+		attribute topCell[0-1] : Integer;
+		-- @comment Specifies that the columns in this table should occupy the entire height (all rows) of the worksheet.
+		attribute fullColumns[0-1] : Boolean;
+		-- @comment Specifies that the rows in this table should occupy the entire width (all columns) of the worksheet.
+		attribute fullRows[0-1] : Boolean;
+	}
+
+	-- @comment Defines a table element, that is to say a column, a row or a cell.
+	abstract class TableElement extends StyledElement {
+		-- @comment Specifies the position of the element in the table. For a cell, it specifies the column index.  
+		attribute index[0-1] : Integer;  
+	}
+	
+	-- @comment Defines a row or a column.
+	abstract class ColOrRowElement extends TableElement {
+		-- @comment Specifies whether a row or a column is hidden.
+		attribute hidden[0-1] : Boolean;
+		-- @comment Specifies the number of adjacent columns/rows with the same formatting as the defined column/row. This integer mustn't be negative.
+		attribute span[0-1] : Integer;
+	}
+	
+	-- @comment Defines the formatting and properties for a column
+	class Column extends ColOrRowElement {
+		reference c_table : Table oppositeOf t_cols;
+		
+		-- @comment Specifies whether a column is automatically resized to fit numeric and date values. Columns are not resized to fit text data.
+		attribute autoFitWidth[0-1] : Boolean;
+		-- @comment Specifies the width of a column in points. This value must be greater than or equal to zero. 
+		attribute width[0-1] : Double;
+	}
+	
+	-- @comment Defines the formatting and properties for a row
+	class Row extends ColOrRowElement {
+		reference r_table : Table oppositeOf t_rows;
+		
+		-- @comment A row contains zero or more cells.
+		reference r_cells[*] ordered container : Cell oppositeOf c_row;
+		
+		-- @comment Specifies whether the height of a row is automatically resized to fit the contents of cells.
+		attribute autoFitHeight[0-1] : Boolean;
+		-- @comment Specifies the height of a row in points. This value must be greater than or equal to zero.
+		attribute height[0-1] : Double;
+	}
+	
+	-- @comment Defines the properties of a cell in a worksheet.
+	class Cell extends TableElement {
+		reference c_smartTags[*] container : SmartTagsCollection oppositeOf st_cell;
+		
+		-- @comment A cell is contained in a row.
+		reference c_row : Row oppositeOf r_cells;
+		
+		-- @comment Specifies the range of cells to which an array formula applies.
+		attribute arrayRange[0-1] : String;
+		-- @comment Specifies a formula for a cell.
+		attribute formula[0-1] : String;
+		-- @comment Specifies a URL to which to which a cell is linked.
+		attribute hRef[0-1] : String;
+		-- @comment Specifies the number of adjacent cells to merge with the current cell. The cells to merge will be to the right of the current cell unless the worksheet is set to display left-to-right.
+		attribute mergeAcross[0-1] : Double;
+		-- @comment Specifies the number of adjacent cells below the current cell that are to be merged with the current cell.
+		attribute mergeDown[0-1] : Double;
+		-- @comment A cell can contain a data.
+		reference c_data[0-1] container : Data oppositeOf d_cell;
+		-- @comment A comment can be associated with a cell.
+		reference c_comment[0-1] container : Comment oppositeOf c_cell;
+	}
+	
+	-- @comment Describes a comment that can be associated with a cell
+	class Comment {
+		reference c_cell : Cell oppositeOf c_comment;
+		
+		-- @comment Specifies the contents of the comment
+		reference com_data container : Data oppositeOf d_comment;
+		-- @comment Specifies the author of a comment.
+		attribute author[0-1] : String;
+		-- @comment Specifies whether a comment is always displayed or is displayed only when the user rests the curser on the cell.
+		attribute showAlways[0-1] : Boolean;	
+	}
+	
+	-- @comment Specifies the value of a cell. The value should be specified in the format and type appropriate for (String, Number, DateTime, Boolean or Error).
+	class Data {
+		reference d_cell : Cell oppositeOf c_data;
+		reference d_comment : Comment oppositeOf com_data;
+		
+		-- @comment Defines the value of the cell in the correct type
+		reference value container : ValueType oppositeOf vt_data;
+	}
+	
+
+-- @end MS Office - Excel workbook basic definition
+
+
+-- @begin MS Office - Excel workbook specific Properties
+	
+	-- @comment Contains the properties of a workbook.
+	class ExcelWorkbook {
+		reference ew_workbook : Workbook oppositeOf wb_excelWorkbook;
+		
+		-- @comment "PublishObjects" and "SupBook" options are not managed in the current version.
+		
+		-- @comment Default value is 1. Specifies the number of sheets selected in a workbook. 
+		attribute selectedSheets[0-1] : Integer;
+		-- @comment Specifies whether a workbook window is hidden.
+		attribute windowHidden[0-1] : Boolean;
+		-- @comment Specifies whether the horizontal scroll bar in a workbook window is hidden.
+		attribute hideHorizontalScrollBar[0-1] : Boolean;
+		-- @comment Specifies whether the vertical scroll bar in a workbook window is hidden.
+		attribute hideVerticalScrollBar[0-1] : Boolean;
+		-- @comment Specifies whether the worksheet tabs in a workbook window are hidden.
+		attribute hideWorkbookTabs[0-1] : Boolean;			
+		-- @comment Contains a value specifying the height in points of a workbook window.
+		attribute windowHeight[0-1] : Double;
+		-- @comment Contains a value in points that specifies the width of a workbook window.
+		attribute windowWidth[0-1] : Double;
+		-- @comment Contains a value in points that specifies the horizontal position of a workbook window relative to the left border of the application window.
+		attribute windowTopX[0-1] : Double;
+		-- @comment Contains a value in points that specifies the vertical position of a workbook window relative to the top border of the application window.
+		attribute windowTopY[0-1] : Double; 
+		-- @comment Default value is 1. Contains the index number of the active worksheet in a workbook. 
+		attribute activeSheet[0-1] : Integer;
+		-- @comment Contains the name of the active chart in a workbook.
+		attribute activeChart[0-1] : String;
+		-- @comment  Default value is 1. Specifies that all worksheets before to the worksheet identified in this element are hidden and that no navigation tabs are shown for hidden sheets.
+		attribute firstVisibleSheet[0-1] : Integer;	
+		-- @comment Prevents the PivotTable Field List dialog box from appearing when the user moves the input focus to the PivotTable view.
+		attribute hidePivotTableFieldList[0-1] : Boolean;	
+		-- @comment Specifies whether the structure of a workbook is protected.
+		attribute protectStructure[0-1] : Boolean;	
+		-- @comment Specifies whether the worksheet windows are protected.
+		attribute protectWindows[0-1] : Boolean;	
+		-- @comment Specifies whether ink comments are displayed.
+		attribute displayInkNotes[0-1] : Boolean;	
+		-- @comment Causes smart tags in the document to be saved to the XML spreadsheet.	
+		attribute embedSaveSmartTags[0-1] : Boolean;
+		-- @comment Enables Excel 2002 to warn users that they may lose data on save back to XMLSS, when the XMLSS loaded was created with Excel 2003. This element will only be written into the XMLSS if were writing out the MapInfo collection (new feature in Excel 2003).
+		attribute futureVer[0-1] : String;
+		-- @comment Default value is 600. Specifies the ratio of the worksheet tab area width to the width of the horizontal scroll bar. 		
+		attribute tabRatio[0-1] : Integer;
+		-- @comment Specifies whether a workbook window is minimized.	
+		attribute windowIconic[0-1] : Boolean;
+		-- @comment DefaultValue is "DisplayShapes". Specifies whether drawing objects are displayed, placeholders are displayed in their place, or all drawing objects are hidden in a workbook.
+		attribute displayDrawingObjects[0-1] : DisplayDrawingObjectsType; 
+		-- @comment Specifies whether a backup file is created when you save a workbook.	
+		attribute createBackup[0-1] : Boolean;		
+		-- @comment Default value is "AutomaticCalculation". Specifies the mode of calculation for a workbook.
+		attribute calculation[0-1] : CalculationWorkbookType;		
+		-- @comment Specifies whether a workbook is calculated before it is saved.	
+		attribute doNotCalculateBeforeSave[0-1] : Boolean;	
+		-- @comment Specifies the date system used in a workbook.	
+		attribute date1904[0-1] : Boolean;
+		-- @comment Specifies that references are in R1C1 reference style.	
+		attribute refModeR1C1[0-1] : Boolean;			
+		-- @comment Specifies whether to track the number of iterations through circular references in formulas.
+		attribute iteration[0-1] : Boolean;
+		-- @comment Specifies the maximum number of iterations when resolving circular references in Excel.
+		attribute maxIterations[0-1] : Integer;
+		-- @comment Default value is 0.001. Specifies the maximum amount of change for a value between each iteration when Excel resolves circular references in formulas.
+		attribute maxChange[0-1] : Double;
+		-- @comment Specifies whether calculations are performed using the precision of numbers as they are displayed. 	
+		attribute precisionAsDisplayed[0-1] : Boolean;	
+		-- @comment Specifies whether the values in linked cells are saved.	
+		attribute doNotSaveLinkValues[0-1] : Boolean;	
+		-- @comment Suppresses autorecovery of documents if Excel fails.	
+		attribute noAutoRecover[0-1] : Boolean;	
+		-- @comment Specifies whether range names are allowed in formulas. 	
+		attribute acceptLabelsInFormulas[0-1] : Boolean;	
+		-- @comment Specifies whether a workbook has already been calculated.	
+		attribute uncalced[0-1] : Boolean;	
+
+	}
+
+	-- @comment This type is used to determine what drawing objects have to be displayed. 
+	enumeration DisplayDrawingObjectsType {
+		literal ddot_displayShapes;
+		literal ddot_placeHolders;
+		literal ddot_hideAll;
+	}
+	
+	-- @comment This type is used to determine the mode of calculation for a workbook.
+	enumeration CalculationWorkbookType {
+		literal cwt_automaticCalculation;
+		literal cwt_manualCalculation;
+		literal cwt_semiAutomaticCalculation;
+	}
+	
+-- @end MS Office - Excel workbook specific Properties
+
+
+-- @begin MS Office - Excel worksheet options
+	
+	-- @comment Contains the properties of a worksheet.
+	class WorksheetOptionsElt {
+		reference wo_worksheet : Worksheet oppositeOf w_worksheetOptions;
+		
+		-- @comment Specifies that the spreadsheet should be fit to the printed page.
+		attribute fitToPage[0-1] : Boolean;
+		-- @comment Specifies whether column headers are displayed in a worksheet window.
+		attribute doNotDisplayColHeaders[0-1] : Boolean;
+		-- @comment Specifies whether row headers are displayed in a worksheet window.
+		attribute doNotDisplayRowHeaders[0-1] : Boolean;
+		-- @comment Specifies the color for gridlines that define cells in a worksheet.
+		attribute gridlineColor[0-1] : String;
+		-- @comment	Contains the user-defined name of an object, range, or reference to another workbook, the location and name of a text file, or the built-in name of a range.
+		attribute name[0-1] : String;
+		-- @comment Contains a value that specifies the type of a worksheet.
+		attribute excelWorksheetType[0-1] : ExcelWorksheetTypeType;		
+		-- @comment Specifies whether a worksheet is an international macro worksheet. 
+		attribute intlMacro[0-1] : Boolean;
+		-- @comment Specifies if multiple windows of the same worksheet could be scrolled synchronously.
+		attribute unsynced[0-1] : Boolean;
+		-- @comment Specifies whether a worksheet is selected.
+		attribute selected[0-1] : Boolean;
+		-- @comment	Contains the code name of a worksheet.
+		attribute codeName[0-1] : String;
+		-- @comment Specifies whether vertical and horizontal page breaks will be indicated by a dotted line in the spreadsheet.
+		attribute displayPageBreak[0-1] : Boolean;
+		-- @comment Specifies whether Excel uses Lotus 1-2-3 expression evaluation rules for a worksheet.
+		attribute transitionExpressionEvaluation[0-1] : Boolean;
+		-- @comment Specifies whether Excel uses Lotus 1-2-3 formula entry rules for a worksheet.
+		attribute transitionFormulaEntry[0-1] : Boolean;				
+		-- @comment Default value is 100. The value must be included between 10 and 400. Contains a value specifying the zoom level of a worksheet window.
+		attribute zoom[0-1] : Integer;	
+		-- @comment Default value is 100. The value must be included between 10 and 400. Contains a value specifying the zoom level used during page break preview.
+		attribute pageBreakZoom[0-1] : Integer;
+		-- @comment Specifies whether page break preview is enabled.
+		attribute showPageBreakZoom[0-1] : Boolean;		
+		-- @comment Default value is 255. Contains the default height in points of a row in a worksheet. 
+		attribute defaultRowHeight[0-1] : Integer;		
+		-- @comment Default value is 8. Contains the default column width in points of a worksheet.
+		attribute defaultColumnWidth[0-1] : Integer;	
+		-- @comment Default value is 0. Contains an integer value specifying the default width of columns in a worksheet.
+		attribute standardWidth[0-1] : Integer;
+		-- @comment Contains a value specifying whether a worksheet is visible.
+		attribute visible[0-1] : VisibleType; 
+		-- @comment Specifies the first column visible on the left.
+		attribute leftColumnVisible[0-1] : Integer;		
+		-- @comment Specifies the display direction in a worksheet window.
+		attribute displayRightToLeft[0-1] : Boolean;
+		-- @comment Default value is 64. Contains a value specifying the index for the color of gridlines in a worksheet.
+		attribute gridlineColorIndex[0-1] : Integer;
+		-- @comment Specifies whether formulas are displayed in a worksheet window.
+		attribute displayFormulas[0-1] : Boolean;		
+		-- @comment Specifies whether gridlines are displayed in a worksheet window.
+		attribute doNotDisplayGridlines[0-1] : Boolean;
+		-- @comment Specifies whether row and column headings are displayed in a worksheet window.
+		attribute doNotDisplayHeadings[0-1] : Boolean;
+		-- @comment Specifies whether outline symbols are displayed in a worksheet window.
+		attribute doNotDisplayOutline[0-1] : Boolean;
+		-- @comment Specifies whether automatic outline styles are applied.
+		attribute applyAutomaticOutlineStyles[0-1] : Boolean;
+		-- @comment Specifies whether summary rows are displayed below detail rows.
+		attribute noSummaryRowsBelowDetail[0-1] : Boolean;
+		-- @comment Specifies whether summary columns are displayed to the right of detail columns.
+		attribute noSummaryColumnsRightDetail[0-1] : Boolean;
+		-- @comment Specifies whether zero values are displayed in a worksheet window.
+		attribute doNotDisplayZeros[0-1] : Boolean;
+		-- @comment Default value is 1. Contains the index number of a pane's active row in a worksheet window.
+		attribute activeRow[0-1] : Integer;		
+		-- @comment Default value is 1. Contains the index number of a pane's active column in a worksheet window.
+		attribute activeColumn[0-1] : Integer;	
+		-- @comment Specifies whether AutoFilter is enabled.
+		attribute filterOn[0-1] : Boolean;
+		-- @comment Contains the selected range of a pane in a worksheet window.
+		attribute rangeSelection[0-1] : String;		
+		-- @comment Default value is 1. Contains the row number of the topmost visible row in the top pane of a worksheet window.
+		attribute topRowVisible[0-1] : Integer;	
+		-- @comment Default value is 1. Contains the row number of the topmost visible row in the bottom pane of a worksheet window.
+		attribute topRowBottomPane[0-1] : Integer;	
+		-- @comment Default value is 1. Contains the column number of the leftmost visible column in the right pane of a worksheet window.
+		attribute leftColumnRightPane[0-1] : Integer;		
+		-- @comment Default value is 3. The value must be included between 0 and 3. Contains the index number of the active pane in a worksheet window.
+		attribute activePane[0-1] : Integer;
+		-- @comment Default value is 0. Contains the number of points from the top of the window that a worksheet is split horizontally. 
+		attribute splitHorizontal[0-1] : Integer;
+		-- @comment Default value is 0. Contains the number of points from the left of the window that a worksheet is split vertically.
+		attribute splitVertical[0-1] : Integer;	
+		-- @comment Specifies whether the panes of a worksheet window are frozen.
+		attribute freezePanes[0-1] : Boolean;
+		-- @comment Specifies whether the frozen panes of a worksheet window are not split.
+		attribute frozenNoSplit[0-1] : Boolean;
+		-- @comment Specifies the index representing the color for tabs.
+		attribute tabColorIndex[0-1] : Integer;
+		-- @comment Specifies whether the contents of a worksheet are protected.
+		attribute protectContentst[0-1] : Boolean;
+		-- @comment Specifies whether the objects of a worksheet are protected.
+		attribute protectObjects[0-1] : Boolean;
+		-- @comment Specifies whether the scenarios of a worksheet are protected.
+		attribute protectScenarios[0-1] : Boolean;
+		-- @comment	Specifies restrictions on selecting cells.
+		attribute enableSelection[0-1] : EnableSelectionType; 
+		-- @comment Specifies whether cells can be formatted when worksheet protection is enabled.
+		attribute allowFormatCells[0-1] : Boolean;
+		-- @comment Specifies whether column widths can be adjusted when worksheet protection is enabled. 
+		attribute allowSizeCols[0-1] : Boolean;	
+		-- @comment Specifies whether row heights can be adjusted when worksheet protection is enabled.
+		attribute allowSizeRows[0-1] : Boolean;	
+		-- @comment Specifies whether columns can be inserted when worksheet protection is enabled.
+		attribute allowInsertCols[0-1] : Boolean;	
+		-- @comment Specifies whether rows can be inserted when worksheet protection is enabled.
+		attribute allowInsertRows[0-1] : Boolean;	
+		-- @comment Specifies whether hyperlinks can inserted when worksheet protection is enabled.
+		attribute allowInsertHyperlinks[0-1] : Boolean;	
+		-- @comment Specifies whether columns can be deleted when worksheet protection is enabled. 
+		attribute allowDeleteCols[0-1] : Boolean;	
+		-- @comment Specifies whether rows can be deleted when worksheet protection is enabled.
+		attribute allowDeleteRows[0-1] : Boolean;	
+		-- @comment Specifies whether data can be sorted when worksheet protection is enabled. 
+		attribute allowSort[0-1] : Boolean;	
+		-- @comment Specifies whether filters can be applied when worksheet protection is enabled.
+		attribute allowFilter[0-1] : Boolean;
+		-- @comment Specifies whether PivotTables views and reports can be used when worksheet protection is enabled.
+		attribute allowUsePivotTables[0-1] : Boolean;
+		
+		-- @comment Contains information related to settings for printing worksheets.
+		reference wo_pageSetup[0-1] container : PageSetup oppositeOf ps_worksheetOptions;
+		-- @comment Contains workbook and worksheet printing options.
+		reference wo_print[0-1] container : Print oppositeOf p_worksheetOptions;
+		
+		-- @comment Field "Panes" is not treated in this version.
+		-- @comment See the following versions
+								
+	}
+
+	-- @comment Specifies the possible types of Excel worksheet type.
+	enumeration ExcelWorksheetTypeType {
+		literal ewt_Worksheet;
+		literal ewt_Chart;
+		literal ewt_Macro;
+		literal ewt_Dialog;
+	}
+	
+	-- @comment Specifies the visibility level of a worksheet.
+	enumeration VisibleType {
+		literal vt_SheetVisible;
+		literal vt_SheetHidden;
+		literal vt_SheetVeryHidden;
+	}
+	
+	-- @comment Specifies restrictions on selecting cells.
+	enumeration EnableSelectionType
+	{
+		literal est_UnlockedCells;
+		literal est_NoSelection;
+	}	
+			
+-- @end MS Office - Excel worksheet options
+
+
+-- @begin MS Office - Page setup and print options (Excel worksheet options)
+	
+	-- @comment Contains information related to settings for printing worksheets.
+	class PageSetup {
+		reference ps_worksheetOptions : WorksheetOptionsElt oppositeOf wo_pageSetup;
+		
+		-- @comment Contains information related to page layout.
+		reference ps_layout[0-1] container : Layout oppositeOf l_pageSetup;
+		-- @comment Contains information related to headers.
+		reference ps_header[0-1] container : Header oppositeOf h_pageSetup;
+		-- @comment Contains information related to footers.
+		reference ps_footer[0-1] container : Footer oppositeOf f_pageSetup;
+		-- @comment Contains information related to page margins.
+		reference ps_pageMargins[0-1] container : PageMarginsInfo oppositeOf pm_pageSetup;
+	}
+	
+	-- @comment Contains information related to page layout.
+	class Layout {
+		reference l_pageSetup : PageSetup oppositeOf ps_layout;
+		
+		-- @comment Default value is "Portrait". Specifies whether the page orientation is portrait or landscape. 
+		attribute orientation[0-1] : OrientationType;
+		-- @comment Default value is False. Specifies whether the worksheet is centered horizontally on the page when it is printed. 
+		attribute centerHorizontal[0-1] : Boolean;				
+		-- @comment Default value is False. Specifies whether the worksheet is centered vertically on the page when it is printed. 
+		attribute centerVertical[0-1] : Boolean;					
+		-- @comment Default value is "1". Specifies the first page number that will be used when the worksheet is printed.			
+		attribute startPageNumber[0-1] : String;					
+	}
+	
+	-- @comment Specifies the type of orientation
+	enumeration OrientationType {
+		literal ot_Landscape;
+		literal ot_Portrait;
+	}
+	
+	-- @comment Contains information related to headers or footers.
+	abstract class HeaderOrFooterElt {
+		-- @comment Specifies the distance in points from the top of the page to the footer or to the header.
+		attribute margin[0-1] : Double;
+		-- @comment Contains the content for the footer or for the header.
+		attribute data[0-1] : String;
+	}
+	
+	-- @comment Contains information related to headers.
+	class Header extends HeaderOrFooterElt {
+		reference h_pageSetup : PageSetup oppositeOf ps_header;
+	}
+	
+	-- @comment Contains information related to footers.
+	class Footer extends HeaderOrFooterElt {
+		reference f_pageSetup : PageSetup oppositeOf ps_footer;
+	}
+	
+	-- @comment Contains information related to page margins.
+	class PageMarginsInfo {
+		reference pm_pageSetup : PageSetup oppositeOf ps_pageMargins;
+		
+		-- @comment Specifies the size in points of the left margin.
+		attribute left[0-1] : Double;
+		-- @comment Specifies the size in points of the right margin.
+		attribute right[0-1] : Double;
+		-- @comment Specifies the size in points of the top margin.
+		attribute top[0-1] : Double;
+		-- @comment Specifies the size in points of the bottom margin.
+		attribute bottom[0-1] : Double;
+	}
+	
+	-- @comment Contains workbook and worksheet printing options.
+	class Print {
+		reference p_worksheetOptions : WorksheetOptionsElt oppositeOf wo_print;
+		
+		-- @comment Specifies the number of pages to spread the width of a print area across.
+		attribute fitWidth[0-1] : Integer;
+		-- @comment Specifies the number of pages to spread the height of a print area across.
+		attribute fitHeight[0-1] : Integer;
+		-- @comment Specifies whether a sort is done left to right by column or top to bottom by row, or whether a workbook or worksheet is printed left to right.
+		attribute leftToRight[0-1] : Boolean;
+		-- @comment Specifies whether a workbook, worksheet, or embedded chart is printed in black and white.
+		attribute blackAndWhite[0-1] : Boolean;
+		-- @comment Specifies whether a workbook or worksheet is printed in draft mode.
+		attribute draftQuality[0-1] : Boolean;
+		-- @comment Specifies whether comments are printed and where they are printed.
+		attribute commentsLayout[0-1] : CommentsLayoutType;	
+		-- @comment Value is included between 10 and 400. Specifies the percentage of reduction or enlargement for a printed worksheet or workbook. 
+		attribute scale[0-1] : Integer;
+		-- @comment Specifies what to print in cells with errors.
+		attribute printErrors[0-1] : String;
+		-- @comment Specifies whether printer properties are valid for the active printer.
+		attribute validPrinterInfo[0-1] : Boolean;
+		-- @comment Contains an index to a paper size used by a printer.
+		attribute paperSizeIndex[0-1] : Integer;
+		-- @comment Specifies the horizontal resolution of a printer.
+		attribute horizontalResolution[0-1] : Integer;
+		-- @comment Specifies the vertical resolution of a printer.
+		attribute verticalResolution[0-1] : Integer;
+		-- @comment Specifies whether gridlines are printed.
+		attribute gridlines[0-1] : Boolean;
+		-- @comment Specifies the number of copies to print.
+		attribute numberOfCopies[0-1] : Integer;
+		-- @comment Specifies whether row and column headings are printed.
+		attribute rowColHeadings[0-1] : Boolean;
+	} 
+	
+	enumeration CommentsLayoutType {	
+		literal clt_InPlace;
+		literal clt_PrintNone;
+		literal clt_SheetEnd;
+	}
+						
+-- @end MS Office - Page setup and print options (Excel worksheet options)
+
+
+-- @begin MS Office - Excel styles
+
+	-- @comment Contains the style definitions for the current worksheet. This element is required for custom formatting; otherwise, it is optional.
+	class StylesCollection {
+		reference s_workbook : Workbook oppositeOf wb_styles;
+		
+		-- @comment Defines a single style in the current workbook. This element is required for custom formatting; otherwise, it is optional.
+		reference style[*] container : StyleType oppositeOf st_styles;
+	}
+	
+	-- @comment Defines a single style in the current workbook. This element is required for custom formatting; otherwise, it is optional.
+	class StyleType {
+		reference st_styles : StylesCollection oppositeOf style;
+		reference st_styledElement : StyledElement oppositeOf styleID;
+		
+		-- @comment Defines a name that identifies a particular style. The special value of "Default" indicates that this style represents the default formatting in the workbook. 
+		attribute id : String;
+		-- @comment Specifies the name for a defined style. Duplicate names for different styles are not permitted.
+		attribute name[0-1] : String;
+		-- @comment Specifies a parent style from which the defined style should inherit format settings.
+		reference parent[0-1] : StyleType oppositeOf st_parent;
+		reference st_parent : StyleType oppositeOf parent;
+		-- @comment Specifies the font alignment attributes to use for cells to which the defined style is applied.
+		reference alignment[0-1] container : AlignmentType oppositeOf at_styleType;
+		-- @comment Defines the border properties to use for cells to which the defined style is applied.
+		reference borders[0-1] container : BordersType oppositeOf bt_styleType;
+		-- @comment Defines the font characteristics to use for cells to which the defined style is applied.
+		reference font[0-1] container : FontType oppositeOf ft_styleType;	
+		-- @comment Defines the fill properties to use for cells to which the defined style is applied.
+		reference interior[0-1] container : InteriorType oppositeOf it_styleType;
+		-- @comment Defines the number format to use for cells to which the defined style is applied.
+		reference numberFormat[0-1] container : NumberFormatType oppositeOf nft_styleType;	
+		-- @comment Defines the protection properties of cells to which the defined style is applied.
+		reference protection[0-1] container : ProtectionType oppositeOf pt_styleType;		
+	}
+	
+	-- @comment Defines the protection properties that should be used for cells to which the defined style is applied.
+	class ProtectionType {
+		reference pt_styleType : StyleType oppositeOf protection;
+		
+		-- @comment Default value is true. Specifies whether a cell is protected. When the worksheet is unprotected, enabling protection on individual cells has no effect.
+		attribute protected[0-1] : Boolean;
+	}
+	
+	-- @begin AlignmentType
+	
+	-- @comment Defines a collection of font alignment attributes.
+	class AlignmentType {
+		reference at_styleType : StyleType oppositeOf alignment;
+	
+		-- @comment Default value is "Automatic". Specifies the left-to-right alignment of text within a cell.
+		attribute horizontal[0-1] : HorizontalAlignementType;
+		-- @comment Default value is "Context". Specifies the default right-to-left text entry mode for a cell.
+		attribute readingOrder[0-1] : ReadingOrderType;
+		-- @comment Default value is 0. Specifies the number of indents. This attribute is not supported by the Spreadsheet component.
+		attribute indent[0-1] : Double;
+		-- @comment Default value is 0. The value must be included between -90 and 90. Specifies the rotation of text within a cell. 
+		attribute rotate[0-1] : Double; 
+		-- @comment Specifies whether text size should be shrunk so that all of the text fits within a cell.
+		attribute shrinkToFit[0-1] : Boolean;
+		-- @comment Default value is "Automatic". Specifies the top-to-bottom alignment of text within a cell.
+		attribute vertical[0-1] : VerticalAlignementType;
+		-- @comment Default value is false. Specifies whether text characters are positioned to read vertically.
+		attribute verticalText[0-1] : Boolean;
+		-- @comment Default value is false. Specifies whether the text in a cell should wrap at the cell boundary.
+		attribute wrapText[0-1] : Boolean;
+	}
+	
+	-- @comment Defines the possible left-to-right alignments of text within a cell.
+	enumeration HorizontalAlignementType {
+		literal hat_CenterAcrossSelection;
+		literal hat_Fill;
+		literal hat_Left;
+		literal hat_Right;
+		literal hat_Justify;
+		literal hat_Distributed;
+		literal hat_Center;
+		literal hat_Automatic;
+		literal hat_JustifyDistributed;
+	}
+	
+	-- @comment Defines the different reading-order types.
+	enumeration ReadingOrderType {
+		literal rot_RightToLeft;
+		literal rot_LeftToRight;
+		literal rot_Context;
+	}
+	
+	-- @comment Defines the possible top-to-bottom alignments of text within a cell.
+	enumeration VerticalAlignementType {
+		literal vat_Top;
+		literal vat_Bottom;
+		literal vat_Justify;
+		literal vat_Distributed;
+		literal vat_Center;
+		literal vat_Automatic;
+		literal vat_JustifyDistributed;
+	}
+	
+	-- @end AlignmentType
+	
+	-- @begin BordersType
+	
+	-- @comment Defines a container for individual Border elements.
+	class BordersType {
+		reference bt_styleType : StyleType oppositeOf borders;
+		
+		-- @comment Specifies the properties of a particular border within the Borders element.
+		reference border[0-6] ordered container : BorderType oppositeOf bt_bordersType;
+	}
+	
+	-- @comment Specifies the properties of a particular border within the Borders element.
+	class BorderType {
+		reference bt_bordersType : BordersType oppositeOf border;
+		
+		-- @comment Specifies one of the six possible borders to use for cells.
+		attribute position : PositionType;
+		-- @comment Default value is "Automatic". Specifies the color of a border.
+		attribute color[0-1] : String;
+		-- @comment Specifies the style of a border.
+		attribute lineStyle[0-1] : LineStyleType;
+		-- @comment Default value is 0 and maximum value is 3.5 . Specifies the weight (or thickness) in points of a border.
+		attribute weight[0-1] : Double;
+	}
+	
+	-- @comment Contains an enumeration of the values that may appear in the Position attribute of the Border element.
+	enumeration PositionType {
+		literal pt_Left;
+		literal pt_Top;
+		literal pt_Right;
+		literal pt_Bottom;
+		literal pt_DiagonalLeft;
+		literal pt_DiagonalRight;
+	}
+	
+	-- @comment Defines the different line style types.
+	enumeration LineStyleType {
+		literal lst_None;
+		literal lst_Continuous;
+		literal lst_Dash;
+		literal lst_Dot;
+		literal lst_DashDot;
+		literal lst_DashDotDot;
+		literal lst_SlantDashDot;
+		literal lst_Double;
+	}
+
+	-- @end BordersType
+	
+	-- @begin FontType
+	
+	-- @comment Defines the font attributes to use in a style.
+	class FontType {
+		reference ft_styleType : StyleType oppositeOf font;
+		
+		-- @comment Default value is false. Specifies whether a font is bold.
+		attribute bold[0-1] : Boolean;
+		-- @comment Default value is "Automatic". Specifies the color of a font.
+		attribute color[0-1] : String;
+		-- @comment Default value is "Arial". Specifies the name of the font.
+		attribute fontName[0-1] : String;
+		-- @comment Default value is false. Specifies whether a font is italic.
+		attribute italic[0-1] : Boolean;
+		-- @comment Default value is false. Specifies whether a font is rendered as an outline. This property is used only on the Macintosh.
+		attribute outline[0-1] : Boolean;
+		-- @comment Default value is false. Specifies whether a font is shadowed. This property is used only on the Macintosh. 
+		attribute shadow[0-1] : Boolean;
+		-- @comment Default value is 10. The value must be positive. Specifies the size of a font in points.
+		attribute size[0-1] : Double;
+		-- @comment Default value is false. Specifies whether a font is displayed using the strikethrough style.
+		attribute strikeThrough[0-1] : Boolean;
+		-- @comment Default value is "None". Specifies whether a font is displayed underlined.
+		attribute underline[0-1] : UnderlineType;
+		-- @comment Default value is "None". Specifies the vertical alignment of a font.
+		attribute verticalAlign[0-1] : VerticalAlignType;	
+	}
+	
+	-- @comment Defines the different underline types.
+	enumeration UnderlineType {
+		literal ut_None;
+		literal ut_Single;
+		literal ut_Double;
+		literal ut_SingleAccounting;
+		literal ut_DoubleAccounting;
+	}
+	
+	-- @comment Defines the different vertical align types.
+	enumeration VerticalAlignType {
+		literal vat_None;
+		literal vat_Subscript;
+		literal vat_Superscript;
+	}
+		
+	-- @end FontType
+	
+	-- @begin InteriorType
+	
+	-- @comment Defines the fill properties to use in a style.
+	class InteriorType {
+		reference it_styleType : StyleType oppositeOf interior;
+		
+		-- @comment Default value is "Automatic". Specifies the fill color of a cell. 
+		attribute color[0-1] : String;
+		-- @comment Specifies the fill pattern of a cell.
+		attribute pattern[0-1] : PatternType;
+		-- @comment Default value is "Automatic". Specifies the secondary fill color of a cell when the Pattern attribute does not equal Solid.
+		attribute patternColor[0-1] : String;
+	}
+	
+	-- @comment Contains an enumeration of the values that may appear in the Pattern attribute of the Interior element.
+	enumeration PatternType {
+		literal pt_None;
+		literal pt_Solid;
+		literal pt_Gray75;
+		literal pt_Gray50;
+		literal pt_Gray25;
+		literal pt_Gray125;
+		literal pt_Gray0625;
+		literal pt_HorzStripe;
+		literal pt_VertStripe;
+		literal pt_ReverseDiagStripe;
+		literal pt_DiagStripe;
+		literal pt_DiagCross;
+		literal pt_ThickDiagCross;
+		literal pt_ThinHorzStripe;
+		literal pt_ThinVertStripe;
+		literal pt_ThinReverseDiagStripe;
+		literal pt_ThinDiagStripe;
+		literal pt_ThinHorzCross;
+		literal pt_ThinDiagCross;
+	}
+
+	-- @end InteriorType
+	
+	-- @begin NumberFormatType
+	
+	-- @comment Specifies a number format code in the Excel number format syntax.
+	class NumberFormatType {
+		reference nft_styleType : StyleType oppositeOf numberFormat;
+		
+		-- @comment default value is "General". Specifies a number format code in the Excel number format syntax.
+		attribute format[0-1] : ExcelNumberFormatType;
+	}
+	
+	-- @comment Defines the different number format types in Excel
+	enumeration ExcelNumberFormatType {
+		literal enft_General;
+		literal enft_General_Number;
+		literal enft_General_Date;
+		literal enft_Long_Date;
+		literal enft_Medium_Date;
+		literal enft_Short_Date;
+		literal enft_Long_Time;
+		literal enft_Medium_Time;
+		literal enft_Short_Time;
+		literal enft_Currency;
+		literal enft_Euro_Currency;
+		literal enft_Fixed;
+		literal enft_Standard;
+		literal enft_Percent;
+		literal enft_Scientific;
+		literal enft_Yes_No;
+		literal enft_True_False;
+		literal enft_On_Off;
+	}
+							
+	-- @end NumberFormatType
+		
+-- @end MS Office - Excel styles
+
+
+-- @begin MS Office - Excel named ranges
+
+	-- @comment Defines the collection of named ranges within a workbook or worksheet.
+	class NamesType {
+		reference nt_workbook : Workbook oppositeOf wb_names;
+	
+		reference namedRanges[*] ordered container : NamedRange oppositeOf nr_namesType;	
+	}
+	
+	-- @comment Defines a single named range within this workbook.
+	class NamedRange {
+		reference nr_namesType : NamesType oppositeOf namedRanges;
+		
+		-- @comment Specifies the name of a named range. 
+		attribute name : String;
+		-- @comment Specifies the range to which the name applies. 
+		attribute refersTo[0-1] : String;
+		-- @comment Default value is false. Specifies whether a named range is hidden.			
+		attribute hidden[0-1] : Boolean;
+	}
+	
+-- @end MS Office - Excel named ranges
+
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

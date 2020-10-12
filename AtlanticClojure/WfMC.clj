@@ -1,0 +1,6 @@
+( defstruct WorkflowProcessDefinition )
+( defstruct WorkflowApplicationDeclaration :processDefinition )
+( defstruct WorkflowRelevantData :processDefinition )
+( defstruct WorkflowParticipantSpecification :processDefinition )
+( defstruct WorkflowProcessActivity :processDefinition :to_transitionInformation :from_transitionInformation )
+( defstruct TransitionInformation :processDefinition :to_processActivity :from_processActivity )

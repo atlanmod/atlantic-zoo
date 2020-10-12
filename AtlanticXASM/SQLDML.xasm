@@ -1,0 +1,125 @@
+universe SQLDML_LocatedElement
+
+	function location(a : SQLDML_LocatedElement, b : String) -> Bool
+
+	function commentsBefore(a : SQLDML_LocatedElement, b : String) -> Bool
+
+	function commentsAfter(a : SQLDML_LocatedElement, b : String) -> Bool
+
+	universe SQLDML_SQLRoot < SQLDML_LocatedElement
+
+	function statements(a : SQLDML_SQLRoot, b : SQLDML_Statement) -> Bool
+
+	universe SQLDML_Statement < SQLDML_LocatedElement
+
+	universe SQLDML_ViewStatement < SQLDML_Statement
+
+	function name(a : SQLDML_ViewStatement, b : String) -> Bool
+
+	function columns(a : SQLDML_ViewStatement, b : SQLDML_ColumnExp) -> Bool
+
+	function query(a : SQLDML_ViewStatement, b : SQLDML_QueryStmt) -> Bool
+
+	universe SQLDML_InsertStmt < SQLDML_Statement
+
+	function tableName(a : SQLDML_InsertStmt, b : String) -> Bool
+
+	function values(a : SQLDML_InsertStmt, b : SQLDML_Expression) -> Bool
+
+	universe SQLDML_QueryStmt < SQLDML_Statement
+
+	function tables(a : SQLDML_QueryStmt, b : SQLDML_Table) -> Bool
+
+	function condition(a : SQLDML_QueryStmt, b : SQLDML_WhereClause) -> Bool
+
+	universe SQLDML_QueryStmtCol < SQLDML_QueryStmt
+
+	function columns(a : SQLDML_QueryStmtCol, b : SQLDML_Expression) -> Bool
+
+	universe SQLDML_QueryStmtAllCol < SQLDML_QueryStmt
+
+	universe SQLDML_NamedElement < SQLDML_LocatedElement
+
+	function name(a : SQLDML_NamedElement, b : String) -> Bool
+
+	universe SQLDML_Table < SQLDML_NamedElement
+
+	function alias(a : SQLDML_Table, b : String) -> Bool
+
+	universe SQLDML_WhereClause < SQLDML_LocatedElement
+
+	function expression(a : SQLDML_WhereClause, b : SQLDML_Expression) -> Bool
+
+	universe SQLDML_Expression < SQLDML_LocatedElement
+
+	universe SQLDML_BinaryExp < SQLDML_Expression
+
+	function opName(a : SQLDML_BinaryExp, b : String) -> Bool
+
+	function leftExp(a : SQLDML_BinaryExp, b : SQLDML_Expression) -> Bool
+
+	function rightExp(a : SQLDML_BinaryExp, b : SQLDML_Expression) -> Bool
+
+	universe SQLDML_OrExp < SQLDML_BinaryExp
+
+	universe SQLDML_AndExp < SQLDML_BinaryExp
+
+	universe SQLDML_NotExp < SQLDML_Expression
+
+	function opName(a : SQLDML_NotExp, b : String) -> Bool
+
+	function valueExp(a : SQLDML_NotExp, b : SQLDML_Expression) -> Bool
+
+	function unused(a : SQLDML_NotExp, b : SQLDML_Expression) -> Bool
+
+	universe SQLDML_LikeExp < SQLDML_Expression
+
+	function columnName(a : SQLDML_LikeExp, b : String) -> Bool
+
+	function expression(a : SQLDML_LikeExp, b : SQLDML_StringValueExp) -> Bool
+
+	universe SQLDML_InExp < SQLDML_Expression
+
+	function columnName(a : SQLDML_InExp, b : String) -> Bool
+
+	function elements(a : SQLDML_InExp, b : SQLDML_Predicate) -> Bool
+
+	universe SQLDML_OperationExp < SQLDML_BinaryExp
+
+	function optName(a : SQLDML_OperationExp, b : String) -> Bool
+
+	universe SQLDML_Predicate < SQLDML_Expression
+
+	universe SQLDML_QueryPredicate < SQLDML_Expression
+
+	function query(a : SQLDML_QueryPredicate, b : SQLDML_QueryStmt) -> Bool
+
+	universe SQLDML_ColumnExp < SQLDML_Predicate SQLDML_NamedElement
+
+	function alias(a : SQLDML_ColumnExp, b : String) -> Bool
+
+	function type(a : SQLDML_ColumnExp, b : SQLDML_DataType) -> Bool
+
+	universe SQLDML_ValueExp < SQLDML_Predicate
+
+	function type(a : SQLDML_ValueExp, b : SQLDML_DataType) -> Bool
+
+	universe SQLDML_StringValueExp < SQLDML_ValueExp
+
+	function aValue(a : SQLDML_StringValueExp, b : String) -> Bool
+
+	universe SQLDML_IntegerValueExp < SQLDML_ValueExp
+
+	function aValue(a : SQLDML_IntegerValueExp, b : Integer) -> Bool
+
+	universe SQLDML_ListExp < SQLDML_Predicate
+
+	function elements(a : SQLDML_ListExp, b : SQLDML_Expression) -> Bool
+
+	universe SQLDML_FunctionExp < SQLDML_Predicate
+
+	function arguments(a : SQLDML_FunctionExp, b : SQLDML_Expression) -> Bool
+
+	function name(a : SQLDML_FunctionExp, b : String) -> Bool
+
+	universe SQLDML_DataType < SQLDML_NamedElement

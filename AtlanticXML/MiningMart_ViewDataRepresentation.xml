@@ -1,0 +1,138 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'SimplfiedMiningMart'>
+    <Class name = 'ModelElement' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Classifier' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::ModelElement'/>
+    <Class name = 'StructuralFeature' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::ModelElement'/>
+    <Class name = 'Class' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::Classifier'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'attributes' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SimplfiedMiningMart::Attribute' opposite = 'SimplfiedMiningMart::Attribute::class'/>
+    </Class>
+    <Class name = 'DataType' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::Classifier'>
+      <Reference name = 'attribute' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimplfiedMiningMart::Attribute' opposite = 'SimplfiedMiningMart::Attribute::has'/>
+    </Class>
+    <Class name = 'Attribute' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::StructuralFeature'>
+      <Reference name = 'class' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimplfiedMiningMart::Class' opposite = 'SimplfiedMiningMart::Class::attributes'/>
+      <Reference name = 'has' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimplfiedMiningMart::DataType' opposite = 'SimplfiedMiningMart::DataType::attribute'/>
+    </Class>
+  </Package>
+  <Package name = 'DataRepresentation'>
+    <Class name = 'Column' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::Attribute'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'dataType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimplfiedMiningMart::DataType' opposite = ''/>
+      <Reference name = 'keys' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::Key' opposite = 'DataRepresentation::Key::hasColumn'/>
+      <Reference name = 'belongsToColumnSet' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::ColumnSet' opposite = 'DataRepresentation::ColumnSet::hasColumn'/>
+      <Reference name = 'corespondsToBaseAttribute' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::BaseAttribute' opposite = ''/>
+    </Class>
+    <Class name = 'ColumnSet' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::Class'>
+      <Attribute name = 'number' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'file' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'dbConnectString' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'user' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'hasColumn' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::Column' opposite = 'DataRepresentation::Column::belongsToColumnSet'/>
+      <Reference name = 'hasKey' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::Key' opposite = 'DataRepresentation::Key::isAssociatedToColumnSet'/>
+      <Reference name = 'correspondsToConcept' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::Concept' opposite = 'DataRepresentation::Concept::correspondsToColumnSet'/>
+      <Reference name = 'correspondsToRelationShip' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::RelationShip' opposite = 'DataRepresentation::RelationShip::correspondsToColumnSet'/>
+    </Class>
+    <Class name = 'ColumnStatistics' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'unique' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'missing' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'min' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'max' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'average' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'standarDeviation' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'distributionValue' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'distributionCount' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'distributionMin' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'distributionMax' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'forColumn' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::Column' opposite = ''/>
+    </Class>
+    <Class name = 'ColumnSetStatistics' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::ModelElement'>
+      <Attribute name = 'allNumber' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'ordinalNumber' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'nominalNumber' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'timeNumber' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'forColumnSet' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::ColumnSet' opposite = ''/>
+    </Class>
+    <Class name = 'Snapshot' isAbstract = 'false' supertypes = 'DataRepresentation::ColumnSet'/>
+    <Class name = 'Table' isAbstract = 'false' supertypes = 'DataRepresentation::ColumnSet'/>
+    <Class name = 'View' isAbstract = 'false' supertypes = 'DataRepresentation::ColumnSet'/>
+    <Class name = 'Key' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::ModelElement'>
+      <Attribute name = 'isUsedForIndex' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'hasColumn' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::Column' opposite = 'DataRepresentation::Column::keys'/>
+      <Reference name = 'isAssociatedToColumnSet' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::ColumnSet' opposite = 'DataRepresentation::ColumnSet::hasKey'/>
+    </Class>
+    <Class name = 'ForeignKey' isAbstract = 'false' supertypes = 'DataRepresentation::Key'>
+      <Reference name = 'isConnectionTo' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::Table' opposite = ''/>
+      <Reference name = 'correspondsToRelationShip' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::RelationShip' opposite = 'DataRepresentation::RelationShip::correspondsToForeignKey'/>
+    </Class>
+    <Class name = 'PrimaryKey' isAbstract = 'false' supertypes = 'DataRepresentation::Key'/>
+    <Class name = 'Concept' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::Class, DataRepresentation::Parameter'>
+      <Attribute name = 'subConceptRestriction' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'isA' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::Concept' opposite = ''/>
+      <Reference name = 'FromConcept' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::RelationShip' opposite = 'DataRepresentation::RelationShip::FromConcept'/>
+      <Reference name = 'ToConcept' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::RelationShip' opposite = 'DataRepresentation::RelationShip::ToConcept'/>
+      <Reference name = 'correspondsToColumnSet' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::ColumnSet' opposite = 'DataRepresentation::ColumnSet::correspondsToConcept'/>
+    </Class>
+    <Class name = 'RelationShip' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::ModelElement, DataRepresentation::Parameter'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'subRelationShipRestriction' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'defined' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'isA' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::RelationShip' opposite = ''/>
+      <Reference name = 'correspondsToForeignKey' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::ForeignKey' opposite = 'DataRepresentation::ForeignKey::correspondsToRelationShip'/>
+      <Reference name = 'correspondsToColumnSet' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::ColumnSet' opposite = 'DataRepresentation::ColumnSet::correspondsToRelationShip'/>
+      <Reference name = 'FromConcept' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::Concept' opposite = 'DataRepresentation::Concept::FromConcept'/>
+      <Reference name = 'ToConcept' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::Concept' opposite = 'DataRepresentation::Concept::ToConcept'/>
+    </Class>
+    <Class name = 'FeatureAttribute' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::Attribute'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'relevanceForMining' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'attributeType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimplfiedMiningMart::DataType' opposite = ''/>
+      <Reference name = 'belongsToConcept' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'DataRepresentation::Concept' opposite = ''/>
+      <Reference name = 'correspondsToColumns' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::Column' opposite = ''/>
+    </Class>
+    <Class name = 'BaseAttribute' isAbstract = 'false' supertypes = 'DataRepresentation::FeatureAttribute'>
+      <Reference name = 'isPartMultiColumnFeature' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::MultiColumnFeature' opposite = 'DataRepresentation::MultiColumnFeature::consitsOfBaseAttributes'/>
+      <Reference name = 'domainDataType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::DomainDataType' opposite = 'DataRepresentation::DomainDataType::baseAttributeD'/>
+    </Class>
+    <Class name = 'MultiColumnFeature' isAbstract = 'false' supertypes = 'DataRepresentation::FeatureAttribute'>
+      <Reference name = 'consitsOfBaseAttributes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DataRepresentation::BaseAttribute' opposite = 'DataRepresentation::BaseAttribute::isPartMultiColumnFeature'/>
+    </Class>
+    <Class name = 'Value' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::Attribute, DataRepresentation::Parameter'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'domainDataType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::DomainDataType' opposite = ''/>
+      <Reference name = 'belongsToUserInput' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DataRepresentation::UserInput' opposite = ''/>
+    </Class>
+    <Class name = 'UserInput' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::Class'>
+      <Reference name = 'containsValues' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::Value' opposite = ''/>
+    </Class>
+    <Class name = 'Ordinal' isAbstract = 'false' supertypes = 'DataRepresentation::DomainDataType'/>
+    <Class name = 'Scalar' isAbstract = 'false' supertypes = 'DataRepresentation::Ordinal'/>
+    <Class name = 'Time' isAbstract = 'false' supertypes = 'DataRepresentation::Scalar'/>
+    <Class name = 'Binary' isAbstract = 'false' supertypes = 'DataRepresentation::Scalar, DataRepresentation::Nominal'/>
+    <Class name = 'Categorial' isAbstract = 'false' supertypes = 'DataRepresentation::Nominal'/>
+    <Class name = 'KeyAttribute' isAbstract = 'false' supertypes = 'DataRepresentation::Nominal'/>
+    <Class name = 'TimeGroup' isAbstract = 'false' supertypes = 'DataRepresentation::KeyAttribute'/>
+    <Class name = 'Spatial' isAbstract = 'false' supertypes = 'DataRepresentation::KeyAttribute'/>
+    <Class name = 'Constant' isAbstract = 'false' supertypes = 'DataRepresentation::Nominal'/>
+    <Class name = 'RoleRestriction' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::Attribute'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'restrictionForRelationShip' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::RelationShip' opposite = ''/>
+      <Reference name = 'restrictionForConcept' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::Concept' opposite = ''/>
+      <Reference name = 'restrictionToConcept' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::Concept' opposite = ''/>
+      <Attribute name = 'min' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'max' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'belongsToConcept' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::Concept' opposite = ''/>
+    </Class>
+    <Class name = 'DomainDataType' isAbstract = 'false' supertypes = 'SimplfiedMiningMart::DataType'>
+      <Reference name = 'baseAttributeD' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DataRepresentation::BaseAttribute' opposite = 'DataRepresentation::BaseAttribute::domainDataType'/>
+    </Class>
+    <Class name = 'Nominal' isAbstract = 'false' supertypes = 'DataRepresentation::DomainDataType'/>
+    <Class name = 'Parameter' isAbstract = 'false' supertypes = ''/>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'Boolean'/>
+  </Package>
+</Metamodel>

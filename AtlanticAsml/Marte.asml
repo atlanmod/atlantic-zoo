@@ -1,0 +1,2172 @@
+class NFP
+  var base_Property as Set of _Property
+
+class Unit
+  var convFactor as Set of Real
+  var convOffset as Set of Real
+  var baseUnit as Set of Unit
+  var base_EnumerationLiteral as Set of EnumerationLiteral
+
+class NfpConstraint
+  var kind as Set of ConstraintKind
+  var base_Constraint as Set of _Constraint
+
+class NfpType extends TupleType
+  var valueAttrib as Set of _Property
+  var unitAttrib as Set of _Property
+  var exprAttrib as Set of _Property
+
+class Allocated
+  var base_NamedElement as Set of NamedElement
+
+class ApplicationAllocationEnd extends Allocated
+  var allocatedTo as Set of ExecutionPlatformAllocationEnd
+
+class ExecutionPlatformAllocationEnd extends Allocated
+  var allocatedFrom as Set of ApplicationAllocationEnd
+
+class AllocateActivityGroup
+  var isUnique as Set of Boolean
+  var base_ActivityPartition as Set of ActivityPartition
+
+class ClockRefine
+  var base_Dependency as Set of Dependency
+  // _constraint IsContainer
+  var _constraint as Set of ClockConstraint
+
+class Allocate
+  var kind as Set of AllocationKind
+  var nature as Set of AllocationNature
+  var base_Abstraction as Set of Abstraction
+  // impliedConstraint IsContainer
+  var impliedConstraint as Set of NfpConstraint
+
+class TimedDomain
+  var base_Package as Set of Package
+
+class Clock
+  var standard as Set of TimeStandardKind
+  var base_InstanceSpecification as Set of InstanceSpecification
+  var _type as Set of ClockType
+  // unit IsContainer
+  var unit as Set of Unit
+
+class ClockType
+  var nature as Set of TimeNatureKind
+  var isLogical as Set of Boolean
+  var unitType as Set of _Enumeration
+  var resolAttrib as Set of _Property
+  var maxValAttrib as Set of _Property
+  var offsetAttrib as Set of _Property
+  var getTime as Set of Operation
+  var setTime as Set of Operation
+  var indexToValue as Set of Operation
+  var base_Class as Set of _Class
+
+class TimedElement
+  // on IsContainer
+  var on as Set of Clock
+
+class TimedValueSpecification extends TimedElement
+  var interpretation as Set of TimeInterpretationKind
+  var base_ValueSpecification as Set of ValueSpecification
+
+class TimedConstraint extends NfpConstraint
+  var interpretation as Set of TimeInterpretationKind
+
+class TimedObservation extends TimedElement
+
+class TimedInstantObservation extends TimedObservation
+  var obsKind as Set of EventKind
+  var base_TimeObservation as Set of TimeObservation
+
+class TimedDurationObservation extends TimedObservation
+  var obsKind as Set of EventKind
+  var base_DurationObservation as Set of DurationObservation
+
+class TimedEvent extends TimedElement
+  var repetition as Set of Integer
+  var base_TimeEvent as Set of TimeEvent
+  var every as Set of ValueSpecification
+
+class TimedProcessing extends TimedElement
+  var base_Action as Set of Action
+  var base_Behavior as Set of Behavior
+  var base_Message as Set of Message
+  // duration IsContainer
+  var duration as Set of ValueSpecification
+  var start as Set of _Event
+  var stop as Set of _Event
+
+class ClockConstraint extends NfpConstraint
+
+class Resource
+  var resMult as Set of Integer
+  var isProtected as Set of Boolean
+  var isActive as Set of Boolean
+  var base_Property as Set of _Property
+  var base_InstanceSpecification as Set of InstanceSpecification
+  var base_Classifier as Set of Classifier
+  var base_Lifeline as Set of Lifeline
+  var base_ConnectableElement as Set of ConnectableElement
+
+class StorageResource extends Resource
+  var elementSize as Set of Integer
+
+class CommunicationEndPoint extends Resource
+  var packetSize as Set of Integer
+
+class SynchronizationResource extends Resource
+
+class ConcurrencyResource extends Resource
+
+class Scheduler extends Resource
+  var isPreemptible as Set of Boolean
+  var schedPolicy as Set of SchedPolicyKind
+  var otherSchedPolicy as Set of String
+  var schedule as Set of OpaqueExpression
+  var processingUnit as Set of ProcessingResource
+  var host as Set of ComputingResource
+
+class ProcessingResource extends Resource
+  var speedFactor as Set of Real
+  var scheduler as Set of Scheduler
+
+class ComputingResource extends ProcessingResource
+
+class MutualExclusionResource extends Resource
+  var protectKind as Set of ProtectProtocolKind
+  var ceiling as Set of Integer
+  var otherProtectProtocol as Set of String
+
+class SecondaryScheduler extends Scheduler
+
+class SchedulableResource extends Resource
+  var schedParams as Set of SchedParameters
+
+class CommunicationMedia extends ProcessingResource
+  var elementSize as Set of Integer
+  var base_Connector as Set of Connector
+
+class DeviceResource extends ProcessingResource
+
+class TimingResource extends ClockType
+
+class ClockResource extends TimingResource
+
+class TimerResource extends TimingResource
+  var isPeriodic as Set of Boolean
+  var duration as Set of NFP_Duration
+
+class GRService
+  var owner as Set of Resource
+  var base_ExecutionSpecification as Set of ExecutionSpecification
+  var base_BehavioralFeature as Set of BehavioralFeature
+  var base_Behavior as Set of Behavior
+  var base_Collaboration as Set of Collaboration
+  var base_CollaborationUse as Set of CollaborationUse
+
+class Release extends GRService
+
+class Acquire extends GRService
+  var isBlocking as Set of Boolean
+
+class ResourceUsage
+  var execTime as Set of NFP_Duration
+  var msgSize as Set of NFP_DataSize
+  var allocatedMemory as Set of NFP_DataSize
+  var usedMemory as Set of NFP_DataSize
+  var powerPeak as Set of NFP_Power
+  var energy as Set of NFP_Energy
+  var base_NamedElement as Set of NamedElement
+  // usedResources IsContainer
+  var usedResources as Set of Resource
+  // subUsage IsContainer
+  var subUsage as Set of ResourceUsage
+
+class FlowProperty
+  var direction as Set of DirectionKind
+  var base_Property as Set of _Property
+
+class FlowPort
+  var isAtomic as Set of Boolean
+  var isConjugated as Set of Boolean
+  var direction as Set of DirectionKind
+  var base_Port as Set of Port
+
+class MessagePort
+  var isAtomic as Set of Boolean
+  var isConjugated as Set of Boolean
+  var direction as Set of DirectionKind
+  var base_Port as Set of Port
+
+class SendFlowAction
+  var base_InvocationAction as Set of InvocationAction
+
+class FlowSpecification
+  var direction as Set of DirectionKind
+  var base_Interface as Set of _Interface
+
+class SignalSpecification
+  var kind as Set of BFeatureKind
+  var base_Interface as Set of _Interface
+
+class FlowBFeature
+  var kind as Set of BFeatureKind
+  var base_BehavioralFeature as Set of BehavioralFeature
+
+abstract class LinkTopology
+  var base_Connector as Set of Connector
+
+class DefaultLink extends LinkTopology
+
+class InterRepetition extends LinkTopology
+  var isModulo as Set of Boolean
+  var repetitionShapeDependence as Set of IntegerVector
+
+class Distribute extends Allocate
+  var patternShape as Set of ShapeSpecification
+  var repetitionSpace as Set of ShapeSpecification
+  var fromTiler as Set of TilerSpecification
+  var toTiler as Set of TilerSpecification
+
+class Reshape extends LinkTopology
+  var patternShape as Set of ShapeSpecification
+  var repetitonShape as Set of ShapeSpecification
+  // srcTiler IsContainer
+  var srcTiler as Set of Tiler
+  // targetTiler IsContainer
+  var targetTiler as Set of Tiler
+
+class Tiler extends LinkTopology
+  var origin as Set of IntegerVector
+  var paving as Set of IntegerMatrix
+  var fitting as Set of IntegerMatrix
+  var tiler as Set of TilerSpecification
+
+class _Var
+  var dir as Set of VariableDirectionKind
+  var base_Property as Set of _Property
+
+class ExpressionContext
+  var base_NamedElement as Set of NamedElement
+
+class BoundedSubtype
+  var minValue as Set of String
+  var maxValue as Set of String
+  var isMinOpen as Set of Boolean
+  var isMaxOpen as Set of Boolean
+  var baseType as Set of DataType
+  var base_DataType as Set of DataType
+
+class IntervalType
+  var intervalAttrib as Set of _Property
+  var base_DataType as Set of DataType
+
+class CollectionType
+  var collectionAttrib as Set of _Property
+  var base_DataType as Set of DataType
+
+class ChoiceType
+  var choiceAttrib as Set of _Property
+  var defaultAttrib as Set of _Property
+  var base_DataType as Set of DataType
+
+class TupleType
+  var tupleAttrib as Set of _Property
+  var base_DataType as Set of DataType
+
+class RtUnit
+  var isDynamic as Set of Boolean
+  var isMain as Set of Boolean
+  var poolSize as Set of Integer
+  var poolPolicy as Set of PoolMgtPolicyKind
+  var poolWaitingTime as Set of NFP_Duration
+  var operationalMode as Set of Behavior
+  var main as Set of Operation
+  var memorySize as Set of NFP_DataSize
+  var base_BehavioredClassifier as Set of BehavioredClassifier
+
+class PpUnit
+  var concPolicy as Set of CallConcurrencyKind
+  var memorySize as Set of NFP_DataSize
+  var base_BehavioredClassifier as Set of BehavioredClassifier
+
+class RtBehavior
+  var queueSchedPolicy as Set of SchedPolicyKind
+  var queueSize as Set of Integer
+  var msgMaxSize as Set of NFP_DataSize
+  var base_Behavior as Set of Behavior
+
+class rtf
+  var base_BehavioralFeature as Set of BehavioralFeature
+  var base_Action as Set of Action
+  var base_Message as Set of Message
+  var base_Signal as Set of Signal
+  var utility as Set of UtilityType
+  var occKind as Set of ArrivalPattern
+  var tRef as Set of TimedInstantObservation
+  var relDl as Set of NFP_Duration
+  var absDl as Set of NFP_DateTime
+  var boundDl as Set of NFP_BoundedDuration
+  var rdTime as Set of NFP_Duration
+  var miss as Set of NFP_Percentage
+  var priority as Set of NFP_Integer
+
+class RtAction
+  var isAtomic as Set of Boolean
+  var synchKind as Set of SynchronizationKind
+  var msgSize as Set of NFP_DataSize
+  var base_BehavioralFeature as Set of BehavioralFeature
+  var base_InvocationAction as Set of InvocationAction
+
+class RtService
+  var concPolicy as Set of ConcurrencyKind
+  var exeKind as Set of ExecutionKind
+  var isAtomic as Set of Boolean
+  var synchKind as Set of SynchronizationKind
+  var base_BehavioralFeature as Set of BehavioralFeature
+
+class RteConnector
+  var transmMode as Set of TransmModeKind
+  var bandwidth as Set of NFP_DataTxRate
+  var packetT as Set of NFP_Duration
+  var blockT as Set of NFP_Duration
+  var base_Connector as Set of Connector
+
+class HwResource extends Resource
+  var description as Set of NFP_String
+  // p_HW_Services IsContainer
+  var p_HW_Services as Set of HwResourceService
+  // r_HW_Services IsContainer
+  var r_HW_Services as Set of HwResourceService
+  var ownedHW as Set of HwResource
+  var endPoints as Set of HwEndPoint
+
+class HwResourceService extends GRService
+
+class HwCommunicationResource extends HwResource
+
+class HwArbiter extends HwCommunicationResource
+  var controlledMedias as Set of HwMedia
+
+class HwMedia extends HwCommunicationResource
+  var bandWidth as Set of NFP_DataTxRate
+  var base_Association as Set of Association
+  var arbiters as Set of HwArbiter
+
+class HwBus extends HwMedia
+  var isSynchronous as Set of Boolean
+  var isSerial as Set of Boolean
+  var adressWidth as Set of NFP_DataSize
+  var wordWidth as Set of NFP_DataSize
+
+class HwBridge extends HwMedia
+  var sides as Set of HwMedia
+
+class HwEndPoint extends HwCommunicationResource
+  var base_Port as Set of Port
+  var connectedTo as Set of HwMedia
+
+class PLD_Organization
+  var _class as Set of PLD_Class
+  var nbRows as Set of NFP_Integer
+  var nbColumns as Set of NFP_Natural
+
+class HwProcessor extends HwComputingResource
+  var architecture as Set of NFP_DataSize
+  var mips as Set of NFP_Natural
+  var ipc as Set of NFP_Real
+  var nbCores as Set of NFP_Natural
+  var nbPipelines as Set of NFP_Natural
+  var nbStages as Set of NFP_Natural
+  var nbALUs as Set of NFP_Natural
+  var nbFBUs as Set of NFP_Natural
+  // ownedISAs IsContainer
+  var ownedISAs as Set of HwISA
+  // predictors IsContainer
+  var predictors as Set of HwBranchPredictor
+  // caches IsContainer
+  var caches as Set of HWCache
+  // ownedMMUs IsContainer
+  var ownedMMUs as Set of HwMMU
+
+class HwComputingResource extends HwResource
+  var op_Frequencies as Set of NFP_FrequencyInterval
+
+class HwISA extends HwResource
+  var _type as Set of ISA_Type
+  var family as Set of NFP_String
+  var inst_Width as Set of NFP_DataSize
+
+class HwBranchPredictor extends HwResource
+
+class HwASIC extends HwComputingResource
+
+class HwPLD extends HwComputingResource
+  var technology as Set of PLD_Technology
+  var organization as Set of PLD_Organization
+  var nbLUTs as Set of NFP_Natural
+  var ndLUT_Inputs as Set of NFP_Natural
+  var nbFlipFlops as Set of NFP_Natural
+  // blocksRAM IsContainer
+  var blocksRAM as Set of HwRAM
+
+class HwMemory extends HwProcessor
+  var memorySize as Set of NFP_DataSize
+  var adressSize as Set of NFP_DataSize
+  var timings as Set of Timing
+
+class Timing
+  var notation as Set of NFP_String
+  var description as Set of NFP_String
+  var value as Set of NFP_Duration
+
+class CacheStructure
+  var nsSets as Set of NFP_Natural
+  var blockSize as Set of NFP_Natural
+  var associativity as Set of NFP_Natural
+
+class MemoryOrganization
+  var nbRows as Set of NFP_Natural
+  var nbColumns as Set of NFP_Natural
+  var nbBanks as Set of NFP_Natural
+  var wordSize as Set of NFP_DataSize
+
+class HwRAM extends HwMemory
+  var repl_Policy as Set of Repl_Policy
+  var writePolicy as Set of WritePolicy
+  var organization as Set of MemoryOrganization
+  var isSynchronous as Set of NFP_Boolean
+  var isStatic as Set of NFP_Boolean
+  var isNonVolatile as Set of NFP_Boolean
+
+class HwROM extends HwMemory
+  var _type as Set of ROM_Type
+  var organization as Set of MemoryOrganization
+
+class HwDrive extends HwMemory
+  var sectorSize as Set of NFP_DataSize
+  // buffer IsContainer
+  var buffer as Set of HwRAM
+
+class HWCache extends HwMemory
+  var _type as Set of CacheType
+  var repl_Policy as Set of Repl_Policy
+  var writePolicy as Set of WritePolicy
+  var level as Set of NFP_Natural
+  var _structure as Set of CacheStructure
+
+class HwStorageManager extends HwResource
+  // managedMemories IsContainer
+  var managedMemories as Set of HwMemory
+
+class HwDMA extends HwStorageManager
+  var nbChannels as Set of NFP_Natural
+  var transferWidth as Set of NFP_DataSize
+  // drivenBy IsContainer
+  var drivenBy as Set of HwProcessor
+
+class HwMMU extends HwStorageManager
+  var virtualAddrSpace as Set of NFP_DataSize
+  var physicalAddrSpace as Set of NFP_DataSize
+  var memoryProtection as Set of NFP_Natural
+  var nbEntries as Set of NFP_Boolean
+  // ownedTLBs IsContainer
+  var ownedTLBs as Set of HWCache
+
+class HwTimingResource extends TimingResource
+
+class HwClock extends HwTimingResource
+  var frequency as Set of NFP_Frequency
+
+class HwTimer extends HwTimingResource
+  var nbCounter as Set of NFP_Natural
+  var counterWidth as Set of NFP_DataSize
+  var inputClock as Set of HwClock
+
+class HwDevice extends HwResource
+
+class HwI_O extends HwDevice
+
+class HwSupport extends HwDevice
+
+class HwComponent extends HwResource
+  var kind as Set of ComponentKind
+  var dimenssions as Set of NFP_Length
+  var area as Set of NFP_Area
+  var position as Set of NFP_NaturalInterval
+  var grid as Set of NFP_Natural
+  var nbPins as Set of NFP_Natural
+  var weight as Set of NFP_Real
+  var price as Set of NFP_String
+  var r_Conditions as Set of Env_Condition
+  // poweredServices IsContainer
+  var poweredServices as Set of HwResourceService
+  var staticConsumption as Set of NFP_Power
+  var staticDissipation as Set of NFP_Power
+
+class Env_Condition
+  var _type as Set of ConditionType
+  var status as Set of CompnentState
+  var description as Set of NFP_String
+  var range as Set of Realnterval
+
+class HwPowerSupply extends HwComponent
+  var suppliedPower as Set of NFP_Power
+  var capacity as Set of NFP_Energy
+
+class HwCoolingSupply extends HwComponent
+  var coolingPower as Set of NFP_Power
+
+class SwResource extends Resource
+  var identifierElements as Set of TypedElement
+  var stateElements as Set of TypedElement
+  var memorySizeFootprint as Set of TypedElement
+  var createServices as Set of BehavioralFeature
+  var deleteServices as Set of BehavioralFeature
+  var initializeServices as Set of BehavioralFeature
+
+class SwAccessService extends GRService
+  var isModifier as Set of Boolean
+  var accessedElement as Set of _Property
+
+class EntryPoint
+  var isReentrant as Set of Boolean
+  var routine as Set of BehavioralFeature
+  var base_BehavioralFeature as Set of BehavioralFeature
+  var base_Dependency as Set of Dependency
+
+abstract class SwConcurrentResource extends SwResource
+  var activationCapacity as Set of Integer
+  var _type as Set of ArrivalPattern
+  var entryPoints as Set of Element
+  var adressSpace as Set of TypedElement
+  var periodElements as Set of TypedElement
+  var priorityElements as Set of TypedElement
+  var stackSizeElements as Set of TypedElement
+  var activateServices as Set of BehavioralFeature
+  var enableConcurrencyServices as Set of BehavioralFeature
+  var resumeServices as Set of BehavioralFeature
+  var suspendServices as Set of BehavioralFeature
+  var terminateServices as Set of BehavioralFeature
+  var disableConcurrencyServices as Set of BehavioralFeature
+  var shareDataResources as Set of TypedElement
+  var messageResources as Set of TypedElement
+  var mutualExclusionResources as Set of TypedElement
+  var notificationResources as Set of TypedElement
+
+class InterruptResource extends SwConcurrentResource
+  var kind as Set of InterruptKind
+  var isMaskable as Set of Boolean
+  var vectorElements as Set of TypedElement
+  var maskElements as Set of TypedElement
+  var routineConnectServices as Set of BehavioralFeature
+  var routineDisconnectServices as Set of BehavioralFeature
+
+class SwSchedulableResource extends SwConcurrentResource
+  var isStaticSchedulingFeature as Set of Boolean
+  var isPreemptable as Set of Boolean
+  var schedulers as Set of NamedElement
+  var deadlineElements as Set of TypedElement
+  var deadlineTypeElements as Set of TypedElement
+  var timeScliceElements as Set of TypedElement
+  var delayServices as Set of BehavioralFeature
+  var joinServices as Set of BehavioralFeature
+  var yieldServices as Set of BehavioralFeature
+
+class SwTimerResource extends TimerResource
+  var durationElements as Set of TypedElement
+
+class MemoryPartition extends SwResource
+  var concurrentResources as Set of TypedElement
+  var memorySpaces as Set of TypedElement
+  var fork as Set of BehavioralFeature
+  var exit as Set of BehavioralFeature
+  var base_Namespace as Set of _Namespace
+
+class Alarm extends InterruptResource
+  var isWatchdog as Set of Boolean
+  var timers as Set of TypedElement
+
+class DeviceBroker extends SwResource
+  var accessPolicy as Set of AccessPolicyKind
+  var isBuffered as Set of Boolean
+  var devices as Set of TypedElement
+  var closeServices as Set of BehavioralFeature
+  var controlServices as Set of BehavioralFeature
+  var openServices as Set of BehavioralFeature
+  var readServices as Set of BehavioralFeature
+  var writeServices as Set of BehavioralFeature
+
+class MemoryBroker extends SwResource
+  var accessPolicy as Set of AccessPolicyKind
+  var memories as Set of TypedElement
+  var memoryBlockAdressSelements as Set of TypedElement
+  var memoryBlockSizeElements as Set of TypedElement
+  var lockServices as Set of BehavioralFeature
+  var unlockServices as Set of BehavioralFeature
+  var mapServices as Set of BehavioralFeature
+  var unMapServices as Set of BehavioralFeature
+
+abstract class SwInteractionResource extends SwResource
+  var isIntraPartitionInteraction as Set of Boolean
+  var waitingQueuePolicy as Set of QueuePolicyKind
+  var waitingQueueCapacity as Set of Integer
+  var waitingPolicyElements as Set of TypedElement
+
+abstract class SwCommunicationResource extends SwInteractionResource
+
+class SwSynchronizationResource extends SwInteractionResource
+
+class SharedDataComResource extends SwCommunicationResource
+  var readServices as Set of BehavioralFeature
+  var writeServices as Set of BehavioralFeature
+
+class MessageComResource extends SwCommunicationResource
+  var isFixedMessageSize as Set of Boolean
+  var meachnism as Set of MessageResourceKind
+  var messageQueuePolicy as Set of QueuePolicyKind
+  var messageSizeElements as Set of TypedElement
+  var messageQueueCapacityElements as Set of TypedElement
+  var sendServices as Set of BehavioralFeature
+  var receiveServices as Set of BehavioralFeature
+
+class NotificationResource extends SwSynchronizationResource
+  var occurence as Set of NotificationKind
+  var mechanism as Set of NotificationResourceKind
+  var occurenceCountElements as Set of TypedElement
+  var maskElements as Set of TypedElement
+  var flushServices as Set of BehavioralFeature
+  var signalServices as Set of BehavioralFeature
+  var waitServices as Set of BehavioralFeature
+  var clearServices as Set of BehavioralFeature
+
+class SwMutualExclusionResource extends SwSynchronizationResource
+  var mechanism as Set of MutualExclusionResourceKind
+  var concurrentAccessProtocol as Set of ConcurrentAccessProtocolKind
+  var accessTokenElements as Set of TypedElement
+  var releaseServices as Set of BehavioralFeature
+  var acquireServices as Set of BehavioralFeature
+
+class GaWorkloadGenerator
+  var pop as Set of NFP_Integer
+  var base_Behavior as Set of Behavior
+
+class GaEventTrace
+  var content as Set of String
+  var format as Set of String
+  var location as Set of String
+  var base_NamedElement as Set of NamedElement
+
+class GaWorkloadEvent
+  var pattern as Set of ArrivalPattern
+  var generator as Set of GaWorkloadGenerator
+  var trace as Set of GaEventTrace
+  var effect as Set of GaScenario
+  var timedEvent as Set of TimeEvent
+  var base_NamedElement as Set of NamedElement
+
+class GaScenario extends ResourceUsage
+  var cause as Set of GaWorkloadEvent
+  var hostDemand as Set of NFP_Duration
+  var hostDemandOps as Set of NFP_Real
+  var interOccT as Set of NFP_Duration
+  var throughput as Set of NFP_Frequency
+  var respT as Set of NFP_Duration
+  var utilization as Set of NFP_Real
+  var utilizationHost as Set of NFP_Real
+  var root as Set of GaStep
+  var timing as Set of GaTimingObs
+  var behavior as Set of GaScenario
+
+class GaStep extends GaScenario
+  var isAtomic as Set of NFP_Boolean
+  var blockT as Set of NFP_Duration
+  var rep as Set of NFP_Real
+  var prob as Set of NFP_Real
+  var priority as Set of NFP_Integer
+  var concurRes as Set of SchedulableResource
+  var host as Set of GaExecHost
+  var serDemand as Set of GaRequestedService
+  var servCount as Set of NFP_Real
+
+class GaExecHost extends ProcessingResource
+  var commTxOch as Set of NFP_Duration
+  var commRcvOvh as Set of NFP_Duration
+  var cntxtSwt as Set of NFP_Duration
+  var clockOvh as Set of NFP_Duration
+  var schedPriRange as Set of IntegerInterval
+  var memSize as Set of NFP_DataSize
+  var utilization as Set of NFP_Real
+  var throughput as Set of NFP_Frequency
+
+class GaRequestedService extends GaStep
+  var base_Operation as Set of Operation
+
+class GaTimingObs extends NfpConstraint
+  var laxity as Set of LaxityKind
+  var startObs as Set of TimeObservation
+  var stopObs as Set of TimeObservation
+
+class GaCommStep extends GaStep
+
+class GaAcqStep extends GaStep
+  var acqRes as Set of Resource
+  var resUnits as Set of NFP_Integer
+
+class GaRelStep extends GaStep
+  var relRes as Set of Resource
+  var resUnits as Set of NFP_Integer
+
+class GaLatencyObs extends GaTimingObs
+  var latency as Set of NFP_Duration
+  var miss as Set of NFP_Real
+  var utility as Set of UtilityType
+  var maxJitter as Set of NFP_Duration
+
+class GaCommHost extends ProcessingResource
+  var transmMode as Set of TransmModeKind
+  var capacity as Set of NFP_DataTxRate
+  var packetT as Set of NFP_Duration
+  var blockT as Set of NFP_Duration
+  var utilization as Set of NFP_Real
+  var throughput as Set of NFP_Frequency
+
+class GaCommChannel extends SchedulableResource
+  var packetSize as Set of NFP_DataSize
+  var utlization as Set of NFP_Real
+
+class GaWorkloadBehavior
+  var behavior as Set of GaScenario
+  var demand as Set of GaWorkloadEvent
+  var base_NamedElement as Set of NamedElement
+
+class GaAnalysisContext extends ExpressionContext
+  var context as Set of NFP_String
+  var workload as Set of GaWorkloadBehavior
+  var platform as Set of GaResourcesPlatform
+
+class GaResourcesPlatform
+  var resources as Set of Resource
+  var base_Classifier as Set of Classifier
+
+class SaAnalysisContext extends GaAnalysisContext
+  var optCriterion as Set of OptimallityCriterionKind
+  var isSched as Set of NFP_Boolean
+
+class SaEnd2EndFlow
+  var isSched as Set of NFP_Boolean
+  var schSlack as Set of NFP_Real
+  var end2EndT as Set of NFP_Duration
+  var end2EndD as Set of NFP_Duration
+  var timing as Set of GaTimingObs
+  var base_NamedElement as Set of NamedElement
+
+class SaCommStep extends GaCommStep
+  var deadline as Set of NFP_Duration
+  var spareCap as Set of NFP_Duration
+  var schSlack as Set of NFP_Real
+  var base_BehavioralFeature as Set of BehavioralFeature
+
+class SaExecStep extends GaStep
+  var base_BehavioralFeature as Set of BehavioralFeature
+  var deadline as Set of NFP_Duration
+  var spareCap as Set of NFP_Duration
+  var schSlack as Set of NFP_Real
+  var preemptT as Set of NFP_Duration
+  var readyT as Set of NFP_Duration
+  var delayT as Set of NFP_Duration
+
+class SaSchedObs extends GaTimingObs
+  var suspentions as Set of NFP_Integer
+  var blockT as Set of NFP_Duration
+  var overlaps as Set of NFP_Integer
+
+class SaSharedResource extends MutualExclusionResource
+  var capacity as Set of NFP_Integer
+  var isPreemp as Set of NFP_Boolean
+  var isConsum as Set of NFP_Boolean
+  var acquisT as Set of NFP_Duration
+  var releaseT as Set of NFP_Duration
+
+class SaCommHost extends GaCommHost
+  var isSched as Set of NFP_Boolean
+  var schSlack as Set of NFP_Real
+
+class SaExecHost extends GaExecHost
+  var schedPolicy as Set of SchedPolicyKind
+  var isSched as Set of NFP_Boolean
+  var schSlack as Set of NFP_Real
+  var schedUtiliz as Set of NFP_Real
+  var ISRswitchT as Set of NFP_Duration
+  var ISRprioRange as Set of IntegerInterval
+  var isPreempible as Set of NFP_Boolean
+
+class PaStep extends GaStep
+  var extOpDemand as Set of String
+  var noSynch as Set of NFP_Boolean
+  var extOpCount as Set of NFP_Real
+  var behavDemand as Set of GaScenario
+  var behavCount as Set of NFP_Real
+
+class PaRequestedStep extends PaStep
+
+class PaCommStep extends PaStep
+
+class PaResPassStep extends GaStep
+  var resource as Set of Resource
+  var resUnits as Set of NFP_Integer
+
+class PaLogicalResource extends Resource
+  var utilization as Set of NFP_Real
+  var throughput as Set of NFP_Frequency
+  var poolSize as Set of NFP_Integer
+
+class PaRunTInstance
+  var unbddPool as Set of Boolean
+  var poolSize as Set of NFP_Integer
+  var instance as Set of Resource
+  var host as Set of SchedulableResource
+  var utilization as Set of NFP_Real
+  var throughput as Set of NFP_Frequency
+  var base_NamedElement as Set of NamedElement
+
+class EDFParameters
+  var deadline as Set of NFP_Duration
+
+class SchedParameters
+  var edf as Set of EDFParameters
+  var fp as Set of FixedPriorityParameters
+  var pooling as Set of PoolingParameters
+  var server as Set of PeriodicServerParameters
+
+class FixedPriorityParameters
+  var priority as Set of Integer
+
+class PoolingParameters extends FixedPriorityParameters
+  var period as Set of NFP_Duration
+  var overhead as Set of NFP_Duration
+
+class PeriodicServerParameters extends FixedPriorityParameters
+  var kind as Set of PeriodicServerKind
+  var backgroundPriority as Set of Integer
+  var maxPendingReplenish as Set of Integer
+  var initialBudget as Set of NFP_Duration
+  var replenishPeriod as Set of NFP_Duration
+
+class NFP_CommonType
+  var expr as Set of VSL_Expression
+  var source as Set of SourceKind
+  var statQ as Set of StatisticalQualifierKind
+  var dir as Set of BasicNFP_Types_DirectionKind
+
+class NFP_Frequency extends NFP_Real
+  var unit as Set of FrequencyUnitKind
+  var precision as Set of Real
+
+class NFP_Real extends NFP_CommonType
+  var value as Set of Real
+
+class NFP_Natural extends NFP_CommonType
+  var value as Set of UnlimitedNatural
+
+class NFP_Boolean extends NFP_CommonType
+  var value as Set of Boolean
+
+class NFP_String extends NFP_CommonType
+  var value as Set of String
+
+class NFP_Integer extends NFP_CommonType
+  var value as Set of Integer
+
+class NFP_DateTime extends NFP_CommonType
+  var value as Set of DateTime
+
+class NFP_DataTxRate extends NFP_Real
+  var unit as Set of DataTxRateUnitKind
+  var precision as Set of Real
+
+class NFP_Power extends NFP_Real
+  var unit as Set of PowerUnitKind
+  var precision as Set of Real
+
+class NFP_DataSize extends NFP_Real
+  var unit as Set of DataSizeUnitKind
+  var precision as Set of Real
+
+class NFP_Energy extends NFP_Real
+  var unit as Set of EnergyUnitKind
+  var precision as Set of Real
+
+class NFP_Length extends NFP_Real
+  var unit as Set of LengthUnitKind
+  var precision as Set of Real
+
+class NFP_Area extends NFP_Real
+  var unit as Set of AreaUnitKind
+  var precision as Set of Real
+
+class ArrivalPattern
+  var periodic as Set of PeriodicPattern
+  var aperiodic as Set of AperiodicPattern
+  var burst as Set of BurstPattern
+  var irregular as Set of IrregularPattern
+  var closed as Set of ClosedPattern
+  var sporadic as Set of SporadicPattern
+
+class PeriodicPattern
+  var period as Set of NFP_Duration
+  var jitter as Set of NFP_Duration
+  var phase as Set of NFP_Duration
+
+class AperiodicPattern
+  var distribution as Set of NFP_CommonType
+
+class BurstPattern extends AperiodicPattern
+  var minInterarrival as Set of NFP_Duration
+  var maxInterarrival as Set of NFP_Duration
+  var minEventInterval as Set of NFP_Duration
+  var maxEventInterval as Set of NFP_Duration
+  var burstSize as Set of NFP_Integer
+
+class IrregularPattern extends AperiodicPattern
+  var phase as Set of NFP_Duration
+  var interarrivals as Set of NFP_Duration
+
+class ClosedPattern
+  var population as Set of NFP_Integer
+  var extDelay as Set of NFP_Duration
+
+class SporadicPattern extends AperiodicPattern
+  var minInterarrival as Set of NFP_Duration
+  var maxInterarrival as Set of NFP_Duration
+  var jitter as Set of NFP_Duration
+
+class NFP_BoundedDuration extends NFP_CommonType
+  var values as Set of Real
+  var unit as Set of TimeUnitKind
+  var clock as Set of String
+  var precision as Set of Real
+
+class NFP_Percentage extends NFP_Real
+  var unit as Set of String
+
+class NFP_Duration extends NFP_Real
+  var unit as Set of TimeUnitKind
+  var clock as Set of String
+  var precision as Set of Real
+
+class IntegerVector
+  var vectorElem as Set of Integer
+
+class IntegerMatrix
+  var matrixElem as Set of IntegerVector
+
+class IntegerInterval
+  var bound as Set of Integer
+
+class UtilityType
+  _eq(u as)
+  _lt(as)
+  _gt(as)
+  le(as)
+  ge(as)
+  _ne(as)
+
+class Array
+
+class Realnterval
+  var bound as Set of Real
+
+class NFP_FrequencyInterval
+  var bound as Set of NFP_Frequency
+
+class MARTE_DataTypes_Interval
+
+class NFP_NaturalInterval
+  var bound as Set of NFP_Natural
+
+class TimedValueType
+  var unit as Set of TUK
+  var value as Set of Real
+  var expr as Set of ClockedValueSpecification
+  var onClock as Set of String
+
+class IdealClock
+  currentTime()
+
+class TilerSpecification
+  var origin as Set of IntegerVector
+  var paving as Set of IntegerMatrix
+  var fitting as Set of IntegerVector
+
+class ShapeSpecification
+  var size as Set of UnlimitedNatural
+
+abstract class Element
+  var ownedElement as Set of Element
+  var owner as Set of Element
+  // ownedComment IsContainer
+  var ownedComment as Set of Comment
+
+class Comment extends Element
+  var body as Set of String
+  var annotatedElement as Set of Element
+
+class Package extends _Namespace
+  var ownedType as Set of _Type
+  // packageMerge IsContainer
+  var packageMerge as Set of PackageMerge
+  // packagedElement IsContainer
+  var packagedElement as Set of PackageableElement
+  var nestedPackage as Set of Package
+  var nestingPackage as Set of Package
+  // profileApplication IsContainer
+  var profileApplication as Set of ProfileApplication
+
+abstract class NamedElement extends Element
+  var name as Set of String
+  var visibility as Set of VisibilityKind
+  var qualifiedName as Set of String
+  var clientDependency as Set of Dependency
+  var _namespace as Set of _Namespace
+  // nameExpression IsContainer
+  var nameExpression as Set of StringExpression
+
+abstract class StructuralFeature extends Feature
+  var isReadOnly as Set of Boolean
+
+abstract class ConnectableElement extends TypedElement
+  var end as Set of ConnectorEnd
+
+abstract class TemplateableElement extends Element
+  // templateBinding IsContainer
+  var templateBinding as Set of TemplateBinding
+  // ownedTemplateSignature IsContainer
+  var ownedTemplateSignature as Set of TemplateSignature
+
+class _Property extends StructuralFeature
+  var isDerived as Set of Boolean
+  var isDerivedUnion as Set of Boolean
+  var default as Set of String
+  var aggregation as Set of AggregationKind
+  var isComposite as Set of Boolean
+  var _class as Set of _Class
+  var datatype as Set of DataType
+  var owningAssociation as Set of Association
+  var association as Set of Association
+  var redefinedProperty as Set of _Property
+  // defaultValue IsContainer
+  var defaultValue as Set of ValueSpecification
+  var opposite as Set of _Property
+  var subsettedProperty as Set of _Property
+  // qualifier IsContainer
+  var qualifier as Set of _Property
+  var associationEnd as Set of _Property
+
+class Dependency extends PackageableElement
+  var supplier as Set of NamedElement
+  var client as Set of NamedElement
+
+abstract class DirectedRelationship extends Relationship
+  var source as Set of Element
+  var target as Set of Element
+
+abstract class Relationship extends Element
+  var relatedElement as Set of Element
+
+abstract class _Namespace extends NamedElement
+  // elementImport IsContainer
+  var elementImport as Set of ElementImport
+  // packageImport IsContainer
+  var packageImport as Set of PackageImport
+  // ownedRule IsContainer
+  var ownedRule as Set of _Constraint
+  var member as Set of NamedElement
+  var importedMember as Set of PackageableElement
+  var ownedMember as Set of NamedElement
+
+class ElementImport extends DirectedRelationship
+  var visibility as Set of VisibilityKind
+  var alias as Set of String
+  var importedElement as Set of PackageableElement
+  var importingNamespace as Set of _Namespace
+
+class PackageImport extends DirectedRelationship
+  var visibility as Set of VisibilityKind
+  var importedPackage as Set of Package
+  var importingNamespace as Set of _Namespace
+
+class _Constraint extends PackageableElement
+  var constrainedElement as Set of Element
+  // specification IsContainer
+  var specification as Set of ValueSpecification
+  var context as Set of _Namespace
+
+abstract class TypedElement extends NamedElement
+  var _type as Set of _Type
+
+abstract class _Type extends PackageableElement
+  var package as Set of Package
+
+class Association extends Classifier
+  var isDerived as Set of Boolean
+  // ownedEnd IsContainer
+  var ownedEnd as Set of _Property
+  var endType as Set of _Type
+  var memberEnd as Set of _Property
+  var navigableOwnedEnd as Set of _Property
+
+abstract class Classifier extends _Namespace
+  var isAbstract as Set of Boolean
+  // generalization IsContainer
+  var generalization as Set of Generalization
+  var powertypeExtent as Set of GeneralizationSet
+  var feature as Set of Feature
+  var inheritedMember as Set of NamedElement
+  var redefinedClassifier as Set of Classifier
+  var general as Set of Classifier
+  // substitution IsContainer
+  var substitution as Set of Substitution
+  var _attribute as Set of _Property
+  var representation as Set of CollaborationUse
+  // collaborationUse IsContainer
+  var collaborationUse as Set of CollaborationUse
+  // ownedUseCase IsContainer
+  var ownedUseCase as Set of UseCase
+  var useCase as Set of UseCase
+
+abstract class RedefinableElement extends NamedElement
+  var isLeaf as Set of Boolean
+  var redefinedElement as Set of RedefinableElement
+  var redefinitionContext as Set of Classifier
+
+class TemplateBinding extends DirectedRelationship
+  var signature as Set of TemplateSignature
+  // parameterSubstitution IsContainer
+  var parameterSubstitution as Set of TemplateParameterSubstitution
+  var boundElement as Set of TemplateableElement
+
+class TemplateSignature extends Element
+  var parameter as Set of TemplateParameter
+  // ownedParameter IsContainer
+  var ownedParameter as Set of TemplateParameter
+  var template as Set of TemplateableElement
+
+class TemplateParameter extends Element
+  var signature as Set of TemplateSignature
+  var parameteredElement as Set of ParameterableElement
+  // ownedParameteredElement IsContainer
+  var ownedParameteredElement as Set of ParameterableElement
+  var default as Set of ParameterableElement
+  // ownedDefault IsContainer
+  var ownedDefault as Set of ParameterableElement
+
+abstract class ParameterableElement extends Element
+  var owningTemplateParameter as Set of TemplateParameter
+  var templateParameter as Set of TemplateParameter
+
+class TemplateParameterSubstitution extends Element
+  var formal as Set of TemplateParameter
+  var actual as Set of ParameterableElement
+  // ownedActual IsContainer
+  var ownedActual as Set of ParameterableElement
+  var templateBinding as Set of TemplateBinding
+
+class Generalization extends DirectedRelationship
+  var isSubstitutable as Set of Boolean
+  var general as Set of Classifier
+  var generalizationSet as Set of GeneralizationSet
+  var specific as Set of Classifier
+
+class GeneralizationSet extends PackageableElement
+  var isCovering as Set of Boolean
+  var isDisjoint as Set of Boolean
+  var powertype as Set of Classifier
+  var generalization as Set of Generalization
+
+abstract class Feature extends RedefinableElement
+  var isStatic as Set of Boolean
+  var featuringClassifier as Set of Classifier
+
+class Substitution extends Realization
+  var contract as Set of Classifier
+  var substitutingClassifier as Set of Classifier
+
+abstract class PackageableElement extends NamedElement
+
+class PackageMerge extends DirectedRelationship
+  var mergedPackage as Set of Package
+  var receivingPackage as Set of Package
+
+class ProfileApplication extends DirectedRelationship
+  var isStrict as Set of Boolean
+  var appliedProfile as Set of Profile
+  var applyingPackage as Set of Package
+
+class Profile extends Package
+  var ownedStereotype as Set of Stereotype
+  var metaclassReference as Set of ElementImport
+  var metamodelReference as Set of PackageImport
+
+class Stereotype extends _Class
+  // icon IsContainer
+  var icon as Set of Image
+
+class _Class extends EncapsulatedClassifier
+  var isActive as Set of Boolean
+  // nestedClassifier IsContainer
+  var nestedClassifier as Set of Classifier
+  // ownedOperation IsContainer
+  var ownedOperation as Set of Operation
+  var superClass as Set of _Class
+  // ownedReception IsContainer
+  var ownedReception as Set of Reception
+  var extension as Set of Extension
+
+class StringExpression extends Expression
+  // subExpression IsContainer
+  var subExpression as Set of StringExpression
+  var owningExpression as Set of StringExpression
+
+class Expression extends ValueSpecification
+  var symbol as Set of String
+  // operand IsContainer
+  var operand as Set of ValueSpecification
+
+abstract class ValueSpecification extends PackageableElement
+
+abstract class BehavioredClassifier extends Classifier
+  // ownedBehavior IsContainer
+  var ownedBehavior as Set of Behavior
+  var classifierBehavior as Set of Behavior
+  // interfaceRealization IsContainer
+  var interfaceRealization as Set of InterfaceRealization
+  // ownedTrigger IsContainer
+  var ownedTrigger as Set of Trigger
+
+abstract class Behavior extends _Class
+  var isReentrant as Set of Boolean
+  var redefinedBehavior as Set of Behavior
+  // ownedParameter IsContainer
+  var ownedParameter as Set of Parameter
+  var context as Set of BehavioredClassifier
+  var precondition as Set of _Constraint
+  var postcondition as Set of _Constraint
+  // ownedParameterSet IsContainer
+  var ownedParameterSet as Set of ParameterSet
+  var specification as Set of BehavioralFeature
+
+abstract class MultiplicityElement extends Element
+  var isOrdered as Set of Boolean
+  var isUnique as Set of Boolean
+  var upper as Set of UnlimitedNatural
+  var lower as Set of Integer
+  // upperValue IsContainer
+  var upperValue as Set of ValueSpecification
+  // lowerValue IsContainer
+  var lowerValue as Set of ValueSpecification
+
+abstract class DeploymentTarget extends NamedElement
+  getDeployedElements()
+  // deployment IsContainer
+  var deployment as Set of Deployment
+  var deployedElement as Set of PackageableElement
+
+class DataType extends Classifier
+  createOwnedOperation(as, as, as, as)
+  createOwnedAttribute(as, as, as, as)
+  // ownedAttribute IsContainer
+  var ownedAttribute as Set of _Property
+  // ownedOperation IsContainer
+  var ownedOperation as Set of Operation
+
+class CollaborationUse extends NamedElement
+  var _type as Set of Collaboration
+  // roleBinding IsContainer
+  var roleBinding as Set of Dependency
+
+class UseCase extends BehavioredClassifier
+  // include IsContainer
+  var include as Set of Include
+  // extend IsContainer
+  var extend as Set of Extend
+  // extensionPoint IsContainer
+  var extensionPoint as Set of ExtensionPoint
+  var subject as Set of Classifier
+
+class Realization extends Abstraction
+
+class Abstraction extends Dependency
+  // mapping IsContainer
+  var mapping as Set of OpaqueExpression
+
+class Image extends Element
+  var content as Set of String
+  var location as Set of String
+  var format as Set of String
+
+class OpaqueExpression extends ValueSpecification
+  var body as Set of String
+  var language as Set of String
+  var result as Set of Parameter
+  var behavior as Set of Behavior
+
+class Parameter extends ConnectableElement
+  var direction as Set of ParameterDirectionKind
+  var default as Set of String
+  var isException as Set of Boolean
+  var isStream as Set of Boolean
+  var effect as Set of ParameterEffectKind
+  // defaultValue IsContainer
+  var defaultValue as Set of ValueSpecification
+  var operation as Set of Operation
+  var parameterSet as Set of ParameterSet
+
+abstract class EncapsulatedClassifier extends StructuredClassifier
+  var ownedPort as Set of Port
+
+class Operation extends BehavioralFeature
+  var isQuery as Set of Boolean
+  var isOrdered as Set of Boolean
+  var isUnique as Set of Boolean
+  var lower as Set of Integer
+  var upper as Set of UnlimitedNatural
+  var _interface as Set of _Interface
+  var _class as Set of _Class
+  var precondition as Set of _Constraint
+  var postcondition as Set of _Constraint
+  var redefinedOperation as Set of Operation
+  var datatype as Set of DataType
+  var bodyCondition as Set of _Constraint
+  var _type as Set of _Type
+
+class Reception extends BehavioralFeature
+  var signal as Set of Signal
+
+class Extension extends Association
+  var isRequired as Set of Boolean
+  var metaclass as Set of _Class
+
+class EnumerationLiteral extends InstanceSpecification
+  var _enumeration as Set of _Enumeration
+
+class ActivityPartition extends NamedElement
+  var isDimension as Set of Boolean
+  var isExternal as Set of Boolean
+  var node as Set of ActivityNode
+  // subpartition IsContainer
+  var subpartition as Set of ActivityPartition
+  var superPartition as Set of ActivityPartition
+  var represents as Set of Element
+  var edge as Set of ActivityEdge
+
+class _Enumeration extends DataType
+  // ownedLiteral IsContainer
+  var ownedLiteral as Set of EnumerationLiteral
+
+class InstanceSpecification extends DeploymentTarget
+  var classifier as Set of Classifier
+  // slot IsContainer
+  var slot as Set of Slot
+  // specification IsContainer
+  var specification as Set of ValueSpecification
+
+abstract class BehavioralFeature extends _Namespace
+  var isAbstract as Set of Boolean
+  var concurrency as Set of CallConcurrencyKind
+  // ownedParameter IsContainer
+  var ownedParameter as Set of Parameter
+  var method as Set of Behavior
+  var raisedException as Set of _Type
+  // ownedParameterSet IsContainer
+  var ownedParameterSet as Set of ParameterSet
+
+class Signal extends Classifier
+  // ownedAttribute IsContainer
+  var ownedAttribute as Set of _Property
+
+class TimeExpression extends ValueSpecification
+  var expr as Set of ValueSpecification
+  var observation as Set of Observation
+
+abstract class Observation extends PackageableElement
+
+class Duration extends ValueSpecification
+  var expr as Set of ValueSpecification
+  var observation as Set of Observation
+
+class DurationInterval extends Interval
+
+class Interval extends ValueSpecification
+  var min as Set of ValueSpecification
+  var max as Set of ValueSpecification
+
+class TimeConstraint extends IntervalConstraint
+  var firstEvent as Set of Boolean
+
+class IntervalConstraint extends _Constraint
+
+class TimeInterval extends Interval
+
+class DurationConstraint extends IntervalConstraint
+  var firstEvent as Set of Boolean
+
+class TimeObservation extends Observation
+  var firstEvent as Set of Boolean
+  var _event as Set of NamedElement
+
+class DurationObservation extends Observation
+  var firstEvent as Set of Boolean
+  var _event as Set of NamedElement
+
+class ConnectorEnd extends MultiplicityElement
+  var definingEnd as Set of _Property
+  var partWithPort as Set of _Property
+  var role as Set of ConnectableElement
+
+class TimeEvent extends _Event
+  var isRelative as Set of Boolean
+  // when IsContainer
+  var when as Set of ValueSpecification
+
+abstract class _Event extends PackageableElement
+
+class Port extends _Property
+  var isBehavior as Set of Boolean
+  var isService as Set of Boolean
+  var required as Set of _Interface
+  var redefinedPort as Set of Port
+  var provided as Set of _Interface
+  var protocol as Set of ProtocolStateMachine
+
+abstract class Action extends ExecutableNode
+  var output as Set of OutputPin
+  var input as Set of InputPin
+  var context as Set of Classifier
+  // localPrecondition IsContainer
+  var localPrecondition as Set of _Constraint
+  // localPostcondition IsContainer
+  var localPostcondition as Set of _Constraint
+
+class Message extends NamedElement
+  var messageKind as Set of MessageKind
+  var messageSort as Set of MessageSort
+  var receiveEvent as Set of MessageEnd
+  var sendEvent as Set of MessageEnd
+  var connector as Set of Connector
+  var interaction as Set of Interaction
+  // argument IsContainer
+  var argument as Set of ValueSpecification
+  var signature as Set of NamedElement
+
+class Lifeline extends NamedElement
+  var represents as Set of ConnectableElement
+  var interaction as Set of Interaction
+  // selector IsContainer
+  var selector as Set of ValueSpecification
+  var decomposedAs as Set of PartDecomposition
+  var coveredBy as Set of InteractionFragment
+
+abstract class ExecutionSpecification extends InteractionFragment
+  var start as Set of OccurrenceSpecification
+  var finish as Set of OccurrenceSpecification
+
+abstract class InvocationAction extends Action
+  // argument IsContainer
+  var argument as Set of InputPin
+  var onPort as Set of Port
+
+class Connector extends Feature
+  var kind as Set of ConnectorKind
+  var _type as Set of Association
+  var redefinedConnector as Set of Connector
+  // end IsContainer
+  var end as Set of ConnectorEnd
+  var contract as Set of Behavior
+
+class Collaboration extends BehavioredClassifier
+  var collaborationRole as Set of ConnectableElement
+
+class _Interface extends Classifier
+  // ownedAttribute IsContainer
+  var ownedAttribute as Set of _Property
+  // ownedOperation IsContainer
+  var ownedOperation as Set of Operation
+  // nestedClassifier IsContainer
+  var nestedClassifier as Set of Classifier
+  var redefinedInterface as Set of _Interface
+  // ownedReception IsContainer
+  var ownedReception as Set of Reception
+  // protocol IsContainer
+  var protocol as Set of ProtocolStateMachine
+
+class InterfaceRealization extends Realization
+  var contract as Set of _Interface
+  var implementingClassifier as Set of BehavioredClassifier
+
+class Trigger extends NamedElement
+  var _event as Set of _Event
+  var port as Set of Port
+
+class ProtocolStateMachine extends StateMachine
+  // conformance IsContainer
+  var conformance as Set of ProtocolConformance
+
+class StateMachine extends Behavior
+  // region IsContainer
+  var region as Set of Region
+  var submachineState as Set of State
+  // connectionPoint IsContainer
+  var connectionPoint as Set of Pseudostate
+  var extendedStateMachine as Set of StateMachine
+
+class ProtocolConformance extends DirectedRelationship
+  var generalMachine as Set of ProtocolStateMachine
+  var specificMachine as Set of ProtocolStateMachine
+
+class Deployment extends Dependency
+  var deployedArtifact as Set of DeployedArtifact
+  // configuration IsContainer
+  var configuration as Set of DeploymentSpecification
+  var location as Set of DeploymentTarget
+
+class Include extends NamedElement
+  var addition as Set of UseCase
+  var includingCase as Set of UseCase
+
+class Extend extends NamedElement
+  var extendedCase as Set of UseCase
+  // condition IsContainer
+  var condition as Set of _Constraint
+  var extensionLocation as Set of ExtensionPoint
+  var extension as Set of UseCase
+
+class ExtensionPoint extends RedefinableElement
+  var useCase as Set of UseCase
+
+class Region extends _Namespace
+  // subvertex IsContainer
+  var subvertex as Set of Vertex
+  // transition IsContainer
+  var transition as Set of Transition
+  var state as Set of State
+  var extendedRegion as Set of Region
+  var stateMachine as Set of StateMachine
+
+abstract class StructuredClassifier extends Classifier
+  // ownedAttribute IsContainer
+  var ownedAttribute as Set of _Property
+  var part as Set of _Property
+  var role as Set of ConnectableElement
+  // ownedConnector IsContainer
+  var ownedConnector as Set of Connector
+
+abstract class Vertex extends NamedElement
+  var incoming as Set of Transition
+  var outgoing as Set of Transition
+  var container as Set of Region
+
+class Transition extends _Namespace
+  var kind as Set of TransitionKind
+  var container as Set of Region
+  var redefinedTransition as Set of Transition
+  var guard as Set of _Constraint
+  // effect IsContainer
+  var effect as Set of Behavior
+  // trigger IsContainer
+  var trigger as Set of Trigger
+  var target as Set of Vertex
+  var source as Set of Vertex
+
+class State extends _Namespace
+  var isComposite as Set of Boolean
+  var isOrthogonal as Set of Boolean
+  var isSimple as Set of Boolean
+  var isSubmachineState as Set of Boolean
+  var submachine as Set of StateMachine
+  // connection IsContainer
+  var connection as Set of ConnectionPointReference
+  // connectionPoint IsContainer
+  var connectionPoint as Set of Pseudostate
+  var redefinedState as Set of State
+  // stateInvariant IsContainer
+  var stateInvariant as Set of _Constraint
+  // entry IsContainer
+  var entry as Set of Behavior
+  // exit IsContainer
+  var exit as Set of Behavior
+  // doActivity IsContainer
+  var doActivity as Set of Behavior
+  // deferrableTrigger IsContainer
+  var deferrableTrigger as Set of Trigger
+  // region IsContainer
+  var region as Set of Region
+
+class ParameterSet extends NamedElement
+  var parameter as Set of Parameter
+  // condition IsContainer
+  var condition as Set of _Constraint
+
+abstract class ActivityNode extends RedefinableElement
+  var inStructuredNode as Set of StructuredActivityNode
+  var activity as Set of Activity
+  var outgoing as Set of ActivityEdge
+  var incoming as Set of ActivityEdge
+  var inPartition as Set of ActivityPartition
+  var inInterruptibleRegion as Set of InterruptibleActivityRegion
+  var inGroup as Set of ActivityGroup
+  var redefinedNode as Set of ActivityNode
+
+abstract class ActivityGroup extends Element
+  var subgroup as Set of ActivityGroup
+  var superGroup as Set of ActivityGroup
+  var inActivity as Set of Activity
+  var containedEdge as Set of ActivityEdge
+  var containedNode as Set of ActivityNode
+
+abstract class ActivityEdge extends RedefinableElement
+  var source as Set of ActivityNode
+  var target as Set of ActivityNode
+  var redefinedEdge as Set of ActivityEdge
+  var inPartition as Set of ActivityPartition
+  // guard IsContainer
+  var guard as Set of ValueSpecification
+  // weight IsContainer
+  var weight as Set of ValueSpecification
+  var interrupts as Set of InterruptibleActivityRegion
+  var inStructuredNode as Set of StructuredActivityNode
+  var inGroup as Set of ActivityGroup
+  var activity as Set of Activity
+
+class InterruptibleActivityRegion extends ActivityGroup
+  var node as Set of ActivityNode
+  var interruptingEdge as Set of ActivityEdge
+
+abstract class DeployedArtifact extends NamedElement
+
+class Slot extends Element
+  var definingFeature as Set of StructuralFeature
+  // value IsContainer
+  var value as Set of ValueSpecification
+  var owningInstance as Set of InstanceSpecification
+
+abstract class ExecutableNode extends ActivityNode
+  // handler IsContainer
+  var handler as Set of ExceptionHandler
+
+class OutputPin extends Pin
+
+class Pin extends ObjectNode
+  var isControl as Set of Boolean
+
+class InputPin extends Pin
+
+class ExceptionHandler extends Element
+  var handlerBody as Set of ExecutableNode
+  var exceptionInput as Set of ObjectNode
+  var exceptionType as Set of Classifier
+  var protectedNode as Set of ExecutableNode
+
+abstract class ObjectNode extends ActivityNode
+  var ordering as Set of ObjectNodeOrderingKind
+  var isControlType as Set of Boolean
+  // upperBound IsContainer
+  var upperBound as Set of ValueSpecification
+  var inState as Set of State
+  var selection as Set of Behavior
+
+abstract class MessageEnd extends NamedElement
+  var message as Set of Message
+
+class Interaction extends Behavior
+  // lifeline IsContainer
+  var lifeline as Set of Lifeline
+  // fragment IsContainer
+  var fragment as Set of InteractionFragment
+  // action IsContainer
+  var action as Set of Action
+  // formalGate IsContainer
+  var formalGate as Set of Gate
+  // message IsContainer
+  var message as Set of Message
+
+class PartDecomposition extends InteractionUse
+
+class InteractionUse extends InteractionFragment
+  var refersTo as Set of Interaction
+  // actualGate IsContainer
+  var actualGate as Set of Gate
+  // argument IsContainer
+  var argument as Set of Action
+
+abstract class InteractionFragment extends NamedElement
+  var covered as Set of Lifeline
+  // generalOrdering IsContainer
+  var generalOrdering as Set of GeneralOrdering
+  var enclosingInteraction as Set of Interaction
+  var enclosingOperand as Set of InteractionOperand
+
+class Pseudostate extends Vertex
+  var kind as Set of PseudostateKind
+  var stateMachine as Set of StateMachine
+  var state as Set of State
+
+class ConnectionPointReference extends Vertex
+  var entry as Set of Pseudostate
+  var exit as Set of Pseudostate
+  var state as Set of State
+
+class StructuredActivityNode extends Action
+  var mustIsolate as Set of Boolean
+  // variable IsContainer
+  var variable as Set of Variable
+  // edge IsContainer
+  var edge as Set of ActivityEdge
+  // node IsContainer
+  var node as Set of ActivityNode
+
+class Variable extends ConnectableElement
+  var scope as Set of StructuredActivityNode
+  var activityScope as Set of Activity
+
+class Activity extends Behavior
+  var isReadOnly as Set of Boolean
+  var isSingleExecution as Set of Boolean
+  var structuredNode as Set of StructuredActivityNode
+  // variable IsContainer
+  var variable as Set of Variable
+  // node IsContainer
+  var node as Set of ActivityNode
+  // edge IsContainer
+  var edge as Set of ActivityEdge
+  var partition as Set of ActivityPartition
+  // group IsContainer
+  var group as Set of ActivityGroup
+
+class OccurrenceSpecification extends InteractionFragment
+  var toBefore as Set of GeneralOrdering
+  var _event as Set of _Event
+  var toAfter as Set of GeneralOrdering
+
+class DeploymentSpecification extends Artifact
+  var deploymentLocation as Set of String
+  var executionLocation as Set of String
+  var deployment as Set of Deployment
+
+class Gate extends MessageEnd
+
+class Artifact extends Classifier
+  var fileName as Set of String
+  // nestedArtifact IsContainer
+  var nestedArtifact as Set of Artifact
+  // manifestation IsContainer
+  var manifestation as Set of Manifestation
+  // ownedOperation IsContainer
+  var ownedOperation as Set of Operation
+  // ownedAttribute IsContainer
+  var ownedAttribute as Set of _Property
+
+class GeneralOrdering extends NamedElement
+  var before as Set of OccurrenceSpecification
+  var after as Set of OccurrenceSpecification
+
+class Manifestation extends Abstraction
+  var utilizedElement as Set of PackageableElement
+
+class InteractionOperand extends _Namespace
+  // guard IsContainer
+  var guard as Set of InteractionConstraint
+  // fragment IsContainer
+  var fragment as Set of InteractionFragment
+
+class InteractionConstraint extends _Constraint
+  // minint IsContainer
+  var minint as Set of ValueSpecification
+  // maxint IsContainer
+  var maxint as Set of ValueSpecification
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+var Element_Universe as Set of Element
+
+var Comment_Universe as Set of Comment
+
+var Package_Universe as Set of Package
+
+var NamedElement_Universe as Set of NamedElement
+
+var StructuralFeature_Universe as Set of StructuralFeature
+
+var ConnectableElement_Universe as Set of ConnectableElement
+
+var TemplateableElement_Universe as Set of TemplateableElement
+
+var _Property_Universe as Set of _Property
+
+var Dependency_Universe as Set of Dependency
+
+var DirectedRelationship_Universe as Set of DirectedRelationship
+
+var Relationship_Universe as Set of Relationship
+
+var _Namespace_Universe as Set of _Namespace
+
+var ElementImport_Universe as Set of ElementImport
+
+var PackageImport_Universe as Set of PackageImport
+
+var _Constraint_Universe as Set of _Constraint
+
+var TypedElement_Universe as Set of TypedElement
+
+var _Type_Universe as Set of _Type
+
+var Association_Universe as Set of Association
+
+var Classifier_Universe as Set of Classifier
+
+var RedefinableElement_Universe as Set of RedefinableElement
+
+var TemplateBinding_Universe as Set of TemplateBinding
+
+var TemplateSignature_Universe as Set of TemplateSignature
+
+var TemplateParameter_Universe as Set of TemplateParameter
+
+var ParameterableElement_Universe as Set of ParameterableElement
+
+var TemplateParameterSubstitution_Universe as Set of TemplateParameterSubstitution
+
+var Generalization_Universe as Set of Generalization
+
+var GeneralizationSet_Universe as Set of GeneralizationSet
+
+var Feature_Universe as Set of Feature
+
+var Substitution_Universe as Set of Substitution
+
+var PackageableElement_Universe as Set of PackageableElement
+
+var PackageMerge_Universe as Set of PackageMerge
+
+var ProfileApplication_Universe as Set of ProfileApplication
+
+var Profile_Universe as Set of Profile
+
+var Stereotype_Universe as Set of Stereotype
+
+var _Class_Universe as Set of _Class
+
+var StringExpression_Universe as Set of StringExpression
+
+var Expression_Universe as Set of Expression
+
+var ValueSpecification_Universe as Set of ValueSpecification
+
+var BehavioredClassifier_Universe as Set of BehavioredClassifier
+
+var Behavior_Universe as Set of Behavior
+
+var MultiplicityElement_Universe as Set of MultiplicityElement
+
+var DeploymentTarget_Universe as Set of DeploymentTarget
+
+var DataType_Universe as Set of DataType
+
+var CollaborationUse_Universe as Set of CollaborationUse
+
+var UseCase_Universe as Set of UseCase
+
+var Realization_Universe as Set of Realization
+
+var Abstraction_Universe as Set of Abstraction
+
+var Image_Universe as Set of Image
+
+var OpaqueExpression_Universe as Set of OpaqueExpression
+
+var Parameter_Universe as Set of Parameter
+
+var EncapsulatedClassifier_Universe as Set of EncapsulatedClassifier
+
+var Operation_Universe as Set of Operation
+
+var Reception_Universe as Set of Reception
+
+var Extension_Universe as Set of Extension
+
+var EnumerationLiteral_Universe as Set of EnumerationLiteral
+
+var ActivityPartition_Universe as Set of ActivityPartition
+
+var _Enumeration_Universe as Set of _Enumeration
+
+var InstanceSpecification_Universe as Set of InstanceSpecification
+
+var BehavioralFeature_Universe as Set of BehavioralFeature
+
+var Signal_Universe as Set of Signal
+
+var TimeExpression_Universe as Set of TimeExpression
+
+var Observation_Universe as Set of Observation
+
+var Duration_Universe as Set of Duration
+
+var DurationInterval_Universe as Set of DurationInterval
+
+var Interval_Universe as Set of Interval
+
+var TimeConstraint_Universe as Set of TimeConstraint
+
+var IntervalConstraint_Universe as Set of IntervalConstraint
+
+var TimeInterval_Universe as Set of TimeInterval
+
+var DurationConstraint_Universe as Set of DurationConstraint
+
+var TimeObservation_Universe as Set of TimeObservation
+
+var DurationObservation_Universe as Set of DurationObservation
+
+var ConnectorEnd_Universe as Set of ConnectorEnd
+
+var TimeEvent_Universe as Set of TimeEvent
+
+var _Event_Universe as Set of _Event
+
+var Port_Universe as Set of Port
+
+var Action_Universe as Set of Action
+
+var Message_Universe as Set of Message
+
+var Lifeline_Universe as Set of Lifeline
+
+var ExecutionSpecification_Universe as Set of ExecutionSpecification
+
+var InvocationAction_Universe as Set of InvocationAction
+
+var Connector_Universe as Set of Connector
+
+var Collaboration_Universe as Set of Collaboration
+
+var _Interface_Universe as Set of _Interface
+
+var InterfaceRealization_Universe as Set of InterfaceRealization
+
+var Trigger_Universe as Set of Trigger
+
+var ProtocolStateMachine_Universe as Set of ProtocolStateMachine
+
+var StateMachine_Universe as Set of StateMachine
+
+var ProtocolConformance_Universe as Set of ProtocolConformance
+
+var Deployment_Universe as Set of Deployment
+
+var Include_Universe as Set of Include
+
+var Extend_Universe as Set of Extend
+
+var ExtensionPoint_Universe as Set of ExtensionPoint
+
+var Region_Universe as Set of Region
+
+var StructuredClassifier_Universe as Set of StructuredClassifier
+
+var Vertex_Universe as Set of Vertex
+
+var Transition_Universe as Set of Transition
+
+var State_Universe as Set of State
+
+var ParameterSet_Universe as Set of ParameterSet
+
+var ActivityNode_Universe as Set of ActivityNode
+
+var ActivityGroup_Universe as Set of ActivityGroup
+
+var ActivityEdge_Universe as Set of ActivityEdge
+
+var InterruptibleActivityRegion_Universe as Set of InterruptibleActivityRegion
+
+var DeployedArtifact_Universe as Set of DeployedArtifact
+
+var Slot_Universe as Set of Slot
+
+var ExecutableNode_Universe as Set of ExecutableNode
+
+var OutputPin_Universe as Set of OutputPin
+
+var Pin_Universe as Set of Pin
+
+var InputPin_Universe as Set of InputPin
+
+var ExceptionHandler_Universe as Set of ExceptionHandler
+
+var ObjectNode_Universe as Set of ObjectNode
+
+var MessageEnd_Universe as Set of MessageEnd
+
+var Interaction_Universe as Set of Interaction
+
+var PartDecomposition_Universe as Set of PartDecomposition
+
+var InteractionUse_Universe as Set of InteractionUse
+
+var InteractionFragment_Universe as Set of InteractionFragment
+
+var Pseudostate_Universe as Set of Pseudostate
+
+var ConnectionPointReference_Universe as Set of ConnectionPointReference
+
+var StructuredActivityNode_Universe as Set of StructuredActivityNode
+
+var Variable_Universe as Set of Variable
+
+var Activity_Universe as Set of Activity
+
+var OccurrenceSpecification_Universe as Set of OccurrenceSpecification
+
+var DeploymentSpecification_Universe as Set of DeploymentSpecification
+
+var Gate_Universe as Set of Gate
+
+var Artifact_Universe as Set of Artifact
+
+var GeneralOrdering_Universe as Set of GeneralOrdering
+
+var Manifestation_Universe as Set of Manifestation
+
+var InteractionOperand_Universe as Set of InteractionOperand
+
+var InteractionConstraint_Universe as Set of InteractionConstraint
+
+Main()

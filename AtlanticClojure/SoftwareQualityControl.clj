@@ -1,0 +1,6 @@
+( defstruct DateType :day :month :year )
+( defstruct ControlsSequence )
+( defstruct Control :c_controlsSequence :responsible :component :developmentPhase :scope :date :type )
+( defstruct ControlType :ct_control )
+( defstruct BugTracking :ct_control )
+( defstruct Bug :b_bugTracking :number :componentVersion :description :status :originator :openDate )

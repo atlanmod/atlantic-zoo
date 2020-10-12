@@ -1,0 +1,65 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'SQLDDL'>
+    <Class name = 'LocatedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'location' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsBefore' lower = '0' upper = '-1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsAfter' lower = '0' upper = '-1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'NamedElement' isAbstract = 'true' supertypes = 'SQLDDL::LocatedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Database' isAbstract = 'false' supertypes = 'SQLDDL::NamedElement'>
+      <Reference name = 'tables' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SQLDDL::Table' opposite = 'SQLDDL::Table::database'/>
+    </Class>
+    <Class name = 'Table' isAbstract = 'false' supertypes = 'SQLDDL::NamedElement'>
+      <Reference name = 'database' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SQLDDL::Database' opposite = 'SQLDDL::Database::tables'/>
+      <Reference name = 'referencedBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SQLDDL::ForeignKey' opposite = 'SQLDDL::ForeignKey::referencedTable'/>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SQLDDL::TableElement' opposite = 'SQLDDL::TableElement::table'/>
+      <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SQLDDL::Parameter' opposite = 'SQLDDL::Parameter::table'/>
+    </Class>
+    <Class name = 'TableElement' isAbstract = 'true' supertypes = 'SQLDDL::LocatedElement'>
+      <Reference name = 'table' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SQLDDL::Table' opposite = 'SQLDDL::Table::elements'/>
+    </Class>
+    <Class name = 'Column' isAbstract = 'false' supertypes = 'SQLDDL::TableElement'>
+      <Reference name = 'referencedBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SQLDDL::ForeignKey' opposite = 'SQLDDL::ForeignKey::referencedColumns'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SQLDDL::Type' opposite = ''/>
+      <Attribute name = 'canBeNull' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'default' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SQLDDL::Value' opposite = ''/>
+      <Reference name = 'keys' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SQLDDL::Key' opposite = 'SQLDDL::Key::columns'/>
+    </Class>
+    <Class name = 'Key' isAbstract = 'true' supertypes = 'SQLDDL::TableElement'>
+      <Attribute name = 'isUnique' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'name' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'columns' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'SQLDDL::Column' opposite = 'SQLDDL::Column::keys'/>
+    </Class>
+    <Class name = 'SimpleKey' isAbstract = 'false' supertypes = 'SQLDDL::Key'/>
+    <Class name = 'PrimaryKey' isAbstract = 'false' supertypes = 'SQLDDL::Key'/>
+    <Class name = 'ForeignKey' isAbstract = 'false' supertypes = 'SQLDDL::Key'>
+      <Reference name = 'referencedTable' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SQLDDL::Table' opposite = 'SQLDDL::Table::referencedBy'/>
+      <Reference name = 'referencedColumns' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SQLDDL::Column' opposite = 'SQLDDL::Column::referencedBy'/>
+    </Class>
+    <Class name = 'Type' isAbstract = 'false' supertypes = 'SQLDDL::NamedElement'>
+      <Attribute name = 'length' lower = '0' upper = '2' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'isUnsigned' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'Parameter' isAbstract = 'false' supertypes = 'SQLDDL::NamedElement'>
+      <Reference name = 'table' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SQLDDL::Table' opposite = 'SQLDDL::Table::parameters'/>
+      <Reference name = 'value' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SQLDDL::Value' opposite = ''/>
+    </Class>
+    <Class name = 'Value' isAbstract = 'true' supertypes = 'SQLDDL::LocatedElement'/>
+    <Class name = 'IntegerVal' isAbstract = 'false' supertypes = 'SQLDDL::Value'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'NullVal' isAbstract = 'false' supertypes = 'SQLDDL::Value'/>
+    <Class name = 'StringVal' isAbstract = 'false' supertypes = 'SQLDDL::Value'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

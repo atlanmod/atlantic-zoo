@@ -1,0 +1,161 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<rdf:RDF xmlns:rdf = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:rdfs = 'http://www.w3.org/2000/01/rdf-schema#' xmlns:xsd = 'http://www.w3.org/2001/XMLSchema#' xmlns:owl = 'http://www.w3.org/2002/07/owl#' xmlns = 'http://example.org/QoSProfile#' xml:base = 'http://example.org/QoSProfile'>
+  <owl:Ontology rdf:about = 'QoSProfile'/>
+  <owl:Class rdf:ID = 'Operation'>
+    <rdfs:label>Operation</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID = 'QoSStatement'>
+    <rdfs:label>QoSStatement</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID = 'ProfileTransition'>
+    <rdfs:label>ProfileTransition</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ProfileTransition.compoundProfile'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ProfileTransition.to'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ProfileTransition.operations'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ProfileTransition.from'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'QoSComponent'>
+    <rdfs:label>QoSComponent</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#QoSComponent.operations'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#QoSComponent.profile'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'CompoundProfile'>
+    <rdfs:label>CompoundProfile</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#QoSProfile'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#CompoundProfile.simpleProfile'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#CompoundProfile.profileTransition'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'SimpleProfile'>
+    <rdfs:label>SimpleProfile</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#QoSProfile'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#SimpleProfile.uses'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#SimpleProfile.provides'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#SimpleProfile.compoundProfile'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'QoSProfile'>
+    <rdfs:label>QoSProfile</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#QoSProfile.for'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID = 'QoSProfile.for'>
+    <rdfs:domain rdf:resource = '#QoSProfile'/>
+    <rdfs:range rdf:resource = '#QoSComponent'/>
+    <owl:inverseOf rdf:resource = '#QoSComponent.profile'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'CompoundProfile.profileTransition'>
+    <rdfs:domain rdf:resource = '#CompoundProfile'/>
+    <rdfs:range rdf:resource = '#ProfileTransition'/>
+    <owl:inverseOf rdf:resource = '#ProfileTransition.compoundProfile'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'SimpleProfile.provides'>
+    <rdfs:domain rdf:resource = '#SimpleProfile'/>
+    <rdfs:range rdf:resource = '#QoSStatement'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ProfileTransition.from'>
+    <rdfs:domain rdf:resource = '#ProfileTransition'/>
+    <rdfs:range rdf:resource = '#SimpleProfile'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ProfileTransition.compoundProfile'>
+    <rdfs:domain rdf:resource = '#ProfileTransition'/>
+    <rdfs:range rdf:resource = '#CompoundProfile'/>
+    <owl:inverseOf rdf:resource = '#CompoundProfile.profileTransition'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'QoSComponent.profile'>
+    <rdfs:domain rdf:resource = '#QoSComponent'/>
+    <rdfs:range rdf:resource = '#QoSProfile'/>
+    <owl:inverseOf rdf:resource = '#QoSProfile.for'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'SimpleProfile.compoundProfile'>
+    <rdfs:domain rdf:resource = '#SimpleProfile'/>
+    <rdfs:range rdf:resource = '#CompoundProfile'/>
+    <owl:inverseOf rdf:resource = '#CompoundProfile.simpleProfile'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'SimpleProfile.uses'>
+    <rdfs:domain rdf:resource = '#SimpleProfile'/>
+    <rdfs:range rdf:resource = '#QoSStatement'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'QoSComponent.operations'>
+    <rdfs:domain rdf:resource = '#QoSComponent'/>
+    <rdfs:range rdf:resource = '#Operation'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ProfileTransition.to'>
+    <rdfs:domain rdf:resource = '#ProfileTransition'/>
+    <rdfs:range rdf:resource = '#SimpleProfile'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'CompoundProfile.simpleProfile'>
+    <rdfs:domain rdf:resource = '#CompoundProfile'/>
+    <rdfs:range rdf:resource = '#SimpleProfile'/>
+    <owl:inverseOf rdf:resource = '#SimpleProfile.compoundProfile'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ProfileTransition.operations'>
+    <rdfs:domain rdf:resource = '#ProfileTransition'/>
+    <rdfs:range rdf:resource = '#Operation'/>
+  </owl:ObjectProperty>
+  <owl:FunctionalProperty rdf:about = '#QoSComponent.operations'/>
+  <owl:FunctionalProperty rdf:about = '#ProfileTransition.to'/>
+  <owl:FunctionalProperty rdf:about = '#SimpleProfile.uses'/>
+  <owl:FunctionalProperty rdf:about = '#ProfileTransition.compoundProfile'/>
+  <owl:FunctionalProperty rdf:about = '#QoSProfile.for'/>
+  <owl:FunctionalProperty rdf:about = '#SimpleProfile.provides'/>
+  <owl:FunctionalProperty rdf:about = '#SimpleProfile.compoundProfile'/>
+  <owl:FunctionalProperty rdf:about = '#ProfileTransition.from'/>
+</rdf:RDF>

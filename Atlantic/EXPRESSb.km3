@@ -1,0 +1,988 @@
+package express {
+
+	datatype Dummy;
+
+	package rules {
+
+		class ONEOFConstraint extends SubtypeConstraint {
+			
+		}
+
+		class SupertypeRule extends CommonElement {
+			reference namedSupertype : EntityType;
+			reference constraints[*] container : SubtypeConstraint oppositeOf collection;
+			attribute assertsAbstract : Boolean;
+		}
+
+		class SubtypeConstraint {
+			reference constrainedSubtypes[1-*] : Extent oppositeOf constraints;
+			reference equivalentRule container : Expression;
+			reference collection : SupertypeRule oppositeOf constraints;
+		}
+
+		class Extent extends SETValue {
+			reference constraints[*] : SubtypeConstraint oppositeOf constrainedSubtypes;
+			reference content[*] : EntityInstance;
+			reference withinPopulation : Population;
+			reference constraintRules[*] : GlobalRule oppositeOf constrainedExtents;
+			reference forType : EntityType oppositeOf extension;
+			reference id container : ScopedId;
+		}
+
+		class TOTAL_OVERConstraint extends SubtypeConstraint {
+			
+		}
+
+		class ANDConstraint extends SubtypeConstraint {
+			
+		}
+
+		class GlobalRule extends SchemaElement, AlgorithmScope {
+			reference supportingBody[0-1] container : Statement;
+			reference constrainedExtents[1-*] : Extent oppositeOf constraintRules;
+			reference containsRules[1-*] container : NamedRule;
+		}
+
+		class NamedRule extends LocalElement {
+			reference assertsExpression container : Expression;
+			attribute position : Integer;
+		}
+	}
+
+	package statements {
+
+		class ProcedureCall extends Statement {
+			reference invokes : Procedure;
+			reference actualParameters[*] container : ActualParameter oppositeOf inProcedureCall;
+		}
+
+		class SkipStatement extends ControlStatement {
+			
+		}
+
+		class AliasStatement extends Statement, LocalScope {
+			reference bindsToReference : VARExpression;
+			reference body container : Statement;
+			reference aliasVariable container : AliasVariable;
+		}
+
+		class ControlVariable extends NamedVariable {
+			reference boundValue : Expression;
+			reference initialValue : Expression;
+			reference increment : Expression;
+		}
+
+		class AliasVariable extends NamedVariable, VARVariable {
+			reference referent[0-1] : VARExpression;
+		}
+
+		abstract class ControlStatement extends Statement {
+			
+		}
+
+		class VARCell extends VARExpression {
+			reference refersTo : VARVariable;
+			attribute id : Identifier;
+		}
+
+		class NullStatement extends ControlStatement {
+			
+		}
+
+		abstract class VARExpression {
+			attribute text[0-1] : ExpressText;
+		}
+
+		class AttributeCell extends VARExpression {
+			reference refersTo : ExplicitAttribute;
+			reference baseEntity container : VARExpression;
+			attribute id : Identifier;
+		}
+
+		class StatementBlock extends Statement {
+			reference bodyStatements_Statement[*] container : Statement oppositeOf inBlock;
+			attribute delimited : Boolean;
+		}
+
+		class CaseAction {
+			reference labelValue[*] : Expression;
+			reference action[0-1] container : Statement;
+			attribute isDefault : Boolean;
+		}
+
+		class MemberCell extends VARExpression {
+			reference indexValue : Expression;
+			reference baseAggregate container : VARExpression;
+		}
+
+		class RepeatStatement extends Statement, LocalScope {
+			reference whileExpression[0-1] : Expression;
+			reference body container : Statement oppositeOf controlledBy;
+			reference controlVariable[0-1] container : ControlVariable;
+			reference untilExpression[0-1] : Expression;
+		}
+
+		class GroupCell extends VARExpression {
+			reference baseEntity container : VARExpression;
+			reference refersTo : SingleEntityType;
+			attribute id : Identifier;
+		}
+
+		class VariableCell extends VARExpression {
+			reference refersTo : Variable;
+			attribute id : Identifier;
+		}
+
+		class CaseStatement extends Statement {
+			reference cases[1-*] container : CaseAction;
+			reference selectionExpression : Expression;
+		}
+
+		class IfStatement extends Statement {
+			reference ifCondition container : Expression;
+			reference elseActions[0-1] container : Statement;
+			reference thenActions container : Statement;
+		}
+
+		class EscapeStatement extends ControlStatement {
+			
+		}
+
+		class ReturnStatement extends ControlStatement {
+			reference returnValue[0-1] : Expression;
+		}
+
+		class Assignment extends Statement {
+			reference assignedValue : Expression;
+			reference variable : VARExpression;
+		}
+	}
+
+	package mof {
+
+		datatype String;
+
+		datatype Integer;
+
+		datatype Boolean;
+	}
+
+	package expressions {
+
+		abstract class Selector extends Expression {
+			reference entityInstance : Expression;
+		}
+
+		class RepeatCount {
+			reference derivation[0-1] : Expression;
+		}
+
+		class EnumItemRef extends Primary {
+			reference refersTo : EnumerationItem;
+			attribute id : Identifier;
+		}
+
+		class Literal extends Primary {
+			reference refersTo : SimpleValue;
+		}
+
+		class BinaryIndex extends IndexOperation {
+			reference firstBit : Expression;
+			reference lastBit[0-1] : Expression;
+		}
+
+		class IndeterminateRef extends Primary {
+			reference refersTo : Indeterminate;
+		}
+
+		class SELFRef extends Primary {
+			
+		}
+
+		abstract class IndexOperation extends Expression {
+			reference baseValue : Expression;
+		}
+
+		class BinaryOperation extends Operation {
+			reference leftOperand : Expression;
+			reference rightOperand : Expression;
+			attribute operator : BinaryOperator;
+		}
+
+		class AggregateInitializer extends Expression {
+			reference resultValue[0-1] : GenericAggregate;
+			reference bindings[*] container : MemberBinding;
+		}
+
+		class StringIndex extends IndexOperation {
+			reference firstCode : Expression;
+			reference lastCode[0-1] : Expression;
+		}
+
+		class PartialEntityConstructor extends Expression {
+			reference resultValue[0-1] : PartialEntityValue;
+			reference attributeGroup : SingleEntityType;
+			reference bindings[*] container : AttributeBinding;
+			attribute id : Identifier;
+		}
+
+		class Coercion extends Operation {
+			reference operand : Expression;
+			reference targetType : VariableType;
+		}
+
+		abstract class Primary extends Expression {
+			
+		}
+
+		class ActualParameter {
+			reference inProcedureCall[0-1] : ProcedureCall oppositeOf actualParameters;
+			reference inFunctionCall[0-1] : FunctionCall oppositeOf actualParameters;
+			reference formalParameter : Parameter;
+			reference actualReferent[0-1] : VARExpression;
+			reference actualValue[0-1] : Expression;
+			attribute position : Integer;
+		}
+
+		class ParameterRef extends Primary {
+			reference refersTo : Parameter;
+			attribute id : Identifier;
+		}
+
+		class AttributeRef extends Selector {
+			reference refersTo : Attribute;
+			attribute id : Identifier;
+		}
+
+		class AggregateIndex extends IndexOperation {
+			reference indexValue container : Expression;
+		}
+
+		class GroupRef extends Selector {
+			reference refersTo : SingleEntityType;
+			attribute id : Identifier;
+		}
+
+		class UnaryOperation extends Operation {
+			reference unaryOperand : Expression;
+			attribute operator : UnaryOperator;
+		}
+
+		class UsedInRef extends Selector {
+			reference inverseOf : Attribute;
+		}
+
+		class ConstantRef extends Primary {
+			reference refersTo : Constant;
+			attribute id : Identifier;
+		}
+
+		class QueryExpression extends LocalScope, Expression {
+			reference selectCondition container : Expression;
+			reference queryVariable : QueryVariable;
+			reference aggregateOperand : Expression;
+		}
+
+		class QueryVariable extends NamedVariable {
+			
+		}
+
+		abstract class Operation extends Expression {
+			
+		}
+
+		class AttributeBinding {
+			reference attributeValue : Expression;
+			reference toValue[0-1] : AttributeValue;
+			reference "attribute" : ExplicitAttribute;
+			attribute position : Integer;
+		}
+
+		class FunctionCall extends Expression {
+			reference actualParameters[*] container : ActualParameter oppositeOf inFunctionCall;
+			reference invokesFunction : Function;
+			reference returnsResult : FunctionResult;
+		}
+
+		class MemberBinding {
+			reference repetition[0-1] container : RepeatCount;
+			reference toSlot[*] : ListMember;
+			reference memberValue : Expression;
+			attribute position : Integer;
+		}
+
+		class ExtentRef extends Primary {
+			reference refersTo : NamedType;
+			attribute id : Identifier;
+		}
+
+		class VariableRef extends Primary {
+			reference refersTo : NamedVariable;
+			attribute id : Identifier;
+		}
+
+		datatype UnaryOperator;
+
+		datatype BinaryOperator;
+	}
+
+	package core {
+
+		abstract class TypeElement extends NamedElement {
+			
+		}
+
+		class SingleEntityType {
+			reference declaresExplicitAttribute[*] : ExplicitAttribute;
+			reference declaresAttribute[*] container : Attribute oppositeOf ofEntity;
+			reference declaredIn : EntityType oppositeOf declares;
+			reference equivalent : PartialEntityType;
+			reference id container : ScopedId;
+		}
+
+		class AGGREGATEType extends GeneralizedType {
+			reference upperBound[0-1] container : SizeConstraint;
+			reference memberType : ParameterType;
+			reference constraint[0-1] : ActualStructureConstraint oppositeOf matchingStructure;
+			reference lowerBound[0-1] container : SizeConstraint;
+		}
+
+		class GeneralBAGType extends GeneralAggregationType {
+			
+		}
+
+		class DomainRule extends DomainConstraint, TypeElement {
+			attribute position : Integer;
+		}
+
+		abstract class GeneralAggregationType extends GeneralizedType, AggregationType {
+			reference memberType : GeneralizedType;
+		}
+
+		abstract class ConcreteType extends InstantiableType {
+			
+		}
+
+		class Expression {
+			reference evaluation[0-1] : Instance;
+			reference interpretationContext[0-1] : Scope;
+			reference dataType[0-1] : DataType;
+			attribute text[0-1] : ExpressText;
+		}
+
+		class InverseAttribute extends Attribute {
+			reference modelsRole : DomainRole oppositeOf rangeView;
+			reference explicit : InvertibleAttribute oppositeOf inverse;
+			attribute isUnique : Boolean;
+		}
+
+		class EnumerationType extends DefinedType {
+			reference values[*] : EnumerationItem;
+			reference declaredItems[*] container : EnumerationItem oppositeOf declaredIn;
+			reference extension[*] : EnumerationType oppositeOf base;
+			reference base : EnumerationType oppositeOf extension;
+			attribute isExtensible : Boolean;
+		}
+
+		abstract class VariableType extends DataType, AttributeType {
+			
+		}
+
+		class ArrayBound {
+			reference boundExpression : Expression;
+			attribute bound[0-1] : Integer;
+		}
+
+		class GeneralSETType extends GeneralAggregationType {
+			
+		}
+
+		class LISTType extends ConcreteAggregationType {
+			
+		}
+
+		class Redeclaration {
+			reference derivation[0-1] : Expression;
+			reference restrictedType : AttributeType;
+			reference refines[0-1] : Redeclaration;
+			reference upperBound[0-1] container : SizeConstraint;
+			reference lowerBound[0-1] container : SizeConstraint;
+			reference scope : EntityType oppositeOf redeclarations;
+			reference originalAttribute : Attribute;
+			reference refinedRole[0-1] : Role;
+			attribute position : Integer;
+			attribute isMandatory[0-1] : Boolean;
+			reference alias[0-1] container : ScopedId;
+		}
+
+		class EntityType extends NamedType, InstantiableType {
+			reference playsRole[*] : Role oppositeOf ofEntity;
+			reference redeclarations[*] container : Redeclaration oppositeOf scope;
+			reference attributes[*] ordered container : Attribute oppositeOf owningEntity;
+			reference playsRangeRole[*] : RangeRole oppositeOf range;
+			reference declares : SingleEntityType oppositeOf declaredIn;
+			reference extension[*] : Extent oppositeOf forType;
+			reference invertibleAttributes[*] : InvertibleAttribute oppositeOf referencingType;
+			reference playsDomainRole[*] : DomainRole oppositeOf domain;
+			reference uniqueRules[*] : UniqueRule oppositeOf domain;
+			reference usedIn[*] : InvertibleAttribute oppositeOf rangeType;
+			reference subtypeOf[*] : EntityType;
+			attribute isAbstract : Boolean;
+		}
+
+		abstract class DataType {
+			reference instances[*] : Instance oppositeOf ofType;
+		}
+
+		class PartialEntityType extends DataType {
+			reference components[1-*] : SingleEntityType;
+		}
+
+		class Schema extends Scope {
+			reference documentation[*] : Remark oppositeOf describesSchema;
+			reference interfaces[*] container : InterfacedElement oppositeOf interfacingSchema;
+			reference schemaElements[*] container : SchemaElement oppositeOf definedIn;
+			reference interfacedElements[*] : SchemaElement oppositeOf referencedIn;
+			attribute name : Identifier;
+			attribute version[0-1] : Identifier;
+		}
+
+		class InvertibleAttribute extends ExplicitAttribute {
+			reference inverse[*] : InverseAttribute oppositeOf explicit;
+			reference rangeType[1-*] : EntityType oppositeOf usedIn;
+			reference createsRelationship : Relationship oppositeOf basedOn;
+			reference referencingType[1-*] : EntityType oppositeOf invertibleAttributes;
+			reference modelsRole : RangeRole oppositeOf domainView;
+		}
+
+		abstract class GeneralizedType extends ParameterType, AttributeType {
+			reference occursIn[1-*] : ParameterType oppositeOf contains;
+		}
+
+		class InterfacedElement {
+			reference interfacingSchema : Schema oppositeOf interfaces;
+			reference refersTo : SchemaElement oppositeOf referencedAs;
+			attribute isUSE : Boolean;
+			reference interfacedId[0-1] container : ScopedId;
+		}
+
+		class NumericType extends SimpleType {
+			
+		}
+
+		abstract class DefinedType extends NamedType, ConcreteType {
+			
+		}
+
+		class UniqueRule extends TypeElement {
+			reference domain : EntityType oppositeOf uniqueRules;
+			reference keyComponent[1-*] : Attribute;
+			attribute position : Integer;
+		}
+
+		class DomainRole extends Role {
+			reference rangeView[0-1] : InverseAttribute oppositeOf modelsRole;
+			reference domain : EntityType oppositeOf playsDomainRole;
+			reference id[0-1] container : ScopedId;
+		}
+
+		abstract class DomainConstraint {
+			reference domain : AttributeType oppositeOf constraints;
+			reference asserts[0-1] container : Expression;
+		}
+
+		abstract class InstantiableType extends ParameterType, VariableType {
+			reference fundamentalType : InstantiableType;
+		}
+
+		class GeneralLISTType extends GeneralAggregationType {
+			
+		}
+
+		abstract class NamedElement {
+			reference namespace : Scope oppositeOf namedElements;
+			reference documentation[*] : Remark oppositeOf describesElement;
+			reference id[0-1] container : ScopedId;
+		}
+
+		abstract class Attribute extends TypeElement {
+			reference attributeType : AttributeType oppositeOf role;
+			reference ofEntity : SingleEntityType oppositeOf declaresAttribute;
+			attribute isAbstract : Boolean;
+			attribute position : Integer;
+			reference owningEntity : EntityType oppositeOf attributes;
+		}
+
+		class BAGType extends ConcreteAggregationType {
+			
+		}
+
+		class RealType extends NumericType {
+			attribute precision[0-1] : Integer;
+		}
+
+		class LogicType extends SimpleType {
+			
+		}
+
+		class GenericType extends GeneralizedType {
+			reference constraint[0-1] : ActualTypeConstraint oppositeOf matchingType;
+			attribute isEntity : Boolean;
+		}
+
+		class StringType extends SimpleType {
+			reference stringLengthConstraint[0-1] container : LengthConstraint;
+		}
+
+		abstract class AnonymousType extends ConcreteType, InstantiableType {
+			reference specializes[*] : AnonymousType;
+		}
+
+		abstract class AlgorithmScope extends LocalScope {
+			reference commonElements[*] : CommonElement oppositeOf localScope;
+			reference variables[*] : Variable;
+		}
+
+		abstract class Instance {
+			reference appearsInPopulation[*] : Population oppositeOf compositionInstance;
+			reference ofType[1-*] : DataType oppositeOf instances;
+		}
+
+		abstract class AttributeType {
+			reference role[*] : Attribute oppositeOf attributeType;
+			reference constraints[*] : DomainConstraint oppositeOf domain;
+		}
+
+		class DerivedAttribute extends Attribute {
+			reference derivation : Expression;
+		}
+
+		class RangeRole extends Role {
+			reference domainView : InvertibleAttribute oppositeOf modelsRole;
+			reference range : EntityType oppositeOf playsRangeRole;
+			reference id container : ScopedId;
+		}
+
+		abstract class LocalElement extends NamedElement {
+			
+		}
+
+		class Remark {
+			reference describesSchema[*] : Schema oppositeOf documentation;
+			reference appearsIn : Scope oppositeOf includesRemarks;
+			reference describesElement[*] : NamedElement oppositeOf documentation;
+			attribute isTagged : Boolean;
+			attribute isTail : Boolean;
+			attribute text : ExpressText;
+		}
+
+		class SizeConstraint extends DomainConstraint {
+			attribute bound[0-1] : Integer;
+		}
+
+		abstract class Role {
+			reference inRelationship : Relationship oppositeOf roles;
+			reference ofEntity[1-*] : EntityType oppositeOf playsRole;
+			reference upperBound[0-1] : SizeConstraint;
+			reference lowerBound[0-1] : SizeConstraint;
+		}
+
+		class SETType extends ConcreteAggregationType {
+			
+		}
+
+		class SpecializedType extends DefinedType {
+			reference underlyingType : ConcreteType;
+		}
+
+		class GeneralARRAYType extends GeneralAggregationType {
+			reference hiIndex[0-1] container : ArrayBound;
+			reference loIndex[0-1] container : ArrayBound;
+			attribute isOptional : Boolean;
+		}
+
+		class Relationship {
+			reference domain : DomainRole;
+			reference roles[2-2] : Role oppositeOf inRelationship;
+			reference basedOn : InvertibleAttribute oppositeOf createsRelationship;
+			reference range : RangeRole;
+		}
+
+		class LengthConstraint extends DomainConstraint {
+			attribute maxLength[0-1] : Integer;
+			attribute isFixed : Boolean;
+		}
+
+		abstract class LocalScope extends Scope {
+			reference localElements[*] : LocalElement;
+		}
+
+		abstract class NamedType extends InstantiableType, Scope, CommonElement, AttributeType {
+			reference instantiates[*] : SelectType oppositeOf allowedTypes;
+			reference domainRules[*] : DomainRule;
+		}
+
+		class BinaryType extends SimpleType {
+			reference binaryLengthConstraint[0-1] container : LengthConstraint;
+		}
+
+		class ScopedId {
+			attribute localName : Identifier;
+			reference definingScope : Scope;
+		}
+
+		abstract class AggregationType {
+			reference lowerBound[0-1] container : SizeConstraint;
+			reference upperBound[0-1] container : SizeConstraint;
+			attribute isUnique : Boolean;
+			attribute ordering : OrderingKind;
+		}
+
+		abstract class Scope {
+			reference namedElements[*] container : NamedElement oppositeOf namespace;
+			reference includesRemarks[*] : Remark oppositeOf appearsIn;
+		}
+
+		abstract class ParameterType {
+			reference contains[*] : GeneralizedType oppositeOf occursIn;
+		}
+
+		class SelectType extends DefinedType {
+			reference allowedTypes[*] : NamedType oppositeOf instantiates;
+			reference extension[*] : SelectType oppositeOf base;
+			reference base : SelectType oppositeOf extension;
+			reference selectList[*] : NamedType;
+			attribute isExtensible : Boolean;
+			attribute isEntity : Boolean;
+		}
+
+		abstract class ActualType extends VariableType {
+			reference scope : Algorithm;
+		}
+
+		class ExplicitAttribute extends Attribute {
+			attribute isOptional : Boolean;
+		}
+
+		abstract class SimpleType extends AnonymousType {
+			attribute id : Keyword;
+		}
+
+		abstract class CommonElement extends SchemaElement {
+			reference localScope[0-1] : AlgorithmScope oppositeOf commonElements;
+		}
+
+		abstract class SchemaElement extends NamedElement {
+			reference referencedAs[*] : InterfacedElement oppositeOf refersTo;
+			reference referencedIn[*] : Schema oppositeOf interfacedElements;
+			reference definedIn[0-1] : Schema oppositeOf schemaElements;
+		}
+
+		abstract class ConcreteAggregationType extends AnonymousType, AggregationType {
+			reference memberType : InstantiableType;
+		}
+
+		class ARRAYType extends ConcreteAggregationType {
+			reference loIndex container : ArrayBound;
+			reference hiIndex container : ArrayBound;
+			attribute isOptional : Boolean;
+		}
+
+		datatype Keyword;
+
+		datatype ExpressText;
+
+		datatype Identifier;
+
+		datatype OrderingKind;
+	}
+
+	package java {
+
+		package lang {
+
+			datatype int;
+
+			datatype void;
+		}
+	}
+
+	package algorithms {
+
+		class ActualTypeConstraint {
+			reference matchingType : GenericType oppositeOf constraint;
+			reference requiredType : ActualDataType;
+			attribute label : Identifier;
+		}
+
+		class FunctionResult extends Variable {
+			
+		}
+
+		class Function extends Algorithm {
+			reference result container : FunctionResult;
+		}
+
+		class InParameter extends Parameter {
+			reference variable : InVariable oppositeOf source;
+		}
+
+		class LocalVariable extends Variable {
+			reference initialValue[0-1] : Expression;
+		}
+
+		class ActualStructure extends GenericElement, AGGREGATEType {
+			
+		}
+
+		class ActualGenericType extends ActualType {
+			reference refersTo : ActualDataType;
+			attribute isEntity : Boolean;
+			attribute label : Identifier;
+		}
+
+		class Statement {
+			reference inBlock[0-1] : StatementBlock oppositeOf bodyStatements_Statement;
+			reference bodyStatementsSkipStatement[*] container : SkipStatement;
+			reference bodyStatementsEscapeStatement[*] container : EscapeStatement;
+			reference controlledBy[0-1] : RepeatStatement oppositeOf body;
+			reference implements[0-1] : Algorithm oppositeOf body;
+			attribute text[0-1] : ExpressText;
+		}
+
+		abstract class NamedVariable extends LocalElement {
+			reference variableType : VariableType;
+		}
+
+		class InVariable extends Variable {
+			reference source : InParameter oppositeOf variable;
+		}
+
+		class Procedure extends Algorithm {
+			
+		}
+
+		class ActualARRAYType extends ActualAggregationType {
+			reference hiIndex container : ArrayBound;
+			reference loIndex container : ArrayBound;
+			attribute isOptional : Boolean;
+		}
+
+		class ActualSETType extends ActualAggregationType {
+			
+		}
+
+		class ActualAGGREGATEType extends ActualType {
+			reference upperBound[0-1] container : SizeConstraint;
+			reference refersTo : ActualStructure;
+			reference memberType : VariableType;
+			reference lowerBound[0-1] container : SizeConstraint;
+			attribute label : Identifier;
+		}
+
+		abstract class Parameter extends LocalElement {
+			reference structureConstraints[*] container : ActualStructureConstraint;
+			reference typeConstraints[*] container : ActualTypeConstraint;
+			reference formalParameterType : ParameterType;
+			attribute inout : Boolean;
+			attribute position : Integer;
+		}
+
+		class ActualStructureConstraint {
+			reference matchingStructure : AGGREGATEType oppositeOf constraint;
+			reference requiredStructure : ActualStructure;
+			attribute label : Identifier;
+		}
+
+		abstract class Algorithm extends AlgorithmScope, CommonElement {
+			reference body[0-1] container : Statement oppositeOf implements;
+			reference formalParameters[*] : Parameter;
+		}
+
+		abstract class ActualAggregationType extends ActualType, AggregationType {
+			reference memberType : ActualType;
+		}
+
+		abstract class VARVariable {
+			
+		}
+
+		class ActualLISTType extends ActualAggregationType {
+			
+		}
+
+		abstract class Variable extends NamedVariable {
+			
+		}
+
+		abstract class GenericElement extends LocalElement {
+			reference source : Parameter;
+			reference label container : ScopedId;
+		}
+
+		class VARParameter extends Parameter, VARVariable {
+			
+		}
+
+		class ActualDataType extends GenericType, GenericElement {
+			
+		}
+
+		class ActualBAGType extends ActualAggregationType {
+			
+		}
+	}
+
+	package instances {
+
+		class AttributeValue {
+			reference actualValue[0-1] : Instance;
+			reference "attribute" : ExplicitAttribute;
+		}
+
+		class ARRAYValue extends AggregateValue {
+			reference memberSlot[1-*] container : ArrayMember;
+		}
+
+		class RoleName extends StringValue {
+			reference refersTo : Attribute;
+			reference represents container : ScopedId;
+		}
+
+		class EntityInstance extends TypedInstance {
+			reference state : EntityValue oppositeOf describes;
+			reference instanceOf[1-*] : EntityType;
+			attribute id : EntityName;
+		}
+
+		class IntegerValue extends RealValue {
+			
+		}
+
+		abstract class AggregateValue extends ConcreteValue {
+			
+		}
+
+		class Constant extends CommonElement {
+			reference valueExpression : Expression;
+			reference actualValue[0-1] : Instance;
+			reference dataType : InstantiableType;
+		}
+
+		class LogicalValue extends SimpleValue {
+			
+		}
+
+		abstract class TypedInstance extends Instance {
+			reference satisfiesType[*] : SelectType;
+		}
+
+		class ListMember {
+			reference memberValue : Instance;
+			attribute position : Integer;
+		}
+
+		class BagMember {
+			reference memberValue : Instance;
+			attribute count : Integer;
+		}
+
+		class SingleEntityValue {
+			reference equivalent : PartialEntityValue;
+			reference ofType : SingleEntityType;
+			reference properties[*] container : AttributeValue;
+		}
+
+		class Indeterminate extends Instance {
+			
+		}
+
+		class SingleLeafInstance extends EntityInstance {
+			reference characterizingType : EntityType;
+		}
+
+		class GenericAggregate extends LISTValue {
+			
+		}
+
+		class BinaryValue extends SimpleValue {
+			
+		}
+
+		class SpecializedValue extends TypedInstance {
+			reference fundamentalValue : ConcreteValue;
+		}
+
+		class BAGValue extends AggregateValue {
+			reference memberSlot[*] container : BagMember;
+		}
+
+		class EnumerationItem extends TypeElement, TypedInstance, ConcreteValue {
+			reference declaredIn : EnumerationType oppositeOf declaredItems;
+			attribute position : Integer;
+		}
+
+		class EntityValue extends PartialEntityValue {
+			reference correspondsTo[1-*] : EntityType;
+			reference describes[*] : EntityInstance oppositeOf state;
+		}
+
+		class SETValue extends AggregateValue {
+			reference memberValue[*] : Instance;
+		}
+
+		class ArrayMember {
+			reference memberValue[0-1] : Instance;
+			attribute index : Integer;
+		}
+
+		class Population {
+			reference compositionEntityInstance[*] : EntityInstance;
+			reference compositionInstance[*] : Instance oppositeOf appearsInPopulation;
+			reference governingSchema[*] : Schema;
+		}
+
+		class RealValue extends NumberValue {
+			
+		}
+
+		class BooleanValue extends LogicalValue {
+			
+		}
+
+		class LISTValue extends Instance, AggregateValue {
+			reference memberSlot[*] container : ListMember;
+		}
+
+		class StringValue extends SimpleValue {
+			
+		}
+
+		class TypeName extends StringValue {
+			reference refersTo : NamedType;
+			reference represents container : ScopedId;
+		}
+
+		class PartialEntityValue extends Instance {
+			reference components[1-*] container : SingleEntityValue;
+		}
+
+		class NumberValue extends SimpleValue {
+			
+		}
+
+		class MultiLeafInstance extends EntityInstance {
+			
+		}
+
+		abstract class SimpleValue extends ConcreteValue {
+			attribute name : String;
+		}
+
+		abstract class ConcreteValue extends Instance {
+			
+		}
+
+		datatype EntityName;
+	}
+}

@@ -1,0 +1,121 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<rdf:RDF xmlns:rdf = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:rdfs = 'http://www.w3.org/2000/01/rdf-schema#' xmlns:xsd = 'http://www.w3.org/2001/XMLSchema#' xmlns:owl = 'http://www.w3.org/2002/07/owl#' xmlns = 'http://example.org/Cristal#' xml:base = 'http://example.org/Cristal'>
+  <owl:Ontology rdf:about = 'Cristal'/>
+  <owl:Class rdf:ID = 'ActCompositeMember'>
+    <rdfs:label>ActCompositeMember</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ActCompositeMember.activityDefinitions'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'PartCompositeMember'>
+    <rdfs:label>PartCompositeMember</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#PartCompositeMember.partDefinitions'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'ElementaryPartDef'>
+    <rdfs:label>ElementaryPartDef</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#PartDefinition'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'ActivityDefinition'>
+    <rdfs:label>ActivityDefinition</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ActivityDefinition.actCompositeMember'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'PartDefinition'>
+    <rdfs:label>PartDefinition</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#PartDefinition.partCompositeMembers'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'ElementaryActDef'>
+    <rdfs:label>ElementaryActDef</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#ActivityDefinition'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'CompositeActDef'>
+    <rdfs:label>CompositeActDef</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#ActivityDefinition'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#CompositeActDef.actCompositeMembers'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Condition'>
+    <rdfs:label>Condition</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Condition.actCompositeMembers'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Condition.partCompositeMembers'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'CompositeParDef'>
+    <rdfs:label>CompositeParDef</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#PartDefinition'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#CompositeParDef.partCompositeMember'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID = 'ActivityDefinition.actCompositeMember'>
+    <rdfs:domain rdf:resource = '#ActivityDefinition'/>
+    <rdfs:range rdf:resource = '#ActCompositeMember'/>
+    <owl:inverseOf rdf:resource = '#ActCompositeMember.activityDefinitions'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ActCompositeMember.activityDefinitions'>
+    <rdfs:domain rdf:resource = '#ActCompositeMember'/>
+    <rdfs:range rdf:resource = '#ActivityDefinition'/>
+    <owl:inverseOf rdf:resource = '#ActivityDefinition.actCompositeMember'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'CompositeParDef.partCompositeMember'>
+    <rdfs:domain rdf:resource = '#CompositeParDef'/>
+    <rdfs:range rdf:resource = '#PartCompositeMember'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Condition.actCompositeMembers'>
+    <rdfs:domain rdf:resource = '#Condition'/>
+    <rdfs:range rdf:resource = '#ActCompositeMember'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'CompositeActDef.actCompositeMembers'>
+    <rdfs:domain rdf:resource = '#CompositeActDef'/>
+    <rdfs:range rdf:resource = '#ActCompositeMember'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Condition.partCompositeMembers'>
+    <rdfs:domain rdf:resource = '#Condition'/>
+    <rdfs:range rdf:resource = '#PartCompositeMember'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'PartCompositeMember.partDefinitions'>
+    <rdfs:domain rdf:resource = '#PartCompositeMember'/>
+    <rdfs:range rdf:resource = '#PartDefinition'/>
+    <owl:inverseOf rdf:resource = '#PartDefinition.partCompositeMembers'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'PartDefinition.partCompositeMembers'>
+    <rdfs:domain rdf:resource = '#PartDefinition'/>
+    <rdfs:range rdf:resource = '#PartCompositeMember'/>
+    <owl:inverseOf rdf:resource = '#PartCompositeMember.partDefinitions'/>
+  </owl:ObjectProperty>
+  <owl:FunctionalProperty rdf:about = '#ActivityDefinition.actCompositeMember'/>
+  <owl:FunctionalProperty rdf:about = '#PartCompositeMember.partDefinitions'/>
+</rdf:RDF>

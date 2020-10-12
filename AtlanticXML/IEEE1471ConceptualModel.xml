@@ -1,0 +1,67 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'IEEE1471'>
+    <Class name = 'Element' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'content' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'IEEE1471Model' isAbstract = 'false' supertypes = 'IEEE1471::Element'>
+      <Reference name = 'system' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IEEE1471::System' opposite = ''/>
+      <Reference name = 'environment' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IEEE1471::Environment' opposite = ''/>
+      <Reference name = 'missions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'IEEE1471::Mission' opposite = ''/>
+      <Reference name = 'architecture' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IEEE1471::Architecture' opposite = ''/>
+      <Reference name = 'stakeholders' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'IEEE1471::Stakeholder' opposite = ''/>
+      <Reference name = 'concerns' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'IEEE1471::Concern' opposite = ''/>
+      <Reference name = 'viewpoints' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'IEEE1471::Viewpoint' opposite = ''/>
+      <Reference name = 'libraryViewpoints' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'IEEE1471::LibraryViewpoint' opposite = ''/>
+      <Reference name = 'architecturalDescription' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IEEE1471::ArchitecturalDescription' opposite = ''/>
+      <Reference name = 'rationale' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IEEE1471::Rationale' opposite = ''/>
+    </Class>
+    <Class name = 'System' isAbstract = 'false' supertypes = 'IEEE1471::Element'>
+      <Reference name = 'fulfils' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'IEEE1471::Mission' opposite = ''/>
+      <Reference name = 'inhabits' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IEEE1471::Environment' opposite = 'IEEE1471::Environment::influences'/>
+      <Reference name = 'hasAn' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IEEE1471::Architecture' opposite = ''/>
+      <Reference name = 'has' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'IEEE1471::Stakeholder' opposite = ''/>
+    </Class>
+    <Class name = 'Mission' isAbstract = 'false' supertypes = 'IEEE1471::Element'/>
+    <Class name = 'Environment' isAbstract = 'false' supertypes = 'IEEE1471::Element'>
+      <Reference name = 'influences' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IEEE1471::System' opposite = 'IEEE1471::System::inhabits'/>
+    </Class>
+    <Class name = 'Architecture' isAbstract = 'false' supertypes = 'IEEE1471::Element'>
+      <Reference name = 'describedBy' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IEEE1471::ArchitecturalDescription' opposite = ''/>
+    </Class>
+    <Class name = 'Rationale' isAbstract = 'false' supertypes = 'IEEE1471::Element'>
+      <Reference name = 'provides' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IEEE1471::ArchitecturalDescription' opposite = ''/>
+    </Class>
+    <Class name = 'ArchitecturalDescription' isAbstract = 'false' supertypes = 'IEEE1471::Element'>
+      <Reference name = 'identifiesS' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'IEEE1471::Stakeholder' opposite = ''/>
+      <Reference name = 'identifiesC' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'IEEE1471::Concern' opposite = ''/>
+      <Reference name = 'selects' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'IEEE1471::Viewpoint' opposite = ''/>
+      <Reference name = 'organizedBy' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'IEEE1471::View' opposite = ''/>
+      <Reference name = 'aggregates' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'IEEE1471::Model' opposite = 'IEEE1471::Model::participatesInAD'/>
+    </Class>
+    <Class name = 'View' isAbstract = 'false' supertypes = 'IEEE1471::Element'>
+      <Reference name = 'conformsTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IEEE1471::Viewpoint' opposite = ''/>
+      <Reference name = 'consitsOf' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'IEEE1471::Model' opposite = 'IEEE1471::Model::participatesInV'/>
+    </Class>
+    <Class name = 'Model' isAbstract = 'false' supertypes = 'IEEE1471::Element'>
+      <Reference name = 'participatesInV' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'IEEE1471::View' opposite = 'IEEE1471::View::consitsOf'/>
+      <Reference name = 'participatesInAD' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IEEE1471::ArchitecturalDescription' opposite = 'IEEE1471::ArchitecturalDescription::aggregates'/>
+    </Class>
+    <Class name = 'Stakeholder' isAbstract = 'false' supertypes = 'IEEE1471::Element'>
+      <Reference name = 'has' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'IEEE1471::Concern' opposite = 'IEEE1471::Concern::isImportantTo'/>
+    </Class>
+    <Class name = 'Concern' isAbstract = 'false' supertypes = 'IEEE1471::Element'>
+      <Reference name = 'isImportantTo' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'IEEE1471::Stakeholder' opposite = 'IEEE1471::Stakeholder::has'/>
+    </Class>
+    <Class name = 'Viewpoint' isAbstract = 'false' supertypes = 'IEEE1471::Element'>
+      <Reference name = 'hasSource' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IEEE1471::LibraryViewpoint' opposite = ''/>
+      <Reference name = 'usedToCover' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'IEEE1471::Concern' opposite = ''/>
+      <Reference name = 'establishesMethodsFor' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'IEEE1471::Model' opposite = ''/>
+    </Class>
+    <Class name = 'LibraryViewpoint' isAbstract = 'false' supertypes = 'IEEE1471::Element'/>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

@@ -1,0 +1,74 @@
+-- @name		SPEM 
+-- @version		0.1
+-- @domains		Software Process
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/10
+-- @description	This metamodel describes SPEM (Software Process Engineering Metamodel) which is is a meta-model for defining processes and their components. A tool based on SPEM would be a tool for process authoring and customizing. The actual enactment of processes - that is, planning and executing a project using a process described with SPEM, is not in the scope of this model. In the chapters so far, SPEM has been directly defined as a meta-model. SPEM can be used by directly instantiating this stand-alone meta-model. But SPEM is also defined as a UML Profile. SPEM is dedicated to software processes modeling. Many features of the UML provide the necessary basis for modeling processes, and many other UML features provide useful additional modeling capacities. Being a UML profile, SPEM both defines modeling capacities dedicated to the software process domain, and gains the benefit of the expressiveness of UML. For example, Use Case modeling, which is sometimes used for modeling processes, is not defined as a specific SPEM facility, but can be inherited from UML. Alignment with various process modeling languages is another advantage of using UML Profiles. The SPEM profile uses extensively the UML Activity Diagram model to give more detail to the work decomposition that is represented in the stand-alone meta-model by the WorkDefinition::subWork association. It is expected that the various kinds of process modeling techniques (Business Process Modeling, Workflow, etc.) will be aligned with UML at some time. SPEM will naturally benefit from this convergence, and from any other convergence and improvements that will occur with UML.
+
+
+package SPEM {
+
+	class ArtifactUsageName{
+		attribute isInput : Boolean;
+		attribute isOutput : Boolean;
+		attribute hasWorkPerArtifact : Boolean;
+		reference artifactKind : ArtifactKind oppositeOf artifactUsageNames;
+		reference workDefinition : WorkDefinition oppositeOf artifactUsageNames;
+	}
+
+	class ProcessDefinitionElement {
+		reference guidances[*] : Guidance oppositeOf processDefinitionElements;
+		reference processComponents[*] : ProcessComponent oppositeOf processDefinitionElements;
+	}
+	
+	class Guidance extends ProcessDefinitionElement {
+		reference processDefinitionElements[1-*] : ProcessDefinitionElement oppositeOf guidances;
+	}
+	
+	class ArtifactKind extends ProcessDefinitionElement {
+		reference artifactUsageNames[*] : ArtifactUsageName oppositeOf artifactKind;
+		reference responsible[0-1] : RoleKind oppositeOf artifactKinds;
+	}
+
+	class WorkItem extends ProcessDefinitionElement {}
+	
+	class RoleKind extends ProcessDefinitionElement {
+		reference artifactKinds[*] : ArtifactKind oppositeOf responsible;
+	}
+	
+	class Condition extends ProcessDefinitionElement {}
+	
+	class ProcessComponent extends ProcessDefinitionElement {
+		reference processDefinitionElements[*] : ProcessDefinitionElement oppositeOf processComponents;
+	}
+	
+	class Goal extends Condition {
+		reference workDefinition : WorkDefinition oppositeOf goal;
+	}
+
+	class Precondition extends Condition {
+		reference workDefinition : WorkDefinition oppositeOf precondition;
+	}
+	
+	class WorkDefinition extends WorkItem {
+		reference artifactUsageNames[*] container : ArtifactUsageName oppositeOf workDefinition;
+		reference goal[0-1] container : Goal oppositeOf workDefinition;
+		reference precondition[0-1] container : Precondition oppositeOf workDefinition;
+	}
+	
+	class ActivityKind extends WorkDefinition {
+		reference performer[1-*] : RoleKind;
+		reference assistant[*] : RoleKind;
+	}
+	
+	class Iteration extends WorkDefinition {}
+	
+	class Phase extends WorkDefinition {}
+	
+	class Lifecycle extends WorkDefinition {}
+}
+
+
+package PrimitiveTypes {
+	datatype Boolean;
+}

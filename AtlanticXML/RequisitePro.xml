@@ -1,0 +1,40 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'RequisitePro'>
+    <Class name = 'DescribedElt' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'description' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'NamedElt' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ContainerElt' isAbstract = 'true' supertypes = 'RequisitePro::NamedElt, RequisitePro::DescribedElt'>
+      <Reference name = 'content' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'RequisitePro::ContainedElt' opposite = 'RequisitePro::ContainedElt::package'/>
+      <Reference name = 'packages' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'RequisitePro::Package' opposite = 'RequisitePro::Package::parentPackage'/>
+    </Class>
+    <Class name = 'Project' isAbstract = 'false' supertypes = 'RequisitePro::ContainerElt'/>
+    <Class name = 'Package' isAbstract = 'false' supertypes = 'RequisitePro::ContainerElt'>
+      <Reference name = 'parentPackage' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RequisitePro::ContainerElt' opposite = 'RequisitePro::ContainerElt::packages'/>
+    </Class>
+    <Class name = 'ContainedElt' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'package' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RequisitePro::ContainerElt' opposite = 'RequisitePro::ContainerElt::content'/>
+    </Class>
+    <Class name = 'TypedElt' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Document' isAbstract = 'false' supertypes = 'RequisitePro::DescribedElt, RequisitePro::NamedElt, RequisitePro::ContainedElt, RequisitePro::TypedElt'/>
+    <Class name = 'Attribute' isAbstract = 'false' supertypes = 'RequisitePro::TypedElt'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Requirement' isAbstract = 'false' supertypes = 'RequisitePro::NamedElt, RequisitePro::ContainedElt, RequisitePro::TypedElt'>
+      <Attribute name = 'text' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'attributes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'RequisitePro::Attribute' opposite = ''/>
+      <Reference name = 'location' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RequisitePro::Document' opposite = ''/>
+      <Reference name = 'parent' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RequisitePro::Requirement' opposite = 'RequisitePro::Requirement::children'/>
+      <Reference name = 'children' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RequisitePro::Requirement' opposite = 'RequisitePro::Requirement::parent'/>
+      <Reference name = 'coverLink' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RequisitePro::Requirement' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

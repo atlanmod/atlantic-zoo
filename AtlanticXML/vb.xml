@@ -1,0 +1,340 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'fr'>
+    <Package name = 'obeo'>
+      <Package name = 'psm'>
+        <Package name = 'vb'>
+          <Package name = 'resources'>
+            <Class name = 'LocatedElement' isAbstract = 'true' supertypes = ''>
+              <Attribute name = 'location' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+              <Attribute name = 'commentsBefore' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+              <Attribute name = 'commentsAfter' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+            </Class>
+            <Class name = 'VB_LangElement' isAbstract = 'true' supertypes = 'resources::LocatedElement'/>
+          </Package>
+          <Package name = 'projects'>
+            <Package name = 'VB_1'>
+              <Package name = 'core'>
+                <Class name = 'VB_Content' isAbstract = 'false' supertypes = 'resources::VB_LangElement'>
+                  <Attribute name = 'hasVersion' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'version' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Attribute name = 'hasClass' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'hasBeginEnd' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Reference name = 'beginEndGlobalVariables' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'core::VB_GlobalVariable' opposite = ''/>
+                  <Reference name = 'globalVariables' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'core::VB_GlobalVariable' opposite = ''/>
+                  <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'core::VB_ContentElement' opposite = ''/>
+                </Class>
+                <Class name = 'VB_GlobalVariable' isAbstract = 'false' supertypes = 'resources::VB_LangElement'>
+                  <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Reference name = 'value' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                </Class>
+                <Class name = 'VB_ContentElement' isAbstract = 'true' supertypes = 'resources::VB_LangElement'/>
+                <Class name = 'VB_FileAttribute' isAbstract = 'false' supertypes = 'core::VB_ContentElement'>
+                  <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Reference name = 'initialValue' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                </Class>
+                <Class name = 'VB_Option' isAbstract = 'false' supertypes = 'core::VB_ContentElement'>
+                  <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Attribute name = 'hasEnablement' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'enablement' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'enumerations::EnablementEnum'/>
+                </Class>
+                <Class name = 'VB_Imports' isAbstract = 'false' supertypes = 'core::VB_ContentElement'>
+                  <Reference name = 'imports' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'references::VB_FullTypeRef' opposite = ''/>
+                </Class>
+                <Class name = 'VB_Implements' isAbstract = 'false' supertypes = 'core::VB_ContentElement'>
+                  <Reference name = 'implements' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'references::VB_FullTypeRef' opposite = ''/>
+                </Class>
+                <Class name = 'VB_Assembly' isAbstract = 'false' supertypes = 'core::VB_ContentElement'>
+                  <Reference name = 'call' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'statements::VB_Call' opposite = ''/>
+                </Class>
+                <Class name = 'VB_Class' isAbstract = 'false' supertypes = 'core::VB_ContentElement, core::VB_Type'>
+                  <Attribute name = 'isFriend' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'hasVisibility' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'visibility' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'enumerations::VisibilityEnum'/>
+                  <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Attribute name = 'hasInherits' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Reference name = 'inherits' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'references::VB_FullTypeRef' opposite = ''/>
+                  <Reference name = 'features' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'features::VB_Feature' opposite = ''/>
+                </Class>
+                <Class name = 'VB_Module' isAbstract = 'false' supertypes = 'core::VB_ContentElement'>
+                  <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Reference name = 'features' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'features::VB_Feature' opposite = ''/>
+                </Class>
+                <Class name = 'VB_Type' isAbstract = 'true' supertypes = 'resources::VB_LangElement'/>
+                <Class name = 'VB_Data' isAbstract = 'true' supertypes = 'resources::VB_LangElement'/>
+                <Class name = 'VB_SimpleType' isAbstract = 'false' supertypes = 'core::VB_ContentElement'>
+                  <Attribute name = 'visibility' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'enumerations::VisibilityEnum'/>
+                  <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Reference name = 'features' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'features::VB_Feature' opposite = ''/>
+                </Class>
+                <Class name = 'VB_Enum' isAbstract = 'false' supertypes = 'core::VB_ContentElement'>
+                  <Attribute name = 'visibility' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'enumerations::VisibilityEnum'/>
+                  <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Reference name = 'features' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'features::VB_Feature' opposite = ''/>
+                </Class>
+              </Package>
+              <Package name = 'preprocessing'>
+                <Class name = 'VB_PreprocIf' isAbstract = 'false' supertypes = 'core::VB_ContentElement'>
+                  <Reference name = 'condition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                  <Reference name = 'features' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'features::VB_Feature' opposite = ''/>
+                </Class>
+              </Package>
+              <Package name = 'features'>
+                <Class name = 'VB_Feature' isAbstract = 'true' supertypes = 'core::VB_Data, core::VB_ContentElement'/>
+                <Class name = 'VB_Region' isAbstract = 'false' supertypes = 'features::VB_Feature'>
+                  <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Reference name = 'features' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'features::VB_Feature' opposite = ''/>
+                </Class>
+                <Class name = 'VB_Sub' isAbstract = 'false' supertypes = 'features::VB_Feature'>
+                  <Attribute name = 'hasAnnotation' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Reference name = 'annotation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'statements::VB_Call' opposite = ''/>
+                  <Attribute name = 'isFriend' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'hasVisibility' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'visibility' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'enumerations::VisibilityEnum'/>
+                  <Attribute name = 'isOverloads' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'isOverrides' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'features::VB_Parameter' opposite = ''/>
+                  <Attribute name = 'hasHandles' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Reference name = 'handles' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'references::VB_FullTypeRef' opposite = ''/>
+                  <Reference name = 'statements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'statements::VB_Statement' opposite = ''/>
+                </Class>
+                <Class name = 'VB_Function' isAbstract = 'false' supertypes = 'features::VB_Feature'>
+                  <Attribute name = 'isFriend' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'hasVisibility' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'visibility' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'enumerations::VisibilityEnum'/>
+                  <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'features::VB_Parameter' opposite = ''/>
+                  <Reference name = 'return' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'references::VB_FullTypeRef' opposite = ''/>
+                  <Reference name = 'statements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'statements::VB_Statement' opposite = ''/>
+                </Class>
+                <Class name = 'VB_DeclareFunction' isAbstract = 'false' supertypes = 'features::VB_Feature'>
+                  <Attribute name = 'hasVisibility' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'visibility' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'enumerations::VisibilityEnum'/>
+                  <Attribute name = 'isAuto' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Attribute name = 'lib' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Attribute name = 'isAlias' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'alias' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'features::VB_Parameter' opposite = ''/>
+                  <Reference name = 'return' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'references::VB_FullTypeRef' opposite = ''/>
+                </Class>
+                <Class name = 'VB_DeclareSub' isAbstract = 'false' supertypes = 'features::VB_Feature'>
+                  <Attribute name = 'hasVisibility' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'visibility' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'enumerations::VisibilityEnum'/>
+                  <Attribute name = 'isAuto' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Attribute name = 'lib' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Attribute name = 'isAlias' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'alias' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'features::VB_Parameter' opposite = ''/>
+                </Class>
+                <Class name = 'VB_Parameter' isAbstract = 'false' supertypes = 'core::VB_Data'>
+                  <Attribute name = 'isOptional' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'hasQualifier' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'qualifier' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'enumerations::QualifierEnum'/>
+                  <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Attribute name = 'isArray' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Reference name = 'arrayExpression' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                  <Attribute name = 'hasType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Reference name = 'type' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'references::VB_FullTypeRef' opposite = ''/>
+                  <Attribute name = 'hasInitialValue' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Reference name = 'value' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                </Class>
+                <Class name = 'VB_Property' isAbstract = 'false' supertypes = 'features::VB_Feature'>
+                  <Attribute name = 'visibility' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'enumerations::VisibilityEnum'/>
+                  <Attribute name = 'isShared' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'isGetOnly' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'isSet' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'isLet' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'features::VB_Parameter' opposite = ''/>
+                  <Reference name = 'type' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'references::VB_FullTypeRef' opposite = ''/>
+                  <Reference name = 'modifiers' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'features::VB_Modifier' opposite = ''/>
+                  <Reference name = 'statements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'statements::VB_Statement' opposite = ''/>
+                </Class>
+                <Class name = 'VB_Modifier' isAbstract = 'true' supertypes = 'resources::VB_LangElement'/>
+                <Class name = 'VB_Set' isAbstract = 'false' supertypes = 'features::VB_Modifier'>
+                  <Attribute name = 'hasParameters' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'features::VB_Parameter' opposite = ''/>
+                  <Reference name = 'statements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'statements::VB_Statement' opposite = ''/>
+                </Class>
+                <Class name = 'VB_Get' isAbstract = 'false' supertypes = 'features::VB_Modifier'>
+                  <Attribute name = 'hasParameters' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'features::VB_Parameter' opposite = ''/>
+                  <Reference name = 'statements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'statements::VB_Statement' opposite = ''/>
+                </Class>
+                <Class name = 'VB_Attribute' isAbstract = 'false' supertypes = 'features::VB_Feature'>
+                  <Attribute name = 'hasVisibility' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'visibility' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'enumerations::VisibilityEnum'/>
+                  <Attribute name = 'hasQualifier' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'qualifier' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'enumerations::Qualifier_2Enum'/>
+                  <Attribute name = 'isFriend' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'isWithEvents' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'isShared' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Attribute name = 'isArray' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Reference name = 'arrayExpressions' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                  <Attribute name = 'hasType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Reference name = 'type' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                  <Attribute name = 'hasInitialValue' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Reference name = 'initialValue' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                  <Attribute name = 'hasNext' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                </Class>
+              </Package>
+              <Package name = 'graphicals'>
+                <Class name = 'VB_GraphicalElement' isAbstract = 'false' supertypes = 'core::VB_ContentElement, core::VB_Data'>
+                  <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'references::VB_FullTypeRef' opposite = ''/>
+                  <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Reference name = 'fields' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'graphicals::VB_GraphicalField' opposite = ''/>
+                  <Reference name = 'children' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'graphicals::VB_GraphicalElement' opposite = ''/>
+                </Class>
+                <Class name = 'VB_GraphicalField' isAbstract = 'true' supertypes = 'resources::VB_LangElement'/>
+                <Class name = 'VB_GraphicalPropertySet' isAbstract = 'false' supertypes = 'graphicals::VB_GraphicalField'>
+                  <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Attribute name = 'hasArguments' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                  <Attribute name = 'hasBrackets' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Reference name = 'fields' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'graphicals::VB_GraphicalField' opposite = ''/>
+                </Class>
+                <Class name = 'VB_GraphicalProperty' isAbstract = 'false' supertypes = 'core::VB_Data, graphicals::VB_GraphicalField'>
+                  <Reference name = 'property' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'references::VB_FullDataRef' opposite = ''/>
+                  <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                </Class>
+              </Package>
+              <Package name = 'statements'>
+                <Class name = 'VB_Statement' isAbstract = 'true' supertypes = 'features::VB_Modifier'/>
+                <Class name = 'VB_Call' isAbstract = 'false' supertypes = 'statements::VB_Statement'>
+                  <Reference name = 'expression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'references::VB_FullDataRef' opposite = ''/>
+                  <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'statements::VB_CallArgument' opposite = ''/>
+                </Class>
+                <Class name = 'VB_CallArgument' isAbstract = 'true' supertypes = 'resources::VB_LangElement'/>
+                <Class name = 'VB_CallEmptyArgument' isAbstract = 'false' supertypes = 'statements::VB_CallArgument'/>
+                <Class name = 'VB_CallExpressionArgument' isAbstract = 'false' supertypes = 'statements::VB_CallArgument'>
+                  <Reference name = 'expression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                  <Attribute name = 'hasSeparator' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                </Class>
+                <Class name = 'VB_Case' isAbstract = 'false' supertypes = 'resources::VB_LangElement'>
+                  <Reference name = 'values' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                  <Attribute name = 'hasSeparator' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Reference name = 'statements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'statements::VB_Statement' opposite = ''/>
+                </Class>
+                <Class name = 'VB_RawBody' isAbstract = 'false' supertypes = 'statements::VB_Statement'>
+                  <Attribute name = 'value' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                </Class>
+              </Package>
+              <Package name = 'expressions'>
+                <Class name = 'VB_Expression' isAbstract = 'true' supertypes = 'resources::VB_LangElement'/>
+                <Class name = 'VB_AssignmentExpression' isAbstract = 'false' supertypes = 'expressions::VB_Expression'>
+                  <Reference name = 'variable' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'references::VB_FullDataRef' opposite = ''/>
+                  <Reference name = 'expression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                </Class>
+                <Class name = 'VB_TypeOfExpression' isAbstract = 'false' supertypes = 'expressions::VB_Expression'>
+                  <Reference name = 'variable' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'references::VB_FullDataRef' opposite = ''/>
+                  <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'references::VB_FullTypeRef' opposite = ''/>
+                </Class>
+                <Class name = 'VB_OperatorExpression' isAbstract = 'false' supertypes = 'expressions::VB_Expression'>
+                  <Reference name = 'leftHand' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                  <Reference name = 'rightHand' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                  <Attribute name = 'operatorName' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                </Class>
+                <Class name = 'VB_NewExpression' isAbstract = 'false' supertypes = 'expressions::VB_Expression'>
+                  <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'references::VB_FullTypeRef' opposite = ''/>
+                  <Attribute name = 'hasArguments' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                  <Attribute name = 'hasInitialization' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Reference name = 'initializations' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                </Class>
+                <Class name = 'VB_NotExpression' isAbstract = 'false' supertypes = 'expressions::VB_Expression'>
+                  <Reference name = 'expression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                </Class>
+                <Class name = 'VB_NegativeExpression' isAbstract = 'false' supertypes = 'expressions::VB_Expression'>
+                  <Reference name = 'expression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                </Class>
+                <Class name = 'VB_ParenthesisExpression' isAbstract = 'false' supertypes = 'expressions::VB_Expression'>
+                  <Reference name = 'expression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                </Class>
+                <Class name = 'VB_TabValuesExpression' isAbstract = 'false' supertypes = 'expressions::VB_Expression'>
+                  <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                </Class>
+                <Class name = 'VB_ByValExpression' isAbstract = 'false' supertypes = 'expressions::VB_Expression'>
+                  <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'expressions::VB_Expression' opposite = ''/>
+                </Class>
+                <Class name = 'VB_Value' isAbstract = 'true' supertypes = 'expressions::VB_Expression'/>
+                <Class name = 'VB_NegativeValue' isAbstract = 'false' supertypes = 'expressions::VB_Value'>
+                  <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'expressions::VB_Value' opposite = ''/>
+                </Class>
+                <Class name = 'VB_VariableSystem' isAbstract = 'false' supertypes = 'expressions::VB_Value'>
+                  <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'enumerations::NameEnum'/>
+                </Class>
+                <Class name = 'VB_Literal' isAbstract = 'true' supertypes = 'expressions::VB_Value'>
+                  <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                </Class>
+                <Class name = 'VB_Literal_Literal' isAbstract = 'false' supertypes = 'expressions::VB_Literal'/>
+                <Class name = 'VB_Literal_Number' isAbstract = 'false' supertypes = 'expressions::VB_Literal'/>
+                <Class name = 'VB_Literal_Value' isAbstract = 'false' supertypes = 'expressions::VB_Literal'/>
+              </Package>
+              <Package name = 'references'>
+                <Class name = 'VB_FullTypeRef' isAbstract = 'false' supertypes = 'resources::VB_LangElement'>
+                  <Reference name = 'members' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'references::VB_TypeRef' opposite = ''/>
+                </Class>
+                <Class name = 'VB_TypeRef' isAbstract = 'false' supertypes = 'resources::VB_LangElement'>
+                  <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'resources::VB_LangElement' opposite = ''/>
+                  <Attribute name = 'typeValue' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                </Class>
+                <Class name = 'VB_FullDataRef' isAbstract = 'false' supertypes = 'expressions::VB_Expression'>
+                  <Attribute name = 'self' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Reference name = 'members' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'references::VB_DataRef' opposite = ''/>
+                  <Attribute name = 'hasRecSet' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Reference name = 'recSetMember' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'references::VB_DataRef' opposite = ''/>
+                </Class>
+                <Class name = 'VB_DataRef' isAbstract = 'false' supertypes = 'resources::VB_LangElement'>
+                  <Reference name = 'data' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'resources::VB_LangElement' opposite = ''/>
+                  <Attribute name = 'dataValue' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                  <Attribute name = 'hasArguments' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'statements::VB_CallArgument' opposite = ''/>
+                  <Attribute name = 'hasRefMarker' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                  <Attribute name = 'hasSubMarker' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+                </Class>
+                <Class name = 'VB_LabelRef' isAbstract = 'false' supertypes = 'resources::VB_LangElement'>
+                  <Reference name = 'label' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'resources::VB_LangElement' opposite = ''/>
+                  <Attribute name = 'labelValue' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+                </Class>
+              </Package>
+              <Package name = 'enumerations'>
+                <Enumeration name = 'EnablementEnum'>
+                  <EnumLiteral name = 'Off'/>
+                  <EnumLiteral name = 'On'/>
+                </Enumeration>
+                <Enumeration name = 'VisibilityEnum'>
+                  <EnumLiteral name = 'private'/>
+                  <EnumLiteral name = 'protected'/>
+                  <EnumLiteral name = 'public'/>
+                </Enumeration>
+                <Enumeration name = 'QualifierEnum'>
+                  <EnumLiteral name = 'byRef'/>
+                  <EnumLiteral name = 'byVal'/>
+                </Enumeration>
+                <Enumeration name = 'Qualifier_2Enum'>
+                  <EnumLiteral name = 'static'/>
+                  <EnumLiteral name = 'const'/>
+                  <EnumLiteral name = 'dim'/>
+                </Enumeration>
+                <Enumeration name = 'NameEnum'>
+                  <EnumLiteral name = 'trueLit'/>
+                  <EnumLiteral name = 'falseLit'/>
+                  <EnumLiteral name = 'nothing'/>
+                </Enumeration>
+              </Package>
+            </Package>
+          </Package>
+        </Package>
+      </Package>
+    </Package>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+  </Package>
+</Metamodel>

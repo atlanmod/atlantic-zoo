@@ -1,0 +1,168 @@
+package Metamodel;
+
+package CPL {
+  abstract class Element {
+  }
+
+  class CPL extends Element {
+    val SubAction[*] subActions;
+    !ordered val Outgoing outgoing;
+    !ordered val Incoming incoming;
+  }
+
+  abstract class NodeContainer extends Element {
+    !ordered val Node contents;
+  }
+
+  class SubAction extends NodeContainer {
+    !unique !ordered attr String[1] ~id;
+  }
+
+  class Outgoing extends NodeContainer {
+  }
+
+  class Incoming extends NodeContainer {
+  }
+
+  class NotPresent extends NodeContainer {
+  }
+
+  class Otherwise extends NodeContainer {
+  }
+
+  class SwitchedAddress extends NodeContainer {
+    !unique !ordered attr String is;
+    !unique !ordered attr String contains;
+    !unique !ordered attr String subDomainOf;
+  }
+
+  class SwitchedString extends NodeContainer {
+    !unique !ordered attr String is;
+    !unique !ordered attr String contains;
+  }
+
+  class SwitchedLanguage extends NodeContainer {
+    !unique !ordered attr String[1] matches;
+  }
+
+  class SwitchedTime extends NodeContainer {
+    !unique !ordered attr String[1] dtstart;
+    !unique !ordered attr String dtend;
+    !unique !ordered attr String duration;
+    !unique !ordered attr String freq;
+    !unique !ordered attr String until;
+    !unique !ordered attr String count;
+    !unique !ordered attr String[1] interval;
+    !unique !ordered attr String bySecond;
+    !unique !ordered attr String byMinute;
+    !unique !ordered attr String byHour;
+    !unique !ordered attr String byDay;
+    !unique !ordered attr String byMonthDay;
+    !unique !ordered attr String byYearDay;
+    !unique !ordered attr String byWeekNo;
+    !unique !ordered attr String byMonth;
+    !unique !ordered attr String[1] wkst;
+    !unique !ordered attr String bySetPos;
+  }
+
+  class SwitchedPriority extends NodeContainer {
+    !unique !ordered attr String less;
+    !unique !ordered attr String greater;
+    !unique !ordered attr String equal;
+  }
+
+  class Busy extends NodeContainer {
+  }
+
+  class NoAnswer extends NodeContainer {
+  }
+
+  class Redirection extends NodeContainer {
+  }
+
+  class Failure extends NodeContainer {
+  }
+
+  class Default extends NodeContainer {
+  }
+
+  abstract class Node extends Element {
+  }
+
+  abstract class Switch extends Node {
+    !ordered val NotPresent notPresent;
+    !ordered val Otherwise otherwise;
+  }
+
+  class AddressSwitch extends Switch {
+    !unique !ordered attr String[1] field;
+    !unique !ordered attr String subField;
+    val SwitchedAddress[*] addresses;
+  }
+
+  class StringSwitch extends Switch {
+    !unique !ordered attr String[1] field;
+    val SwitchedString[*] strings;
+  }
+
+  class LanguageSwitch extends Switch {
+    val SwitchedLanguage[*] languages;
+  }
+
+  class TimeSwitch extends Switch {
+    !unique !ordered attr String tzid;
+    !unique !ordered attr String tzurl;
+    val SwitchedTime[*] times;
+  }
+
+  class PrioritySwitch extends Switch {
+    val SwitchedPriority[*] priorities;
+  }
+
+  class Location extends Node, NodeContainer {
+    !unique !ordered attr String[1] url;
+    !unique !ordered attr String priority;
+    !unique !ordered attr String[1] clear;
+  }
+
+  class SubCall extends Node {
+    !unique !ordered attr String[1] ~ref;
+  }
+
+  abstract class Action extends Node {
+  }
+
+  abstract class SignallingAction extends Action {
+  }
+
+  class Proxy extends SignallingAction {
+    !unique !ordered attr String timeout;
+    !unique !ordered attr String[1] recurse;
+    !unique !ordered attr String[1] ordering;
+    !ordered val Busy busy;
+    !ordered val NoAnswer noAnswer;
+    !ordered val Redirection redirection;
+    !ordered val Failure failure;
+    !ordered val Default default;
+  }
+
+  class Redirect extends SignallingAction {
+    !unique !ordered attr String[1] permanent;
+  }
+
+  class Reject extends SignallingAction {
+    !unique !ordered attr String[1] status;
+    !unique !ordered attr String reason;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

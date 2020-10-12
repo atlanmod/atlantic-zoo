@@ -1,0 +1,121 @@
+-- @name			Promenade
+-- @version			1.0
+-- @authors			Youssef Srour (Srour.youssef@gmail.com)
+-- @date			2006/07/19
+-- @description		This metamodel describes Promenade. It is a PML which intends to formalize the construction of SPMs.
+-- @see    			http://delivery.acm.org/10.1145/570000/568839/p457-ribo.pdf?key1=568839&key2=0221904511&coll=ACM&dl=ACM&CFID=15151515&CFTOKEN=6184618
+
+package Promenade{
+
+-- Begin class Strong
+	class Strong extends DynPrecedence,BasPrecedence{
+		
+	}--End class Strong
+
+-- Begin class Start
+	class Start extends DynPrecedence,BasPrecedence{
+		
+	}--End class Start
+
+-- Begin class End
+	class End extends DynPrecedence,BasPrecedence{
+		
+	}--End class End
+	
+-- Begin class FeedBack
+	class FeedBack extends DynPrecedence,BasPrecedence{
+		
+	}--End class FeedBack
+	
+-- Begin class Weak
+	class Weak extends DynPrecedence,DerPrecedence{
+		
+	}--End class Weak
+
+-- Begin class Grouping
+	class Grouping extends DynPrecedence,DerPrecedence{
+		
+	}--End class Grouping
+
+-- Begin class Precedence
+	class Precedence {
+		--attribute cond : String;
+		--attribute comb : String;
+		reference deprecs [0-*] : DerPrecedence oppositeOf precs;
+		reference parbind [0-*] : ParBinding oppositeOf precs;
+	}--End class Precedence
+
+-- Begin class DynPrecedence
+	class DynPrecedence extends Precedence{
+		--attribute qexp [*] : String;
+	}--End class DynPrecedence
+
+-- Begin class DerPrecedence
+	class DerPrecedence extends Precedence{
+		reference precs [1-*] : Precedence oppositeOf deprecs;
+		reference auxTasks [*] : MetaTaskOccurence oppositeOf dprecs;
+	}--End class DerPrecedence
+
+-- Begin class BasPrecedence
+	class BasPrecedence extends Precedence{
+		--attribute startCondition [*]: String;
+		--attribute endCondition [*]: String;
+	}--End class BasPrecedence
+
+-- Begin class MetaTaskOccurence
+	class MetaTaskOccurence extends ModelElement{
+		reference dprecs [*] : DerPrecedence oppositeOf auxTasks;
+		reference taskCl [*] : MetaTask oppositeOf occurs;
+	}--End class MetaTaskOccurence
+
+-- Begin class ParBinding
+	class ParBinding{
+		attribute inclusion : Boolean;
+		reference precs [1-*] : Precedence oppositeOf parbind;
+		reference targetPar : ParameterPrec oppositeOf parbindsTar;
+		reference sourcePar : ParameterPrec oppositeOf parbindsSour;
+	}--End class ParBinding
+
+-- Begin class ParameterPrec
+	class ParameterPrec extends ParameterUML{
+		reference parbindsTar [1-*] : ParBinding oppositeOf targetPar;
+		reference parbindsSour [1-*] : ParBinding oppositeOf sourcePar;
+		reference dstParams [1-*] : ParameterPrec oppositeOf orParams;
+		reference  orParams[1-*] : ParameterPrec oppositeOf dstParams;
+	}--End class ParameterPrec
+
+-- Begin class ModelElement
+	class ModelElement{
+		reference dependencyUMLsupp : DependancyUML oppositeOf suppier;
+		reference dependencyUMLcli : DependancyUML oppositeOf client;
+	}--End class ModelElement
+
+-- Begin class DependancyUML
+	class DependancyUML{
+		reference suppier[1-*] : ModelElement oppositeOf dependencyUMLsupp;
+		reference client[1-*] : ModelElement oppositeOf dependencyUMLcli;
+	}--End class DependancyUML
+	
+-- Begin class MetaTask
+	class MetaTask extends ModelElement{
+		reference params[1-*] : ParameterUML oppositeOf task;
+		reference occurs [*] : MetaTaskOccurence oppositeOf taskCl;
+	}--End class MetaTask
+
+-- Begin class ParameterUML
+	class ParameterUML{
+		reference task : MetaTask oppositeOf params;
+		reference doc [1-*] : MetaDocument oppositeOf params;
+	}--End class ParameterUML
+
+-- Begin class MetaDocument
+	class MetaDocument{
+		reference params [1-*] : ParameterUML oppositeOf doc;
+	}--End class MetaDocument
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+	datatype Integer;
+}

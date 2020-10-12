@@ -1,0 +1,124 @@
+-- @name		COBOL 
+-- @version		1.0
+-- @domains		Programming language
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/08
+-- @description	This metamodel describes COBOL (Common Business Oriented Language) which is a programming languages still used in business programming . It has been developed for building business, finance, and administrative systems for companies and governments in 1959 by a group of computer professionals called the Conference on Data Systems Languages (CODASYL).  
+-- @see			http://cobol.com/
+
+package COBOL {
+
+	-- @begin COBOL Special Data Types 
+	
+	enumeration COBOLUsageValue {
+		literal cuv_binary;
+		literal cuv_dbcs;
+		literal cuv_double;
+		literal cuv_display;
+		literal cuv_float;
+		literal cuv_index;
+		literal cuv_objectReference;
+		literal cuv_packedDecimal;
+		literal cuv_pointer;
+		literal cuv_procedurePointer;
+	}
+	
+	enumeration COBOLInitialValueKind {
+		literal civk_string_value;
+		literal civk_low_value;
+		literal civk_high_value;
+		literal civk_zero_value;
+		literal civk_quotes;
+		literal civk_null;
+		literal civk_all_literal;
+	}
+	
+	-- @end COBOL Special Data Types
+	
+	
+	-- @begin COBOL Language Structure
+
+	class COBOLElement {
+		attribute level : String;
+		-- @comment Default value is false.
+		attribute refined : Boolean;
+		attribute name : String;
+		reference sharedType : COBOLClassifier oppositeOf typedElements;
+		reference group[0-1] : COBOLComposedType oppositeOf elements;
+		reference initial[*] : COBOLElementInitialValue;
+		reference contains[*] container : COBOL88Element;
+		reference source : COBOLSourceText;
+		reference array[0-1] container : COBOLFixedLengthArray;
+	}
+	
+	class COBOLClassifier {
+		attribute typeded : Boolean;
+		attribute name : String;
+		reference typedElements[*] : COBOLElement oppositeOf sharedType;
+	}
+	
+	class COBOLSimpleType extends COBOLClassifier {
+		attribute usageValue : COBOLUsageValue;
+		attribute pictureString : String;
+		-- @comment Default value is false.
+		attribute usage : Boolean;
+	}
+	
+	class COBOLComposedType extends COBOLClassifier {
+		reference elements[*] container : COBOLElement oppositeOf group;
+	}
+	
+	class COBOLElementInitialValue {
+		attribute initVal : String;
+		-- @comment Default value is "string_value".
+		attribute valueKind : COBOLInitialValueKind;
+	}
+	
+	class COBOL88Element {
+		attribute name : String;
+		reference has[1-*] container : COBOL88ElementValue;
+	}
+	
+	class COBOL88ElementValue {
+		attribute lowerLimit : String;
+		attribute upperLimit : String;
+		attribute range : Boolean;
+	}
+	
+	class COBOLRedefiningElement extends COBOLElement {
+		reference redefines : COBOLElement;
+	}
+	
+	class COBOL66Element {
+		attribute name : String;
+		reference end[0-1] : COBOLElement;
+		reference start : COBOLElement;
+	}
+	
+	class COBOLSourceText {
+		attribute source : String;
+		attribute fileName : String;
+	}
+	
+	class COBOLFixedLengthArray {
+		attribute maxUpper : Integer;
+	}
+	
+	class COBOLVariableLengthArray extends COBOLFixedLengthArray {
+		attribute minUpper : Integer;
+		reference dependingOn : COBOLElement;
+	}
+	
+	-- @end COBOL Language Structure
+
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

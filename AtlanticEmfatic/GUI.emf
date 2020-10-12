@@ -1,0 +1,87 @@
+package Metamodel;
+
+package GUI {
+  abstract class LocatedElement {
+    !unique !ordered attr String[1] location;
+  }
+
+  abstract class Named extends LocatedElement {
+    !unique !ordered attr String[1] name;
+  }
+
+  class GUI extends Named {
+    val Tab[*]#gui guiTabs;
+  }
+
+  class Tab extends Named {
+    !unique !ordered attr String[1] title;
+    !ordered ref GUI[1]#guiTabs gui;
+    !ordered ref Group[1]#tabGroup group;
+  }
+
+  abstract class Composant extends Named {
+    !ordered ref Group[1]#composants composantGroup;
+  }
+
+  enum Layout {
+    default = 0;
+    horizontal = 0;
+    vertical = 0;
+  }
+
+  class Group extends Composant {
+    !unique !ordered attr String[1] title;
+    !unique !ordered attr Layout[1] layout;
+    !unique !ordered attr String[1] description;
+    !ordered ref Tab#group tabGroup;
+    val Composant[*]#composantGroup composants;
+  }
+
+  class Label extends Composant {
+    !unique !ordered attr String[1] text;
+  }
+
+  class TextArea extends Composant {
+    !unique !ordered attr String[1] text;
+    !unique !ordered attr Integer[1] nbRows;
+  }
+
+  class Table extends Composant {
+    val Column[*]#columnTab tabColumns;
+  }
+
+  class Column extends LocatedElement {
+    !unique !ordered attr String[1] title;
+    !ordered ref Table[1]#tabColumns columnTab;
+  }
+
+  class ComboBox extends Composant {
+    val Row[*]#rowList listRows;
+  }
+
+  class Row extends Composant {
+    !ordered ref ComboBox[1]#listRows rowList;
+    !unique !ordered attr String[1] text;
+    val Item[*]#itemList listItems;
+  }
+
+  class Item extends Composant {
+    !ordered ref Row[1]#listItems itemList;
+    !unique !ordered attr String[1] text;
+  }
+
+  class Button extends Composant {
+    !unique !ordered attr String[1] title;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

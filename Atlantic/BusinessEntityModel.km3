@@ -1,0 +1,54 @@
+-- @name 		Business Entity Model
+-- @domains 	Business
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/07/20
+-- @description This metamodel fragment describes a Business Entity Model
+-- @see 		This metamodel has been extracted from information available in the following article:
+-- @see 		Article "Processes, Roles, and Events : UML Concepts for Entreprise Architecture"
+-- @see 		by Alistair Barros, Keith Duddy, Michael lawley, Zoran Milosevic, Kerry Raymond, Andrew Wood
+-- @see 		Page 71, Section 4, Fig. 4. Business Entity Model
+-- @see 		Lecture Notes in Computer Science 1939
+-- @see 		Andy Evans, Stuart Kent, Bran Selic
+-- @see 		UML 2000 - The Unified Modeling Language
+
+package BusinessEntityModel {
+
+	class DataType {}
+
+	class Action {}
+
+	class Class {}
+
+	abstract class BusinessEntityPropertySet extends DataType {}
+
+	abstract class BusinessRole extends Action {
+		reference characterisedby : BusinessEntityPropertySet;
+		reference typ : Class;
+		reference task [*] : Task oppositeOf associatedWith;
+		reference fille [1-*] : BusinessEntity oppositeOf placehold;
+	}
+
+	class Task {
+		reference associatedWith[1-*] : BusinessRole oppositeOf task;
+		reference needs[*] : ArtifactRole;
+	}
+
+	class ArtifactRole extends BusinessRole {}
+
+	class PerformerRole extends BusinessRole {
+		reference perform : Task;
+	}
+
+	class OrganisationalUnit extends BusinessRole {}
+
+	class BusinessEntity extends Class {
+		reference placehold [1-*] : BusinessRole oppositeOf fille;
+	}
+}
+
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

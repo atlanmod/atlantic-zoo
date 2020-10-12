@@ -1,0 +1,65 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_SecureUML"{
+labelloc=t
+color=black
+label=SecureUML
+ node[shape=record];
+Group[label="{Group| | }"]
+ Group->Subject[arrowhead=onormal,group=Subject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+User[label="{User| | }"]
+ User->Subject[arrowhead=onormal,group=Subject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Subject[label="{Subject| | }"]
+ Subject->Group[arrowhead=diamond,arrowtail=none,headlabel="group",taillabel="subjectGroup[*]",group=Group,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Role[label="{Role| | }"]
+ Role->Role[arrowhead=vee,arrowtail=diamond,headlabel="roleHierarchy[*]",group=Role,minlen=2,constraint=true,]
+ Role->Subject[arrowhead=none,arrowtail=none,headlabel="subjectAssignment[*]",taillabel="role[*]",group=Subject,minlen=2,constraint=false,]
+ Role->Permission[arrowhead=none,arrowtail=none,headlabel="permissionAssignment[*]",taillabel="role[*]",group=Permission,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Permission[label="{Permission| | }"]
+ Permission->AuthorizationConstraint[arrowhead=none,arrowtail=none,headlabel="constraintAssignment[0-1]",taillabel="permission[*]",group=AuthorizationConstraint,minlen=2,constraint=false,]
+ Permission->Action[arrowhead=none,arrowtail=none,headlabel="actionAssignment[1-*]",taillabel="permission[*]",group=Action,minlen=2,constraint=false,]
+;
+ node[shape=record];
+AuthorizationConstraint[label="{AuthorizationConstraint| | }"]
+;
+ node[shape=record];
+AtomicAction[label="{AtomicAction| | }"]
+ AtomicAction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompositeAction[label="{CompositeAction| | }"]
+ CompositeAction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Action[label="{Action| | }"]
+ Action->Resource[arrowhead=diamond,arrowtail=none,headlabel="resource",taillabel="resourceAction[*]",group=Resource,minlen=2,constraint=true,]
+ Action->CompositeAction[arrowhead=diamond,arrowtail=none,headlabel="actionHyerarchy[*]",taillabel="subordinatedAction[*]",group=CompositeAction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Resource[label="{Resource| | }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

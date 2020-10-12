@@ -1,0 +1,526 @@
+-- @atlcompiler atl2006
+
+-- ******************************************************************************
+-- Copyright (c) 2006 INRIA. 
+-- All rights reserved. This program and the accompanying materials 
+-- are made available under the terms of the Eclipse Public License v1.0 
+-- which accompanies this distribution, and is available at
+-- http://www.eclipse.org/legal/epl-v10.html
+-- 
+-- Contributors: 
+-- 	INRIA - Initial implementation
+--  
+-- ******************************************************************************
+
+--@author Guillaume Doux (Guillaume.Doux <at> gmail.com)
+
+module KM32Clojure;
+create OUT : Clojure from IN : KM3;
+
+helper context KM3!Class def: getAllFeatures : Sequence(KM3!StructuralFeatures)=
+	if self.supertypes->isEmpty()
+		then self.structuralFeatures
+		else self.structuralFeatures->union(self.supertypes->collect(c | c.getAllFeatures)->flatten())
+	endif;
+
+helper def: allPackages : Sequence(KM3!Packages) =
+	KM3!Package.allInstancesFrom('IN');
+
+-- begin topological sort
+
+--helper context KM3!Classifier def: getLinkedClassifier : Sequence(KM3!Classifier) =
+--	if self.oclIsTypeOf(KM3!DataType)
+--		then	Sequence{}
+--		else	self.supertypes->union(self.structuralFeatures->collect(c | c.type))
+--	endif;
+--
+--helper def: allClassifiers : Sequence(KM3!Classifiers) =
+--	KM3!Classifier.allInstancesFrom('IN');
+--
+--helper def: allClassLink : Map(KM3!Classifier, Sequence(KM3!Classifier)) =
+--	thisModule.allClassifiers
+--		->iterate(c; acc :Map(KM3!Classifier, Sequence(KM3!Classifier)) = Map{} | 
+--				acc->including(c, c.getLinkedClassifier));
+--
+--helper def: visitMap : Map(KM3!Classifier, Sequence(KM3!Classifier)) =
+--	thisModule.allClassifiers
+--		->iterate(c; acc :Map(KM3!Classifier, Sequence(KM3!Classifier)) = Map{} | 
+--				acc->including(c, false));
+--
+--helper context KM3!Classifier def: isVisited : Boolean =
+--	thisModule.visitMap->get(self);
+--
+--helper context KM3!Classifier def: visit : Boolean =
+--	thisModule.visitMap->including(self, true) ;
+
+--end topological sort
+
+rule Metamodel2Root{
+	from
+		s	:	KM3!Metamodel 
+	to
+		t	:	Clojure!Root(
+			expressions<-Sequence{
+				KM3!Classifier.allInstancesFrom('IN')->collect(c | thisModule.createDeclare(c)),
+				s.contents}->flatten()
+		)
+}
+
+unique lazy rule createDeclare {
+	from
+		s	:	KM3!Classifier
+	to
+		t	:	Clojure!FunctionAritm(
+			op <- #declare,
+			p <- v 
+		),
+--		t	:	Clojure!List(
+--			elements <- Sequence{c}
+--		),
+--		c	:	Clojure!Entry(
+--			key <- k,
+--			value <- v
+--		),
+--		k	:	Clojure!Symbol(
+--			value <- 'declare'	
+--		),
+		v	:	Clojure!Symbol(
+			value <- s.package.name+'_'+s.name	
+		)
+}
+
+rule Package2DefStruct {
+	from
+		s	:	KM3!Package
+	to
+		t	:	Clojure!FunctionDefn(
+			def <- #"def",
+			name <- symb,
+			corps <-co
+		),
+		co	:	Clojure!BuiltInExpression(
+			builtInOp <- #structMap,
+			args <- Sequence{nam, entry}
+			),
+		entry	:	Clojure!Entry(
+			key <- k,
+			value <- v
+		),
+		k	:	Clojure!Symbol(
+			value <- ':contents'
+		),
+		v	:	Clojure!Vector(
+			elements <- Sequence{ s.contents->select(c | c.oclIsTypeOf(KM3!Enumeration)),
+							s.contents->select(c | not c.oclIsTypeOf(KM3!Enumeration))
+			}.flatten()
+		),
+		symb	:	Clojure!Symbol(
+			value <- s.name
+		),
+		nam	:	Clojure!Symbol(
+			value <- 'KM3_Package'
+		)
+--		do {
+
+--			for (c in v.elements)
+--		}
+}
+
+rule Class2DefStruct {
+	from
+		s	:	KM3!Class
+	to
+		r	:	Clojure!FunctionDefn(
+			def <- #"def",
+			name <- symb,
+			corps <- t
+		),
+		t	:	Clojure!BuiltInExpression(
+			builtInOp <- #structMap,
+--			name <- nam,
+--			corps <-s.getAllFeatures->collect(c | thisModule.StructuralFeature2StructMapEntry(c))
+			args <- Sequence{nam, isAbstract, supertypes, entry	}
+		),
+		entry	:	Clojure!Entry(
+			key <- kz,
+			value <- vz
+		),
+		kz	:	Clojure!Symbol(
+			value <- ':structuralFeatures'
+		),
+		vz	:	Clojure!Vector(
+			elements <- Sequence{  
+				s.structuralFeatures->select(c | c.oclIsTypeOf(KM3!Attribute)),-->collect(c | thisModule.Attribute2StructMap(c)),
+				s.structuralFeatures->select(c | c.oclIsTypeOf(KM3!Reference))-->collect(c | thisModule.Reference2StructMap(c))
+			}.flatten()
+		),
+		symb	:	Clojure!Symbol(
+			value <- s.package.name+'_'+s.name
+		),
+		nam	:	Clojure!Symbol(
+			value <- 'KM3_Class'
+		),
+		isAbstract	:	Clojure!Entry(
+			key <- k,
+			value <- v
+		),
+		k	:	Clojure!Keyword(
+			value <- ':isAbstract'
+		),
+		v	:	Clojure!Symbol(
+			value <- s.isAbstract.toString()
+		),
+		supertypes	:	Clojure!Entry(
+			key <- k1,
+			value <- v1
+		),
+		k1	:	Clojure!Keyword(
+			value <- ':supertypes'
+		),
+		v1	:	Clojure!Vector(
+			elements <- s.supertypes->collect(c | thisModule.createST(c))
+		)
+		
+}
+
+lazy rule createST {
+	from
+		s	:	KM3!Class
+	to
+		t	:	Clojure!Symbol(
+			value <- s.package.name+'_'+s.name
+		)
+}
+
+
+
+rule Attribute2StructMap {
+	from
+		s	:	KM3!Attribute
+	to
+
+		va	:	Clojure!BuiltInExpression(
+			builtInOp <- #structMap,
+			args <- Sequence{nam, name, upper, lower, isOrdered, isUnique, owner, type, location}--, package
+		),
+		nam	:	Clojure!Symbol(
+			value <- 'KM3_Attribute'
+		),
+		name	:	Clojure!Entry(
+			key <- k1,
+			value <- v1
+		),
+		k1	:	Clojure!Keyword(
+			value <- ':name'
+		),
+		v1	:	Clojure!StringElem(
+			value <- s.name	
+		),
+--		package	:	Clojure!Entry(
+--			key <- k2,
+--			value <- v2
+--		),
+--		k2	:	Clojure!Keyword(
+--			value <- ':package'
+--		),
+--		v2	:	Clojure!Symbol(
+--			value <- if s.package.oclIsUndefined() then OclUndefined else s.package.name endif
+--		),
+		upper	:	Clojure!Entry(
+			key <- k3,
+			value <- v3
+		),
+		k3	:	Clojure!Keyword(
+			value <- ':upper'
+		),
+		v3	:	Clojure!INumber(
+			value <- s.upper
+		),
+		lower	:	Clojure!Entry(
+			key <- k4,
+			value <- v4
+		),
+		k4	:	Clojure!Keyword(
+			value <- ':lower'
+		),
+		v4	:	Clojure!INumber(
+			value <- s.lower
+		),
+		isOrdered	:	Clojure!Entry(
+			key <- k5,
+			value <- v5
+		),
+		k5	:	Clojure!Keyword(
+			value <- ':isOrdered'
+		),
+		v5	:	Clojure!Symbol(
+			value <- s.isOrdered.toString()
+		),
+		isUnique	:	Clojure!Entry(
+			key <- k5,
+			value <- v5
+		),
+		k6	:	Clojure!Keyword(
+			value <- ':isUnique'
+		),
+		v6	:	Clojure!Symbol(
+			value <- s.isUnique.toString()
+		),
+		owner	:	Clojure!Entry(
+			key <- k7,
+			value <- v7
+		),
+		k7	:	Clojure!Keyword(
+			value <- ':owner'
+		),
+		v7	:	Clojure!Symbol(
+			value <- s.owner.package.name +'_'+s.owner.name
+		),
+		type	:	Clojure!Entry(
+			key <- k8,
+			value <- v8
+		),
+		k8	:	Clojure!Keyword(
+			value <- ':type'
+		),
+		v8	:	Clojure!Symbol(
+			value <- s.type.name
+		),
+		location	:	Clojure!Entry(
+			key <- k9,
+			value <- v9
+		),
+		k9	:	Clojure!Keyword(
+			value <- ':location'
+		),
+		v9	:	Clojure!StringElem(
+			value <- s.location
+		)
+		
+}
+
+rule Reference2StructMap {
+	from
+		s	:	KM3!Reference
+	to
+		va	:	Clojure!BuiltInExpression(
+			builtInOp <- #structMap,
+			args <- if s.opposite.oclIsUndefined() then
+						Sequence{nam, name, upper, lower, isOrdered, isUnique, owner, type, location, isContainer}--, package
+					else Sequence{nam, name, upper, lower, isOrdered, isUnique, owner, type, location, isContainer, opposite}endif
+		),
+		nam	:	Clojure!Symbol(
+			value <- 'KM3_Reference'
+		),
+		name	:	Clojure!Entry(
+			key <- k1,
+			value <- v1
+		),
+		k1	:	Clojure!Keyword(
+			value <- ':name'
+		),
+		v1	:	Clojure!StringElem(
+			value <- s.name	
+		),
+--		package	:	Clojure!Entry(
+--			key <- k2,
+--			value <- v2
+--		),
+--		k2	:	Clojure!Keyword(
+--			value <- ':package'
+--		),
+--		v2	:	Clojure!Symbol(
+--			value <- if s.package.oclIsUndefined() then OclUndefined else s.package.name endif
+--		),
+		upper	:	Clojure!Entry(
+			key <- k3,
+			value <- v3
+		),
+		k3	:	Clojure!Keyword(
+			value <- ':upper'
+		),
+		v3	:	Clojure!INumber(
+			value <- s.upper
+		),
+		lower	:	Clojure!Entry(
+			key <- k4,
+			value <- v4
+		),
+		k4	:	Clojure!Keyword(
+			value <- ':lower'
+		),
+		v4	:	Clojure!INumber(
+			value <- s.lower
+		),
+		isOrdered	:	Clojure!Entry(
+			key <- k5,
+			value <- v5
+		),
+		k5	:	Clojure!Keyword(
+			value <- ':isOrdered'
+		),
+		v5	:	Clojure!Symbol(
+			value <- s.isOrdered.toString()
+		),
+		isUnique	:	Clojure!Entry(
+			key <- k5,
+			value <- v5
+		),
+		k6	:	Clojure!Keyword(
+			value <- ':isUnique'
+		),
+		v6	:	Clojure!Symbol(
+			value <- s.isUnique.toString()
+		),
+		owner	:	Clojure!Entry(
+			key <- k7,
+			value <- v7
+		),
+		k7	:	Clojure!Keyword(
+			value <- ':owner'
+		),
+		v7	:	Clojure!Symbol(
+			value <- s.owner.package.name+'_'+s.owner.name
+		),
+		type	:	Clojure!Entry(
+			key <- k8,
+			value <- v8
+		),
+		k8	:	Clojure!Keyword(
+			value <- ':type'
+		),
+		v8	:	Clojure!Symbol(
+			value <- s.type.package.name+'_'+s.type.name
+		),
+		location	:	Clojure!Entry(
+			key <- k9,
+			value <- v9
+		),
+		k9	:	Clojure!Keyword(
+			value <- ':location'
+		),
+		v9	:	Clojure!StringElem(
+			value <- s.location
+		),
+		isContainer	:	Clojure!Entry(
+			key <- k10,
+			value <- v10
+		),
+		k10	:	Clojure!Keyword(
+			value <- ':isContainer'
+		),
+		v10	:	Clojure!Symbol(
+			value <- s.isContainer.toString()
+		),
+		opposite	:	Clojure!Entry(
+			key <- k11,
+			value <- v11
+		),
+		k11	:	Clojure!Keyword(
+			value <- ':opposite'
+		),
+		v11	:	Clojure!Symbol(
+			value <- if s.opposite.oclIsUndefined() then OclUndefined else s.opposite.name endif
+		)
+}
+
+rule Enumeration2List {
+	from
+		s	:	KM3!Enumeration
+	to
+		t	:	Clojure!FunctionDefn(
+			def <- #"def",
+			name <- symb,
+			corps <- co
+		),
+		symb	:	Clojure!Symbol(
+			value <- s.name --s.package.name+'_'+
+		),
+		co	:	Clojure!List(
+			elements <- set
+		),
+		set : Clojure!Entry(
+			key <- kz,
+			value <- vz
+		),
+		kz	:	Clojure!Symbol(
+			value <- ':literals'
+		),
+		vz	:	Clojure!Vector(
+			elements <- s.literals
+		)
+}
+
+rule EnumLiteral2Symbol {
+	from
+		s	:	KM3!EnumLiteral
+	to
+		va	:	Clojure!BuiltInExpression(
+			builtInOp <- #structMap,
+			args <- Sequence{nam, name, location}
+		),
+		nam	:	Clojure!Symbol(
+			value <- 'KM3_EnumLiteral'
+		),
+		name	:	Clojure!Entry(
+			key <- k1,
+			value <- v1
+		),
+		k1	:	Clojure!Keyword(
+			value <- ':name'
+		),
+		v1	:	Clojure!StringElem(
+			value <- s.name	
+		),
+		location :	Clojure!Entry(
+			key <- k2,
+			value <- v2
+		),
+		k2	:	Clojure!Keyword(
+			value <- ':location'
+		),
+		v2	:	Clojure!StringElem(
+			value <- s.location	
+		)
+}
+
+rule Datatype {
+	from
+		s	:	KM3!DataType
+	to
+		r	:	Clojure!FunctionDefn(
+			def <- #"def",
+			name <- symb,
+			corps <- va
+		),
+		symb	:	Clojure!Symbol(
+			value <- 'ptyp_'+s.name
+		),
+		va	:	Clojure!BuiltInExpression(
+			builtInOp <- #structMap,
+			args <- Sequence{nam, name, location}
+		),
+		nam	:	Clojure!Symbol(
+			value <- 'KM3_DataType'
+		),
+		name	:	Clojure!Entry(
+			key <- k1,
+			value <- v1
+		),
+		k1	:	Clojure!Keyword(
+			value <- ':name'
+		),
+		v1	:	Clojure!StringElem(
+			value <- s.name	
+		),
+		location :	Clojure!Entry(
+			key <- k2,
+			value <- v2
+		),
+		k2	:	Clojure!Keyword(
+			value <- ':location'
+		),
+		v2	:	Clojure!StringElem(
+			value <- s.location	
+		)
+}

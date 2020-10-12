@@ -1,0 +1,777 @@
+-- @name		QVT
+-- @version		1.0
+-- @domains		MDE/Model Transformation, QVT
+-- @authors		Frédéric Jouault
+-- @date		2007/06/03
+-- @description	This KM3 version of the QVT (MOF™ Query / Views / Transformations) metamodel was created from the files available on the OMG website (http://www.omg.org/cgi-bin/doc?ad/2005-09-01), and was hand-modified to be compatible with the output of the SmartQVT front-end.
+-- @see			http://www.omg.org/technology/documents/modeling_spec_catalog.htm#MOF_QVT
+
+-- @nsURI http:///qvttemplate.ecore
+package qvttemplate {
+
+	abstract class TemplateExp extends LiteralExp {
+		reference bindsTo[0-1] container : Variable;
+		reference where[0-1] container : OclExpression;
+	}
+
+	class ObjectTemplateExp extends TemplateExp {
+		reference part[*] ordered container : PropertyTemplateItem oppositeOf objContainer;
+		reference referredClass : Class;
+	}
+
+	class CollectionTemplateExp extends TemplateExp {
+		reference part[*] ordered container : OclExpression;
+		attribute kind[0-1] : CollectionKind;
+		reference referredCollectionType[0-1] : CollectionType;
+		reference match[0-1] : OclExpression;
+	}
+
+	class PropertyTemplateItem extends Element {
+		reference objContainer : ObjectTemplateExp oppositeOf part;
+		reference value container : OclExpression;
+		reference referredProperty : Property;
+	}
+}
+
+-- @nsURI http:///imperativeocl.ecore
+package imperativeocl {
+
+-- Hand-addition
+	class ImperativeIterateExp extends ImperativeLoopExp {
+    	reference target container : Variable;
+	}
+
+	class AssignExp extends ImperativeExpression {
+		reference value[*] ordered container : OclExpression;
+		reference left container : OclExpression;
+		reference defaultValue[0-1] container : OclExpression;
+		attribute isReset[0-1] : Boolean;
+	}
+
+	class BlockExp extends ImperativeExpression {
+		reference body[*] ordered container : OclExpression;
+	}
+
+	class SwitchExp extends CallExp, ImperativeExpression {
+		reference alternativePart[*] ordered container : AltExp;
+		reference elsePart[0-1] container : OclExpression;
+	}
+
+	class VariableInitExp extends ImperativeExpression {
+		reference referredVariable container : Variable;
+		attribute withResult[0-1] : Boolean;
+	}
+
+	class WhileExp extends ImperativeExpression {
+		reference condition container : OclExpression;
+		reference body container : OclExpression;
+	}
+
+	class ComputeExp extends ImperativeExpression {
+		reference returnedElement container : Variable oppositeOf computeOwner;
+		reference body container : OclExpression;
+	}
+
+	class AltExp extends ImperativeExpression {
+		reference condition container : OclExpression;
+		reference body container : OclExpression;
+	}
+
+	class UnlinkExp extends ImperativeExpression {
+		reference target container : OclExpression;
+		reference item container : OclExpression;
+	}
+
+	class ReturnExp extends ImperativeExpression {
+		reference value container : OclExpression;
+	}
+
+	class BreakExp extends ImperativeExpression {
+		
+	}
+
+	class TryExp extends ImperativeExpression {
+		reference tryBody container : OclExpression oppositeOf tryBodyOwner;
+		reference exception[*] ordered : Type;
+		reference exceptBody[0-1] container : OclExpression;
+	}
+
+	class RaiseExp extends ImperativeExpression {
+		reference exception : Type;
+	}
+
+	class ContinueExp extends ImperativeExpression {
+		
+	}
+
+	class ForExp extends ImperativeLoopExp {
+		
+	}
+
+	class TupleExp extends ImperativeExpression {
+		reference element[1-*] ordered container : OclExpression;
+	}
+
+	class Typedef extends Class {
+		reference base : Type;
+		reference condition[0-1] container : OclExpression;
+	}
+
+	class InstantiationExp extends ImperativeExpression {
+		reference instantiatedClass : Class;
+		reference extent[0-1] : Variable;
+		reference argument[*] ordered container : OclExpression;
+	}
+
+	class DictionaryType extends CollectionType {
+		reference keyType[0-1] : Type;
+	}
+
+	class DictLiteralExp extends LiteralExp {
+		reference part[*] ordered container : DictLiteralPart;
+	}
+
+	class DictLiteralPart extends Element {
+		reference key container : OclExpression;
+		reference value container : OclExpression;
+	}
+
+	class TemplateParameterType extends Type {
+		attribute specification[0-1] : String;
+	}
+
+	class LogExp extends ImperativeExpression {
+		attribute text[0-1] : String;
+		attribute level[0-1] : Integer;
+		reference condition[0-1] container : OclExpression;
+		reference element[0-1] : Element;
+	}
+
+	class AssertExp extends ImperativeExpression {
+		attribute severity[0-1] : SeverityKind;
+		reference log[0-1] container : LogExp;
+		reference assertion container : OclExpression;
+	}
+
+	enumeration SeverityKind {
+		literal error;
+		literal fatal;
+		literal warning;
+	}
+
+	abstract class ImperativeLoopExp extends LoopExp, ImperativeExpression {
+		reference condition[0-1] container : OclExpression;
+	}
+
+	class CollectorExp extends ImperativeLoopExp {
+		reference target container : Variable;
+	}
+
+	abstract class ImperativeExpression extends OclExpression {
+		
+	}
+
+	class UnpackExp extends ImperativeExpression {
+		reference variable[1-*] ordered container : Variable;
+	}
+
+	class AnonymousTupleType extends Class {
+		reference elementType[*] ordered : Type;
+	}
+
+	class AnonymousTupleLiteralExp extends LiteralExp {
+		reference part[*] ordered container : AnonymousTupleLiteralPart;
+	}
+
+	class AnonymousTupleLiteralPart extends Element {
+		reference value[*] ordered container : OclExpression;
+	}
+
+	class ListType extends CollectionType {
+		
+	}
+}
+
+-- @nsURI http:///emof.ecore
+package emof {
+
+	class Class extends Type {
+		reference ownedAttribute[*] ordered container : Property oppositeOf Class;
+		reference ownedOperation[*] ordered container : Operation oppositeOf "class";
+		reference superClass[*] ordered : Class;
+		attribute isAbstract[0-1] : Boolean;
+	}
+
+	abstract class DataType extends Type {
+		
+	}
+
+	abstract class Element extends Object {
+		reference tag[*] ordered : Tag oppositeOf element;
+		reference ownedComment[*] ordered container : Comment;
+	}
+
+	class Tag extends Element {
+		reference element[*] ordered : Element oppositeOf tag;
+		reference transformation[0-1] : Transformation oppositeOf ownedTag;
+		reference owner[0-1] : Module oppositeOf ownedTag;
+		attribute value[0-1] : String;
+		attribute name[0-1] : String;
+	}
+
+	class Enumeration extends DataType {
+		reference ownedLiteral[*] ordered container : EnumerationLiteral oppositeOf "enumeration";
+	}
+
+	abstract class NamedElement extends Element {
+		attribute name[0-1] : String;
+	}
+
+	class Extent extends Object {
+		
+	}
+
+	class Object {
+		
+	}
+
+	class Operation extends MultiplicityElement, TypedElement {
+		reference "class" : Class oppositeOf ownedOperation;
+		reference ownedParameter[*] ordered container : Parameter oppositeOf "operation";
+		reference raisedException[*] ordered : Type;
+	}
+
+	abstract class MultiplicityElement {
+		attribute isOrdered[0-1] : Boolean;
+		attribute isUnique[0-1] : Boolean;
+		attribute lower[0-1] : Integer;
+		attribute upper[0-1] : UnlimitedNatural;
+	}
+
+	class Package extends NamedElement {
+		reference ownedType[*] ordered container : Type oppositeOf "package";
+		reference nestedPackage[*] ordered : Package;
+		attribute uri[0-1] : String;
+	}
+
+	abstract class Type extends NamedElement {
+		reference "package" : Package oppositeOf ownedType;
+	}
+
+	class Parameter extends MultiplicityElement, TypedElement {
+		reference "operation"[0-1] : Operation oppositeOf ownedParameter;
+	}
+
+	class EnumerationLiteral extends NamedElement {
+		reference "enumeration"[0-1] : Enumeration oppositeOf ownedLiteral;
+	}
+
+	class Property extends MultiplicityElement, TypedElement {
+		reference Class : Class oppositeOf ownedAttribute;
+		reference opposite[0-1] : Property;
+		reference module[0-1] : Module oppositeOf configProperty;
+		attribute isReadOnly[0-1] : Boolean;
+		attribute isDerived[0-1] : Boolean;
+		attribute isComposite[0-1] : Boolean;
+		attribute isId[0-1] : Boolean;
+		attribute default[0-1] : String;
+	}
+
+	abstract class TypedElement extends NamedElement {
+		reference type[0-1] : Type;
+	}
+
+	class PrimitiveType extends DataType {
+		
+	}
+
+	class URIExtent extends Extent {
+		
+	}
+
+	datatype Boolean;
+
+	datatype String;
+
+	datatype UnlimitedNatural;
+
+	datatype Integer;
+
+	datatype Real;
+
+	class Comment extends Element {
+		reference annotatedElement[*] ordered : NamedElement;
+	}
+}
+
+-- @nsURI http:///qvtoperational.ecore
+package qvtoperational {
+
+	class MappingBody extends OperationBody {
+		reference initSection[*] ordered container : OclExpression;
+		reference endSection[*] ordered container : OclExpression;
+	}
+
+	class Helper extends ImperativeOperation {
+		attribute isQuery[0-1] : Boolean;
+	}
+
+	class ResolveExp extends CallExp {
+		reference condition[0-1] container : OclExpression;
+		attribute one[0-1] : Boolean;
+		attribute isInverse[0-1] : Boolean;
+		attribute isDeferred[0-1] : Boolean;
+	}
+
+	class ResolveInExp extends ResolveExp {
+		reference inMapping[0-1] : MappingOperation;
+	}
+
+	class OperationalTransformation extends Module {
+		reference intermediateClass[*] ordered : Class;
+		reference refined[0-1] : Transformation;
+		reference intermediateProperty[*] ordered : Property;
+		reference modelParameter[*] ordered container : ModelParameter;
+		reference entry[0-1] : EntryOperation;
+		reference relation[*] ordered container : Relation;
+	}
+
+	class MappingParameter extends VarParameter {
+		reference refinedDomain[0-1] : RelationDomain;
+-- Hand-addition
+		reference extent[0-1] : ModelParameter;
+	}
+
+	class MappingOperation extends ImperativeOperation, Operation, NamedElement {
+		reference disjunct[*] ordered : MappingOperation;
+		reference refinedRelation : Relation;
+		reference merged[*] ordered : MappingOperation;
+		reference inherited[*] ordered : MappingOperation;
+-- Hand-addition
+		reference when[0-*] ordered container : OclExpression;
+	}
+
+	class MappingCallExp extends ImperativeCallExp {
+		attribute isStrict[0-1] : Boolean;
+	}
+
+	class Constructor extends ImperativeOperation {
+		
+	}
+
+	class ContextualProperty extends Property {
+		reference context : Class;
+		reference overridden[0-1] : Property;
+	}
+
+	class EntryOperation extends ImperativeOperation {
+		
+	}
+
+	class ImperativeCallExp extends OperationCallExp {
+		attribute isVirtual[0-1] : Boolean;
+	}
+
+	class ImperativeOperation extends Operation {
+		reference context[0-1] container : VarParameter oppositeOf ctxOwner;
+		reference result[*] ordered container : VarParameter oppositeOf resOwner;
+		reference overridden[0-1] : ImperativeOperation;
+		reference body[0-1] container : OperationBody oppositeOf "operation";
+		attribute isBlackbox[0-1] : Boolean;
+	}
+
+	enumeration DirectionKind {
+		literal in;
+		literal inout;
+		literal out;
+	}
+
+	class Library extends Module {
+		
+	}
+
+	class ModelParameter extends VarParameter {
+		
+	}
+
+	class ModelType extends Class, URIExtent {
+		reference metamodel[*] ordered : Package;
+		reference additionalCondition[*] ordered container : OclExpression;
+		attribute conformanceKind[0-1] : String;
+	}
+
+	class Module extends Class, Package {
+		reference ownedTag[*] ordered container : Tag oppositeOf owner;
+		reference configProperty[*] ordered : Property oppositeOf module;
+		reference moduleImport[*] ordered container : ModuleImport oppositeOf module;
+		reference usedModelType[*] ordered : ModelType;
+		attribute isBlackbox[0-1] : Boolean;
+	}
+
+	class ModuleImport extends Element {
+		reference binding[*] ordered : ModelType;
+		reference module[0-1] : Module oppositeOf moduleImport;
+		reference importedModule : Module;
+		attribute kind[0-1] : ImportKind;
+	}
+
+	enumeration ImportKind {
+		literal extension;
+		literal access;
+	}
+
+	class VarParameter extends Parameter, Variable {
+		reference ctxOwner[0-1] : ImperativeOperation oppositeOf context;
+		reference resOwner[0-1] : ImperativeOperation oppositeOf result;
+		attribute kind[0-1] : DirectionKind;
+	}
+
+	class OperationBody extends Element {
+		reference "operation"[0-1] : ImperativeOperation oppositeOf body;
+		reference content[*] ordered container : OclExpression;
+	}
+
+	class ConstructorBody extends OperationBody {
+		
+	}
+
+	class ObjectExp extends InstantiationExp {
+		reference referredObject[0-1] : Variable;
+		reference body container : ConstructorBody;
+	}
+}
+
+-- @nsURI http:///qvtcore.ecore
+package qvtcore {
+
+	abstract class Area {
+		reference guardPattern container : GuardPattern oppositeOf area;
+		reference bottomPattern container : BottomPattern oppositeOf area;
+	}
+
+	class Assignment {
+		reference bottomPattern : BottomPattern oppositeOf assignment;
+		reference slotExpression container : OclExpression;
+		reference value container : OclExpression;
+		reference targetProperty : Property;
+		attribute isDefault[0-1] : Boolean;
+	}
+
+	class BottomPattern extends CorePattern {
+		reference area : Area oppositeOf bottomPattern;
+		reference assignment[*] ordered container : Assignment oppositeOf bottomPattern;
+		reference realizedVariable[*] ordered container : RealizedVariable;
+		reference enforcementOperation[*] ordered container : EnforcementOperation oppositeOf bottomPattern;
+	}
+
+	class GuardPattern extends CorePattern {
+		reference area : Area oppositeOf guardPattern;
+	}
+
+	class Mapping extends Rule, Area {
+		reference specification[*] ordered : Mapping;
+		reference local[*] ordered : Mapping oppositeOf context;
+		reference context[0-1] : Mapping oppositeOf local;
+	}
+
+	class RealizedVariable extends Variable {
+		
+	}
+
+	class CoreDomain extends Domain, Area {
+		
+	}
+
+	class CorePattern extends Pattern {
+		
+	}
+
+	class EnforcementOperation {
+		attribute enforcementMode[0-1] : EnforcementMode;
+		reference bottomPattern[0-1] : BottomPattern oppositeOf enforcementOperation;
+		reference operationCallExp : OperationCallExp;
+	}
+
+	enumeration EnforcementMode {
+		literal Deletion;
+		literal Creation;
+	}
+}
+
+-- @nsURI http:///qvtbase.ecore
+package qvtbase {
+
+	class Domain extends NamedElement {
+		attribute isCheckable[0-1] : Boolean;
+		attribute isEnforceable[0-1] : Boolean;
+		reference rule : Rule oppositeOf domain;
+		reference typedModel : TypedModel;
+	}
+
+	class Transformation extends Class, Package {
+		reference ownedTag[*] ordered container : Tag oppositeOf transformation;
+		reference modelParameter[*] ordered container : TypedModel oppositeOf transformation;
+		reference rule[*] ordered container : Rule oppositeOf transformation;
+		reference "extends"[0-1] : Transformation;
+	}
+
+	class TypedModel extends NamedElement {
+		reference transformation : Transformation oppositeOf modelParameter;
+		reference usedPackage[1-*] ordered : Package;
+		reference dependsOn[*] ordered : TypedModel;
+	}
+
+	class Rule extends NamedElement {
+		reference domain[*] ordered container : Domain oppositeOf rule;
+		reference transformation : Transformation oppositeOf rule;
+		reference overrides[0-1] : Rule;
+	}
+
+	class Pattern extends Element {
+		reference predicate[*] ordered container : Predicate oppositeOf pattern;
+		reference bindsTo[*] ordered container : Variable;
+		reference whenOwner[0-1] : Relation oppositeOf where;
+		reference whereOwner[0-1] : Relation oppositeOf when;
+	}
+
+	class Predicate extends Element {
+		reference conditionExpression container : OclExpression;
+		reference pattern : Pattern oppositeOf predicate;
+	}
+
+	class Function extends Operation {
+		reference queryExpression[0-1] container : OclExpression;
+	}
+
+	class FunctionParameter extends Parameter, Variable {
+		
+	}
+}
+
+-- @nsURI http:///qvtrelation.ecore
+package qvtrelation {
+
+-- Hand-addition
+	class RelationalTransformation extends Transformation {
+		reference ownedKey[0-*] container : Key oppositeOf transformation;
+	}
+	
+	class Relation extends Rule {
+		attribute isTopLevel[0-1] : Boolean;
+		reference variable[*] ordered container : Variable;
+		reference operationalImpl[*] ordered : RelationImplementation oppositeOf relation;
+		reference where[0-1] container : Pattern oppositeOf whenOwner;
+		reference when[0-1] container : Pattern oppositeOf whereOwner;
+	}
+
+	class RelationDomain extends Domain {
+		reference pattern container : DomainPattern;
+		reference rootVariable : Variable;
+	}
+
+	class DomainPattern extends Pattern {
+		reference templateExpression[0-1] container : TemplateExp;
+	}
+
+	class RelationImplementation extends Element {
+		reference relation[0-1] : Relation oppositeOf operationalImpl;
+		reference impl : Operation;
+		reference inDirectionOf : TypedModel;
+	}
+
+	class Key extends Element {
+		reference identifies : Class;
+		reference part[1-*] ordered : Property;
+-- Hand-addition
+		reference transformation[0-1] : RelationalTransformation oppositeOf ownedKey;
+	}
+}
+
+-- @nsURI http:///essentialocl.ecore
+package essentialocl {
+
+	class BooleanLiteralExp extends PrimitiveLiteralExp {
+		attribute booleanSymbol[0-1] : Boolean;
+	}
+
+	abstract class CallExp extends OclExpression {
+		reference source[0-1] container : OclExpression;
+	}
+
+	enumeration CollectionKind {
+		literal OrderedSet;
+		literal Set;
+		literal Bag;
+		literal Sequence;
+	}
+
+	abstract class OclExpression extends TypedElement {
+		reference tryBodyOwner[0-1] : TryExp oppositeOf tryBody;
+	}
+
+	class UnlimitedNaturalExp extends NumericLiteralExp {
+		attribute symbol[0-1] : UnlimitedNatural;
+	}
+
+	class IfExp extends OclExpression {
+		reference condition container : OclExpression;
+		reference thenExpression container : OclExpression;
+		reference elseExpression container : OclExpression;
+	}
+
+	class LetExp extends OclExpression {
+		reference in[*] ordered container : OclExpression;
+		reference variable container : Variable oppositeOf LetExp;
+	}
+
+	class Variable extends TypedElement {
+		reference initExpression[0-1] container : OclExpression;
+		reference LetExp[0-1] : LetExp oppositeOf variable;
+		reference computeOwner[0-1] : ComputeExp oppositeOf returnedElement;
+		reference bindParameter[0-1] : Parameter;
+	}
+
+	class PropertyCallExp extends FeaturePropertyCall {
+		reference referredProperty[0-1] : Property;
+	}
+
+	class VariableExp extends OclExpression {
+		reference referredVariable[0-1] : Variable;
+	}
+
+	class TypeExp extends OclExpression {
+		reference referredType[0-1] : Type;
+	}
+
+	abstract class LoopExp extends CallExp, OclExpression {
+		reference body container : OclExpression;
+		reference iterator[*] ordered container : Variable;
+	}
+
+	class IteratorExp extends LoopExp {
+		
+	}
+
+	class StringLiteralExp extends PrimitiveLiteralExp {
+		attribute stringSymbol[0-1] : String;
+	}
+
+	class IntegerLiteralExp extends NumericLiteralExp {
+		attribute integerSymbol[0-1] : Integer;
+	}
+
+	class OperationCallExp extends FeaturePropertyCall {
+		reference argument[*] ordered container : OclExpression;
+		reference referredOperation[0-1] : Operation;
+	}
+
+	class RealLiteralExp extends NumericLiteralExp {
+		attribute realSymbol[0-1] : Real;
+	}
+
+	abstract class LiteralExp extends OclExpression {
+		
+	}
+
+	class IterateExp extends LoopExp {
+		reference result[0-1] container : Variable;
+	}
+
+	abstract class PrimitiveLiteralExp extends LiteralExp {
+		
+	}
+
+	abstract class NumericLiteralExp extends PrimitiveLiteralExp {
+		
+	}
+
+	class CollectionLiteralExp extends LiteralExp {
+		attribute kind[0-1] : CollectionKind;
+		reference part[*] ordered container : CollectionLiteralPart oppositeOf CollectionLiteralExp;
+	}
+
+	abstract class CollectionLiteralPart extends TypedElement {
+		reference CollectionLiteralExp : CollectionLiteralExp oppositeOf part;
+	}
+
+	class CollectionItem extends CollectionLiteralPart {
+		reference item container : OclExpression;
+	}
+
+	class CollectionRange extends CollectionLiteralPart {
+		reference first container : OclExpression;
+		reference last container : OclExpression;
+	}
+
+	class TupleLiteralExp extends LiteralExp {
+		reference part[*] ordered container : TupleLiteralPart oppositeOf TupleLiteralExp;
+	}
+
+	class NullLiteralExp extends LiteralExp {
+		
+	}
+
+	class ExpressionInOcl extends OpaqueExpression {
+		reference bodyExpression container : OclExpression;
+		reference context[0-1] container : Variable;
+		reference resultVariable[0-1] container : Variable;
+		reference parameterVariable[0-1] container : Variable;
+	}
+
+	class OpaqueExpression {
+		
+	}
+
+	class InvalidLiteralExp extends LiteralExp {
+		
+	}
+
+	abstract class FeaturePropertyCall extends CallExp {
+		
+	}
+
+	class TupleLiteralPart extends TypedElement {
+		reference TupleLiteralExp[0-1] : TupleLiteralExp oppositeOf part;
+		reference "attribute"[0-1] container : Property;
+	}
+
+	class BagType extends CollectionType {
+		
+	}
+
+	abstract class CollectionType extends DataType {
+		reference elementType[0-1] : Type;
+	}
+
+	class EnumLiteralExp extends LiteralExp {
+		reference referredEnumLiteral[0-1] : EnumerationLiteral;
+	}
+
+	class InvalidType extends Type {
+		
+	}
+
+	class OrderedSetType extends CollectionType {
+		
+	}
+
+	class SequenceType extends CollectionType {
+		
+	}
+
+	class SetType extends CollectionType {
+		
+	}
+
+	class TupleType extends Class, DataType {
+		
+	}
+
+	class VoidType extends Type {
+		
+	}
+
+	class AnyType extends Class, Type {
+		
+	}
+}

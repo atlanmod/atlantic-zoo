@@ -1,0 +1,72 @@
+package Metamodel;
+
+package IMSTransactionMessage {
+  enum OIMAPrefixFormats {
+    opp_one = 0;
+    opp_two = 0;
+  }
+
+  class TwoByteField {
+  }
+
+  class VariableLengthField {
+  }
+
+  class IMSTransactionMessage {
+    !unique !ordered attr OIMAPrefixFormats[1] OIMAPrefixFormat;
+    !unique !ordered attr Boolean[1] standardFieldsFlag;
+    !ordered val OIMAPrefix OIMAPrefixComponent;
+    !ordered val StandardFields standardFieldComponent;
+    !ordered val ApplicationData[1] messageComponent;
+  }
+
+  class OIMAPrefix {
+    !ordered val ControlData[1] controlDataComponent;
+    !ordered val StateData[1] stateDataComponent;
+    !ordered val SecurityData securityDataComponent;
+    !ordered val UserData userDataComponent;
+  }
+
+  class ControlData {
+  }
+
+  class StateData {
+  }
+
+  class SecurityData {
+  }
+
+  class UserData {
+  }
+
+  class StandardFields {
+    !ordered ref TwoByteField[1] length;
+    !ordered ref TwoByteField[1] reservedField;
+    !ordered ref VariableLengthField[1] transactionCode;
+  }
+
+  class ApplicationData {
+    !ordered ref TDLangElement[*] languageElements;
+    !ordered val Field[+]#fieldContainer fieldComponents;
+  }
+
+  class Field {
+    !ordered ref ApplicationData[1]#fieldComponents fieldContainer;
+  }
+
+  class TDLangElement {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

@@ -1,0 +1,66 @@
+-- @name		EclipsePlugIn
+-- @version		0.1
+-- @domains		IDE
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/04
+-- @description	This metamodel describes the structure of Eclipse plug-in. The Eclipse Platform is designed for building integrated development environments (IDE) that can be used to create applications as diverse as Web sites, embedded Java programs, C++ programs, and Enterprise JavaBeans. Although the Eclipse Platform has a lot of built-in functionality, most of that functionality is very generic. It takes additional tools to extend the Platform to work with new content types, to do new things with existing content types, and to focus the generic functionality on something specific. The Eclipse Platform is built on a mechanism for discovering, integrating, and running modules called plug-ins. A tool provider writes a tool as a separate plug-in that operates on files in the workspace and surfaces its tool-specific UI in the workbench. When the Platform is launched, the user is presented with an integrated development environment (IDE) composed of the set of available plug-ins. The quality of the user experience depends significantly on how well the tools integrate with the Platform and how well the various tools work with each other.
+-- @see			http://www.eclipse.org/
+
+package EclipsePlugIn {
+
+	class Application {
+		attribute name : String;
+		attribute version : String;
+		attribute author : String;
+		reference extensionPoints[1-*] container : ExtensionPoint oppositeOf application;
+	}
+
+	class ExtensionPoint {
+		attribute name : String;
+		attribute id : String;
+		reference application : Application oppositeOf extensionPoints;
+		reference descriptions[*] : Description oppositeOf extensionPoints;
+		reference plugIn : PlugIn oppositeOf extensionPoints;
+	}
+	
+	class Description {
+		attribute xmlSchema : String;
+		reference extensionPoints[*] : ExtensionPoint oppositeOf descriptions;
+	}
+
+	class Extension {
+		attribute name : String;
+		attribute id : String;
+		reference isConfiguredInto : ExtensionPoint;
+	}
+		
+	class PlugIn {
+		attribute id : String;
+		attribute displayableName : String;
+		attribute version : String;
+		attribute supplier : String;
+		reference configures[1-*] : Extension;
+		reference extensionPoints[*] container : ExtensionPoint oppositeOf plugIn;
+		-- @comment The required plug-ins for the execution of this plug-in
+		reference requires[*] : PlugIn;
+		reference uses[*] : Librairy oppositeOf plugIn;
+	}
+
+	-- @comment The executable part of a plug-in (".jar" file(s))		
+	class Librairy {
+		attribute name : String;
+		reference plugIn : PlugIn oppositeOf uses;
+		reference classes[1-*] container : Class oppositeOf librairy;
+	}
+	
+	class Class {
+		attribute name : String;
+		reference librairy : Librairy oppositeOf classes;
+	}
+	
+}
+
+package PrimitiveTypes {	
+	datatype Integer;
+	datatype String;
+}

@@ -1,0 +1,639 @@
+-- @name		JavaAbstractSyntax
+-- @version		1.0
+-- @domains		Object-oriented programming, Java
+-- @authors		Mikaël Barbero <mikael.barbero@univ-nantes.fr>
+-- @date		2006/10/24
+-- @description	This metamodel describes a full abstract syntax tree (AST) of the code (statements, expressions, annotations and Javadoc) taken from a Java compilation unit (typically a Class). It is based upon the Eclipse JDT API specification.
+-- @see		The "Eclipse JDT API Specification" : http://help.eclipse.org/help32/index.jsp?topic=/org.eclipse.jdt.doc.isv/reference/apt/overview-summary.html
+
+package JavaAbstractSyntax {
+
+       class AST {
+               reference root container : ASTNode;
+       }
+
+       abstract class ASTNode {
+
+       }
+
+       class AnonymousClassDeclaration extends ASTNode {
+               reference bodyDeclarations[*] ordered container : BodyDeclaration;
+       }
+
+       abstract class BodyDeclaration extends ASTNode {
+               reference modifiers[*] ordered container : ExtendedModifier;
+               reference javadoc container : Javadoc;
+       }
+
+       class CatchClause extends ASTNode {
+               reference body container : Block;
+               reference exception container : SingleVariableDeclaration;
+       }
+
+       abstract class Comment extends ASTNode {
+               reference alternateRoot : ASTNode;
+       }
+
+       class CompilationUnit extends ASTNode {
+               reference comments[*] ordered container : Comment;
+               reference "package" container : PackageDeclaration;
+               reference imports[*] ordered container : ImportDeclaration;
+               reference types[*] ordered container : AbstractTypeDeclaration;
+       }
+
+       abstract class Expression extends ASTNode {
+               attribute resolveBoxing : Boolean;
+               attribute resolveUnboxing : Boolean;
+       }
+
+       class ImportDeclaration extends ASTNode {
+               attribute onDemand : Boolean;
+               attribute static : Boolean;
+               reference name container : Name;
+       }
+
+       class MemberRef extends ASTNode {
+               reference name container : SimpleName;
+               reference qualifier container : Name;
+       }
+
+       class MemberValuePair extends ASTNode {
+               reference name container : SimpleName;
+               reference value container : Expression;
+       }
+
+       class MethodRef extends ASTNode {
+               reference name container : SimpleName;
+               reference qualifier container : Name;
+               reference parameters[*] ordered container : MethodRefParameter;
+       }
+
+       class MethodRefParameter extends ASTNode {
+               reference name container : SimpleName;
+               reference type container : Type;
+               attribute varargs : Boolean;
+       }
+
+       abstract class ExtendedModifier {
+
+       }
+
+       class Modifier extends ASTNode, ExtendedModifier {
+               attribute "abstract" : Boolean;
+               attribute final : Boolean;
+               attribute native : Boolean;
+               attribute none : Boolean;
+               attribute private : Boolean;
+               attribute protected : Boolean;
+               attribute public : Boolean;
+               attribute static : Boolean;
+               attribute strictfp : Boolean;
+               attribute synchronized : Boolean;
+               attribute transient : Boolean;
+               attribute volatile : Boolean;
+       }
+
+       class PackageDeclaration extends ASTNode {
+               reference annotations[*] ordered container : Annotation;
+               reference javadoc container : Javadoc;
+               reference name container : Name;
+       }
+
+       abstract class Statement extends ASTNode {
+
+       }
+
+       class TagElement extends ASTNode {
+               reference fragments[*] ordered container : ASTNode;
+               attribute tagName : String;
+               attribute nested : Boolean;
+       }
+
+       class TextElement extends ASTNode {
+               attribute text : String;
+       }
+
+       abstract class Type extends ASTNode {
+
+       }
+
+       class TypeParameter extends ASTNode {
+               reference name container : SimpleName;
+               reference typeBounds[*] ordered container : Type;
+       }
+
+       abstract class VariableDeclaration extends ASTNode {
+               attribute extraDimensions : Integer;
+               reference initializer container : Expression;
+               reference name container : SimpleName;
+       }
+
+       abstract class AbstractTypeDeclaration extends BodyDeclaration {
+               reference bodyDeclarations[*] ordered container : BodyDeclaration;
+               reference name container : SimpleName;
+               attribute localTypeDeclaration : Boolean;
+               attribute memberTypeDeclaration : Boolean;
+               attribute packageMemberTypeDeclaration : Boolean;
+       }
+
+       class AnnotationTypeMemberDeclaration extends BodyDeclaration {
+               reference default container : Expression;
+               reference name container : SimpleName;
+               reference type container : Type;
+       }
+
+       class EnumConstantDeclaration extends BodyDeclaration {
+               reference arguments[*] ordered container : Expression;
+               reference anonymousClassDeclaration container : AnonymousClassDeclaration;
+               reference name container : SimpleName;
+       }
+
+       class FieldDeclaration extends BodyDeclaration {
+               reference fragments[*] ordered container : VariableDeclarationFragment;
+               reference type container : Type;
+       }
+
+       class Initializer extends BodyDeclaration {
+               reference body container : Block;
+       }
+
+       class MethodDeclaration extends BodyDeclaration {
+               reference body container : Block;
+               attribute extraDimensions : Integer;
+               reference name container : SimpleName;
+               reference returnType container : Type;
+               attribute constructor : Boolean;
+               attribute varargs : Boolean;
+               reference parameters[*] ordered container : SingleVariableDeclaration;
+               reference thrownExceptions[*] ordered container : Name;
+               reference typeParameters[*] ordered container : TypeParameter;
+       }
+
+       class AnnotationTypeDeclaration extends AbstractTypeDeclaration {
+
+       }
+
+       class EnumDeclaration extends AbstractTypeDeclaration {
+               reference superInterfaceTypes[*] ordered container : Type;
+               reference enumConstants[*] ordered container : EnumConstantDeclaration;
+       }
+
+       class TypeDeclaration extends AbstractTypeDeclaration {
+               reference superclassType container : Type;
+               attribute interface : Boolean;
+               reference superInterfaceTypes[*] ordered container : Type;
+               reference typeParameters[*] ordered container : TypeParameter;
+       }
+
+       class BlockComment extends Comment {
+
+       }
+
+       class Javadoc extends Comment {
+               reference tags[*] ordered container : TagElement;
+       }
+
+       class LineComment extends Comment {
+
+       }
+
+       abstract class Annotation extends Expression, ExtendedModifier {
+               reference typeName container : Name;
+       }
+
+       class ArrayAccess extends Expression {
+               reference array container : Expression;
+               reference index container : Expression;
+       }
+
+       class ArrayCreation extends Expression {
+               reference dimensions[*] ordered container : Expression;
+               reference initializer container : ArrayInitializer;
+               reference type container : ArrayType;
+       }
+
+       class ArrayInitializer extends Expression {
+               reference expressions[*] ordered container : Expression;
+       }
+
+       class Assignment extends Expression {
+               reference leftHandSide container : Expression;
+               attribute operator : AssignementOperatorKind;
+               reference rightHandSide container : Expression;
+       }
+
+       enumeration AssignementOperatorKind {
+
+               -- @stringLiteral >>=
+               literal RIGHT_SHIFT_SIGNED_ASSIGN;
+
+               -- @stringLiteral ^=
+               literal BIT_XOR_ASSIGN;
+
+               -- @stringLiteral *=
+               literal TIMES_ASSIGN;
+
+               -- @stringLiteral <<=
+               literal LEFT_SHIFT_ASSIGN;
+
+               -- @stringLiteral -=
+               literal MINUS_ASSIGN;
+
+               -- @stringLiteral |=
+               literal BIT_OR_ASSIGN;
+
+               -- @stringLiteral +=
+               literal PLUS_ASSIGN;
+
+               -- @stringLiteral =
+               literal ASSIGN;
+
+               -- @stringLiteral >>>=
+               literal RIGHT_SHIFT_UNSIGNED_ASSIGN;
+
+               -- @stringLiteral %=
+               literal REMAINDER_ASSIGN;
+
+               -- @stringLiteral /=
+               literal DIVIDE_ASSIGN;
+
+               -- @stringLiteral &=
+               literal BIT_AND_ASSIGN;
+       }
+
+       class BooleanLiteral extends Expression {
+               attribute booleanValue : Boolean;
+       }
+
+       class CastExpression extends Expression {
+               reference expression container : Expression;
+               reference type container : Type;
+       }
+
+       class CharacterLiteral extends Expression {
+               attribute charValue : Character;
+               attribute escapedValue : String;
+       }
+
+       class ClassInstanceCreation extends Expression {
+               reference arguments[*] ordered container : Expression;
+               reference anonymousClassDeclaration container : AnonymousClassDeclaration;
+               reference expression container : Expression;
+               reference type container : Type;
+               reference typeArguments[*] ordered container : Type;
+       }
+
+       class ConditionalExpression extends Expression {
+               reference elseExpression container : Expression;
+               reference expression container : Expression;
+               reference thenExpression container : Expression;
+       }
+
+       class FieldAccess extends Expression {
+               reference expression container : Expression;
+               reference name container : SimpleName;
+       }
+
+       class InfixExpression extends Expression {
+               reference extendedOperands[*] ordered container : Expression;
+               reference leftOperand container : Expression;
+               attribute operator : InfixExpressionOperatorKind;
+               reference rightOperand container : Expression;
+       }
+
+       enumeration InfixExpressionOperatorKind {
+
+               -- @stringLiteral >=
+               literal GREATER_EQUALS;
+
+               -- @stringLiteral |
+               literal OR;
+
+               -- @stringLiteral >>
+               literal RIGHT_SHIFT_SIGNED;
+
+               -- @stringLiteral -
+               literal MINUS;
+
+               -- @stringLiteral ^
+               literal XOR;
+
+               -- @stringLiteral <=
+               literal LESS_EQUALS;
+
+               -- @stringLiteral ==
+               literal EQUALS;
+
+               -- @stringLiteral !=
+               literal NOT_EQUALS;
+
+               -- @stringLiteral &
+               literal AND;
+
+               -- @stringLiteral +
+               literal PLUS;
+
+               -- @stringLiteral >
+               literal GREATER;
+
+               -- @stringLiteral ||
+               literal CONDITIONAL_OR;
+
+               -- @stringLiteral %
+               literal REMAINDER;
+
+               -- @stringLiteral <
+               literal LESS;
+
+               -- @stringLiteral <<
+               literal LEFT_SHIFT;
+
+               -- @stringLiteral >>
+               literal RIGHT_SHIFT_UNSIGNED;
+
+               -- @stringLiteral &&
+               literal CONDITIONAL_AND;
+
+               -- @stringLiteral *
+               literal TIMES;
+
+               -- @stringLiteral /
+               literal DIVIDE;
+       }
+
+       class InstanceofExpression extends Expression {
+               reference leftOperand container : Expression;
+               reference rightOperand container : Type;
+       }
+
+       class MethodInvocation extends Expression {
+               reference arguments[*] ordered container : Expression;
+               reference expression container : Expression;
+               reference name container : SimpleName;
+               reference typeArguments[*] ordered container : Type;
+       }
+
+       abstract class Name extends Expression {
+               attribute fullyQualifiedName : String;
+       }
+
+       class NullLiteral extends Expression {
+
+       }
+
+       class NumberLiteral extends Expression {
+               attribute token : String;
+       }
+
+       class ParenthesizedExpression extends Expression {
+               reference expression container : Expression;
+       }
+
+       class PostfixExpression extends Expression {
+               reference operand container : Expression;
+               attribute operator : PostfixExpresssionOperatorKind;
+       }
+
+       enumeration PostfixExpresssionOperatorKind {
+
+               -- @stringLiteral ++
+               literal INCREMENT;
+
+               -- @stringLiteral --
+               literal DECREMENT;
+       }
+
+       class PrefixExpression extends Expression {
+               reference operand container : Expression;
+               attribute operator : PrefixExpresssionOperatorKind;
+       }
+
+       enumeration PrefixExpresssionOperatorKind {
+
+               -- @stringLiteral -
+               literal MINUS;
+
+               -- @stringLiteral !
+               literal NOT;
+
+               -- @stringLiteral --
+               literal DECREMENT;
+
+               -- @stringLiteral ~
+               literal COMPLEMENT;
+
+               -- @stringLiteral ++
+               literal INCREMENT;
+
+               -- @stringLiteral +
+               literal PLUS;
+       }
+
+       class StringLiteral extends Expression {
+               attribute escapedValue : String;
+               attribute literalValue : String;
+       }
+
+       class SuperFieldAccess extends Expression {
+               reference name container : SimpleName;
+               reference qualifier container : Name;
+       }
+
+       class SuperMethodInvocation extends Expression {
+               reference arguments[*] ordered container : Expression;
+               reference name container : Name;
+               reference qualifier container : Name;
+               reference typeArguments[*] ordered container : Type;
+       }
+
+       class ThisExpression extends Expression {
+               reference qualifier container : Name;
+       }
+
+       class TypeLiteral extends Expression {
+               reference type container : Type;
+       }
+
+       class VariableDeclarationExpression extends Expression {
+               reference fragments[*] ordered container : VariableDeclarationFragment;
+               reference modifiers[*] ordered container : ExtendedModifier;
+               reference type container : Type;
+       }
+
+       class AssertStatement extends Statement {
+               reference expression container : Expression;
+               reference message container : Expression;
+       }
+
+       class Block extends Statement {
+               reference statements[*] ordered container : Statement;
+       }
+
+       class BreakStatement extends Statement {
+               reference label container : SimpleName;
+       }
+
+       class ConstructorInvocation extends Statement {
+               reference arguments[*] ordered container : Expression;
+               reference typeArguments[*] ordered container : Type;
+       }
+
+       class ContinueStatement extends Statement {
+               reference label container : SimpleName;
+       }
+
+       class DoStatement extends Statement {
+               reference body container : Statement;
+               reference expression container : Expression;
+       }
+
+       class EmptyStatement extends Statement {
+
+       }
+
+       class EnhancedForStatement extends Statement {
+               reference body container : Statement;
+               reference expression container : Expression;
+               reference parameter container : SingleVariableDeclaration;
+       }
+
+       class ExpressionStatement extends Statement {
+               reference expression container : Expression;
+       }
+
+       class ForStatement extends Statement {
+               reference body container : Statement;
+               reference expression container : Expression;
+               reference initializers[*] ordered container : Expression;
+               reference updaters[*] ordered container : Expression;
+       }
+
+       class IfStatement extends Statement {
+               reference elseStatement container : Statement;
+               reference expression container : Expression;
+               reference thenStatement container : Statement;
+       }
+
+       class LabeledStatement extends Statement {
+               reference body container : Statement;
+               reference label container : SimpleName;
+       }
+
+       class ReturnStatement extends Statement {
+               reference expression container : Expression;
+       }
+
+       class SuperConstructorInvocation extends Statement {
+               reference arguments[*] ordered container : Expression;
+               reference expression container : Expression;
+               reference typeArguments[*] ordered container : Type;
+       }
+
+       class SwitchCase extends Statement {
+               reference expression container : Expression;
+               attribute default : Boolean;
+       }
+
+       class SwitchStatement extends Statement {
+               reference expression container : Expression;
+               reference statements[*] ordered container : Statement;
+       }
+
+       class SynchronizedStatement extends Statement {
+               reference body container : Block;
+               reference expression container : Expression;
+       }
+
+       class ThrowStatement extends Statement {
+               reference expression container : Expression;
+       }
+
+       class TryStatement extends Statement {
+               reference catchClauses[*] ordered container : CatchClause;
+               reference body container : Block;
+               reference finally container : Block;
+       }
+
+       class TypeDeclarationStatement extends Statement {
+               reference declaration container : AbstractTypeDeclaration;
+       }
+
+       class VariableDeclarationStatement extends Statement {
+               reference fragments[*] ordered container : VariableDeclarationFragment;
+               reference modifiers[*] ordered container : ExtendedModifier;
+               reference type container : Type;
+       }
+
+       class WhileStatement extends Statement {
+               reference body container : Statement;
+               reference expression container : Expression;
+       }
+
+       class ArrayType extends Type {
+               reference componentType container : Type;
+               attribute dimensions : Integer;
+               reference elementType container : Type;
+       }
+
+       class ParameterizedType extends Type {
+               reference type container : Type;
+               reference typeArguments[*] ordered container : Type;
+       }
+
+       class PrimitiveType extends Type {
+               attribute code : String;
+       }
+
+       class QualifiedType extends Type {
+               reference name container : SimpleName;
+               reference qualifier container : Type;
+       }
+
+       class SimpleType extends Type {
+               reference name container : Name;
+       }
+
+       class WildcardType extends Type {
+               reference bound container : Type;
+               attribute upperBound : Boolean;
+       }
+
+       class SingleVariableDeclaration extends VariableDeclaration {
+               reference type container : Type;
+               attribute varargs : Boolean;
+               reference modifiers[*] ordered container : ExtendedModifier;
+       }
+
+       class VariableDeclarationFragment extends VariableDeclaration {
+
+       }
+
+       class QualifiedName extends Name {
+               reference name container : SimpleName;
+               reference qualifier container : Name;
+       }
+
+       class SimpleName extends Name {
+               attribute identifier : String;
+               attribute declaration : Boolean;
+       }
+
+       class MarkerAnnotation extends Annotation {
+
+       }
+
+       class NormalAnnotation extends Annotation {
+               reference values[*] ordered container : MemberValuePair;
+       }
+
+       class SingleMemberAnnotation extends Annotation {
+               reference value container : Expression;
+       }
+}
+
+package PrimitiveTypes {
+       datatype String;
+       datatype Boolean;
+       datatype Integer;
+       datatype Character;
+}

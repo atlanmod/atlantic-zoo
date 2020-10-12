@@ -1,0 +1,6 @@
+( defstruct MgaObject )
+( defstruct Transition :stateMachine :associationStateState )
+( defstruct State :stateMachine :associationStateStatedst :associationStateStatesrc )
+( defstruct StateMachine :rootFolder )
+( defstruct RootFolder )
+( defstruct AssociationStateState :transition :dstTransition :srcTransition )

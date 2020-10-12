@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="TCS">
+  <ConcreteSyntax location="1:1-501:2" name="SQLDDL" lexer="&#xA;class SQLDDLLexer extends Lexer;&#xA;&#xA;options {&#xA;&#x9;k = 2;&#xA;&#x9;charVocabulary = '\0' .. '\u00FF';&#xA;&#x9;testLiterals = false;&#xA;}&#xA;&#xA;{&#xA;&#xA;&#x9;protected Token makeToken(int t) {&#xA;&#x9;&#x9;org.atl.engine.injectors.ebnf.LocationToken ret = null;&#xA;&#xA;&#x9;&#x9;tokenObjectClass = org.atl.engine.injectors.ebnf.LocationToken.class;&#xA;&#x9;&#x9;ret = (org.atl.engine.injectors.ebnf.LocationToken)super.makeToken(t);&#xA;&#x9;&#x9;ret.setEndLine(getLine());&#xA;&#x9;&#x9;ret.setEndColumn(getColumn());&#xA;&#xA;&#x9;&#x9;return ret;&#xA;&#x9;}&#xA;&#xA;}&#xA;&#xA;//protected&#xA;NL&#xA;&#x9;:&#x9;(&#x9;'\r' '\n'&#xA;&#x9;&#x9;|&#x9;'\n' '\r'&#x9;//Improbable&#xA;&#x9;&#x9;|&#x9;'\r'&#xA;&#x9;&#x9;|&#x9;'\n'&#xA;&#x9;&#x9;)&#xA;&#x9;{newline();}&#xA;&#x9;;&#xA;&#xA;WS&#xA;&#x9;:&#x9;(&#x9;' '&#xA;&#x9;&#x9;|&#x9;'\t'&#xA;//&#x9;&#x9;|&#x9;NL&#xA;&#x9;&#x9;)&#xA;//&#x9;{ $setType(Token.SKIP); }&#xA;&#x9;;&#xA;&#xA;COMMENT&#xA;&#x9;:&#x9;&quot;--&quot;&#xA;&#x9;&#x9;(~(&#x9;'\r'&#xA;&#x9;&#x9;|&#x9;'\n'&#xA;&#x9;&#x9;))*&#xA;//&#x9;&#x9;({LA(1) != EOF_CHAR}? NL)?&#xA;//&#x9;{ $setType(Token.SKIP); }&#xA;&#x9;;&#xA;&#xA;protected&#xA;DIGIT&#xA;&#x9;:&#x9;'0'..'9'&#xA;&#x9;;&#xA;&#xA;protected&#xA;ALPHA&#xA;&#x9;:&#x9;'a'..'z'&#xA;&#x9;|&#x9;'A'..'Z'&#xA;&#x9;|&#x9;'_'&#xA;&#x9;//For Unicode compatibility (from 0000 to 00ff)&#xA;&#x9;|&#x9;'\u00C0' .. '\u00D6'&#xA;&#x9;|&#x9;'\u00D8' .. '\u00F6'&#xA;&#x9;|&#x9;'\u00F8' .. '\u00FF'&#xA;&#x9;;&#xA;&#xA;protected&#xA;SNAME&#xA;options {&#xA;&#x9;testLiterals = true;&#xA;}&#xA;&#x9;:&#x9;(ALPHA) (ALPHA | DIGIT)*&#xA;;&#xA;&#xA;NAME&#xA;&#x9;:&#x9;(&#x9;s:SNAME {if(s.getType() != SNAME) $setType(s.getType());}&#xA;&#x9;&#x9;|&#x9;'&quot;'!&#xA;&#x9;&#x9;&#x9;(&#x9;ESC&#xA;&#x9;&#x9;&#x9;|&#x9;'\n' {newline();}&#xA;&#x9;&#x9;&#x9;|&#x9;~('\\'|'\&quot;'|'\n')&#xA;&#x9;&#x9;&#x9;)*&#xA;&#x9;&#x9;&#x9;'&quot;'!&#xA;&#x9;&#x9;)&#xA;&#x9;{&#xA;&#x9;if($getText.equals(&quot;true&quot;)) $setType(BOOLEAN);&#xA;&#x9;if($getText.equals(&quot;false&quot;)) $setType(BOOLEAN);&#xA;&#x9;}&#xA;&#x9;;&#xA;&#xA;INT&#xA;&#x9;:&#x9;(DIGIT)+&#xA;&#x9;&#x9;(('.' DIGIT)=> '.' (DIGIT)+ {$setType(FLOAT);})?&#xA;&#x9;;&#xA;&#xA;protected&#xA;ESC&#xA;&#x9;:&#x9;'\\'!&#xA;&#x9;&#x9;(&#x9;'n' {$setText(&quot;\n&quot;);}&#xA;&#x9;&#x9;|&#x9;'r' {$setText(&quot;\r&quot;);}&#xA;&#x9;&#x9;|&#x9;'t' {$setText(&quot;\t&quot;);}&#xA;&#x9;&#x9;|&#x9;'b' {$setText(&quot;\b&quot;);}&#xA;&#x9;&#x9;|&#x9;'f' {$setText(&quot;\f&quot;);}&#xA;&#x9;&#x9;|&#x9;'&quot;' {$setText(&quot;\&quot;&quot;);}&#xA;&#x9;&#x9;|&#x9;'\'' {$setText(&quot;\'&quot;);}&#xA;&#x9;&#x9;|&#x9;'\\' {$setText(&quot;\\&quot;);}&#xA;&#x9;&#x9;|&#x9;(&#xA;&#x9;&#x9;&#x9;&#x9;('0'..'3')&#xA;&#x9;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;options {&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;warnWhenFollowAmbig = false;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;}&#xA;&#x9;&#x9;&#x9;&#x9;:&#x9;('0'..'7')&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;options {&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;warnWhenFollowAmbig = false;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;}&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;:&#x9;'0'..'7'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;)?&#xA;&#x9;&#x9;&#x9;&#x9;)?&#xA;&#x9;&#x9;&#x9;|&#x9;('4'..'7')&#xA;&#x9;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;options {&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;warnWhenFollowAmbig = false;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;}&#xA;&#x9;&#x9;&#x9;&#x9;:&#x9;('0'..'7')&#xA;&#x9;&#x9;&#x9;&#x9;)?&#xA;&#x9;&#x9;&#x9;)&#xA;&#x9;&#x9;&#x9;&#x9;{&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;String s = $getText;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;int i;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;int ret = 0;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;String ans;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;for (i=0; i&lt;s.length(); ++i)&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ret = ret*8 + s.charAt(i) - '0';&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;ans = String.valueOf((char) ret);&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;$setText(ans);&#xA;&#x9;&#x9;&#x9;&#x9;}&#xA;&#x9;&#x9;)&#xA;&#x9;;&#xA;&#xA;STRING&#xA;&#x9;:&#x9;'\''!&#xA;&#x9;&#x9;(&#x9;ESC&#xA;&#x9;&#x9;|&#x9;'\n' {newline();}&#xA;&#x9;&#x9;|&#x9;~('\\'|'\''|'\n')&#xA;&#x9;&#x9;)*&#xA;&#x9;&#x9;'\''!&#xA;&#x9;;&#xA;&#xA;&#x9;">
+    <templates xsi:type="PrimitiveTemplate" location="3:9-4:35" name="identifier" typeName="String" isDefault="true" tokenName="NAME" value="%token%"/>
+    <templates xsi:type="PrimitiveTemplate" location="6:9-8:64" name="stringSymbol" typeName="String" tokenName="STRING" value="%token%" serializer="''' + %value%.toCString() + '''"/>
+    <templates xsi:type="PrimitiveTemplate" location="10:9-11:52" name="integerSymbol" typeName="Integer" isDefault="true" tokenName="INT" value="Integer.valueOf(%token%)"/>
+    <templates xsi:type="PrimitiveTemplate" location="13:9-14:51" name="floatSymbol" typeName="Double" isDefault="true" tokenName="FLOAT" value="Double.valueOf(%token%)"/>
+    <templates xsi:type="PrimitiveTemplate" location="16:9-17:52" name="booleanSymbol" typeName="Boolean" isDefault="true" tokenName="BOOLEAN" value="Boolean.valueOf(%token%)"/>
+    <templates xsi:type="ClassTemplate" location="19:9-21:18" name="Database" isMain="true" isContext="true">
+      <templateSequence location="20:25-20:79">
+        <elements xsi:type="Block" location="20:25-20:79">
+          <blockSequence location="20:27-20:33">
+            <elements xsi:type="Property" location="20:27-20:33" name="tables"/>
+          </blockSequence>
+          <blockArgs xsi:type="IndentIncrBArg" location="20:37-20:51" value="0"/>
+          <blockArgs xsi:type="StartNLBArg" location="20:53-20:68"/>
+          <blockArgs xsi:type="NbNLBArg" location="20:70-20:78" value="2"/>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="ClassTemplate" location="23:9-27:18" name="Table" isContext="true" isAddToContext="true">
+      <templateSequence location="24:25-26:45">
+        <elements xsi:type="LiteralRef" location="24:25-24:33" referredLiteral="/0/@keywords.63"/>
+        <elements xsi:type="LiteralRef" location="24:34-24:41" referredLiteral="/0/@keywords.99"/>
+        <elements xsi:type="Property" location="24:42-24:46" name="name"/>
+        <elements xsi:type="LiteralRef" location="24:47-24:50" referredLiteral="/0/@symbols.4"/>
+        <elements xsi:type="Block" location="24:51-26:26">
+          <blockSequence location="25:33-25:58">
+            <elements xsi:type="Property" location="25:33-25:58" name="elements">
+              <propertyArgs xsi:type="SeparatorPArg" location="25:42-25:57">
+                <separatorSequence location="25:54-25:57">
+                  <elements xsi:type="LiteralRef" location="25:54-25:57" referredLiteral="/0/@symbols.3"/>
+                </separatorSequence>
+              </propertyArgs>
+            </elements>
+          </blockSequence>
+        </elements>
+        <elements xsi:type="LiteralRef" location="26:27-26:30" referredLiteral="/0/@symbols.5"/>
+        <elements xsi:type="Property" location="26:31-26:41" name="parameters"/>
+        <elements xsi:type="LiteralRef" location="26:42-26:45" referredLiteral="/0/@symbols.8"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="ClassTemplate" location="30:9-30:40" name="TableElement" isAbstract="true"/>
+    <templates xsi:type="ClassTemplate" location="32:9-36:18" name="Column" isAddToContext="true">
+      <templateSequence location="33:25-35:84">
+        <elements xsi:type="Property" location="33:25-33:29" name="name"/>
+        <elements xsi:type="Property" location="33:30-33:34" name="type"/>
+        <elements xsi:type="ConditionalElement" location="34:25-34:53">
+          <condition xsi:type="AndExp" location="34:26-34:35">
+            <expressions xsi:type="BooleanPropertyExp" location="34:26-34:35" propertyName="canBeNull"/>
+          </condition>
+          <thenSequence location="34:38-34:37"/>
+          <elseSequence location="34:40-34:52">
+            <elements xsi:type="LiteralRef" location="34:40-34:45" referredLiteral="/0/@keywords.6"/>
+            <elements xsi:type="LiteralRef" location="34:46-34:52" referredLiteral="/0/@keywords.26"/>
+          </elseSequence>
+        </elements>
+        <elements xsi:type="ConditionalElement" location="35:25-35:84">
+          <condition xsi:type="AndExp" location="35:26-35:44">
+            <expressions xsi:type="IsDefinedExp" location="35:26-35:44" propertyName="default"/>
+          </condition>
+          <thenSequence location="35:47-35:83">
+            <elements xsi:type="LiteralRef" location="35:47-35:56" referredLiteral="/1"/>
+            <elements xsi:type="Property" location="35:57-35:83" name="default">
+              <propertyArgs xsi:type="AsPArg" location="35:65-35:82" value="stringSymbol"/>
+            </elements>
+          </thenSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="ClassTemplate" location="38:9-38:31" name="Key" isAbstract="true"/>
+    <templates xsi:type="ClassTemplate" location="40:9-43:18" name="SimpleKey">
+      <templateSequence location="41:25-42:105">
+        <elements xsi:type="ConditionalElement" location="41:25-41:46">
+          <condition xsi:type="AndExp" location="41:26-41:34">
+            <expressions xsi:type="BooleanPropertyExp" location="41:26-41:34" propertyName="isUnique"/>
+          </condition>
+          <thenSequence location="41:37-41:45">
+            <elements xsi:type="LiteralRef" location="41:37-41:45" referredLiteral="/0/@keywords.160"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="LiteralRef" location="42:25-42:30" referredLiteral="/0/@keywords.5"/>
+        <elements xsi:type="ConditionalElement" location="42:31-42:55">
+          <condition xsi:type="AndExp" location="42:32-42:47">
+            <expressions xsi:type="IsDefinedExp" location="42:32-42:47" propertyName="name"/>
+          </condition>
+          <thenSequence location="42:50-42:54">
+            <elements xsi:type="Property" location="42:50-42:54" name="name"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="LiteralRef" location="42:56-42:59" referredLiteral="/0/@symbols.4"/>
+        <elements xsi:type="Property" location="42:60-42:101" name="columns">
+          <propertyArgs xsi:type="RefersToPArg" location="42:68-42:83" propertyName="name"/>
+          <propertyArgs xsi:type="SeparatorPArg" location="42:85-42:100">
+            <separatorSequence location="42:97-42:100">
+              <elements xsi:type="LiteralRef" location="42:97-42:100" referredLiteral="/0/@symbols.3"/>
+            </separatorSequence>
+          </propertyArgs>
+        </elements>
+        <elements xsi:type="LiteralRef" location="42:102-42:105" referredLiteral="/0/@symbols.5"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="ClassTemplate" location="45:9-48:18" name="PrimaryKey">
+      <templateSequence location="46:25-47:105">
+        <elements xsi:type="LiteralRef" location="46:25-46:34" referredLiteral="/0/@keywords.143"/>
+        <elements xsi:type="ConditionalElement" location="46:35-46:56">
+          <condition xsi:type="AndExp" location="46:36-46:44">
+            <expressions xsi:type="BooleanPropertyExp" location="46:36-46:44" propertyName="isUnique"/>
+          </condition>
+          <thenSequence location="46:47-46:55">
+            <elements xsi:type="LiteralRef" location="46:47-46:55" referredLiteral="/0/@keywords.160"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="LiteralRef" location="47:25-47:30" referredLiteral="/0/@keywords.5"/>
+        <elements xsi:type="ConditionalElement" location="47:31-47:55">
+          <condition xsi:type="AndExp" location="47:32-47:47">
+            <expressions xsi:type="IsDefinedExp" location="47:32-47:47" propertyName="name"/>
+          </condition>
+          <thenSequence location="47:50-47:54">
+            <elements xsi:type="Property" location="47:50-47:54" name="name"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="LiteralRef" location="47:56-47:59" referredLiteral="/0/@symbols.4"/>
+        <elements xsi:type="Property" location="47:60-47:101" name="columns">
+          <propertyArgs xsi:type="RefersToPArg" location="47:68-47:83" propertyName="name"/>
+          <propertyArgs xsi:type="SeparatorPArg" location="47:85-47:100">
+            <separatorSequence location="47:97-47:100">
+              <elements xsi:type="LiteralRef" location="47:97-47:100" referredLiteral="/0/@symbols.3"/>
+            </separatorSequence>
+          </propertyArgs>
+        </elements>
+        <elements xsi:type="LiteralRef" location="47:102-47:105" referredLiteral="/0/@symbols.5"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="ClassTemplate" location="50:9-58:18" name="ForeignKey">
+      <templateSequence location="51:25-57:60">
+        <elements xsi:type="LiteralRef" location="51:25-51:34" referredLiteral="/0/@keywords.78"/>
+        <elements xsi:type="ConditionalElement" location="51:35-51:56">
+          <condition xsi:type="AndExp" location="51:36-51:44">
+            <expressions xsi:type="BooleanPropertyExp" location="51:36-51:44" propertyName="isUnique"/>
+          </condition>
+          <thenSequence location="51:47-51:55">
+            <elements xsi:type="LiteralRef" location="51:47-51:55" referredLiteral="/0/@keywords.160"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="LiteralRef" location="52:25-52:30" referredLiteral="/0/@keywords.5"/>
+        <elements xsi:type="ConditionalElement" location="52:31-52:55">
+          <condition xsi:type="AndExp" location="52:32-52:47">
+            <expressions xsi:type="IsDefinedExp" location="52:32-52:47" propertyName="name"/>
+          </condition>
+          <thenSequence location="52:50-52:54">
+            <elements xsi:type="Property" location="52:50-52:54" name="name"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="ConditionalElement" location="53:25-53:50">
+          <condition xsi:type="AndExp" location="53:26-53:44">
+            <expressions xsi:type="IsDefinedExp" location="53:26-53:44" propertyName="columns"/>
+          </condition>
+          <thenSequence location="53:46-53:49">
+            <elements xsi:type="LiteralRef" location="53:46-53:49" referredLiteral="/0/@symbols.4"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="Property" location="53:51-53:92" name="columns">
+          <propertyArgs xsi:type="RefersToPArg" location="53:59-53:74" propertyName="name"/>
+          <propertyArgs xsi:type="SeparatorPArg" location="53:76-53:91">
+            <separatorSequence location="53:88-53:91">
+              <elements xsi:type="LiteralRef" location="53:88-53:91" referredLiteral="/0/@symbols.3"/>
+            </separatorSequence>
+          </propertyArgs>
+        </elements>
+        <elements xsi:type="ConditionalElement" location="53:93-53:118">
+          <condition xsi:type="AndExp" location="53:94-53:112">
+            <expressions xsi:type="IsDefinedExp" location="53:94-53:112" propertyName="columns"/>
+          </condition>
+          <thenSequence location="53:114-53:117">
+            <elements xsi:type="LiteralRef" location="53:114-53:117" referredLiteral="/0/@symbols.5"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="LiteralRef" location="54:25-54:37" referredLiteral="/0/@keywords.175"/>
+        <elements xsi:type="Property" location="54:38-54:70" name="referencedTable">
+          <propertyArgs xsi:type="RefersToPArg" location="54:54-54:69" propertyName="name"/>
+        </elements>
+        <elements xsi:type="ConditionalElement" location="55:25-55:60">
+          <condition xsi:type="AndExp" location="55:26-55:54">
+            <expressions xsi:type="IsDefinedExp" location="55:26-55:54" propertyName="referencedColumns"/>
+          </condition>
+          <thenSequence location="55:56-55:59">
+            <elements xsi:type="LiteralRef" location="55:56-55:59" referredLiteral="/0/@symbols.4"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="Property" location="56:25-56:102" name="referencedColumns">
+          <propertyArgs xsi:type="SeparatorPArg" location="56:43-56:58">
+            <separatorSequence location="56:55-56:58">
+              <elements xsi:type="LiteralRef" location="56:55-56:58" referredLiteral="/0/@symbols.3"/>
+            </separatorSequence>
+          </propertyArgs>
+          <propertyArgs xsi:type="RefersToPArg" location="56:60-56:75" propertyName="name"/>
+          <propertyArgs xsi:type="LookInPArg" location="56:77-56:101">
+            <propertyName>referencedTable</propertyName>
+          </propertyArgs>
+        </elements>
+        <elements xsi:type="ConditionalElement" location="57:25-57:60">
+          <condition xsi:type="AndExp" location="57:26-57:54">
+            <expressions xsi:type="IsDefinedExp" location="57:26-57:54" propertyName="referencedColumns"/>
+          </condition>
+          <thenSequence location="57:56-57:59">
+            <elements xsi:type="LiteralRef" location="57:56-57:59" referredLiteral="/0/@symbols.5"/>
+          </thenSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="ClassTemplate" location="61:9-63:18" name="Type">
+      <templateSequence location="62:25-62:109">
+        <elements xsi:type="Property" location="62:25-62:29" name="name"/>
+        <elements xsi:type="ConditionalElement" location="62:30-62:83">
+          <condition xsi:type="AndExp" location="62:31-62:48">
+            <expressions xsi:type="IsDefinedExp" location="62:31-62:48" propertyName="length"/>
+          </condition>
+          <thenSequence location="62:51-62:82">
+            <elements xsi:type="LiteralRef" location="62:51-62:54" referredLiteral="/0/@symbols.4"/>
+            <elements xsi:type="Property" location="62:55-62:78" name="length">
+              <propertyArgs xsi:type="SeparatorPArg" location="62:62-62:77">
+                <separatorSequence location="62:74-62:77">
+                  <elements xsi:type="LiteralRef" location="62:74-62:77" referredLiteral="/0/@symbols.3"/>
+                </separatorSequence>
+              </propertyArgs>
+            </elements>
+            <elements xsi:type="LiteralRef" location="62:79-62:82" referredLiteral="/0/@symbols.5"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="ConditionalElement" location="62:84-62:109">
+          <condition xsi:type="AndExp" location="62:85-62:95">
+            <expressions xsi:type="BooleanPropertyExp" location="62:85-62:95" propertyName="isUnsigned"/>
+          </condition>
+          <thenSequence location="62:98-62:108">
+            <elements xsi:type="LiteralRef" location="62:98-62:108" referredLiteral="/2"/>
+          </thenSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="ClassTemplate" location="65:9-67:18" name="Parameter">
+      <templateSequence location="66:19-66:54">
+        <elements xsi:type="Property" location="66:19-66:23" name="name"/>
+        <elements xsi:type="ConditionalElement" location="66:24-66:54">
+          <condition xsi:type="AndExp" location="66:25-66:41">
+            <expressions xsi:type="IsDefinedExp" location="66:25-66:41" propertyName="value"/>
+          </condition>
+          <thenSequence location="66:44-66:53">
+            <elements xsi:type="LiteralRef" location="66:44-66:47" referredLiteral="/0/@symbols.20"/>
+            <elements xsi:type="Property" location="66:48-66:53" name="value"/>
+          </thenSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="ClassTemplate" location="70:9-70:33" name="Value" isAbstract="true"/>
+    <templates xsi:type="ClassTemplate" location="72:9-74:18" name="IntegerVal">
+      <templateSequence location="73:25-73:30">
+        <elements xsi:type="Property" location="73:25-73:30" name="value"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="ClassTemplate" location="76:9-78:18" name="NullVal">
+      <templateSequence location="77:25-77:31">
+        <elements xsi:type="LiteralRef" location="77:25-77:31" referredLiteral="/0/@keywords.26"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="ClassTemplate" location="80:9-82:18" name="StringVal">
+      <templateSequence location="81:25-81:49">
+        <elements xsi:type="Property" location="81:25-81:49" name="value">
+          <propertyArgs xsi:type="AsPArg" location="81:31-81:48" value="stringSymbol"/>
+        </elements>
+      </templateSequence>
+    </templates>
+    <keywords location="86:17-86:29" name="kwis" value="IS"/>
+    <keywords location="87:17-87:33" name="kwkeys" value="KEYS"/>
+    <keywords location="88:17-88:33" name="kwleft" value="LEFT"/>
+    <keywords location="89:17-89:41" name="kwstarting" value="STARTING"/>
+    <keywords location="90:17-90:37" name="kwelseif" value="ELSEIF"/>
+    <keywords location="91:17-91:31" name="kwkey" literalRefs="/0/@templates.10/@templateSequence/@elements.1 /0/@templates.11/@templateSequence/@elements.2 /0/@templates.12/@templateSequence/@elements.2" value="KEY"/>
+    <keywords location="92:17-92:31" name="kwnot" literalRefs="/0/@templates.8/@templateSequence/@elements.2/@elseSequence/@elements.0" value="NOT"/>
+    <keywords location="93:17-93:37" name="kwrename" value="RENAME"/>
+    <keywords location="94:17-94:61" name="kwsecond_microsecond" value="SECOND_MICROSECOND"/>
+    <keywords location="95:17-95:33" name="kwblob" value="BLOB"/>
+    <keywords location="96:17-96:31" name="kwout" value="OUT"/>
+    <keywords location="97:17-97:39" name="kwrequire" value="REQUIRE"/>
+    <keywords location="98:17-98:39" name="kwrelease" value="RELEASE"/>
+    <keywords location="99:17-99:37" name="kwschema" value="SCHEMA"/>
+    <keywords location="100:17-100:31" name="kwxor" value="XOR"/>
+    <keywords location="101:17-101:33" name="kwjoin" value="JOIN"/>
+    <keywords location="102:17-102:41" name="kwtinytext" value="TINYTEXT"/>
+    <keywords location="103:17-103:45" name="kwsqlwarning" value="SQLWARNING"/>
+    <keywords location="104:17-104:33" name="kwundo" value="UNDO"/>
+    <keywords location="105:17-105:33" name="kwthen" value="THEN"/>
+    <keywords location="106:17-106:37" name="kwbefore" value="BEFORE"/>
+    <keywords location="107:17-107:37" name="kwignore" value="IGNORE"/>
+    <keywords location="108:17-108:49" name="kwsqlexception" value="SQLEXCEPTION"/>
+    <keywords location="109:17-109:35" name="kwfalse" value="FALSE"/>
+    <keywords location="110:17-110:43" name="kwdatabases" value="DATABASES"/>
+    <keywords location="111:17-111:39" name="kwbetween" value="BETWEEN"/>
+    <keywords location="112:17-112:33" name="kwnull" literalRefs="/0/@templates.8/@templateSequence/@elements.2/@elseSequence/@elements.1 /0/@templates.17/@templateSequence/@elements.0" value="NULL"/>
+    <keywords location="113:17-113:41" name="kwlongtext" value="LONGTEXT"/>
+    <keywords location="114:17-114:39" name="kwvarying" value="VARYING"/>
+    <keywords location="115:17-115:39" name="kwconvert" value="CONVERT"/>
+    <keywords location="116:17-116:39" name="kwreplace" value="REPLACE"/>
+    <keywords location="117:17-117:49" name="kwlow_priority" value="LOW_PRIORITY"/>
+    <keywords location="118:17-118:35" name="kwgroup" value="GROUP"/>
+    <keywords location="119:17-119:45" name="kwasensitive" value="ASENSITIVE"/>
+    <keywords location="120:17-120:33" name="kwint4" value="INT4"/>
+    <keywords location="121:17-121:41" name="kwdatabase" value="DATABASE"/>
+    <keywords location="122:17-122:55" name="kwday_microsecond" value="DAY_MICROSECOND"/>
+    <keywords location="123:17-123:35" name="kwraid0" value="RAID0"/>
+    <keywords location="124:17-124:35" name="kwinout" value="INOUT"/>
+    <keywords location="125:17-125:31" name="kwset" value="SET"/>
+    <keywords location="126:17-126:43" name="kwlocaltime" value="LOCALTIME"/>
+    <keywords location="127:17-127:43" name="kwsensitive" value="SENSITIVE"/>
+    <keywords location="128:17-128:37" name="kwbinary" value="BINARY"/>
+    <keywords location="129:17-129:29" name="kwor" value="OR"/>
+    <keywords location="130:17-130:51" name="kwdeterministic" value="DETERMINISTIC"/>
+    <keywords location="131:17-131:31" name="kwint" value="INT"/>
+    <keywords location="132:17-132:31" name="kwsql" value="SQL"/>
+    <keywords location="133:17-133:33" name="kwdrop" value="DROP"/>
+    <keywords location="134:17-134:37" name="kwbigint" value="BIGINT"/>
+    <keywords location="135:17-135:45" name="kwconstraint" value="CONSTRAINT"/>
+    <keywords location="136:17-136:29" name="kwto" value="TO"/>
+    <keywords location="137:17-137:45" name="kwday_second" value="DAY_SECOND"/>
+    <keywords location="138:17-138:51" name="kwminute_second" value="MINUTE_SECOND"/>
+    <keywords location="139:17-139:35" name="kwforce" value="FORCE"/>
+    <keywords location="140:17-140:47" name="kwhour_second" value="HOUR_SECOND"/>
+    <keywords location="141:17-141:33" name="kwinto" value="INTO"/>
+    <keywords location="142:17-142:31" name="kwfor" value="FOR"/>
+    <keywords location="143:17-143:61" name="kwno_write_to_binlog" value="NO_WRITE_TO_BINLOG"/>
+    <keywords location="144:17-144:29" name="kwby" value="BY"/>
+    <keywords location="145:17-145:29" name="kwin" value="IN"/>
+    <keywords location="146:17-146:45" name="kwmediumblob" value="MEDIUMBLOB"/>
+    <keywords location="147:17-147:37" name="kwvalues" value="VALUES"/>
+    <keywords location="148:17-148:37" name="kwrepeat" value="REPEAT"/>
+    <keywords location="149:17-149:37" name="kwcreate" literalRefs="/0/@templates.6/@templateSequence/@elements.0" value="CREATE"/>
+    <keywords location="150:17-150:39" name="kwanalyze" value="ANALYZE"/>
+    <keywords location="151:17-151:39" name="kwdeclare" value="DECLARE"/>
+    <keywords location="152:17-152:33" name="kweach" value="EACH"/>
+    <keywords location="153:17-153:53" name="kwlocaltimestamp" value="LOCALTIMESTAMP"/>
+    <keywords location="154:17-154:33" name="kwboth" value="BOTH"/>
+    <keywords location="155:17-155:41" name="kwoptimize" value="OPTIMIZE"/>
+    <keywords location="156:17-156:47" name="kwdistinctrow" value="DISTINCTROW"/>
+    <keywords location="157:17-157:33" name="kwwhen" value="WHEN"/>
+    <keywords location="158:17-158:43" name="kwmiddleint" value="MIDDLEINT"/>
+    <keywords location="159:17-159:35" name="kwalter" value="ALTER"/>
+    <keywords location="160:17-160:35" name="kwright" value="RIGHT"/>
+    <keywords location="161:17-161:35" name="kwcheck" value="CHECK"/>
+    <keywords location="162:17-162:33" name="kwloop" value="LOOP"/>
+    <keywords location="163:17-163:33" name="kwint1" value="INT1"/>
+    <keywords location="164:17-164:39" name="kwforeign" literalRefs="/0/@templates.12/@templateSequence/@elements.0" value="FOREIGN"/>
+    <keywords location="165:17-165:35" name="kwfetch" value="FETCH"/>
+    <keywords location="166:17-166:33" name="kwwith" value="WITH"/>
+    <keywords location="167:17-167:39" name="kwdefault" value="DEFAULT"/>
+    <keywords location="168:17-168:41" name="kwsqlstate" value="SQLSTATE"/>
+    <keywords location="169:17-169:35" name="kworder" value="ORDER"/>
+    <keywords location="170:17-170:33" name="kwshow" value="SHOW"/>
+    <keywords location="171:17-171:53" name="kwsql_big_result" value="SQL_BIG_RESULT"/>
+    <keywords location="172:17-172:51" name="kwhigh_priority" value="HIGH_PRIORITY"/>
+    <keywords location="173:17-173:29" name="kwif" value="IF"/>
+    <keywords location="174:17-174:33" name="kwlong" value="LONG"/>
+    <keywords location="175:17-175:37" name="kwupdate" value="UPDATE"/>
+    <keywords location="176:17-176:43" name="kwmediumint" value="MEDIUMINT"/>
+    <keywords location="177:17-177:33" name="kwx509" value="X509"/>
+    <keywords location="178:17-178:35" name="kwfloat" value="FLOAT"/>
+    <keywords location="179:17-179:35" name="kwlabel" value="LABEL"/>
+    <keywords location="180:17-180:33" name="kwfrom" value="FROM"/>
+    <keywords location="181:17-181:51" name="kwstraight_join" value="STRAIGHT_JOIN"/>
+    <keywords location="182:17-182:49" name="kwcurrent_user" value="CURRENT_USER"/>
+    <keywords location="183:17-183:45" name="kwyear_month" value="YEAR_MONTH"/>
+    <keywords location="184:17-184:37" name="kwinfile" value="INFILE"/>
+    <keywords location="185:17-185:35" name="kwtable" literalRefs="/0/@templates.6/@templateSequence/@elements.1" value="TABLE"/>
+    <keywords location="186:17-186:45" name="kwoptionally" value="OPTIONALLY"/>
+    <keywords location="187:17-187:47" name="kwinsensitive" value="INSENSITIVE"/>
+    <keywords location="188:17-188:57" name="kwsql_small_result" value="SQL_SMALL_RESULT"/>
+    <keywords location="189:17-189:33" name="kwint2" value="INT2"/>
+    <keywords location="190:17-190:35" name="kwwhere" value="WHERE"/>
+    <keywords location="191:17-191:41" name="kwenclosed" value="ENCLOSED"/>
+    <keywords location="192:17-192:33" name="kwchar" value="CHAR"/>
+    <keywords location="193:17-193:35" name="kwmatch" value="MATCH"/>
+    <keywords location="194:17-194:33" name="kwload" value="LOAD"/>
+    <keywords location="195:17-195:45" name="kwmediumtext" value="MEDIUMTEXT"/>
+    <keywords location="196:17-196:29" name="kwon" value="ON"/>
+    <keywords location="197:17-197:41" name="kwcontinue" value="CONTINUE"/>
+    <keywords location="198:17-198:41" name="kwrestrict" value="RESTRICT"/>
+    <keywords location="199:17-199:35" name="kwindex" value="INDEX"/>
+    <keywords location="200:17-200:51" name="kwutc_timestamp" value="UTC_TIMESTAMP"/>
+    <keywords location="201:17-201:37" name="kwdouble" value="DOUBLE"/>
+    <keywords location="202:17-202:39" name="kwescaped" value="ESCAPED"/>
+    <keywords location="203:17-203:35" name="kwreads" value="READS"/>
+    <keywords location="204:17-204:37" name="kwhaving" value="HAVING"/>
+    <keywords location="205:17-205:31" name="kwssl" value="SSL"/>
+    <keywords location="206:17-206:41" name="kwzerofill" value="ZEROFILL"/>
+    <keywords location="207:17-207:41" name="kwinterval" value="INTERVAL"/>
+    <keywords location="208:17-208:31" name="kwdec" value="DEC"/>
+    <keywords location="209:17-209:45" name="kwterminated" value="TERMINATED"/>
+    <keywords location="210:17-210:41" name="kwdistinct" value="DISTINCT"/>
+    <keywords location="211:17-211:31" name="kwdiv" value="DIV"/>
+    <keywords location="212:17-212:43" name="kwprocedure" value="PROCEDURE"/>
+    <keywords location="213:17-213:39" name="kwupgrade" value="UPGRADE"/>
+    <keywords location="214:17-214:35" name="kwwhile" value="WHILE"/>
+    <keywords location="215:17-215:43" name="kwcondition" value="CONDITION"/>
+    <keywords location="216:17-216:45" name="kwday_minute" value="DAY_MINUTE"/>
+    <keywords location="217:17-217:31" name="kwand" value="AND"/>
+    <keywords location="218:17-218:33" name="kwkill" value="KILL"/>
+    <keywords location="219:17-219:37" name="kwselect" value="SELECT"/>
+    <keywords location="220:17-220:39" name="kwiterate" value="ITERATE"/>
+    <keywords location="221:17-221:33" name="kwelse" value="ELSE"/>
+    <keywords location="222:17-222:35" name="kwusing" value="USING"/>
+    <keywords location="223:17-223:41" name="kwtrailing" value="TRAILING"/>
+    <keywords location="224:17-224:49" name="kwvarcharacter" value="VARCHARACTER"/>
+    <keywords location="225:17-225:49" name="kwcurrent_date" value="CURRENT_DATE"/>
+    <keywords location="226:17-226:41" name="kwunsigned" value="UNSIGNED"/>
+    <keywords location="227:17-227:39" name="kwvarchar" value="VARCHAR"/>
+    <keywords location="228:17-228:37" name="kwdelete" value="DELETE"/>
+    <keywords location="229:17-229:39" name="kwprimary" literalRefs="/0/@templates.11/@templateSequence/@elements.0" value="PRIMARY"/>
+    <keywords location="230:17-230:37" name="kwoption" value="OPTION"/>
+    <keywords location="231:17-231:31" name="kwuse" value="USE"/>
+    <keywords location="232:17-232:41" name="kwspecific" value="SPECIFIC"/>
+    <keywords location="233:17-233:39" name="kwcascade" value="CASCADE"/>
+    <keywords location="234:17-234:57" name="kwhour_microsecond" value="HOUR_MICROSECOND"/>
+    <keywords location="235:17-235:35" name="kwrlike" value="RLIKE"/>
+    <keywords location="236:17-236:37" name="kwregexp" value="REGEXP"/>
+    <keywords location="237:17-237:39" name="kwexplain" value="EXPLAIN"/>
+    <keywords location="238:17-238:39" name="kwtinyint" value="TINYINT"/>
+    <keywords location="239:17-239:37" name="kwcolumn" value="COLUMN"/>
+    <keywords location="240:17-240:39" name="kwnumeric" value="NUMERIC"/>
+    <keywords location="241:17-241:41" name="kwday_hour" value="DAY_HOUR"/>
+    <keywords location="242:17-242:39" name="kwleading" value="LEADING"/>
+    <keywords location="243:17-243:35" name="kwouter" value="OUTER"/>
+    <keywords location="244:17-244:35" name="kwleave" value="LEAVE"/>
+    <keywords location="245:17-245:35" name="kwcross" value="CROSS"/>
+    <keywords location="246:17-246:37" name="kwunique" literalRefs="/0/@templates.10/@templateSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.11/@templateSequence/@elements.1/@thenSequence/@elements.0 /0/@templates.12/@templateSequence/@elements.1/@thenSequence/@elements.0" value="UNIQUE"/>
+    <keywords location="247:17-247:41" name="kwutc_date" value="UTC_DATE"/>
+    <keywords location="248:17-248:33" name="kwlock" value="LOCK"/>
+    <keywords location="249:17-249:39" name="kwnatural" value="NATURAL"/>
+    <keywords location="250:17-250:47" name="kwhour_minute" value="HOUR_MINUTE"/>
+    <keywords location="251:17-251:35" name="kwpurge" value="PURGE"/>
+    <keywords location="252:17-252:33" name="kwtrue" value="TRUE"/>
+    <keywords location="253:17-253:43" name="kwvarbinary" value="VARBINARY"/>
+    <keywords location="254:17-254:37" name="kwunlock" value="UNLOCK"/>
+    <keywords location="255:17-255:35" name="kwunion" value="UNION"/>
+    <keywords location="256:17-256:37" name="kwfloat4" value="FLOAT4"/>
+    <keywords location="257:17-257:33" name="kwdesc" value="DESC"/>
+    <keywords location="258:17-258:43" name="kwseparator" value="SEPARATOR"/>
+    <keywords location="259:17-259:35" name="kwwrite" value="WRITE"/>
+    <keywords location="260:17-260:37" name="kwrevoke" value="REVOKE"/>
+    <keywords location="261:17-261:45" name="kwreferences" literalRefs="/0/@templates.12/@templateSequence/@elements.7" value="REFERENCES"/>
+    <keywords location="262:17-262:33" name="kwcase" value="CASE"/>
+    <keywords location="263:17-263:33" name="kwint8" value="INT8"/>
+    <keywords location="264:17-264:35" name="kwlimit" value="LIMIT"/>
+    <keywords location="265:17-265:31" name="kwmod" value="MOD"/>
+    <keywords location="266:17-266:41" name="kwtinyblob" value="TINYBLOB"/>
+    <keywords location="267:17-267:37" name="kwcursor" value="CURSOR"/>
+    <keywords location="268:17-268:33" name="kwlike" value="LIKE"/>
+    <keywords location="269:17-269:33" name="kwreal" value="REAL"/>
+    <keywords location="270:17-270:45" name="kwconnection" value="CONNECTION"/>
+    <keywords location="271:17-271:63" name="kwsql_calc_found_rows" value="SQL_CALC_FOUND_ROWS"/>
+    <keywords location="272:17-272:41" name="kwsmallint" value="SMALLINT"/>
+    <keywords location="273:17-273:29" name="kwas" value="AS"/>
+    <keywords location="274:17-274:37" name="kwchange" value="CHANGE"/>
+    <keywords location="275:17-275:39" name="kwtrigger" value="TRIGGER"/>
+    <keywords location="276:17-276:39" name="kwdelayed" value="DELAYED"/>
+    <keywords location="277:17-277:35" name="kwlines" value="LINES"/>
+    <keywords location="278:17-278:41" name="kwmodifies" value="MODIFIES"/>
+    <keywords location="279:17-279:49" name="kwcurrent_time" value="CURRENT_TIME"/>
+    <keywords location="280:17-280:61" name="kwminute_microsecond" value="MINUTE_MICROSECOND"/>
+    <keywords location="281:17-281:39" name="kwoutfile" value="OUTFILE"/>
+    <keywords location="282:17-282:39" name="kwschemas" value="SCHEMAS"/>
+    <keywords location="283:17-283:37" name="kwfloat8" value="FLOAT8"/>
+    <keywords location="284:17-284:31" name="kwall" value="ALL"/>
+    <keywords location="285:17-285:37" name="kwreturn" value="RETURN"/>
+    <keywords location="286:17-286:33" name="kwcall" value="CALL"/>
+    <keywords location="287:17-287:39" name="kwcollate" value="COLLATE"/>
+    <keywords location="288:17-288:39" name="kwdecimal" value="DECIMAL"/>
+    <keywords location="289:17-289:33" name="kwgoto" value="GOTO"/>
+    <keywords location="290:17-290:33" name="kwread" value="READ"/>
+    <keywords location="291:17-291:35" name="kwinner" value="INNER"/>
+    <keywords location="292:17-292:35" name="kwusage" value="USAGE"/>
+    <keywords location="293:17-293:39" name="kwspatial" value="SPATIAL"/>
+    <keywords location="294:17-294:41" name="kwutc_time" value="UTC_TIME"/>
+    <keywords location="295:17-295:35" name="kwgrant" value="GRANT"/>
+    <keywords location="296:17-296:37" name="kwexists" value="EXISTS"/>
+    <keywords location="297:17-297:31" name="kwasc" value="ASC"/>
+    <keywords location="298:17-298:41" name="kwlongblob" value="LONGBLOB"/>
+    <keywords location="299:17-299:41" name="kwdescribe" value="DESCRIBE"/>
+    <keywords location="300:17-300:43" name="kwcharacter" value="CHARACTER"/>
+    <keywords location="301:17-301:43" name="kwprecision" value="PRECISION"/>
+    <keywords location="302:17-302:37" name="kwinsert" value="INSERT"/>
+    <keywords location="303:17-303:31" name="kwadd" value="ADD"/>
+    <keywords location="304:17-304:59" name="kwcurrent_timestamp" value="CURRENT_TIMESTAMP"/>
+    <keywords location="305:17-305:41" name="kwfulltext" value="FULLTEXT"/>
+    <keywords location="306:17-306:37" name="kwsoname" value="SONAME"/>
+    <keywords location="307:17-307:33" name="kwexit" value="EXIT"/>
+    <keywords location="308:17-308:33" name="kwint3" value="INT3"/>
+    <keywords location="309:17-309:33" name="kwdual" value="DUAL"/>
+    <symbols location="313:17-313:39" name="lsquare" value="["/>
+    <symbols location="314:17-314:54" name="rsquare" value="]">
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="315:17-315:39" name="excl" value="!"/>
+    <symbols location="316:17-316:64" name="coma" literalRefs="/0/@templates.6/@templateSequence/@elements.4/@blockSequence/@elements.0/@propertyArgs.0/@separatorSequence/@elements.0 /0/@templates.10/@templateSequence/@elements.4/@propertyArgs.1/@separatorSequence/@elements.0 /0/@templates.11/@templateSequence/@elements.5/@propertyArgs.1/@separatorSequence/@elements.0 /0/@templates.12/@templateSequence/@elements.5/@propertyArgs.1/@separatorSequence/@elements.0 /0/@templates.12/@templateSequence/@elements.10/@propertyArgs.0/@separatorSequence/@elements.0 /0/@templates.13/@templateSequence/@elements.1/@thenSequence/@elements.1/@propertyArgs.0/@separatorSequence/@elements.0" value=",">
+      <spaces>leftNone</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="317:17-317:53" name="lparen" literalRefs="/0/@templates.6/@templateSequence/@elements.3 /0/@templates.10/@templateSequence/@elements.3 /0/@templates.11/@templateSequence/@elements.4 /0/@templates.12/@templateSequence/@elements.4/@thenSequence/@elements.0 /0/@templates.12/@templateSequence/@elements.9/@thenSequence/@elements.0 /0/@templates.13/@templateSequence/@elements.1/@thenSequence/@elements.0" value="(">
+      <spaces>leftSpace</spaces>
+    </symbols>
+    <symbols location="318:17-318:54" name="rparen" literalRefs="/0/@templates.6/@templateSequence/@elements.5 /0/@templates.10/@templateSequence/@elements.5 /0/@templates.11/@templateSequence/@elements.6 /0/@templates.12/@templateSequence/@elements.6/@thenSequence/@elements.0 /0/@templates.12/@templateSequence/@elements.11/@thenSequence/@elements.0 /0/@templates.13/@templateSequence/@elements.1/@thenSequence/@elements.2" value=")">
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="319:17-319:53" name="lcurly" value="{">
+      <spaces>leftSpace</spaces>
+    </symbols>
+    <symbols location="320:17-320:39" name="rcurly" value="}"/>
+    <symbols location="321:17-321:39" name="semi" literalRefs="/0/@templates.6/@templateSequence/@elements.7" value=";"/>
+    <symbols location="322:17-322:65" name="colon" value=":">
+      <spaces>leftSpace</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="323:17-323:40" name="colons" value="::"/>
+    <symbols location="324:17-324:39" name="pipe" value="|"/>
+    <symbols location="325:17-325:39" name="sharp" value="#"/>
+    <symbols location="326:17-326:39" name="qmark" value="?"/>
+    <symbols location="329:17-329:39" name="point" value="."/>
+    <symbols location="330:17-330:40" name="rarrow" value="->"/>
+    <symbols location="331:17-331:39" name="minus" value="-"/>
+    <symbols location="332:17-332:39" name="star" value="*"/>
+    <symbols location="333:17-333:39" name="slash" value="/"/>
+    <symbols location="334:17-334:39" name="plus" value="+"/>
+    <symbols location="335:17-335:39" name="eq" literalRefs="/0/@templates.14/@templateSequence/@elements.1/@thenSequence/@elements.0" value="="/>
+    <symbols location="336:17-336:39" name="gt" value=">"/>
+    <symbols location="337:17-337:39" name="lt" value="&lt;"/>
+    <symbols location="338:17-338:40" name="ge" value=">="/>
+    <symbols location="339:17-339:40" name="le" value="&lt;="/>
+    <symbols location="340:17-340:40" name="ne" value="&lt;>"/>
+    <symbols location="341:17-341:40" name="larrow" value="&lt;-"/>
+  </ConcreteSyntax>
+  <Keyword literalRefs="/0/@templates.8/@templateSequence/@elements.3/@thenSequence/@elements.0" value="default"/>
+  <Keyword literalRefs="/0/@templates.13/@templateSequence/@elements.2/@thenSequence/@elements.0" value="unsigned"/>
+</xmi:XMI>

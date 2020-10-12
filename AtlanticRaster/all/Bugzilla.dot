@@ -1,0 +1,64 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_Bugzilla"{
+labelloc=t
+color=black
+label=Bugzilla
+ node[shape=record];
+BugzillaRoot[label="{BugzillaRoot|version : String\nurlbase : String\nmaintainer : String\nexporter[0-1] : String| }"]
+;
+ node[shape=record];
+Bug[label="{Bug|error[0-1] : ErrorType\nbug_id : String\nexporter : String\nurlbase : String\nbug_status : StatusType\nresolution[0-1] : ResolutionType\nproduct : String\npriority : PriorityType\nversion : String\nrep_platform : ReportedPlatformType\nassigned_to : String\ndelta_ts : String\ncomponent : String\nreporter : String\ntarget_milestone[0-1] : String\nbug_severity : SeverityType\ncreation_ts : String\nqa_contact[0-1] : String\nstatus_whiteboard[0-1] : String\nop_sys : OperatingSystemType\nbug_file_loc[0-1] : String\nshort_desc[0-1] : String| }"]
+ Bug->BugzillaRoot[arrowhead=diamond,arrowtail=none,headlabel="bug_bugzillaRoot",taillabel="bugs[1-*]{ordered}",group=BugzillaRoot,minlen=2,constraint=true,]
+ Bug->Keywords[arrowhead=vee,arrowtail=diamond,headlabel="keywords[*]{ordered}",group=Keywords,minlen=2,constraint=true,]
+ Bug->Dependson[arrowhead=vee,arrowtail=diamond,headlabel="dependson[*]{ordered}",group=Dependson,minlen=2,constraint=true,]
+ Bug->Blocks[arrowhead=vee,arrowtail=diamond,headlabel="blocks[*]{ordered}",group=Blocks,minlen=2,constraint=true,]
+ Bug->Cc[arrowhead=vee,arrowtail=diamond,headlabel="cc[*]{ordered}",group=Cc,minlen=2,constraint=true,]
+ Bug->LongDesc[arrowhead=vee,arrowtail=diamond,headlabel="long_desc[0-1]",group=LongDesc,minlen=2,constraint=true,]
+ Bug->Attachment[arrowhead=vee,arrowtail=diamond,headlabel="attachment[*]{ordered}",group=Attachment,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StringElt[label="{/StringElt/|value : String| }"]
+;
+ node[shape=record];
+Keywords[label="{Keywords| | }"]
+ Keywords->StringElt[arrowhead=onormal,group=StringElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Dependson[label="{Dependson| | }"]
+ Dependson->StringElt[arrowhead=onormal,group=StringElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Blocks[label="{Blocks| | }"]
+ Blocks->StringElt[arrowhead=onormal,group=StringElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Cc[label="{Cc| | }"]
+ Cc->StringElt[arrowhead=onormal,group=StringElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LongDesc[label="{LongDesc|who : String\nbug_when : String\nthetext : String| }"]
+;
+ node[shape=record];
+Attachment[label="{Attachment|id : String\ndate : String\ndesc : String\ntype : String\ndata : String| }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

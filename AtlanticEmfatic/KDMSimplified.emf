@@ -1,0 +1,91 @@
+package Metamodel;
+
+package KDMSimplified {
+  abstract class Element {
+    !ordered val Annotation[*] annotation;
+    !ordered val Attribute[*] attribute;
+  }
+
+  abstract class ModelElement extends Element {
+    !ordered val TaggedValue[*] taggedValue;
+    !ordered ref Stereotype#extendedElement stereotype;
+  }
+
+  abstract class KDMEntity extends ModelElement {
+    !unique !ordered attr String[1] name;
+    !ordered ref KDMRelationship[*]#to inbound;
+    !ordered ref KDMRelationship[*]#from outbound;
+    !ordered ref KDMContainer#ownedElement owner;
+    !ordered ref KDMGroup[*]#groupedElement group;
+    !ordered ref KDMModel[1]#ownedElement model;
+  }
+
+  abstract class KDMContainer extends KDMEntity {
+    !ordered val KDMEntity[*]#owner ownedElement;
+  }
+
+  abstract class KDMGroup extends KDMEntity {
+    !ordered ref KDMEntity[*]#group groupedElement;
+  }
+
+  abstract class KDMRelationship extends ModelElement {
+    !ordered ref KDMEntity[1]#inbound to;
+    !ordered ref KDMEntity[1]#outbound from;
+    !ordered ref KDMModel[1]#ownedRelation model;
+  }
+
+  class Annotation extends Element {
+    !unique !ordered attr String[1] note;
+  }
+
+  class Attribute extends Element {
+    !unique !ordered attr String[1] tag;
+    !unique !ordered attr String[1] value;
+  }
+
+  class KDMExtensionFamily extends Element {
+    !unique !ordered attr String[1] name;
+    !ordered val Stereotype[*]#family stereotype;
+  }
+
+  class Stereotype extends Element {
+    !unique !ordered attr String[1] baseClass;
+    !unique !ordered attr String[1] name;
+    !ordered ref KDMExtensionFamily[1]#stereotype family;
+    !ordered ref ModelElement[1]#stereotype extendedElement;
+    !ordered val TagDefinition[*] tag;
+  }
+
+  class TagDefinition extends Element {
+    !unique !ordered attr String[1] tag;
+    !unique !ordered attr String[1] type;
+  }
+
+  class TaggedValue extends Element {
+    !unique !ordered attr String[1] value;
+    !ordered ref TagDefinition[1] tag;
+  }
+
+  abstract class KDMFramework extends Element {
+    !unique !ordered attr String[1] name;
+    !ordered val KDMExtensionFamily[*] extension;
+  }
+
+  abstract class KDMModel extends KDMFramework {
+    !ordered val KDMEntity[*]#model ownedElement;
+    !ordered val KDMRelationship[*]#model ownedRelation;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

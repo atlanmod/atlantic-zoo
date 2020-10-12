@@ -1,0 +1,126 @@
+-- ******************************************************************************
+-- Copyright (c) 2009 INRIA. 
+-- All rights reserved. This program and the accompanying materials 
+-- are made available under the terms of the Eclipse Public License v1.0 
+-- which accompanies this distribution, and is available at
+-- http://www.eclipse.org/legal/epl-v10.html
+-- 
+-- Contributors: 
+-- 	INRIA - Initial implementation
+--  
+-- ******************************************************************************
+
+--@authors Mathieu Vénisse
+
+-- @name		ChocoModel
+-- @version		1.0
+-- @date		2008/07/18
+-- @description	${description}
+package ChocoModel {
+
+	-- Every class should extend LocatedElement, directly or indirectly.
+	-- This is a technical constraint to support text-to-model traceability.
+	abstract class LocatedElement {
+		attribute location[0-1] : String;
+		attribute commentsBefore[*] ordered : String;
+		attribute commentsAfter[*] ordered : String;
+	}
+
+-- BEGIN Language-specific classes (replace sample contents)
+--	enumeration OpIntExp {
+--		literal plus;
+--	}
+	
+	enumeration OpConstraint {
+		literal eq;
+		literal and2;
+		literal or2;
+		literal gt;
+		literal ge;
+		literal lt;
+		literal le;
+		literal plus;
+	}
+
+	class Package extends LocatedElement {
+		attribute name : String;
+		
+		reference import[*] container : Import; 
+		reference problem container : ChocoProblem;
+	}
+	
+	class Import extends LocatedElement {
+		attribute fqn : String;
+	}
+	
+	class ChocoProblem extends LocatedElement {
+		attribute name : String;
+		
+		reference elements[*] container : Element;
+	}
+	
+	abstract class Element extends LocatedElement {
+		attribute label : String;
+	}
+
+	abstract class Expression extends Element {
+	
+	}
+	
+	class ConstraintDef extends Expression {
+		attribute op : OpConstraint;
+		
+		reference left container : Expression;
+		reference right container : Expression;
+	}
+
+	class IntVar extends Expression {
+		reference domain container : Domain;
+	}
+	
+	class Domain extends LocatedElement {
+		attribute lower : Integer;
+		attribute upper : Integer;
+	}
+	
+	class IntConstant extends Expression {
+		attribute val : Integer;
+	}
+	
+	class SymbolicTerm extends Expression {
+		reference term : Expression;
+	}
+	
+	class IntValue extends Expression {
+		attribute val : Integer;
+	}
+	
+	class IntExp extends Expression {
+		attribute op : OpConstraint;
+		
+		reference left container : Expression;
+		reference right container : Expression;
+	}
+	
+	class Constraint extends Expression {
+		attribute op : OpConstraint;
+		
+		reference left container : Expression;
+		reference right container : Expression;
+	}
+	
+	class PostConstraint extends Element {
+		attribute op : OpConstraint;
+		
+		reference constraint : ConstraintDef;
+	}
+	
+-- END Language-specific classes
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Double;
+	datatype Integer;
+	datatype String;
+}

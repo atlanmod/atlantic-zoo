@@ -1,0 +1,59 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'Pascal'>
+    <Class name = 'Program' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'variables' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Pascal::Variable' opposite = 'Pascal::Variable::program'/>
+      <Reference name = 'types' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Pascal::Type' opposite = 'Pascal::Type::program'/>
+      <Reference name = 'procedures' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Pascal::Procedure' opposite = 'Pascal::Procedure::program'/>
+    </Class>
+    <Class name = 'Variable' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'program' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Pascal::Program' opposite = 'Pascal::Program::variables'/>
+      <Reference name = 'procedure' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Pascal::Procedure' opposite = 'Pascal::Procedure::variables'/>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Pascal::Type' opposite = 'Pascal::Type::variables'/>
+    </Class>
+    <Class name = 'Type' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'program' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Pascal::Program' opposite = 'Pascal::Program::types'/>
+      <Reference name = 'variables' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Pascal::Variable' opposite = 'Pascal::Variable::type'/>
+    </Class>
+    <Class name = 'Parameter' isAbstract = 'false' supertypes = 'Pascal::Variable'>
+      <Reference name = 'procedure_parameter' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Pascal::Procedure' opposite = 'Pascal::Procedure::parameters'/>
+    </Class>
+    <Class name = 'Instruction' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'block' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Pascal::Block' opposite = 'Pascal::Block::instructions'/>
+    </Class>
+    <Class name = 'Calculation' isAbstract = 'false' supertypes = 'Pascal::Instruction'/>
+    <Class name = 'Control' isAbstract = 'false' supertypes = 'Pascal::Instruction'/>
+    <Class name = 'Assignment' isAbstract = 'false' supertypes = 'Pascal::Instruction'/>
+    <Class name = 'Block' isAbstract = 'false' supertypes = 'Pascal::Instruction'>
+      <Reference name = 'instructions' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Pascal::Instruction' opposite = 'Pascal::Instruction::block'/>
+      <Reference name = 'procedure' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Pascal::Procedure' opposite = 'Pascal::Procedure::block_procedure'/>
+      <Reference name = 'loop' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Pascal::Loop' opposite = 'Pascal::Loop::block_loop'/>
+      <Reference name = 'conditional' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Pascal::Conditional' opposite = 'Pascal::Conditional::blocks'/>
+    </Class>
+    <Class name = 'Conditional' isAbstract = 'false' supertypes = 'Pascal::Control'>
+      <Reference name = 'blocks' lower = '1' upper = '2' isOrdered = 'true' isContainer = 'true' type = 'Pascal::Block' opposite = 'Pascal::Block::conditional'/>
+    </Class>
+    <Class name = 'Loop' isAbstract = 'false' supertypes = 'Pascal::Control'>
+      <Reference name = 'block_loop' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Pascal::Block' opposite = 'Pascal::Block::loop'/>
+    </Class>
+    <Class name = 'Procedure' isAbstract = 'false' supertypes = 'Pascal::Control'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'program' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Pascal::Program' opposite = 'Pascal::Program::procedures'/>
+      <Reference name = 'variables' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Pascal::Variable' opposite = 'Pascal::Variable::procedure'/>
+      <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Pascal::Parameter' opposite = 'Pascal::Parameter::procedure_parameter'/>
+      <Reference name = 'block_procedure' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Pascal::Block' opposite = 'Pascal::Block::procedure'/>
+    </Class>
+    <Class name = 'Function' isAbstract = 'false' supertypes = 'Pascal::Procedure'>
+      <Reference name = 'returnType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Pascal::Type' opposite = ''/>
+    </Class>
+    <Class name = 'For' isAbstract = 'false' supertypes = 'Pascal::Loop'/>
+    <Class name = 'While' isAbstract = 'false' supertypes = 'Pascal::Loop'/>
+    <Class name = 'Repeat' isAbstract = 'false' supertypes = 'Pascal::Loop'/>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

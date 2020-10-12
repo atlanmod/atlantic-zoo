@@ -1,0 +1,101 @@
+-- ******************************************************************************
+-- Copyright (c) 2009 INRIA. 
+-- All rights reserved. This program and the accompanying materials 
+-- are made available under the terms of the Eclipse Public License v1.0 
+-- which accompanies this distribution, and is available at
+-- http://www.eclipse.org/legal/epl-v10.html
+-- 
+-- Contributors: 
+-- 	INRIA - Initial implementation
+--  @author : Jean-Sébastien Sottet
+-- ******************************************************************************
+-- Resource Dictionary used for the generation of 3D Transformation
+
+-- @name		XAML-ResourceDictionary
+-- @version		1.0
+-- @domains		Graphical Programming Language
+-- @author 		Jean-Sébastien Sottet( jean-sebasiten.sottet <at> inria <dot> fr )
+-- @date		2010/01/30
+-- @description	XAML-RessourceDictionary is a subset of the XAML language. It is used to describe resources used in other XAML files.
+--				These metamodel only focuses on graphical transformations resources (e.g., rotate, scale, etc.).
+
+package XAML {
+
+
+	abstract class Transformation {
+		
+	}
+	
+	abstract class WinFXElement { -- example x:Name
+		reference namespace : NameSpace;
+	}
+	
+	class NameSpace {
+		attribute namespace : String;
+		attribute identifier : String;
+	}
+	
+	class ResourceGroup {
+		reference key container : Key;
+	}
+
+	abstract class Material {
+	
+	}
+		
+	class Key extends WinFXElement {
+		attribute name : String;
+	}
+	
+	class ResourceDictionary {
+		reference resourcegroups[*] container : ResourceGroup;
+		reference xmlns[*] container : NameSpace;
+	}
+	
+	class Transform3DGroup extends ResourceGroup {
+		reference transformations[*] container : Transformation;
+	}
+	
+	class MaterialGroup extends ResourceGroup {
+		reference materials[*] container : Material;
+	}
+	
+	class DiffuseMaterial extends Material {
+		attribute Brush : String; -- It is an enumeration of pre-defined value and user defined values
+	}
+	
+	class TranslateTransform3D extends Transformation {
+		attribute OffsetX : Double;
+		attribute OffsetY : Double;
+		attribute OffsetZ : Double;
+	}
+	
+	class ScaleTransform3D extends Transformation{
+		attribute ScaleX : Double;
+		attribute ScaleY : Double;
+		attribute ScaleZ : Double;
+	}
+	
+	class RotateTransform3D extends Transformation {
+		attribute CenterX : Double;
+		attribute CenterY : Double;
+		reference rotation container : RotateTransformat3DRotation;
+	}
+	
+	class RotateTransformat3DRotation {
+		reference axisAngleRotation3D container : AxisAngleRotation3D;
+	}
+	
+	class AxisAngleRotation3D {
+		attribute angle : Integer;
+		attribute axis : String; -- it is a collection of value x,y,z like : "1.0 , 0.0 , 0.0 "	
+	}
+	
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+	datatype Integer;
+	datatype Double;
+}

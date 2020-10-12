@@ -1,0 +1,3089 @@
+package pcs {
+
+	class Thing {
+		
+	}
+
+	class "Meta-Reviewer" extends Reviewer {
+		
+	}
+
+	class Reviewer extends ConferenceMember, User, Member, ProgramCommitteeMember, Organizer, Speaker, Person {
+		reference "invites_co-reviewers"[0-1] : Reviewer;
+		reference invited_by[0-1] : Reviewer;
+		reference has_a_review_reference_or_expertise[*] : Thing; --Review_preference or Review_Expertise
+		reference writes_review[0-1] : Review oppositeOf review_written_by;
+		reference hasReviewHistory[0-1] : PersonalReviewHistory oppositeOf isReviewHistoryOf;
+		reference executes[0-1] : DoubleBlindReview oppositeOf isExecutedBy;
+		reference cooperates[0-1] : ExternalReviewer oppositeOf cooperatesReviewer;
+		reference IsAssignedTo[0-1] : Paper oppositeOf paperIsAssignedTo;
+		reference hasConflictedPaper[0-1] : Paper;
+		reference hasPreferredPaper[0-1] : Paper;
+		reference hasPreferredTopic[0-1] : ResearchTopic;
+		reference writeReview[0-1] : Review oppositeOf isWritenBy;
+		reference has_made_review[0-1] : Paper_Review oppositeOf Review_made_by;
+		attribute UserName[0-1] : String;
+		attribute Comments_to_Chair[0-1] : String;
+		attribute Other_Areas[0-1] : String;
+		reference refuses[0-1] : Pending_Proposed_Conflict oppositeOf refusedBy;
+		reference reviews[0-1] : Paper oppositeOf reviewedBy;
+		reference bidsFor[0-1] : Paper;
+		reference confirmes[0-1] : Pending_Proposed_Conflict oppositeOf confirmedBy;
+		reference assignedPaperBy[0-1] : Program_Comitee_Chair oppositeOf assignsPaper;
+		reference assignedByAdministrator[0-1] : Administrator;
+		reference adjustBid[0-1] : Bid oppositeOf adjustedBy;
+		reference readPaper[0-1] : Paper;
+		reference hasBeenAssigned[0-1] : Paper;
+--		reference writeReview[0-1] : Review;
+		reference assignExternalReviewer[0-1] : ExternalReviewer;
+	}
+
+	class Decision {
+		
+	}
+
+
+	class Preference {
+		
+	}
+
+
+	class Bid {
+		reference adjustedBy[0-1] : Reviewer;
+	}
+
+	class Conference extends Thing, Scientific_Event, Working_event, Event {
+		reference is_in_phase[0-1] : phase_of_conference;
+		reference has_program[0-1] : program;
+		reference hasMember[0-1] : Person oppositeOf isMemberOf;
+		attribute hasName[0-1] : String;
+		attribute endDate[0-1] : dateTime;
+		attribute paperDueOn[0-1] : dateTime;
+		attribute registrationDueOn[0-1] : dateTime;
+		attribute manuscriptDueOn[0-1] : dateTime;
+		attribute startDate[0-1] : dateTime;
+		reference hasCountry : Country;
+		reference isOrganizedBy[0-1] : OrganizingCommittee oppositeOf organizes;
+		attribute annualOrder[0-1] : Integer;
+		reference takesPlace[0-1] : Location;
+		attribute hasAcronym[0-1] :String;
+		reference finishedBy[0-1] : Program_Comitee_Chair oppositeOf finishes;
+		reference focusesOn[0-1] : Topic;
+		reference startedBy[0-1] : Program_Comitee_Chair oppositeOf starts;
+		reference takesPlace[0-1] : Location;
+		reference has_conference_member[0-1] : ConferenceMember oppositeOf member_of_conference;
+		attribute WebSite[0-1] : anyURI;
+		attribute Topic_of_conference[0-1] : String;
+		attribute Date[0-1] : date;
+		reference hasConferenceMember[0-1] : ConferenceMember;
+		reference paperAssignmentFinalizedBy[0-1] : Administrator;
+		reference reviewCriteriaEnteredBy[0-1] : Administrator;
+		reference paperAssignmentToolsRunBy[0-1] : Administrator;
+		reference virtualMeetingEnabledBy[0-1] : Administrator;
+		reference hardcopyMailingManifestsPrintedBy[0-1] : Administrator;
+		reference detailsEnteredBy[0-1] : Administrator;
+		reference reviewerBiddingStartedBy[0-1] : Administrator;
+		attribute date[0-1] : date;
+		attribute reviewsPerPaper[0-1] : Integer;
+		attribute logoURL[0-1] : anyURI;
+		attribute acceptsHardcopySubmissions[0-1] : Boolean;
+		attribute siteURL[0-1] : anyURI;
+	}
+
+	class ConferenceChair extends ConferenceMember, Chairman, Person {
+		
+	}
+
+
+	class AssociatedChair extends ConferenceMember, Chairman {
+		
+	}
+
+
+	class AuthorNotReviewer extends Author {
+		
+	}
+
+	class SubjectArea {
+		
+	}
+
+	class ExternalReviewer extends Person {
+		reference assignedByReviewer : Reviewer;
+		reference cooperatesReviewer[0-1] : Reviewer oppositeOf cooperates;
+	}
+
+	class Chairman extends Person, ConferenceMember {
+		
+	}
+
+	class ProgramCommitteeChair extends ProgramCommitteeMember, Chairman {
+		reference endReview[0-1] : Review;
+	}
+
+	class Acceptance extends Decision {
+		
+	}
+
+	class Rejection extends Decision {
+		
+	}
+
+
+	class Paper extends Contribution, Domain_Topic, ActivitySubmissionForm,  Document, Contribution,  article, Regular_contribution  {
+		attribute full_paper_size[0-1] : Integer;
+--		reference has_author : human;
+		reference isWrittenBy[0-1] : Author oppositeOf hasRelatedPaper;
+		reference isReviewedBy[*] : Person;--SessionChair, Reviewer, TPCMember, ConferenceChair
+		reference hasReview[0-1] : Review oppositeOf reviewOfPaper;
+		reference hasReviewer[0-1] : Possible_Reviewer oppositeOf reviewerOfPaper;
+		reference paperIsSubmittedBy[0-1] : Author oppositeOf submitsPaper;
+		reference isRejectedBy[0-1] : Chair oppositeOf rejects;
+		reference isAcceptedBy[0-1] : Chair oppositeOf accepts;
+		reference paperIsAssignedTo[0-1] : Reviewer oppositeOf IsAssignedTo;
+		reference hasSecondaryTopic[0-1] : ResearchTopic;
+		reference hasMainTopic[0-1] : ResearchTopic;
+		reference hasAuthor[0-1] : Author oppositeOf writePaper;
+		reference hasStatus[0-1] : PaperStatus oppositeOf isStatusOf;
+		attribute hasTitle[0-1] : String;
+		attribute hasID[0-1] : String;
+		reference hasAbstract[0-1] : PaperAbstract oppositeOf isAbstractOf;
+		reference isRatedBy[0-1] : Review oppositeOf rates;
+		reference is_written_by[0-1] : Author oppositeOf writes_Paper;
+		attribute Abstract[0-1] : String;
+		attribute Title[0-1] : String;
+		attribute Students[0-1] : String;
+		attribute Keywords[0-1] : String;
+		reference rejectedBy[0-1] : Program_Comitee_Chair oppositeOf rejects;
+		reference acceptedBy[0-1] : Program_Comitee_Chair oppositeOf accepts;
+		reference reviewedBy[0-1] : Reviewer oppositeOf reviews;
+		reference discussedBy[0-1] : Program_Comitee oppositeOf discusses;
+		attribute isPaperTypeOf[0-1] : EEnum;
+		reference assignedToReviewBy[0-1] : Program_Comitee_Chair oppositeOf assignsToReview;
+		attribute hasBid[0-1] : EEnum;
+--		attribute Title[0-1] : String;
+		attribute Summary[0-1] : String;
+		reference rejected_paper_by[0-1] : CommitteeMember oppositeOf reject_paper;
+		reference accepted_by[0-1] : CommitteeMember oppositeOf accept;
+		reference written_paper_by[0-1] : Author oppositeOf write_paper;
+		reference "hasCo-author"[0-1] : "Co-Author" oppositeOf "co-writePaper";
+		reference hasBid[0-1] : Bid;
+		reference hasDecision[0-1] : Decision;
+		reference assignedTo[0-1] : Reviewer;
+		reference hasSubjectArea[0-1] : SubjectArea;
+		reference readByReviewer : Reviewer;
+		attribute paperID[0-1] : unsignedLong;
+		attribute title[0-1] : String;
+--		reference hasAuthor[0-1] : Author;
+--		reference acceptedBy[0-1] : Administrator;
+--		reference rejectedBy[0-1] : Administrator;
+		reference "readByMeta-Reviewer"[0-1] : "Meta-Reviewer";
+	}
+
+	class Author extends ConferenceMember, User,  People,  Person, Speaker {
+		reference submitsPaper[0-1] : Paper oppositeOf paperIsSubmittedBy;
+		reference writePaper[0-1] : Paper oppositeOf hasAuthor;
+		reference writes_Paper[0-1] : Paper oppositeOf is_written_by;
+		reference changes[0-1] : Contribution oppositeOf changedBy;
+		reference write_paper[0-1] : Paper oppositeOf written_paper_by;
+		reference submitPaper[0-1] : Paper;
+--		reference writePaper[0-1] : Paper;
+		reference writes[0-1] : Contribution;
+		reference writes_article[0-1] : article oppositeOf article_written_by;
+		reference assigns_article_to_conference[0-1] : article;
+		reference hasRelatedPaper[0-1] : Paper oppositeOf isWrittenBy;
+		reference conflictsWith[*] : Thing;--Author, Organizer or OutsideReferee
+		reference isAuthorOf[0-1] : ActivitySubmissionForm oppositeOf hasAuthor;
+		reference conducts[0-1] : Thing;--Tutorial, Workshop or Lecture
+	}
+
+
+
+	class PaperFullVersion extends Paper {
+		
+	}
+
+	class Administrator extends User, ProgramCommitteeMember, Person {
+		reference approve[0-1] : Event;
+		reference assign[0-1] : Role oppositeOf assigned_by;
+		reference assigns[0-1] : Thing;--??
+		reference send[0-1] : Email oppositeOf sended_by;
+		reference generate[0-1] : Thing;--??
+		reference finalizePaperAssignment[0-1] : Conference;
+		reference runPaperAssignmentTools[0-1] : Conference;
+		reference enableVirtualMeeting[0-1] : Conference;
+		reference startReviewerBidding[0-1] : Conference;
+		reference assignReviewer[0-1] : Reviewer;
+		reference rejectPaper[0-1] : Paper;
+		reference enterConferenceDetails[0-1] : Conference;
+		reference printHardcopyMailingManifests[0-1] : Conference;
+		reference setMaxPapers[0-1] : ProgramCommitteeMember;
+		reference enterReviewCriteria[0-1] : Conference;
+		reference acceptPaper[0-1] : Paper;
+		reference addProgramCommitteeMember[0-1] : ProgramCommitteeMember;
+	}
+
+	class "Meta-Review" extends Review {
+		
+	}
+
+	datatype unsignedLong;
+
+	class Event extends Thing {
+		attribute starts_on[0-1] : String;
+		attribute ends_on[0-1] : String;
+		attribute has_startdate[0-1] : dateTime;
+		attribute has_enddate[0-1] : dateTime;
+		reference eventOnList[*] : Thing;--Programme_Brochure, Web_Site
+		reference partOfEvent[0-1] : Event;
+		reference hasEvent[0-1] : Event;
+		reference organisedBy[*] : Thing;--organization, Person
+		reference heldIn[0-1] : Location;
+		reference conists_of[0-1] : Event_Tracks;
+		reference confirmed_by[0-1] : Approval_Email oppositeOf confirm;
+		reference defined_by[0-1] : Event_Setup oppositeOf define;
+		reference approved_by[0-1] : Administrator oppositeOf approve;
+	}
+
+	class Account {
+		reference registred_by[0-1] : Person oppositeOf register;
+	}
+
+	class Inforamtion {
+		
+	}
+
+	class User extends Person {
+		reference recieve[0-1] : Document oppositeOf recieved_by;
+		reference create[*] : Thing; --Event or Document
+		reference submit[0-1] : Document oppositeOf submited__by;
+	}
+
+	class Role extends Thing {
+		reference assigned_by[0-1] : Administrator oppositeOf assign;
+	}
+
+	class Help_Request extends Request {
+		
+	}
+
+
+	class Symposium extends Event {
+		
+	}
+
+
+
+	class Document extends Thing, Item {
+		reference writtenBy[0-1] : Person oppositeOf authorOf;
+		reference hasUpdatedVersion[0-1] : Document;
+		reference updatedVersionOf[0-1] : Document;
+		reference relatesTo[*] : Thing; --AcademicEvent, Conference, Person, ConferenceSession
+		reference submited_by[0-1] : Person oppositeOf submit;
+		attribute Document_ID[0-1] : String;
+		reference recieved_by[0-1] : User oppositeOf recieve;
+		reference used_by[0-1] : Person oppositeOf use;
+		reference submited__by[0-1] : User oppositeOf submit;
+	}
+
+	class Invited_Paper extends Paper {
+		
+	}
+
+	class Admin_Role extends Role {
+		
+	}
+
+	class Paper_Typologies extends Event_Setup {
+		
+	}
+
+	class Event_Setup {
+		reference define[0-1] : Event;
+	}
+
+	class Event_URL extends URL {
+		reference concerned[0-1] : Event;
+	}
+
+
+	class Notification_Email extends Email {
+		
+	}
+
+
+	class Short_Paper extends Paper {
+		
+	}
+
+	class Author_Role extends Role {
+		
+	}
+
+	class Preview extends Review_Form {
+		
+	}
+
+	class Review_Form extends Event_Setup {
+		
+	}
+
+
+	class Committe_Role extends Role {
+		
+	}
+
+	class Group_Email extends Email {
+		
+	}
+
+	class Submission_Template extends Event_Setup {
+		
+	}
+
+	class Review_Form_Setup extends Review_Form {
+		
+	}
+
+	class Misc extends Help_Request {
+		
+	}
+
+	class Event_Creation extends Activity {
+		
+	}
+
+	class Approval_Email extends Email {
+		reference confirm[0-1] : Event;
+	}
+
+	class Rejection_Email extends Email {
+		
+	}
+
+
+	class Template extends Document {
+		
+	}
+
+	class Feature_Request extends Help_Request {
+		
+	}
+
+	class Event_Tracks extends Event_Setup {
+		
+	}
+
+	class Request extends Activity {
+		
+	}
+
+	class Activity extends Thing {
+		reference hasTopic[0-1] : Topic oppositeOf isIncluded;
+		attribute expectedAttendance[0-1] : Integer;
+		reference isPartOf[0-1] : Conference;
+		reference is_followed_by[0-1] : Activity;
+		reference is_monitored_by[0-1] : human;
+		reference has_intensity[0-1] : intensity;
+		reference has_result[0-1] : article;
+		reference is_performed_by[0-1] : human oppositeOf performs_activity;
+		reference is_supervised_by[0-1] : human oppositeOf supervises;
+		reference is_held_before[0-1] : Time;
+		reference is_held_in[0-1] : Thing;--??
+		reference is_held_after[0-1] : Time;
+		attribute is_dated_on[0-1] : dateTime;
+		reference has_result[0-1] : article;
+		reference sent_by[0-1] : Person oppositeOf send;
+	}
+
+	class Head_Role extends Role {
+		
+	}
+
+	class Detail extends Thing {
+		
+	}
+
+	class Corresponding_Author extends Author {
+		
+	}
+
+	class Reviewer_Role extends Role {
+		
+	}
+
+	class Event_Approval extends Activity {
+		
+	}
+
+	class Registration extends Activity {
+		
+	}
+
+	class Full_Paper extends Paper {
+		
+	}
+
+	class Research_Topic extends Event_Setup {
+		
+	}
+
+	class Description {
+		
+	}
+
+
+	class Assistance extends Help_Request {
+		
+	}
+
+	class Email_Template extends Event_Setup {
+		
+	}
+
+
+	class Conference_participant extends Person {
+		
+	}
+
+	class Active_conference_participant extends Conference_contributor, Conference_participant {
+		reference gives_presentations[0-1] : Presentation;
+	}
+
+	class Passive_conference_participant extends Conference_participant {
+		
+	}
+
+	class Person extends Thing {
+		reference loggin_in[0-1] : System;
+		reference submit[0-1] : Document oppositeOf submited_by;
+		reference get[0-1] : Email;
+		attribute "E-mail"[0-1] : String;
+		attribute hasMail[0-1] : String;
+		attribute worksForCompany[0-1] : String;
+		reference employedBy[0-1] : Organization;
+		attribute hasHomePage[0-1] : String;
+		attribute hasSurname[0-1] : String;
+		attribute hasFax[0-1] : String;
+		attribute hasFirstName[0-1] : String;
+		attribute hasPhone[0-1] : String;
+		attribute hasEmail[0-1] : String;
+		reference attendeeAt[0-1] : ConferenceEvent oppositeOf hasAttendee;
+		reference isMemberOf[0-1] : Conference oppositeOf hasMember;
+		attribute hasFirstName[0-1] : String;
+		attribute hasBiography[0-1] : String;
+		attribute hasLastName[0-1] : String;
+		reference authorOf[0-1] : Document oppositeOf writtenBy;
+		reference prepare[0-1] : Item oppositeOf is_prepared_by;
+		reference occupy[*] : Presenter_city;
+		reference is_present_in[*] : Thing;--Time or Place
+		reference write[0-1] : Item oppositeOf is_writen_by;
+		reference obtain[0-1] : Item;
+		reference send[0-1] : Item oppositeOf is_sent_by;
+		reference speak_in[*] : Thing;--Time or Place
+		reference pay[0-1] : Money oppositeOf is_paid_by;
+		reference sign[0-1] : Item oppositeOf is_signed_by;
+		reference is_present[0-1] : Time;
+		reference give[*] : Thing; --Item or Activity
+		reference need[0-1] : Item oppositeOf is_needed_for;
+		attribute hasAffiliation[0-1] : String;
+		attribute hasFirstName[0-1] : String;
+		attribute hasLastName[0-1] : String;
+		attribute hasEmail[0-1] : String;
+		attribute hasName[0-1] : String;
+		reference hasConflictOfInterest[0-1] : Document;
+		attribute email[0-1] : String;
+		reference inverse_of_add[*] : Thing; --Person or Document
+		reference execute[*] : Thing; --Role or Activity
+		reference get[0-1] : Inforamtion;
+		reference use[0-1] : Document oppositeOf used_by;
+		reference register[0-1] : Account oppositeOf registred_by;
+		reference modify[*] : Thing; --Account or Detail
+		reference take_part_in[0-1] : Event;
+		reference remove[*] : Thing; --Account or Detail
+		reference add[0-1] : Person;
+--		reference send[0-1] : Activity;
+		reference added_by[0-1] : Person;
+		reference contributes[0-1] : Conference_document oppositeOf has_authors;
+		attribute has_an_email[0-1] : String;
+		attribute has_the_first_name[0-1] : String;
+		attribute has_gender[0-1] : EEnum;
+		attribute has_the_last_name[0-1] : String;
+	}
+
+	class Review_expertise extends Thing {
+		reference has_a_submitted_contribution[0-1] : Submitted_contribution oppositeOf has_a_review_expertise;
+		attribute has_an_expertise[0-1] : EEnum;
+	}
+
+	class Submitted_contribution extends Written_contribution {
+		reference has_a_review_expertise[0-1] : Review_expertise oppositeOf has_a_submitted_contribution;
+	}
+
+	class Regular_author extends Conference_contributor {
+		
+	}
+
+	class Conference_contributor extends Person {
+		
+	}
+
+	class "Contribution_1th-author" extends Regular_author {
+		
+	}
+
+	class "Contribution_co-author" extends Regular_author {
+		
+	}
+
+	class Conference_contribution extends Conference_document {
+		reference is_submitted_at[0-1] : Conference_volume oppositeOf has_contributions;
+	}
+
+	class "Co-chair" extends Committee_member {
+		reference "was_a_committe_co-chair_of"[0-1] : Committee oppositeOf "has_a_committee_co-chair";
+	}
+
+	class Committee extends User {
+		reference has_members[0-1] : Committee_member oppositeOf was_a_member_of;
+		reference was_a_committee_of[0-1] : Conference_volume oppositeOf has_a_commtitee;
+		reference "has_a_committee_co-chair"[0-1] : "Co-chair" oppositeOf "was_a_committe_co-chair_of";
+		reference has_a_committee_chair[0-1] : Chair;
+	}
+
+	class Committee_member extends Person {
+		reference was_a_member_of[0-1] : Committee oppositeOf has_members;
+	}
+
+
+	class Extended_abstract extends Regular_contribution {
+		
+	}
+
+	class Important_dates {
+		attribute is_an_abstract_submission_date[0-1] : date;
+		attribute is_a_full_paper_submission_date[0-1] : date;
+		attribute is_an_ending_date[0-1] : date;
+		attribute is_a_date_of_acceptance_announcement[0-1] : date;
+		attribute is_a_date_of_camera_ready_paper_submission[0-1] : date;
+		attribute is_a_starting_date[0-1] : date;
+		reference belong_to_a_conference_volume[0-1] : Conference_volume oppositeOf has_important_dates;
+	}
+
+	class Invited_speaker extends Conference_contributor {
+		
+	}
+
+	class Conference_proceedings {
+		attribute has_an_ISBN[0-1] : String;
+		reference has_a_publisher[0-1] : Publisher oppositeOf issues;
+		attribute has_a_volume[0-1] : String;
+	}
+
+	class Information_for_participants extends Conference_document {
+		
+	}
+
+	class Conference_document {
+		reference has_authors[0-1] : Person oppositeOf contributes;
+		attribute has_a_date_of_issue[0-1] : date;
+	}
+
+	class Regular_contribution extends Written_contribution {
+		
+	}
+
+	class Poster extends Conference_contribution {
+		
+	}
+
+	class Written_contribution extends Conference_contribution {
+		
+	}
+
+	class Conference_applicant extends Person {
+		
+	}
+
+	class Camera_ready_contribution extends Accepted_contribution {
+		
+	}
+
+	class Accepted_contribution extends Reviewed_contribution {
+		
+	}
+
+	class Program_committee extends Committee, Committees {
+		reference was_a_program_committee_of[0-1] : Conference_volume oppositeOf has_a_program_committee;
+	}
+
+	class Organizing_committee extends Committee {
+		reference was_an_organizing_committee_of[0-1] : Conference_volume oppositeOf has_an_organizing_committee;
+	}
+
+	class Steering_committee extends Committee {
+		reference was_a_steering_committee_of[0-1] : Conference_volume oppositeOf has_a_steering_committee;
+	}
+
+	class Conference_volume extends Conference {
+		reference has_parts[0-1] : Conference_part oppositeOf is_part_of_conference_volumes;
+		reference has_workshops[0-1] : Workshop;
+		reference has_tracks[0-1] : Track;
+		reference has_tutorials[0-1] : Tutorial;
+		reference has_a_commtitee[0-1] : Committee oppositeOf was_a_committee_of;
+		reference has_a_steering_committee[0-1] : Steering_committee oppositeOf was_a_steering_committee_of;
+		reference has_an_organizing_committee[0-1] : Organizing_committee oppositeOf was_an_organizing_committee_of;
+		reference has_important_dates[0-1] : Important_dates oppositeOf belong_to_a_conference_volume;
+		reference has_contributions[0-1] : Conference_contribution oppositeOf is_submitted_at;
+		attribute has_a_location[0-1] : String;
+		reference has_a_program_committee[0-1] : Program_committee oppositeOf was_a_program_committee_of;
+	}
+
+	class Call_for_paper extends Conference_document {
+		
+	}
+
+	class Conference_announcement extends Conference_document {
+		
+	}
+
+
+	class Invited_talk extends Presentation {
+		
+	}
+
+	class Conference_part {
+		reference "has_a_track-workshop-tutorial_topic"[0-1] : Topic;
+		reference is_part_of_conference_volumes[0-1] : Conference_volume oppositeOf has_parts;
+		reference "has_a_track-workshop-tutorial_chair"[0-1] : "Track-workshop_chair" oppositeOf "was_a_track-workshop_chair_of";
+	}
+
+
+
+	class Rejected_contribution extends Reviewed_contribution {
+		
+	}
+
+	class Reviewed_contribution extends Submitted_contribution {
+		reference has_a_review[0-1] : Review oppositeOf reviews;
+	}
+
+	class Review extends Conference_document, Thing, Document, article {
+		reference gives_classification : classification;
+		reference is_created_in : Activity;
+		reference review_written_by[0-1] : Reviewer oppositeOf writes_review;
+		reference reviewOfPaper[0-1] : Paper oppositeOf hasReview;
+		reference reviewWrittenBy[0-1] : Possible_Reviewer;
+		reference containsEvaluation[0-1] : Evaluation;
+		reference rates[0-1] : Paper oppositeOf isRatedBy;
+		reference isWritenBy[0-1] : Reviewer oppositeOf writeReview;
+		reference assigned_review_by[0-1] : Primary_Reviewer oppositeOf assign_review;
+		reference written_review_by[0-1] : Reviewer;
+		reference writtenBy[0-1] : Reviewer;
+		reference reviews[0-1] : Reviewed_contribution oppositeOf has_a_review;
+	}
+
+
+	class Late_paid_applicant extends Paid_applicant {
+		
+	}
+
+	class Paid_applicant extends Registeered_applicant {
+		
+	}
+
+	class Early_paid_applicant extends Paid_applicant {
+		
+	}
+
+
+	class Call_for_participation extends Conference_document {
+		
+	}
+
+	class Publisher {
+		reference issues[0-1] : Conference_proceedings oppositeOf has_a_publisher;
+	}
+
+	class Registeered_applicant extends Conference_applicant {
+		
+	}
+
+	class "Track-workshop_chair" extends Person {
+		reference "was_a_track-workshop_chair_of"[0-1] : Conference_part oppositeOf "has_a_track-workshop-tutorial_chair";
+	}
+
+	class Conference_www extends Conference_document {
+		attribute has_a_URL[0-1] : String;
+	}
+
+	class Conference_fees {
+		
+	}
+
+	class Review_preference extends Thing {
+		reference has_a_topic_or_a_submission_contribution[*] : Thing; --Topic or Submission_contribution
+		attribute has_a_degree[0-1] : Integer;
+	}
+
+	enumeration EEnum {
+		literal Yes;
+		literal No;
+		literal Unsure;
+
+		literal Accept;
+		literal Reject;
+		literal Unsure;
+		
+		literal submitted;
+		literal missing;
+
+		literal notStarted;
+		literal active;
+		literal finished;
+
+		literal accepted;
+		literal rejected;
+
+		literal regular;
+		literal invited;
+
+		literal lowBid;
+		literal "-";
+		literal CONFLICT;
+		literal wantNot;
+		literal highBid;
+		
+		literal Compilers;
+		literal Microarchitecture;
+		literal Systems;
+
+		literal ForwardLookingIdea;
+		
+		literal "1";
+		literal "2";
+		literal "3";
+		literal "4";
+		literal "5";
+		literal "6";
+		literal "7";
+		
+		literal male;
+		literal female;
+
+		literal high;
+		literal medium;
+		literal low;
+		literal "very high";
+	}
+
+
+	class Accepted_Paper extends Paper {
+		
+	}
+
+
+	class Rejected_Paper extends Paper {
+		
+	}
+
+	class Undecided_Paper extends Paper {
+		
+	}
+
+	class Manual_Paper_Assignment extends paper_assignment {
+		reference manually_assign_paper[*] : Program_Committee_member;
+	}
+
+	class Program_Committee_member extends human {
+		
+	}
+
+	class paper_assignment extends Activity {
+		reference assign_paper[0-1] : Program_Committee_member;
+		reference is_performed_by : human;
+	}
+
+	class intensity {
+		
+	}
+
+	class "start_date_of_camera-ready_submission" extends "camera-ready_submission_date" {
+		
+	}
+
+	class "camera-ready_submission_date" extends date {
+		
+	}
+
+	class date_of_notification extends date {
+		
+	}
+
+	class date extends Thing {
+		
+	}
+
+	class article extends Document {
+--		reference has_author[0-1] : author;
+		reference article_written_by[0-1] : Author oppositeOf writes_article;
+		reference has_reviewer[0-1] : Reviewer;
+		reference has_abstract[0-1] : Abstract oppositeOf part_of_article;
+		reference goes_through[0-1] : Activity;
+		reference is_sent_to[0-1] : human;
+		reference is_created_in[0-1] : Activity;
+		reference structure_created_by[0-1] : human;
+		reference has_author[0-1] : human oppositeOf is_author_of;
+		reference gives_classification[0-1] : classification;
+	}
+
+	class Contact_Person extends human {
+		
+	}
+
+
+	class bidding_of_reviewer extends Activity {
+		reference is_performed_by : human;
+	}
+
+	class URL extends Thing {
+		
+	}
+
+	class conference_setup extends Thing {
+		reference sets_member[0-1] : human;
+		reference is_made_by[0-1] : human;
+		reference includes_topic[0-1] : Topic;
+		reference sets_date[0-1] : date;
+		reference sets_URL[0-1] : URL;
+	}
+
+	class human {
+		reference is_author_of[0-1] : article oppositeOf has_author;
+		reference performs_activity[0-1] : Activity oppositeOf is_performed_by;
+		reference is_employed_in[0-1] : institute;
+		reference has_topic_of_interest[0-1] : Topic;
+		reference supervises[0-1] : Activity oppositeOf is_supervised_by;
+		attribute "e-mail"[0-1] : String;
+		attribute last_name[0-1] : String;
+		attribute first_name[0-1] : String;
+	}
+
+	class managing_of_conference_process extends Activity {
+		
+	}
+
+	class Program_Committee_Chair extends human {
+		
+	}
+
+	class reviewing_proces extends Activity {
+		
+	}
+
+	class "end_date_of_camera-ready_submission" extends "camera-ready_submission_date" {
+		
+	}
+
+	class abstract_submission_date extends date {
+		
+	}
+
+	class group_email extends article {
+		
+	}
+
+	class Senior_Reviewer_URL extends URL {
+		
+	}
+
+	class notification extends Activity {
+		reference has_result : article;
+		reference is_performed_by : human;
+	}
+
+	class notification_email extends article {
+		
+	}
+
+	class Chair_URL extends URL {
+		
+	}
+
+	class abstract_of_paper extends article {
+		
+	}
+
+	class submission_process extends Activity {
+		reference is_performed_by : human;
+	}
+
+	class lower_tier_reviewing_process extends reviewing_proces {
+		
+	}
+
+	class start_date_of_conference extends date_of_conference {
+		
+	}
+
+	class date_of_conference extends date {
+		
+	}
+
+	class Senior_Program_Committee_member extends Program_Committee_member {
+		reference supervises[0-4] ordered : Activity;
+	}
+
+	class end_date_of_abstract_submission extends abstract_submission_date {
+		
+	}
+
+	class phase_of_conference {
+		
+	}
+
+	class Regular_Program_Committee_member extends Program_Committee_member {
+		
+	}
+
+
+
+	class start_date_of_full_paper_submission extends full_paper_submission_date {
+		
+	}
+
+	class full_paper_submission_date extends date {
+		
+	}
+
+	class start_date_of_abstract_submission extends abstract_submission_date {
+		
+	}
+
+	class end_date_of_conference extends date_of_conference {
+		
+	}
+
+	class review_form extends article {
+		reference is_created_in : Activity;
+	}
+
+	class Automatic_Paper_Assignment extends paper_assignment {
+		reference automatically_assign_paper[*] : Program_Committee_member;
+	}
+
+	class institute {
+		
+	}
+
+	class classification {
+		
+	}
+
+	class summary_of_reviews extends article {
+		reference is_created_in : Activity;
+	}
+
+	class upper_tier_reviewing_process extends reviewing_proces {
+		reference is_performed_by : human;
+	}
+
+	class end_date_of_full_paper_submission extends full_paper_submission_date {
+		
+	}
+
+	class acceptance_notification_email extends notification_email {
+		
+	}
+
+	class rejection_notification_email extends notification_email {
+		
+	}
+
+	class Contact_Person_URL extends URL {
+		
+	}
+
+	class Regular_Reviewer_URL extends URL {
+		
+	}
+
+
+	class Trip extends Social_event {
+		
+	}
+
+	class Banquet extends Social_event {
+		
+	}
+
+	class Reception extends Social_event {
+		
+	}
+
+	class Social_event extends Event {
+		
+	}
+
+	class Organization {
+	reference isProviderOf[0-1] : Sponsorship oppositeOf providedBy;
+	}
+
+
+	class Country {
+		
+	}
+
+	class Company extends Organization {
+		
+	}
+
+
+	class Scholar extends Person {
+		reference studyAt[0-1] : University;
+	}
+
+
+
+	class Poster extends Contribution {
+		
+	}
+
+	class Short_paper extends Contribution {
+		
+	}
+
+	class Reviewing_results_event extends Administrative_event {
+		
+	}
+
+	class Administrative_event extends Event {
+		reference follows[0-1] : Administrative_event;
+		reference parallel_with[0-1] : Administrative_event;
+	}
+
+	class Reviewing_event extends Administrative_event {
+		
+	}
+
+	class Registration_of_participants_event extends Administrative_event {
+		
+	}
+
+	class Submission_event extends Administrative_event {
+		
+	}
+
+	class Camera_Ready_event extends Administrative_event {
+		
+	}
+
+
+
+	class Tutorial extends Working_event, Conference_part, Activity,  Lecture, Individual_Presentation {
+		
+	}
+
+	class Working_event extends Event {
+		reference hasTopic[0-1] : Topic oppositeOf isTopicOf;
+		reference hasAdministrativeEvent[0-1] : Administrative_event;
+	}
+
+	class Member extends Participant, People {
+		attribute Web_address[0-1] : String;
+	}
+
+	class Participant extends Person {
+		reference submits_to_conference[0-1] : Conference;
+		attribute earlyRegistration[0-1] : Boolean;
+	}
+
+	class Member_PC extends Person {
+		reference expertOn[0-1] : Topic;
+		reference reviewes[0-1] : Contribution;
+	}
+
+	class Chair_PC extends Person {
+		
+	}
+
+	class Student extends Participant {
+		
+	}
+
+	class Science_Worker extends Person {
+		
+	}
+
+	class Assistant extends Person {
+		
+	}
+
+	class Volunteer extends Person {
+		
+	}
+
+	class Regular extends Participant {
+		
+	}
+
+
+	datatype positiveInteger;
+
+
+	class pc_meeting extends Event {
+		
+	}
+
+
+
+	class session extends Event {
+		
+	}
+
+
+
+	class chair extends Person, Committee_member {
+		reference was_a_committee_chair_of[0-1] : Committee oppositeOf has_a_committee_chair;
+		reference assigns_reviewers_to_article[0-1] : Reviewer;
+		reference creates_program[0-1] : program oppositeOf program_created_by;
+	}
+
+	class Abstract extends Paper, Contribution_File, Document, Extended_abstract {
+		reference is_the_1th_part_of[*] : Thing; --Paper, Poster or Presentation
+		reference part_of_article[0-1] : article oppositeOf has_abstract;
+	}
+
+	class program {
+		reference program_created_by[0-1] : chair oppositeOf creates_program;
+		reference has_session[0-1] : session;
+	}
+
+	class SlideSet extends Document {
+		
+	}
+
+	class Programme extends Document, Conference {
+		reference belongsToEvent[0-1] : ConferenceEvent oppositeOf hasProgramme;
+	}
+
+
+
+	class MealMenu extends Document {
+		reference isMenuOf[0-1] : MealEvent oppositeOf hasMenu;
+	}
+
+
+	class Topic extends Thing {
+		reference isIncluded[0-1] : Activity oppositeOf hasTopic;
+		reference belongs_to_a_review_reference[0-1] : Review_preference;
+		reference is_a_topis_of_conference_parts[0-1] : Conference_part oppositeOf "has_a_track-workshop-tutorial_topic";
+		reference isTopicOf[0-1] : Working_event oppositeOf hasTopic;
+	}
+
+	class ConferenceEvent {
+		reference hasAttendee[0-1] : Person oppositeOf attendeeAt;
+		reference hasLocation[0-1] : Place;
+		reference hasProgramme[0-1] : Programme;
+		attribute hasEndDateTime[0-1] : dateTime;
+		attribute hasStartDateTime[0-1] : dateTime;
+	}
+
+	class Call {
+		reference forEvent[0-1] : AcademicEvent oppositeOf hasCall;
+		reference isInitiatedBy[*] : Person; --SessionChair TPCMember ConferenceChair
+		attribute hasSubmissionInstructions[0-1] : String;
+		attribute hasSubmissionDeadline[0-1] : dateTime;
+	}
+
+	class ReviewRating {
+		
+	}
+
+
+	class ReviewForm {
+		
+	}
+
+
+	class PersonalHistory {
+		
+	}
+
+	class Sponsorship {
+		reference providedBy[0-1] : Organization oppositeOf isProviderOf;
+		attribute hasCostCurrency[0-1] : String;
+		attribute hasCostAmount[0-1] : Integer;
+	}
+
+
+	class ConferenceSession {
+		
+	}
+
+	class ContactInformation {
+		attribute hasCity[0-1] : String;
+		attribute hasStreet[0-1] : String;
+		attribute hasPostalCode[0-1] : String;
+		attribute hasPhone[0-1] : String;
+	}
+
+
+	class WeekRejectRating extends ReviewRating {
+		
+	}
+
+	class AcceptRating extends ReviewRating {
+		
+	}
+
+	class AccpetIfRoomRating extends ReviewRating {
+		
+	}
+
+	class RejectRating extends ReviewRating {
+		
+	}
+
+	class MealEvent extends NonAcademicEvent {
+		reference hasMenu[0-1] : MealMenu oppositeOf isMenuOf;
+	}
+
+	class NonAcademicEvent extends ConferenceEvent {
+		
+	}
+
+	class BreakEvent extends NonAcademicEvent {
+		
+	}
+
+	class ParallelAndDistributedComputingTopic extends Topic {
+		
+	}
+
+	class WirelessCommunicationsTopic extends Topic {
+		
+	}
+
+	class OperatingTopicsystems extends Topic {
+		
+	}
+
+	class ComputerNetworksTopic extends Topic {
+		
+	}
+
+	class SatelliteAndSpaceCommunicationsTopic extends Topic {
+		
+	}
+
+	class CADTopic extends Topic {
+		
+	}
+
+	class MultimediaTopic extends Topic {
+		
+	}
+
+	class CommunicationsTopic extends Topic {
+		
+	}
+
+	class PowerlineTransmissionTopic extends Topic {
+		
+	}
+
+	class AntennasTopic extends Topic {
+		
+	}
+
+	class PerformanceTopic extends Topic {
+		
+	}
+
+	class SignalProcessingTopic extends Topic {
+		
+	}
+
+	class MicroelectronicsTopic extends Topic {
+		
+	}
+
+	class TestOnlyTopic extends Topic {
+		
+	}
+
+	class RadioCommunicationsTopic extends Topic {
+		
+	}
+
+	class ComputerArchitectureTopic extends Topic {
+		
+	}
+
+	class MedicineTopic extends Topic {
+		
+	}
+
+	class SecurityTopic extends Topic {
+		
+	}
+
+	class MobileComputingTopic extends Topic {
+		
+	}
+
+	class CryptographyTopic extends Topic {
+		
+	}
+
+	class CommunicationTheoryTopic extends Topic {
+		
+	}
+
+
+	class DiningPlace extends Place {
+		
+	}
+
+	class Presenter extends Author, Conference_Participant {
+		
+	}
+
+	class AcademiaOrganization extends Organization {
+		
+	}
+
+	class IndustryOrganization extends Organization {
+		
+	}
+
+	class NGO extends Organization {
+		
+	}
+
+	class GovernmentOrganization extends Organization {
+		
+	}
+
+	class ComputerNetworksEnterpriseTopic extends ComputerNetworksTopic {
+		
+	}
+
+	class ComputerNetworksSwitchingTopic extends ComputerNetworksTopic {
+		
+	}
+
+	class ComputerNetworksSensorTopic extends ComputerNetworksTopic {
+		
+	}
+
+	class ComputerNetworksSecurityTopic extends ComputerNetworksTopic {
+		
+	}
+
+	class ComputerNetworksOpticalTopic extends ComputerNetworksTopic {
+		
+	}
+
+	class ComputerNetworksMeasurementsTopic extends ComputerNetworksTopic {
+		
+	}
+
+	class ComputerNetworksManagementTopic extends ComputerNetworksTopic {
+		
+	}
+
+	class ComputerNetworksAapplicationsTopic extends ComputerNetworksTopic {
+		
+	}
+
+	class ActivePaper extends Paper {
+		reference hasRating[0-1] : ReviewRating;
+	}
+
+	class PendingPaper extends Paper {
+		
+	}
+
+	class WithdrawnPaper extends Paper {
+		
+	}
+
+	class RejectedPaper extends Paper {
+		
+	}
+
+
+
+	class PublishedPaper extends Paper {
+		
+	}
+
+	class Attendee extends Person {
+		
+	}
+
+	class CoffeeBreak extends BreakEvent {
+		
+	}
+
+	class FreeTimeBreak extends BreakEvent {
+		
+	}
+
+	class MealBreak extends BreakEvent {
+		
+	}
+
+	class ClosingTalk extends TalkEvent {
+		
+	}
+
+	class WelcomeTalk extends TalkEvent {
+		
+	}
+
+	class TalkEvent extends AcademicEvent {
+		
+	}
+
+	class SessionChair extends Person {
+		
+	}
+
+	class TPCMember extends Person {
+		
+	}
+
+	class TwoLevelConference extends Conference {
+		
+	}
+
+	class CallForPapers extends Call {
+		
+	}
+
+	class TextualReviewQuestion extends ReviewQuestion {
+		
+	}
+
+	class NumericalReviewQuestion extends ReviewQuestion {
+		
+	}
+
+	class OrganizationalMeeting extends AcademicEvent {
+		
+	}
+
+	class PaperPresentation extends AcademicEvent {
+		reference relatedToPaper[0-1] : AcceptedPaper;
+	}
+
+
+
+	class AcademicEvent extends ConferenceEvent {
+		reference hasCall[0-1] : Call oppositeOf forEvent;
+	}
+
+	class PersonalPublicationHistory extends PersonalHistory {
+		
+	}
+
+	class Excursion extends SocialEvent {
+		
+	}
+
+	class SocialEvent extends NonAcademicEvent {
+		
+	}
+
+	class CallForReviews extends Call {
+		
+	}
+
+	class PersonalReviewHistory extends PersonalHistory {
+		reference isReviewHistoryOf[0-1] : Reviewer oppositeOf hasReviewHistory;
+	}
+
+	class ConferenceVenuePlace extends Place {
+		
+	}
+
+	class CallForManuscripts extends Call {
+		
+	}
+
+	class Reception extends SocialEvent {
+		
+	}
+
+	class SingleLevelConference extends Conference {
+		
+	}
+
+	class MeetingRoomPlace extends Place {
+		
+	}
+
+	class AccommodationPlace extends Place {
+		
+	}
+
+	class RatedPapers extends ActivePaper {
+		
+	}
+
+	class TravelGrant extends Sponsorship {
+		
+	}
+
+	class ConferenceDinner extends MealEvent {
+		
+	}
+
+
+	class Accepted_Paper extends Evaluated_Paper {
+		
+	}
+
+	class Rejected_Paper extends Evaluated_Paper {
+		
+	}
+
+	class Evaluated_Paper extends Assigned_Paper {
+		reference hasReview[3-1] : Review;
+	}
+
+	class Camera_Ready_Paper extends Paper {
+		
+	}
+
+	class Positive_Review extends Review {
+		
+	}
+
+	class Workshop_Paper extends Paper {
+		
+	}
+
+	class Industrial_Paper extends Paper {
+		
+	}
+	
+	class Conference_Paper extends Paper {
+		
+	}
+
+	class Industrial_Session extends Conference_Session {
+		
+	}
+
+	class Conference_Session extends Session {
+		
+	}
+
+	class Regular_Session extends Session {
+		
+	}
+
+	class Poster_Session extends Session {
+		
+	}
+
+	class Demo_Session extends Session {
+		
+	}
+
+
+
+
+
+	class Paper_Author extends Person {
+		
+	}
+
+	class Conference_Trip extends Social_Event {
+		
+	}
+
+	class Social_Event extends Event {
+		
+	}
+
+	class Tutorial_Abstract extends Abstract {
+		
+	}
+
+	class Conference_Participant extends Person {
+		
+	}
+
+
+	class Assigned_Paper extends Submitted_Paper {
+		reference hasReviewer[3-1] : Possible_Reviewer;
+	}
+
+	class Negative_Review extends Review {
+		
+	}
+
+
+	class Neutral_Review extends Review {
+		
+	}
+
+	class Research_Topic {
+		reference topicCoveredBy[0-1] : Thing; --??
+	}
+
+	class Organising_Agency extends Organisation {
+		
+	}
+
+	class Academic_Institution extends Organisation {
+		reference scientificallyOrganises[0-1] : Academic_Institution;
+	}
+
+	class Organisation {
+		reference publisherOf[*] : Thing;--Multi-author_Volume, Programme_Brochure, Web_Site,Flyer
+		reference technicallyOrganises[0-1] : Thing; --??
+	}
+
+	class Proceedings_Publisher extends Organisation {
+		
+	}
+
+	class Poster_Paper extends Paper {
+		
+	}
+
+	class Regular_Paper extends Paper {
+		
+	}
+
+	class Demo_Paper extends Paper {
+		
+	}
+
+	class Location {
+		reference locationOf[0-1] : Event oppositeOf heldIn;
+	}
+
+	class Research_Institute extends Academic_Institution {
+		
+	}
+
+	class Scientific_Event extends Event {
+		
+	}
+
+	class Invited_Talk_Abstract extends Abstract {
+		
+	}
+
+	class Agency_Staff_Member extends Person {
+		
+	}
+
+	class Workshop_Session extends Session {
+		
+	}
+
+	class Track extends Scientific_Event, Conference_part {
+		
+	}
+
+	class Invited_Talk extends Individual_Presentation {
+		
+	}
+
+	class Workshop extends Scientific_Event, Activity, AcademicEvent, Working_event, Conference_part, Event {
+		
+	}
+
+
+
+	class Contributed_Talk extends Individual_Presentation {
+		reference presentationOfPaper [*]: Document;--Paper, Abstract
+	}
+
+
+
+	class Demo_Chair extends Conference_Participant {
+		
+	}
+
+	class Tutorial_Chair extends Conference_Participant, PC_Member {
+		
+	}
+
+	class PC_Chair extends Conference_Participant, PC_Member {
+		
+	}
+
+	class PC_Member extends Possible_Reviewer {
+		
+	}
+
+	class OC_Member extends Conference_Participant {
+		
+	}
+
+
+	class Programme_Brochure extends Document {
+		
+	}
+
+	class Flyer extends Document {
+		
+	}
+
+	class Web_Site extends Document {
+		
+	}
+
+	class "Multi-author_Volume" extends Document {
+		
+	}
+
+	class Individual_Presentation extends Scientific_Event {
+		reference presentationOfPaper [*]: Document;--Paper, Abstract
+	}
+
+	class OC_Chair extends OC_Member {
+		
+	}
+
+	class Conference_Banquet extends Social_Event {
+		
+	}
+
+	class Workshop_Chair extends Conference_Participant, PC_Member {
+		
+	}
+
+	class Conference_Proceedings extends Proceedings {
+		
+	}
+
+	class Session_Chair extends PC_Member, Conference_Participant {
+		
+	}
+
+	class "Early-Registered_Participant" extends Conference_Participant {
+		
+	}
+
+	class "Late-Registered_Participant" extends Conference_Participant {
+		
+	}
+
+	class University extends Academic_Institution, Organization {
+		
+	}
+
+	class Possible_Reviewer extends Person {
+		reference reviewerOfPaper[0-1] : Paper oppositeOf hasReviewer;
+	}
+
+	class Student extends Person {
+		
+	}
+
+	class Invited_Speaker extends Presenter {
+		
+	}
+
+
+
+	class SC_Member extends PC_Member {
+		
+	}
+
+	class Presenter_house extends Building {
+		
+	}
+
+	class Building extends Place {
+		
+	}
+
+	class Presenter_state extends State {
+		
+	}
+
+	class Delegate extends Person {
+		
+	}
+
+	class Presenter_city extends City {
+		
+	}
+
+	class Hotel_registration_form extends Form {
+		
+	}
+
+	class Deadline_hotel_reservation extends Deadline {
+		
+	}
+
+	class Form extends Document {
+		
+	}
+
+	class Car extends Transport_vehicle {
+		
+	}
+
+	class Transport_vehicle extends Item {
+		
+	}
+
+	class Mailing_list extends Document {
+		
+	}
+
+
+	class Renting extends Activity_before_conference {
+		
+	}
+
+	class Activity_before_conference extends Activity {
+		
+	}
+
+	class Dinner_banquet extends Social_program {
+		
+	}
+
+	class One_day_presenter extends Delegate {
+		
+	}
+
+	class Social_program extends Conference_activity {
+		
+	}
+
+
+
+	class PowerPoint_presentation extends Presentation {
+		
+	}
+
+	class Presentation extends Conference_activity, Conference_contribution {
+		reference is_given_by[0-1] : Active_conference_participant oppositeOf give;
+		
+	}
+
+	class Conference_restaurant extends Building {
+		
+	}
+
+	class Conference_city extends City {
+		
+	}
+
+	class Conference_state extends State {
+		
+	}
+
+	class Submissions_deadline extends Deadline {
+		
+	}
+
+	class Deadline extends Time {
+		attribute done_till[0-1] : date;
+	}
+
+	class Simulating extends Research {
+		
+	}
+
+	class Research extends Activity_before_conference {
+		
+	}
+
+	class Technic_activity extends Conference_activity {
+		
+	}
+
+	class Conference_activity extends Activity {
+		
+	}
+
+	class Technical_commitee extends Delegate {
+		
+	}
+
+	class Place extends Thing {
+		reference isLocationOf[0-1] : ConferenceEvent oppositeOf hasLocation;
+		reference is_equipped_by[0-1] : Item;
+	}
+
+	class Author_cd_proceedings_included extends Author {
+		
+	}
+
+
+	class Cd_proceening extends Publication {
+		
+	}
+
+	class Trip_day extends Time {
+		
+	}
+
+	class Time {
+		
+	}
+
+	class Record_of_attendance extends Document {
+		
+	}
+
+	class Listener extends Delegate {
+		
+	}
+
+	class Session_room extends Place {
+		
+	}
+
+	class Brief_introduction_for_Session_chair extends Document {
+		
+	}
+
+	class Session_chair extends Delegate {
+		
+	}
+
+	class Invitation_letter extends Document {
+		
+	}
+
+	class Registration_form extends Form {
+		
+	}
+
+	class Viza extends Document {
+		
+	}
+
+	class Registration extends Conference_activity {
+		
+	}
+
+	class Conference_days extends Time {
+		
+	}
+
+	class Conference_building extends Building {
+		
+	}
+
+	class Registration_fee extends Fee {
+		
+	}
+
+	class Departure extends Activity_after_conference {
+		
+	}
+
+	class Activity_after_conference extends Activity {
+		
+	}
+
+	class Conference_airport extends Building {
+		
+	}
+
+	class Worker_lecturer extends Lecturer {
+		
+	}
+
+	class Lecturer extends Author {
+		
+	}
+
+	class Transparency extends Document {
+		
+	}
+
+
+
+	class City extends Thing {
+		
+	}
+
+	class Card extends Item {
+		
+	}
+
+	class Item {
+		reference go_through[0-1] : Activity;
+		reference is_used_for[*] : Thing; --Activity or Money
+		reference is_signed_by[0-1] : Person oppositeOf sign;
+		reference is_made_from[0-1] : Item;
+		reference is_sent_after[0-1] : Time;
+		reference is_needed_for[0-1] : Person oppositeOf need;
+		reference is_sent_before[0-1] : Time;
+		reference is_prepared_by[0-1] : Person oppositeOf prepare;
+		reference is_used_by[0-1] : Person;
+		reference is_given_to[0-1] : Person;
+		reference is_sent_by[0-1] : Person oppositeOf send;
+		reference is_writen_by[0-1] : Person oppositeOf write;
+	}
+
+	class Author_attendee_book_registration_fee extends Registration_fee {
+		
+	}
+
+	class Book_proceeding extends Publication {
+		
+	}
+
+	class Video_cassette_player extends Audiovisual_equipment {
+		
+	}
+
+	class Audiovisual_equipment extends Item {
+		
+	}
+
+	class Video_presentation extends Presentation {
+		
+	}
+
+	class Hotel_room extends Place {
+		
+	}
+
+	class Hotel_presenter extends Delegate {
+		
+	}
+
+	class Conference_hotel extends Building {
+		
+	}
+
+	class Money {
+		reference is_paid_with[0-1] : Item;
+		reference is_paid_by[0-1] : Person oppositeOf pay;
+		reference is_paid_in[0-1] : Building;
+		reference is_paid_for[*] : Thing;--Activity or Item;
+		attribute has_amount_of[0-1] : Money;
+	}
+
+	class State {
+		
+	}
+
+	class Introduction extends Conference_activity {
+		
+	}
+
+	class Welcome_address extends Conference_activity {
+		
+	}
+
+	class Value_added_tax extends Tax {
+		
+	}
+
+	class Tax extends Money {
+		
+	}
+
+	class Refusing_manuscript extends Activity_before_conference {
+		
+	}
+
+	class Final_manuscript extends Submission {
+		
+	}
+
+	class Accepting_manuscript extends Activity_before_conference {
+		
+	}
+
+	class Submission extends Document, Thing {
+		reference writtenBy[0-1] : Author oppositeOf writes;
+		reference dealsWith[0-1] : Topic;
+		attribute remark[0-1] : String;
+		attribute "abstract"[0-1] : String;
+		attribute contactEmail[0-1] : String;
+		attribute hasKeyword[0-1] : String;
+		attribute hasTitle[0-1] : String;
+	}
+
+	class Sponsor_city extends City {
+		
+	}
+
+	class Sponsor extends Person {
+		
+	}
+
+	class Time_zone {
+		
+	}
+
+	class Introduction_of_speaker extends Introduction {
+		
+	}
+
+	class Conference_hall extends Place {
+		
+	}
+
+	class Plenary_lecture extends Lecture {
+		
+	}
+
+
+
+	class Plenary_lecture_speaker extends Author {
+		
+	}
+
+	class LCD_projector extends Audiovisual_equipment {
+		
+	}
+
+	class Deadline_for_notification_of_acceptance extends Deadline {
+		
+	}
+
+
+	class Tutorial_speaker extends Author {
+		
+	}
+
+
+	class Registation_deadline extends Deadline {
+		
+	}
+
+	class Single_hotel_room extends Hotel_room {
+		
+	}
+
+	class Non_speaker extends Delegate {
+		
+	}
+
+	class Author_information_form extends Form {
+		
+	}
+
+	class Nonmember_registration_fee extends Registration_fee {
+		
+	}
+
+	class IASTED_non_member extends Delegate {
+		
+	}
+
+	class Hotel_fee extends Fee {
+		
+	}
+
+	class Fee extends Money {
+		
+	}
+
+	class Publication extends Item {
+		
+	}
+
+	class Taxi extends Transport_vehicle {
+		
+	}
+
+	class Sponsor_state extends State {
+		
+	}
+
+
+	class Modelling extends Research {
+		
+	}
+
+	class Worker_non_speaker extends Non_speaker {
+		
+	}
+
+	class Nonauthor_registration_fee extends Registration_fee {
+		
+	}
+
+	class Payment_document extends Document {
+		
+	}
+
+	class Camera_ready_manuscript_deadline extends Deadline {
+		
+	}
+
+	class One_conference_day extends Conference_days {
+		
+	}
+
+	class Fee_for_extra_trip extends Fee {
+		
+	}
+
+	class Full_day_tour extends Activity_after_conference {
+		
+	}
+
+	class Conference_Hiker extends Delegate {
+		
+	}
+
+	class Computer extends Audiovisual_equipment {
+		
+	}
+
+	class IASTED_member extends Delegate {
+		
+	}
+
+	class Memeber_registration_fee extends Registration_fee {
+		
+	}
+
+	class Author_book_proceedings_included extends Author {
+		
+	}
+
+	class Sponsor_company_house extends Building {
+		
+	}
+
+	class Sponzorship extends Money {
+		
+	}
+
+	class Student_lecturer extends Lecturer {
+		
+	}
+
+	class Trip_city extends City {
+		
+	}
+
+	class Cheque extends Payment_document {
+		
+	}
+
+	class Shuttle_bus extends Transport_vehicle {
+		
+	}
+
+	class Student_non_speaker extends Non_speaker {
+		
+	}
+
+	class Student_registration_fee extends Registration_fee {
+		
+	}
+
+	class Author_attendee_cd_registration_fee extends Registration_fee {
+		
+	}
+
+	class Tip extends Money {
+		
+	}
+
+	class Credit_card extends Card {
+		
+	}
+
+	class Van extends Transport_vehicle {
+		
+	}
+
+	class Main_office extends Place {
+		
+	}
+
+	class Presenter_university extends Building {
+		
+	}
+
+	class Departure_tax extends Tax {
+		
+	}
+
+	class Receiving_manuscript extends Activity_before_conference {
+		
+	}
+
+	class Double_hotel_room extends Hotel_room {
+		
+	}
+
+	class Initial_manuscipt extends Submission {
+		
+	}
+
+	class Coffee_break extends Conference_activity {
+		
+	}
+
+	class Bank_transfer extends Payment_document {
+		
+	}
+
+	class Overhead_projector extends Audiovisual_equipment {
+		
+	}
+
+	class Speaker_lecture extends Session {
+		
+	}
+
+	class Coctail_reception extends Conference_activity {
+		
+	}
+
+	class Currency {
+		
+	}
+
+
+
+
+	class OrganizingCommittee extends Thing {
+		reference organizes[0-1] : Conference oppositeOf isOrganizedBy;
+	}
+
+
+
+	class ProgramCoChair extends OrganizingCommittee {
+		
+	}
+
+	class Organizer extends Person, Thing {
+		
+	}
+
+
+	class PublicationsChair extends OrganizingCommittee {
+		
+	}
+
+	class OutsideReferee extends Person {
+		
+	}
+
+	class Lecture extends Activity, Conference_activity {
+		attribute hasAcronym[0-1] : String;
+	}
+
+	class ActivitySubmissionForm extends Thing {
+		reference isSubmittedBy[0-1] : Author;
+		reference hasAuthor[0-1] : Author oppositeOf isAuthorOf;
+		attribute submissionDeadline[0-1] : dateTime;
+	}
+
+	class WorkshopTutorialChair extends OrganizingCommittee {
+		
+	}
+
+	class DoubleBlindReview extends Thing {
+		reference isExecutedBy[0-1] : Reviewer oppositeOf executes;
+	}
+
+	class TutorialProposal extends ActivitySubmissionForm {
+		
+	}
+
+
+
+	class RegistrationChair extends OrganizingCommittee {
+		
+	}
+
+	class StudentAdvocate extends OrganizingCommittee {
+		
+	}
+
+	class FinanceChair extends OrganizingCommittee {
+		
+	}
+
+	class QualitatvieLecture extends Lecture {
+		
+	}
+
+	class TraditionalLecture extends Lecture {
+		
+	}
+
+	class PaperSubmissionChair extends OrganizingCommittee {
+		
+	}
+
+	class PublicityWebChair extends OrganizingCommittee {
+		
+	}
+
+
+
+	class SteeringCommittee extends OrganizingCommittee {
+		
+	}
+
+	class GeneralCoChair extends OrganizingCommittee {
+		
+	}
+
+	class WorksopProposal extends ActivitySubmissionForm {
+		
+	}
+
+	datatype dateTime;
+
+
+	class ProgramCommitteeMember extends Person, ConferenceMember {
+		reference memberOfProgramCommittee[0-1] : ProgramCommittee;
+		attribute maxPapers[0-1] : Integer;
+		reference addedBy[0-1] : Administrator;
+		reference isMemberOf[0-1] : ProgramCommittee oppositeOf hasMember;
+		attribute hasPassword[0-1] : String;
+	}
+
+
+	class ContactAuthor extends Author {
+		reference submitsAbstract[0-1] : PaperAbstract oppositeOf abstractIsSubmittedBy;
+	}
+
+	class ConferenceProgram extends Thing {
+		reference isProgramOf : Conference;
+		reference consistsOf[0-1] : Slot oppositeOf forms;
+	}
+
+	class PaperStatus {
+		reference isStatusOf[0-1] : Paper oppositeOf hasStatus;
+	}
+
+	class Slot extends Thing {
+		attribute date[0-1] : date;
+		attribute endsAt[0-1] : time;
+		attribute beginsAt[0-1] : time;
+		reference forms[0-1] : ConferenceProgram oppositeOf consistsOf;
+		reference hosts[0-1] : Session oppositeOf isAssociatedTo;
+	}
+
+	class Session extends Thing, Lecture, Scientific_Event {
+		reference hasAssignedPaper[0-1] : AcceptedPaper oppositeOf isAssignedToSession;
+		attribute room[0-1] : String;
+		reference isAssociatedTo[0-1] : Slot oppositeOf hosts;
+		reference hasChair[0-1] : Chair oppositeOf isChairOf;
+	}
+
+	class ResearchTopic extends Thing {
+		
+	}
+
+	class Question {
+		
+	}
+
+	class PaymentMode {
+		
+	}
+
+	class OutputDocument extends Thing {
+		reference isProducedBy[0-1] : Chair oppositeOf produces;
+	}
+
+
+
+	class ProgramCommittee extends Thing {
+		reference hasProgramCommitteeMember[0-1] : ProgramCommitteeMember;
+		reference hasMember[0-1] : ProgramCommitteeMember oppositeOf isMemberOf;
+	}
+
+	class Criterion extends Thing {
+		attribute hasWeight[0-1] : double;
+	}
+
+	class AcceptedPaper extends Paper {
+		reference relatedToEvent[0-1] : PaperPresentation oppositeOf relatedToPaper;
+		reference isAssignedToSession[0-1] : Session oppositeOf hasAssignedPaper;
+	}
+
+	class RejectedPaper extends Paper {
+		
+	}
+
+	class Chair extends ProgramCommitteeMember {
+		reference produces[0-1] : OutputDocument oppositeOf isProducedBy;
+		reference sets[0-1] : Thing;--??
+		reference accepts[0-1] : Paper oppositeOf isAcceptedBy;
+		reference rejects[0-1] : Paper oppositeOf isRejectedBy;
+		reference asksForPreference[0-1] : Reviewer;
+		reference isChairOf[0-1] : Session oppositeOf hasChair;
+	}
+
+
+
+
+	class ConferenceAttendant extends Person {
+		reference mustPay[0-1] : Fee;
+		attribute hasAdress[0-1] : String;
+		attribute paid[0-1] : Boolean;
+		attribute hasPhone[0-1] : String;
+	}
+
+	class Evaluation extends Document {
+		reference isContainedIn[0-1] : Review;
+	}
+
+	class PaperAbstract extends Document, Paper {
+		reference isAbstractOf[0-1] : Paper oppositeOf hasAbstract;
+		reference abstractIsSubmittedBy[0-1] : ContactAuthor oppositeOf submitsAbstract;
+	}
+
+	class ReviewQuestion extends Question {
+		
+	}
+
+	class PaperQuestion extends Question {
+		
+	}
+
+	class "CD-ROM" extends OutputDocument {
+		
+	}
+
+	class IndexOfAuthors extends OutputDocument {
+		
+	}
+
+	class ExternalReviewersList extends OutputDocument {
+		
+	}
+
+	class Proceedings extends OutputDocument, "Multi-author_Volume" {
+		reference includes[*] : Thing;--??
+	}
+
+	class Program extends OutputDocument {
+		
+	}
+
+	class PCMembersList extends OutputDocument {
+		
+	}
+
+	class ListOfAbstracts extends OutputDocument {
+		
+	}
+
+	class BookletOfAbstracts extends OutputDocument {
+		
+	}
+
+	datatype time;
+
+	class RFC extends Topics {
+		
+	}
+
+	class Topics extends Value_Partition {
+		
+	}
+
+	class Classic_Papers extends Topics {
+		
+	}
+
+	class Networking extends Topics {
+		
+	}
+
+	class Humour extends Topics {
+		
+	}
+
+	class Programming extends Topics {
+		
+	}
+
+	class Computer_Science extends Topics {
+		
+	}
+
+	class Format extends Value_Partition {
+		
+	}
+
+	class Value_Partition {
+		
+	}
+
+	class Adobe_PDF extends Format {
+		
+	}
+
+	class MS_Word extends Format {
+		
+	}
+
+	class Corel_Word_Perfect extends Format {
+		
+	}
+
+	class HTML extends Format {
+		
+	}
+
+	class PostScript extends Format {
+		
+	}
+
+	class RTF extends Format {
+		
+	}
+
+	class Text extends Format {
+		
+	}
+
+	class High extends Reviewer_Famliliarity {
+		
+	}
+
+	class Reviewer_Famliliarity extends Review_Values {
+		
+	}
+
+	class Low extends Reviewer_Famliliarity {
+		
+	}
+
+	class Moderate extends Reviewer_Famliliarity {
+		
+	}
+
+	class Marginal_Tend_to_Reject extends Reccommendation {
+		
+	}
+
+	class Reccommendation extends Review_Values {
+		
+	}
+
+	class Marginal_Tend_to_Accept extends Reccommendation {
+		
+	}
+
+	class Portable_Reject extends Reccommendation {
+		
+	}
+
+	class Must_Accept extends Reccommendation {
+		
+	}
+
+	class Clear_Reject extends Reccommendation {
+		
+	}
+
+	class Clear_Accept extends Reccommendation {
+		
+	}
+
+	class Program_chair extends Member {
+		reference made_program[0-1] : Conference_Program oppositeOf Program_made_by;
+	}
+
+	class Conference_Program extends Domain_Topic {
+		reference Program_made_by[0-1] : Program_chair oppositeOf made_program;
+		reference planned_papers[0-1] : Planed_Paper oppositeOf is_planned_in;
+	}
+
+
+
+
+	class Domain_Topic {
+		
+	}
+
+	class Planed_Paper extends Reviewed_Paper {
+		reference is_planned_in[0-1] : Conference_Program oppositeOf planned_papers;
+	}
+
+	class Valuable_Confirmation_of_Present_Knowledge extends Overall_Value {
+		
+	}
+
+	class Other extends Overall_Value {
+		
+	}
+
+	class Not_Much extends Overall_Value {
+		
+	}
+
+	class New_Information extends Overall_Value {
+		
+	}
+
+	class New_Perspective_Issue_Problem_Solving extends Overall_Value {
+		
+	}
+
+	class Clarity_to_Present_Understanding extends Overall_Value {
+		
+	}
+
+	class Overall_Value extends Review_Values {
+		
+	}
+
+	class Tends_Towards_Theoretical extends Paper_Categorization {
+		
+	}
+
+	class Paper_Categorization extends Review_Values {
+		
+	}
+
+	class Tends_Towards_Practical extends Paper_Categorization {
+		
+	}
+
+	class Balanced_Theory_and_Practice extends Paper_Categorization {
+		
+	}
+
+	class Highly_Theoretical extends Paper_Categorization {
+		
+	}
+
+	class Highly_Practical extends Paper_Categorization {
+		
+	}
+
+	class Reviewed_Paper extends Submitted_Paper {
+		
+	}
+
+	class Submitted_Paper extends Paper {
+		reference is_stored_in[0-1] : Paper_File;
+		reference has_been_sent_by[0-1] : Contact_Author oppositeOf has_sent;
+		attribute Paper_Id[0-1] : String;
+		attribute Comments_To_Chair[0-1] : String;
+	}
+
+	class Paper_Review extends Domain_Topic {
+		reference is_Candidate_for_Award[0-1] : Long_bool;
+		reference appropriate_length[0-1] : Long_bool;
+		reference has_Categorization[0-1] : Paper_Categorization;
+		reference has_Overall[0-1] : Overall_Value;
+		reference has_Reccommendation[0-1] : Reccommendation;
+		reference Review_made_by[0-1] : Reviewer oppositeOf has_made_review;
+		attribute Comments_for_Author[0-1] : String;
+		attribute Comments_for_Program_Committee[0-1] : String;
+	}
+
+	class Long_bool extends Value_Partition {
+		
+	}
+
+	class Review_Values extends Value_Partition {
+		
+	}
+
+	class Review_Committee extends Committees {
+		
+	}
+
+	class Committees extends Domain_Topic {
+		
+	}
+
+
+	class Advocate extends Member {
+		reference will_advocate[0-1] : Advocated_Paper oppositeOf to_advocate_by;
+	}
+
+	class Advocated_Paper extends Submitted_Paper {
+		reference to_advocate_by[0-1] : Advocate oppositeOf will_advocate;
+	}
+
+	class Contact_Author extends Author {
+		reference has_sent[0-1] : Submitted_Paper oppositeOf has_been_sent_by;
+		attribute Alternate_Email[0-1] : String;
+	}
+
+	class Result_of_Advocate extends Value_Partition {
+		
+	}
+
+	class People extends Domain_Topic {
+		attribute Surname[0-1] : String;
+		attribute Name[0-1] : String;
+		attribute Country[0-1] : String;
+		attribute "E-mail"[0-1] : String;
+		attribute Organisation[0-1] : String;
+	}
+
+
+	class Source_Archive extends Contribution_File {
+		
+	}
+
+	class Poster extends Contribution_File {
+		
+	}
+
+	class Camera_Ready_Copy extends Contribution_File {
+		
+	}
+
+	class Paper_File extends Contribution_File, Domain_Topic {
+		reference is_Type[0-1] : Format;
+		
+	}
+
+	class Slides extends Contribution_File {
+		
+	}
+
+	class Contribution_File extends Contribution {
+		attribute hasContributionFileStatus[0-1] : EEnum;
+	}
+
+	class Discussion {
+		
+	}
+
+	class PhaseOfConferencePreparation {
+		attribute hasPhaseStatus[0-1] : EEnum;
+	}
+
+	class Program_Comitee extends Thing {
+		reference discusses[0-1] : Paper oppositeOf discussedBy;
+	}
+
+	class Contribution extends Thing {
+		reference writtenBy[0-1] : Author oppositeOf writes;
+		reference dealsWith[0-1] : Topic;
+		attribute remark[0-1] : String;
+		attribute "abstract"[0-1] : String;
+		attribute contactEmail[0-1] : String;
+		attribute hasKeyword[0-1] : String;
+		attribute hasTitle[0-1] : String;
+		reference changedBy[0-1] : Author oppositeOf changes;
+		attribute hasContributionStatus[0-1] : EEnum;
+	}
+
+	class Conflict_Of_Interest extends Thing {
+		
+	}
+
+
+	class Conflict_Rules extends Thing {
+		
+	}
+
+
+	class Program_Comitee_Meeting extends Thing {
+		
+	}
+
+
+	class Setup_Phase extends PhaseOfConferencePreparation {
+		
+	}
+
+	class Camera_Ready_Copy_Phase extends PhaseOfConferencePreparation {
+		
+	}
+
+	class Assignment_Phase extends PhaseOfConferencePreparation {
+		
+	}
+
+	class Blocked_Phase extends PhaseOfConferencePreparation {
+		
+	}
+
+	class Abstract_And_Paper_Submission_Phase extends PhaseOfConferencePreparation {
+		
+	}
+
+	class Invitation_Of_Reviewers_Phase extends PhaseOfConferencePreparation {
+		
+	}
+
+	class Review_Phase extends PhaseOfConferencePreparation {
+		
+	}
+
+	class Closed_Phase extends PhaseOfConferencePreparation {
+		
+	}
+
+	class Bidding_Phase extends PhaseOfConferencePreparation {
+		
+	}
+
+
+	class Speaker extends Person, Delegate {
+		
+	}
+
+	class Program_Comitee_Chair extends Person {
+		reference finishes[0-1] : Conference oppositeOf finishedBy;
+		reference headOf[0-1] : Program_Comitee;
+		reference switches[0-1] : PhaseOfConferencePreparation;
+		reference starts[0-1] : Conference oppositeOf startedBy;
+		reference accepts[0-1] : Paper oppositeOf acceptedBy;
+		reference assignsToReview[0-1] : Paper oppositeOf assignedToReviewBy;
+		reference assignsPaper[0-1] : Reviewer oppositeOf assignedPaperBy;
+		reference rejects[0-1] : Paper oppositeOf rejectedBy;
+	}
+
+
+	class Confirmed_Conflict extends Conflict_Of_Interest {
+		
+	}
+
+	class Pending_Proposed_Conflict extends Conflict_Of_Interest {
+		reference refusedBy[0-1] : Reviewer oppositeOf refuses;
+		reference confirmedBy[0-1] : Reviewer oppositeOf confirmes;
+	}
+
+	class Hidden_Conflict extends Conflict_Of_Interest {
+		
+	}
+
+	class Deleted_Conflict extends Conflict_Of_Interest {
+		
+	}
+
+	class Proposed_Conflict extends Conflict_Of_Interest {
+		reference conflictProposedBy[0-1] : Thing;--??
+	}
+
+	class Self_Conflict extends Conflict_Of_Interest {
+		
+	}
+
+	class "Co-Author" extends Author {
+		reference "co-writePaper"[0-1] : Paper;
+	}
+
+	class MainAuthor extends Author {
+		
+	}
+
+	class Bidding_And_Paper_Submission_Phase extends Bidding_Phase {
+		
+	}
+
+	class Bidding_Without_Paper_Submission_Phase extends Bidding_Phase {
+		
+	}
+
+	class "E-mail_PC_Meeting" extends Program_Comitee_Meeting {
+		
+	}
+
+	class PC_Meeting extends Program_Comitee_Meeting {
+		
+	}
+
+
+
+	class External_Reviewer extends Person {
+		
+	}
+
+	class Accepted_paper extends Paper {
+		reference read_paper_by[0-1] : Thing;--??
+		reference rateed_paper_by[0-1] : Thing;--??
+		attribute Score[0-1] : EEnum;
+	}
+
+	class Report {
+		
+	}
+
+	class Secondary_Reviewer extends CommitteeMember {
+		
+	}
+
+	class CommitteeMember extends ConferenceMember, Organizer {
+		reference isMemberOf[0-1] : Conference;
+		reference reject_paper[0-1] : Paper oppositeOf rejected_paper_by;
+		reference accept[0-1] : Paper oppositeOf accepted_by;
+	}
+
+
+	class Email extends Document{
+		reference sended_by[0-1] : Administrator oppositeOf send;
+		attribute Receiver_of_email[0-1] : String;
+		attribute Message_of_email[0-1] : String;
+		attribute Subject_of_email[0-1] : String;
+	}
+
+	class ConferenceMember extends Person {
+		reference memberOfConference[0-1] : Conference;
+		reference member_of_conference[0-1] : Conference oppositeOf has_conference_member;
+	}
+
+	class Information extends Email {
+		
+	}
+
+
+	class Electronic_proceeding {
+		
+	}
+
+	class System {
+		
+	}
+
+	class CD extends Electronic_proceeding {
+		
+	}
+
+	class Invitation extends Email {
+		
+	}
+
+	class Web_site extends Electronic_proceeding {
+		
+	}
+
+	class Rejected_paper extends Paper {
+		
+	}
+	class Primary_Reviewer extends CommitteeMember {
+		reference assign_review[0-1] : Review oppositeOf assigned_review_by;
+	}
+
+	datatype anyURI;
+
+
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+	datatype double;
+}
+

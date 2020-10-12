@@ -1,0 +1,370 @@
+module GraphML2XML; -- Module Template
+create OUT : XML from IN : GraphML;
+
+rule Root2Root {
+	from 
+		s 	: 	GraphML!Root
+	to 
+		root 	: 	XML!Root (
+			name <- 'graphml',
+			children <- Sequence{xmlns, schemaLoc, GraphML!Key.allInstancesFrom('IN'), s.graphs}->flatten()
+		),
+		xmlns 	: 	XML!Attribute (
+			name <- 'xmlns:xsi',
+			value <- 'http://www.w3.org/2001/XMLSchema-instance'
+--			,
+--			parent <- root
+		),
+		schemaLoc 	: 	XML!Attribute (
+			name <- 'xsi:schemaLocation',
+			value <- 'http://graphml.graphdrawing.org/xmlnshttp://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd'
+--			,
+--			parent <- root
+		)
+}
+
+helper def:  getRoot : GraphML!Root = GraphML!Root.allInstancesFrom('IN')->first();
+
+rule Keys2Keys {
+	from 
+		s	:	GraphML!Key --(s.defValue.oclIsUndefined())
+	to
+		key : XML!Element (
+--			parent <- thisModule.getRoot, 
+			name <- 'key'
+		),
+		id : XML!Attribute (
+			name <- 'id',
+			value <- s.id,
+			parent <-key
+		),
+		fo : XML!Attribute (
+			name <- 'for',
+			value <- s."for".toString(),
+			parent <-key
+		),
+		an : XML!Attribute (
+			name <- 'attr.name',
+			value <- s.attrName,
+			parent <-key
+		),
+		id2 : XML!Attribute (
+			name <- 'attr.type',
+			value <- s.type.toString(),
+			parent <-key
+		)
+}
+
+--rule Keys2Keys {
+--	from 
+--		s	:	GraphML!Key (not s.defValue.oclIsUndefined())
+--	to
+--		key : XML!Element (
+--			parent <- thisModule.getRoot,
+--			name <- 'key'
+--		),
+--		id : XML!Attribute (
+--			name <- 'id',
+--			value <- s.id,
+--			parent <-key
+--		),
+--		fo : XML!Attribute (
+--			name <- 'for',
+--			value <- s."for".toString(),
+--			parent <-key
+--		),
+--		an : XML!Attribute (
+--			name <- 'attr.name',
+--			value <- s.attrName,
+--			parent <-key
+--		),
+--		id2 : XML!Attribute (
+--			name <- 'attr.type',
+--			value <- s.type.toString(),
+--			parent <-key
+--		),
+--		default : XML!Element (
+--			parent <- key,
+--			name <- 'default'
+--		),
+--		text : XML!Text (
+--			parent <- default,
+--			value <- s.defValue
+--		)
+--}
+
+rule Graph2Graph {
+	from
+		s	:	GraphML!Graph 
+--		(thisModule.getRoot.graphs.debug('graph')->incudes(s).debug('rootgraph'))
+	to
+		graph : XML!Element (
+			name <- 'graph'
+--			,
+--			parent <- thisModule.getRoot
+		),
+		id : XML!Attribute (
+			name <- 'id',
+			value <- s.id,
+			parent <- graph
+		),
+		edg : XML!Attribute (
+			name <- 'edgedefault',
+			value <- s.edgeDefault.toString(),
+			parent <-graph
+		)
+}
+
+helper def: allElements : Sequence(GraphML!Element) =
+	GraphML!Element.allInstancesFrom('IN');
+
+helper def: allEdges : Sequence(GraphML!Edge) =
+	GraphML!Edge.allInstancesFrom('IN');
+
+helper def: allGraphs : Sequence(GraphML!Graph) =
+	GraphML!Graph.allInstancesFrom('IN').debug('allGraphs');
+
+helper def: allNodes : Sequence(GraphML!Node) =
+	GraphML!Node.allInstancesFrom('IN');
+		
+helper def: allNodeWithSG : Sequence(GraphML!Node) =
+	thisModule.allNodes->select(c | not c.subgraph.oclIsUndefined());
+		
+helper context GraphML!Element def: getParent: GraphML!Element =
+	thisModule.allGraphs->select(c | c.contents->includes(self))
+	->union(thisModule.allNodeWithSG->select(c | c.subgraph=self))->first();
+
+--rule Graph2Graph {
+--	from
+--		s	:	GraphML!Graph (not thisModule.getRoot.graphs->includes(s))
+--	to
+--		graph : XML!Element (
+--			name <- 'graph',
+--			parent <- s.getParent
+--		),
+--		id : XML!Attribute (
+--			name <- 'id',
+--			value <- s.id,
+--			parent <- graph
+--		),
+--		edg : XML!Attribute (
+--			name <- 'edgedefault',
+--			value <- s.edgeDefault,
+--			parent <-graph
+--		)
+--}
+
+rule Edge2Edge1 {
+	from
+		s	:	GraphML!Edge (s.sourceport.oclIsUndefined() and s.targetport.oclIsUndefined())
+	to
+		edge : XML!Element (
+			name <- 'edge',
+			parent <- thisModule.allGraphs->select(c | c.contents->includes(s))->first()
+		),
+		id1 : XML!Attribute (
+			name <- 'id',
+			value <- s.id,
+			parent <- edge
+		),
+		source : XML!Attribute (
+			name <- 'source',
+			value <- s.source.id,
+			parent <- edge
+		),
+		target : XML!Attribute (
+			name <- 'target',
+			value <- s.target.id,
+			parent <- edge
+		)
+}
+
+rule Edge2Edge2 {
+	from
+		s	:	GraphML!Edge ((not s.sourceport.oclIsUndefined()) and (not s.targetport.oclIsUndefined()))
+	to
+		edge : XML!Element (
+			name <- 'edge',
+			parent <- thisModule.allGraphs->select(c | c.contents->includes(s))->first()
+		),
+		id1 : XML!Attribute (
+			name <- 'id',
+			value <- s.id,
+			parent <- edge
+		),
+		source : XML!Attribute (
+			name <- 'source',
+			value <- s.source.id,
+			parent <- edge
+		),
+		target : XML!Attribute (
+			name <- 'target',
+			value <- s.target.id,
+			parent <- edge
+		),
+		sourceport : XML!Attribute (
+			name <- 'sourceport',
+			value <- s.sourceport.name,
+			parent <- edge
+		),
+		targetport : XML!Attribute (
+			name <- 'targetport',
+			value <- s.targetport.name,
+			parent <- edge
+		)
+}
+
+rule Edge2Edge3 {
+	from
+		s	:	GraphML!Edge (s.sourceport.oclIsUndefined() and (not s.targetport.oclIsUndefined()))
+	to
+		edge : XML!Element (
+			name <- 'edge',
+			parent <- thisModule.allGraphs->select(c | c.contents->includes(s))->first()
+		),
+		id1 : XML!Attribute (
+			name <- 'id',
+			value <- s.id,
+			parent <- edge
+		),
+		source : XML!Attribute (
+			name <- 'source',
+			value <- s.source.id,
+			parent <- edge
+		),
+		target : XML!Attribute (
+			name <- 'target',
+			value <- s.target.id,
+			parent <- edge
+		),
+		targetport : XML!Attribute (
+			name <- 'targetport',
+			value <- s.targetport.name,
+			parent <- edge
+		)
+}
+
+rule Edge2Edge4 {
+	from
+		s	:	GraphML!Edge ((not s.sourceport.oclIsUndefined()) and s.targetport.oclIsUndefined())
+	to
+		edge : XML!Element (
+			name <- 'edge',
+			parent <- thisModule.allGraphs->select(c | c.contents->includes(s))->first()
+		),
+		id1 : XML!Attribute (
+			name <- 'id',
+			value <- s.id,
+			parent <- edge
+		),
+		source : XML!Attribute (
+			name <- 'source',
+			value <- s.source.id,
+			parent <- edge
+		),
+		target : XML!Attribute (
+			name <- 'target',
+			value <- s.target.id,
+			parent <- edge
+		),
+		sourceport : XML!Attribute (
+			name <- 'sourceport',
+			value <- s.sourceport.name,
+			parent <- edge
+		)
+}
+
+rule HyperEdge2HyperEdge {
+	from
+		s	:	GraphML!HyperEdge
+	to
+		edge : XML!Element (
+			name <- 'hyperedge',
+			parent <- thisModule.allGraphs->select(c | c.contents->includes(s))->first(),
+			children <- s.endpoints
+		)
+}
+
+rule Endpoints2Endpoints {
+	from
+		s	:	GraphML!EndPoint	(s.port.oclIsUndefined())
+	to
+		endp : XML!Element (
+			name <- 'endpoint'
+		),
+		node : XML!Attribute (
+			name <- 'node',
+			value <- s.node.name,
+			parent <- endp
+		)
+}
+
+rule Endpoints2Endpoints2 {
+	from
+		s	:	GraphML!EndPoint	(not s.port.oclIsUndefined())
+	to
+		endp : XML!Element (
+			name <- 'endpoint'
+		),
+		node : XML!Attribute (
+			name <- 'node',
+			value <- s.node.name,
+			parent <- endp
+		),
+		node : XML!Attribute (
+			name <- 'port',
+			value <- s.port.name,
+			parent <- endp
+		)
+}
+
+rule Node2Node {
+	from
+		s	:	GraphML!Node
+	to
+		node : XML!Element (
+			name <- 'node',
+			parent <- s.getParent,
+			children <- Sequence{id , s.ports, s.datas}->flatten()
+		),
+		id : XML!Attribute (
+			name <- 'id',
+			value <- s.id
+		)
+}
+
+rule Port2Port {
+	from
+		s	:	GraphML!Port
+	to
+		endp : XML!Element (
+			name <- 'port'
+		),
+		node : XML!Attribute (
+			name <- 'name',
+			value <- s.name,
+			parent <- endp
+		)
+}
+
+helper context GraphML!Data def: getContainer : GraphML!Element =
+	thisModule.allElements->select(c |c.datas->includes(self))->first();
+
+rule Data2Data {
+	from
+		s	:	GraphML!Data
+	to
+		data : XML!Element (
+			name <- 'data',
+			parent <- s.getContainer
+		),
+		key : XML!Attribute (
+			name <- 'key',
+			value <- s.key,
+			parent <- data
+		),
+		value :	XML!Text (
+			parent <- data,
+			value <- s.value
+		)
+}

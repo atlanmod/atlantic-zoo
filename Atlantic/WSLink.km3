@@ -1,0 +1,43 @@
+-- @name		Simple Web Services connection
+-- @version		0.1
+-- @authors		Guillaume Doux (guillaume.doux <at> inria.fr)
+-- @date		January 2009
+-- @description	A simple metamodel for representing links between web services.
+-- @see			
+
+package PrimitiveTypes {
+
+	datatype Boolean;
+
+	datatype Integer;
+
+	datatype String;
+}
+
+package WSLink {
+
+	abstract class LocatedElement {
+		attribute location : String;
+		attribute commentsBefore[*] ordered : String;
+		attribute commentsAfter[*] ordered : String;
+	}
+
+	class Network extends LocatedElement {
+		reference services[*] ordered container : Services;
+		attribute name[0-1] : String;
+	}
+
+	abstract class Services extends LocatedElement {
+		attribute name : String;
+		attribute URL : String;
+		attribute descriptions : String;
+	}
+
+	class WebService extends Services {
+		reference linkedServices[*] : Services;
+	}
+
+	class RSS extends Services {
+		
+	}
+}

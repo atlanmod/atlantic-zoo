@@ -1,0 +1,236 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'AsmL'>
+    <Class name = 'LocatedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'location' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsBefore' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsAfter' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Body' isAbstract = 'false' supertypes = 'AsmL::LocatedElement'>
+      <Reference name = 'rules' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'AsmL::Rule' opposite = 'AsmL::Rule::ownerBody'/>
+    </Class>
+    <Class name = 'InWhereHolds' isAbstract = 'false' supertypes = 'AsmL::LocatedElement'>
+      <Reference name = 'var' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+      <Reference name = 'in' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+      <Reference name = 'where' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+      <Reference name = 'holds' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+    </Class>
+    <Class name = 'AsmLFile' isAbstract = 'false' supertypes = 'AsmL::LocatedElement'>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'AsmL::AsmLElement' opposite = 'AsmL::AsmLElement::file'/>
+      <Reference name = 'main' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Main' opposite = 'AsmL::Main::mainFile'/>
+    </Class>
+    <Class name = 'AsmLElement' isAbstract = 'true' supertypes = 'AsmL::LocatedElement'>
+      <Reference name = 'file' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'AsmL::AsmLFile' opposite = 'AsmL::AsmLFile::elements'/>
+    </Class>
+    <Class name = 'VarDeclaration' isAbstract = 'false' supertypes = 'AsmL::AsmLElement, AsmL::VarOrCase, AsmL::VarOrMethod'>
+      <Attribute name = 'isConstant' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isDeclaration' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isLocal' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Type' opposite = 'AsmL::Type::ownerDeclaration'/>
+    </Class>
+    <Class name = 'Namespace' isAbstract = 'false' supertypes = 'AsmL::AsmLElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Structure' isAbstract = 'false' supertypes = 'AsmL::AsmLElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'varOrCase' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'AsmL::VarOrCase' opposite = 'AsmL::VarOrCase::ownerStructure'/>
+      <Attribute name = 'superStructureName' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'VarOrCase' isAbstract = 'true' supertypes = 'AsmL::LocatedElement'>
+      <Reference name = 'ownerStructure' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'AsmL::Structure' opposite = 'AsmL::Structure::varOrCase'/>
+    </Class>
+    <Class name = 'Case' isAbstract = 'false' supertypes = 'AsmL::VarOrCase'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'variables' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'AsmL::VarDeclaration' opposite = ''/>
+    </Class>
+    <Class name = 'Class' isAbstract = 'false' supertypes = 'AsmL::AsmLElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'isAbstract' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'superClassName' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'varOrMethod' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'AsmL::VarOrMethod' opposite = 'AsmL::VarOrMethod::ownerClass'/>
+    </Class>
+    <Class name = 'VarOrMethod' isAbstract = 'false' supertypes = 'AsmL::LocatedElement'>
+      <Reference name = 'ownerClass' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'AsmL::Class' opposite = 'AsmL::Class::varOrMethod'/>
+    </Class>
+    <Class name = 'Enumeration' isAbstract = 'false' supertypes = 'AsmL::AsmLElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'enumerators' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'AsmL::Enumerator' opposite = ''/>
+    </Class>
+    <Class name = 'Enumerator' isAbstract = 'false' supertypes = 'AsmL::LocatedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'value' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+    </Class>
+    <Class name = 'Function' isAbstract = 'true' supertypes = 'AsmL::AsmLElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'body' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Body' opposite = ''/>
+    </Class>
+    <Class name = 'Method' isAbstract = 'false' supertypes = 'AsmL::Function, AsmL::VarOrMethod'>
+      <Attribute name = 'isAbstract' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isShared' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isEntryPoint' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isOverride' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'returnType' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Type' opposite = 'AsmL::Type::ownerMethod'/>
+      <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'AsmL::Parameter' opposite = 'AsmL::Parameter::ownerMethod'/>
+    </Class>
+    <Class name = 'Parameter' isAbstract = 'false' supertypes = 'AsmL::LocatedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Type' opposite = 'AsmL::Type::ownerParameter'/>
+      <Reference name = 'ownerMethod' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'AsmL::Method' opposite = 'AsmL::Method::parameters'/>
+    </Class>
+    <Class name = 'Main' isAbstract = 'false' supertypes = 'AsmL::Function'>
+      <Reference name = 'mainFile' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'AsmL::AsmLFile' opposite = 'AsmL::AsmLFile::main'/>
+      <Reference name = 'initialisations' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'AsmL::Initially' opposite = ''/>
+    </Class>
+    <Class name = 'Initially' isAbstract = 'false' supertypes = 'AsmL::LocatedElement'>
+      <Reference name = 'id' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::VarTerm' opposite = ''/>
+      <Reference name = 'val' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+    </Class>
+    <Class name = 'Rule' isAbstract = 'true' supertypes = 'AsmL::LocatedElement'>
+      <Reference name = 'ownerBody' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'AsmL::Body' opposite = 'AsmL::Body::rules'/>
+    </Class>
+    <Class name = 'SkipRule' isAbstract = 'false' supertypes = 'AsmL::Rule'/>
+    <Class name = 'Step' isAbstract = 'true' supertypes = 'AsmL::Rule'>
+      <Attribute name = 'name' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'StepUntilFixPoint' isAbstract = 'false' supertypes = 'AsmL::Step'/>
+    <Class name = 'StepExpression' isAbstract = 'true' supertypes = 'AsmL::Step'>
+      <Reference name = 'expression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+    </Class>
+    <Class name = 'StepWhile' isAbstract = 'false' supertypes = 'AsmL::StepExpression'/>
+    <Class name = 'StepUntil' isAbstract = 'false' supertypes = 'AsmL::StepExpression'/>
+    <Class name = 'StepForEach' isAbstract = 'false' supertypes = 'AsmL::Step'>
+      <Reference name = 'expressions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::InWhereHolds' opposite = ''/>
+    </Class>
+    <Class name = 'MethodInvocation' isAbstract = 'false' supertypes = 'AsmL::Rule'>
+      <Reference name = 'called' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::MethodCallTerm' opposite = ''/>
+    </Class>
+    <Class name = 'UpdateRule' isAbstract = 'true' supertypes = 'AsmL::Rule'>
+      <Reference name = 'term' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+    </Class>
+    <Class name = 'UpdateVarRule' isAbstract = 'false' supertypes = 'AsmL::UpdateRule'>
+      <Reference name = 'updateVar' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+    </Class>
+    <Class name = 'UpdateFieldRule' isAbstract = 'false' supertypes = 'AsmL::UpdateRule'>
+      <Reference name = 'path' lower = '2' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'AsmL::VarTerm' opposite = ''/>
+    </Class>
+    <Class name = 'UpdateMapRule' isAbstract = 'false' supertypes = 'AsmL::UpdateRule'>
+      <Reference name = 'updateMap' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::VarTerm' opposite = ''/>
+      <Reference name = 'parameters' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+    </Class>
+    <Class name = 'ChooseRule' isAbstract = 'false' supertypes = 'AsmL::Rule'>
+      <Reference name = 'expressions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::InWhereHolds' opposite = ''/>
+      <Reference name = 'ifChoosenRules' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Body' opposite = ''/>
+      <Reference name = 'ifNotChoosenRule' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Body' opposite = ''/>
+    </Class>
+    <Class name = 'ForallRule' isAbstract = 'false' supertypes = 'AsmL::Rule'>
+      <Reference name = 'expressions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::InWhereHolds' opposite = ''/>
+      <Reference name = 'doRule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Body' opposite = ''/>
+    </Class>
+    <Class name = 'ConditionalRule' isAbstract = 'false' supertypes = 'AsmL::Rule'>
+      <Reference name = 'condition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+      <Reference name = 'thenRule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Body' opposite = ''/>
+      <Reference name = 'elseRule' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Body' opposite = ''/>
+      <Reference name = 'elseIfRule' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::ElseIf' opposite = ''/>
+    </Class>
+    <Class name = 'ElseIf' isAbstract = 'false' supertypes = 'AsmL::ConditionalRule'/>
+    <Class name = 'ReturnRule' isAbstract = 'false' supertypes = 'AsmL::Rule'>
+      <Reference name = 'term' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+    </Class>
+    <Class name = 'AddRule' isAbstract = 'false' supertypes = 'AsmL::Rule'>
+      <Reference name = 'val' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+      <Reference name = 'set' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::VarTerm' opposite = ''/>
+    </Class>
+    <Class name = 'RemoveRule' isAbstract = 'false' supertypes = 'AsmL::Rule'>
+      <Reference name = 'val' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+      <Reference name = 'set' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::VarTerm' opposite = ''/>
+    </Class>
+    <Class name = 'Type' isAbstract = 'true' supertypes = 'AsmL::AsmLElement'>
+      <Attribute name = 'withNull' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'ownerDeclaration' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'AsmL::VarDeclaration' opposite = 'AsmL::VarDeclaration::type'/>
+      <Reference name = 'ownerMethod' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'AsmL::Method' opposite = 'AsmL::Method::returnType'/>
+      <Reference name = 'ownerParameter' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'AsmL::Parameter' opposite = 'AsmL::Parameter::type'/>
+    </Class>
+    <Class name = 'NamedType' isAbstract = 'false' supertypes = 'AsmL::Type'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'MapType' isAbstract = 'false' supertypes = 'AsmL::Type'>
+      <Reference name = 'ofType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Type' opposite = ''/>
+      <Reference name = 'toType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Type' opposite = ''/>
+    </Class>
+    <Class name = 'TupletType' isAbstract = 'false' supertypes = 'AsmL::Type'>
+      <Reference name = 'types' lower = '2' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'AsmL::Type' opposite = ''/>
+    </Class>
+    <Class name = 'SetType' isAbstract = 'false' supertypes = 'AsmL::Type'>
+      <Reference name = 'of' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Type' opposite = ''/>
+    </Class>
+    <Class name = 'SequenceType' isAbstract = 'false' supertypes = 'AsmL::Type'>
+      <Reference name = 'of' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Type' opposite = ''/>
+    </Class>
+    <Class name = 'Term' isAbstract = 'true' supertypes = 'AsmL::LocatedElement'/>
+    <Class name = 'VarTerm' isAbstract = 'false' supertypes = 'AsmL::Term'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Operator' isAbstract = 'false' supertypes = 'AsmL::Term'>
+      <Attribute name = 'opName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'leftExp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+      <Reference name = 'rightExp' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+    </Class>
+    <Class name = 'MapTerm' isAbstract = 'false' supertypes = 'AsmL::Term'>
+      <Reference name = 'ofTerm' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+      <Reference name = 'toTerm' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+      <Attribute name = 'separator' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'TulpletTerm' isAbstract = 'false' supertypes = 'AsmL::Term'>
+      <Reference name = 'terms' lower = '2' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+    </Class>
+    <Class name = 'MethodCallTerm' isAbstract = 'false' supertypes = 'AsmL::Term'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+    </Class>
+    <Class name = 'NewInstance' isAbstract = 'false' supertypes = 'AsmL::MethodCallTerm'/>
+    <Class name = 'PredicateTerm' isAbstract = 'false' supertypes = 'AsmL::Term'>
+      <Reference name = 'expressions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::InWhereHolds' opposite = ''/>
+    </Class>
+    <Class name = 'ForAllTerm' isAbstract = 'false' supertypes = 'AsmL::PredicateTerm'/>
+    <Class name = 'ExistsTerm' isAbstract = 'false' supertypes = 'AsmL::PredicateTerm'>
+      <Attribute name = 'isUnique' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'AnyIn' isAbstract = 'false' supertypes = 'AsmL::PredicateTerm'/>
+    <Class name = 'SetTerm' isAbstract = 'true' supertypes = 'AsmL::Term'/>
+    <Class name = 'EnumerateSet' isAbstract = 'false' supertypes = 'AsmL::SetTerm'>
+      <Reference name = 'vals' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+    </Class>
+    <Class name = 'RangeSet' isAbstract = 'false' supertypes = 'AsmL::SetTerm'>
+      <Reference name = 'minval' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+      <Reference name = 'maxval' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+    </Class>
+    <Class name = 'AlgorithmSet' isAbstract = 'false' supertypes = 'AsmL::SetTerm'>
+      <Reference name = 'expressions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::InWhereHolds' opposite = ''/>
+    </Class>
+    <Class name = 'SequenceTerm' isAbstract = 'true' supertypes = 'AsmL::Term'/>
+    <Class name = 'EnumerateSequence' isAbstract = 'false' supertypes = 'AsmL::SequenceTerm'>
+      <Reference name = 'vals' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+    </Class>
+    <Class name = 'RangeSequence' isAbstract = 'false' supertypes = 'AsmL::SequenceTerm'>
+      <Reference name = 'minval' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+      <Reference name = 'maxval' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'AsmL::Term' opposite = ''/>
+    </Class>
+    <Class name = 'Constant' isAbstract = 'true' supertypes = 'AsmL::Term'/>
+    <Class name = 'BooleanConstant' isAbstract = 'false' supertypes = 'AsmL::Constant'>
+      <Attribute name = 'val' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'IntegerConstant' isAbstract = 'false' supertypes = 'AsmL::Constant'>
+      <Attribute name = 'val' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'StringConstant' isAbstract = 'false' supertypes = 'AsmL::Constant'>
+      <Attribute name = 'val' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'NullConstant' isAbstract = 'false' supertypes = 'AsmL::Constant'/>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'Boolean'/>
+  </Package>
+</Metamodel>

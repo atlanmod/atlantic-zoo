@@ -1,0 +1,305 @@
+package Metamodel;
+
+package OWL {
+  class OWLOntology extends RDFS.RDFSResource {
+    !ordered ref OWLUniverse[*]#ontology owlUniverse;
+    !ordered ref OWLOntology[*]#newerOntology OWLPriorVersion;
+    !ordered ref OWLOntology[*]#OWLPriorVersion newerOntology;
+    !ordered ref OWLOntology[*]#incompatibleOntology OWLIncompatibleWith;
+    !ordered ref OWLOntology[*]#OWLIncompatibleWith incompatibleOntology;
+    !ordered ref OWLOntology[*]#importingOntology OWLImports;
+    !ordered ref OWLOntology[*]#OWLImports importingOntology;
+    !ordered ref OWLGraph[+]#ontology owlGraph;
+    !ordered ref OWLStatement[+]#ontology owlStatement;
+    !ordered val RDFS.RDFSLiteral[*] versionInfo;
+  }
+
+  class OWLGraph extends RDFS.RDFGraph {
+    !ordered ref OWLOntology[*]#owlGraph ontology;
+    ref OWLStatement[+]#owlGraph owlStatement;
+  }
+
+  class OWLStatement extends RDFS.RDFStatement {
+    ref OWLOntology[*]#owlStatement ontology;
+    !ordered ref OWLGraph[+]#owlStatement owlGraph;
+  }
+
+  class OWLUniverse extends RDFS.RDFSResource {
+    !ordered ref OWLOntology[+]#owlUniverse ontology;
+  }
+
+  class OWLClass extends RDFS.RDFSClass, OWLUniverse {
+    !unique !ordered attr Boolean isDeprecated;
+    !ordered ref OWLClass[*]#equivalentClass OWLequivalentClass;
+    !ordered ref OWLClass[*]#OWLequivalentClass equivalentClass;
+    !ordered ref OWLClass[*]#disjointClass OWLdisjointWith;
+    !ordered ref OWLClass[*]#OWLdisjointWith disjointClass;
+    !ordered ref IntersectionClass[*]#OWLIntersectionOf intersectionClass;
+    !ordered ref UnionClass[*]#OWLUnionOf unionClass;
+    !ordered ref ComplementClass[*]#OWLComplementOf complementClass;
+    !ordered ref AllValuesFromRestriction[*]#OWLAllValuesFromClass allValuesFromRestrictionClass;
+    !ordered ref SomeValuesFromRestriction[*]#OWLSomeValuesFromClass someValuesFromRestrictionClass;
+  }
+
+  class IntersectionClass extends OWLClass {
+    !ordered ref OWLClass[*]#intersectionClass OWLIntersectionOf;
+  }
+
+  class UnionClass extends OWLClass {
+    !ordered ref OWLClass[*]#unionClass OWLUnionOf;
+  }
+
+  class ComplementClass extends OWLClass {
+    !ordered ref OWLClass[*]#complementClass OWLComplementOf;
+  }
+
+  class EnumeratedClass extends OWLClass {
+    !ordered ref Individual[*]#enumeratedClass OWLOneOf;
+  }
+
+  class OWLRestriction extends OWLClass {
+    !ordered ref RDFS.RDFProperty[1]#propertyRestriction OWLOnProperty;
+  }
+
+  class HasValueRestriction extends OWLRestriction {
+    !ordered ref RDFS.RDFSLiteral#restrictionClass OWLHasLiteralValue;
+    !ordered ref Individual#restrictionClass OWLHasIndividualValue;
+  }
+
+  class AllValuesFromRestriction extends OWLRestriction {
+    !ordered ref OWLDataRange#allValuesFromRestrictionClass OWLAllValuesFromDataRange;
+    !ordered ref OWLClass#allValuesFromRestrictionClass OWLAllValuesFromClass;
+  }
+
+  class SomeValuesFromRestriction extends OWLRestriction {
+    !ordered ref OWLClass#someValuesFromRestrictionClass OWLSomeValuesFromClass;
+    !ordered ref OWLDataRange#someValuesFromRestrictionClass OWLSomeValuesFromDataRange;
+  }
+
+  class CardinalityRestriction extends OWLRestriction {
+    !ordered ref RDFS.TypedLiteral[1]#cardinalityRestriction OWLCardinality;
+  }
+
+  class MaxCardinalityRestriction extends OWLRestriction {
+    !ordered ref RDFS.TypedLiteral[1]#maxCardinalityRestriction OWLMaxCardinality;
+  }
+
+  class MinCardinalityRestriction extends OWLRestriction {
+    !ordered ref RDFS.TypedLiteral[1]#minCardinalityRestriction OWLMinCardinality;
+  }
+
+  class OWLAnnotationProperty extends RDFS.RDFProperty, OWLUniverse {
+  }
+
+  class OWLOntologyProperty extends RDFS.RDFProperty, OWLUniverse {
+  }
+
+  abstract class Property extends RDFS.RDFProperty, OWLUniverse {
+    !unique !ordered attr Boolean isDeprecated;
+    !ordered ref Property[*]#equivalentProperty OWLEquivalentProperty;
+    !ordered ref Property[*]#OWLEquivalentProperty equivalentProperty;
+  }
+
+  class FunctionalProperty extends Property {
+  }
+
+  class OWLDatatypeProperty extends Property {
+  }
+
+  class OWLObjectProperty extends Property {
+    !ordered ref OWLObjectProperty#inverseProperty OWLInverseOf;
+    !ordered ref OWLObjectProperty[*]#OWLInverseOf inverseProperty;
+  }
+
+  class InverseFunctionalProperty extends OWLObjectProperty {
+  }
+
+  class SymmetricProperty extends OWLObjectProperty {
+  }
+
+  class TransitiveProperty extends OWLObjectProperty {
+  }
+
+  class Individual extends RDFS.RDFSResource, OWLUniverse {
+    !ordered ref Individual[*]#differentIndividual OWLDifferentFrom;
+    !ordered ref Individual[*]#OWLDifferentFrom differentIndividual;
+    !ordered ref Individual[*]#sameIndividual OWLSameAs;
+    !ordered ref Individual[*]#OWLSameAs sameIndividual;
+    !ordered ref OWLAllDifferent[*]#OWLDistinctMembers allDifferent;
+    !ordered ref EnumeratedClass[*]#OWLOneOf enumeratedClass;
+    !ordered ref HasValueRestriction[*]#OWLHasIndividualValue restrictionClass;
+  }
+
+  class OWLAllDifferent extends OWLClass {
+    !ordered ref Individual[2..*]#allDifferent OWLDistinctMembers;
+  }
+
+  class OWLDataRange extends RDFS.RDFSClass, OWLUniverse {
+    !ordered ref RDFS.RDFSDataType#dataRange ~datatype;
+    !ordered ref RDFS.RDFSLiteral[*]#dataRange OWLOneOf;
+    !ordered ref SomeValuesFromRestriction#OWLSomeValuesFromDataRange someValuesFromRestrictionClass;
+    !ordered ref AllValuesFromRestriction#OWLAllValuesFromDataRange allValuesFromRestrictionClass;
+  }
+
+}
+
+package RDFS {
+  class Document extends RDFSResource {
+    !ordered val LocalName[*]#document localName;
+    !ordered ref Namespace[*]#document xmlBase;
+    !ordered val NamespaceDefinition[*]#document namespaceDefinition;
+    ref RDFStatement[+]#document statement;
+  }
+
+  class LocalName {
+    !unique !ordered attr String[1] name;
+    !ordered ref Document[1]#localName document;
+    !ordered ref URIReference[*]#fragmentIdentifier uriRef;
+  }
+
+  class Namespace {
+    !ordered ref Document[+]#xmlBase document;
+    !ordered ref URIReference[1]#namespace namespaceURIRef;
+    !ordered ref NamespaceDefinition[*]#namespace namespaceDefinition;
+  }
+
+  class NamespaceDefinition {
+    !unique !ordered attr String[1] namespacePrefix;
+    !ordered ref Document[1]#namespaceDefinition document;
+    !ordered ref Namespace[1]#namespaceDefinition namespace;
+  }
+
+  class RDFSResource {
+    !ordered val URIReference[*]#resource uriRef;
+    !ordered ref RDFStatement[*]#RDFsubject subjectStatement;
+    !ordered ref RDFStatement[*]#RDFobject objectStatement;
+    !ordered val PlainLiteral[*]#labeledResource label;
+    !ordered ref RDFSClass[+]#typedResource type;
+    !ordered val PlainLiteral[*]#commentedResource comment;
+    !ordered ref RDFSResource[*]#referringResource seeAlso;
+    !ordered ref RDFSResource[*]#seeAlso referringResource;
+    !ordered ref RDFSResource[*]#definedResource isDefinedBy;
+    !ordered ref RDFSResource[*]#isDefinedBy definedResource;
+    !ordered ref RDFSResource[*]#container member;
+    !ordered ref RDFSResource[*]#member container;
+    !ordered ref List[*]#first list;
+  }
+
+  class RDFGraph extends RDFSResource {
+    !ordered val URIReference#namedGraph graphName;
+    ref RDFStatement[+]#graph statement;
+  }
+
+  class List extends RDFSResource {
+    !ordered ref RDFSResource#list first;
+    !ordered ref List#originalList rest;
+    !ordered ref List[*]#rest originalList;
+  }
+
+  class Container extends RDFSResource {
+  }
+
+  class Alt extends Container {
+  }
+
+  class Bag extends Container {
+  }
+
+  class Seq extends Container {
+  }
+
+  class RDFProperty extends RDFSResource {
+    !ordered ref RDFStatement[*]#RDFpredicate predicateStatement;
+    !ordered ref RDFProperty[*]#superProperty subPropertyOf;
+    !ordered ref RDFProperty[*]#subPropertyOf superProperty;
+    !ordered ref RDFSClass[*]#propertyForDomain domain;
+    !ordered ref RDFSClass[*]#propertyForRange range;
+    !ordered ref OWL.OWLRestriction[*]#OWLOnProperty propertyRestriction;
+  }
+
+  class ContainerMembershipProperty {
+  }
+
+  class RDFStatement extends RDFSResource {
+    !unique !ordered attr ReificationKind[1] reificationKind;
+    !ordered ref RDFGraph[+]#statement graph;
+    !ordered ref RDFProperty#predicateStatement RDFpredicate;
+    !ordered ref RDFSResource[1]#objectStatement RDFobject;
+    !ordered ref RDFSResource[1]#subjectStatement RDFsubject;
+    !ordered ref URIReference[*]#reifiedStatement nameForReification;
+    !ordered ref Document[+]#statement document;
+  }
+
+  enum ReificationKind {
+    none = 0;
+    reifiedOnly = 0;
+    reified = 0;
+  }
+
+  class URIReferenceNode extends RDFSResource {
+  }
+
+  class BlankNode extends RDFSResource {
+    !unique !ordered attr String nodeId;
+  }
+
+  class RDFSClass extends RDFSResource {
+    !ordered ref RDFSClass[*]#superClass subClassOf;
+    !ordered ref RDFSClass[*]#subClassOf superClass;
+    !ordered ref RDFSResource[*]#type typedResource;
+    !ordered ref RDFProperty[*]#domain propertyForDomain;
+    !ordered ref RDFProperty[*]#range propertyForRange;
+  }
+
+  class RDFSDataType extends RDFSClass {
+    !ordered ref OWL.OWLDataRange[*]#~datatype dataRange;
+  }
+
+  class RDFSLiteral extends RDFSResource {
+    !unique !ordered attr String[1] lexicalForm;
+    !ordered ref OWL.HasValueRestriction[*]#OWLHasLiteralValue restrictionClass;
+    !ordered ref OWL.OWLDataRange[*]#OWLOneOf dataRange;
+  }
+
+  class PlainLiteral extends RDFSLiteral {
+    !unique !ordered attr String language;
+    !ordered ref RDFSResource[1]#label labeledResource;
+    !ordered ref RDFSResource[1]#comment commentedResource;
+  }
+
+  class TypedLiteral extends RDFSLiteral {
+    !ordered ref URIReference[1]#literal datatypeURI;
+    !ordered ref OWL.CardinalityRestriction[*]#OWLCardinality cardinalityRestriction;
+    !ordered ref OWL.MinCardinalityRestriction[*]#OWLMinCardinality minCardinalityRestriction;
+    !ordered ref OWL.MaxCardinalityRestriction[*]#OWLMaxCardinality maxCardinalityRestriction;
+  }
+
+  class XMLLiteral extends TypedLiteral {
+  }
+
+  class URIReference {
+    !ordered ref UniformResourceIdentifier#uriRef uri;
+    !ordered ref RDFSResource#uriRef resource;
+    !ordered ref TypedLiteral[*]#datatypeURI literal;
+    !ordered ref RDFGraph#graphName namedGraph;
+    !ordered ref RDFStatement[*]#nameForReification reifiedStatement;
+    !ordered ref LocalName#uriRef fragmentIdentifier;
+    !ordered ref Namespace#namespaceURIRef namespace;
+  }
+
+  class UniformResourceIdentifier extends URIReference {
+    !unique !ordered attr String[1] name;
+    !ordered ref URIReference[*]#uri uriRef;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

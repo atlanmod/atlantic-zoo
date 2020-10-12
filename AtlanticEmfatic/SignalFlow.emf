@@ -1,0 +1,66 @@
+package Metamodel;
+
+package SignalFlow {
+  class RootFolder {
+    !ordered val CompoundComponent[*]#rootFolder compoundComponent;
+  }
+
+  class CompoundComponent extends BaseComponent {
+    !ordered ref RootFolder[1]#compoundComponent rootFolder;
+    !ordered val BaseComponent[*]#compoundComponent baseComponent;
+    !ordered val LocalPort[*]#compoundComponent localPort;
+  }
+
+  class PrimitiveComponent extends BaseComponent {
+  }
+
+  class BaseComponent {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String position;
+    !ordered val Signal[*]#baseComponent signal;
+    !ordered val OutputPort[*]#baseComponent outputPort;
+    !ordered val InputPort[*]#baseComponent inputPort;
+    !ordered ref CompoundComponent[1]#baseComponent compoundComponent;
+  }
+
+  class InputPort extends PortBase {
+    !ordered ref BaseComponent[1]#inputPort baseComponent;
+  }
+
+  class LocalPort extends PortBase {
+    !ordered ref CompoundComponent[1]#localPort compoundComponent;
+  }
+
+  class OutputPort extends PortBase {
+    !ordered ref BaseComponent[1]#outputPort baseComponent;
+  }
+
+  class PortBase {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String position;
+    !ordered ref AssociationPortBase_PortBase[1]#srcPortBase associationPortBase_PortBasesrc;
+    !ordered ref AssociationPortBase_PortBase[1]#dstPortBase associationPortBase_PortBasedst;
+  }
+
+  class Signal {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String position;
+    !ordered ref BaseComponent[1]#signal baseComponent;
+    !ordered ref AssociationPortBase_PortBase[1]#signal associationPortBase_PortBase;
+  }
+
+  class AssociationPortBase_PortBase {
+    !ordered ref PortBase[+]#associationPortBase_PortBasesrc srcPortBase;
+    !ordered ref PortBase[+]#associationPortBase_PortBasedst dstPortBase;
+    !ordered ref Signal[1]#associationPortBase_PortBase signal;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+}
+

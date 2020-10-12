@@ -1,0 +1,97 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_yUML"{
+labelloc=t
+color=black
+label=yUML
+ node[shape=record];
+LocatedElement[label="{/LocatedElement/|location[0-1] : String\ncommentsBefore[*] : String\ncommentsAfter[*] : String| }"]
+;
+ node[shape=record];
+Model[label="{Model| | }"]
+ Model->Class[arrowhead=vee,arrowtail=diamond,headlabel="classes[*]{ordered}",group=Class,minlen=2,constraint=true,]
+ Model->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Class[label="{Class|name : String| }"]
+ Class->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ModelElement[label="{/ModelElement/| | }"]
+ ModelElement->Model[arrowhead=diamond,arrowtail=none,headlabel="model",taillabel="elements{ordered}",group=Model,minlen=2,constraint=true,]
+ ModelElement->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ColorableElement[label="{/ColorableElement/|color[0-1] : String| }"]
+ ColorableElement->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ClassReference[label="{ClassReference|stereotype[0-1] : String| }"]
+ ClassReference->Class[arrowhead=vee,arrowtail=none,headlabel="class",group=Class,minlen=2,constraint=false,]
+ ClassReference->ClassDefinition[arrowhead=vee,arrowtail=diamond,headlabel="definition[0-1]",group=ClassDefinition,minlen=2,constraint=true,]
+ ClassReference->ColorableElement[arrowhead=onormal,group=ColorableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Relationship[label="{/Relationship/| | }"]
+ Relationship->ClassReference[arrowhead=vee,arrowtail=diamond,headlabel="source",group=ClassReference,minlen=2,constraint=true,]
+ Relationship->ClassReference[arrowhead=vee,arrowtail=diamond,headlabel="target",group=ClassReference,minlen=2,constraint=true,]
+ Relationship->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ClassDefinition[label="{ClassDefinition| | }"]
+ ClassDefinition->Attribute[arrowhead=vee,arrowtail=diamond,headlabel="attributes[*]{ordered}",group=Attribute,minlen=2,constraint=true,]
+ ClassDefinition->Method[arrowhead=vee,arrowtail=diamond,headlabel="methods[*]{ordered}",group=Method,minlen=2,constraint=true,]
+ ClassDefinition->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Association[label="{Association|type : AssociationType\nsourceLabel[0-1] : String\nnavigableSource : Boolean\nsourceVisibility : Visibility\ntargetLabel[0-1] : String\nnavigableTarget : Boolean\ntargetVisibility : Visibility| }"]
+ Association->Cardinality[arrowhead=vee,arrowtail=diamond,headlabel="sourceCardinality[0-1]",group=Cardinality,minlen=2,constraint=true,]
+ Association->Cardinality[arrowhead=vee,arrowtail=diamond,headlabel="targetCardinality[0-1]",group=Cardinality,minlen=2,constraint=true,]
+ Association->Relationship[arrowhead=onormal,group=Relationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Inheritance[label="{Inheritance| | }"]
+ Inheritance->Relationship[arrowhead=onormal,group=Relationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Cardinality[label="{Cardinality|lowerBound[0-1] : Integer\nupperBound : Integer| }"]
+ Cardinality->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ClassMember[label="{/ClassMember/|visibility : Visibility\nname : String| }"]
+ ClassMember->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Attribute[label="{Attribute|type[0-1] : String| }"]
+ Attribute->ClassMember[arrowhead=onormal,group=ClassMember,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Method[label="{Method|arguments[*] : String| }"]
+ Method->ClassMember[arrowhead=onormal,group=ClassMember,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Note[label="{Note|text[*] : String| }"]
+ Note->ColorableElement[arrowhead=onormal,group=ColorableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NoteAssociation[label="{NoteAssociation| | }"]
+ NoteAssociation->Note[arrowhead=vee,arrowtail=diamond,headlabel="note",group=Note,minlen=2,constraint=true,]
+ NoteAssociation->Relationship[arrowhead=onormal,group=Relationship,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

@@ -1,0 +1,321 @@
+package Metamodel;
+
+package AsmL {
+  abstract class LocatedElement {
+    !unique !ordered attr String[1] location;
+    !unique attr String[*] commentsBefore;
+    !unique attr String[*] commentsAfter;
+  }
+
+  class Body extends LocatedElement {
+    val Rule[*]#ownerBody rules;
+  }
+
+  class InWhereHolds extends LocatedElement {
+    !ordered val Term[1] var;
+    !ordered val Term[1] in;
+    !ordered val Term where;
+    !ordered val Term holds;
+  }
+
+  class AsmLFile extends LocatedElement {
+    val AsmLElement[*]#file elements;
+    !ordered val Main[1]#mainFile main;
+  }
+
+  abstract class AsmLElement extends LocatedElement {
+    !ordered ref AsmLFile[1]#elements file;
+  }
+
+  class VarDeclaration extends AsmLElement, VarOrCase, VarOrMethod {
+    !unique !ordered attr Boolean[1] isConstant;
+    !unique !ordered attr Boolean[1] isDeclaration;
+    !unique !ordered attr Boolean[1] isLocal;
+    !unique !ordered attr String[1] name;
+    !ordered val Type[1]#ownerDeclaration type;
+  }
+
+  class Namespace extends AsmLElement {
+    !unique !ordered attr String[1] name;
+  }
+
+  class Structure extends AsmLElement {
+    !unique !ordered attr String[1] name;
+    val VarOrCase[*]#ownerStructure varOrCase;
+    !unique !ordered attr String superStructureName;
+  }
+
+  abstract class VarOrCase extends LocatedElement {
+    !ordered ref Structure[1]#varOrCase ownerStructure;
+  }
+
+  class Case extends VarOrCase {
+    !unique !ordered attr String[1] name;
+    val VarDeclaration[*] variables;
+  }
+
+  class Class extends AsmLElement {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr Boolean[1] isAbstract;
+    !unique !ordered attr String superClassName;
+    val VarOrMethod[*]#ownerClass varOrMethod;
+  }
+
+  class VarOrMethod extends LocatedElement {
+    !ordered ref Class[1]#varOrMethod ownerClass;
+  }
+
+  class Enumeration extends AsmLElement {
+    !unique !ordered attr String[1] name;
+    val Enumerator[*] enumerators;
+  }
+
+  class Enumerator extends LocatedElement {
+    !unique !ordered attr String[1] name;
+    !ordered val Term value;
+  }
+
+  abstract class Function extends AsmLElement {
+    !unique !ordered attr String[1] name;
+    !ordered val Body[1] body;
+  }
+
+  class Method extends Function, VarOrMethod {
+    !unique !ordered attr Boolean isAbstract;
+    !unique !ordered attr Boolean isShared;
+    !unique !ordered attr Boolean isEntryPoint;
+    !unique !ordered attr Boolean isOverride;
+    !ordered val Type#ownerMethod returnType;
+    val Parameter[*]#ownerMethod parameters;
+  }
+
+  class Parameter extends LocatedElement {
+    !unique !ordered attr String[1] name;
+    !ordered val Type[1]#ownerParameter type;
+    !ordered ref Method[1]#parameters ownerMethod;
+  }
+
+  class Main extends Function {
+    !ordered ref AsmLFile[1]#main mainFile;
+    val Initially[*] initialisations;
+  }
+
+  class Initially extends LocatedElement {
+    !ordered val VarTerm[1] ~id;
+    !ordered val Term[1] ~val;
+  }
+
+  abstract class Rule extends LocatedElement {
+    !ordered ref Body[1]#rules ownerBody;
+  }
+
+  class SkipRule extends Rule {
+  }
+
+  abstract class Step extends Rule {
+    !unique !ordered attr String name;
+  }
+
+  class StepUntilFixPoint extends Step {
+  }
+
+  abstract class StepExpression extends Step {
+    !ordered val Term[1] expression;
+  }
+
+  class StepWhile extends StepExpression {
+  }
+
+  class StepUntil extends StepExpression {
+  }
+
+  class StepForEach extends Step {
+    !ordered val InWhereHolds[*] expressions;
+  }
+
+  class MethodInvocation extends Rule {
+    !ordered val MethodCallTerm[1] called;
+  }
+
+  abstract class UpdateRule extends Rule {
+    !ordered val Term[1] term;
+  }
+
+  class UpdateVarRule extends UpdateRule {
+    !ordered val Term[1] updateVar;
+  }
+
+  class UpdateFieldRule extends UpdateRule {
+    val VarTerm[2..*] path;
+  }
+
+  class UpdateMapRule extends UpdateRule {
+    !ordered val VarTerm[1] updateMap;
+    val Term[+] parameters;
+  }
+
+  class ChooseRule extends Rule {
+    !ordered val InWhereHolds[*] expressions;
+    !ordered val Body[1] ifChoosenRules;
+    !ordered val Body ifNotChoosenRule;
+  }
+
+  class ForallRule extends Rule {
+    !ordered val InWhereHolds[*] expressions;
+    !ordered val Body[1] doRule;
+  }
+
+  class ConditionalRule extends Rule {
+    !ordered val Term[1] condition;
+    !ordered val Body[1] thenRule;
+    !ordered val Body elseRule;
+    !ordered val ElseIf elseIfRule;
+  }
+
+  class ElseIf extends ConditionalRule {
+  }
+
+  class ReturnRule extends Rule {
+    !ordered val Term[1] term;
+  }
+
+  class AddRule extends Rule {
+    !ordered val Term[1] ~val;
+    !ordered val VarTerm[1] set;
+  }
+
+  class RemoveRule extends Rule {
+    !ordered val Term[1] ~val;
+    !ordered val VarTerm[1] set;
+  }
+
+  abstract class Type extends AsmLElement {
+    !unique !ordered attr Boolean[1] withNull;
+    !ordered ref VarDeclaration#type ownerDeclaration;
+    !ordered ref Method#returnType ownerMethod;
+    !ordered ref Parameter#type ownerParameter;
+  }
+
+  class NamedType extends Type {
+    !unique !ordered attr String[1] name;
+  }
+
+  class MapType extends Type {
+    !ordered val Type[1] ofType;
+    !ordered val Type[1] toType;
+  }
+
+  class TupletType extends Type {
+    val Type[2..*] types;
+  }
+
+  class SetType extends Type {
+    !ordered val Type[1] of;
+  }
+
+  class SequenceType extends Type {
+    !ordered val Type[1] of;
+  }
+
+  abstract class Term extends LocatedElement {
+  }
+
+  class VarTerm extends Term {
+    !unique !ordered attr String[1] name;
+  }
+
+  class Operator extends Term {
+    !unique !ordered attr String[1] opName;
+    !ordered val Term[1] leftExp;
+    !ordered val Term rightExp;
+  }
+
+  class MapTerm extends Term {
+    !ordered val Term[1] ofTerm;
+    !ordered val Term[1] toTerm;
+    !unique !ordered attr String[1] separator;
+  }
+
+  class TulpletTerm extends Term {
+    val Term[2..*] terms;
+  }
+
+  class MethodCallTerm extends Term {
+    !unique !ordered attr String[1] name;
+    val Term[*] parameters;
+  }
+
+  class NewInstance extends MethodCallTerm {
+  }
+
+  class PredicateTerm extends Term {
+    !ordered val InWhereHolds[*] expressions;
+  }
+
+  class ForAllTerm extends PredicateTerm {
+  }
+
+  class ExistsTerm extends PredicateTerm {
+    !unique !ordered attr Boolean[1] isUnique;
+  }
+
+  class AnyIn extends PredicateTerm {
+  }
+
+  abstract class SetTerm extends Term {
+  }
+
+  class EnumerateSet extends SetTerm {
+    !ordered val Term[*] vals;
+  }
+
+  class RangeSet extends SetTerm {
+    !ordered val Term[1] minval;
+    !ordered val Term[1] maxval;
+  }
+
+  class AlgorithmSet extends SetTerm {
+    !ordered val InWhereHolds[*] expressions;
+  }
+
+  abstract class SequenceTerm extends Term {
+  }
+
+  class EnumerateSequence extends SequenceTerm {
+    val Term[*] vals;
+  }
+
+  class RangeSequence extends SequenceTerm {
+    !ordered val Term[1] minval;
+    !ordered val Term[1] maxval;
+  }
+
+  abstract class Constant extends Term {
+  }
+
+  class BooleanConstant extends Constant {
+    !unique !ordered attr Boolean[1] ~val;
+  }
+
+  class IntegerConstant extends Constant {
+    !unique !ordered attr Integer[1] ~val;
+  }
+
+  class StringConstant extends Constant {
+    !unique !ordered attr String[1] ~val;
+  }
+
+  class NullConstant extends Constant {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+  datatype Boolean : "";
+
+}
+

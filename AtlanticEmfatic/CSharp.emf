@@ -1,0 +1,73 @@
+package Metamodel;
+
+package CSharp {
+  class Member {
+    !unique !ordered attr String[1] name;
+    !ordered ref Type#members owner;
+  }
+
+  class TypedAttribute extends Member {
+    !ordered ref Type[1] type;
+  }
+
+  class Field extends TypedAttribute {
+  }
+
+  class Property extends TypedAttribute {
+    !unique !ordered attr Boolean[1] isReadable;
+    !unique !ordered attr Boolean[1] isWritable;
+  }
+
+  class MethodBase extends Member {
+    !unique !ordered attr String[1] visibility;
+    !unique !ordered attr Boolean[1] isAbstract;
+    !unique !ordered attr Boolean[1] isFinal;
+    !unique !ordered attr Boolean[1] isStatic;
+    !ordered val Parameter[*]#method parameters;
+  }
+
+  class Constructor extends MethodBase {
+  }
+
+  class Method extends MethodBase {
+    !ordered ref Type[1] returnType;
+  }
+
+  class Type extends Member {
+    !unique !ordered attr String[1] qualifiedName;
+    !unique !ordered attr Boolean[1] isAbstract;
+    !unique !ordered attr String[1] visibility;
+    !unique !ordered attr Boolean[1] isSealed;
+    !unique !ordered attr String[1] nameSpace;
+    !ordered val Member[*]#owner members;
+    !ordered ref Assembly#content t_container;
+    !ordered ref Type super;
+  }
+
+  class Parameter {
+    !unique !ordered attr Boolean[1] isIn;
+    !unique !ordered attr Boolean[1] isOut;
+    !unique !ordered attr Boolean[1] name;
+    !unique !ordered attr Integer[1] position;
+    !ordered ref MethodBase[1]#parameters method;
+    !ordered ref Type[1] type;
+  }
+
+  class Assembly {
+    !unique !ordered attr String[1] name;
+    !ordered val Type[*]#t_container content;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

@@ -1,0 +1,83 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_EQN"{
+labelloc=t
+color=black
+label=EQN
+ node[shape=record];
+RoutingChain[label="{RoutingChain| | }"]
+ RoutingChain->QueuingNetwork[arrowhead=diamond,arrowtail=none,headlabel="queuingNetwork[*]",taillabel="workLoad",group=QueuingNetwork,minlen=2,constraint=true,]
+;
+ node[shape=record];
+QueuingNetwork[label="{QueuingNetwork| | }"]
+;
+ node[shape=record];
+ExecutionGraph[label="{ExecutionGraph| | }"]
+;
+ node[shape=record];
+Center[label="{Center| | }"]
+ Center->Node[arrowhead=none,arrowtail=none,headlabel="node",taillabel="demand[1-*]",group=Node,minlen=2,constraint=false,]
+ Center->QueuingNetwork[arrowhead=diamond,arrowtail=none,headlabel="queuingNetwork",taillabel="center[1-*]",group=QueuingNetwork,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Node[label="{Node| | }"]
+ Node->ExecutionGraph[arrowhead=none,arrowtail=none,headlabel="nested",taillabel="nodeNested",group=ExecutionGraph,minlen=2,constraint=false,]
+ Node->ExecutionGraph[arrowhead=diamond,arrowtail=none,headlabel="executionGraph",taillabel="node[1-*]",group=ExecutionGraph,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Special[label="{Special| | }"]
+ Special->Center[arrowhead=onormal,group=Center,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActiveCenter[label="{ActiveCenter| | }"]
+ ActiveCenter->Center[arrowhead=onormal,group=Center,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PassiveCenter[label="{PassiveCenter| | }"]
+ PassiveCenter->Center[arrowhead=onormal,group=Center,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Source[label="{Source| | }"]
+ Source->Special[arrowhead=onormal,group=Special,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Sink[label="{Sink| | }"]
+ Sink->Special[arrowhead=onormal,group=Special,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Fork[label="{Fork| | }"]
+ Fork->Special[arrowhead=onormal,group=Special,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Join[label="{Join| | }"]
+ Join->Special[arrowhead=onormal,group=Special,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Split[label="{Split| | }"]
+ Split->Special[arrowhead=onormal,group=Special,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Allocate[label="{Allocate| | }"]
+ Allocate->Special[arrowhead=onormal,group=Special,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Release[label="{Release| | }"]
+ Release->Special[arrowhead=onormal,group=Special,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

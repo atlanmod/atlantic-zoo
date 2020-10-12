@@ -1,0 +1,125 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_CompleteWebApplication"{
+labelloc=t
+color=black
+label=CompleteWebApplication
+ node[shape=record];
+HyperLink[label="{HyperLink| | }"]
+ HyperLink->ServerPage[arrowhead=none,arrowtail=none,headlabel="server[*]",taillabel="link[*]",group=ServerPage,minlen=2,constraint=false,]
+;
+ subgraph "cluster_Client"{
+labelloc=t
+color=black
+label=Client
+ node[shape=record];
+ClientPage[label="{ClientPage| | }"]
+ ClientPage->HyperLink[arrowhead=vee,arrowtail=none,headlabel="hyperlink",group=HyperLink,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ClientPageModule[label="{ClientPageModule| | }"]
+ ClientPageModule->ClientPage[arrowhead=vee,arrowtail=diamond,headlabel="consistsOf",group=ClientPage,minlen=2,constraint=true,]
+ ClientPageModule->ServerPageModule[arrowhead=vee,arrowtail=none,headlabel="representsSMP",group=ServerPageModule,minlen=2,constraint=false,]
+;
+ node[shape=record];
+LogicInterface[label="{LogicInterface| | }"]
+ LogicInterface->LogicModule[arrowhead=vee,arrowtail=none,headlabel="represents",group=LogicModule,minlen=2,constraint=false,]
+ LogicInterface->Renderer[arrowhead=vee,arrowtail=none,headlabel="generatedBy",group=Renderer,minlen=2,constraint=false,]
+ LogicInterface->ClientPageModule[arrowhead=onormal,group=ClientPageModule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DesignElement[label="{DesignElement| | }"]
+ DesignElement->DesignModule[arrowhead=vee,arrowtail=none,headlabel="represents",group=DesignModule,minlen=2,constraint=false,]
+ DesignElement->ClientPageModule[arrowhead=onormal,group=ClientPageModule,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Server"{
+labelloc=t
+color=black
+label=Server
+ node[shape=record];
+ServerPage[label="{ServerPage| | }"]
+ ServerPage->ClientPage[arrowhead=vee,arrowtail=none,headlabel="generates[*]",group=ClientPage,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ServerPageModule[label="{ServerPageModule| | }"]
+ ServerPageModule->ServerPage[arrowhead=diamond,arrowtail=none,headlabel="contains[1-*]",taillabel="module[1-*]",group=ServerPage,minlen=2,constraint=true,]
+ ServerPageModule->Link[arrowhead=vee,arrowtail=none,headlabel="link",group=Link,minlen=2,constraint=false,]
+ ServerPageModule->DesignModule[arrowhead=vee,arrowtail=diamond,headlabel="containsModule",group=DesignModule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DesignModule[label="{DesignModule| | }"]
+ DesignModule->ServerPageModule[arrowhead=onormal,group=ServerPageModule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LogicModule[label="{LogicModule| | }"]
+ LogicModule->UseCase[arrowhead=vee,arrowtail=diamond,headlabel="useCase[1-*]",group=UseCase,minlen=2,constraint=true,]
+ LogicModule->LogicElement[arrowhead=vee,arrowtail=diamond,headlabel="logicElement[1-*]",group=LogicElement,minlen=2,constraint=true,]
+ LogicModule->ServerPageModule[arrowhead=onormal,group=ServerPageModule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Link[label="{Link| | }"]
+ Link->ServerPage[arrowhead=vee,arrowtail=none,headlabel="page",group=ServerPage,minlen=2,constraint=false,]
+ Link->Data[arrowhead=vee,arrowtail=none,headlabel="posts",group=Data,minlen=2,constraint=false,]
+;
+ node[shape=record];
+BeginUseCase[label="{BeginUseCase| | }"]
+ BeginUseCase->UseCase[arrowhead=vee,arrowtail=none,headlabel="useCase",group=UseCase,minlen=2,constraint=false,]
+ BeginUseCase->Link[arrowhead=onormal,group=Link,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UseCase[label="{UseCase| | }"]
+ UseCase->Link[arrowhead=onormal,group=Link,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LogicElement[label="{LogicElement| | }"]
+ LogicElement->UseCase[arrowhead=diamond,arrowtail=none,headlabel="uses[1-*]",taillabel="logicElem[1-*]",group=UseCase,minlen=2,constraint=true,]
+ LogicElement->LogicElement[arrowhead=none,arrowtail=none,headlabel="next",taillabel="generatedBy",group=LogicElement,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Alternative[label="{Alternative| | }"]
+ Alternative->LogicElement[arrowhead=onormal,group=LogicElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UserDecision[label="{UserDecision| | }"]
+ UserDecision->Alternative[arrowhead=vee,arrowtail=diamond,headlabel="allows[1-*]",group=Alternative,minlen=2,constraint=true,]
+ UserDecision->LogicElement[arrowhead=onormal,group=LogicElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ServerDecision[label="{ServerDecision| | }"]
+ ServerDecision->Processor[arrowhead=vee,arrowtail=none,headlabel="evaluatesResultOf",group=Processor,minlen=2,constraint=false,]
+ ServerDecision->LogicElement[arrowhead=onormal,group=LogicElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Processor[label="{Processor| | }"]
+ Processor->Data[arrowhead=none,arrowtail=none,headlabel="outputData[1-*]",taillabel="computes[*]",group=Data,minlen=2,constraint=false,]
+ Processor->LogicElement[arrowhead=onormal,group=LogicElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Renderer[label="{Renderer| | }"]
+ Renderer->LogicElement[arrowhead=onormal,group=LogicElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Data[label="{Data| | }"]
+ Data->Renderer[arrowhead=none,arrowtail=none,headlabel="renderer[*]",taillabel="renders[1-*]",group=Renderer,minlen=2,constraint=false,]
+ Data->Processor[arrowhead=none,arrowtail=none,headlabel="persist[*]",taillabel="persistentData[*]",group=Processor,minlen=2,constraint=false,]
+ Data->Processor[arrowhead=none,arrowtail=none,headlabel="uses[*]",taillabel="inputData[*]",group=Processor,minlen=2,constraint=false,]
+;
+
+}
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

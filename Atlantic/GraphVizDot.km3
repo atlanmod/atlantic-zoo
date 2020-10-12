@@ -1,0 +1,70 @@
+-- @name		GraphvizDot
+-- @version		1.0
+-- @authors		Guillaume Doux (guillaume.doux <at> inria.fr)
+-- @date		2008/06/04
+-- @description	A simple DOT metamodel.
+
+package DOT {
+
+	-- Every class should extend LocatedElement, directly or indirectly.
+	-- This is a technical constraint to support text-to-model traceability.
+	abstract class LocatedElement {
+		attribute location[0-1] : String;
+		attribute commentsBefore[*] ordered : String;
+		attribute commentsAfter[*] ordered : String;
+	}
+
+
+-- BEGIN Language-specific classes (replace sample contents)
+	abstract class NamedElement extends LocatedElement {
+		attribute name : String;
+	}
+
+	class Graph extends NamedElement {
+		attribute type[0-1] : String; --not used
+		attribute rankDir[0-1] : String;
+		attribute dim[0-1] : Integer;
+		
+		reference contents[*]  ordered container : GraphElement oppositeOf graph;
+	}
+
+	abstract class GraphElement extends NamedElement {
+		attribute label[0-1] : String;
+		attribute color[0-1] : String;
+		attribute z[0-1] : Integer;
+		
+		reference graph : Graph oppositeOf contents;
+	}
+
+	class Node extends GraphElement, NamedElement {
+		attribute shape : String;
+		attribute style : String;
+	}
+
+
+	class DirectedArc extends GraphElement {
+		attribute sourceNode : String;
+		attribute sourcePart[0-1] : String;
+		attribute targetNode : String;
+		attribute targetPart[0-1] : String;
+		attribute shape[0-1] : String;
+	}
+	
+	class Constraint extends GraphElement {
+		attribute val[0-1] : String;
+		attribute refers[*] : String;
+	}
+	
+	class SubGraph extends Graph, GraphElement {
+		--no more attributes
+	}
+	
+-- END Language-specific classes
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Double;
+	datatype Integer;
+	datatype String;
+}

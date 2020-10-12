@@ -1,0 +1,121 @@
+<!--
+	TODO:
+		- correct metamodels with errors
+		- generate all/UMLDI.png (takes a lot of time)
+-->
+<!-- How to configure this ant script:
+	Run as->Ant Build...
+		Set:
+			- Base directory
+			- Run in same JRE
+			- Refresh
+
+			- ANTLR jar (?)
+			- ant contrib jar
+-->
+<project name="atlanticRaster" default="transformAll">
+	<property name="sourcePath" value="../../New metamodels/km3/" />
+	<property name="targetPath" value="../../New metamodels/Raster/" />
+	<property name="projectPath" value="" />
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml"/>
+	
+	<target name="transformAll" depends="loadModels">
+		<for param="e">
+		  <path>
+		    <fileset dir="C:/Workspaces/MetamodelZoo_wkspace/New metamodels/km3/" includes="*.km3"/>
+		  </path>
+		  <sequential>
+<!--			<antcall target="condition" inheritall="true" inheritrefs="true">
+				<param name="sample" value="@{e}"/>
+				<param name="mode" value="inheritance"/>
+			</antcall>
+-->
+			<antcall target="condition" inheritall="true" inheritrefs="true">
+				<param name="sample" value="@{e}"/>
+				<param name="mode" value="all"/>
+			</antcall>
+		  </sequential>
+		</for>
+	</target>
+
+	<target name="condition">
+	  	<basename property="name" file="${sample}" suffix=".km3"/>
+		<property name="sourceModel" value="${sourcePath}${name}.km3"/>
+		<property name="targetModel" value="${targetPath}${mode}/${name}.dot"/>
+		<property name="targetModelPNG" value="${targetPath}${mode}/${name}.png"/>
+		
+		<uptodate property="isUpToDate" srcfile="${sourceModel}" targetfile="${targetModelPNG}"/>
+		
+	  	<if>
+	  	 <not>
+			 <equals arg1="${isUpToDate}" arg2="true" />
+		 </not>
+		 <then>
+			<antcall target="transformOne" inheritall="true" inheritrefs="true">
+				<param name="name" value="${name}"/>
+				<param name="sourceModel" value="${sourceModel}"/>
+				<param name="targetModel" value="${targetModel}"/>
+				<param name="mode" value="${mode}"/>
+			</antcall>
+		 </then>
+		</if>
+
+	</target>
+	
+	<!-- parameters: sample, mode -->
+	<target name="transformOne">
+<!--		<mkdir dir="${basedir}/${mode}"/>-->
+		
+		<echo message="Transforming ${name}"/>
+		
+		<!-- Load source model -->
+		<am3.loadModel modelHandler="EMF" name="source" metamodel="KM3" path="${sourceModel}.xmi">
+			<!--injector name="ebnf">
+				<param name="name" value="KM3"/>
+			</injector-->
+		</am3.loadModel>
+
+		<!-- Load param model -->
+		<am3.loadModel modelHandler="EMF" name="param" metamodel="XML" path="/org.eclipse.am3.zoos.atlanticRaster/build/parameters/${mode}.xml">
+			<injector name="xml"/>
+		</am3.loadModel>
+
+		<!-- Transform KM3 model into DOT model -->
+		<am3.atl path="/org.eclipse.am3.zoos.atlanticRaster/build/KM32DOT.atl">
+			<inModel name="IN" model="source"/>
+			<inModel name="KM3" model="KM3"/>
+			<inModel name="Param" model="param"/>
+			<inModel name="XML" model="XML"/>
+			<inModel name="DOT" model="DOT"/>
+			<outModel name="OUT" model="target" metamodel="DOT"/>
+			<library name="XMLHelpers" path="/org.eclipse.am3.zoos.atlanticRaster/build/XMLHelpers.asm"/>
+		</am3.atl>
+
+		<!-- Serialize DOT model -->
+		<am3.saveModel model="target" path="${targetModel}">
+			<extractor name="atl">
+				<param name="queryPath" value="/org.eclipse.am3.zoos.atlanticRaster/build/DOT2Text.atl"/>
+			</extractor>
+		</am3.saveModel>
+
+		<echo message="Generating ../${mode}/${name}.png" />
+		<exec executable="dot">
+			  <arg value="-Tpng"/>
+			  <arg value="-o../${mode}/${name}.png"/>
+			  <arg value="../${mode}/${name}.dot"/>
+		</exec>
+
+	</target>
+
+	<target name="loadModels">
+		<!-- Load KM3 metamodel -->
+		<am3.loadModel modelHandler="EMF" name="KM3" metamodel="MOF" nsUri="http://www.eclipse.org/gmt/2005/KM3"/>
+
+		<!-- Load DOT metamodel -->
+		<am3.loadModel modelHandler="EMF" name="DOT" metamodel="MOF" path="/org.eclipse.am3.zoos.atlanticRaster/build/DOT.ecore"/>
+
+		<!-- Load XML metamodel -->
+		<am3.loadModel modelHandler="EMF" name="XML" metamodel="MOF" path="/org.eclipse.am3.zoos.atlanticRaster/build/XML.ecore"/>
+	</target>	
+</project>

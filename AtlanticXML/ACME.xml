@@ -1,0 +1,64 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'ACME'>
+    <Class name = 'ACMEFile' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'entries' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ACME::ACMEEntry' opposite = ''/>
+    </Class>
+    <Class name = 'ACMEEntry' isAbstract = 'true' supertypes = ''/>
+    <Class name = 'Element' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'representations' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ACME::Representation' opposite = ''/>
+      <Reference name = 'property' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ACME::Property' opposite = ''/>
+    </Class>
+    <Class name = 'Type' isAbstract = 'false' supertypes = 'ACME::Element'/>
+    <Class name = 'System' isAbstract = 'false' supertypes = 'ACME::Element, ACME::ACMEEntry'>
+      <Reference name = 'componentDeclaration' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ACME::ComponentInstance' opposite = ''/>
+      <Reference name = 'connectorDeclaration' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ACME::Connector' opposite = 'ACME::Connector::system'/>
+      <Reference name = 'attachments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ACME::Link' opposite = 'ACME::Link::systemAttachment'/>
+      <Reference name = 'bindings' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ACME::Link' opposite = 'ACME::Link::systemBinding'/>
+    </Class>
+    <Class name = 'Representation' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'systems' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ACME::System' opposite = ''/>
+    </Class>
+    <Class name = 'Component' isAbstract = 'true' supertypes = 'ACME::Element'>
+      <Reference name = 'ports' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ACME::Port' opposite = ''/>
+    </Class>
+    <Class name = 'ComponentInstance' isAbstract = 'false' supertypes = 'ACME::Component'>
+      <Attribute name = 'instanceOf' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ComponentType' isAbstract = 'false' supertypes = 'ACME::Component, ACME::ACMEEntry'>
+      <Attribute name = 'extend' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Port' isAbstract = 'false' supertypes = 'ACME::Element'/>
+    <Class name = 'Connector' isAbstract = 'false' supertypes = 'ACME::Element'>
+      <Reference name = 'roles' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ACME::Role' opposite = ''/>
+      <Reference name = 'system' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ACME::System' opposite = 'ACME::System::connectorDeclaration'/>
+    </Class>
+    <Class name = 'Role' isAbstract = 'false' supertypes = 'ACME::Element'/>
+    <Class name = 'Property' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'val' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Link' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'systemBinding' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ACME::System' opposite = 'ACME::System::bindings'/>
+      <Reference name = 'systemAttachment' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ACME::System' opposite = 'ACME::System::attachments'/>
+    </Class>
+    <Class name = 'Attachment' isAbstract = 'false' supertypes = 'ACME::Link'>
+      <Attribute name = 'comp' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'port' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'con' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'role' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Binding' isAbstract = 'false' supertypes = 'ACME::Link'>
+      <Attribute name = 'compSrc' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'portSrc' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'compDest' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'portDest' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

@@ -1,0 +1,81 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_PetriNet"{
+labelloc=t
+color=black
+label=PetriNet
+ node[shape=record];
+LocatedElement[label="{/LocatedElement/|location : String| }"]
+;
+ node[shape=record];
+NamedElement[label="{/NamedElement/|name : String| }"]
+ NamedElement->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PetriNet[label="{PetriNet| | }"]
+ PetriNet->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Element[label="{/Element/| | }"]
+ Element->PetriNet[arrowhead=diamond,arrowtail=none,headlabel="net",taillabel="elements[*]",group=PetriNet,minlen=2,constraint=true,]
+ Element->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Place[label="{Place| | }"]
+ Place->TransitionToPlace[arrowhead=none,arrowtail=none,headlabel="incomingArc[*]",taillabel="to",group=TransitionToPlace,minlen=2,constraint=false,]
+ Place->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Transition[label="{Transition| | }"]
+ Transition->TransitionToPlace[arrowhead=none,arrowtail=none,headlabel="outgoingArc[1-*]",taillabel="from",group=TransitionToPlace,minlen=2,constraint=false,]
+ Transition->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Arc[label="{/Arc/|weight : Integer| }"]
+ Arc->PetriNet[arrowhead=diamond,arrowtail=none,headlabel="net",taillabel="arcs[*]",group=PetriNet,minlen=2,constraint=true,]
+ Arc->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PlaceToTransition[label="{PlaceToTransition| | }"]
+ PlaceToTransition->Place[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outgoingArc[*]",group=Place,minlen=2,constraint=false,]
+ PlaceToTransition->Transition[arrowhead=none,arrowtail=none,headlabel="to",taillabel="incomingArc[1-*]",group=Transition,minlen=2,constraint=false,]
+ PlaceToTransition->Arc[arrowhead=onormal,group=Arc,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TransitionToPlace[label="{TransitionToPlace| | }"]
+ TransitionToPlace->Arc[arrowhead=onormal,group=Arc,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Execution[label="{Execution| | }"]
+ Execution->PetriNet[arrowhead=none,arrowtail=none,headlabel="net",taillabel="execs[*]",group=PetriNet,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Token[label="{Token| | }"]
+ Token->Place[arrowhead=vee,arrowtail=none,headlabel="placedAt",group=Place,minlen=2,constraint=false,]
+ Token->Marking[arrowhead=diamond,arrowtail=none,headlabel="marking",taillabel="tokens[*]",group=Marking,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Marking[label="{Marking| | }"]
+ Marking->Execution[arrowhead=diamond,arrowtail=none,headlabel="exec",taillabel="markings[*]",group=Execution,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Movement[label="{Movement| | }"]
+ Movement->Execution[arrowhead=diamond,arrowtail=none,headlabel="exec",taillabel="movements[*]",group=Execution,minlen=2,constraint=true,]
+ Movement->Transition[arrowhead=vee,arrowtail=none,headlabel="fire",group=Transition,minlen=2,constraint=false,]
+ Movement->Marking[arrowhead=vee,arrowtail=none,headlabel="source",group=Marking,minlen=2,constraint=false,]
+ Movement->Marking[arrowhead=vee,arrowtail=none,headlabel="target",group=Marking,minlen=2,constraint=false,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

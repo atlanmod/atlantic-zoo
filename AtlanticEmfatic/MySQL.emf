@@ -1,0 +1,52 @@
+package Metamodel;
+
+package MySQL {
+  abstract class NamedElement {
+    !unique !ordered attr String[1] name;
+  }
+
+  class DataBase extends NamedElement {
+    !ordered val Table[*]#database tables;
+  }
+
+  class Table extends NamedElement {
+    val Column[*]#table columns;
+    !ordered ref DataBase[1]#tables database;
+  }
+
+  class Column extends NamedElement {
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr Boolean[1] isPrimaryKey;
+    !unique !ordered attr Boolean[1] null;
+    !unique !ordered attr String[1] defaultValue;
+    !unique !ordered attr String[1] comment;
+    !ordered ref Table[1]#columns table;
+  }
+
+  class IntegerColumn extends Column {
+    !unique !ordered attr Boolean[1] isAutoIncrement;
+  }
+
+  class EnumColumn extends Column {
+    !ordered val EnumSet[1] enumSet;
+  }
+
+  class EnumSet {
+    !ordered val EnumItem[*]#enumSet enumItems;
+  }
+
+  class EnumItem extends NamedElement {
+    !ordered ref EnumSet[1]#enumItems enumSet;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

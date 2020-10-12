@@ -1,0 +1,91 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_Model_Management"{
+labelloc=t
+color=black
+label=Model_Management
+ node[shape=record];
+Package[label="{Package| | }"]
+ Package->GeneralizableElement[arrowhead=onormal,group=GeneralizableElement,minlen=2,constraint=true,]
+ Package->Namespace[arrowhead=onormal,group=Namespace,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Model[label="{Model| | }"]
+ Model->Package[arrowhead=onormal,group=Package,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Subsystem[label="{Subsystem|isInstantiable : Boolean| }"]
+ Subsystem->Package[arrowhead=onormal,group=Package,minlen=2,constraint=true,]
+ Subsystem->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ElementImport[label="{ElementImport|visibility[0-1] : VisibilityKind\nalias[0-1] : String\nisSpecification : Boolean| }"]
+;
+
+} subgraph "cluster_Core"{
+labelloc=t
+color=black
+label=Core
+ node[shape=record];
+Element[label="{/Element/| | }"]
+;
+ node[shape=record];
+ModelElement[label="{/ModelElement/|name[0-1] : String\nvisibility[0-1] : VisibilityKind\nisSpecification : Boolean| }"]
+ ModelElement->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GeneralizableElement[label="{/GeneralizableElement/|isRoot : Boolean\nisLeaf : Boolean\nisAbstract : Boolean| }"]
+ GeneralizableElement->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Namespace[label="{/Namespace/| | }"]
+ Namespace->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Classifier[label="{/Classifier/| | }"]
+ Classifier->GeneralizableElement[arrowhead=onormal,group=GeneralizableElement,minlen=2,constraint=true,]
+ Classifier->Namespace[arrowhead=onormal,group=Namespace,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Feature[label="{/Feature/|ownerScope : ScopeKind| }"]
+ Feature->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Relationship[label="{/Relationship/| | }"]
+ Relationship->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Generalization[label="{Generalization|discriminator[0-1] : String| }"]
+ Generalization->Relationship[arrowhead=onormal,group=Relationship,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Data_Types"{
+labelloc=t
+color=black
+label=Data_Types
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Float[label="{&#171;DataType&#187;\nFloat|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+Long[label="{&#171;DataType&#187;\nLong|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

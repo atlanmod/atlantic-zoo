@@ -1,0 +1,246 @@
+universe IRLTypes_Element
+
+	function location(a : IRLTypes_Element, b : String) -> Bool
+
+	function commentsBefore(a : IRLTypes_Element, b : String) -> Bool
+
+	function commentsAfter(a : IRLTypes_Element, b : String) -> Bool
+
+	function order(a : IRLTypes_Element, b : String) -> Integer
+
+	function order(a : IRLTypes_Element, b : String) -> Integer
+
+	universe IRLTypes_NamedElement < IRLTypes_Element
+
+	function name(a : IRLTypes_NamedElement, b : String) -> Bool
+
+	universe IRLTypes_ExtendedIdentifier < IRLTypes_NamedElement
+
+	function parentIdentifier(a : IRLTypes_ExtendedIdentifier, b : IRLTypes_ExtendedIdentifier) -> Bool
+
+	function extendedIdentifierOwner(a : IRLTypes_ExtendedIdentifier, b : IRLTypes_Extended) -> Bool
+
+	universe IRLTypes_Extended < IRLTypes_Element
+
+	function extendedIdentifier(a : IRLTypes_Extended, b : IRLTypes_ExtendedIdentifier) -> Bool
+
+	universe IRLTypes_Definition < IRLTypes_Extended
+
+	universe IRLTypes_RuleSet < IRLTypes_NamedElement
+
+	function importDefinitions(a : IRLTypes_RuleSet, b : IRLTypes_ImportDefinition) -> Bool
+
+	function propertyDefinitions(a : IRLTypes_RuleSet, b : IRLTypes_PropertyDefinition) -> Bool
+
+	function rulesetElementDefinitions(a : IRLTypes_RuleSet, b : IRLTypes_RulesetElementDefinition) -> Bool
+
+	function order(a : IRLTypes_RuleSet, b : IRLTypes_ImportDefinition) -> Integer
+
+	universe IRLTypes_ImportDefinition < IRLTypes_Definition
+
+	function importDefinitionOwners(a : IRLTypes_ImportDefinition, b : IRLTypes_RuleSet) -> Bool
+
+	function dotStar(a : IRLTypes_ImportDefinition, b : Boolean) -> Bool
+
+	universe IRLTypes_Expression < IRLTypes_Typed
+
+		function appliedProperty(a : IRLTypes_Expression, b : IRLTypes_PropertyCallExpression) -> Bool
+
+		function expressionOwner(a : IRLTypes_Expression, b : IRLTypes_RuleSetDeclaration) -> Bool
+
+		function loopExpression(a : IRLTypes_Expression, b : IRLTypes_LoopExpression) -> Bool
+
+		function parentOperation(a : IRLTypes_Expression, b : IRLTypes_OperationCallExpression) -> Bool
+
+		function ruleConditionExpression(a : IRLTypes_Expression, b : IRLTypes_RuleCondition) -> Bool
+
+		function parentInsert(a : IRLTypes_Expression, b : IRLTypes_CreateAction) -> Bool
+
+		function parentModifying(a : IRLTypes_Expression, b : IRLTypes_ModifyAction) -> Bool
+
+		universe IRLTypes_PropertyCallExpression < IRLTypes_Expression
+
+		function source(a : IRLTypes_PropertyCallExpression, b : IRLTypes_Expression) -> Bool
+
+		universe IRLTypes_IteratorExp < IRLTypes_LoopExpression
+
+		function name(a : IRLTypes_IteratorExp, b : String) -> Bool
+
+		universe IRLTypes_LoopExpression < IRLTypes_PropertyCallExpression
+
+		function body(a : IRLTypes_LoopExpression, b : IRLTypes_Expression) -> Bool
+
+		function iterators(a : IRLTypes_LoopExpression, b : IRLTypes_Iterator) -> Bool
+
+		universe IRLTypes_OperatorCallExpression < IRLTypes_OperationCallExpression
+
+		universe IRLTypes_OperationCallExpression < IRLTypes_PropertyCallExpression
+
+		function arguments(a : IRLTypes_OperationCallExpression, b : IRLTypes_Expression) -> Bool
+
+		function operationName(a : IRLTypes_OperationCallExpression, b : String) -> Bool
+
+		function signature(a : IRLTypes_OperationCallExpression, b : String) -> Bool
+
+		function order(a : IRLTypes_OperationCallExpression, b : IRLTypes_Expression) -> Integer
+
+		universe IRLTypes_PrimitiveExpression < IRLTypes_Expression
+
+		universe IRLTypes_Iterator < IRLTypes_VariableDeclaration
+
+		function loopExpression(a : IRLTypes_Iterator, b : IRLTypes_LoopExpression) -> Bool
+
+		universe IRLTypes_NumericExpression < IRLTypes_PrimitiveExpression
+
+		universe IRLTypes_IntegerExpression < IRLTypes_NumericExpression
+
+		function integerSymbol(a : IRLTypes_IntegerExpression, b : Integer) -> Bool
+
+		universe IRLTypes_RealExpression < IRLTypes_NumericExpression
+
+		function realSymbol(a : IRLTypes_RealExpression, b : Double) -> Bool
+
+		universe IRLTypes_BooleanExpression < IRLTypes_PrimitiveExpression
+
+		function booleanSymbol(a : IRLTypes_BooleanExpression, b : Boolean) -> Bool
+
+		universe IRLTypes_NavigationOrAttributeCallExpression < IRLTypes_PropertyCallExpression
+
+		function name(a : IRLTypes_NavigationOrAttributeCallExpression, b : String) -> Bool
+
+		universe IRLTypes_VariableExpression < IRLTypes_Expression
+
+		function referredVariable(a : IRLTypes_VariableExpression, b : IRLTypes_VariableDeclaration) -> Bool
+
+		function name(a : IRLTypes_VariableExpression, b : String) -> Bool
+
+		universe IRLTypes_StringExpression < IRLTypes_PrimitiveExpression
+
+		function stringSymbol(a : IRLTypes_StringExpression, b : String) -> Bool
+	
+
+	universe IRLTypes_Type < IRLTypes_NamedElement
+
+		function typeOwner(a : IRLTypes_Type, b : IRLTypes_Typed) -> Bool
+
+		universe IRLTypes_Typed < IRLTypes_Element
+
+		function type(a : IRLTypes_Typed, b : IRLTypes_Type) -> Bool
+
+		universe IRLTypes_Primitive < IRLTypes_Type
+
+		universe IRLTypes_StringType < IRLTypes_Primitive
+
+		universe IRLTypes_NumericType < IRLTypes_Primitive
+
+		universe IRLTypes_IntegerType < IRLTypes_NumericType
+
+		universe IRLTypes_RealType < IRLTypes_NumericType
+
+		universe IRLTypes_BooleanType < IRLTypes_Primitive
+
+		universe IRLTypes_ClassType < IRLTypes_Type
+	
+
+	universe IRLTypes_PropertyDefinition < IRLTypes_Definition
+
+		function propertyDefinitionOwner(a : IRLTypes_PropertyDefinition, b : IRLTypes_RuleSet) -> Bool
+
+		function ruleSetDeclarations(a : IRLTypes_PropertyDefinition, b : IRLTypes_RuleSetDeclaration) -> Bool
+
+		function semicoloneOpt(a : IRLTypes_PropertyDefinition, b : Boolean) -> Bool
+
+		function order(a : IRLTypes_PropertyDefinition, b : IRLTypes_RuleSetDeclaration) -> Integer
+
+		universe IRLTypes_RuleSetDeclaration < IRLTypes_Element
+
+		function ruleSetDeclarationOwner(a : IRLTypes_RuleSetDeclaration, b : IRLTypes_PropertyDefinition) -> Bool
+
+		function expression(a : IRLTypes_RuleSetDeclaration, b : IRLTypes_Expression) -> Bool
+
+		universe IRLTypes_ClassInstancesDeclaration < IRLTypes_RuleSetDeclaration IRLTypes_Extended
+
+		universe IRLTypes_PropertyDeclaration < IRLTypes_RuleSetDeclaration
+
+		universe IRLTypes_VariableDeclaration < IRLTypes_Typed
+
+		function varName(a : IRLTypes_VariableDeclaration, b : String) -> Bool
+
+		function variableExp(a : IRLTypes_VariableDeclaration, b : IRLTypes_VariableExpression) -> Bool
+	
+
+	universe IRLTypes_RulesetElementDefinition < IRLTypes_NamedElement
+
+		function rulesetElementDefinitionOwner(a : IRLTypes_RulesetElementDefinition, b : IRLTypes_RuleSet) -> Bool
+
+		universe IRLTypes_RuleDefinition < IRLTypes_RulesetElementDefinition
+
+		function binding(a : IRLTypes_RuleDefinition, b : IRLTypes_Binding) -> Bool
+
+		function condition(a : IRLTypes_RuleDefinition, b : IRLTypes_RuleCondition) -> Bool
+
+		function actions(a : IRLTypes_RuleDefinition, b : IRLTypes_RuleAction) -> Bool
+
+		function order(a : IRLTypes_RuleDefinition, b : IRLTypes_RuleAction) -> Integer
+
+		universe IRLTypes_Binding < IRLTypes_Element
+
+		function bindingOwner(a : IRLTypes_Binding, b : IRLTypes_RuleDefinition) -> Bool
+
+		function ruleVariable(a : IRLTypes_Binding, b : IRLTypes_RuleVariable) -> Bool
+
+		universe IRLTypes_RuleVariable < IRLTypes_VariableDeclaration
+
+		function ruleVariableOwner(a : IRLTypes_RuleVariable, b : IRLTypes_Binding) -> Bool
+
+		function filter(a : IRLTypes_RuleVariable, b : IRLTypes_Expression) -> Bool
+
+		function collectIn(a : IRLTypes_RuleVariable, b : IRLTypes_Expression) -> Bool
+
+		function order(a : IRLTypes_RuleVariable, b : IRLTypes_Expression) -> Integer
+
+		universe IRLTypes_CollectionOperationRuleVariable < IRLTypes_RuleVariable
+
+		function operationName(a : IRLTypes_CollectionOperationRuleVariable, b : String) -> Bool
+
+		function collectWhere(a : IRLTypes_CollectionOperationRuleVariable, b : IRLTypes_Expression) -> Bool
+
+		universe IRLTypes_SimpleRuleVariable < IRLTypes_RuleVariable
+
+		universe IRLTypes_RuleCondition < IRLTypes_Element
+
+		function conditionExpression(a : IRLTypes_RuleCondition, b : IRLTypes_Expression) -> Bool
+
+		function ruleDefinitionCondition(a : IRLTypes_RuleCondition, b : IRLTypes_RuleDefinition) -> Bool
+
+		universe IRLTypes_RuleAction < IRLTypes_Element
+
+		function actionOwner(a : IRLTypes_RuleAction, b : IRLTypes_RuleDefinition) -> Bool
+
+		universe IRLTypes_DeleteAction < IRLTypes_RuleAction
+
+			function objValue(a : IRLTypes_DeleteAction, b : IRLTypes_Expression) -> Bool
+
+			universe IRLTypes_CreateAction < IRLTypes_RuleAction IRLTypes_VariableDeclaration
+
+			function insertArguments(a : IRLTypes_CreateAction, b : IRLTypes_Expression) -> Bool
+
+			function order(a : IRLTypes_CreateAction, b : IRLTypes_Expression) -> Integer
+
+			universe IRLTypes_ModifyAction < IRLTypes_RuleAction
+
+			function objValue(a : IRLTypes_ModifyAction, b : IRLTypes_Expression) -> Bool
+
+			function modifiedArguments(a : IRLTypes_ModifyAction, b : IRLTypes_Expression) -> Bool
+
+			function order(a : IRLTypes_ModifyAction, b : IRLTypes_Expression) -> Integer
+
+			universe IRLTypes_UpdateAction < IRLTypes_RuleAction
+
+			function objValue(a : IRLTypes_UpdateAction, b : IRLTypes_Expression) -> Bool
+
+			universe IRLTypes_InvokeAction < IRLTypes_RuleAction
+
+			function invocation(a : IRLTypes_InvokeAction, b : IRLTypes_Expression) -> Bool
+		
+	

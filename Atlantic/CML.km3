@@ -1,0 +1,340 @@
+-- @name		CML
+-- @version		1.0
+-- @domains		Chemical, XML
+-- @authors		Pierrick Guyard (pierrick.guyard@gmail.com)
+-- @date		2005/06/22
+-- @description	This metamodel describes CML (Chemical Markup Language). It is based on the 1.0 DTD of CML. CML deliberately does not cover all chemistry but concentrates on "molecules" (discrete entities representatable by a formula and usually a connection table). It supports a hierarchy for compound molecules (clathrates, macromolecules, etc.). It also supports reactions, and macromolcular strucures/sequences (though it can interoperate with other macromolecular XML languages as they are developed). It has no specific support for physicochemical concepts, but can support labelled numeric datatypes of several sorts which can cover a wide range of requirements. It allows quantities and properties to be specifically attached to molecules, atoms or bonds.
+-- @see			http://www.xml-cml.org/
+
+package CML {
+
+	abstract class PCDATA {
+		attribute value : String;
+	}
+
+	abstract class Any {}
+	
+	-- @begin abstract class for attributes found on almost elements
+		
+	abstract class TitledElement {
+		attribute title[0-1] : String;
+	}
+	
+
+	abstract class IdedElement {
+		attribute id[0-1] : String;
+	}
+
+	abstract class ConventionnedElement {
+		-- @comment default value "CML"
+		attribute convention : String;
+	}
+
+	abstract class DictRefElement {
+		attribute dictRef[0-1] : String;
+	}
+	
+	abstract class SimpleLink_Element {
+		attribute href : String;
+	}
+	
+	abstract class Counted_Element {
+		-- @comment default value "1"
+		attribute count : String;
+	}
+		
+	abstract class Sized_Element {
+		attribute size[0-1] : String;
+	}
+
+	abstract class Rows_Element {
+		attribute rows : String;
+	}
+
+	abstract class Columns_Element {
+		attribute colums : String;
+	}
+
+	abstract class Min_Element {
+		attribute min[0-1] : String;
+	}
+	
+	abstract class Max_Element {
+		attribute max[0-1] : String;
+	}
+	
+	abstract class Units_Element {
+		attribute units[0-1] : String;
+	}
+	
+	enumeration AngleUnits {
+		literal degrees;
+		literal radians;
+	}
+	
+	abstract class AngleUnits_Element {
+		-- @comment default value "degrees"
+		attribute angleUnits : AngleUnits;
+	}
+
+	abstract class UnitsRef_Element {
+		attribute unitsRef[0-1] : String;
+	}
+
+	abstract class AtomRefs_Element {
+		attribute atomRefs[0-1] : String;
+	}
+
+	-- @end abstract class for attributes found on almost elements
+
+
+
+	-- @begin data primitives
+		
+		-- @begin string
+	
+	enumeration StringBuiltin {
+		literal id;
+		-- atom string builtin
+		literal elementType;
+		literal atomId;
+		literal residueType;
+		literal residueId;
+		-- bond string builtin
+		literal atomRef;
+		literal order;
+		literal stereo;	
+		-- crystal string builtin
+		literal spaceground;	
+	}
+	
+	abstract class _StringBuiltin extends AtomRefs_Element {
+		attribute builtin[0-1] : StringBuiltin;
+	}
+	
+	class _String extends Any, PCDATA, TitledElement, IdedElement, _StringBuiltin, DictRefElement, ConventionnedElement {
+	}
+
+		-- @end string
+	
+	
+		-- @begin link
+		
+	class _Link extends Any, PCDATA, TitledElement, IdedElement, SimpleLink_Element, ConventionnedElement{
+	}
+		
+		-- @end link
+		
+		
+		-- @begin float
+	
+		enumeration FloatBuiltin {
+		-- atom float builtin
+		literal x2;
+		literal y2;
+		literal x3;
+		literal y3;
+		literal z3;
+		literal xFract;
+		literal yFract;
+		literal zFract;
+		literal occupancy;
+		literal isotope;
+		literal formalCharge;
+		literal hydrogenCount;
+		literal nonHydrogenCount;
+		literal atomParity;
+		-- bond float builtin
+		literal length;
+		-- crystal float builtin
+		literal acell;
+		literal bcell;
+		literal ccell;
+		literal alpha;
+		literal beta;
+		literal gamma;
+		literal z;
+	}
+	
+	abstract class _FloatBuiltin {
+		attribute builtin[0-1] : FloatBuiltin;
+	}
+		
+	class _Float extends Any, PCDATA, TitledElement, IdedElement, _FloatBuiltin, Min_Element, Max_Element, Units_Element, UnitsRef_Element, DictRefElement, ConventionnedElement {
+	}
+		
+		-- @end float
+	
+	
+		-- @begin integer
+		
+	enumeration IntegerBuiltin {
+		-- atom integer builtin
+		literal isotope;
+		literal formalCharge;
+		literal hydrogenCount;
+		literal nonHydrogenCount;
+		literal atomParity;		
+		-- crystal integer builtin
+		literal z;
+	}
+	
+	abstract class _IntegerBuiltin {
+		attribute builtin[0-1] : IntegerBuiltin;
+	}
+		
+	class _Integer extends Any, PCDATA, TitledElement, IdedElement, _IntegerBuiltin, Min_Element, Max_Element, Units_Element, UnitsRef_Element, DictRefElement, ConventionnedElement {
+	}
+		
+		-- @end integer
+		
+		
+		-- @begin string array
+
+	class _StringArray extends Any, PCDATA, TitledElement, IdedElement, _StringBuiltin, Sized_Element, Min_Element, Max_Element, DictRefElement, ConventionnedElement {
+		attribute delimiter[0-1] : String;
+	}
+
+		-- @end string array
+		
+		
+		-- @begin float array
+		
+	class _FloatArray extends Any, PCDATA, TitledElement, IdedElement, _FloatBuiltin, Sized_Element, Min_Element, Max_Element, Units_Element, UnitsRef_Element, DictRefElement, ConventionnedElement {
+	}
+		
+		-- @end float array
+		
+		
+		--@begin integer array
+		
+	class _IntegerArray extends Any, PCDATA, TitledElement, IdedElement, _IntegerBuiltin, Sized_Element, Min_Element, Max_Element, Units_Element, UnitsRef_Element, DictRefElement, ConventionnedElement {
+	}
+		
+		-- @end integer array
+		
+		
+		-- @begin float matrix
+		
+	class _FloatMatrix extends Any, PCDATA, TitledElement, IdedElement, Rows_Element, Columns_Element, Min_Element, Max_Element, Units_Element, UnitsRef_Element, DictRefElement, ConventionnedElement {
+	}
+		
+		-- @end float matrix
+		
+		
+		-- @begin _Coordinate2
+		
+	enumeration Coordinate2Builtin {
+		literal xy2;
+	}
+	
+	abstract class _Coordinate2Builtin {
+		attribute builtin[0-1] : Coordinate2Builtin;
+	}
+		
+	class _Coordinate2 extends Any, PCDATA, TitledElement, IdedElement, _Coordinate2Builtin, UnitsRef_Element, DictRefElement, ConventionnedElement {
+	}
+		
+		-- @end _Coordinate2
+	
+	
+		-- @begin _Coordinate3
+		
+	enumeration Coordinate3Builtin {
+		literal xyz3;
+		literal xyzFract;
+	}
+	
+	abstract class _Coordinate3Builtin {
+		attribute builtin[0-1] : Coordinate3Builtin;
+	}
+		
+	class _Coordinate3 extends Any, PCDATA, TitledElement, IdedElement, _Coordinate3Builtin, UnitsRef_Element, DictRefElement, ConventionnedElement {
+	}
+		
+		-- @end _Coordinate3
+	
+	
+		-- @begin angle
+		
+	class _Angle extends Any, PCDATA, TitledElement, IdedElement, AtomRefs_Element, AngleUnits_Element, Min_Element, Max_Element, DictRefElement, ConventionnedElement {
+	}
+		
+		-- @end angle
+
+
+		-- @begin torsion
+
+	class _Torsion extends Any, PCDATA, TitledElement, IdedElement, AtomRefs_Element, AngleUnits_Element, Min_Element, Max_Element, DictRefElement, ConventionnedElement {
+	}
+			
+		-- @end torsion
+
+
+		-- @begin list
+	
+	class _List extends Any, TitledElement, IdedElement {
+		reference any[*] : Any;
+	}
+	
+		-- @end list
+		
+	-- @end data primitives	
+	
+
+
+	-- @begin chemical and crystallographic concepts
+	
+	class Molecule extends Any, TitledElement, IdedElement, Counted_Element, DictRefElement, ConventionnedElement {
+		reference any[*] : Any;
+	}
+
+	class Formula extends Any, TitledElement, IdedElement, Counted_Element, DictRefElement, ConventionnedElement {
+		reference any[*] : Any;
+	}
+	
+	class Atom extends Any, TitledElement, IdedElement, Counted_Element, DictRefElement, ConventionnedElement {
+		reference any[*] : Any;
+	}
+	
+	class Atom_Array extends Any, TitledElement, IdedElement, DictRefElement, ConventionnedElement {
+		reference any[*] : Any;
+	}
+	
+	class Bond extends Any, IdedElement, AtomRefs_Element, DictRefElement, ConventionnedElement {
+		reference any[*] : Any;
+	}
+	
+	class Bond_Array extends Any, IdedElement, DictRefElement, ConventionnedElement {
+		reference any[*] : Any;
+	}
+	
+	class Electron extends Any, IdedElement, Counted_Element, DictRefElement, ConventionnedElement {
+		reference any[*] : Any;
+	}
+	
+	class Reaction extends Any, IdedElement, DictRefElement, ConventionnedElement {
+		reference any[*] : Any;
+	}
+	
+	class Crystal extends Any, TitledElement, IdedElement, DictRefElement, ConventionnedElement {
+		reference any[*] : Any;
+	}
+	
+	class Sequence extends Any, TitledElement, IdedElement, DictRefElement, ConventionnedElement {
+		reference any[*] : Any;
+	}
+	
+	class Feature extends Any, TitledElement, IdedElement, DictRefElement, ConventionnedElement {
+		reference any[*] : Any;
+	}
+
+	-- @end  chemical and crystallographic concepts
+	
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+	datatype Boolean;
+}

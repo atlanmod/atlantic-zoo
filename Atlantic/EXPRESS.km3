@@ -1,0 +1,1059 @@
+-- @name		EXPRESS
+-- @version		0.1
+-- @domains		Information Modeling Language
+-- @authors		Freddy Allilaire
+-- @date		2007/09/28
+-- @description	This EXPRESS metamodel was created from the EXPRESS UML model RFC (http://www.omg.org/cgi-bin/doc?mantis/2007-09-02). The EXPRESS information modeling language is widely used in the scope of the ISO 10303 Standard for Exchange of Product Data (STEP).
+-- @see			http://www.omg.org/cgi-bin/doc?mantis/2007-09-02
+
+package Express_metamodel {
+
+	package Rules {
+
+		class "Express_metamodel::Rules::ONEOFConstraint" extends "Express_metamodel::Rules::SubtypeConstraint" {
+			
+		}
+
+		class "Express_metamodel::Rules::SupertypeRule" extends "Express_metamodel::Core::CommonElement" {
+			reference "Express_metamodel::Rules::SupertypeRule::named-supertype" : "Express_metamodel::Core::EntityType";
+			reference "Express_metamodel::Rules::SupertypeRule::constraints"[*] container : "Express_metamodel::Rules::SubtypeConstraint" oppositeOf "Express_metamodel::Rules::SubtypeConstraint::collection";
+			attribute assertsAbstract : Boolean;
+		}
+
+		class "Express_metamodel::Rules::SubtypeConstraint" {
+			reference "Express_metamodel::Rules::SubtypeConstraint::constrained-subtypes"[1-*] : "Express_metamodel::Rules::Extent" oppositeOf "Express_metamodel::Rules::Extent::constraints";
+			reference "Express_metamodel::Rules::SubtypeConstraint::equivalent-rule" container : "Express_metamodel::Core::Expression";
+			reference "Express_metamodel::Rules::SubtypeConstraint::collection" : "Express_metamodel::Rules::SupertypeRule" oppositeOf "Express_metamodel::Rules::SupertypeRule::constraints";
+		}
+
+		class "Express_metamodel::Rules::Extent" extends "Express_metamodel::Instances::SETValue" {
+			reference "Express_metamodel::Rules::Extent::constraints"[*] : "Express_metamodel::Rules::SubtypeConstraint" oppositeOf "Express_metamodel::Rules::SubtypeConstraint::constrained-subtypes";
+			reference "Express_metamodel::Rules::Extent::content"[*] : "Express_metamodel::Instances::EntityInstance";
+			reference "Express_metamodel::Rules::Extent::within-population" : "Express_metamodel::Instances::Population";
+			reference "Express_metamodel::Rules::Extent::constraint-rules"[*] : "Express_metamodel::Rules::GlobalRule" oppositeOf "Express_metamodel::Rules::GlobalRule::constrained-extents";
+			reference "Express_metamodel::Rules::Extent::for-type" : "Express_metamodel::Core::EntityType" oppositeOf "Express_metamodel::Core::EntityType::extension";
+			attribute id : "Express_metamodel::Core::ScopedId";
+		}
+
+		class "Express_metamodel::Rules::TOTAL_OVERConstraint" extends "Express_metamodel::Rules::SubtypeConstraint" {
+			
+		}
+
+		class "Express_metamodel::Rules::ANDConstraint" extends "Express_metamodel::Rules::SubtypeConstraint" {
+			
+		}
+
+		class "Express_metamodel::Rules::GlobalRule" extends "Express_metamodel::Core::SchemaElement", "Express_metamodel::Core::AlgorithmScope" {
+			reference "Express_metamodel::Rules::GlobalRule::supporting-body"[0-1] container : "Express_metamodel::Algorithms::Statement";
+			reference "Express_metamodel::Rules::GlobalRule::constrained-extents"[1-*] : "Express_metamodel::Rules::Extent" oppositeOf "Express_metamodel::Rules::Extent::constraint-rules";
+			reference "Express_metamodel::Rules::GlobalRule::contains-rules"[1-*] container : "Express_metamodel::Rules::NamedRule" oppositeOf "Express_metamodel::Rules::NamedRule::namespace";
+		}
+
+		class "Express_metamodel::Rules::NamedRule" extends "Express_metamodel::Core::LocalElement" {
+			reference "Express_metamodel::Rules::NamedRule::namespace" : "Express_metamodel::Rules::GlobalRule" oppositeOf "Express_metamodel::Rules::GlobalRule::contains-rules";
+			reference "Express_metamodel::Rules::NamedRule::asserts-expression" container : "Express_metamodel::Core::Expression";
+			attribute position : Integer;
+		}
+	}
+
+	package Statements {
+
+		class "Express_metamodel::Statements::ProcedureCall" extends "Express_metamodel::Algorithms::Statement" {
+			reference "Express_metamodel::Statements::ProcedureCall::invokes" : "Express_metamodel::Algorithms::Procedure";
+			reference "Express_metamodel::Statements::ProcedureCall::actual-parameters"[*] container : "Express_metamodel::Expressions::ActualParameter" oppositeOf "Express_metamodel::Expressions::ActualParameter::in-ProcedureCall";
+		}
+
+		class "Express_metamodel::Statements::SkipStatement" extends "Express_metamodel::Statements::ControlStatement" {
+			-- WARNING renammed body-statement reference to avoid collision name error
+			reference "Express_metamodel::Statements::SkipStatement::in-block" : "Express_metamodel::Algorithms::Statement" oppositeOf "Express_metamodel::Algorithms::Statement::body-statements_SkipStatement";
+		}
+
+		class "Express_metamodel::Statements::AliasStatement" extends "Express_metamodel::Algorithms::Statement", "Express_metamodel::Core::LocalScope" {
+			reference "Express_metamodel::Statements::AliasStatement::binds-to-reference" : "Express_metamodel::Statements::VARExpression";
+			reference "Express_metamodel::Statements::AliasStatement::body" container : "Express_metamodel::Algorithms::Statement";
+			reference "Express_metamodel::Statements::AliasStatement::alias-variable" container : "Express_metamodel::Statements::AliasVariable" oppositeOf "Express_metamodel::Statements::AliasVariable::namespace";
+		}
+
+		class "Express_metamodel::Statements::ControlVariable" extends "Express_metamodel::Algorithms::NamedVariable" {
+			reference "Express_metamodel::Statements::ControlVariable::bound-value" : "Express_metamodel::Core::Expression";
+			reference "Express_metamodel::Statements::ControlVariable::initial-value" : "Express_metamodel::Core::Expression";
+			reference "Express_metamodel::Statements::ControlVariable::namespace" : "Express_metamodel::Statements::RepeatStatement" oppositeOf "Express_metamodel::Statements::RepeatStatement::control-variable";
+			reference "Express_metamodel::Statements::ControlVariable::increment" : "Express_metamodel::Core::Expression";
+		}
+
+		class "Express_metamodel::Statements::AliasVariable" extends "Express_metamodel::Algorithms::NamedVariable", "Express_metamodel::Algorithms::VARVariable" {
+			reference "Express_metamodel::Statements::AliasVariable::namespace"[0-1] : "Express_metamodel::Statements::AliasStatement" oppositeOf "Express_metamodel::Statements::AliasStatement::alias-variable";
+			reference "Express_metamodel::Statements::AliasVariable::referent"[0-1] : "Express_metamodel::Statements::VARExpression";
+		}
+
+		abstract class "Express_metamodel::Statements::ControlStatement" extends "Express_metamodel::Algorithms::Statement" {
+			
+		}
+
+		class "Express_metamodel::Statements::VARCell" extends "Express_metamodel::Statements::VARExpression" {
+			reference "Express_metamodel::Statements::VARCell::refers-to" : "Express_metamodel::Algorithms::VARVariable";
+			attribute id : Identifier;
+		}
+
+		class "Express_metamodel::Statements::NullStatement" extends "Express_metamodel::Statements::ControlStatement" {
+			
+		}
+
+		abstract class "Express_metamodel::Statements::VARExpression" {
+			attribute text[0-1] : ExpressText;
+		}
+
+		class "Express_metamodel::Statements::AttributeCell" extends "Express_metamodel::Statements::VARExpression" {
+			reference "Express_metamodel::Statements::AttributeCell::refers-to" : "Express_metamodel::Core::ExplicitAttribute";
+			reference "Express_metamodel::Statements::AttributeCell::base-entity" container : "Express_metamodel::Statements::VARExpression";
+			attribute id : Identifier;
+		}
+
+		class "Express_metamodel::Statements::StatementBlock" extends "Express_metamodel::Algorithms::Statement" {
+			-- WARNING renammed body-statement reference to avoid collision name error
+			reference "Express_metamodel::Statements::StatementBlock::body-statements_Statement"[*] container : "Express_metamodel::Algorithms::Statement" oppositeOf "Express_metamodel::Algorithms::Statement::in-block";
+			attribute delimited : Boolean;
+		}
+
+		class "Express_metamodel::Statements::CaseAction" {
+			reference "Express_metamodel::Statements::CaseAction::label-value"[*] : "Express_metamodel::Core::Expression";
+			reference "Express_metamodel::Statements::CaseAction::action"[0-1] container : "Express_metamodel::Algorithms::Statement";
+			attribute isDefault : Boolean;
+		}
+
+		class "Express_metamodel::Statements::MemberCell" extends "Express_metamodel::Statements::VARExpression" {
+			reference "Express_metamodel::Statements::MemberCell::index-value" : "Express_metamodel::Core::Expression";
+			reference "Express_metamodel::Statements::MemberCell::base-aggregate" container : "Express_metamodel::Statements::VARExpression";
+		}
+
+		class "Express_metamodel::Statements::RepeatStatement" extends "Express_metamodel::Algorithms::Statement", "Express_metamodel::Core::LocalScope" {
+			reference "Express_metamodel::Statements::RepeatStatement::while-expression"[0-1] : "Express_metamodel::Core::Expression";
+			reference "Express_metamodel::Statements::RepeatStatement::body" container : "Express_metamodel::Algorithms::Statement" oppositeOf "Express_metamodel::Algorithms::Statement::controlled-by";
+			reference "Express_metamodel::Statements::RepeatStatement::control-variable"[0-1] container : "Express_metamodel::Statements::ControlVariable" oppositeOf "Express_metamodel::Statements::ControlVariable::namespace";
+			reference "Express_metamodel::Statements::RepeatStatement::until-expression"[0-1] : "Express_metamodel::Core::Expression";
+		}
+
+		class "Express_metamodel::Statements::GroupCell" extends "Express_metamodel::Statements::VARExpression" {
+			reference "Express_metamodel::Statements::GroupCell::base-entity" container : "Express_metamodel::Statements::VARExpression";
+			reference "Express_metamodel::Statements::GroupCell::refers-to" : "Express_metamodel::Core::SingleEntityType";
+			attribute id : Identifier;
+		}
+
+		class "Express_metamodel::Statements::VariableCell" extends "Express_metamodel::Statements::VARExpression" {
+			reference "Express_metamodel::Statements::VariableCell::refers-to" : "Express_metamodel::Algorithms::Variable";
+			attribute id : Identifier;
+		}
+
+		class "Express_metamodel::Statements::CaseStatement" extends "Express_metamodel::Algorithms::Statement" {
+			reference "Express_metamodel::Statements::CaseStatement::cases"[1-*] container : "Express_metamodel::Statements::CaseAction";
+			reference "Express_metamodel::Statements::CaseStatement::selection-expression" : "Express_metamodel::Core::Expression";
+		}
+
+		class "Express_metamodel::Statements::IfStatement" extends "Express_metamodel::Algorithms::Statement" {
+			reference "Express_metamodel::Statements::IfStatement::if-condition" container : "Express_metamodel::Core::Expression";
+			reference "Express_metamodel::Statements::IfStatement::else-actions"[0-1] container : "Express_metamodel::Algorithms::Statement";
+			reference "Express_metamodel::Statements::IfStatement::then-actions" container : "Express_metamodel::Algorithms::Statement";
+		}
+
+		class "Express_metamodel::Statements::EscapeStatement" extends "Express_metamodel::Statements::ControlStatement" {
+			-- WARNING renammed body-statement reference to avoid collision name error
+			reference "Express_metamodel::Statements::EscapeStatement::in-block" : "Express_metamodel::Algorithms::Statement" oppositeOf "Express_metamodel::Algorithms::Statement::body-statements_EscapeStatement";
+		}
+
+		class "Express_metamodel::Statements::ReturnStatement" extends "Express_metamodel::Statements::ControlStatement" {
+			reference "Express_metamodel::Statements::ReturnStatement::return-value"[0-1] : "Express_metamodel::Core::Expression";
+		}
+
+		class "Express_metamodel::Statements::Assignment" extends "Express_metamodel::Algorithms::Statement" {
+			reference "Express_metamodel::Statements::Assignment::assigned-value" : "Express_metamodel::Core::Expression";
+			reference "Express_metamodel::Statements::Assignment::variable" : "Express_metamodel::Statements::VARExpression";
+		}
+	}
+
+	package MOF {
+
+		datatype String;
+
+		datatype Integer;
+
+		datatype Boolean;
+	}
+
+	package Expressions {
+
+		package BuiltInConstants {
+
+			
+		}
+
+		abstract class "Express_metamodel::Expressions::Selector" extends "Express_metamodel::Core::Expression" {
+			reference "Express_metamodel::Expressions::Selector::entity-instance" : "Express_metamodel::Core::Expression";
+		}
+
+		class "Express_metamodel::Expressions::RepeatCount" {
+			reference "Express_metamodel::Expressions::RepeatCount::derivation"[0-1] : "Express_metamodel::Core::Expression";
+--			attribute count[0-1] : ;
+		}
+
+		class "Express_metamodel::Expressions::EnumItemRef" extends "Express_metamodel::Expressions::Primary" {
+			reference "Express_metamodel::Expressions::EnumItemRef::refers-to" : "Express_metamodel::Instances::EnumerationItem";
+			attribute id : Identifier;
+		}
+
+		class "Express_metamodel::Expressions::Literal" extends "Express_metamodel::Expressions::Primary" {
+			reference "Express_metamodel::Expressions::Literal::refers-to" : "Express_metamodel::Instances::SimpleValue";
+		}
+
+		class "Express_metamodel::Expressions::BinaryIndex" extends "Express_metamodel::Expressions::IndexOperation" {
+			reference "Express_metamodel::Expressions::BinaryIndex::first-bit" : "Express_metamodel::Core::Expression";
+			reference "Express_metamodel::Expressions::BinaryIndex::last-bit"[0-1] : "Express_metamodel::Core::Expression";
+		}
+
+		class "Express_metamodel::Expressions::IndeterminateRef" extends "Express_metamodel::Expressions::Primary" {
+			reference "Express_metamodel::Expressions::IndeterminateRef::refers-to" : "Express_metamodel::Instances::Indeterminate";
+		}
+
+		class "Express_metamodel::Expressions::SELFRef" extends "Express_metamodel::Expressions::Primary" {
+			
+		}
+
+		abstract class "Express_metamodel::Expressions::IndexOperation" extends "Express_metamodel::Core::Expression" {
+			reference "Express_metamodel::Expressions::IndexOperation::base-value" : "Express_metamodel::Core::Expression";
+		}
+
+		class "Express_metamodel::Expressions::BinaryOperation" extends "Express_metamodel::Expressions::Operation" {
+			reference "Express_metamodel::Expressions::BinaryOperation::left-operand" : "Express_metamodel::Core::Expression";
+			reference "Express_metamodel::Expressions::BinaryOperation::right-operand" : "Express_metamodel::Core::Expression";
+			attribute operator : BinaryOperator;
+		}
+
+		class "Express_metamodel::Expressions::AggregateInitializer" extends "Express_metamodel::Core::Expression" {
+			reference "Express_metamodel::Expressions::AggregateInitializer::result-value"[0-1] : "Express_metamodel::Instances::GenericAggregate";
+			reference "Express_metamodel::Expressions::AggregateInitializer::bindings"[*] container : "Express_metamodel::Expressions::MemberBinding";
+		}
+
+		class "Express_metamodel::Expressions::StringIndex" extends "Express_metamodel::Expressions::IndexOperation" {
+			reference "Express_metamodel::Expressions::StringIndex::first-code" : "Express_metamodel::Core::Expression";
+			reference "Express_metamodel::Expressions::StringIndex::last-code"[0-1] : "Express_metamodel::Core::Expression";
+		}
+
+		class "Express_metamodel::Expressions::PartialEntityConstructor" extends "Express_metamodel::Core::Expression" {
+			reference "Express_metamodel::Expressions::PartialEntityConstructor::result-value"[0-1] : "Express_metamodel::Instances::PartialEntityValue";
+			reference "Express_metamodel::Expressions::PartialEntityConstructor::attribute-group" : "Express_metamodel::Core::SingleEntityType";
+			reference "Express_metamodel::Expressions::PartialEntityConstructor::bindings"[*] container : "Express_metamodel::Expressions::AttributeBinding";
+			attribute id : Identifier;
+		}
+
+		class "Express_metamodel::Expressions::Coercion" extends "Express_metamodel::Expressions::Operation" {
+			reference "Express_metamodel::Expressions::Coercion::operand" : "Express_metamodel::Core::Expression";
+			reference "Express_metamodel::Expressions::Coercion::target-type" : "Express_metamodel::Core::VariableType";
+		}
+
+		abstract class "Express_metamodel::Expressions::Primary" extends "Express_metamodel::Core::Expression" {
+			
+		}
+
+		class "Express_metamodel::Expressions::ActualParameter" {
+			reference "Express_metamodel::Expressions::ActualParameter::in-ProcedureCall"[0-1] : "Express_metamodel::Statements::ProcedureCall" oppositeOf "Express_metamodel::Statements::ProcedureCall::actual-parameters";
+			reference "Express_metamodel::Expressions::ActualParameter::in-FunctionCall"[0-1] : "Express_metamodel::Expressions::FunctionCall" oppositeOf "Express_metamodel::Expressions::FunctionCall::actual-parameters";
+			reference "Express_metamodel::Expressions::ActualParameter::formal-parameter" : "Express_metamodel::Algorithms::Parameter";
+			reference "Express_metamodel::Expressions::ActualParameter::actual-referent"[0-1] : "Express_metamodel::Statements::VARExpression";
+			reference "Express_metamodel::Expressions::ActualParameter::actual-value"[0-1] : "Express_metamodel::Core::Expression";
+			attribute position : Integer;
+		}
+
+		class "Express_metamodel::Expressions::ParameterRef" extends "Express_metamodel::Expressions::Primary" {
+			reference "Express_metamodel::Expressions::ParameterRef::refers-to" : "Express_metamodel::Algorithms::Parameter";
+			attribute id : Identifier;
+		}
+
+		class "Express_metamodel::Expressions::AttributeRef" extends "Express_metamodel::Expressions::Selector" {
+			reference "Express_metamodel::Expressions::AttributeRef::refers-to" : "Express_metamodel::Core::Attribute";
+			attribute id : Identifier;
+		}
+
+		class "Express_metamodel::Expressions::AggregateIndex" extends "Express_metamodel::Expressions::IndexOperation" {
+			reference "Express_metamodel::Expressions::AggregateIndex::index-value" container : "Express_metamodel::Core::Expression";
+		}
+
+		class "Express_metamodel::Expressions::GroupRef" extends "Express_metamodel::Expressions::Selector" {
+			reference "Express_metamodel::Expressions::GroupRef::refers-to" : "Express_metamodel::Core::SingleEntityType";
+			attribute id : Identifier;
+		}
+
+		class "Express_metamodel::Expressions::UnaryOperation" extends "Express_metamodel::Expressions::Operation" {
+			reference "Express_metamodel::Expressions::UnaryOperation::unary-operand" : "Express_metamodel::Core::Expression";
+			attribute operator : UnaryOperator;
+		}
+
+		class "Express_metamodel::Expressions::UsedInRef" extends "Express_metamodel::Expressions::Selector" {
+			reference "Express_metamodel::Expressions::UsedInRef::inverse-of" : "Express_metamodel::Core::Attribute";
+		}
+
+		class "Express_metamodel::Expressions::ConstantRef" extends "Express_metamodel::Expressions::Primary" {
+			reference "Express_metamodel::Expressions::ConstantRef::refers-to" : "Express_metamodel::Instances::Constant";
+			attribute id : Identifier;
+		}
+
+		class "Express_metamodel::Expressions::QueryExpression" extends "Express_metamodel::Core::LocalScope", "Express_metamodel::Core::Expression" {
+			reference "Express_metamodel::Expressions::QueryExpression::select-condition" container : "Express_metamodel::Core::Expression";
+			reference "Express_metamodel::Expressions::QueryExpression::query-variable" : "Express_metamodel::Expressions::QueryVariable" oppositeOf "Express_metamodel::Expressions::QueryVariable::namespace";
+			reference "Express_metamodel::Expressions::QueryExpression::aggregate-operand" : "Express_metamodel::Core::Expression";
+		}
+
+		class "Express_metamodel::Expressions::QueryVariable" extends "Express_metamodel::Algorithms::NamedVariable" {
+			reference "Express_metamodel::Expressions::QueryVariable::namespace" : "Express_metamodel::Expressions::QueryExpression" oppositeOf "Express_metamodel::Expressions::QueryExpression::query-variable";
+		}
+
+		abstract class "Express_metamodel::Expressions::Operation" extends "Express_metamodel::Core::Expression" {
+			
+		}
+
+		class "Express_metamodel::Expressions::AttributeBinding" {
+			reference "Express_metamodel::Expressions::AttributeBinding::attribute-value" : "Express_metamodel::Core::Expression";
+			reference "Express_metamodel::Expressions::AttributeBinding::to-value"[0-1] : "Express_metamodel::Instances::AttributeValue";
+			reference "Express_metamodel::Expressions::AttributeBinding::attribute" : "Express_metamodel::Core::ExplicitAttribute";
+			attribute position : Integer;
+		}
+
+		class "Express_metamodel::Expressions::FunctionCall" extends "Express_metamodel::Core::Expression" {
+			reference "Express_metamodel::Expressions::FunctionCall::actual-parameters"[*] container : "Express_metamodel::Expressions::ActualParameter" oppositeOf "Express_metamodel::Expressions::ActualParameter::in-FunctionCall";
+			reference "Express_metamodel::Expressions::FunctionCall::invokes-function" : "Express_metamodel::Algorithms::Function";
+			reference "Express_metamodel::Expressions::FunctionCall::/returns-result" : "Express_metamodel::Algorithms::FunctionResult";
+		}
+
+		class "Express_metamodel::Expressions::MemberBinding" {
+			reference "Express_metamodel::Expressions::MemberBinding::repetition"[0-1] container : "Express_metamodel::Expressions::RepeatCount";
+			reference "Express_metamodel::Expressions::MemberBinding::to-slot"[*] : "Express_metamodel::Instances::ListMember";
+			reference "Express_metamodel::Expressions::MemberBinding::member-value" : "Express_metamodel::Core::Expression";
+			attribute position : Integer;
+		}
+
+		class "Express_metamodel::Expressions::ExtentRef" extends "Express_metamodel::Expressions::Primary" {
+			reference "Express_metamodel::Expressions::ExtentRef::refers-to" : "Express_metamodel::Core::NamedType";
+			attribute id : Identifier;
+		}
+
+		class "Express_metamodel::Expressions::VariableRef" extends "Express_metamodel::Expressions::Primary" {
+			reference "Express_metamodel::Expressions::VariableRef::refers-to" : "Express_metamodel::Algorithms::NamedVariable";
+			attribute id : Identifier;
+		}
+
+		datatype UnaryOperator;
+
+		datatype BinaryOperator;
+	}
+
+	package Core {
+
+		package GenericTypes {
+
+			
+		}
+
+		package BuiltInTypes {
+
+			
+		}
+
+		abstract class "Express_metamodel::Core::TypeElement" extends "Express_metamodel::Core::NamedElement" {
+			reference "Express_metamodel::Core::TypeElement::namespace" : "Express_metamodel::Core::NamedType" oppositeOf "Express_metamodel::Core::NamedType::named-elements";
+		}
+
+		class "Express_metamodel::Core::SingleEntityType" {
+			-- WARNING renammed reference to avoid collision name error
+			reference "Express_metamodel::Core::SingleEntityType::declares_ExplicitAttribute"[*] : "Express_metamodel::Core::ExplicitAttribute" oppositeOf "Express_metamodel::Core::ExplicitAttribute::of-entity";
+			-- WARNING renammed reference to avoid collision name error
+			reference "Express_metamodel::Core::SingleEntityType::declares_Attribute"[*] container : "Express_metamodel::Core::Attribute" oppositeOf "Express_metamodel::Core::Attribute::of-entity";
+			reference "Express_metamodel::Core::SingleEntityType::declared-in" : "Express_metamodel::Core::EntityType" oppositeOf "Express_metamodel::Core::EntityType::declares";
+			reference "Express_metamodel::Core::SingleEntityType::equivalent" : "Express_metamodel::Core::PartialEntityType";
+			attribute id : "Express_metamodel::Core::ScopedId";
+		}
+
+		class "Express_metamodel::Core::AGGREGATEType" extends "Express_metamodel::Core::GeneralizedType" {
+			reference "Express_metamodel::Core::AGGREGATEType::upper-bound"[0-1] container : "Express_metamodel::Core::SizeConstraint";
+			reference "Express_metamodel::Core::AGGREGATEType::member-type" : "Express_metamodel::Core::ParameterType";
+			reference "Express_metamodel::Core::AGGREGATEType::constraint"[0-1] : "Express_metamodel::Algorithms::ActualStructureConstraint" oppositeOf "Express_metamodel::Algorithms::ActualStructureConstraint::matching-structure";
+			reference "Express_metamodel::Core::AGGREGATEType::lower-bound"[0-1] container : "Express_metamodel::Core::SizeConstraint";
+		}
+
+		class "Express_metamodel::Core::GeneralBAGType" extends "Express_metamodel::Core::GeneralAggregationType" {
+			
+		}
+
+		class "Express_metamodel::Core::DomainRule" extends "Express_metamodel::Core::DomainConstraint", "Express_metamodel::Core::TypeElement" {
+			reference "Express_metamodel::Core::DomainRule::domain" : "Express_metamodel::Core::NamedType" oppositeOf "Express_metamodel::Core::NamedType::domain-rules";
+			attribute position : Integer;
+		}
+
+		abstract class "Express_metamodel::Core::GeneralAggregationType" extends "Express_metamodel::Core::GeneralizedType", "Express_metamodel::Core::AggregationType" {
+			reference "Express_metamodel::Core::GeneralAggregationType::member-type" : "Express_metamodel::Core::GeneralizedType";
+		}
+
+		abstract class "Express_metamodel::Core::ConcreteType" extends "Express_metamodel::Core::InstantiableType" {
+			
+		}
+
+		class "Express_metamodel::Core::Expression" {
+			reference "Express_metamodel::Core::Expression::evaluation"[0-1] : "Express_metamodel::Core::Instance";
+			reference "Express_metamodel::Core::Expression::interpretation-context"[0-1] : "Express_metamodel::Core::Scope";
+			reference "Express_metamodel::Core::Expression::data-type"[0-1] : "Express_metamodel::Core::DataType";
+			attribute text[0-1] : ExpressText;
+		}
+
+		class "Express_metamodel::Core::InverseAttribute" extends "Express_metamodel::Core::Attribute" {
+			reference "Express_metamodel::Core::InverseAttribute::models-role" : "Express_metamodel::Core::DomainRole" oppositeOf "Express_metamodel::Core::DomainRole::range-view";
+			reference "Express_metamodel::Core::InverseAttribute::explicit" : "Express_metamodel::Core::InvertibleAttribute" oppositeOf "Express_metamodel::Core::InvertibleAttribute::inverse";
+			attribute isUnique : Boolean;
+		}
+
+		class "Express_metamodel::Core::EnumerationType" extends "Express_metamodel::Core::DefinedType" {
+			reference "Express_metamodel::Core::EnumerationType::values"[*] : "Express_metamodel::Instances::EnumerationItem" oppositeOf "Express_metamodel::Instances::EnumerationItem::of-type";
+			reference "Express_metamodel::Core::EnumerationType::declared-items"[*] : "Express_metamodel::Instances::EnumerationItem" oppositeOf "Express_metamodel::Instances::EnumerationItem::declared-in";
+			reference "Express_metamodel::Core::EnumerationType::extension"[*] : "Express_metamodel::Core::EnumerationType" oppositeOf "Express_metamodel::Core::EnumerationType::base";
+			reference "Express_metamodel::Core::EnumerationType::base" : "Express_metamodel::Core::EnumerationType" oppositeOf "Express_metamodel::Core::EnumerationType::extension";
+			attribute isExtensible : Boolean;
+		}
+
+		abstract class "Express_metamodel::Core::VariableType" extends "Express_metamodel::Core::DataType", "Express_metamodel::Core::AttributeType" {
+			
+		}
+
+		class "Express_metamodel::Core::ArrayBound" {
+			reference "Express_metamodel::Core::ArrayBound::bound-expression" : "Express_metamodel::Core::Expression";
+			attribute bound[0-1] : Integer;
+		}
+
+		class "Express_metamodel::Core::GeneralSETType" extends "Express_metamodel::Core::GeneralAggregationType" {
+			
+		}
+
+		class "Express_metamodel::Core::LISTType" extends "Express_metamodel::Core::ConcreteAggregationType" {
+			
+		}
+
+		class "Express_metamodel::Core::Redeclaration" {
+			reference "Express_metamodel::Core::Redeclaration::derivation"[0-1] : "Express_metamodel::Core::Expression";
+			reference "Express_metamodel::Core::Redeclaration::restricted-type" : "Express_metamodel::Core::AttributeType";
+			reference "Express_metamodel::Core::Redeclaration::refines"[0-1] : "Express_metamodel::Core::Redeclaration";
+			reference "Express_metamodel::Core::Redeclaration::upper-bound"[0-1] container : "Express_metamodel::Core::SizeConstraint";
+			reference "Express_metamodel::Core::Redeclaration::lower-bound"[0-1] container : "Express_metamodel::Core::SizeConstraint";
+			reference "Express_metamodel::Core::Redeclaration::scope" : "Express_metamodel::Core::EntityType" oppositeOf "Express_metamodel::Core::EntityType::redeclarations";
+			reference "Express_metamodel::Core::Redeclaration::original-attribute" : "Express_metamodel::Core::Attribute";
+			reference "Express_metamodel::Core::Redeclaration::refined-role"[0-1] : "Express_metamodel::Core::Role";
+			attribute position : Integer;
+			attribute isMandatory[0-1] : Boolean;
+			attribute alias[0-1] : "Express_metamodel::Core::ScopedId";
+		}
+
+		class "Express_metamodel::Core::EntityType" extends "Express_metamodel::Core::NamedType", "Express_metamodel::Core::InstantiableType" {
+			reference "Express_metamodel::Core::EntityType::plays-role"[*] : "Express_metamodel::Core::Role" oppositeOf "Express_metamodel::Core::Role::of-entity";
+			reference "Express_metamodel::Core::EntityType::redeclarations"[*] container : "Express_metamodel::Core::Redeclaration" oppositeOf "Express_metamodel::Core::Redeclaration::scope";
+			reference "Express_metamodel::Core::EntityType::attributes"[*] : "Express_metamodel::Core::Attribute";
+			reference "Express_metamodel::Core::EntityType::plays-range-role"[*] : "Express_metamodel::Core::RangeRole" oppositeOf "Express_metamodel::Core::RangeRole::range";
+			reference "Express_metamodel::Core::EntityType::declares" : "Express_metamodel::Core::SingleEntityType" oppositeOf "Express_metamodel::Core::SingleEntityType::declared-in";
+			reference "Express_metamodel::Core::EntityType::extension"[*] : "Express_metamodel::Rules::Extent" oppositeOf "Express_metamodel::Rules::Extent::for-type";
+			-- WARNING renammed reference attributes in invertible_attributes to avoid name collision
+			reference "Express_metamodel::Core::EntityType::invertible_attributes"[*] : "Express_metamodel::Core::InvertibleAttribute" oppositeOf "Express_metamodel::Core::InvertibleAttribute::referencing-type";
+			reference "Express_metamodel::Core::EntityType::plays-domain-role"[*] : "Express_metamodel::Core::DomainRole" oppositeOf "Express_metamodel::Core::DomainRole::domain";
+			reference "Express_metamodel::Core::EntityType::instances"[*] : "Express_metamodel::Instances::EntityInstance" oppositeOf "Express_metamodel::Instances::EntityInstance::instance-of";
+			reference "Express_metamodel::Core::EntityType::unique-rules"[*] : "Express_metamodel::Core::UniqueRule" oppositeOf "Express_metamodel::Core::UniqueRule::domain";
+			reference "Express_metamodel::Core::EntityType::used-in"[*] : "Express_metamodel::Core::InvertibleAttribute" oppositeOf "Express_metamodel::Core::InvertibleAttribute::range-type";
+			reference "Express_metamodel::Core::EntityType::subtype-of"[*] : "Express_metamodel::Core::EntityType";
+			attribute isAbstract : Boolean;
+		}
+
+		abstract class "Express_metamodel::Core::DataType" {
+			reference "Express_metamodel::Core::DataType::instances"[*] : "Express_metamodel::Core::Instance" oppositeOf "Express_metamodel::Core::Instance::of-type";
+		}
+
+		class "Express_metamodel::Core::PartialEntityType" extends "Express_metamodel::Core::DataType" {
+			reference "Express_metamodel::Core::PartialEntityType::components"[1-*] : "Express_metamodel::Core::SingleEntityType";
+		}
+
+		class "Express_metamodel::Core::Schema" extends "Express_metamodel::Core::Scope" {
+			reference "Express_metamodel::Core::Schema::documentation"[*] : "Express_metamodel::Core::Remark" oppositeOf "Express_metamodel::Core::Remark::describes-schema";
+			reference "Express_metamodel::Core::Schema::interfaces"[*] container : "Express_metamodel::Core::InterfacedElement" oppositeOf "Express_metamodel::Core::InterfacedElement::interfacing-schema";
+			reference "Express_metamodel::Core::Schema::schema-elements"[*] : "Express_metamodel::Core::SchemaElement" oppositeOf "Express_metamodel::Core::SchemaElement::defined-in";
+			reference "Express_metamodel::Core::Schema::interfaced-elements"[*] : "Express_metamodel::Core::SchemaElement" oppositeOf "Express_metamodel::Core::SchemaElement::referenced-in";
+			attribute name : Identifier;
+			attribute version[0-1] : Identifier;
+		}
+
+		class "Express_metamodel::Core::InvertibleAttribute" extends "Express_metamodel::Core::ExplicitAttribute" {
+			reference "Express_metamodel::Core::InvertibleAttribute::inverse"[*] : "Express_metamodel::Core::InverseAttribute" oppositeOf "Express_metamodel::Core::InverseAttribute::explicit";
+			reference "Express_metamodel::Core::InvertibleAttribute::range-type"[1-*] : "Express_metamodel::Core::EntityType" oppositeOf "Express_metamodel::Core::EntityType::used-in";
+			reference "Express_metamodel::Core::InvertibleAttribute::creates-relationship" : "Express_metamodel::Core::Relationship" oppositeOf "Express_metamodel::Core::Relationship::based-on";
+			reference "Express_metamodel::Core::InvertibleAttribute::referencing-type"[1-*] : "Express_metamodel::Core::EntityType" oppositeOf "Express_metamodel::Core::EntityType::attributes";
+			reference "Express_metamodel::Core::InvertibleAttribute::models-role" : "Express_metamodel::Core::RangeRole" oppositeOf "Express_metamodel::Core::RangeRole::domain-view";
+		}
+
+		abstract class "Express_metamodel::Core::GeneralizedType" extends "Express_metamodel::Core::ParameterType", "Express_metamodel::Core::AttributeType" {
+			reference "Express_metamodel::Core::GeneralizedType::occurs-in"[1-*] : "Express_metamodel::Core::ParameterType" oppositeOf "Express_metamodel::Core::ParameterType::contains";
+		}
+
+		class "Express_metamodel::Core::InterfacedElement" {
+			reference "Express_metamodel::Core::InterfacedElement::interfacing-schema" : "Express_metamodel::Core::Schema" oppositeOf "Express_metamodel::Core::Schema::interfaces";
+			reference "Express_metamodel::Core::InterfacedElement::refers-to" : "Express_metamodel::Core::SchemaElement" oppositeOf "Express_metamodel::Core::SchemaElement::referenced-as";
+			attribute isUSE : Boolean;
+			attribute interfacedId[0-1] : "Express_metamodel::Core::ScopedId";
+		}
+
+		class "Express_metamodel::Core::NumericType" extends "Express_metamodel::Core::SimpleType" {
+			
+		}
+
+		abstract class "Express_metamodel::Core::DefinedType" extends "Express_metamodel::Core::NamedType", "Express_metamodel::Core::ConcreteType" {
+			
+		}
+
+		class "Express_metamodel::Core::UniqueRule" extends "Express_metamodel::Core::TypeElement" {
+			reference "Express_metamodel::Core::UniqueRule::domain" : "Express_metamodel::Core::EntityType" oppositeOf "Express_metamodel::Core::EntityType::unique-rules";
+			reference "Express_metamodel::Core::UniqueRule::key-component"[1-*] : "Express_metamodel::Core::Attribute";
+			attribute position : Integer;
+		}
+
+		class "Express_metamodel::Core::DomainRole" extends "Express_metamodel::Core::Role" {
+			reference "Express_metamodel::Core::DomainRole::range-view"[0-1] : "Express_metamodel::Core::InverseAttribute" oppositeOf "Express_metamodel::Core::InverseAttribute::models-role";
+			reference "Express_metamodel::Core::DomainRole::domain" : "Express_metamodel::Core::EntityType" oppositeOf "Express_metamodel::Core::EntityType::plays-domain-role";
+			reference "Express_metamodel::Core::DomainRole::in-relationship" : "Express_metamodel::Core::Relationship" oppositeOf "Express_metamodel::Core::Relationship::domain";
+			attribute id[0-1] : "Express_metamodel::Core::ScopedId";
+		}
+
+		abstract class "Express_metamodel::Core::DomainConstraint" {
+			reference "Express_metamodel::Core::DomainConstraint::domain" : "Express_metamodel::Core::AttributeType" oppositeOf "Express_metamodel::Core::AttributeType::constraints";
+			reference "Express_metamodel::Core::DomainConstraint::asserts"[0-1] container : "Express_metamodel::Core::Expression";
+		}
+
+		abstract class "Express_metamodel::Core::InstantiableType" extends "Express_metamodel::Core::ParameterType", "Express_metamodel::Core::VariableType" {
+			reference "Express_metamodel::Core::InstantiableType::fundamental-type" : "Express_metamodel::Core::InstantiableType";
+		}
+
+		class "Express_metamodel::Core::GeneralLISTType" extends "Express_metamodel::Core::GeneralAggregationType" {
+			
+		}
+
+		abstract class "Express_metamodel::Core::NamedElement" {
+			reference "Express_metamodel::Core::NamedElement::namespace" : "Express_metamodel::Core::Scope" oppositeOf "Express_metamodel::Core::Scope::named-elements";
+			reference "Express_metamodel::Core::NamedElement::documentation"[*] : "Express_metamodel::Core::Remark" oppositeOf "Express_metamodel::Core::Remark::describes-element";
+			attribute id[0-1] : "Express_metamodel::Core::ScopedId";
+		}
+
+		abstract class "Express_metamodel::Core::Attribute" extends "Express_metamodel::Core::TypeElement" {
+			reference "Express_metamodel::Core::Attribute::attribute-type" : "Express_metamodel::Core::AttributeType" oppositeOf "Express_metamodel::Core::AttributeType::role";
+			-- WARNING renammed reference to avoid collision name error
+			reference "Express_metamodel::Core::Attribute::of-entity" : "Express_metamodel::Core::SingleEntityType" oppositeOf "Express_metamodel::Core::SingleEntityType::declares_Attribute";
+			attribute isAbstract : Boolean;
+			attribute position : Integer;
+		}
+
+		class "Express_metamodel::Core::BAGType" extends "Express_metamodel::Core::ConcreteAggregationType" {
+			
+		}
+
+		class "Express_metamodel::Core::RealType" extends "Express_metamodel::Core::NumericType" {
+			attribute precision[0-1] : Integer;
+		}
+
+		class "Express_metamodel::Core::LogicType" extends "Express_metamodel::Core::SimpleType" {
+			
+		}
+
+		class "Express_metamodel::Core::GenericType" extends "Express_metamodel::Core::GeneralizedType" {
+			reference "Express_metamodel::Core::GenericType::constraint"[0-1] : "Express_metamodel::Algorithms::ActualTypeConstraint" oppositeOf "Express_metamodel::Algorithms::ActualTypeConstraint::matching-type";
+			attribute isEntity : Boolean;
+		}
+
+		class "Express_metamodel::Core::StringType" extends "Express_metamodel::Core::SimpleType" {
+			reference "Express_metamodel::Core::StringType::string-length-constraint"[0-1] container : "Express_metamodel::Core::LengthConstraint";
+		}
+
+		abstract class "Express_metamodel::Core::AnonymousType" extends "Express_metamodel::Core::ConcreteType", "Express_metamodel::Core::InstantiableType" {
+			reference "Express_metamodel::Core::AnonymousType::specializes"[*] : "Express_metamodel::Core::AnonymousType";
+		}
+
+		abstract class "Express_metamodel::Core::AlgorithmScope" extends "Express_metamodel::Core::LocalScope" {
+			reference "Express_metamodel::Core::AlgorithmScope::common-elements"[*] : "Express_metamodel::Core::CommonElement" oppositeOf "Express_metamodel::Core::CommonElement::local-scope";
+			reference "Express_metamodel::Core::AlgorithmScope::variables"[*] : "Express_metamodel::Algorithms::Variable" oppositeOf "Express_metamodel::Algorithms::Variable::namespace";
+		}
+
+		abstract class "Express_metamodel::Core::Instance" {
+			-- WARNING renammed reference to avoid collision name error
+			reference "Express_metamodel::Core::Instance::appears-in-population"[*] : "Express_metamodel::Instances::Population" oppositeOf "Express_metamodel::Instances::Population::composition_Instance";
+			reference "Express_metamodel::Core::Instance::of-type"[1-*] : "Express_metamodel::Core::DataType" oppositeOf "Express_metamodel::Core::DataType::instances";
+		}
+
+		abstract class "Express_metamodel::Core::AttributeType" {
+			reference "Express_metamodel::Core::AttributeType::role"[*] : "Express_metamodel::Core::Attribute" oppositeOf "Express_metamodel::Core::Attribute::attribute-type";
+			reference "Express_metamodel::Core::AttributeType::constraints"[*] : "Express_metamodel::Core::DomainConstraint" oppositeOf "Express_metamodel::Core::DomainConstraint::domain";
+		}
+
+		class "Express_metamodel::Core::DerivedAttribute" extends "Express_metamodel::Core::Attribute" {
+			reference "Express_metamodel::Core::DerivedAttribute::derivation" : "Express_metamodel::Core::Expression";
+		}
+
+		class "Express_metamodel::Core::RangeRole" extends "Express_metamodel::Core::Role" {
+			reference "Express_metamodel::Core::RangeRole::domain-view" : "Express_metamodel::Core::InvertibleAttribute" oppositeOf "Express_metamodel::Core::InvertibleAttribute::models-role";
+			reference "Express_metamodel::Core::RangeRole::in-relationship" : "Express_metamodel::Core::Relationship" oppositeOf "Express_metamodel::Core::Relationship::range";
+			reference "Express_metamodel::Core::RangeRole::range" : "Express_metamodel::Core::EntityType" oppositeOf "Express_metamodel::Core::EntityType::plays-range-role";
+			attribute id : "Express_metamodel::Core::ScopedId";
+		}
+
+		abstract class "Express_metamodel::Core::LocalElement" extends "Express_metamodel::Core::NamedElement" {
+			reference "Express_metamodel::Core::LocalElement::namespace" : "Express_metamodel::Core::LocalScope" oppositeOf "Express_metamodel::Core::LocalScope::local-elements";
+		}
+
+		class "Express_metamodel::Core::Remark" {
+			reference "Express_metamodel::Core::Remark::describes-schema"[*] : "Express_metamodel::Core::Schema" oppositeOf "Express_metamodel::Core::Schema::documentation";
+			reference "Express_metamodel::Core::Remark::appears-in" : "Express_metamodel::Core::Scope" oppositeOf "Express_metamodel::Core::Scope::includes-remarks";
+			reference "Express_metamodel::Core::Remark::describes-element"[*] : "Express_metamodel::Core::NamedElement" oppositeOf "Express_metamodel::Core::NamedElement::documentation";
+			attribute isTagged : Boolean;
+			attribute isTail : Boolean;
+			attribute text : ExpressText;
+		}
+
+		class "Express_metamodel::Core::SizeConstraint" extends "Express_metamodel::Core::DomainConstraint" {
+			reference "Express_metamodel::Core::SizeConstraint::asserts"[0-1] container : "Express_metamodel::Core::Expression";
+			attribute bound[0-1] : Integer;
+		}
+
+		abstract class "Express_metamodel::Core::Role" {
+			reference "Express_metamodel::Core::Role::in-relationship" : "Express_metamodel::Core::Relationship" oppositeOf "Express_metamodel::Core::Relationship::roles";
+			reference "Express_metamodel::Core::Role::of-entity"[1-*] : "Express_metamodel::Core::EntityType" oppositeOf "Express_metamodel::Core::EntityType::plays-role";
+			reference "Express_metamodel::Core::Role::upper-bound"[0-1] : "Express_metamodel::Core::SizeConstraint";
+			reference "Express_metamodel::Core::Role::lower-bound"[0-1] : "Express_metamodel::Core::SizeConstraint";
+		}
+
+		class "Express_metamodel::Core::SETType" extends "Express_metamodel::Core::ConcreteAggregationType" {
+			
+		}
+
+		class "Express_metamodel::Core::SpecializedType" extends "Express_metamodel::Core::DefinedType" {
+			reference "Express_metamodel::Core::SpecializedType::underlying-type" : "Express_metamodel::Core::ConcreteType";
+		}
+
+		class "Express_metamodel::Core::GeneralARRAYType" extends "Express_metamodel::Core::GeneralAggregationType" {
+			reference "Express_metamodel::Core::GeneralARRAYType::hi-index"[0-1] container : "Express_metamodel::Core::ArrayBound";
+			reference "Express_metamodel::Core::GeneralARRAYType::lo-index"[0-1] container : "Express_metamodel::Core::ArrayBound";
+			attribute isOptional : Boolean;
+		}
+
+		class "Express_metamodel::Core::Relationship" {
+			reference "Express_metamodel::Core::Relationship::domain" : "Express_metamodel::Core::DomainRole" oppositeOf "Express_metamodel::Core::DomainRole::in-relationship";
+			reference "Express_metamodel::Core::Relationship::roles"[2-2] : "Express_metamodel::Core::Role" oppositeOf "Express_metamodel::Core::Role::in-relationship";
+			reference "Express_metamodel::Core::Relationship::based-on" : "Express_metamodel::Core::InvertibleAttribute" oppositeOf "Express_metamodel::Core::InvertibleAttribute::creates-relationship";
+			reference "Express_metamodel::Core::Relationship::range" : "Express_metamodel::Core::RangeRole" oppositeOf "Express_metamodel::Core::RangeRole::in-relationship";
+		}
+
+		class "Express_metamodel::Core::LengthConstraint" extends "Express_metamodel::Core::DomainConstraint" {
+			attribute maxLength[0-1] : Integer;
+			attribute isFixed : Boolean;
+		}
+
+		abstract class "Express_metamodel::Core::LocalScope" extends "Express_metamodel::Core::Scope" {
+			reference "Express_metamodel::Core::LocalScope::local-elements"[*] : "Express_metamodel::Core::LocalElement" oppositeOf "Express_metamodel::Core::LocalElement::namespace";
+		}
+
+		abstract class "Express_metamodel::Core::NamedType" extends "Express_metamodel::Core::InstantiableType", "Express_metamodel::Core::Scope", "Express_metamodel::Core::CommonElement", "Express_metamodel::Core::AttributeType" {
+			reference "Express_metamodel::Core::NamedType::named-elements"[*] : "Express_metamodel::Core::TypeElement" oppositeOf "Express_metamodel::Core::TypeElement::namespace";
+			reference "Express_metamodel::Core::NamedType::instantiates"[*] : "Express_metamodel::Core::SelectType" oppositeOf "Express_metamodel::Core::SelectType::allowed-types";
+			reference "Express_metamodel::Core::NamedType::domain-rules"[*] : "Express_metamodel::Core::DomainRule" oppositeOf "Express_metamodel::Core::DomainRule::domain";
+		}
+
+		class "Express_metamodel::Core::BinaryType" extends "Express_metamodel::Core::SimpleType" {
+			reference "Express_metamodel::Core::BinaryType::binary-length-constraint"[0-1] container : "Express_metamodel::Core::LengthConstraint";
+		}
+
+		class "Express_metamodel::Core::ScopedId" {
+			attribute localName : Identifier;
+			attribute definingScope : "Express_metamodel::Core::Scope";
+		}
+
+		abstract class "Express_metamodel::Core::AggregationType" {
+			reference "Express_metamodel::Core::AggregationType::lower-bound"[0-1] container : "Express_metamodel::Core::SizeConstraint";
+			reference "Express_metamodel::Core::AggregationType::upper-bound"[0-1] container : "Express_metamodel::Core::SizeConstraint";
+			attribute isUnique : Boolean;
+			attribute ordering : OrderingKind;
+		}
+
+		abstract class "Express_metamodel::Core::Scope" {
+			reference "Express_metamodel::Core::Scope::named-elements"[*] : "Express_metamodel::Core::NamedElement" oppositeOf "Express_metamodel::Core::NamedElement::namespace";
+			reference "Express_metamodel::Core::Scope::includes-remarks"[*] : "Express_metamodel::Core::Remark" oppositeOf "Express_metamodel::Core::Remark::appears-in";
+		}
+
+		abstract class "Express_metamodel::Core::ParameterType" {
+			reference "Express_metamodel::Core::ParameterType::contains"[*] : "Express_metamodel::Core::GeneralizedType" oppositeOf "Express_metamodel::Core::GeneralizedType::occurs-in";
+		}
+
+		class "Express_metamodel::Core::SelectType" extends "Express_metamodel::Core::DefinedType" {
+			reference "Express_metamodel::Core::SelectType::allowed-types"[*] : "Express_metamodel::Core::NamedType" oppositeOf "Express_metamodel::Core::NamedType::instantiates";
+			reference "Express_metamodel::Core::SelectType::extension"[*] : "Express_metamodel::Core::SelectType" oppositeOf "Express_metamodel::Core::SelectType::base";
+			reference "Express_metamodel::Core::SelectType::base" : "Express_metamodel::Core::SelectType" oppositeOf "Express_metamodel::Core::SelectType::extension";
+			reference "Express_metamodel::Core::SelectType::select-list"[*] : "Express_metamodel::Core::NamedType";
+			attribute isExtensible : Boolean;
+			attribute isEntity : Boolean;
+		}
+
+		abstract class "Express_metamodel::Core::ActualType" extends "Express_metamodel::Core::VariableType" {
+			reference "Express_metamodel::Core::ActualType::scope" : "Express_metamodel::Algorithms::Algorithm";
+		}
+
+		class "Express_metamodel::Core::ExplicitAttribute" extends "Express_metamodel::Core::Attribute" {
+			-- WARNING renammed reference to avoid collision name error
+			reference "Express_metamodel::Core::ExplicitAttribute::of-entity" : "Express_metamodel::Core::SingleEntityType" oppositeOf "Express_metamodel::Core::SingleEntityType::declares_ExplicitAttribute";
+			attribute isOptional : Boolean;
+		}
+
+		abstract class "Express_metamodel::Core::SimpleType" extends "Express_metamodel::Core::AnonymousType" {
+			attribute id : Keyword;
+		}
+
+		abstract class "Express_metamodel::Core::CommonElement" extends "Express_metamodel::Core::SchemaElement" {
+			reference "Express_metamodel::Core::CommonElement::local-scope"[0-1] : "Express_metamodel::Core::AlgorithmScope" oppositeOf "Express_metamodel::Core::AlgorithmScope::common-elements";
+		}
+
+		abstract class "Express_metamodel::Core::SchemaElement" extends "Express_metamodel::Core::NamedElement" {
+			reference "Express_metamodel::Core::SchemaElement::referenced-as"[*] : "Express_metamodel::Core::InterfacedElement" oppositeOf "Express_metamodel::Core::InterfacedElement::refers-to";
+			reference "Express_metamodel::Core::SchemaElement::referenced-in"[*] : "Express_metamodel::Core::Schema" oppositeOf "Express_metamodel::Core::Schema::interfaced-elements";
+			reference "Express_metamodel::Core::SchemaElement::defined-in"[0-1] : "Express_metamodel::Core::Schema" oppositeOf "Express_metamodel::Core::Schema::schema-elements";
+		}
+
+		abstract class "Express_metamodel::Core::ConcreteAggregationType" extends "Express_metamodel::Core::AnonymousType", "Express_metamodel::Core::AggregationType" {
+			reference "Express_metamodel::Core::ConcreteAggregationType::member-type" : "Express_metamodel::Core::InstantiableType";
+		}
+
+		class "Express_metamodel::Core::ARRAYType" extends "Express_metamodel::Core::ConcreteAggregationType" {
+			reference "Express_metamodel::Core::ARRAYType::lo-index" container : "Express_metamodel::Core::ArrayBound";
+			reference "Express_metamodel::Core::ARRAYType::hi-index" container : "Express_metamodel::Core::ArrayBound";
+			attribute isOptional : Boolean;
+		}
+
+		datatype Keyword;
+
+		datatype ExpressText;
+
+		datatype Identifier;
+
+		datatype OrderingKind;
+	}
+
+	package java {
+
+		package lang {
+
+			datatype int;
+
+			datatype void;
+		}
+	}
+
+	package Algorithms {
+
+		class "Express_metamodel::Algorithms::ActualTypeConstraint" {
+			reference "Express_metamodel::Algorithms::ActualTypeConstraint::matching-type" : "Express_metamodel::Core::GenericType" oppositeOf "Express_metamodel::Core::GenericType::constraint";
+			reference "Express_metamodel::Algorithms::ActualTypeConstraint::required-type" : "Express_metamodel::Algorithms::ActualDataType";
+			attribute label : Identifier;
+		}
+
+		class "Express_metamodel::Algorithms::FunctionResult" extends "Express_metamodel::Algorithms::Variable" {
+			reference "Express_metamodel::Algorithms::FunctionResult::namespace" : "Express_metamodel::Algorithms::Function" oppositeOf "Express_metamodel::Algorithms::Function::result";
+		}
+
+		class "Express_metamodel::Algorithms::Function" extends "Express_metamodel::Algorithms::Algorithm" {
+			reference "Express_metamodel::Algorithms::Function::result" container : "Express_metamodel::Algorithms::FunctionResult" oppositeOf "Express_metamodel::Algorithms::FunctionResult::namespace";
+		}
+
+		class "Express_metamodel::Algorithms::InParameter" extends "Express_metamodel::Algorithms::Parameter" {
+			reference "Express_metamodel::Algorithms::InParameter::variable" : "Express_metamodel::Algorithms::InVariable" oppositeOf "Express_metamodel::Algorithms::InVariable::source";
+		}
+
+		class "Express_metamodel::Algorithms::LocalVariable" extends "Express_metamodel::Algorithms::Variable" {
+			reference "Express_metamodel::Algorithms::LocalVariable::initial-value"[0-1] : "Express_metamodel::Core::Expression";
+		}
+
+		class "Express_metamodel::Algorithms::ActualStructure" extends "Express_metamodel::Algorithms::GenericElement", "Express_metamodel::Core::AGGREGATEType" {
+			
+		}
+
+		class "Express_metamodel::Algorithms::ActualGenericType" extends "Express_metamodel::Core::ActualType" {
+			reference "Express_metamodel::Algorithms::ActualGenericType::refers-to" : "Express_metamodel::Algorithms::ActualDataType";
+			attribute isEntity : Boolean;
+			attribute label : Identifier;
+		}
+
+		class "Express_metamodel::Algorithms::Statement" {
+			-- WARNING renammed body-statement reference to avoid collision name error
+			reference "Express_metamodel::Algorithms::Statement::in-block"[0-1] : "Express_metamodel::Statements::StatementBlock" oppositeOf "Express_metamodel::Statements::StatementBlock::body-statements_Statement";
+			-- WARNING renammed body-statement reference to avoid collision name error
+			reference "Express_metamodel::Algorithms::Statement::body-statements_SkipStatement"[*] container : "Express_metamodel::Statements::SkipStatement" oppositeOf "Express_metamodel::Statements::SkipStatement::in-block";
+			-- WARNING renammed body-statement reference to avoid collision name error
+			reference "Express_metamodel::Algorithms::Statement::body-statements_EscapeStatement"[*] container : "Express_metamodel::Statements::EscapeStatement" oppositeOf "Express_metamodel::Statements::EscapeStatement::in-block";
+			reference "Express_metamodel::Algorithms::Statement::controlled-by"[0-1] : "Express_metamodel::Statements::RepeatStatement" oppositeOf "Express_metamodel::Statements::RepeatStatement::body";
+			reference "Express_metamodel::Algorithms::Statement::implements"[0-1] : "Express_metamodel::Algorithms::Algorithm" oppositeOf "Express_metamodel::Algorithms::Algorithm::body";
+			attribute text[0-1] : ExpressText;
+		}
+
+		abstract class "Express_metamodel::Algorithms::NamedVariable" extends "Express_metamodel::Core::LocalElement" {
+			reference "Express_metamodel::Algorithms::NamedVariable::variable-type" : "Express_metamodel::Core::VariableType";
+		}
+
+		class "Express_metamodel::Algorithms::InVariable" extends "Express_metamodel::Algorithms::Variable" {
+			reference "Express_metamodel::Algorithms::InVariable::source" : "Express_metamodel::Algorithms::InParameter" oppositeOf "Express_metamodel::Algorithms::InParameter::variable";
+		}
+
+		class "Express_metamodel::Algorithms::Procedure" extends "Express_metamodel::Algorithms::Algorithm" {
+			
+		}
+
+		class "Express_metamodel::Algorithms::ActualARRAYType" extends "Express_metamodel::Algorithms::ActualAggregationType" {
+			reference "Express_metamodel::Algorithms::ActualARRAYType::hi-index" container : "Express_metamodel::Core::ArrayBound";
+			reference "Express_metamodel::Algorithms::ActualARRAYType::lo-index" container : "Express_metamodel::Core::ArrayBound";
+			attribute isOptional : Boolean;
+		}
+
+		class "Express_metamodel::Algorithms::ActualSETType" extends "Express_metamodel::Algorithms::ActualAggregationType" {
+			
+		}
+
+		class "Express_metamodel::Algorithms::ActualAGGREGATEType" extends "Express_metamodel::Core::ActualType" {
+			reference "Express_metamodel::Algorithms::ActualAGGREGATEType::upper-bound"[0-1] container : "Express_metamodel::Core::SizeConstraint";
+			reference "Express_metamodel::Algorithms::ActualAGGREGATEType::refers-to" : "Express_metamodel::Algorithms::ActualStructure";
+			reference "Express_metamodel::Algorithms::ActualAGGREGATEType::member-type" : "Express_metamodel::Core::VariableType";
+			reference "Express_metamodel::Algorithms::ActualAGGREGATEType::lower-bound"[0-1] container : "Express_metamodel::Core::SizeConstraint";
+			attribute label : Identifier;
+		}
+
+		abstract class "Express_metamodel::Algorithms::Parameter" extends "Express_metamodel::Core::LocalElement" {
+			reference "Express_metamodel::Algorithms::Parameter::namespace" : "Express_metamodel::Algorithms::Algorithm" oppositeOf "Express_metamodel::Algorithms::Algorithm::formal-parameters";
+			reference "Express_metamodel::Algorithms::Parameter::structure-constraints"[*] container : "Express_metamodel::Algorithms::ActualStructureConstraint";
+			reference "Express_metamodel::Algorithms::Parameter::type-constraints"[*] container : "Express_metamodel::Algorithms::ActualTypeConstraint";
+			reference "Express_metamodel::Algorithms::Parameter::formal-parameter-type" : "Express_metamodel::Core::ParameterType";
+			attribute inout : Boolean;
+			attribute position : Integer;
+		}
+
+		class "Express_metamodel::Algorithms::ActualStructureConstraint" {
+			reference "Express_metamodel::Algorithms::ActualStructureConstraint::matching-structure" : "Express_metamodel::Core::AGGREGATEType" oppositeOf "Express_metamodel::Core::AGGREGATEType::constraint";
+			reference "Express_metamodel::Algorithms::ActualStructureConstraint::required-structure" : "Express_metamodel::Algorithms::ActualStructure";
+			attribute label : Identifier;
+		}
+
+		abstract class "Express_metamodel::Algorithms::Algorithm" extends "Express_metamodel::Core::AlgorithmScope", "Express_metamodel::Core::CommonElement" {
+			reference "Express_metamodel::Algorithms::Algorithm::body"[0-1] container : "Express_metamodel::Algorithms::Statement" oppositeOf "Express_metamodel::Algorithms::Statement::implements";
+			reference "Express_metamodel::Algorithms::Algorithm::formal-parameters"[*] : "Express_metamodel::Algorithms::Parameter" oppositeOf "Express_metamodel::Algorithms::Parameter::namespace";
+		}
+
+		abstract class "Express_metamodel::Algorithms::ActualAggregationType" extends "Express_metamodel::Core::ActualType", "Express_metamodel::Core::AggregationType" {
+			reference "Express_metamodel::Algorithms::ActualAggregationType::member-type" : "Express_metamodel::Core::ActualType";
+		}
+
+		abstract class "Express_metamodel::Algorithms::VARVariable" {
+			
+		}
+
+		class "Express_metamodel::Algorithms::ActualLISTType" extends "Express_metamodel::Algorithms::ActualAggregationType" {
+			
+		}
+
+		abstract class "Express_metamodel::Algorithms::Variable" extends "Express_metamodel::Algorithms::NamedVariable" {
+			reference "Express_metamodel::Algorithms::Variable::namespace" : "Express_metamodel::Core::AlgorithmScope" oppositeOf "Express_metamodel::Core::AlgorithmScope::variables";
+		}
+
+		abstract class "Express_metamodel::Algorithms::GenericElement" extends "Express_metamodel::Core::LocalElement" {
+			reference "Express_metamodel::Algorithms::GenericElement::occurs-in" : "Express_metamodel::Core::ParameterType";
+			reference "Express_metamodel::Algorithms::GenericElement::source" : "Express_metamodel::Algorithms::Parameter";
+			reference "Express_metamodel::Algorithms::GenericElement::namespace" : "Express_metamodel::Algorithms::Algorithm";
+			attribute label : "Express_metamodel::Core::ScopedId";
+		}
+
+		class "Express_metamodel::Algorithms::VARParameter" extends "Express_metamodel::Algorithms::Parameter", "Express_metamodel::Algorithms::VARVariable" {
+			
+		}
+
+		class "Express_metamodel::Algorithms::ActualDataType" extends "Express_metamodel::Core::GenericType", "Express_metamodel::Algorithms::GenericElement" {
+			
+		}
+
+		class "Express_metamodel::Algorithms::ActualBAGType" extends "Express_metamodel::Algorithms::ActualAggregationType" {
+			
+		}
+	}
+
+	package Instances {
+
+		class "Express_metamodel::Instances::AttributeValue" {
+			reference "Express_metamodel::Instances::AttributeValue::actual-value"[0-1] : "Express_metamodel::Core::Instance";
+			reference "Express_metamodel::Instances::AttributeValue::attribute" : "Express_metamodel::Core::ExplicitAttribute";
+		}
+
+		class "Express_metamodel::Instances::ARRAYValue" extends "Express_metamodel::Instances::AggregateValue" {
+			reference "Express_metamodel::Instances::ARRAYValue::of-type"[1-*] : "Express_metamodel::Core::ARRAYType";
+			reference "Express_metamodel::Instances::ARRAYValue::member-slot"[1-*] container : "Express_metamodel::Instances::ArrayMember";
+		}
+
+		class "Express_metamodel::Instances::RoleName" extends "Express_metamodel::Instances::StringValue" {
+			reference "Express_metamodel::Instances::RoleName::refers-to" : "Express_metamodel::Core::Attribute";
+			attribute represents : "Express_metamodel::Core::ScopedId";
+		}
+
+		class "Express_metamodel::Instances::EntityInstance" extends "Express_metamodel::Instances::TypedInstance" {
+			reference "Express_metamodel::Instances::EntityInstance::state" : "Express_metamodel::Instances::EntityValue" oppositeOf "Express_metamodel::Instances::EntityValue::describes";
+			reference "Express_metamodel::Instances::EntityInstance::instance-of"[1-*] : "Express_metamodel::Core::EntityType" oppositeOf "Express_metamodel::Core::EntityType::instances";
+			-- WARNING renammed reference to avoid collision name error
+			reference "Express_metamodel::Instances::EntityInstance::appears-in-population"[1-*] : "Express_metamodel::Instances::Population" oppositeOf "Express_metamodel::Instances::Population::composition_EntityInstance";
+			attribute id : EntityName;
+		}
+
+		class "Express_metamodel::Instances::IntegerValue" extends "Express_metamodel::Instances::RealValue" {
+			
+		}
+
+		abstract class "Express_metamodel::Instances::AggregateValue" extends "Express_metamodel::Instances::ConcreteValue" {
+			reference "Express_metamodel::Instances::AggregateValue::of-type"[1-*] : "Express_metamodel::Core::AggregationType";
+		}
+
+		class "Express_metamodel::Instances::Constant" extends "Express_metamodel::Core::CommonElement" {
+			reference "Express_metamodel::Instances::Constant::value-expression" : "Express_metamodel::Core::Expression";
+			reference "Express_metamodel::Instances::Constant::actual-value"[0-1] : "Express_metamodel::Core::Instance";
+			reference "Express_metamodel::Instances::Constant::data-type" : "Express_metamodel::Core::InstantiableType";
+		}
+
+		class "Express_metamodel::Instances::LogicalValue" extends "Express_metamodel::Instances::SimpleValue" {
+			
+		}
+
+		abstract class "Express_metamodel::Instances::TypedInstance" extends "Express_metamodel::Core::Instance" {
+			reference "Express_metamodel::Instances::TypedInstance::satisfies-type"[*] : "Express_metamodel::Core::SelectType";
+		}
+
+		class "Express_metamodel::Instances::ListMember" {
+			reference "Express_metamodel::Instances::ListMember::member-value" : "Express_metamodel::Core::Instance";
+			attribute position : Integer;
+		}
+
+		class "Express_metamodel::Instances::BagMember" {
+			reference "Express_metamodel::Instances::BagMember::member-value" : "Express_metamodel::Core::Instance";
+			attribute count : Integer;
+		}
+
+		class "Express_metamodel::Instances::SingleEntityValue" {
+			reference "Express_metamodel::Instances::SingleEntityValue::equivalent" : "Express_metamodel::Instances::PartialEntityValue";
+			reference "Express_metamodel::Instances::SingleEntityValue::of-type" : "Express_metamodel::Core::SingleEntityType";
+			reference "Express_metamodel::Instances::SingleEntityValue::properties"[*] container : "Express_metamodel::Instances::AttributeValue";
+		}
+
+		class "Express_metamodel::Instances::Indeterminate" extends "Express_metamodel::Core::Instance" {
+			
+		}
+
+		class "Express_metamodel::Instances::SingleLeafInstance" extends "Express_metamodel::Instances::EntityInstance" {
+			reference "Express_metamodel::Instances::SingleLeafInstance::characterizing-type" : "Express_metamodel::Core::EntityType";
+		}
+
+		class "Express_metamodel::Instances::GenericAggregate" extends "Express_metamodel::Instances::LISTValue" {
+			
+		}
+
+		class "Express_metamodel::Instances::BinaryValue" extends "Express_metamodel::Instances::SimpleValue" {
+			
+		}
+
+		class "Express_metamodel::Instances::SpecializedValue" extends "Express_metamodel::Instances::TypedInstance" {
+			reference "Express_metamodel::Instances::SpecializedValue::of-type" : "Express_metamodel::Core::SpecializedType";
+			reference "Express_metamodel::Instances::SpecializedValue::fundamental-value" : "Express_metamodel::Instances::ConcreteValue";
+		}
+
+		class "Express_metamodel::Instances::BAGValue" extends "Express_metamodel::Instances::AggregateValue" {
+			reference "Express_metamodel::Instances::BAGValue::member-slot"[*] container : "Express_metamodel::Instances::BagMember";
+			reference "Express_metamodel::Instances::BAGValue::of-type"[1-*] : "Express_metamodel::Core::BAGType";
+		}
+
+		class "Express_metamodel::Instances::EnumerationItem" extends "Express_metamodel::Core::TypeElement", "Express_metamodel::Instances::TypedInstance", "Express_metamodel::Instances::ConcreteValue" {
+			reference "Express_metamodel::Instances::EnumerationItem::of-type"[1-*] : "Express_metamodel::Core::EnumerationType" oppositeOf "Express_metamodel::Core::EnumerationType::values";
+			reference "Express_metamodel::Instances::EnumerationItem::declared-in" : "Express_metamodel::Core::EnumerationType" oppositeOf "Express_metamodel::Core::EnumerationType::declared-items";
+			attribute position : Integer;
+		}
+
+		class "Express_metamodel::Instances::EntityValue" extends "Express_metamodel::Instances::PartialEntityValue" {
+			reference "Express_metamodel::Instances::EntityValue::corresponds to"[1-*] : "Express_metamodel::Core::EntityType";
+			reference "Express_metamodel::Instances::EntityValue::describes"[*] : "Express_metamodel::Instances::EntityInstance" oppositeOf "Express_metamodel::Instances::EntityInstance::state";
+		}
+
+		class "Express_metamodel::Instances::SETValue" extends "Express_metamodel::Instances::AggregateValue" {
+			reference "Express_metamodel::Instances::SETValue::member-value"[*] : "Express_metamodel::Core::Instance";
+			reference "Express_metamodel::Instances::SETValue::of-type"[1-*] : "Express_metamodel::Core::SETType";
+		}
+
+		class "Express_metamodel::Instances::ArrayMember" {
+			reference "Express_metamodel::Instances::ArrayMember::member-value"[0-1] : "Express_metamodel::Core::Instance";
+			attribute index : Integer;
+		}
+
+		class "Express_metamodel::Instances::Population" {
+			-- WARNING renammed reference to avoid collision name error
+			reference "Express_metamodel::Instances::Population::composition_EntityInstance"[*] : "Express_metamodel::Instances::EntityInstance" oppositeOf "Express_metamodel::Instances::EntityInstance::appears-in-population";
+			-- WARNING renammed reference to avoid collision name error
+			reference "Express_metamodel::Instances::Population::composition_Instance"[*] : "Express_metamodel::Core::Instance" oppositeOf "Express_metamodel::Core::Instance::appears-in-population";
+			reference "Express_metamodel::Instances::Population::governing-schema"[*] : "Express_metamodel::Core::Schema";
+		}
+
+		class "Express_metamodel::Instances::RealValue" extends "Express_metamodel::Instances::NumberValue" {
+			
+		}
+
+		class "Express_metamodel::Instances::BooleanValue" extends "Express_metamodel::Instances::LogicalValue" {
+			
+		}
+
+		class "Express_metamodel::Instances::LISTValue" extends "Express_metamodel::Core::Instance", "Express_metamodel::Instances::AggregateValue" {
+			reference "Express_metamodel::Instances::LISTValue::of-type"[1-*] : "Express_metamodel::Core::LISTType";
+			reference "Express_metamodel::Instances::LISTValue::member-slot"[*] container : "Express_metamodel::Instances::ListMember";
+		}
+
+		class "Express_metamodel::Instances::StringValue" extends "Express_metamodel::Instances::SimpleValue" {
+			
+		}
+
+		class "Express_metamodel::Instances::TypeName" extends "Express_metamodel::Instances::StringValue" {
+			reference "Express_metamodel::Instances::TypeName::refers-to" : "Express_metamodel::Core::NamedType";
+			attribute represents : "Express_metamodel::Core::ScopedId";
+		}
+
+		class "Express_metamodel::Instances::PartialEntityValue" extends "Express_metamodel::Core::Instance" {
+			reference "Express_metamodel::Instances::PartialEntityValue::of-type" : "Express_metamodel::Core::PartialEntityType";
+			reference "Express_metamodel::Instances::PartialEntityValue::components"[1-*] container : "Express_metamodel::Instances::SingleEntityValue";
+		}
+
+		class "Express_metamodel::Instances::NumberValue" extends "Express_metamodel::Instances::SimpleValue" {
+			
+		}
+
+		class "Express_metamodel::Instances::MultiLeafInstance" extends "Express_metamodel::Instances::EntityInstance" {
+			
+		}
+
+		abstract class "Express_metamodel::Instances::SimpleValue" extends "Express_metamodel::Instances::ConcreteValue" {
+			reference "Express_metamodel::Instances::SimpleValue::of-type"[1-*] : "Express_metamodel::Core::SimpleType";
+			attribute name : String;
+		}
+
+		abstract class "Express_metamodel::Instances::ConcreteValue" extends "Express_metamodel::Core::Instance" {
+			
+		}
+
+		datatype EntityName;
+	}
+
+	package Express2 {
+
+		
+	}
+
+	class "Express_metamodel::java::lang::void" {
+		
+	}
+
+	class "Express_metamodel::java::lang::int" {
+		
+	}
+}

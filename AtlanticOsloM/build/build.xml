@@ -1,0 +1,99 @@
+<project name="atlanticOsloM" default="atlantic">
+
+	<property name="sourcePath" value="../../org.eclipse.am3.zoos.atlantEcore/" />
+	<property name="targetPath" value="../../org.eclipse.am3.zoos.atlanticOsloM/" />
+	<property name="projectPath" value="" />
+	
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+	</taskdef>
+	
+	<target name="atlantic" depends="loadModels">
+		
+		<for param="e">
+		  <path>
+		    <fileset dir="${projectPath}../../org.eclipse.am3.zoos.atlantEcore" includes="*.ecore"/>
+		  </path>
+		  <sequential>
+			<antcall target="condition" inheritall="true" inheritrefs="true">
+				<param name="sample" value="@{e}"/>
+			</antcall>
+		  </sequential>
+		</for>
+
+	</target>
+
+	<target name="condition">
+	  	<basename property="name" file="${sample}" suffix=".ecore"/>
+		<property name="sourceModel" value="${sourcePath}${name}.ecore"/>
+		<property name="targetModel" value="${targetPath}${name}.m"/>
+		
+		<uptodate property="isUpToDate" srcfile="${sourceModel}" targetfile="${targetModel}"/>
+		
+	  	<if>
+	  	 <not>
+			 <equals arg1="${isUpToDate}" arg2="true" />
+		 </not>
+		 <then>
+			<antcall target="transformOne" inheritall="true" inheritrefs="true">
+				<param name="name" value="${name}"/>
+				<param name="sourceModel" value="${sourceModel}"/>
+				<param name="targetModel" value="${targetModel}"/>
+			</antcall>
+		 </then>
+		</if>
+
+	</target>
+	
+	<!-- parameters: sample -->
+	<target name="transformOne">
+
+		<echo message="Transforming ${name}"/>
+					
+		<echo message="Loading ${sourceModel}" />
+		<!-- Load Ecore metamodel -->	
+		<am3.loadModel modelHandler="EMF" name="source" metamodel="%EMF" path="${sourceModel}" />
+
+		<echo message="Transforming ${name}.ecore into ${name}-KM3.xmi" />
+		<!-- Transform Ecore metamodel into KM3 metamodel -->
+		<am3.atl path="${targetPath}build/Ecore2KM3.asm">
+			<inModel name="IN" model="source" />
+			<inModel name="Ecore" model="%EMF" />
+			<inModel name="KM3" model="KM3" />
+			<outModel name="OUT" model="intermediate" metamodel="KM3" />
+		</am3.atl>
+			
+		<echo message="Transforming ${name}-KM3.xmi into ${name}-M.xmi" />
+		<!-- Transform KM3 metamodel into M model -->
+		<am3.atl path="${targetPath}build/KM32MSchema.asm">
+			<inModel name="IN" model="intermediate"/>
+			<inModel name="KM3" model="KM3"/>
+			<inModel name="MSchema" model="MSchema"/>
+			<outModel name="OUT" model="target" metamodel="MSchema"/>
+		</am3.atl>
+
+		<echo message="Extracting ${targetModel}" />
+		<!-- Extract target M model -->
+		<am3.loadModel modelHandler="EMF" name="M.tcs" metamodel="TCS" path="${targetPath}build/M.tcs.xmi"/>
+		<am3.saveModel model="target" path="${targetModel}">
+			<extractor name="ebnf">
+				<param name="format" value="M.tcs"/>
+				<param name="indentString" value="&#9;"/>
+				<param name="identEscStart" value="@["/>
+				<param name="identEscEnd" value="]"/>
+				<param name="stringDelim" value="&quot;"/>
+				<param name="decimalFormat" value="0.##############"/>
+				<param name="serializeComments" value="true"/>
+			</extractor>
+		</am3.saveModel>
+		
+	</target>
+
+	<target name="loadModels">
+		<!-- Load KM3 metamodel -->
+		<am3.loadModel modelHandler="EMF" name="KM3" metamodel="MOF" nsUri="http://www.eclipse.org/gmt/2005/KM3" />
+		<!-- Load TCS metamodel-->
+		<am3.loadModel modelHandler="EMF" name="TCS" metamodel="MOF" path="${targetPath}build/TCS.ecore"/>
+		<!-- Load MSchema metamodel-->
+		<am3.loadModel modelHandler="EMF" name="MSchema" metamodel="MOF" path="${targetPath}build/M.ecore"/>
+	</target>	
+</project>

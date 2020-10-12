@@ -1,0 +1,46 @@
+package Metamodel;
+
+package BQL {
+  abstract class LocatedElement {
+    !unique !ordered attr String[1] location;
+    !unique attr String[*] commentsBefore;
+    !unique attr String[*] commentsAfter;
+  }
+
+  class Query {
+    !ordered val Entry[*] entries;
+    !ordered val Predicate[*] predicates;
+  }
+
+  class Entry extends LocatedElement {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr Boolean[1] allFields;
+    !ordered val Field[+]#entry fields;
+    !ordered ref Predicate#entry predicate;
+  }
+
+  class Field {
+    !unique !ordered attr String[1] name;
+    !ordered ref Entry[1]#fields entry;
+  }
+
+  class Predicate {
+    !ordered ref Entry[1]#predicate entry;
+    !ordered val Expression[+] expression;
+  }
+
+  class Expression {
+    !unique !ordered attr String[1] field;
+    !unique !ordered attr String[1] value;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+}
+

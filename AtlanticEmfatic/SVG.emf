@@ -1,0 +1,200 @@
+package Metamodel;
+
+package SVG {
+  abstract class Element {
+    !ordered ref SvgFile[*]#elements owner;
+    !ordered ref Use[*]#use target;
+    !ordered ref Attribute[*]#attOwner attribute;
+    !ordered val Coordinates position;
+    !ordered val Dimension size;
+    !ordered ref Svg#children root;
+    !unique !ordered attr String fill;
+    !unique !ordered attr String viewBox;
+    !ordered ref GroupingElement#groupContent group;
+    !unique !ordered attr String identifier;
+    !ordered ref Marker#drawing drawsMarker;
+  }
+
+  abstract class StructuralElement extends Element {
+  }
+
+  class Image extends StructuralElement {
+    !ordered ref ReferencedFile[*]#referer referee;
+  }
+
+  class Svg extends StructuralElement {
+    !ordered ref SvgFile[*]#tag owner_SVG;
+    val Element[*]#root children;
+    !unique !ordered attr String namespace;
+    !unique !ordered attr String version;
+    !unique !ordered attr String baseProfile;
+  }
+
+  abstract class GroupingElement extends StructuralElement {
+    val Element[*]#group groupContent;
+  }
+
+  class G extends GroupingElement {
+    !unique !ordered attr String name;
+  }
+
+  class Defs extends GroupingElement {
+  }
+
+  class Symbol extends GroupingElement {
+  }
+
+  class Use extends StructuralElement {
+    !ordered ref Element[*]#target use;
+  }
+
+  abstract class GraphicalElement extends Element {
+    !unique !ordered attr String stroke;
+  }
+
+  abstract class Shape extends GraphicalElement {
+  }
+
+  abstract class TextElement extends GraphicalElement {
+    !unique !ordered attr PrimitiveTypes.Double rotate;
+    !unique !ordered attr String textLength;
+    !unique !ordered attr String fontSize;
+  }
+
+  class Rect extends Shape {
+    !unique !ordered attr PrimitiveTypes.Double rx;
+    !unique !ordered attr PrimitiveTypes.Double ry;
+  }
+
+  class Circle extends Shape {
+  }
+
+  class Ellipse extends Shape {
+  }
+
+  class Line extends Shape {
+    !ordered ref Point[2] between;
+    !unique !ordered attr String markerEnd;
+    !unique !ordered attr String markerStart;
+  }
+
+  class Polyline extends Shape {
+    val Point[*] waypoints;
+    !unique !ordered attr String strokeDashArray;
+    !unique !ordered attr String markerEnd;
+    !unique !ordered attr String markerStart;
+  }
+
+  class Polygon extends Shape {
+    ref Point[*] waypoints;
+    !unique !ordered attr String markerEnd;
+    !unique !ordered attr String markerStart;
+  }
+
+  class Path extends Shape {
+    !unique !ordered attr PrimitiveTypes.Double pathLength;
+    !unique !ordered attr String[1] d;
+    !unique !ordered attr String markerEnd;
+    !unique !ordered attr String markerStart;
+  }
+
+  class Point extends Shape {
+  }
+
+  class Marker extends Shape {
+    !unique !ordered attr String markerUnits;
+    !unique !ordered attr PrimitiveTypes.Double refX;
+    !unique !ordered attr PrimitiveTypes.Double refY;
+    !unique !ordered attr PrimitiveTypes.Double markerWidth;
+    !unique !ordered attr PrimitiveTypes.Double markerHeight;
+    !unique !ordered attr String orient;
+    !ordered val Element[*]#drawsMarker drawing;
+  }
+
+  class Text extends TextElement {
+    !unique !ordered attr String lengthAdjust;
+    !unique !ordered attr String[1] content;
+  }
+
+  class Tspan extends TextElement {
+    !unique !ordered attr String content;
+  }
+
+  class Tref extends TextElement {
+    !ordered ref TextElement[1] xlinkHref;
+  }
+
+  abstract class Attribute {
+    !ordered ref Element[*]#attribute attOwner;
+  }
+
+  abstract class Transform extends Attribute {
+  }
+
+  class Scale extends Transform {
+    !unique !ordered attr PrimitiveTypes.Double[1] sx;
+    !unique !ordered attr PrimitiveTypes.Double[1] sy;
+  }
+
+  class Translate extends Transform {
+    !unique !ordered attr PrimitiveTypes.Double[1] tx;
+    !unique !ordered attr PrimitiveTypes.Double[1] ty;
+  }
+
+  class Rotate extends Transform {
+    !unique !ordered attr PrimitiveTypes.Double[1] angle;
+    !unique !ordered attr PrimitiveTypes.Double[1] cx;
+    !unique !ordered attr PrimitiveTypes.Double[1] cy;
+  }
+
+  class Visibility extends Attribute {
+    !unique !ordered attr Boolean[1] visible;
+  }
+
+  class FontWeight extends Attribute {
+    !unique !ordered attr Boolean[1] bold;
+  }
+
+  class FontStyle extends Attribute {
+    !unique !ordered attr Boolean[1] italic;
+  }
+
+  class Dimension {
+    !unique !ordered attr PrimitiveTypes.Double[1] width;
+    !unique !ordered attr PrimitiveTypes.Double[1] height;
+  }
+
+  abstract class Coordinates {
+    !unique !ordered attr PrimitiveTypes.Double[1] x;
+    !unique !ordered attr PrimitiveTypes.Double[1] y;
+  }
+
+  class RelativeCoord extends Coordinates {
+  }
+
+  class AbsoluteCoord extends Coordinates {
+  }
+
+  abstract class ReferencedFile {
+    !ordered ref Image[*]#referee referer;
+    !unique !ordered attr String[1] name;
+  }
+
+  class SvgFile extends ReferencedFile {
+    !ordered ref Svg[1]#owner_SVG tag;
+    !ordered ref Element[*]#owner elements;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Double : "";
+
+}
+

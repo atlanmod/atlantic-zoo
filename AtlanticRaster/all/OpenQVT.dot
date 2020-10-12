@@ -1,0 +1,100 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_OpenQVT"{
+labelloc=t
+color=black
+label=OpenQVT
+ node[shape=record];
+Variable[label="{Variable|name : String\ntype : String\nvalue : String\nvisibility : String| }"]
+ Variable->Context[arrowhead=diamond,arrowtail=none,headlabel="context",taillabel="variables[*]",group=Context,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Context[label="{Context| | }"]
+ Context->Rule[arrowhead=diamond,arrowtail=none,headlabel="rule",taillabel="context",group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Rule[label="{Rule| | }"]
+ Rule->Rule[arrowhead=diamond,arrowtail=none,headlabel="superRule",taillabel="subRule",group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RootRule[label="{RootRule| | }"]
+ RootRule->RuleSet[arrowhead=diamond,arrowtail=none,headlabel="ruleSet",taillabel="rootRule",group=RuleSet,minlen=2,constraint=true,]
+ RootRule->Rule[arrowhead=onormal,group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RuleSetCall[label="{RuleSetCall| | }"]
+ RuleSetCall->RuleSet[arrowhead=vee,arrowtail=none,headlabel="ruleSet",group=RuleSet,minlen=2,constraint=false,]
+ RuleSetCall->Rule[arrowhead=onormal,group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+QARule[label="{QARule| | }"]
+ QARule->Rule[arrowhead=onormal,group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RuleSet[label="{RuleSet| | }"]
+;
+ node[shape=record];
+Service[label="{Service|visibility : String\nsignature : String| }"]
+ Service->Rule[arrowhead=diamond,arrowtail=none,headlabel="rule",taillabel="services[*]",group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OCLService[label="{OCLService| | }"]
+ OCLService->Service[arrowhead=onormal,group=Service,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RTransService[label="{RTransService| | }"]
+ RTransService->Service[arrowhead=onormal,group=Service,minlen=2,constraint=true,]
+;
+ node[shape=record];
+JavaService[label="{JavaService| | }"]
+ JavaService->Service[arrowhead=onormal,group=Service,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RulePart[label="{/RulePart/| | }"]
+ RulePart->Service[arrowhead=vee,arrowtail=none,headlabel="service",group=Service,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Action[label="{Action| | }"]
+ Action->QARule[arrowhead=diamond,arrowtail=none,headlabel="qARule",taillabel="action",group=QARule,minlen=2,constraint=true,]
+ Action->RulePart[arrowhead=onormal,group=RulePart,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RTransAction[label="{RTransAction| | }"]
+ RTransAction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+JavaAction[label="{JavaAction| | }"]
+ JavaAction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Query[label="{Query| | }"]
+ Query->QARule[arrowhead=diamond,arrowtail=none,headlabel="qARule",taillabel="query",group=QARule,minlen=2,constraint=true,]
+ Query->RulePart[arrowhead=onormal,group=RulePart,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OCLFilter[label="{OCLFilter| | }"]
+ OCLFilter->Query[arrowhead=onormal,group=Query,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RTransQuery[label="{RTransQuery| | }"]
+ RTransQuery->Query[arrowhead=onormal,group=Query,minlen=2,constraint=true,]
+;
+ node[shape=record];
+JavaQuery[label="{JavaQuery| | }"]
+ JavaQuery->Query[arrowhead=onormal,group=Query,minlen=2,constraint=true,]
+;
+ node[shape=record];
+JavaFilter[label="{JavaFilter| | }"]
+ JavaFilter->Query[arrowhead=onormal,group=Query,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

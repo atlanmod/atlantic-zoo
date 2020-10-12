@@ -1,0 +1,96 @@
+abstract class LocatedElement
+  var location as Set of String
+
+abstract class Expression extends LocatedElement
+
+class Program extends ProcContainerElement
+  // monitors IsContainer
+  var monitors as Set of Monitor
+
+abstract class LiteralExp extends Expression
+
+abstract class _Structure extends NamedElement
+  // variables IsContainer
+  var variables as Set of VariableDeclaration
+
+class ProcedureCallExp extends PropertyCallExp
+  // arguments IsContainer
+  var arguments as Set of Expression
+
+class _Procedure extends _Structure
+  // statements IsContainer
+  var statements as Set of Statement
+  var container as Set of ProcContainerElement
+  // parameters IsContainer
+  var parameters as Set of Parameter
+
+abstract class PropertyCallExp extends Expression
+  var name as Set of String
+  // source IsContainer
+  var source as Set of Expression
+
+class OperatorCallExp extends PropertyCallExp
+  // right IsContainer
+  var right as Set of Expression
+
+class VariableDeclaration extends NamedElement
+  // initialValue IsContainer
+  var initialValue as Set of Expression
+  var _type as Set of _Type
+  var _structure as Set of _Structure
+
+class Parameter extends VariableDeclaration
+  var direction as Set of Direction
+  var _procedure as Set of _Procedure
+
+abstract class Statement extends LocatedElement
+
+class ConditionalStat extends Statement
+  // condition IsContainer
+  var condition as Set of Expression
+  // thenStats IsContainer
+  var thenStats as Set of Statement
+  // elseStats IsContainer
+  var elseStats as Set of Statement
+
+class Monitor extends ProcContainerElement
+  var program as Set of Program
+
+class IntegerExp extends LiteralExp
+  var symbol as Set of Integer
+
+class AttributeCallExp extends PropertyCallExp
+
+class WhileStat extends Statement
+  // condition IsContainer
+  var condition as Set of Expression
+  // doStats IsContainer
+  var doStats as Set of Statement
+
+class _Type extends NamedElement
+
+class BooleanExp extends LiteralExp
+  var symbol as Set of Boolean
+
+class ExpressionStat extends Statement
+  // expression IsContainer
+  var expression as Set of Expression
+
+abstract class NamedElement extends LocatedElement
+  var name as Set of String
+
+abstract class ProcContainerElement extends _Structure
+  // procedures IsContainer
+  var procedures as Set of _Procedure
+
+class VariableExp extends Expression
+  var declaration as Set of VariableDeclaration
+
+class AssignmentStat extends Statement
+  // target IsContainer
+  var target as Set of VariableExp
+  // value IsContainer
+  var value as Set of Expression
+
+enum Direction
+  _in

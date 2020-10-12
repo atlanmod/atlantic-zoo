@@ -1,0 +1,164 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_ODPCV"{
+labelloc=t
+color=black
+label=ODPCV
+ node[shape=record];
+EnvironmentContract[label="{EnvironmentContract| | }"]
+ EnvironmentContract->Action[arrowhead=none,arrowtail=none,headlabel="ec_to_a[1-*]",taillabel="constrainer_ec[*]",group=Action,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ComputationalTemplate[label="{/ComputationalTemplate/| | }"]
+ ComputationalTemplate->EnvironmentContract[arrowhead=none,arrowtail=none,headlabel="ct_to_ec",taillabel="specifier_ec",group=EnvironmentContract,minlen=2,constraint=false,]
+ ComputationalTemplate->Behaviour[arrowhead=none,arrowtail=none,headlabel="ct_to_bh[*]",taillabel="specifier_bh",group=Behaviour,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ComputationalObject[label="{ComputationalObject| | }"]
+ ComputationalObject->Interface[arrowhead=none,arrowtail=none,headlabel="co_to_i[1-*]",taillabel="owner_i",group=Interface,minlen=2,constraint=false,]
+;
+ node[shape=record];
+BindingObject[label="{BindingObject| | }"]
+ BindingObject->ComputationalObject[arrowhead=onormal,group=ComputationalObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ComputationalObjectTemplate[label="{ComputationalObjectTemplate| | }"]
+ ComputationalObjectTemplate->ComputationalObject[arrowhead=none,arrowtail=none,headlabel="cot_to_co[*]",taillabel="specifier_co",group=ComputationalObject,minlen=2,constraint=false,]
+ ComputationalObjectTemplate->ComputationalInterfaceTemplate[arrowhead=none,arrowtail=none,headlabel="part_provide[*]",taillabel="aggregate_provide[*]",group=ComputationalInterfaceTemplate,minlen=2,constraint=false,]
+ ComputationalObjectTemplate->ComputationalInterfaceTemplate[arrowhead=none,arrowtail=none,headlabel="part_request[*]",taillabel="aggregate_request[*]",group=ComputationalInterfaceTemplate,minlen=2,constraint=false,]
+ ComputationalObjectTemplate->ComputationalTemplate[arrowhead=onormal,group=ComputationalTemplate,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ComputationalInterfaceTemplate[label="{ComputationalInterfaceTemplate| | }"]
+ ComputationalInterfaceTemplate->Interface[arrowhead=none,arrowtail=none,headlabel="cit_to_i[*]",taillabel="specifier_i",group=Interface,minlen=2,constraint=false,]
+ ComputationalInterfaceTemplate->ComputationalTemplate[arrowhead=onormal,group=ComputationalTemplate,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Interface[label="{/Interface/| | }"]
+;
+ node[shape=record];
+Binding[label="{Binding| | }"]
+ Binding->Interface[arrowhead=none,arrowtail=none,headlabel="bd_to_i[2-*]",taillabel="i_to_bd[0-1]",group=Interface,minlen=2,constraint=false,]
+;
+ node[shape=record];
+SignalInterface[label="{SignalInterface| | }"]
+ SignalInterface->Interface[arrowhead=onormal,group=Interface,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperationInterface[label="{OperationInterface| | }"]
+ OperationInterface->Interface[arrowhead=onormal,group=Interface,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StreamInterface[label="{StreamInterface| | }"]
+ StreamInterface->Interface[arrowhead=onormal,group=Interface,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InterfaceSignature[label="{/InterfaceSignature/| | }"]
+ InterfaceSignature->ComputationalInterfaceTemplate[arrowhead=diamond,arrowtail=none,headlabel="intsig_to_cit",taillabel="cit_to_intsig",group=ComputationalInterfaceTemplate,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SignalInterfaceSignature[label="{SignalInterfaceSignature| | }"]
+ SignalInterfaceSignature->InterfaceSignature[arrowhead=onormal,group=InterfaceSignature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperationInterfaceSignature[label="{OperationInterfaceSignature| | }"]
+ OperationInterfaceSignature->InterfaceSignature[arrowhead=onormal,group=InterfaceSignature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StreamInterfaceSignature[label="{StreamInterfaceSignature| | }"]
+ StreamInterfaceSignature->InterfaceSignature[arrowhead=onormal,group=InterfaceSignature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InteractionSignature[label="{/InteractionSignature/| | }"]
+ InteractionSignature->ActionTemplate[arrowhead=diamond,arrowtail=none,headlabel="isig_to_at",taillabel="at_to_isig",group=ActionTemplate,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parameter[label="{Parameter| | }"]
+ Parameter->InteractionSignature[arrowhead=diamond,arrowtail=none,headlabel="param_to_isig",taillabel="isig_to_param[*]{ordered}",group=InteractionSignature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnouncementSignature[label="{AnnouncementSignature| | }"]
+ AnnouncementSignature->OperationInterfaceSignature[arrowhead=diamond,arrowtail=none,headlabel="ansig_to_optisig",taillabel="optisig_to_ansig[*]{ordered}",group=OperationInterfaceSignature,minlen=2,constraint=true,]
+ AnnouncementSignature->InteractionSignature[arrowhead=onormal,group=InteractionSignature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InterrogationSignature[label="{InterrogationSignature| | }"]
+ InterrogationSignature->OperationInterfaceSignature[arrowhead=diamond,arrowtail=none,headlabel="intsig_to_optisig",taillabel="optisig_to_intsig[*]{ordered}",group=OperationInterfaceSignature,minlen=2,constraint=true,]
+ InterrogationSignature->InteractionSignature[arrowhead=onormal,group=InteractionSignature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TerminationSignature[label="{TerminationSignature| | }"]
+ TerminationSignature->InterrogationSignature[arrowhead=diamond,arrowtail=none,headlabel="tersig_to_intsig",taillabel="intsig_to_tersig[1-*]{ordered}",group=InterrogationSignature,minlen=2,constraint=true,]
+ TerminationSignature->InteractionSignature[arrowhead=onormal,group=InteractionSignature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SignalSignature[label="{SignalSignature| | }"]
+ SignalSignature->SignalInterfaceSignature[arrowhead=diamond,arrowtail=none,headlabel="ssig_to_sgisig",taillabel="sgisig_to_ssig[*]{ordered}",group=SignalInterfaceSignature,minlen=2,constraint=true,]
+ SignalSignature->InteractionSignature[arrowhead=onormal,group=InteractionSignature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FlowSignature[label="{FlowSignature| | }"]
+ FlowSignature->StreamInterfaceSignature[arrowhead=diamond,arrowtail=none,headlabel="fsig_to_strisig",taillabel="strisig_to_fsig[*]{ordered}",group=StreamInterfaceSignature,minlen=2,constraint=true,]
+ FlowSignature->InteractionSignature[arrowhead=onormal,group=InteractionSignature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActionTemplate[label="{ActionTemplate| | }"]
+ ActionTemplate->Action[arrowhead=none,arrowtail=none,headlabel="at_to_a[1-*]",taillabel="specifier_a",group=Action,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Behaviour[label="{Behaviour| | }"]
+ Behaviour->ComputationalObject[arrowhead=none,arrowtail=none,headlabel="owner_bh",taillabel="co_to_bh",group=ComputationalObject,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Action[label="{Action| | }"]
+ Action->State[arrowhead=none,arrowtail=none,headlabel="changedState[*]",taillabel="changer[*]",group=State,minlen=2,constraint=false,]
+ Action->Behaviour[arrowhead=diamond,arrowtail=none,headlabel="a_to_bh",taillabel="bh_to_a[1-*]{ordered}",group=Behaviour,minlen=2,constraint=true,]
+;
+ node[shape=record];
+State[label="{State| | }"]
+ State->State[arrowhead=none,arrowtail=none,headlabel="endState",taillabel="startState",group=State,minlen=2,constraint=false,]
+ State->ComputationalObject[arrowhead=diamond,arrowtail=none,headlabel="st_to_co",taillabel="co_to_st",group=ComputationalObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InternalAction[label="{InternalAction| | }"]
+ InternalAction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Interaction[label="{/Interaction/| | }"]
+ Interaction->Interface[arrowhead=diamond,arrowtail=none,headlabel="ina_to_i",taillabel="i_to_ina[1-*]",group=Interface,minlen=2,constraint=true,]
+ Interaction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Flow[label="{Flow| | }"]
+ Flow->Interaction[arrowhead=onormal,group=Interaction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Signal[label="{Signal| | }"]
+ Signal->Interaction[arrowhead=onormal,group=Interaction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Operation[label="{/Operation/| | }"]
+ Operation->Interaction[arrowhead=onormal,group=Interaction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Announcement[label="{Announcement| | }"]
+ Announcement->Operation[arrowhead=onormal,group=Operation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Interrogation[label="{Interrogation| | }"]
+ Interrogation->Termination[arrowhead=none,arrowtail=none,headlabel="int_to_ter[0-1]",taillabel="owner_ter",group=Termination,minlen=2,constraint=false,]
+ Interrogation->Operation[arrowhead=onormal,group=Operation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Invocation[label="{Invocation| | }"]
+ Invocation->Termination[arrowhead=none,arrowtail=none,headlabel="inv_to_ter",taillabel="ter_to_inv",group=Termination,minlen=2,constraint=false,]
+ Invocation->Operation[arrowhead=diamond,arrowtail=none,headlabel="inv_to_opt",taillabel="opt_to_inv",group=Operation,minlen=2,constraint=true,]
+ Invocation->Interaction[arrowhead=onormal,group=Interaction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Termination[label="{Termination| | }"]
+ Termination->Interaction[arrowhead=onormal,group=Interaction,minlen=2,constraint=true,]
+;
+
+}
+}

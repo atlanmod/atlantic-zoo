@@ -1,0 +1,63 @@
+-- @name			Cristal
+-- @version			1.0
+-- @authors			Youssef Srour (Srour.youssef@gmail.com)
+-- @date			2006/07/28
+-- @description		This metamodel describes CRISTAL.  The CRISTAL system is being developed to control the production and assembly process of the CMS Electromagnetic Calorimeter (ECAL) detector.
+-- @see  			http://chep2000.pd.infn.it/paper/pap-a010.pdf
+
+package Cristal {
+
+-- Begin class Condition
+	class Condition {
+		reference partCompositeMembers [*] : PartCompositeMember;
+		reference actCompositeMembers [*] : ActCompositeMember;
+	}-- End class Condition
+
+-- Begin class CompositeParDef
+	class CompositeParDef extends PartDefinition {
+		reference partCompositeMember [*] container : PartCompositeMember;
+	}-- End class CompositeParDef
+
+-- Begin class ElementaryPartDef
+	class ElementaryPartDef extends PartDefinition {
+		
+	}-- End class ElementaryPartDef
+	
+-- Begin class ElementaryActDef
+	class ElementaryActDef extends ActivityDefinition {
+		
+	}-- End class ElementaryActDef
+
+-- Begin class CompositeActDef
+	class CompositeActDef extends ActivityDefinition {
+		reference actCompositeMembers [*] container : ActCompositeMember;
+	}-- End class CompositeActDef
+
+-- Begin class ActCompositeMember
+	class ActCompositeMember {
+		reference activityDefinitions [*] : ActivityDefinition oppositeOf actCompositeMember;
+	}-- End class ActCompositeMember
+
+-- Begin class ActivityDefinition
+	class ActivityDefinition {
+		reference actCompositeMember : ActCompositeMember oppositeOf activityDefinitions;
+	}-- End class ActivityDefinition
+
+-- Begin class PartDefinition
+	class PartDefinition {
+		reference partCompositeMembers [*] : PartCompositeMember oppositeOf partDefinitions;
+	}-- End class PartDefinition
+
+-- Begin class PartCompositeMember
+	class PartCompositeMember {
+		reference partDefinitions : PartDefinition oppositeOf partCompositeMembers;
+	}-- End class PartCompositeMember
+}
+-- Il manque la elation d'association entre condition et les deux classes
+-- PartDefinition et ActivityDefintion.
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+	datatype Integer;
+}

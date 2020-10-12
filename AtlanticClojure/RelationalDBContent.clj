@@ -1,0 +1,5 @@
+( defstruct NamedElement :name )
+( defstruct DataBase :SGBDname :name )
+( defstruct Table :database :name )
+( defstruct Tuple :owner )
+( defstruct TupleElement :tuple )

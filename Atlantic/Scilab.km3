@@ -1,0 +1,274 @@
+-- @name		Scilab
+-- @version		1.0
+-- @authors		Youssef Srour (srour.youssef@gmail.com)
+-- @date		30/06/2006
+-- @description	This metamodel describes Scilab. Scilab is a scientific software package for numerical computations providing a powerful open computing environment for engineering and scientific applications.
+-- @see			http://www.inria.fr/fournisseurs/IMG/pdf/CahierDesCharges_AideEnLigneScilab.pdf
+-- @see			http://www.scilab.org/index.php
+
+package Scilab {
+
+	-- The principal Class (Class Man)
+	class Man{
+		attribute language : String;
+		attribute title : String;
+		attribute type : String;
+		attribute date : String;
+		attribute name[0-1] : String;
+		attribute keyword[0-1] : String;
+		attribute exemple[0-1] : String;
+		
+		reference meta[*] container : Meta oppositeOf man;		
+	}--End class Man
+	
+	-- Begin Class Meta 
+	class Meta{
+		attribute meta : String;
+		attribute path : String;
+		attribute category : String;
+		attribute version_CSI : String;
+		attribute version_DOC : String;
+		attribute author : String;
+		
+		reference man : Man oppositeOf meta;
+	}--End class Meta
+	
+	-- Begin Class Short_Description 
+	class Short_Description extends Biblio{
+		attribute name : String;
+		attribute verb[*] : String;
+	}--End class Short_Description
+	
+	-- Begin Class Calling_Sequence 
+	class Calling_Sequence{
+		reference calling_Sequence_Item[*] container : Calling_Sequence_Item oppositeOf calling_Sequence;
+	}--End class Calling_Sequence
+	
+	-- Begin Class Calling_Sequence_Item 
+	class Calling_Sequence_Item{
+		attribute calling_Sequence_Item[*] : String;
+		
+		reference calling_Sequence : Calling_Sequence oppositeOf calling_Sequence_Item;
+	}--End class Calling_Sequence_Item
+	
+	-- Begin Class Param 
+	class Param{
+		attribute target[0-1] : InOut;
+		
+		reference param_Indent[*] container : Param_Indent oppositeOf param;
+	}--End class Param
+	
+	-- Begin Class Param_Indent 
+	class Param_Indent{		
+		reference param : Param oppositeOf param_Indent;
+		reference param_Description : Param_Description oppositeOf param_Indent;
+		reference param_Item[1-*] container : Param_Item oppositeOf param_Indent;
+	}--End class Param_Indent
+	
+	-- Begin Class Param_Item 
+	class Param_Item{
+		attribute label[0-1] : String;
+		
+		reference param_Indent : Param_Indent oppositeOf param_Item;
+		reference param_Name container : Param_Name oppositeOf param_Item;
+		reference param_Description container : Param_Description oppositeOf param_Item;
+	}--End class Param_Item
+	
+	-- Begin Class Param_Name 
+	class Param_Name{
+		attribute verb[*] : String;
+		
+		reference param_Item : Param_Item oppositeOf param_Name;		
+	}--End class Param_Name
+	
+	-- Begin Class Param_Description 
+	class Param_Description extends Used_Functions{
+		reference param_Indent[*] container : Param_Indent oppositeOf param_Description;
+		reference param_Item : Param_Item oppositeOf param_Description;
+	}--End class Param_Description
+	
+	-- Begin Class Description 
+	class Description extends Used_Functions{
+		reference itemize[*] container : Itemize oppositeOf description;
+		reference description_Indent[*] container : Description_Indent oppositeOf description;
+	}--End class Description
+	
+	-- Begin Class Description_Indent 	
+	class Description_Indent{		
+		reference description : Description oppositeOf description_Indent;
+		reference description_Item[1-*] container : Description_Item oppositeOf description_Indent;
+	}--End class Description_Indent
+	
+	-- Begin Class Description_Item 
+	class Description_Item{
+		attribute label[0-1] : String;
+		
+		reference description_Indent : Description_Indent oppositeOf description_Item;
+	}--End class Description_Item
+	
+	-- Begin Class AIMG 
+	class AIMG{
+		attribute verb[*] : String;		
+	}--End class AIMG
+	
+	-- Begin Class See_Also 
+	class See_Also{
+		reference see_Also_Item[*] container : See_Also_Item oppositeOf see_Also;
+	}--End class See_Also
+	
+	-- Begin Class Exemple 
+	class Exemple{
+		attribute exemple : String;
+		attribute xml_space : PreDef;
+	}--End class Exemple
+	
+	-- Begin Class See_Also_Item 
+	class See_Also_Item{
+		reference see_Also : See_Also oppositeOf see_Also_Item;
+		reference link[*] container : Link oppositeOf see_Also_Item;
+	}--End class See_Also_Item
+	
+	-- Begin Class A 
+	class A extends AIMG{		
+		attribute href[0-1] : String;
+		
+		reference psppp : PSPPP oppositeOf a;
+		reference authors_Item : Authors_Item oppositeOf a;
+	}--End class A
+	
+	-- Begin Class Img 
+	class Img extends AIMG{
+		attribute src[0-1] : String;
+		
+		reference psppp : PSPPP oppositeOf img;
+	}--End class Img
+	
+	-- Begin Class Biblio 
+	class Biblio {
+		reference p[*] container : P oppositeOf biblio;
+		reference sp[*] container : SP oppositeOf biblio;
+		reference pp[*] container : PP oppositeOf biblio;
+	}--End class Biblio
+	
+	-- Begin Class Used_Functions
+	class Used_Functions extends Biblio{
+		attribute verbatim[*] : String;
+		
+		reference table[*] container : Table oppositeOf used_Functions;
+	}--End class Used_Functions
+	
+	-- Begin Class PSPPP 
+	class PSPPP{
+		attribute verb[*] : String;
+		attribute em[*] : String;
+		attribute bd[*] : String;
+		attribute tt[*] : String;
+		
+		reference a[*] container : A oppositeOf psppp;
+		reference link[*] container : Link oppositeOf psppp;
+		reference img[*] container : Img oppositeOf psppp;
+	}--End class PSPPP
+	
+	-- Begin Class P 
+	class P extends PSPPP{
+		reference biblio : Biblio oppositeOf p;
+	}--End class P
+	
+	-- Begin Class SP 
+	class SP extends PSPPP{
+		reference biblio : Biblio oppositeOf sp;
+	}--End class SP
+	
+	-- Begin Class PP 
+	class PP extends PSPPP{
+		reference biblio : Biblio oppositeOf pp;
+	}--End class PP
+	
+	-- Begin Class Itemize
+	class Itemize extends Used_Functions{
+		attribute label : String;
+		
+		reference item : Item oppositeOf itemize;
+		reference section : Section oppositeOf itemize;
+		reference authors_Item : Authors_Item oppositeOf itemize;
+		reference description : Description oppositeOf itemize;
+	}--End class Itemize
+	
+	-- Begin Class Item 
+	class Item extends Used_Functions, Itemize{
+		reference itemize[*] container : Itemize oppositeOf item;
+	}--End class Item
+		
+	-- Begin Class Table 
+	class Table{
+		reference table_New_Row[1-*] container : Table_New_Row oppositeOf table;
+		reference used_Functions : Used_Functions oppositeOf table;
+	}--End class Table
+	
+	-- Begin Class Table_New_Row 
+	class Table_New_Row{
+		reference table_New_Column[1-*] container : Table_New_Column oppositeOf table_New_Row;
+		reference table : Table oppositeOf table_New_Row;
+	}--End class Table_New_Row
+	
+	-- Begin Class Table_New_Column
+	class Table_New_Column{
+		attribute Verb[*] : String;
+		attribute em[*] : String;
+		attribute bd[*] : String;
+		attribute tt[*] : String;
+		
+		reference table_New_Row : Table_New_Row oppositeOf table_New_Column;
+	}--End class Table_New_Column
+	
+	-- Begin Class Link 
+	class Link{
+		attribute link : String;
+		
+		reference psppp : PSPPP oppositeOf link;
+		reference see_Also_Item : See_Also_Item oppositeOf link;
+		reference authors_Item : Authors_Item oppositeOf link;
+	}--End class Link
+	
+	-- Begin Class Authors 
+	class Authors{
+		reference authors_Item[1-*] container : Authors_Item oppositeOf authors;
+	}--End class Authors
+	
+	-- Begin Class Authors_Item 
+	class Authors_Item extends Biblio{		
+		attribute Verb[*] : String;
+		attribute em[*] : String;
+		attribute bd[*] : String;
+		attribute tt[*] : String;
+		attribute verbatim[*] : String;
+		attribute label[0-1] : String;
+		
+		reference a[*] container : A oppositeOf authors_Item;
+		reference link[*] container : Link oppositeOf authors_Item;
+		reference authors : Authors oppositeOf authors_Item;
+		reference itemize[1-*] container : Itemize oppositeOf authors_Item;		
+	}--End class Authors_Item
+	
+	-- Begin Class Section 
+	class Section extends Used_Functions, Itemize{
+		reference itemize[*] container : Itemize oppositeOf section;
+	}--End class Section
+		
+	-- Begin enumeration InOut 
+	enumeration InOut {
+ 		literal in;
+ 		literal out;
+ 	}--End enumeration InOut
+ 	
+ 	-- Begin enumeration PreDef 
+ 	enumeration PreDef {
+ 		literal Preserve;
+ 		literal Default;
+ 	}--End enumeration	PreDef
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+}

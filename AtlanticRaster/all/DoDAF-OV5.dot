@@ -1,0 +1,187 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_DoDAF"{
+labelloc=t
+color=black
+label=DoDAF
+ node[shape=record];
+Element[label="{/Element/|name : String\ndescription : String\nview : String| }"]
+;
+ node[shape=record];
+DoDAFModel[label="{DoDAFModel| | }"]
+ DoDAFModel->Document[arrowhead=vee,arrowtail=diamond,headlabel="document[*]",group=Document,minlen=2,constraint=true,]
+ DoDAFModel->AM[arrowhead=vee,arrowtail=diamond,headlabel="am[*]",group=AM,minlen=2,constraint=true,]
+ DoDAFModel->Task[arrowhead=vee,arrowtail=diamond,headlabel="task[*]",group=Task,minlen=2,constraint=true,]
+ DoDAFModel->InformationAssetDocument[arrowhead=vee,arrowtail=diamond,headlabel="iaDocument[*]",group=InformationAssetDocument,minlen=2,constraint=true,]
+ DoDAFModel->AMSpecification[arrowhead=vee,arrowtail=diamond,headlabel="amSpecification[*]",group=AMSpecification,minlen=2,constraint=true,]
+ DoDAFModel->DOSCR[arrowhead=vee,arrowtail=diamond,headlabel="doscr[*]",group=DOSCR,minlen=2,constraint=true,]
+ DoDAFModel->OrganizationType[arrowhead=vee,arrowtail=diamond,headlabel="organizationType[*]",group=OrganizationType,minlen=2,constraint=true,]
+ DoDAFModel->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Document[label="{Document|type : String| }"]
+ Document->InformationAssetDocument[arrowhead=vee,arrowtail=none,headlabel="cites[*]",group=InformationAssetDocument,minlen=2,constraint=false,]
+ Document->ArchitectureDocument[arrowhead=vee,arrowtail=diamond,headlabel="records[*]",group=ArchitectureDocument,minlen=2,constraint=true,]
+ Document->IE[arrowhead=vee,arrowtail=diamond,headlabel="isTheReferenceFor[*]",group=IE,minlen=2,constraint=true,]
+ Document->PA[arrowhead=vee,arrowtail=diamond,headlabel="isThePrimaryReferenceFor[*]",group=PA,minlen=2,constraint=true,]
+ Document->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AMSpecification[label="{AMSpecification| | }"]
+ AMSpecification->AMSpecificationElement[arrowhead=vee,arrowtail=diamond,headlabel="isSpecifiedUsing[*]",group=AMSpecificationElement,minlen=2,constraint=true,]
+ AMSpecification->Document[arrowhead=onormal,group=Document,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AMSpecificationElement[label="{AMSpecificationElement| | }"]
+ AMSpecificationElement->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PAExchangeRequirement[label="{PAExchangeRequirement| | }"]
+ PAExchangeRequirement->AMSpecificationElement[arrowhead=none,arrowtail=none,headlabel="isTheSubjectOf[*]",taillabel="subject[0-1]",group=AMSpecificationElement,minlen=2,constraint=false,]
+ PAExchangeRequirement->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ArchitectureDocument[label="{ArchitectureDocument| | }"]
+ ArchitectureDocument->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IE[label="{IE| | }"]
+ IE->AMIERole[arrowhead=vee,arrowtail=none,headlabel="isAssociatedWith[*]",group=AMIERole,minlen=2,constraint=false,]
+ IE->IE[arrowhead=none,arrowtail=none,headlabel="isOrdinateOf[*]",taillabel="isSubordinateOf[*]",group=IE,minlen=2,constraint=false,]
+ IE->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AMIERole[label="{AMIERole| | }"]
+ AMIERole->AMPA[arrowhead=vee,arrowtail=none,headlabel="defines[*]",group=AMPA,minlen=2,constraint=false,]
+ AMIERole->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Control[label="{Control|source : String\ndestination : String| }"]
+ Control->AMIERole[arrowhead=onormal,group=AMIERole,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Input[label="{Input|source : String\ndestination : String\ninformation : String| }"]
+ Input->Output[arrowhead=vee,arrowtail=none,headlabel="isTheInputThatIsDefinedBy[*]",group=Output,minlen=2,constraint=false,]
+ Input->AMIERole[arrowhead=onormal,group=AMIERole,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Output[label="{Output|source : String\ndestination : String\ninformation : String| }"]
+ Output->AMIERole[arrowhead=onormal,group=AMIERole,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Mechanism[label="{Mechanism|source : String\ndestination : String\nresourceType : String| }"]
+ Mechanism->AMIERole[arrowhead=onormal,group=AMIERole,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MechanismSystem[label="{MechanismSystem| | }"]
+ MechanismSystem->Mechanism[arrowhead=onormal,group=Mechanism,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MechanismReference[label="{MechanismReference| | }"]
+ MechanismReference->Mechanism[arrowhead=onormal,group=Mechanism,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MechanismFacility[label="{MechanismFacility| | }"]
+ MechanismFacility->Mechanism[arrowhead=onormal,group=Mechanism,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InformationAssetDocument[label="{InformationAssetDocument| | }"]
+ InformationAssetDocument->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AMPA[label="{AMPA| | }"]
+ AMPA->AMPA[arrowhead=none,arrowtail=none,headlabel="isOrdinateOf[*]",taillabel="isSubordinateOf[*]",group=AMPA,minlen=2,constraint=false,]
+ AMPA->AMIERole[arrowhead=vee,arrowtail=diamond,headlabel="defines[*]",group=AMIERole,minlen=2,constraint=true,]
+ AMPA->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PACapability[label="{PACapability| | }"]
+ PACapability->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PA[label="{PA| | }"]
+ PA->PAExchangeRequirement[arrowhead=vee,arrowtail=diamond,headlabel="isTheProducerFor[*]",group=PAExchangeRequirement,minlen=2,constraint=true,]
+ PA->PAExchangeRequirement[arrowhead=vee,arrowtail=diamond,headlabel="isTheConsumerFor[*]",group=PAExchangeRequirement,minlen=2,constraint=true,]
+ PA->PA[arrowhead=none,arrowtail=none,headlabel="isParentFor[*]",taillabel="isChildFor[*]",group=PA,minlen=2,constraint=false,]
+ PA->PACapability[arrowhead=vee,arrowtail=diamond,headlabel="has[*]",group=PACapability,minlen=2,constraint=true,]
+ PA->AMPA[arrowhead=vee,arrowtail=none,headlabel="isIncludedIn[*]",group=AMPA,minlen=2,constraint=false,]
+ PA->PATask[arrowhead=vee,arrowtail=none,headlabel="correspondsTo[*]",group=PATask,minlen=2,constraint=false,]
+ PA->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AM[label="{AM|type : String| }"]
+ AM->AMSpecification[arrowhead=vee,arrowtail=none,headlabel="specifies[*]",group=AMSpecification,minlen=2,constraint=false,]
+ AM->AMPA[arrowhead=vee,arrowtail=diamond,headlabel="includes[*]",group=AMPA,minlen=2,constraint=true,]
+ AM->PATask[arrowhead=vee,arrowtail=none,headlabel="paTask[*]",group=PATask,minlen=2,constraint=false,]
+ AM->InformationAsset[arrowhead=onormal,group=InformationAsset,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InformationAsset[label="{/InformationAsset/| | }"]
+ InformationAsset->PACapability[arrowhead=vee,arrowtail=diamond,headlabel="isDescribedUsing[*]",group=PACapability,minlen=2,constraint=true,]
+ InformationAsset->InformationAssetDocument[arrowhead=vee,arrowtail=none,headlabel="isCitedIn[*]",group=InformationAssetDocument,minlen=2,constraint=false,]
+ InformationAsset->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Task[label="{Task|levelIdentifier : String\nreferences : String\ncost : String| }"]
+ Task->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PATask[label="{PATask| | }"]
+ PATask->InformationAsset[arrowhead=vee,arrowtail=none,headlabel="isCitedBy",group=InformationAsset,minlen=2,constraint=false,]
+ PATask->Task[arrowhead=onormal,group=Task,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Organization[label="{Organization| | }"]
+ Organization->OrganizationType[arrowhead=diamond,arrowtail=none,headlabel="type",taillabel="isTheTypeOf[*]",group=OrganizationType,minlen=2,constraint=true,]
+ Organization->InformationAsset[arrowhead=vee,arrowtail=none,headlabel="supplies[*]",group=InformationAsset,minlen=2,constraint=false,]
+ Organization->InformationAsset[arrowhead=vee,arrowtail=none,headlabel="providesStewardshipFor[*]",group=InformationAsset,minlen=2,constraint=false,]
+ Organization->InformationAsset[arrowhead=vee,arrowtail=none,headlabel="owns[*]",group=InformationAsset,minlen=2,constraint=false,]
+ Organization->IE[arrowhead=vee,arrowtail=none,headlabel="develops[*]",group=IE,minlen=2,constraint=false,]
+ Organization->MechanismReference[arrowhead=vee,arrowtail=none,headlabel="isCitedAs[*]",group=MechanismReference,minlen=2,constraint=false,]
+ Organization->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OrganizationType[label="{OrganizationType| | }"]
+ OrganizationType->MechanismReference[arrowhead=vee,arrowtail=diamond,headlabel="isCitedAs[*]",group=MechanismReference,minlen=2,constraint=true,]
+ OrganizationType->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperationalRole[label="{OperationalRole| | }"]
+ OperationalRole->MechanismReference[arrowhead=vee,arrowtail=diamond,headlabel="isCitedAs[*]",group=MechanismReference,minlen=2,constraint=true,]
+ OperationalRole->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Occupation[label="{Occupation| | }"]
+ Occupation->OperationalRole[arrowhead=vee,arrowtail=diamond,headlabel="mayBeCitedForOR[*]",group=OperationalRole,minlen=2,constraint=true,]
+ Occupation->PersonType[arrowhead=vee,arrowtail=diamond,headlabel="mayBeCitedForPT[*]",group=PersonType,minlen=2,constraint=true,]
+ Occupation->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PersonType[label="{PersonType| | }"]
+ PersonType->OperationalRole[arrowhead=vee,arrowtail=diamond,headlabel="mayBeCitedFor[*]",group=OperationalRole,minlen=2,constraint=true,]
+ PersonType->Skill[arrowhead=vee,arrowtail=diamond,headlabel="can[*]",group=Skill,minlen=2,constraint=true,]
+ PersonType->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Skill[label="{Skill| | }"]
+ Skill->OperationalRole[arrowhead=vee,arrowtail=diamond,headlabel="mayBeCitedFor[*]",group=OperationalRole,minlen=2,constraint=true,]
+ Skill->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DOSCR[label="{DOSCR| | }"]
+ DOSCR->Occupation[arrowhead=vee,arrowtail=diamond,headlabel="mayBeAn",group=Occupation,minlen=2,constraint=true,]
+ DOSCR->PersonType[arrowhead=vee,arrowtail=diamond,headlabel="appliesTo[*]",group=PersonType,minlen=2,constraint=true,]
+ DOSCR->OperationalRole[arrowhead=vee,arrowtail=diamond,headlabel="mayBeCitedFor[*]",group=OperationalRole,minlen=2,constraint=true,]
+ DOSCR->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

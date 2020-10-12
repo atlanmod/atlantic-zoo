@@ -1,0 +1,122 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<rdf:RDF xmlns:rdf = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:rdfs = 'http://www.w3.org/2000/01/rdf-schema#' xmlns:xsd = 'http://www.w3.org/2001/XMLSchema#' xmlns:owl = 'http://www.w3.org/2002/07/owl#' xmlns = 'http://example.org/OCLExpression#' xml:base = 'http://example.org/OCLExpression'>
+  <owl:Ontology rdf:about = 'OCLExpression'/>
+  <owl:Class rdf:ID = 'PreCondition'>
+    <rdfs:label>PreCondition</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Constraint'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Invariant'>
+    <rdfs:label>Invariant</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Constraint'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'ModelElement'>
+    <rdfs:label>ModelElement</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ModelElement.constraint'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'BooleanExpression'>
+    <rdfs:label>BooleanExpression</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Expression'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#BooleanExpression.constraint'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#BooleanExpression.constraint'/>
+        <owl:maxCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:maxCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Expression'>
+    <rdfs:label>Expression</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Expression.body'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Expression.body'/>
+        <owl:maxCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:maxCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Guard'>
+    <rdfs:label>Guard</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Constraint'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'OCLExpression'>
+    <rdfs:label>OCLExpression</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#OCLExpression.owner'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#OCLExpression.owner'/>
+        <owl:maxCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:maxCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Constraint'>
+    <rdfs:label>Constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#ModelElement'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Constraint.constrainedElement'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Constraint.body'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'PortCondition'>
+    <rdfs:label>PortCondition</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Constraint'/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID = 'BooleanExpression.constraint'>
+    <rdfs:domain rdf:resource = '#BooleanExpression'/>
+    <rdfs:range rdf:resource = '#Constraint'/>
+    <owl:inverseOf rdf:resource = '#Constraint.body'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ModelElement.constraint'>
+    <rdfs:domain rdf:resource = '#ModelElement'/>
+    <rdfs:range rdf:resource = '#Constraint'/>
+    <owl:inverseOf rdf:resource = '#Constraint.constrainedElement'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Constraint.constrainedElement'>
+    <rdfs:domain rdf:resource = '#Constraint'/>
+    <rdfs:range rdf:resource = '#ModelElement'/>
+    <owl:inverseOf rdf:resource = '#ModelElement.constraint'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'OCLExpression.owner'>
+    <rdfs:domain rdf:resource = '#OCLExpression'/>
+    <rdfs:range rdf:resource = '#Expression'/>
+    <owl:inverseOf rdf:resource = '#Expression.body'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Expression.body'>
+    <rdfs:domain rdf:resource = '#Expression'/>
+    <rdfs:range rdf:resource = '#OCLExpression'/>
+    <owl:inverseOf rdf:resource = '#OCLExpression.owner'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Constraint.body'>
+    <rdfs:domain rdf:resource = '#Constraint'/>
+    <rdfs:range rdf:resource = '#BooleanExpression'/>
+    <owl:inverseOf rdf:resource = '#BooleanExpression.constraint'/>
+  </owl:ObjectProperty>
+  <owl:FunctionalProperty rdf:about = '#Constraint.body'/>
+</rdf:RDF>

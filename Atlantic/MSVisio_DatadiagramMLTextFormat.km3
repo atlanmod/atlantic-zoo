@@ -1,0 +1,751 @@
+-- @name		DatadiagramMLTextFormat
+-- @version		1.2
+-- @domains		Microsoft Visio, XML
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com)
+-- @date		2005/07/01
+-- @extends 	DatadiagramMLBasicDef
+-- @description	This metamodel describes a subset of DatadiagramML, an XML dialect developed by Microsoft to represent Visio documents data elements and attributes and their containment relationships. This metamodel takes back in details the concepts expressed in the basic DatadiagramML metamodel and adds the management of textual data formatting for a Visio document.
+-- @see			visio.xsd; Microsoft Office 2003 XML Reference Schemas; http://www.microsoft.com/downloads/details.aspx?familyid=FE118952-3547-420A-A412-00A2662442D9&displaylang=en
+
+package DatadiagramMLTextFormat {
+	
+	-- @begin MS Visio - Special types
+	
+	-- @comment The format for date/time fields is yyyy-mm-ddThh:mm:ssZ. (This format can be described as follows: a four-digit year, hyphen, two-digit month, hyphen, two-digit day, uppercase letter T, two-digit hour, colon, two-digit minute value, colon, two-digit seconds value, uppercase letter Z.).
+	class DateTimeType {
+		attribute year : Integer;
+		attribute month : Integer;
+		attribute day : Integer;
+		attribute hour : Integer;
+		attribute minute : Integer;
+		attribute second : Integer;	
+	}
+	
+	-- @comment Defines a special type of data for some Geom's elements or other types of element... 
+	class CellType {
+		-- @comment Represents a unit of measure. The default is BOOL.
+		attribute unit[0-1] : String;
+		-- @comment Represents the element's formula. This attribute can contain one of the following strings: "someFormula" if the formula exists locally, "No Formula" if the formula is locally deleted or blocked, or "Inh" if the formula is inherited. If the attribute is not present, the element's formula is a simple constant, for example, <element>5</element>. 	
+		attribute formula[0-1] : String;
+		-- @comment Indicates that the formula evaluates to an error. The value of Err is the current value (an error message string); the value of the element is the last valid value.
+		attribute err[0-1] : String;
+		-- @comment Indicates the value of the element.
+		attribute value[0-1] : String;
+	}
+	
+	-- @end MS Visio - Special types
+	
+	
+	-- @begin MS Visio - Basic Document Definition
+	
+	-- @comment This is the root element of a Microsoft Office Visio document.
+	class VisioDocument {
+		-- @comment Indicates whether the document has been modified outside of Visio. If present, Visio will fully test the contents of the file. Omit for files you create outside of Visio. 
+		attribute start[0-1] : Integer;
+		-- @comment Indicates whether the document has been modified outside of Visio. If present, Visio will fully test the contents of the file. Omit for files you create outside of Visio.
+		attribute key[0-1] : String;
+		-- @comment Whether to use metric units in the drawing. Set this attribute to True (1) to use metric units; set it to False (0) to use English units.
+		attribute metric[0-1] : Boolean;
+		-- @comment The build number of the Visio instance used to create the document.
+		attribute buildnum[0-1] : Integer;
+		-- @comment The version number of the Visio instance. Microsoft Office Visio 2003 = 11.
+		attribute version[0-1] : String;
+		-- @comment The unique ID of the user-interface language the user has specified in Microsoft Office Language Settings.
+		attribute docLangId[0-1] : Integer; 
+
+		-- @comment Represents the properties of this Visio document.
+		reference docProps[0-1] container : DocumentPropertiesCollection oppositeOf dps_visioDocument;
+		-- @comment Represents the settings of this Visio document.
+		reference docSettings[0-1] container : DocumentSettingsElt oppositeOf dss_visioDocument;
+		-- @comment Represents the table of colors for this Visio document.
+		reference docColors[0-1] container : ColorsTable oppositeOf cs_visioDocument;
+		-- @comment Represents the printing parameters for this Visio document.
+		reference docPrintSetup[0-1] container : PrintSetup oppositeOf ps_visioDocument;
+		-- @comment Represents the table of fonts for this Visio document, obsolete since Visio 2003.
+		reference docFonts[0-1] container : FontsTable oppositeOf fs_visioDocument;
+		-- @comment Represents the face names (fonts) for this Visio document.
+		reference docFaceNames[0-1] container : FaceNamesTable oppositeOf fns_visioDocument;
+		-- @comment Represents the style sheets defined for this Visio document.
+		reference docStyleSheets[0-1] container : StyleSheetsCollection oppositeOf sss_visioDocument;
+		-- @comment Represents the sheet of the document for this Visio document.
+		reference docDocumentSheet[0-1] container : DocumentSheet oppositeOf ds_visioDocument;
+		-- @comment Represents the masters of this Visio document.
+		reference docMasters[0-1] container : MastersCollection oppositeOf ms_visioDocument;
+		-- @comment Represents the pages of this Visio document.
+		reference docPages[0-1] container : PagesCollection oppositeOf ps_visioDocument;
+		-- @comment Represents the windows (information about user interface windows) for this Visio document.
+		reference docWindows[0-1] container : WindowsInfo oppositeOf ws_visioDocument;		
+		-- @comment Represents the events to which an object should respond in this Visio document.
+		reference docEventList[0-1] container : EventList oppositeOf el_visioDocument;
+		-- @comment Represents the Visio document's header and footer.
+		reference docHeaderFooter[0-1] container : HeaderFooter oppositeOf ef_visioDocument;			
+		-- @comment Represents the Microsoft Visual Basic for Applications project data in MIME (Multipurpose Internet Mail Extensions) encoded format for this Visio document.
+		reference docVBProjectData[0-1] container : VBProjectData oppositeOf vpd_visioDocument;
+		-- @comment Represents the MIME (Multipurpose Internet Mail Extensions) encoded MAPI e-mail routing slip for this Visio document.
+		reference docEmailRoutingData[0-1] container : EmailRoutingData oppositeOf erd_visioDocument;	
+		-- @comment Represents solutions-specific, well-formed XML data that are prefixed in an explicit namespace and are stored with this Visio document.
+		reference docSolutionXML[*] ordered container : SolutionXML oppositeOf sx_visioDocument;
+	}
+	
+	-- @comment Defines the properties of a Visio document. 
+	class DocumentPropertiesCollection {
+		reference dps_visioDocument : VisioDocument oppositeOf docProps;
+	
+		-- @comment For each of the following String attributes, the maximum length is 63 characters.
+		-- @comment Descriptive title for the document. 
+		attribute title[0-1] : String;
+		-- @comment Describes the contents of the document. 
+		attribute subject[0-1] : String;
+		-- @comment Identifies who created or last updated the file. 
+		attribute creator[0-1] : String;
+		-- @comment Identifies the person who is in charge of the project or department. 
+		attribute manager[0-1] : String;
+		-- @comment Identifies the company creating the drawing or the company the drawing is being created for. 
+		attribute company[0-1] : String;
+		-- @comment Describes the type of drawing, such as flowchart or office layout.
+		attribute category[0-1] : String;
+		-- @comment Identifies topics or other important information about the file, such as project name, client name, or version number.
+		attribute keywords[0-1] : String;
+		
+		-- @comment Maximum length is 191 characters. Store the important information about the document, such as its purpose, recent changes, or pending changes. 
+		attribute description[0-1] : String;
+		-- @comment Maximum length is 256 characters. Represents the Uniform Resource Locator (URL) path to be used for relative hyperlinks (hyperlinks for which the linked file location is described in relation to the Microsoft Office Visio diagram). By default, a hyperlink path is relative to the current document unless a different path is specified in this element. 
+		attribute hyperlinkBase_href[0-1] : String;
+		-- @comment Specifies the alternate names for a document.
+		attribute alternateNames[0-1] : String;
+		-- @comment Specifies the file name of the template from which the document was created.
+		attribute template[0-1] : String;
+		-- @comment Contains the full build number of the instance used to create the document.
+		attribute buildNumberCreated[0-1] : String;
+		-- @comment Contains the build number of the instance last used to edit the document, for example, 2195.
+		attribute buildNumberEdited[0-1] : String;
+		
+		-- @comment attribute "PreviewPicture" not managed by this version.
+		
+		-- @comment Represents a collection of custom properties.
+		reference customProps[0-1] container : CustomPropertiesCollection oppositeOf cps_docProp;
+		-- @comment Indicates when the document was created.
+		reference timeCreated[0-1] container : DateTimeType;
+		-- @comment Indicates when the document was last saved.
+		reference timeSaved[0-1] container : DateTimeType;
+		-- @comment Indicates when the document was last edited.
+		reference timeEdited[0-1] container : DateTimeType;
+		-- @comment Indicates when the document was last printed.
+		reference timePrinted[0-1] container : DateTimeType;
+	}
+	
+	-- @comment Defines a collection of custom properties.
+	class CustomPropertiesCollection {
+		reference cps_docProp : DocumentPropertiesCollection oppositeOf customProps;
+		
+		-- @comment Represents the custom properties of the collection.
+		reference cps_customProps[*] ordered container : CustomProperty oppositeOf cp_customProps;
+	}
+	
+	-- @comment Defines a custom property.
+	class CustomProperty {
+		reference  cp_customProps : CustomPropertiesCollection oppositeOf cps_customProps;
+		
+		-- @comment The name of the custom property.
+		attribute name[0-1] : String;
+		-- @comment The data type of the custom property.
+		attribute dataType[0-1] : String;	
+	}
+	
+	-- @comment Defines the table of colors for a Visio document. Each document contains a single color table, which lists the 24 standard colors that are available for application to objects such as shapes, text, and layers in the document.
+	class ColorsTable {
+		reference cs_visioDocument : VisioDocument oppositeOf docColors;
+		
+		-- @comment Represents the different colors of the table. 
+		reference colorEntries[*] ordered container : ColorEntry oppositeOf ce_colors; 	
+	}
+	
+	-- @comment Defines a color table entry. Each color table entry specifies a standard color that is available for application to objects such as shapes, text, and layers in the document.
+	class ColorEntry extends IXrequiredElt {
+		reference ce_colors : ColorsTable oppositeOf colorEntries;
+		
+		-- @comment The hexadecimal value of the color table entry.
+		attribute rgb : String; 
+	}
+	
+	-- @comment This element is obsolete since the 2003 version of Microsoft Office Visio.
+	-- @comment Defines the table of fonts for a Visio document.
+	class FontsTable {
+		reference fs_visioDocument : VisioDocument oppositeOf docFonts;
+		
+		 -- @comment Represents the different fonts of the table. 
+		reference fontEntries[*] ordered container : FontEntry oppositeOf fe_fonts; 	
+	}
+	
+	-- @comment This element is obsolete since the 2003 version of Microsoft Office Visio.
+	-- @comment Defines a font table entry for the document.
+	class FontEntry extends IdentifiedElt {
+		reference fe_fonts : FontsTable oppositeOf fontEntries; 
+		
+		attribute name : String;
+		attribute charSet : String;
+		attribute pitchAndFamily : String;
+		attribute attributes : Integer;
+		attribute weight : Integer;
+		attribute unicode : Boolean;
+	}
+	
+	-- @comment Defines the table of face names (fonts) for a Visio document.
+	class FaceNamesTable {
+		reference fns_visioDocument : VisioDocument oppositeOf docFaceNames;
+		
+		 -- @comment Represents the different face names (fonts) of the table. 
+		reference faceNameEntries[*] ordered container : FaceName oppositeOf fn_faceNames; 	
+	}
+	
+	-- @comment Defines a face name (font) table entry for the document.
+	class FaceName extends IdentifiedElt {
+		reference fn_faceNames : FaceNamesTable oppositeOf faceNameEntries; 
+		
+		-- @comment The name of the font as a UTF-16 Unicode string.
+		attribute name : String;
+		-- @comment The supported Unicode ranges of the font.
+		attribute unicodeRanges : String;
+		-- @comment The supported character sets of the font. 
+		attribute charSet : String;
+		-- @comment The panose signature for the font. Panose is a classification system for typefaces that categorizes them based upon their visual characteristics.
+		attribute panos : String;
+		-- @comment Flags that indicate the following: missing font, default font, asian font, complex font, vertical font, and font type.
+		attribute flags : Integer;
+	}
+	
+	-- @comment Defines the Microsoft Visual Basic for Applications project data in MIME (Multipurpose Internet Mail Extensions) encoded format for a Visio document.
+	class VBProjectData {
+		reference vpd_visioDocument : VisioDocument oppositeOf docVBProjectData;
+		
+		-- @comment Represents the VBA source code.
+		attribute data : String;
+	}	
+	
+	-- @comment Defines the MIME (Multipurpose Internet Mail Extensions) encoded MAPI e-mail routing slip for a Visio document.
+	class  EmailRoutingData {
+		reference erd_visioDocument : VisioDocument oppositeOf docEmailRoutingData;
+		
+		-- @comment Represents the MAPI e-mail routing slip.
+		attribute data : String;
+		-- @comment The size in bytes of the bin.base64 block MIME-encoded BLOB.
+		attribute size[0-1] : Integer; 
+	}
+	
+	-- @comment Defines style sheets used in a Visio document.
+	class StyleSheetsCollection {
+		reference sss_visioDocument : VisioDocument oppositeOf docStyleSheets;
+		
+		-- @comment Represents the styles sheets of the document.
+		reference stylesSheets[*] ordered container : StyleSheet oppositeOf ss_stylesSheets;
+	}
+	
+	-- @comment Defines a style sheet used in a Visio document.
+	class StyleSheet extends Shape, IdentifiedElt, NamedElt {
+		reference ss_stylesSheets : StyleSheetsCollection oppositeOf stylesSheets;
+	}			
+	
+	-- @comment Defines the sheet of the document for a Visio document.
+	class DocumentSheet extends PageSheet, NamedElt {
+		reference ds_visioDocument : VisioDocument oppositeOf docDocumentSheet;	
+	}
+	
+	-- @comment Defines the page sheet for a Page or Master element.
+	class PageSheet extends Shape, UniqueIdElt, MasterElt, PageElt {}
+	
+	-- @comment Defines the abstract concept of an element with a name and an universal name.
+	abstract class NamedElt {
+		-- @comment The name of the element.
+		attribute name[0-1] : String;
+		-- @comment The universal name of the element.
+		attribute nameU[0-1] : String; 
+	}
+	
+	-- @comment Defines the abstract concept of an element with an unique identifier.
+	abstract class IdentifiedElt {
+		-- @comment The unique ID of the element within its parent element.
+		attribute ID : Integer;
+	}
+	
+	-- @comment Defines the abstract concept of an element with a GUID identifier.
+	abstract class UniqueIdElt {
+		-- @comment A GUID (globally unique identifier) identifying the sheet.
+		attribute UniqueID[0-1] : String;
+	}
+	
+	
+	-- @begin Detail of "Shape" element
+	
+	-- @comment Defines a shape in a Master, Page, or group shape element.
+	class Shape {
+		reference ss_shapes : ShapesCollection oppositeOf shapes;
+	
+		-- @comment The ID of the StyleSheet element from which this style inherits line formatting.
+		attribute lineStyle[0-1] : Integer;
+		-- @comment The ID of the StyleSheet element from which this style inherits fill formatting.
+		attribute fillStyle[0-1] : Integer;
+		-- @comment The ID of the StyleSheet element from which this style inherits text formatting.
+		attribute textStyle[0-1] : Integer;
+
+		-- @comment Represents the elements that can be contained in a shape sheet.
+		reference shapeElts[*] ordered container : ShapeElt oppositeOf sse_shapeSheet;
+	}
+	
+	-- @comment Defines the abstract concept of shape's element
+	abstract class ShapeElt {
+		reference sse_shapeSheet : Shape oppositeOf shapeElts;
+	}
+	
+	-- @comment Defines the abstract concept of indexed element.
+	abstract class IXElt {
+		-- @comment The zero-based index of the element within its parent element.
+		attribute iX[0-1] : Integer;
+	}
+	
+	-- @comment Defines the abstract concept of locally-deletable element.
+	abstract class DelElt {
+		-- @comment A flag indicating whether the element has been deleted locally. A value of 1 indicates that the element was deleted locally.
+		attribute del[0-1] : Boolean;
+	}
+	
+	
+		-- @begin geometrical elements
+	
+	-- @comment Defines the coordinates of the vertices for the lines and arcs that make up the shape. If the shape has more than one path, there is a "Geom" element for each path. Each shape can have up to 230 paths (and therefore, 230 Geom elements). Any paths over 230 are ignored. The Geom element is relevant only when contained in a Shape element. It is ignored when contained in a DocumentSheet, PageSheet, or StyleSheet element.
+	class Geom extends ShapeElt, IXElt, DelElt {
+		-- @comment Specifies whether a path can be filled. The value 0 means that the shape's fill applies to the path, even if it isn't closed. The value 1 means that the path is not filled, even if other paths in the shape are filled.
+		reference noFill[0-1] container : CellType;
+		-- @comment Specifies whether a line is drawn around the boundary of the path. The value 0 means that a line is drawn around the boundary of a path. The value 1 means that a line is not drawn around the boundary of the path.
+		reference noLine[0-1] container : CellType;
+		-- @comment Specifies whether a path is displayed on the drawing page. The value 0 means that the stroke and fill of the path are shown. The value 1 means that the stroke and fill of the path represented by this section are hidden.
+		reference noShow[0-1] container : CellType;
+		-- @comment Specifies whether other shapes snap to a path. The value 0 means that other shapes are allowed to snap to this path. The value 1 means that other shapes are not allowed to snap to this path.
+		reference noSnap[0-1] container : CellType;
+		--@comment Represents the lines, arcs, ellipses... that make up the shape.
+		reference linesTo[*] ordered container : LineTo oppositeOf lt_geom;
+		reference movesTo[*] ordered container : MoveTo oppositeOf mt_geom;
+		reference arcsTo[*] ordered container : ArcTo oppositeOf ac_geom;
+		reference splineKnots[*] ordered container : SplineKnot oppositeOf sk_geom;
+		reference polylinesTo[*] ordered container : PolylineTo oppositeOf pt_geom;
+		reference infiniteLines[*] ordered container : InfiniteLine oppositeOf il_geom;
+		reference ellipses[*] ordered container : Ellipse oppositeOf e_geom;
+		reference ellipticalArcsTo[*] ordered container : EllipticalArcTo oppositeOf eat_geom;
+		reference splineStarts[*] ordered container : SplineStart oppositeOf ss_geom;
+		reference nurbsTo[*] ordered container : NURBSTo oppositeOf nt_geom;			
+	}
+	
+	-- @comment Defines the abstract concept of element with x- and y-coordinates.
+	abstract class XYElt extends IXElt, DelElt {
+		reference x[0-1] container : CellType;
+		reference y[0-1] container : CellType;
+	}
+	
+	-- @comment Contains x- and y-coordinates of the ending vertex of a straight line segment.
+	class LineTo extends XYElt {
+		reference lt_geom : Geom oppositeOf linesTo;
+	}
+	
+	-- @comment Contains the x- and y-coordinates of the first vertex of a shape, or contains the x- and y-coordinates of the first vertex after a break in a path.
+	class MoveTo extends XYElt {
+		reference mt_geom : Geom oppositeOf movesTo;
+	}
+	
+	-- @comment Defines the abstract concept of element with x- and y-coordinates and a supplemental information in "a".
+	abstract class XYAElt extends XYElt {
+		reference a[0-1] container : CellType;
+	}
+	
+	-- @comment Contains the x- and y-coordinates and bow of a circular arc represented respectively by the X, Y, and A elements.
+	class ArcTo extends XYAElt {
+		reference ac_geom : Geom oppositeOf arcsTo;
+	}
+	
+	-- @comment Contains x- and y-coordinates for a spline's control point and a spline's knot, represented by the X, Y, and A elements, respectively.
+	class SplineKnot extends XYAElt {
+		reference sk_geom : Geom oppositeOf splineKnots;
+	}
+	
+	-- @comment Contains x- and y-coordinates of the last point of a polyline and a polyline formula. The coordinates are specified in the X and Y elements, and the formula is specified in the A element.
+	class PolylineTo extends XYAElt {
+		reference pt_geom : Geom oppositeOf polylinesTo;
+	}
+	
+	-- @comment Defines the abstract concept of element with x- and y-coordinates and supplemental information in "a" and "b".
+	abstract class XYABElt extends XYAElt {
+		reference b[0-1] container : CellType;
+	}
+	
+	-- @comment Contains elements specifying the x- and y-coordinates of two points on an infinite line. The X and Y elements specify the x- and y-coordinates of the first point, and the A and B elements specify the x- and y-coordinates of the second point.
+	class InfiniteLine extends XYABElt {
+		reference il_geom : Geom oppositeOf infiniteLines;
+	}
+	
+	-- @comment Defines the abstract concept of element with x- and y-coordinates and supplemental information in "a", "b", "c" and "d".
+	abstract class XYABCDElt extends XYABElt {
+		reference c[0-1] container : CellType;
+		reference d[0-1] container : CellType;
+	}
+	
+	-- @comment Contains elements specifying the x- and y-coordinates of the ellipse's center point and two points on the ellipse. The X and Y elements specify the x- and y-coordinates of the center point. The A and B elements specify the x- and y-coordinates of one point on the ellipse; the C and D elements specify the x- and y-coordinates of the other point.
+	class Ellipse extends XYABCDElt {
+		reference e_geom : Geom oppositeOf ellipses;
+	}
+	
+	-- @comment Contains elements that specify information about an elliptical arc. The X and Y elements specify the x- and y-coordinates of the ending vertex on the arc. The A and B elements specify the x- and y-coordinates of the arc's control point. The C element specifies the angle of the arc's major axis relative to the x-axis of its parent. The D element specifies the ratio of an arc's major axis to its minor axis.
+	class EllipticalArcTo extends XYABCDElt {
+		reference eat_geom : Geom oppositeOf ellipticalArcsTo;
+	}
+	
+	-- @comment Contains x- and y-coordinates for a spline's second control point, its second knot, its first knot, the last knot, and the degree of the spline. This information is contained in the X, Y, A, B, C, and D elements, respectively.
+	class SplineStart extends XYABCDElt {
+		reference ss_geom : Geom oppositeOf splineStarts;
+	}
+	
+	-- @comment Defines the abstract concept of element with x- and y-coordinates and supplemental information in "a", "b", "c", "d" and "e".
+	abstract class XYABCDEElt extends XYABCDElt {
+		reference e[0-1] container : CellType;
+	}
+	
+	-- @comment Contains the x- and y-coordinates, position of the second to last knot, position of the last weight, position of the first knot, position of the first weight, and the formula for a nonuniform rational B-spline (NURBS). This information is specified in the X, Y, A, B, C, D, and E elements, respectively.
+	class NURBSTo extends XYABCDEElt {
+		reference nt_geom : Geom oppositeOf nurbsTo;	
+	}
+	
+		-- @end geometrical elements
+	
+	
+		-- @begin textual elements
+		
+	-- @comment Defines the text of a shape. The Text element is relevant only when contained in a Shape element. It is ignored when contained in a DocumentSheet, PageSheet, or StyleSheet element.
+	class Text extends ShapeElt {
+		reference textElts[*] ordered container : TextElt oppositeOf te_text; 
+	}
+	
+	-- @comment Defines the abstract concept of text's element.
+	abstract class TextElt {
+		reference te_text : Text oppositeOf textElts;
+	}
+	
+	-- @comment Defines the concept of element with required index.
+	abstract class IXrequiredElt {
+		-- @comment The zero-based index of the element within its parent element.
+		attribute iX : Integer;
+	}
+	
+	-- @comment Marks the beginning of a character properties run that is formatted according to the corresponding Char element. The run is defined to the end of the text or until the next "Cp" element.
+	class Cp extends IXrequiredElt, TextElt {}
+	
+	-- @comment Specifies the beginning of a paragraph properties run. The run is defined to the end of the text or until the next "Pp" element.
+	class Pp extends IXrequiredElt, TextElt {}
+	
+	-- @comment Specifies the beginning of a tabs properties run. The run is defined to the end of the text or until the next "Tp" element.
+	class Tp extends IXrequiredElt, TextElt {}
+	
+	-- @comment Indicates a text-field insertion point for the corresponding Field element.
+	class Fld extends IXrequiredElt, TextElt {}
+	
+	-- @comment Defines the content of the "Text" element.
+	class StringElt extends TextElt {
+		attribute value : String;
+	}
+	
+	-- @comment Defines the formatting attributes for the shape's text, such as font, color, text style, case, position relative to the baseline, and point size. 
+	class Char extends ShapeElt, IXElt, DelElt {
+		-- @comment Specifies the ID number of the font used to format the text. Font ID numbers vary according to the fonts installed on the user's system. The ID number corresponds to the ID attribute of a FontEntry or a FaceName element in the document's font table (contained in the Fonts element). The number 0 represents the default font (often Arial). The Font element is relevant only when contained in a Shape or StyleSheet element. It is ignored when contained in a DocumentSheet or PageSheet element.
+		reference font[0-1] container : CellType;
+		-- @comment Specifies the index of the color in the color table used for the shape's text or an RGB value specifying a custom color not in the color table (for example, #ff9900 ). 
+		reference color[0-1] container : CellType;
+		-- @comment Specifies the character formatting applied to a range of text in the shape's text block. The value represents a binary number in which each bit indicates a character style (1 for bold, 2 for italic, 3 for underline and 4 for small caps). For example, a value of 3 represents text formatted in both italic and bold. If the value of "style" is 0, the text is plain, or unformatted.
+		reference style[0-1] container : CellType;
+		-- @comment Determines the case of a shape's text. All capital (uppercase) letters (1) and initial capital letters (2) do not change the appearance of text that was entered in all capital letters. The text must be entered in lowercase letters for these options to show an effect. The value 0 is for normal case.
+		reference case[0-1] container : CellType;
+		-- @comment Specifies the position of the shape's text relative to the baseline. 0 is for "normal position", 1 is for "superscript" and 2 is for "subscript".
+		reference pos[0-1] container : CellType;
+		-- @comment Specifies the font width. To decrease the font width, enter a number less than 1.0. To increase the font width, enter a percentage between 1.0 and 6.0.
+		reference fontScale[0-1] container : CellType;
+		-- @comment Specifies the size of the text in the shape's text block. The text's size is independent of the scale of the drawing. If the drawing is scaled, the text size remains the same.
+		reference size[0-1] container : CellType;
+		-- @comment Specifies whether the range of text has a double underline below it. 0 is for "no double underline" and 1 is for "double underline".
+		reference dblUnderline[0-1] container : CellType;
+		-- @comment Specifies whether the text has a line above it. 0 is for "no" and 1 is for "yes".
+		reference overline[0-1] container : CellType;
+		-- @comment Specifies whether the text is formatted as strikethrough. 0 is for "no" and 1 is for "yes".
+		reference strikethru[0-1] container : CellType;
+		-- @comment Specifies whether the text is formatted as double strikethrough. 0 is for "no" and 1 is for "yes".
+		reference doubleStrikethrough[0-1] container : CellType;
+		-- @comment Determines if the text direction of the current character run is left to right or right to left. 0 is for "text direction is left to right" (the default) and 1 is for "text direction is right to left".
+		reference rtlText[0-1] container : CellType;
+		-- @comment Determines whether the character run is vertical or horizontal. 0 is for "text direction is horizontal" (the default) and 1 is for "text direction is vertical".
+		reference runVertical[0-1] container : CellType;
+		-- @comment Specifies the amount of space between two or more characters. Space can be added or subtracted in 1/20th point increments.
+		reference letterspace[0-1] container : CellType;
+		-- @comment Determines the degree of transparency for a layer or shape's text color, from 0 (completely opaque) to 1 (completely transparent).
+		reference colorTrans[0-1] container : CellType;
+		-- @comment Specifies whether the shape text should be localized (translated into another language). 0 is for "localize the font only if it is Arial or Symbol" (the default), 1 is for "always localize the font" and 2 is for "never localize the font".
+		reference localizeFont[0-1] container : CellType;
+		-- @comment Indicates the locale ID (LCID) of the language in which the text was entered. 
+		reference langID[0-1] container : CellType;
+	}
+	
+	-- @comment Defines the paragraph formatting elements for the shape's text, such as indents, line spacing, bullets, and horizontal alignment of paragraphs.
+	class Para extends ShapeElt, IXElt, DelElt {
+		-- @comment Specifies the distance the first line of each paragraph in the shape's text block is indented from the left indent of the paragraph. This value is independent of the scale of the drawing. If the drawing is scaled, the first line indent remains the same.
+		reference indFirst[0-1] container : CellType;
+		-- @comment Specifies the distance all lines of text in a paragraph are indented from the left margin of the text block. This value is independent of the scale of the drawing. If the drawing is scaled, the left indent remains the same.
+		reference indLeft[0-1] container : CellType;
+		-- @comment Specifies the distance all lines of text in a paragraph are indented from the right margin of the text block. This value is independent of the scale of the drawing. If the drawing is scaled, the right indent remains the same.
+		reference indRight[0-1] container : CellType;
+		-- @comment Specifies the distance between one line of text and the next, where 100% is the height of a text line. ">0" is for "absolute spacing, regardless of type size" (default unit is PER), "=0" is for "set solid (spacing equals 100% of type size)" (default unit is DT) and "<0" is for "a percentage of type size (for example, -1.2 yields 120% spacing)" (default unit is DT).	
+		reference spLine[0-1] container : CellType;
+		-- @comment Specifies the amount of space inserted before each paragraph in the shape's text block.
+		reference spBefore[0-1] container : CellType;
+		-- @comment Specifies the amount of space inserted after each paragraph in the shape's text block.
+		reference spAfter[0-1] container : CellType;
+		-- @comment Specifies the horizontal alignment of text in the shape's text block. 0 is for left align, 1 is for center, 2 is for right align, 3 is for justify and 4 is for force justify. 
+		reference horzAlign[0-1] container : CellType;
+		-- @comment Determines the bullet style. The value is included between 0 (none) and 7. For the different possible bullet look at the "Bullet Element" in the Microsoft Office 2003 XML Reference Schema.
+		reference bullet[0-1] container : CellType;
+		-- @comment Defines a custom bullet style. Enter the style as a string (within quotation marks). For example, you could enter the string, "ooo."
+		reference bulletStr[0-1] container : CellType;
+		-- @comment Represents the number of the font used to format the text when a custom bullet string is specified and the value in the Bullet element is non-zero.
+		reference bulletFont[0-1] container : CellType;
+		-- @comment Specifies whether the bullet font should be localized (translated into another language). The possible values are the same as those of the "localizeFont" field in the "Char" class.
+		reference localizeBulletFont[0-1] container : CellType;
+		-- @comment Specifies the size of a bullet.
+		reference bulletFontSize[0-1] container : CellType;
+		-- @comment Represents the distance between the first line of the paragraph and the bullet. 
+		reference textPosAfterBullet[0-1] container : CellType;
+		-- @comment Indicates whether the text direction is left to right or right to left. 0 is for "left to right" (default) and 1 is for "right to left".
+		reference flags[0-1] container : CellType;	
+	}
+	
+	-- @comment Defines a collection of Tab elements.
+	class TabsCollection extends ShapeElt, IXElt, DelElt {
+		reference tabs[*] ordered container : Tab oppositeOf t_tabs;
+	}
+	
+	-- @comment Specifies tab stop position and alignment for a single tab stop.
+	class Tab extends IXElt {
+		reference t_tabs : TabsCollection oppositeOf tabs;
+		-- @comment Specifies the position of a tab stop. The tab position is independent of the scale of the drawing. If the drawing is scaled, the line weight remains the same.		
+		reference position[0-1] container : CellType;
+		-- @comment Specifies the tab alignment. 0 is for left, 1 is for center, 2 is for right and 3 is for decimal.
+		reference alignment[0-1] container : CellType;	
+	}
+	
+	-- @comment Defines elements that specify functions and formulas inserted in the shape's text.
+	class Field extends ShapeElt, IXElt, DelElt {
+		-- @comment Contains the value for a text field.
+		reference value[0-1] container : CellType;
+		-- @comment Reserved for future use...
+		reference editMode[0-1] container : CellType;
+		-- @comment Specifies the formatting for a text field that is a string, number, date or time, duration, or currency. The text field type is specified in "type".
+		reference format[0-1] container : CellType;
+		-- @comment Specifies a data type for the text field value. 0 is for "string", 2 is for "number" (includes date, time, duration, and currency values as well as scalars, dimensions, and angles), 5 is for "date or time value" (displays days, months, and years, or seconds, minutes, and hours, or a combined date and time value), 6 is for "duration value" (displays elapsed time) and 7 is for "currency value" (uses the system's current regional settings). 
+		reference type[0-1] container : CellType;
+		-- @comment Specifies the category of an inserted field in versions of Microsoft Office Visio earlier than Visio 2000.
+		reference uiCat[0-1] container : CellType;
+		-- @comment Specifies the code of an inserted field in versions of Microsoft Office Visio earlier than Visio 2000.
+		reference uiCode[0-1] container : CellType;
+		-- @comment Specifies the format of an inserted field in versions of Microsoft Office Visio earlier than Visio 2000.
+		reference uiFmt[0-1] container : CellType;
+		-- @comment Determines the calendar that is used for text fields. For the different possible bullet look at the "Calendar Element" in the Microsoft Office 2003 XML Reference Schema.
+		reference calendar[0-1] container : CellType;
+		-- @comment Indicates the type of text field. 0 is for "standard" and 1 is for "horizontal in vertical". 
+		reference objectKind[0-1] container : CellType;	
+	}
+	
+		-- @end textual elements
+	
+	-- @end Detail of "Shape" element
+	
+		
+	-- @comment Defines the masters' container for a Visio document. 
+	class MastersCollection {
+		reference ms_visioDocument : VisioDocument oppositeOf docMasters;
+		
+		-- @comment Represents the "master" containers in this "masters" container.
+		reference masters[*] ordered container : Master oppositeOf m_masters;
+		-- @comment Represents the "master" short cuts used in this "masters" container.
+		reference masterShortCuts[*] ordered container : MasterShortCut oppositeOf m_masterShortCuts;
+	}
+	
+	-- @comment Defines a master shortcut for a Visio document. 
+	class MasterShortCut extends IdentifiedElt, NamedElt {
+		reference m_masterShortCuts : MastersCollection oppositeOf masterShortCuts;
+		
+		-- @comment The size of the element's icon.
+		attribute iconSize[0-1] : Integer; 
+		-- @comment Determines whether a master behaves as a custom pattern.
+		attribute patternFlags [0-1] : Integer;
+		-- @comment The status bar and tool tip prompt for the element.
+		attribute prompt[0-1] : String;
+		-- @comment A URL to a MasterShortcut element. If this attribute is present, this MasterShortcut element is a shortcut.
+		attribute shortcutURL[0-1] : String; 
+		-- @comment A help string for the element.
+		attribute shortcutHelp [0-1] : String;
+		-- @comment  Specifies whether the element's text in the stencil window is aligned left, right, or center.
+		attribute alignName[0-1] : Integer;
+
+		-- @comment Represents the shortcut's icons 
+		reference icons[*] ordered container : Icon oppositeOf i_masterShortCut;
+	}
+	
+	-- @comment Defines an icon for a master or a master's shortcut.
+	class Icon extends MasterElt {
+		reference i_masterShortCut : MasterShortCut oppositeOf icons;
+		
+		-- @comment Specifies a MIME (Multipurpose Internet Mail Extensions) encoded binary icon (in .ico format) for a Master or MasterShortcut element in the document.
+		attribute value : String;
+	}
+	
+	-- @comment Defines a "master" container for a Visio document.  
+	class Master extends IdentifiedElt, UniqueIdElt, NamedElt {
+		reference m_masters : MastersCollection oppositeOf masters;
+		
+		-- @comment A GUID (globally unique identifier) that identifies the master across documents.
+		attribute baseID[0-1] : String; 
+		-- @comment The MatchByName attribute determines how Microsoft Office Visio decides if a document master is already present when an instance of a master is dropped on the drawing page.
+		attribute matchByName[0-1] : Boolean;
+		-- @comment The size of the element's icon.
+		attribute iconSize[0-1] : Integer; 
+		-- @comment Determines whether a master behaves as a custom pattern.
+		attribute patternFlags [0-1] : Integer;
+		-- @comment The status bar and tool tip prompt for the element.
+		attribute prompt[0-1] : String;
+		-- @comment Specifies whether the master is hidden in the user interface.
+		attribute hidden[0-1] : Boolean; 
+		-- @comment Specifies whether the icon is automatically generated from the master itself.
+		attribute iconUpdate [0-1] : Boolean; 
+		-- @comment  Specifies whether the element's text in the stencil window is aligned left, right, or center.
+		attribute alignName[0-1] : Integer;
+		
+		-- @comment Represents the elements contained in this "master" container.
+		reference masterElts[*] ordered container : MasterElt oppositeOf me_master;
+	}
+	
+	-- @comment Defines a collection of shapes in a Visio document.
+	class ShapesCollection extends MasterElt, PageElt {
+		-- @comment Represents the shapes of this "shapes" container.
+		reference shapes[*] ordered container : Shape oppositeOf ss_shapes;
+	}
+	
+	-- @comment Defines the connections in a Visio document.
+	class ConnectsCollection extends MasterElt, PageElt {
+		-- @comment Represents the connections of this "connects" container.
+		reference connections[*] ordered container : Connect oppositeOf c_connects;
+	}
+	
+	-- @comment Defines a connection between two shapes in a drawing.
+	class Connect {
+		reference c_connects : ConnectsCollection oppositeOf connections;
+		
+		-- @comment The ID of the shape from which a connection or connections originate.
+		attribute fromSheet : Integer;
+		-- @comment The ID of the shape to which one or more connections are made.
+		attribute toSheet : Integer;
+		-- @comment The cell from which a connection originates.
+		attribute fromCell [0-1] : String;
+		-- @comment  The cell to which a connection is made. 
+		attribute toCell[0-1] : String;
+		-- @comment The part of a shape from which a connection originates. 
+		attribute fromPart[0-1] : Integer;
+		-- @comment The part of a shape to which a connection is made.
+		attribute toPart[0-1] : Integer;
+	}
+	
+	-- @comment Defines the abstract concept of master's element.
+	abstract class MasterElt {
+		reference me_master : Master oppositeOf masterElts;
+	}
+	
+	-- @comment Defines the pages' container for a Visio document.
+	class PagesCollection {
+		reference ps_visioDocument : VisioDocument oppositeOf docPages;
+		
+		-- @comment Represents the pages contained in this "pages" container.
+		reference pages[*] ordered container : Page oppositeOf p_pages; 
+	}
+	
+	-- @comment Defines a "page" container for a Visio document.  
+	class Page extends IdentifiedElt, NamedElt {
+		reference p_pages : PagesCollection oppositeOf pages; 
+		
+		-- @comment A flag indicating if the page is a background page.
+		attribute background [0-1] : Boolean;
+		-- @comment The ID of this page's background page.
+		attribute backPage [0-1] : Integer;
+		-- @comment The default magnification factor to use when a new view (window) of the page is opened. For example, 1 = 100%; 1.5 = 150%, and so on.
+		attribute viewScale [0-1] : Double;
+		-- @comment ViewCenterX and ViewCenterY specify a center point on a page that a new view (window) assumes when it is opened initially.
+		attribute viewCenterX[0-1] : Double;
+		-- @comment ViewCenterX and ViewCenterY specify a center point on a page that a new view (window) assumes when it is opened initially.
+		attribute ViewCenterY [0-1] : Double;
+		-- @comment The ID of the reviewer associated with the markup overlay.
+		attribute reviewerID[0-1] : Integer;
+		-- @comment The ID of the original drawing page that was marked up on separate markup overlays by reviewers of the drawing.
+		attribute associatedPage[0-1] : Integer;
+	
+		-- @comment Represents the elements contained in this "page" container.
+		reference pageElts[*] ordered container : PageElt oppositeOf pe_page;
+	}
+	
+	-- @comment Defines the abstract concept of page's element.
+	abstract class PageElt {
+		reference pe_page : Page oppositeOf pageElts;
+	} 
+	
+	-- @end MS Visio - Basic Document Definition
+
+	
+	-- @begin MS Visio - Options not managed by this version
+	
+	-- @comment Defines the settings of a Visio document.
+	class DocumentSettingsElt {
+		reference dss_visioDocument : VisioDocument oppositeOf docSettings;
+		-- to supplement...
+	}
+	
+	-- @comment Defines the printing parameters for a Visio document.
+	class PrintSetup {
+		reference ps_visioDocument : VisioDocument oppositeOf docPrintSetup;
+		-- to supplement...
+	}
+	
+	-- @comment Defines the windows (information about user interface windows) for a Visio document.
+	class WindowsInfo {
+		reference ws_visioDocument : VisioDocument oppositeOf docWindows;
+		-- to supplement...
+	}
+	
+	-- @comment Defines the events to which an object should respond in this Visio document.
+	class EventList {
+		reference el_visioDocument : VisioDocument oppositeOf docEventList;
+		-- to supplement...
+	}
+	
+	-- @comment Defines the Visio document's header and footer.
+	class HeaderFooter {
+		reference ef_visioDocument : VisioDocument oppositeOf docHeaderFooter;
+		-- to supplement...
+	}
+			
+	-- @comment Represents solution-specific, well-formed XML data that is prefixed in an explicit namespace and is stored with a Visio document.
+	class SolutionXML {
+		reference sx_visioDocument : VisioDocument oppositeOf docSolutionXML;
+		-- to supplement...
+	}
+			
+	-- @end MS Visio - Options not managed by this version	
+
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

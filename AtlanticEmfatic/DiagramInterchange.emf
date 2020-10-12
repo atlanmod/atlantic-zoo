@@ -1,0 +1,138 @@
+package Metamodel;
+
+package DiagramInterchange {
+  class Dimension {
+    !unique !ordered attr PrimitiveTypes.Double[1] width;
+    !unique !ordered attr PrimitiveTypes.Double[1] heigth;
+  }
+
+  class Point {
+    !unique !ordered attr PrimitiveTypes.Double[1] x;
+    !unique !ordered attr PrimitiveTypes.Double[1] y;
+  }
+
+  class BezierPoint extends Point {
+    ref Point[0..2] controls;
+  }
+
+  class Property {
+    !unique !ordered attr String[1] key;
+    !unique !ordered attr String[1] value;
+  }
+
+  abstract class DiagramElement {
+    !unique !ordered attr Boolean[1] isVisible;
+    !ordered val Property[*] properties;
+    !ordered ref Reference[*]#referenced references;
+    !ordered ref GraphElement#contained de_container;
+  }
+
+  class Reference extends DiagramElement {
+    !unique !ordered attr Boolean[1] isIndividualRepresentation;
+    !ordered ref DiagramElement[1]#references referenced;
+  }
+
+  abstract class GraphElement extends DiagramElement {
+    !ordered ref Point[1] position;
+    val DiagramElement[*]#de_container contained;
+    !ordered val SemanticModelBridge[1]#smb_graphElement semanticModel;
+    !ordered val GraphConnector[*]#gc_graphElement anchorages;
+    !ordered val DiagramLink[*]#dl_graphElement links;
+  }
+
+  class GraphEdge extends GraphElement {
+    ref Point[0..2] waypoints;
+    ref GraphConnector[2]#graphEdges anchors;
+  }
+
+  class GraphNode extends GraphElement {
+    !ordered ref Dimension size;
+  }
+
+  class GraphConnector {
+    !ordered ref Point[1] position;
+    !ordered ref GraphElement[1]#anchorages gc_graphElement;
+    !ordered ref GraphEdge[*]#anchors graphEdges;
+  }
+
+  class DiagramLink {
+    !unique !ordered attr PrimitiveTypes.Double[1] zoom;
+    !ordered ref Point[1] viewPort;
+    !ordered ref GraphElement[1]#links dl_graphElement;
+    !ordered ref Diagram[1]#diagramLinks dl_diagram;
+  }
+
+  abstract class SemanticModelBridge {
+    !unique !ordered attr String[1] presentation;
+    !ordered ref GraphElement#semanticModel smb_graphElement;
+    !ordered ref Diagram#namespace smb_diagram;
+  }
+
+  class Diagram extends GraphNode {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr PrimitiveTypes.Double[1] zoom;
+    !ordered ref Point[1] viewPort;
+    !ordered ref DiagramLink[*]#dl_diagram diagramLinks;
+    !ordered val SemanticModelBridge[1]#smb_diagram namespace;
+  }
+
+  class SimpleSemanticModelElement extends SemanticModelBridge {
+    !unique !ordered attr String[1] typeInfo;
+  }
+
+  class UML1SemanticModelBridge extends SemanticModelBridge {
+    !ordered ref CoreElement[1] element;
+  }
+
+  class CoreSemanticModelBridge extends SemanticModelBridge {
+    !ordered ref ElementsElement[1] element;
+  }
+
+  class CoreElement {
+  }
+
+  class ElementsElement {
+  }
+
+  abstract class LeafElement extends DiagramElement {
+  }
+
+  class TextElement extends LeafElement {
+    !unique !ordered attr String[1] text;
+  }
+
+  class Image extends LeafElement {
+    !unique !ordered attr String[1] uri;
+    !unique !ordered attr String[1] mimeType;
+  }
+
+  abstract class GraphicPrimitive extends LeafElement {
+  }
+
+  class Polyline extends GraphicPrimitive {
+    ref Point[2..*] waypoints;
+    !unique !ordered attr Boolean[1] closed;
+  }
+
+  class Ellipse extends GraphicPrimitive {
+    !ordered ref Point[1] center;
+    !unique !ordered attr PrimitiveTypes.Double[1] radiusX;
+    !unique !ordered attr PrimitiveTypes.Double[1] radiusY;
+    !unique !ordered attr PrimitiveTypes.Double[1] rotation;
+    !unique !ordered attr PrimitiveTypes.Double[1] startAngle;
+    !unique !ordered attr PrimitiveTypes.Double[1] endAngle;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

@@ -1,0 +1,82 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_OCLExpressions"{
+labelloc=t
+color=black
+label=OCLExpressions
+ node[shape=record];
+OclExpression[label="{/OclExpression/| | }"]
+ OclExpression->QueryExp[arrowhead=diamond,arrowtail=none,headlabel="queryArg[*]",taillabel="argument",group=QueryExp,minlen=2,constraint=true,]
+ OclExpression->QueryExp[arrowhead=diamond,arrowtail=none,headlabel="querySrc[*]",taillabel="source",group=QueryExp,minlen=2,constraint=true,]
+ OclExpression->VariableDeclaration[arrowhead=none,arrowtail=none,headlabel="varDec[1-*]",taillabel="oclExpression[*]",group=VariableDeclaration,minlen=2,constraint=false,]
+ OclExpression->VariableInitialisation[arrowhead=diamond,arrowtail=none,headlabel="varInit[*]",taillabel="initExpression",group=VariableInitialisation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SelfExp[label="{SelfExp| | }"]
+ SelfExp->OclExpression[arrowhead=onormal,group=OclExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ResultExp[label="{ResultExp| | }"]
+ ResultExp->OclExpression[arrowhead=onormal,group=OclExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VariableExp[label="{VariableExp|var : String| }"]
+ VariableExp->OclExpression[arrowhead=onormal,group=OclExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperationExp[label="{/OperationExp/| | }"]
+ OperationExp->OclExpression[arrowhead=onormal,group=OclExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+QueryExp[label="{/QueryExp/| | }"]
+ QueryExp->OclExpression[arrowhead=onormal,group=OclExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Type[label="{/Type/| | }"]
+ Type->OclExpression[arrowhead=diamond,arrowtail=none,headlabel="oclExpression[*]",taillabel="resultType",group=OclExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VariableDeclaration[label="{VariableDeclaration|var : String| }"]
+ VariableDeclaration->Type[arrowhead=diamond,arrowtail=none,headlabel="varType",taillabel="varDec[*]",group=Type,minlen=2,constraint=true,]
+ VariableDeclaration->QueryExp[arrowhead=diamond,arrowtail=none,headlabel="queryExp[*]",taillabel="varDeclaration[0-1]",group=QueryExp,minlen=2,constraint=true,]
+ VariableDeclaration->VariableInitialisation[arrowhead=diamond,arrowtail=none,headlabel="varInit[*]",taillabel="varDec",group=VariableInitialisation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VariableInitialisation[label="{VariableInitialisation| | }"]
+ VariableInitialisation->IterateExp[arrowhead=diamond,arrowtail=diamond,headlabel="iterateExp",taillabel="varInit",group=IterateExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ForAllExp[label="{ForAllExp| | }"]
+;
+ node[shape=record];
+ExistsExp[label="{ExistsExp| | }"]
+;
+ node[shape=record];
+SelectExp[label="{SelectExp| | }"]
+;
+ node[shape=record];
+RejectExp[label="{RejectExp| | }"]
+;
+ node[shape=record];
+CollectExp[label="{CollectExp| | }"]
+;
+ node[shape=record];
+IterateExp[label="{IterateExp| | }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

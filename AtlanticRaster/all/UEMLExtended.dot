@@ -1,0 +1,172 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_UEML"{
+labelloc=t
+color=black
+label=UEML
+ node[shape=record];
+UEMLObject[label="{UEMLObject| | }"]
+ UEMLObject->Geometry[arrowhead=none,arrowtail=none,headlabel="has[0-1]",taillabel="object",group=Geometry,minlen=2,constraint=false,]
+ UEMLObject->UEMLModel[arrowhead=diamond,arrowtail=none,headlabel="model[0-1]",taillabel="contains[*]",group=UEMLModel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UEMLModel[label="{UEMLModel| | }"]
+ UEMLModel->UEMLObject[arrowhead=onormal,group=UEMLObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Geometry[label="{Geometry| | }"]
+;
+ node[shape=record];
+Port[label="{Port| | }"]
+ Port->UEMLObject[arrowhead=onormal,group=UEMLObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Flow[label="{Flow| | }"]
+ Flow->AssociationConnector[arrowhead=none,arrowtail=none,headlabel="associationConnector",taillabel="classAssociation",group=AssociationConnector,minlen=2,constraint=false,]
+ Flow->UEMLObject[arrowhead=onormal,group=UEMLObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Activity[label="{Activity| | }"]
+ Activity->Process[arrowhead=diamond,arrowtail=none,headlabel="parent[0-1]",taillabel="child",group=Process,minlen=2,constraint=true,]
+ Activity->ActivityType[arrowhead=none,arrowtail=none,headlabel="activityType",taillabel="activityT[*]",group=ActivityType,minlen=2,constraint=false,]
+ Activity->UEMLObject[arrowhead=onormal,group=UEMLObject,minlen=2,constraint=true,]
+ Activity->FlowObject[arrowhead=onormal,group=FlowObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Object[label="{Object| | }"]
+ Object->UEMLObject[arrowhead=onormal,group=UEMLObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InformationObject[label="{InformationObject| | }"]
+ InformationObject->ControlFlow[arrowhead=none,arrowtail=none,headlabel="controlFlow[0-1]",taillabel="carries[*]",group=ControlFlow,minlen=2,constraint=false,]
+ InformationObject->Object[arrowhead=onormal,group=Object,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Resource[label="{Resource| | }"]
+ Resource->ResourceFlow[arrowhead=none,arrowtail=none,headlabel="carries[0-1]",taillabel="resourceCarries[*]",group=ResourceFlow,minlen=2,constraint=false,]
+ Resource->ResourceType[arrowhead=none,arrowtail=none,headlabel="resourceType",taillabel="resource[*]",group=ResourceType,minlen=2,constraint=false,]
+ Resource->Commitment[arrowhead=none,arrowtail=none,headlabel="commitment[*]",taillabel="resource[1-*]",group=Commitment,minlen=2,constraint=false,]
+ Resource->Object[arrowhead=onormal,group=Object,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MaterialResource[label="{MaterialResource| | }"]
+ MaterialResource->PassiveObject[arrowhead=onormal,group=PassiveObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+HumanResource[label="{HumanResource| | }"]
+ HumanResource->Agent[arrowhead=onormal,group=Agent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ResourceFlow[label="{ResourceFlow| | }"]
+ ResourceFlow->Flow[arrowhead=onormal,group=Flow,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IOFlow[label="{IOFlow| | }"]
+ IOFlow->Object[arrowhead=none,arrowtail=none,headlabel="carries[*]",taillabel="ioFlow[0-1]",group=Object,minlen=2,constraint=false,]
+ IOFlow->Flow[arrowhead=onormal,group=Flow,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ControlFlow[label="{ControlFlow| | }"]
+ ControlFlow->Flow[arrowhead=onormal,group=Flow,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TriggerFlow[label="{TriggerFlow| | }"]
+ TriggerFlow->ControlFlow[arrowhead=onormal,group=ControlFlow,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConstraintFlow[label="{ConstraintFlow| | }"]
+ ConstraintFlow->ControlFlow[arrowhead=onormal,group=ControlFlow,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ResourceRole[label="{ResourceRole| | }"]
+ ResourceRole->Resource[arrowhead=none,arrowtail=none,headlabel="resourcePlays[*]",taillabel="plays[*]",group=Resource,minlen=2,constraint=false,]
+ ResourceRole->RoleType[arrowhead=vee,arrowtail=none,headlabel="roleQualifier[0-1]",group=RoleType,minlen=2,constraint=false,]
+ ResourceRole->Activity[arrowhead=none,arrowtail=none,headlabel="in",taillabel="resourceRole[*]",group=Activity,minlen=2,constraint=false,]
+ ResourceRole->Port[arrowhead=onormal,group=Port,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RoleType[label="{RoleType| | }"]
+;
+ node[shape=record];
+Anchor[label="{Anchor| | }"]
+ Anchor->Port[arrowhead=onormal,group=Port,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OutputPort[label="{OutputPort| | }"]
+ OutputPort->Activity[arrowhead=diamond,arrowtail=none,headlabel="activity",taillabel="hasOutput[1-*]",group=Activity,minlen=2,constraint=true,]
+ OutputPort->Anchor[arrowhead=onormal,group=Anchor,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InputPort[label="{InputPort| | }"]
+ InputPort->Activity[arrowhead=diamond,arrowtail=none,headlabel="activity",taillabel="hasInput[1-*]",group=Activity,minlen=2,constraint=true,]
+ InputPort->Anchor[arrowhead=onormal,group=Anchor,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConnectionOperator[label="{ConnectionOperator| | }"]
+ ConnectionOperator->Anchor[arrowhead=onormal,group=Anchor,minlen=2,constraint=true,]
+ ConnectionOperator->FlowObject[arrowhead=onormal,group=FlowObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AssociationConnector[label="{AssociationConnector| | }"]
+;
+ node[shape=record];
+FlowObject[label="{FlowObject| | }"]
+ FlowObject->AssociationConnector[arrowhead=none,arrowtail=none,headlabel="target",taillabel="origin[*]",group=AssociationConnector,minlen=2,constraint=false,]
+ FlowObject->AssociationConnector[arrowhead=none,arrowtail=none,headlabel="origin",taillabel="target[*]",group=AssociationConnector,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Event[label="{Event| | }"]
+ Event->FlowObject[arrowhead=onormal,group=FlowObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ResourceType[label="{ResourceType| | }"]
+;
+ node[shape=record];
+ActivityType[label="{ActivityType| | }"]
+;
+ node[shape=record];
+PassiveObject[label="{PassiveObject| | }"]
+ PassiveObject->Resource[arrowhead=onormal,group=Resource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Commitment[label="{Commitment| | }"]
+ Commitment->Task[arrowhead=none,arrowtail=none,headlabel="task",taillabel="fulfills[*]",group=Task,minlen=2,constraint=false,]
+ Commitment->Agent[arrowhead=none,arrowtail=none,headlabel="agentO",taillabel="obliger",group=Agent,minlen=2,constraint=false,]
+ Commitment->Agent[arrowhead=none,arrowtail=none,headlabel="agentC",taillabel="claimer",group=Agent,minlen=2,constraint=false,]
+ Commitment->Contract[arrowhead=diamond,arrowtail=none,headlabel="contract",taillabel="collection_of[1-*]",group=Contract,minlen=2,constraint=true,]
+ Commitment->PassiveObject[arrowhead=onormal,group=PassiveObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Software[label="{Software| | }"]
+ Software->Agent[arrowhead=onormal,group=Agent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Organisation[label="{Organisation| | }"]
+ Organisation->Agent[arrowhead=onormal,group=Agent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Process[label="{Process| | }"]
+ Process->Service[arrowhead=none,arrowtail=none,headlabel="realises",taillabel="process",group=Service,minlen=2,constraint=false,]
+ Process->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Service[label="{Service| | }"]
+ Service->Resource[arrowhead=onormal,group=Resource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Agent[label="{Agent| | }"]
+ Agent->Resource[arrowhead=onormal,group=Resource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Contract[label="{Contract| | }"]
+ Contract->Process[arrowhead=none,arrowtail=none,headlabel="process[1-*]",taillabel="fulfills[*]",group=Process,minlen=2,constraint=false,]
+ Contract->Agent[arrowhead=none,arrowtail=none,headlabel="agent[2-*]",taillabel="has_parties",group=Agent,minlen=2,constraint=false,]
+ Contract->PassiveObject[arrowhead=onormal,group=PassiveObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Task[label="{Task| | }"]
+ Task->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+
+}
+}

@@ -1,0 +1,230 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_Requirement"{
+labelloc=t
+color=black
+label=Requirement
+ node[shape=record];
+Model[label="{Model| | }"]
+ Model->AbstractDocument[arrowhead=vee,arrowtail=diamond,headlabel="abstract[0-1]",group=AbstractDocument,minlen=2,constraint=true,]
+ Model->ProductDescription[arrowhead=vee,arrowtail=diamond,headlabel="description[0-1]",group=ProductDescription,minlen=2,constraint=true,]
+;
+ subgraph "cluster_AbstractDocument"{
+labelloc=t
+color=black
+label=AbstractDocument
+ node[shape=record];
+Purpose[label="{Purpose|id[0-1] : String\nversion[0-1] : String\nrelease[0-1] : String\ndescription[0-1] : String| }"]
+;
+ node[shape=record];
+IntendedAudience[label="{IntendedAudience|readers[0-1] : READERS_KIND| }"]
+;
+ node[shape=record];
+Scope[label="{Scope|description[0-1] : String| }"]
+ Scope->BusinessProblem[arrowhead=vee,arrowtail=diamond,headlabel="problem[0-1]",group=BusinessProblem,minlen=2,constraint=true,]
+ Scope->ProjectMission[arrowhead=vee,arrowtail=diamond,headlabel="mission[0-1]",group=ProjectMission,minlen=2,constraint=true,]
+ Scope->BusinessBackground[arrowhead=vee,arrowtail=diamond,headlabel="background[0-1]",group=BusinessBackground,minlen=2,constraint=true,]
+ Scope->ProjectObjective[arrowhead=vee,arrowtail=diamond,headlabel="goals[*]{ordered}",group=ProjectObjective,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Reference[label="{Reference|title[0-1] : String\nauthor[0-1] : String\nversion[0-1] : Integer\ndate[0-1] : Date\nlocation[0-1] : String| }"]
+;
+ node[shape=record];
+Information[label="{Information|body[0-1] : String| }"]
+;
+ node[shape=record];
+AbstractDocument[label="{AbstractDocument| | }"]
+ AbstractDocument->IntendedAudience[arrowhead=vee,arrowtail=diamond,headlabel="intendedAudience[0-1]",group=IntendedAudience,minlen=2,constraint=true,]
+ AbstractDocument->Reference[arrowhead=vee,arrowtail=diamond,headlabel="references[*]{ordered}",group=Reference,minlen=2,constraint=true,]
+ AbstractDocument->Purpose[arrowhead=vee,arrowtail=diamond,headlabel="purpose[0-1]",group=Purpose,minlen=2,constraint=true,]
+ AbstractDocument->Scope[arrowhead=vee,arrowtail=diamond,headlabel="scope[0-1]",group=Scope,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BusinessBackground[label="{BusinessBackground|overview[0-1] : String| }"]
+;
+ node[shape=record];
+BusinessProblem[label="{BusinessProblem|problem[0-1] : String| }"]
+;
+ node[shape=record];
+ProjectMission[label="{ProjectMission|mission[0-1] : String| }"]
+;
+ node[shape=record];
+ProjectObjective[label="{/ProjectObjective/|title[0-1] : String\ndescription[0-1] : String| }"]
+;
+ node[shape=record];
+BusinessObjective[label="{BusinessObjective| | }"]
+ BusinessObjective->ProjectObjective[arrowhead=onormal,group=ProjectObjective,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TechnicalObjective[label="{TechnicalObjective| | }"]
+ TechnicalObjective->ProjectObjective[arrowhead=onormal,group=ProjectObjective,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BusinessCase[label="{BusinessCase| | }"]
+ BusinessCase->ProjectObjective[arrowhead=onormal,group=ProjectObjective,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_ProductDescription"{
+labelloc=t
+color=black
+label=ProductDescription
+ node[shape=record];
+ProductDescription[label="{ProductDescription| | }"]
+ ProductDescription->AbstractRequirement[arrowhead=vee,arrowtail=diamond,headlabel="ownedRequirement[*]{ordered}",group=AbstractRequirement,minlen=2,constraint=true,]
+ ProductDescription->Constraint[arrowhead=vee,arrowtail=none,headlabel="constraints[*]{ordered}",group=Constraint,minlen=2,constraint=false,]
+ ProductDescription->Characteristic[arrowhead=vee,arrowtail=none,headlabel="characteristics[*]{ordered}",group=Characteristic,minlen=2,constraint=false,]
+ ProductDescription->UserDocumentation[arrowhead=vee,arrowtail=none,headlabel="userDocumentation[0-1]",group=UserDocumentation,minlen=2,constraint=false,]
+ ProductDescription->Perspective[arrowhead=vee,arrowtail=none,headlabel="perspective[0-1]",group=Perspective,minlen=2,constraint=false,]
+ ProductDescription->OperatingEnvironment[arrowhead=vee,arrowtail=none,headlabel="operatingEnvironment[0-1]",group=OperatingEnvironment,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Perspective[label="{Perspective| | }"]
+ Perspective->Information[arrowhead=onormal,group=Information,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Characteristic[label="{Characteristic|priority[0-1] : Priority| }"]
+ Characteristic->Information[arrowhead=onormal,group=Information,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperatingEnvironment[label="{OperatingEnvironment| | }"]
+ OperatingEnvironment->HardwarePlatform[arrowhead=vee,arrowtail=diamond,headlabel="hardwarePlatform[*]{ordered}",group=HardwarePlatform,minlen=2,constraint=true,]
+ OperatingEnvironment->OperatingSystem[arrowhead=vee,arrowtail=diamond,headlabel="operatingSystem[*]{ordered}",group=OperatingSystem,minlen=2,constraint=true,]
+;
+ node[shape=record];
+HardwarePlatform[label="{HardwarePlatform| | }"]
+ HardwarePlatform->Information[arrowhead=onormal,group=Information,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperatingSystem[label="{OperatingSystem| | }"]
+ OperatingSystem->Information[arrowhead=onormal,group=Information,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Constraint[label="{Constraint| | }"]
+ Constraint->Information[arrowhead=onormal,group=Information,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UserDocumentation[label="{UserDocumentation|format[0-1] : Format\nstandard[0-1] : String| }"]
+ UserDocumentation->Information[arrowhead=onormal,group=Information,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SystemFeature[label="{SystemFeature| | }"]
+ SystemFeature->Condition[arrowhead=vee,arrowtail=diamond,headlabel="conditions[*]{ordered}",group=Condition,minlen=2,constraint=true,]
+ SystemFeature->EventFlow[arrowhead=vee,arrowtail=diamond,headlabel="flows[*]{ordered}",group=EventFlow,minlen=2,constraint=true,]
+ SystemFeature->Feature[arrowhead=onormal,group=Feature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EventFlow[label="{EventFlow|name[0-1] : String| }"]
+ EventFlow->SequentialElement[arrowhead=vee,arrowtail=diamond,headlabel="elements[*]{ordered}",group=SequentialElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AbstractRequirement[label="{/AbstractRequirement/|seq_number[0-1] : Integer\ndescription[0-1] : String\npriority[0-1] : Priority| }"]
+ AbstractRequirement->SimpleFeature[arrowhead=vee,arrowtail=diamond,headlabel="simpleFeatures[*]{ordered}",group=SimpleFeature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+functionalRequirement[label="{functionalRequirement| | }"]
+ functionalRequirement->SystemFeature[arrowhead=vee,arrowtail=diamond,headlabel="systemFeatures[*]{ordered}",group=SystemFeature,minlen=2,constraint=true,]
+ functionalRequirement->AbstractRequirement[arrowhead=onormal,group=AbstractRequirement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Condition[label="{Condition| | }"]
+;
+ node[shape=record];
+PreCondition[label="{PreCondition| | }"]
+ PreCondition->Condition[arrowhead=onormal,group=Condition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PostCondition[label="{PostCondition| | }"]
+ PostCondition->Condition[arrowhead=onormal,group=Condition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SafetyRequirement[label="{SafetyRequirement| | }"]
+ SafetyRequirement->AbstractRequirement[arrowhead=onormal,group=AbstractRequirement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PerformanceRequirement[label="{PerformanceRequirement| | }"]
+ PerformanceRequirement->AbstractRequirement[arrowhead=onormal,group=AbstractRequirement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SecurityRequirement[label="{SecurityRequirement| | }"]
+ SecurityRequirement->AbstractRequirement[arrowhead=onormal,group=AbstractRequirement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SoftwareQuality[label="{SoftwareQuality| | }"]
+ SoftwareQuality->AbstractRequirement[arrowhead=onormal,group=AbstractRequirement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Action[label="{Action| | }"]
+ Action->SequentialElement[arrowhead=onormal,group=SequentialElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SequentialElement[label="{/SequentialElement/|step[0-1] : Integer| }"]
+ SequentialElement->Information[arrowhead=onormal,group=Information,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Response[label="{Response| | }"]
+ Response->SequentialElement[arrowhead=onormal,group=SequentialElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Stimulus[label="{Stimulus| | }"]
+ Stimulus->SequentialElement[arrowhead=onormal,group=SequentialElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DesignConstraintRequirement[label="{DesignConstraintRequirement| | }"]
+ DesignConstraintRequirement->functionalRequirement[arrowhead=onormal,group=functionalRequirement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BusinessRuleRequirement[label="{BusinessRuleRequirement| | }"]
+ BusinessRuleRequirement->functionalRequirement[arrowhead=onormal,group=functionalRequirement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BusinessAutomationRequirement[label="{BusinessAutomationRequirement| | }"]
+ BusinessAutomationRequirement->functionalRequirement[arrowhead=onormal,group=functionalRequirement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UIRequirement[label="{UIRequirement| | }"]
+ UIRequirement->functionalRequirement[arrowhead=onormal,group=functionalRequirement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GeneralRequirement[label="{GeneralRequirement| | }"]
+ GeneralRequirement->functionalRequirement[arrowhead=onormal,group=functionalRequirement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InstallationRequirement[label="{InstallationRequirement| | }"]
+ InstallationRequirement->functionalRequirement[arrowhead=onormal,group=functionalRequirement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MigrationRequirement[label="{MigrationRequirement| | }"]
+ MigrationRequirement->functionalRequirement[arrowhead=onormal,group=functionalRequirement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperationalRequirement[label="{OperationalRequirement| | }"]
+ OperationalRequirement->functionalRequirement[arrowhead=onormal,group=functionalRequirement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleFeature[label="{SimpleFeature| | }"]
+ SimpleFeature->Feature[arrowhead=onormal,group=Feature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Feature[label="{/Feature/|name[0-1] : String\nshort_description[0-1] : String\npriority[0-1] : Priority\ncost[0-1] : Double\nrisk[0-1] : String| }"]
+;
+
+}
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+Date[label="{&#171;DataType&#187;\nDate|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

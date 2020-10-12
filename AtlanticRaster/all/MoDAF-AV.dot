@@ -1,0 +1,238 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_MoDAF"{
+labelloc=t
+color=black
+label=MoDAF
+ node[shape=record];
+Element[label="{/Element/|name : String\ncontent[0-1] : String| }"]
+;
+ node[shape=record];
+MoDAFModel[label="{MoDAFModel| | }"]
+ MoDAFModel->Enterprise[arrowhead=vee,arrowtail=diamond,headlabel="enterprise",group=Enterprise,minlen=2,constraint=true,]
+ MoDAFModel->Environment[arrowhead=vee,arrowtail=diamond,headlabel="environment",group=Environment,minlen=2,constraint=true,]
+ MoDAFModel->OperationalMission[arrowhead=vee,arrowtail=diamond,headlabel="operationalMissions[1-*]",group=OperationalMission,minlen=2,constraint=true,]
+ MoDAFModel->Architecture[arrowhead=vee,arrowtail=diamond,headlabel="architectures[1-*]",group=Architecture,minlen=2,constraint=true,]
+ MoDAFModel->ArchitecturalDescription[arrowhead=vee,arrowtail=diamond,headlabel="architecturalDescription[1-*]",group=ArchitecturalDescription,minlen=2,constraint=true,]
+ MoDAFModel->ArchitecturalReference[arrowhead=vee,arrowtail=diamond,headlabel="architecturalReferences[1-*]",group=ArchitecturalReference,minlen=2,constraint=true,]
+ MoDAFModel->ArchitecturalFramework[arrowhead=vee,arrowtail=diamond,headlabel="architecturalFrameworks[1-*]",group=ArchitecturalFramework,minlen=2,constraint=true,]
+ MoDAFModel->ArchitectureMetaData[arrowhead=vee,arrowtail=diamond,headlabel="architectureMetadatas[*]",group=ArchitectureMetaData,minlen=2,constraint=true,]
+ MoDAFModel->MetaData[arrowhead=vee,arrowtail=diamond,headlabel="metaDatas[*]",group=MetaData,minlen=2,constraint=true,]
+ MoDAFModel->Stakeholder[arrowhead=vee,arrowtail=diamond,headlabel="stakeholders[1-*]",group=Stakeholder,minlen=2,constraint=true,]
+ MoDAFModel->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Enterprise[label="{Enterprise| | }"]
+ Enterprise->OperationalMission[arrowhead=vee,arrowtail=none,headlabel="fulfills[1-*]",group=OperationalMission,minlen=2,constraint=false,]
+ Enterprise->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Environment[label="{Environment| | }"]
+ Environment->Enterprise[arrowhead=none,arrowtail=none,headlabel="influences",taillabel="inhabits",group=Enterprise,minlen=2,constraint=false,]
+ Environment->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperationalMission[label="{OperationalMission| | }"]
+ OperationalMission->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Architecture[label="{Architecture| | }"]
+ Architecture->Enterprise[arrowhead=vee,arrowtail=none,headlabel="enterprise",group=Enterprise,minlen=2,constraint=false,]
+ Architecture->ArchitecturalDescription[arrowhead=vee,arrowtail=none,headlabel="describedBy",group=ArchitecturalDescription,minlen=2,constraint=false,]
+ Architecture->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ArchitecturalDescription[label="{ArchitecturalDescription|approvialAuthority : String\narchitect : String\nassumptionAndConstraints : String\ncreatingOrganisation : String\ndateCompleted : String\npurpose : String\nrecommendations : String\nsummaryOfFindings : String\ntollsUsed : String| }"]
+ ArchitecturalDescription->View[arrowhead=vee,arrowtail=none,headlabel="viewpoints[1-*]",group=View,minlen=2,constraint=false,]
+ ArchitecturalDescription->ArchitecturalProduct[arrowhead=vee,arrowtail=diamond,headlabel="products[1-*]",group=ArchitecturalProduct,minlen=2,constraint=true,]
+ ArchitecturalDescription->Taxonomy[arrowhead=vee,arrowtail=none,headlabel="taxonomy",group=Taxonomy,minlen=2,constraint=false,]
+ ArchitecturalDescription->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ArchitecturalReference[label="{ArchitecturalReference| | }"]
+ ArchitecturalReference->ArchitecturalDescription[arrowhead=vee,arrowtail=none,headlabel="referred",group=ArchitecturalDescription,minlen=2,constraint=false,]
+ ArchitecturalReference->ArchitecturalDescription[arrowhead=vee,arrowtail=none,headlabel="referrer",group=ArchitecturalDescription,minlen=2,constraint=false,]
+ ArchitecturalReference->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ArchitecturalProduct[label="{ArchitecturalProduct|description : String| }"]
+ ArchitecturalProduct->Elements[arrowhead=vee,arrowtail=diamond,headlabel="architecturalElements[1-*]",group=Elements,minlen=2,constraint=true,]
+ ArchitecturalProduct->View[arrowhead=vee,arrowtail=none,headlabel="definingView",group=View,minlen=2,constraint=false,]
+ ArchitecturalProduct->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Elements[label="{Elements| | }"]
+ Elements->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ArchitecturalFramework[label="{ArchitecturalFramework| | }"]
+ ArchitecturalFramework->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+View[label="{View|framework : String\nframeworkWebsite : String\nviewCode : String\nviewDescription : String\nviewName : String| }"]
+ View->ArchitecturalFramework[arrowhead=diamond,arrowtail=none,headlabel="definingFramework",taillabel="ownedMember[1-*]",group=ArchitecturalFramework,minlen=2,constraint=true,]
+ View->Concern[arrowhead=vee,arrowtail=diamond,headlabel="usedToCover[*]",group=Concern,minlen=2,constraint=true,]
+ View->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Concern[label="{Concern| | }"]
+ Concern->ArchitecturalProduct[arrowhead=none,arrowtail=none,headlabel="adressedBy[*]",taillabel="addresses[*]",group=ArchitecturalProduct,minlen=2,constraint=false,]
+ Concern->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StakeholderHasConcern[label="{StakeholderHasConcern| | }"]
+ StakeholderHasConcern->Stakeholder[arrowhead=vee,arrowtail=none,headlabel="client",group=Stakeholder,minlen=2,constraint=false,]
+ StakeholderHasConcern->Concern[arrowhead=vee,arrowtail=none,headlabel="supplier",group=Concern,minlen=2,constraint=false,]
+ StakeholderHasConcern->MoDAFModel[arrowhead=diamond,arrowtail=none,headlabel="owner",taillabel="stakeholderHasConcerns[1-*]",group=MoDAFModel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Stakeholder[label="{Stakeholder| | }"]
+ Stakeholder->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MetaData[label="{MetaData|dublinCoreElement : String\nmodMetaDataElement : String\nname : String\nbody : String| }"]
+;
+ node[shape=record];
+ArchitectureMetaData[label="{ArchitectureMetaData| | }"]
+ ArchitectureMetaData->ArchitecturalDescription[arrowhead=vee,arrowtail=none,headlabel="annotatedArchitecture",group=ArchitecturalDescription,minlen=2,constraint=false,]
+ ArchitectureMetaData->MetaData[arrowhead=onormal,group=MetaData,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Taxonomy[label="{Taxonomy|date : String\nurl : String\nversion : String| }"]
+ Taxonomy->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ClassifiedElement[label="{/ClassifiedElement/| | }"]
+ ClassifiedElement->Taxonomy[arrowhead=diamond,arrowtail=none,headlabel="taxonomy",taillabel="contents[*]",group=Taxonomy,minlen=2,constraint=true,]
+ ClassifiedElement->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Standard[label="{Standard|identifier : String\npublishedWebsite : String\npublisher : String\nversion : String| }"]
+ Standard->TimeExpression[arrowhead=vee,arrowtail=diamond,headlabel="ratificationDate",group=TimeExpression,minlen=2,constraint=true,]
+ Standard->TimeExpression[arrowhead=vee,arrowtail=diamond,headlabel="withdrawalDate",group=TimeExpression,minlen=2,constraint=true,]
+ Standard->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MeasurableProperty[label="{MeasurableProperty| | }"]
+ MeasurableProperty->LiteralSpecification[arrowhead=vee,arrowtail=diamond,headlabel="maxValue[0-1]",group=LiteralSpecification,minlen=2,constraint=true,]
+ MeasurableProperty->LiteralSpecification[arrowhead=vee,arrowtail=diamond,headlabel="minValue[0-1]",group=LiteralSpecification,minlen=2,constraint=true,]
+ MeasurableProperty->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CapabilityRequirement[label="{CapabilityRequirement| | }"]
+ CapabilityRequirement->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Effect[label="{Effect| | }"]
+ Effect->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EnduringTask[label="{EnduringTask| | }"]
+ EnduringTask->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperationalConstraint[label="{OperationalConstraint| | }"]
+ OperationalConstraint->Property[arrowhead=vee,arrowtail=diamond,headlabel="nodeUsageContext[0-1]",group=Property,minlen=2,constraint=true,]
+ OperationalConstraint->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PostType[label="{PostType| | }"]
+ PostType->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OrganisationType[label="{OrganisationType| | }"]
+ OrganisationType->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RoleInOrganisation[label="{RoleInOrganisation| | }"]
+ RoleInOrganisation->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LocationType[label="{LocationType| | }"]
+ LocationType->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperationalActivity[label="{OperationalActivity| | }"]
+ OperationalActivity->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Node[label="{Node| | }"]
+ Node->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InformationExchange[label="{InformationExchange|identifier : String\nrequirementText[0-1] : String| }"]
+ InformationExchange->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Competence[label="{Competence| | }"]
+ Competence->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InformationElement[label="{InformationElement| | }"]
+ InformationElement->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NodeConnectionType[label="{NodeConnectionType| | }"]
+ NodeConnectionType->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+System[label="{System| | }"]
+ System->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataElement[label="{DataElement| | }"]
+ DataElement->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SystemFunction[label="{SystemFunction| | }"]
+ SystemFunction->Property[arrowhead=vee,arrowtail=diamond,headlabel="systemUsageContext",group=Property,minlen=2,constraint=true,]
+ SystemFunction->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SystemConnectionSpecification[label="{SystemConnectionSpecification| | }"]
+ SystemConnectionSpecification->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ProjectType[label="{ProjectType| | }"]
+ ProjectType->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Service[label="{Service| | }"]
+ Service->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Unit[label="{Unit| | }"]
+ Unit->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Dimension[label="{Dimension| | }"]
+ Dimension->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OrganisationProjectRelationship[label="{OrganisationProjectRelationship| | }"]
+ OrganisationProjectRelationship->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ProjectThreadType[label="{ProjectThreadType| | }"]
+ ProjectThreadType->ClassifiedElement[arrowhead=onormal,group=ClassifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TimeExpression[label="{TimeExpression|value : String| }"]
+;
+ node[shape=record];
+LiteralSpecification[label="{LiteralSpecification|value : String| }"]
+;
+ node[shape=record];
+Property[label="{Property|value : String| }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

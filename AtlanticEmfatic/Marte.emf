@@ -1,0 +1,2599 @@
+package Metamodel;
+
+package MARTE {
+  package MARTE_Foundations {
+    package NFPs {
+      enum ConstraintKind {
+        required = 0;
+        offered = 0;
+        constraint = 0;
+      }
+
+      class NFP {
+        !ordered ref uml.Property[1] base_Property;
+      }
+
+      class Unit {
+        !unique !ordered attr MARTE_Library.MARTE_PrimitivesTypes.Real convFactor;
+        !unique !ordered attr MARTE_Library.MARTE_PrimitivesTypes.Real convOffset;
+        !ordered ref Unit baseUnit;
+        !ordered ref uml.EnumerationLiteral[1] base_EnumerationLiteral;
+      }
+
+      class NfpConstraint {
+        !unique !ordered attr ConstraintKind kind;
+        !ordered ref uml.Constraint[1] base_Constraint;
+      }
+
+      class NfpType extends MARTE_Annexes.VSL.DataTypes.TupleType {
+        !ordered ref uml.Property valueAttrib;
+        !ordered ref uml.Property unitAttrib;
+        !ordered ref uml.Property exprAttrib;
+      }
+
+    }
+
+    package Alloc {
+      class Allocated {
+        !ordered ref uml.NamedElement[1] base_NamedElement;
+      }
+
+      class ApplicationAllocationEnd extends Allocated {
+        !ordered ref ExecutionPlatformAllocationEnd[*] allocatedTo;
+      }
+
+      class ExecutionPlatformAllocationEnd extends Allocated {
+        !ordered ref ApplicationAllocationEnd[*] allocatedFrom;
+      }
+
+      enum AllocationNature {
+        spatialDistribution = 0;
+        timeScheduling = 0;
+      }
+
+      enum AllocationKind {
+        structural = 0;
+        behavioral = 0;
+        hybrid = 0;
+      }
+
+      class AllocateActivityGroup {
+        !unique !ordered attr Boolean isUnique;
+        !ordered ref uml.ActivityPartition[1] base_ActivityPartition;
+      }
+
+      class ClockRefine {
+        !ordered ref uml.Dependency[1] base_Dependency;
+        !ordered val Time.ClockConstraint[*] constraint;
+      }
+
+      class Allocate {
+        !unique !ordered attr AllocationKind kind;
+        !unique !ordered attr AllocationNature nature;
+        !ordered ref uml.Abstraction[1] base_Abstraction;
+        !ordered val NFPs.NfpConstraint[*] impliedConstraint;
+      }
+
+    }
+
+    package Time {
+      class TimedDomain {
+        !ordered ref uml.Package[1] base_Package;
+      }
+
+      class Clock {
+        !unique !ordered attr MARTE_Library.TimeLibrary.TimeStandardKind standard;
+        !ordered ref uml.InstanceSpecification[1] base_InstanceSpecification;
+        !ordered ref ClockType type;
+        !ordered val NFPs.Unit unit;
+      }
+
+      class ClockType {
+        !unique !ordered attr MARTE_Library.TimeTypesLibrary.TimeNatureKind[1] nature;
+        !ordered ref uml.Enumeration unitType;
+        !unique !ordered attr Boolean[1] isLogical;
+        !ordered ref uml.Property resolAttrib;
+        !ordered ref uml.Property maxValAttrib;
+        !ordered ref uml.Property offsetAttrib;
+        !ordered ref uml.Operation getTime;
+        !ordered ref uml.Operation setTime;
+        !ordered ref uml.Operation indexToValue;
+        !ordered ref uml.Class[1] base_Class;
+      }
+
+      class TimedElement {
+        !ordered val Clock[+] on;
+      }
+
+      class TimedValueSpecification extends TimedElement {
+        !unique !ordered attr MARTE_Library.TimeTypesLibrary.TimeInterpretationKind interpretation;
+        !ordered ref uml.ValueSpecification[1] base_ValueSpecification;
+      }
+
+      class TimedConstraint extends NFPs.NfpConstraint, TimedElement {
+        !unique !ordered attr MARTE_Library.TimeTypesLibrary.TimeInterpretationKind interpretation;
+      }
+
+      class TimedObservation extends TimedElement {
+      }
+
+      class TimedInstantObservation extends TimedObservation {
+        !unique !ordered attr MARTE_Library.TimeLibrary.EventKind obsKind;
+        !ordered ref uml.TimeObservation[1] base_TimeObservation;
+      }
+
+      class TimedDurationObservation extends TimedObservation {
+        !unique !ordered attr MARTE_Library.TimeLibrary.EventKind[0..2] obsKind;
+        !ordered ref uml.DurationObservation[1] base_DurationObservation;
+      }
+
+      class TimedEvent extends TimedElement {
+        !unique !ordered attr Integer repetition;
+        !ordered ref uml.TimeEvent[1] base_TimeEvent;
+        !ordered ref uml.ValueSpecification every;
+      }
+
+      class TimedProcessing extends TimedElement {
+        !ordered ref uml.Action[1] base_Action;
+        !ordered ref uml.Behavior[1] base_Behavior;
+        !ordered ref uml.Message[1] base_Message;
+        !ordered val uml.ValueSpecification duration;
+        !ordered ref uml.Event start;
+        !ordered ref uml.Event stop;
+      }
+
+      class ClockConstraint extends NFPs.NfpConstraint, TimedElement {
+      }
+
+    }
+
+    package GRM {
+      class Resource {
+        !unique !ordered attr Integer resMult;
+        !unique !ordered attr Boolean isProtected;
+        !unique !ordered attr Boolean isActive;
+        !ordered ref uml.Property[1] base_Property;
+        !ordered ref uml.InstanceSpecification[1] base_InstanceSpecification;
+        !ordered ref uml.Classifier[1] base_Classifier;
+        !ordered ref uml.Lifeline[1] base_Lifeline;
+        !ordered ref uml.ConnectableElement[1] base_ConnectableElement;
+      }
+
+      class StorageResource extends Resource {
+        !unique !ordered attr Integer elementSize;
+      }
+
+      class CommunicationEndPoint extends Resource {
+        !unique !ordered attr Integer packetSize;
+      }
+
+      class SynchronizationResource extends Resource {
+      }
+
+      class ConcurrencyResource extends Resource {
+      }
+
+      class Scheduler extends Resource {
+        !unique !ordered attr Boolean isPreemptible;
+        !unique !ordered attr MARTE_Library.GRM_BasicTypes.SchedPolicyKind schedPolicy;
+        !unique !ordered attr String otherSchedPolicy;
+        !ordered ref uml.OpaqueExpression schedule;
+        !ordered ref ProcessingResource[*] processingUnit;
+        !ordered ref ComputingResource host;
+      }
+
+      class ProcessingResource extends Resource {
+        !unique !ordered attr MARTE_Library.MARTE_PrimitivesTypes.Real speedFactor;
+        !ordered ref Scheduler scheduler;
+      }
+
+      class ComputingResource extends ProcessingResource {
+      }
+
+      class MutualExclusionResource extends Resource {
+        !unique !ordered attr MARTE_Library.GRM_BasicTypes.ProtectProtocolKind protectKind;
+        !unique !ordered attr Integer ceiling;
+        !unique !ordered attr String otherProtectProtocol;
+      }
+
+      class SecondaryScheduler extends Scheduler {
+      }
+
+      class SchedulableResource extends Resource {
+        !ordered ref MARTE_Library.GRM_BasicTypes.SchedParameters[*] schedParams;
+      }
+
+      class CommunicationMedia extends ProcessingResource {
+        !unique !ordered attr Integer elementSize;
+        !ordered ref uml.Connector[1] base_Connector;
+      }
+
+      class DeviceResource extends ProcessingResource {
+      }
+
+      class TimingResource extends Time.ClockType, Resource {
+      }
+
+      class ClockResource extends TimingResource {
+      }
+
+      class TimerResource extends TimingResource {
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration duration;
+        !unique !ordered attr Boolean isPeriodic;
+      }
+
+      class GRService {
+        !ordered ref Resource owner;
+        !ordered ref uml.ExecutionSpecification[1] base_ExecutionSpecification;
+        !ordered ref uml.BehavioralFeature[1] base_BehavioralFeature;
+        !ordered ref uml.Behavior[1] base_Behavior;
+        !ordered ref uml.Collaboration[1] base_Collaboration;
+        !ordered ref uml.CollaborationUse[1] base_CollaborationUse;
+      }
+
+      class Release extends GRService {
+      }
+
+      class Acquire extends GRService {
+        !unique !ordered attr Boolean isBlocking;
+      }
+
+      class ResourceUsage {
+        ref MARTE_Library.BasicNFP_Types.NFP_Duration[*] execTime;
+        ref MARTE_Library.BasicNFP_Types.NFP_DataSize[*] msgSize;
+        ref MARTE_Library.BasicNFP_Types.NFP_DataSize[*] allocatedMemory;
+        ref MARTE_Library.BasicNFP_Types.NFP_DataSize[*] usedMemory;
+        ref MARTE_Library.BasicNFP_Types.NFP_Power[*] powerPeak;
+        ref MARTE_Library.BasicNFP_Types.NFP_Energy[*] energy;
+        !ordered ref uml.NamedElement[1] base_NamedElement;
+        val Resource[*] usedResources;
+        !ordered val ResourceUsage[*] subUsage;
+      }
+
+    }
+
+    package GCM {
+      class FlowProperty {
+        !unique !ordered attr DirectionKind[1] direction;
+        !ordered ref uml.Property[1] base_Property;
+      }
+
+      enum DirectionKind {
+        in = 0;
+        out = 0;
+        inout = 0;
+      }
+
+      class FlowPort {
+        !unique !ordered attr Boolean[1] isAtomic;
+        !unique !ordered attr Boolean[1] isConjugated;
+        !unique !ordered attr DirectionKind direction;
+        !ordered ref uml.Port[1] base_Port;
+      }
+
+      class MessagePort {
+        !ordered ref uml.Port[1] base_Port;
+        !unique !ordered attr Boolean[1] isAtomic;
+        !unique !ordered attr Boolean[1] isConjugated;
+        !unique !ordered attr DirectionKind direction;
+      }
+
+      class SendFlowAction {
+        !ordered ref uml.InvocationAction[1] base_InvocationAction;
+      }
+
+      class FlowSpecification {
+        !unique !ordered attr DirectionKind direction;
+        !ordered ref uml.Interface[1] base_Interface;
+      }
+
+      class SignalSpecification {
+        !unique !ordered attr BFeatureKind kind;
+        !ordered ref uml.Interface[1] base_Interface;
+      }
+
+      enum BFeatureKind {
+        in = 0;
+        out = 0;
+        inout = 0;
+        required = 0;
+        provided = 0;
+        reqpro = 0;
+      }
+
+      class FlowBFeature {
+        !unique !ordered attr BFeatureKind[1] kind;
+        !ordered ref uml.BehavioralFeature[1] base_BehavioralFeature;
+      }
+
+    }
+
+  }
+
+  package MARTE_Annexes {
+    package RSM {
+      abstract class LinkTopology {
+        !ordered ref uml.Connector[1] base_Connector;
+      }
+
+      class DefaultLink extends LinkTopology {
+      }
+
+      class InterRepetition extends LinkTopology {
+        !ordered ref MARTE_Library.MARTE_DataTypes.IntegerVector[1] repetitionShapeDependence;
+        !unique !ordered attr Boolean isModulo;
+      }
+
+      class Distribute extends MARTE_Foundations.Alloc.Allocate {
+        !ordered ref MARTE_Library.RS_Library.ShapeSpecification[1] patternShape;
+        !ordered ref MARTE_Library.RS_Library.ShapeSpecification[1] repetitionSpace;
+        !ordered ref MARTE_Library.RS_Library.TilerSpecification[1] fromTiler;
+        !ordered ref MARTE_Library.RS_Library.TilerSpecification[1] toTiler;
+      }
+
+      class Reshape extends LinkTopology {
+        !ordered ref MARTE_Library.RS_Library.ShapeSpecification[1] patternShape;
+        !ordered ref MARTE_Library.RS_Library.ShapeSpecification[1] repetitonShape;
+        !ordered val Tiler[1] srcTiler;
+        !ordered val Tiler[1] targetTiler;
+      }
+
+      class Tiler extends LinkTopology {
+        !ordered ref MARTE_Library.MARTE_DataTypes.IntegerVector origin;
+        !ordered ref MARTE_Library.MARTE_DataTypes.IntegerMatrix paving;
+        !ordered ref MARTE_Library.MARTE_DataTypes.IntegerMatrix fitting;
+        !ordered ref MARTE_Library.RS_Library.TilerSpecification tiler;
+      }
+
+    }
+
+    package VSL {
+      package Variables {
+        enum VariableDirectionKind {
+          in = 0;
+          out = 0;
+          inout = 0;
+        }
+
+        class Var {
+          !unique !ordered attr VariableDirectionKind dir;
+          !ordered ref uml.Property[1] base_Property;
+        }
+
+        class ExpressionContext {
+          !ordered ref uml.NamedElement[1] base_NamedElement;
+        }
+
+      }
+
+      package DataTypes {
+        class BoundedSubtype {
+          !ordered ref uml.DataType[1] baseType;
+          !unique !ordered attr String[1] minValue;
+          !unique !ordered attr String[1] maxValue;
+          !unique !ordered attr Boolean[1] isMinOpen;
+          !unique !ordered attr Boolean[1] isMaxOpen;
+          !ordered ref uml.DataType[1] base_DataType;
+        }
+
+        class IntervalType {
+          !ordered ref uml.Property[1] intervalAttrib;
+          !ordered ref uml.DataType[1] base_DataType;
+        }
+
+        class CollectionType {
+          !ordered ref uml.Property[1] collectionAttrib;
+          !ordered ref uml.DataType[1] base_DataType;
+        }
+
+        class ChoiceType {
+          !ordered ref uml.Property[*] choiceAttrib;
+          !ordered ref uml.Property defaultAttrib;
+          !ordered ref uml.DataType[1] base_DataType;
+        }
+
+        class TupleType {
+          !ordered ref uml.Property[*] tupleAttrib;
+          !ordered ref uml.DataType[1] base_DataType;
+        }
+
+      }
+
+    }
+
+  }
+
+  package MARTE_DesignModel {
+    package RTEMoCC {
+      class RtUnit {
+        !unique !ordered attr Boolean[1] isDynamic;
+        !unique !ordered attr Boolean isMain;
+        !unique !ordered attr Integer poolSize;
+        !unique !ordered attr PoolMgtPolicyKind poolPolicy;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration poolWaitingTime;
+        !ordered ref uml.Behavior operationalMode;
+        !ordered ref uml.Operation main;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataSize memorySize;
+        !ordered ref uml.BehavioredClassifier[1] base_BehavioredClassifier;
+      }
+
+      enum PoolMgtPolicyKind {
+        infiniteWait = 0;
+        timedWait = 0;
+        dynamic = 0;
+        exception = 0;
+        other = 0;
+      }
+
+      class PpUnit {
+        !unique !ordered attr CallConcurrencyKind concPolicy;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataSize memorySize;
+        !ordered ref uml.BehavioredClassifier[1] base_BehavioredClassifier;
+      }
+
+      enum CallConcurrencyKind {
+        sequential = 0;
+        guarded = 0;
+        concurrent = 0;
+      }
+
+      class RtBehavior {
+        !unique !ordered attr MARTE_Library.GRM_BasicTypes.SchedPolicyKind queueSchedPolicy;
+        !unique !ordered attr Integer queueSize;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataSize msgMaxSize;
+        !ordered ref uml.Behavior[1] base_Behavior;
+      }
+
+      class rtf {
+        !ordered ref uml.BehavioralFeature[1] base_BehavioralFeature;
+        !ordered ref uml.Action[1] base_Action;
+        !ordered ref uml.Message[1] base_Message;
+        !ordered ref uml.Signal[1] base_Signal;
+        !ordered ref MARTE_Library.MARTE_DataTypes.UtilityType utility;
+        !ordered ref MARTE_Library.BasicNFP_Types.ArrivalPattern occKind;
+        !ordered ref MARTE_Foundations.Time.TimedInstantObservation tRef;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration relDl;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_DateTime absDl;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_BoundedDuration boundDl;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration rdTime;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Percentage miss;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Integer priority;
+      }
+
+      enum SynchronizationKind {
+        synchronous = 0;
+        asynchronous = 0;
+        delayedSynchronous = 0;
+        rendezVous = 0;
+        other = 0;
+      }
+
+      class RtAction {
+        !unique !ordered attr Boolean[1] isAtomic;
+        !unique !ordered attr SynchronizationKind synchKind;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataSize msgSize;
+        !ordered ref uml.BehavioralFeature[1] base_BehavioralFeature;
+        !ordered ref uml.InvocationAction[1] base_InvocationAction;
+      }
+
+      enum ExecutionKind {
+        deferred = 0;
+        remoteImmediate = 0;
+        localImmediate = 0;
+      }
+
+      enum ConcurrencyKind {
+        reader = 0;
+        writer = 0;
+        parallel = 0;
+      }
+
+      class RtService {
+        !unique !ordered attr ConcurrencyKind concPolicy;
+        !unique !ordered attr ExecutionKind exeKind;
+        !unique !ordered attr Boolean[1] isAtomic;
+        !unique !ordered attr SynchronizationKind synchKind;
+        !ordered ref uml.BehavioralFeature[1] base_BehavioralFeature;
+      }
+
+      class RteConnector {
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataTxRate bandwidth;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration packetT;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration blockT;
+        !unique !ordered attr MARTE_Library.MARTE_DataTypes.TransmModeKind transmMode;
+        !ordered ref uml.Connector[1] base_Connector;
+      }
+
+    }
+
+    package HRM {
+      package HwLogical {
+        package HwGeneral {
+          class HwResource extends MARTE_Foundations.GRM.Resource {
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_String description;
+            !ordered val HwResourceService[*] p_HW_Services;
+            !ordered val HwResourceService[*] r_HW_Services;
+            !ordered ref HwResource[*] ownedHW;
+            !ordered ref HwCommunication.HwEndPoint[*] endPoints;
+          }
+
+          class HwResourceService extends MARTE_Foundations.GRM.GRService {
+          }
+
+        }
+
+        package HwCommunication {
+          class HwCommunicationResource extends HwGeneral.HwResource {
+          }
+
+          class HwArbiter extends HwCommunicationResource {
+            !ordered ref HwMedia[*]#arbiters controlledMedias;
+          }
+
+          class HwMedia extends HwCommunicationResource, MARTE_Foundations.GRM.CommunicationMedia {
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataTxRate bandWidth;
+            !ordered ref uml.Association[1] base_Association;
+            !ordered ref HwArbiter[*]#controlledMedias arbiters;
+          }
+
+          class HwBus extends HwMedia {
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataSize adressWidth;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataSize wordWidth;
+            !unique !ordered attr Boolean isSynchronous;
+            !unique !ordered attr Boolean isSerial;
+          }
+
+          class HwBridge extends HwMedia {
+            !ordered ref HwMedia[*] sides;
+          }
+
+          class HwEndPoint extends HwCommunicationResource, MARTE_Foundations.GRM.CommunicationEndPoint {
+            !ordered ref uml.Port[1] base_Port;
+            !ordered ref HwMedia[*] connectedTo;
+          }
+
+        }
+
+        package HwComputing {
+          enum ISA_Type {
+            RISC = 0;
+            CISC = 0;
+            VLIW = 0;
+            SIMD = 0;
+            Other = 0;
+            Undef = 0;
+          }
+
+          enum PLD_Technology {
+            SRAM = 0;
+            Antifuse = 0;
+            Flash = 0;
+            Other = 0;
+            Undef = 0;
+          }
+
+          enum PLD_Class {
+            SymetricalArray = 0;
+            RowBased = 0;
+            SeaOfGates = 0;
+            HierarchicalPLD = 0;
+            Other = 0;
+            Undef = 0;
+          }
+
+          class PLD_Organization {
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Integer nbRows;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural nbColumns;
+            !unique !ordered attr PLD_Class ~class;
+          }
+
+          class HwProcessor extends HwComputingResource {
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataSize architecture;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural mips;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Real ipc;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural nbCores;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural nbPipelines;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural nbStages;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural nbALUs;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural nbFBUs;
+            !ordered val HwISA[*] ownedISAs;
+            !ordered val HwBranchPredictor[*] predictors;
+            !ordered val HwMemory.HWCache[*] caches;
+            !ordered val HwStorageManager.HwMMU[*] ownedMMUs;
+          }
+
+          class HwComputingResource extends HwGeneral.HwResource, MARTE_Foundations.GRM.ComputingResource {
+            !ordered ref MARTE_Library.MARTE_DataTypes.NFP_FrequencyInterval op_Frequencies;
+          }
+
+          class HwISA extends HwGeneral.HwResource {
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_String family;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataSize inst_Width;
+            !unique !ordered attr ISA_Type type;
+          }
+
+          class HwBranchPredictor extends HwGeneral.HwResource {
+          }
+
+          class HwASIC extends HwComputingResource {
+          }
+
+          class HwPLD extends HwComputingResource {
+            !unique !ordered attr PLD_Technology technology;
+            !ordered ref PLD_Organization organization;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural nbLUTs;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural ndLUT_Inputs;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural nbFlipFlops;
+            !ordered val HwMemory.HwRAM[*] blocksRAM;
+          }
+
+        }
+
+        package HwMemory {
+          class HwMemory extends HwComputing.HwProcessor, MARTE_Foundations.GRM.StorageResource {
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataSize memorySize;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataSize adressSize;
+            !ordered ref Timing[*] timings;
+          }
+
+          class Timing {
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_String notation;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_String description;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration value;
+          }
+
+          enum Repl_Policy {
+            LRU = 0;
+            NFU = 0;
+            FIFO = 0;
+            Random = 0;
+            Other = 0;
+            Undef = 0;
+          }
+
+          enum WritePolicy {
+            WriteBack = 0;
+            WriteThrough = 0;
+            Other = 0;
+            Undef = 0;
+          }
+
+          enum CacheType {
+            Data = 0;
+            Instruction = 0;
+            Unified = 0;
+            Other = 0;
+            Undef = 0;
+          }
+
+          enum ROM_Type {
+            MaskedROM = 0;
+            EPROM = 0;
+            OTP_EPROM = 0;
+            EEPROM = 0;
+            Flash = 0;
+            Other = 0;
+            Undef = 0;
+          }
+
+          class CacheStructure {
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural nsSets;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural blockSize;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural associativity;
+          }
+
+          class MemoryOrganization {
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural nbRows;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural nbColumns;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural nbBanks;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataSize wordSize;
+          }
+
+          class HwRAM extends HwMemory {
+            !ordered ref MemoryOrganization organization;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Boolean isSynchronous;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Boolean isStatic;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Boolean isNonVolatile;
+            !unique !ordered attr Repl_Policy repl_Policy;
+            !unique !ordered attr WritePolicy writePolicy;
+          }
+
+          class HwROM extends HwMemory {
+            !unique !ordered attr ROM_Type type;
+            !ordered ref MemoryOrganization organization;
+          }
+
+          class HwDrive extends HwMemory {
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataSize sectorSize;
+            !ordered val HwRAM buffer;
+          }
+
+          class HWCache extends HwMemory {
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural level;
+            !unique !ordered attr CacheType type;
+            !ordered ref CacheStructure structure;
+            !unique !ordered attr Repl_Policy repl_Policy;
+            !unique !ordered attr WritePolicy writePolicy;
+          }
+
+        }
+
+        package HwStorageManager {
+          class HwStorageManager extends HwGeneral.HwResource, MARTE_Foundations.GRM.StorageResource {
+            !ordered val HwMemory.HwMemory[*] managedMemories;
+          }
+
+          class HwDMA extends HwStorageManager, HwCommunication.HwArbiter {
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural nbChannels;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataSize transferWidth;
+            !ordered val HwComputing.HwProcessor[*] drivenBy;
+          }
+
+          class HwMMU extends HwStorageManager {
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataSize virtualAddrSpace;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataSize physicalAddrSpace;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural memoryProtection;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Boolean nbEntries;
+            !ordered val HwMemory.HWCache[*] ownedTLBs;
+          }
+
+        }
+
+        package HwTiming {
+          class HwTimingResource extends MARTE_Foundations.GRM.TimingResource, HwGeneral.HwResource {
+          }
+
+          class HwClock extends HwTimingResource {
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Frequency frequency;
+          }
+
+          class HwTimer extends HwTimingResource {
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural nbCounter;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataSize counterWidth;
+            !ordered ref HwClock inputClock;
+          }
+
+        }
+
+        package HwDevice {
+          class HwDevice extends HwGeneral.HwResource, MARTE_Foundations.GRM.DeviceResource {
+          }
+
+          class HwI_O extends HwDevice {
+          }
+
+          class HwSupport extends HwDevice {
+          }
+
+        }
+
+      }
+
+      package HwPhysical {
+        package HwPhysical_HwGeneral {
+        }
+
+        package HwLayout {
+          class HwComponent extends HwLogical.HwGeneral.HwResource {
+            !unique !ordered attr ComponentKind kind;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Length[0..3] dimenssions;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Area area;
+            !ordered ref MARTE_Library.MARTE_DataTypes.NFP_NaturalInterval[0..2] position;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural[0..2] grid;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Natural nbPins;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Real weight;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_String price;
+            !ordered ref Env_Condition[*] r_Conditions;
+            !ordered val HwLogical.HwGeneral.HwResourceService[*] poweredServices;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Power staticConsumption;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Power staticDissipation;
+          }
+
+          enum ComponentKind {
+            Card = 0;
+            Channel = 0;
+            Chip = 0;
+            Port = 0;
+            Unit = 0;
+            Other = 0;
+            Undef = 0;
+          }
+
+          class Env_Condition {
+            !unique !ordered attr ConditionType type;
+            !unique !ordered attr CompnentState status;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_String description;
+            !ordered ref MARTE_Library.MARTE_DataTypes.Realnterval range;
+          }
+
+          enum ConditionType {
+            Temperature = 0;
+            Humidity = 0;
+            Altitude = 0;
+            Vibration = 0;
+            Shock = 0;
+            Other = 0;
+            Undef = 0;
+          }
+
+          enum CompnentState {
+            Operating = 0;
+            Storage = 0;
+            Other = 0;
+            Undef = 0;
+          }
+
+        }
+
+        package HwPower {
+          class HwPowerSupply extends HwLayout.HwComponent {
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Power suppliedPower;
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Energy capacity;
+          }
+
+          class HwCoolingSupply extends HwLayout.HwComponent {
+            !ordered ref MARTE_Library.BasicNFP_Types.NFP_Power coolingPower;
+          }
+
+        }
+
+      }
+
+    }
+
+    package SRM {
+      package SW_ResourceCore {
+        class SwResource extends MARTE_Foundations.GRM.Resource {
+          !ordered ref uml.TypedElement[*] identifierElements;
+          !ordered ref uml.TypedElement[*] stateElements;
+          !ordered ref uml.TypedElement memorySizeFootprint;
+          !ordered ref uml.BehavioralFeature[*] createServices;
+          !ordered ref uml.BehavioralFeature[*] deleteServices;
+          !ordered ref uml.BehavioralFeature[*] initializeServices;
+        }
+
+        class SwAccessService extends MARTE_Foundations.GRM.GRService {
+          !unique !ordered attr Boolean isModifier;
+          !ordered ref uml.Property[1] accessedElement;
+        }
+
+      }
+
+      package SW_Concurrency {
+        enum InterruptKind {
+          HardwareInterruption = 0;
+          ProcessorDetectedException = 0;
+          ProgrammedException = 0;
+          Undef = 0;
+          Other = 0;
+        }
+
+        class EntryPoint {
+          !unique !ordered attr Boolean isReentrant;
+          !ordered ref uml.BehavioralFeature[1] routine;
+          !ordered ref uml.BehavioralFeature[1] base_BehavioralFeature;
+          !ordered ref uml.Dependency[1] base_Dependency;
+        }
+
+        abstract class SwConcurrentResource extends SW_ResourceCore.SwResource {
+          !ordered ref MARTE_Library.BasicNFP_Types.ArrivalPattern type;
+          !unique !ordered attr Integer activationCapacity;
+          !ordered ref uml.Element[*] entryPoints;
+          !ordered ref uml.TypedElement[*] adressSpace;
+          !ordered ref uml.TypedElement[*] periodElements;
+          !ordered ref uml.TypedElement[*] priorityElements;
+          !ordered ref uml.TypedElement[*] stackSizeElements;
+          !ordered ref uml.BehavioralFeature[*] activateServices;
+          !ordered ref uml.BehavioralFeature[*] enableConcurrencyServices;
+          !ordered ref uml.BehavioralFeature[*] resumeServices;
+          !ordered ref uml.BehavioralFeature[*] suspendServices;
+          !ordered ref uml.BehavioralFeature[*] terminateServices;
+          !ordered ref uml.BehavioralFeature[*] disableConcurrencyServices;
+          !ordered ref uml.TypedElement[*] shareDataResources;
+          !ordered ref uml.TypedElement[*] messageResources;
+          !ordered ref uml.TypedElement[*] mutualExclusionResources;
+          !ordered ref uml.TypedElement[*] notificationResources;
+        }
+
+        class InterruptResource extends SwConcurrentResource {
+          !unique !ordered attr InterruptKind kind;
+          !unique !ordered attr Boolean isMaskable;
+          !ordered ref uml.TypedElement[*] vectorElements;
+          !ordered ref uml.TypedElement[*] maskElements;
+          !ordered ref uml.BehavioralFeature[*] routineConnectServices;
+          !ordered ref uml.BehavioralFeature[*] routineDisconnectServices;
+        }
+
+        class SwSchedulableResource extends SwConcurrentResource {
+          !unique !ordered attr Boolean isStaticSchedulingFeature;
+          !unique !ordered attr Boolean isPreemptable;
+          !ordered ref uml.NamedElement[1] schedulers;
+          !ordered ref uml.TypedElement[*] deadlineElements;
+          !ordered ref uml.TypedElement[*] deadlineTypeElements;
+          !ordered ref uml.TypedElement[*] timeScliceElements;
+          !ordered ref uml.BehavioralFeature[*] delayServices;
+          !ordered ref uml.BehavioralFeature[*] joinServices;
+          !ordered ref uml.BehavioralFeature[*] yieldServices;
+        }
+
+        class SwTimerResource extends MARTE_Foundations.GRM.TimerResource {
+          !ordered ref uml.TypedElement durationElements;
+        }
+
+        class MemoryPartition extends SW_ResourceCore.SwResource {
+          !ordered ref uml.TypedElement[*] concurrentResources;
+          !ordered ref uml.TypedElement[*] memorySpaces;
+          !ordered ref uml.BehavioralFeature[*] fork;
+          !ordered ref uml.BehavioralFeature[*] exit;
+          !ordered ref uml.Namespace[1] base_Namespace;
+        }
+
+        class Alarm extends InterruptResource {
+          !unique !ordered attr Boolean isWatchdog;
+          !ordered ref uml.TypedElement[*] timers;
+        }
+
+      }
+
+      package SW_Brokering {
+        enum AccessPolicyKind {
+          Read = 0;
+          Write = 0;
+          ReadWrite = 0;
+          Undef = 0;
+          Other = 0;
+        }
+
+        class DeviceBroker extends SW_ResourceCore.SwResource {
+          !unique !ordered attr AccessPolicyKind accessPolicy;
+          !unique !ordered attr Boolean isBuffered;
+          !ordered ref uml.TypedElement[*] devices;
+          !ordered ref uml.BehavioralFeature[*] closeServices;
+          !ordered ref uml.BehavioralFeature[*] controlServices;
+          !ordered ref uml.BehavioralFeature[*] openServices;
+          !ordered ref uml.BehavioralFeature[*] readServices;
+          !ordered ref uml.BehavioralFeature[*] writeServices;
+        }
+
+        class MemoryBroker extends SW_ResourceCore.SwResource {
+          !unique !ordered attr AccessPolicyKind accessPolicy;
+          !ordered ref uml.TypedElement[*] memories;
+          !ordered ref uml.TypedElement[*] memoryBlockAdressSelements;
+          !ordered ref uml.TypedElement[*] memoryBlockSizeElements;
+          !ordered ref uml.BehavioralFeature[*] lockServices;
+          !ordered ref uml.BehavioralFeature[*] unlockServices;
+          !ordered ref uml.BehavioralFeature[*] mapServices;
+          !ordered ref uml.BehavioralFeature[*] unMapServices;
+        }
+
+      }
+
+      package SW_Interaction {
+        enum QueuePolicyKind {
+          FIFO = 0;
+          LIFO = 0;
+          Priority = 0;
+          Undef = 0;
+          Other = 0;
+        }
+
+        enum MessageResourceKind {
+          MessageQueue = 0;
+          Pipe = 0;
+          Blackboard = 0;
+          Undef = 0;
+          Other = 0;
+        }
+
+        enum NotificationKind {
+          Memorized = 0;
+          Bounded = 0;
+          Memoryless = 0;
+          Undef = 0;
+          Other = 0;
+        }
+
+        enum NotificationResourceKind {
+          Event = 0;
+          Barrier = 0;
+          Undef = 0;
+          Other = 0;
+        }
+
+        enum MutualExclusionResourceKind {
+          BooleanSemaphore = 0;
+          CountSemaphore = 0;
+          Mutex = 0;
+          Undef = 0;
+          Other = 0;
+        }
+
+        enum ConcurrentAccessProtocolKind {
+          PIP = 0;
+          PCP = 0;
+          NoPreemption = 0;
+          Undef = 0;
+          Other = 0;
+        }
+
+        abstract class SwInteractionResource extends SW_ResourceCore.SwResource {
+          !unique !ordered attr Boolean isIntraPartitionInteraction;
+          !unique !ordered attr QueuePolicyKind waitingQueuePolicy;
+          !unique !ordered attr Integer waitingQueueCapacity;
+          !ordered ref uml.TypedElement[*] waitingPolicyElements;
+        }
+
+        abstract class SwCommunicationResource extends SwInteractionResource, MARTE_Foundations.GRM.CommunicationMedia {
+        }
+
+        class SwSynchronizationResource extends SwInteractionResource, MARTE_Foundations.GRM.SynchronizationResource {
+        }
+
+        class SharedDataComResource extends SwCommunicationResource {
+          !ordered ref uml.BehavioralFeature[*] readServices;
+          !ordered ref uml.BehavioralFeature[*] writeServices;
+        }
+
+        class MessageComResource extends SwCommunicationResource {
+          !unique !ordered attr Boolean isFixedMessageSize;
+          !unique !ordered attr MessageResourceKind meachnism;
+          !ordered ref uml.TypedElement[*] messageSizeElements;
+          !ordered ref uml.TypedElement[*] messageQueueCapacityElements;
+          !unique !ordered attr QueuePolicyKind messageQueuePolicy;
+          !ordered ref uml.BehavioralFeature[*] sendServices;
+          !ordered ref uml.BehavioralFeature[*] receiveServices;
+        }
+
+        class NotificationResource extends SwSynchronizationResource {
+          !unique !ordered attr NotificationKind occurence;
+          !unique !ordered attr NotificationResourceKind mechanism;
+          !ordered ref uml.TypedElement[*] occurenceCountElements;
+          !ordered ref uml.TypedElement[*] maskElements;
+          !ordered ref uml.BehavioralFeature[*] flushServices;
+          !ordered ref uml.BehavioralFeature[*] signalServices;
+          !ordered ref uml.BehavioralFeature[*] waitServices;
+          !ordered ref uml.BehavioralFeature[*] clearServices;
+        }
+
+        class SwMutualExclusionResource extends SwSynchronizationResource {
+          !unique !ordered attr MutualExclusionResourceKind mechanism;
+          !unique !ordered attr ConcurrentAccessProtocolKind concurrentAccessProtocol;
+          !ordered ref uml.TypedElement[*] accessTokenElements;
+          !ordered ref uml.BehavioralFeature[*] releaseServices;
+          !ordered ref uml.BehavioralFeature[*] acquireServices;
+        }
+
+      }
+
+    }
+
+  }
+
+  package MARTE_AnalysisModel {
+    package GQAM {
+      class GaWorkloadGenerator {
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Integer pop;
+        !ordered ref uml.Behavior[1] base_Behavior;
+      }
+
+      class GaEventTrace {
+        !unique !ordered attr String content;
+        !unique !ordered attr String format;
+        !unique !ordered attr String location;
+        !ordered ref uml.NamedElement[1] base_NamedElement;
+      }
+
+      class GaWorkloadEvent {
+        !ordered ref MARTE_Library.BasicNFP_Types.ArrivalPattern pattern;
+        !ordered ref GaWorkloadGenerator generator;
+        !ordered ref GaEventTrace trace;
+        !ordered ref GaScenario effect;
+        !ordered ref uml.TimeEvent timedEvent;
+        !ordered ref uml.NamedElement[1] base_NamedElement;
+      }
+
+      class GaScenario extends MARTE_Foundations.GRM.ResourceUsage, MARTE_Foundations.Time.TimedProcessing {
+        !ordered ref GaWorkloadEvent cause;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration[*] hostDemand;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Real[*] hostDemandOps;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration[*] interOccT;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Frequency[*] throughput;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration respT;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Real[*] utilization;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Real[*] utilizationHost;
+        !ordered ref GaStep root;
+        !ordered ref GaTimingObs[*] timing;
+        !ordered ref GaScenario behavior;
+      }
+
+      class GaStep extends GaScenario {
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Boolean isAtomic;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration blockT;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Real[1] rep;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Real prob;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Integer priority;
+        !ordered ref MARTE_Foundations.GRM.SchedulableResource concurRes;
+        !ordered ref GaExecHost host;
+        ref GaRequestedService[*] serDemand;
+        ref MARTE_Library.BasicNFP_Types.NFP_Real[*] servCount;
+      }
+
+      class GaExecHost extends MARTE_Foundations.GRM.ProcessingResource {
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration commTxOch;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration commRcvOvh;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration cntxtSwt;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration clockOvh;
+        !ordered ref MARTE_Library.MARTE_DataTypes.IntegerInterval schedPriRange;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataSize memSize;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Real[*] utilization;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Frequency[*] throughput;
+      }
+
+      class GaRequestedService extends GaStep {
+        !ordered ref uml.Operation[1] base_Operation;
+      }
+
+      class GaTimingObs extends MARTE_Foundations.NFPs.NfpConstraint {
+        !unique !ordered attr LaxityKind laxity;
+        !ordered ref uml.TimeObservation startObs;
+        !ordered ref uml.TimeObservation stopObs;
+      }
+
+      enum LaxityKind {
+        hard = 0;
+        soft = 0;
+        other = 0;
+      }
+
+      class GaCommStep extends GaStep {
+      }
+
+      class GaAcqStep extends GaStep {
+        !ordered ref MARTE_Foundations.GRM.Resource acqRes;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Integer resUnits;
+      }
+
+      class GaRelStep extends GaStep {
+        !ordered ref MARTE_Foundations.GRM.Resource relRes;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Integer resUnits;
+      }
+
+      class GaLatencyObs extends GaTimingObs {
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration[*] latency;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Real[*] miss;
+        !ordered ref MARTE_Library.MARTE_DataTypes.UtilityType[*] utility;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration[*] maxJitter;
+      }
+
+      class GaCommHost extends MARTE_Foundations.GRM.ProcessingResource {
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataTxRate[*] capacity;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration[*] packetT;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration[*] blockT;
+        !unique !ordered attr MARTE_Library.MARTE_DataTypes.TransmModeKind transmMode;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Real[*] utilization;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Frequency[*] throughput;
+      }
+
+      class GaCommChannel extends MARTE_Foundations.GRM.SchedulableResource {
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_DataSize packetSize;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Real[*] utlization;
+      }
+
+      class GaWorkloadBehavior {
+        !ordered ref GaScenario[*] behavior;
+        !ordered ref GaWorkloadEvent[*] demand;
+        !ordered ref uml.NamedElement[1] base_NamedElement;
+      }
+
+      class GaAnalysisContext extends MARTE_Annexes.VSL.Variables.ExpressionContext {
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_String[*] context;
+        !ordered ref GaWorkloadBehavior[+] workload;
+        !ordered ref GaResourcesPlatform[+] platform;
+      }
+
+      class GaResourcesPlatform {
+        !ordered ref MARTE_Foundations.GRM.Resource[*] resources;
+        !ordered ref uml.Classifier[1] base_Classifier;
+      }
+
+    }
+
+    package SAM {
+      enum OptimallityCriterionKind {
+        meetHardDeadlines = 0;
+        minimizeMissedDeadlines = 0;
+        minimizedMeanTardiness = 0;
+        undef = 0;
+        other = 0;
+      }
+
+      class SaAnalysisContext extends GQAM.GaAnalysisContext {
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Boolean isSched;
+        !unique !ordered attr OptimallityCriterionKind optCriterion;
+      }
+
+      class SaEnd2EndFlow {
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Boolean isSched;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Real schSlack;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration[*] end2EndT;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration[*] end2EndD;
+        ref GQAM.GaTimingObs[*] timing;
+        !ordered ref uml.NamedElement[1] base_NamedElement;
+      }
+
+      class SaCommStep extends GQAM.GaCommStep {
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration deadline;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration spareCap;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Real schSlack;
+        !ordered ref uml.BehavioralFeature[1] base_BehavioralFeature;
+      }
+
+      class SaExecStep extends GQAM.GaStep {
+        !ordered ref uml.BehavioralFeature[1] base_BehavioralFeature;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration deadline;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration spareCap;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Real schSlack;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration preemptT;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration readyT;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration delayT;
+      }
+
+      class SaSchedObs extends GQAM.GaTimingObs {
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Integer[*] suspentions;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration[*] blockT;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Integer[*] overlaps;
+      }
+
+      class SaSharedResource extends MARTE_Foundations.GRM.MutualExclusionResource {
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Integer capacity;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Boolean isPreemp;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Boolean isConsum;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration[*] acquisT;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration[*] releaseT;
+      }
+
+      class SaCommHost extends GQAM.GaCommHost {
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Boolean isSched;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Real schSlack;
+      }
+
+      class SaExecHost extends GQAM.GaExecHost {
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Boolean isSched;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Real schSlack;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Real schedUtiliz;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Duration ISRswitchT;
+        !ordered ref MARTE_Library.MARTE_DataTypes.IntegerInterval ISRprioRange;
+        !unique !ordered attr MARTE_Library.GRM_BasicTypes.SchedPolicyKind schedPolicy;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Boolean isPreempible;
+      }
+
+    }
+
+    package PAM {
+      class PaStep extends GQAM.GaStep {
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Boolean noSynch;
+        !unique attr String[*] extOpDemand;
+        ref MARTE_Library.BasicNFP_Types.NFP_Real[*] extOpCount;
+        ref GQAM.GaScenario[*] behavDemand;
+        ref MARTE_Library.BasicNFP_Types.NFP_Real[*] behavCount;
+      }
+
+      class PaRequestedStep extends PaStep, GQAM.GaRequestedService {
+      }
+
+      class PaCommStep extends PaStep, GQAM.GaCommStep {
+      }
+
+      class PaResPassStep extends GQAM.GaStep {
+        !ordered ref MARTE_Foundations.GRM.Resource resource;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Integer resUnits;
+      }
+
+      class PaLogicalResource extends MARTE_Foundations.GRM.Resource {
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Real utilization;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Frequency throughput;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Integer[1] poolSize;
+      }
+
+      class PaRunTInstance {
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Integer poolSize;
+        !unique !ordered attr Boolean unbddPool;
+        !ordered ref MARTE_Foundations.GRM.Resource instance;
+        !ordered ref MARTE_Foundations.GRM.SchedulableResource host;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Real utilization;
+        !ordered ref MARTE_Library.BasicNFP_Types.NFP_Frequency throughput;
+        !ordered ref uml.NamedElement[1] base_NamedElement;
+      }
+
+    }
+
+  }
+
+}
+
+package MARTE_Library {
+  package MeasurementUnits {
+    enum TimeUnitKind {
+      s = 0;
+      tick = 0;
+      ms = 0;
+      us = 0;
+      min = 0;
+      hrs = 0;
+      dys = 0;
+    }
+
+    enum PowerUnitKind {
+      W = 0;
+      mW = 0;
+      KW = 0;
+    }
+
+    enum FrequencyUnitKind {
+      Hz = 0;
+      KHz = 0;
+      MHz = 0;
+      GHz = 0;
+      rpm = 0;
+    }
+
+    enum DataSizeUnitKind {
+      bits = 0;
+      Bytes = 0;
+      KB = 0;
+      MB = 0;
+      GB = 0;
+    }
+
+    enum DataTxRateUnitKind {
+      b_per_s = 0;
+      Kb_per_s = 0;
+      Mb_per_s = 0;
+    }
+
+    enum EnergyUnitKind {
+      J = 0;
+      KJ = 0;
+      Wh = 0;
+      KWh = 0;
+      mWh = 0;
+    }
+
+    enum LengthUnitKind {
+      m = 0;
+      cm = 0;
+      mm = 0;
+    }
+
+    enum AreaUnitKind {
+      mm2 = 0;
+      um2 = 0;
+    }
+
+  }
+
+  package GRM_BasicTypes {
+    class EDFParameters {
+      !ordered ref BasicNFP_Types.NFP_Duration deadline;
+    }
+
+    enum SchedPolicyKind {
+      EarliestDeadlineFirst = 0;
+      FIFO = 0;
+      FixedPriority = 0;
+      LeastLaxityFirst = 0;
+      RoundRobin = 0;
+      TimeTableDriven = 0;
+      Undef = 0;
+      Other = 0;
+    }
+
+    enum ProtectProtocolKind {
+      FIFO = 0;
+      NoPreemption = 0;
+      PriorityCeiling = 0;
+      PriorityInheritance = 0;
+      StackBased = 0;
+      Undef = 0;
+      Other = 0;
+    }
+
+    enum PeriodicServerKind {
+      Sporadic = 0;
+      Deferrable = 0;
+      Undef = 0;
+      Other = 0;
+    }
+
+    class SchedParameters {
+      !ordered ref EDFParameters edf;
+      !ordered ref FixedPriorityParameters fp;
+      !ordered ref PoolingParameters pooling;
+      !ordered ref PeriodicServerParameters server;
+    }
+
+    class FixedPriorityParameters {
+      !unique !ordered attr Integer priority;
+    }
+
+    class PoolingParameters extends FixedPriorityParameters {
+      !ordered ref BasicNFP_Types.NFP_Duration period;
+      !ordered ref BasicNFP_Types.NFP_Duration[*] overhead;
+    }
+
+    class PeriodicServerParameters extends FixedPriorityParameters {
+      !unique !ordered attr PeriodicServerKind kind;
+      !unique !ordered attr Integer backgroundPriority;
+      !ordered ref BasicNFP_Types.NFP_Duration initialBudget;
+      !ordered ref BasicNFP_Types.NFP_Duration replenishPeriod;
+      !unique !ordered attr Integer maxPendingReplenish;
+    }
+
+  }
+
+  package BasicNFP_Types {
+    enum SourceKind {
+      est = 0;
+      meas = 0;
+      calc = 0;
+      req = 0;
+    }
+
+    enum BasicNFP_Types_DirectionKind {
+      incr = 0;
+      decr = 0;
+    }
+
+    enum StatisticalQualifierKind {
+      max = 0;
+      min = 0;
+      mean = 0;
+      range = 0;
+      percent = 0;
+      distrib = 0;
+      determ = 0;
+      other = 0;
+    }
+
+    class NFP_CommonType {
+      !unique !ordered attr MARTE_DataTypes.VSL_Expression expr;
+      !unique !ordered attr SourceKind source;
+      !unique !ordered attr StatisticalQualifierKind statQ;
+      !unique !ordered attr BasicNFP_Types_DirectionKind dir;
+    }
+
+    class NFP_Frequency extends NFP_Real {
+      !unique !ordered attr MeasurementUnits.FrequencyUnitKind unit;
+      !unique !ordered attr MARTE_PrimitivesTypes.Real precision;
+    }
+
+    class NFP_Real extends NFP_CommonType {
+      !unique !ordered attr MARTE_PrimitivesTypes.Real value;
+    }
+
+    class NFP_Natural extends NFP_CommonType {
+      !unique !ordered attr MARTE_PrimitivesTypes.UnlimitedNatural value;
+    }
+
+    class NFP_Boolean extends NFP_CommonType {
+      !unique !ordered attr Boolean value;
+    }
+
+    class NFP_String extends NFP_CommonType {
+      !unique !ordered attr String value;
+    }
+
+    class NFP_Integer extends NFP_CommonType {
+      !unique !ordered attr Integer value;
+    }
+
+    class NFP_DateTime extends NFP_CommonType {
+      !unique !ordered attr MARTE_PrimitivesTypes.DateTime value;
+    }
+
+    class NFP_DataTxRate extends NFP_Real {
+      !unique !ordered attr MeasurementUnits.DataTxRateUnitKind unit;
+      !unique !ordered attr MARTE_PrimitivesTypes.Real precision;
+    }
+
+    class NFP_Power extends NFP_Real {
+      !unique !ordered attr MeasurementUnits.PowerUnitKind unit;
+      !unique !ordered attr MARTE_PrimitivesTypes.Real precision;
+    }
+
+    class NFP_DataSize extends NFP_Real {
+      !unique !ordered attr MeasurementUnits.DataSizeUnitKind unit;
+      !unique !ordered attr MARTE_PrimitivesTypes.Real precision;
+    }
+
+    class NFP_Energy extends NFP_Real {
+      !unique !ordered attr MeasurementUnits.EnergyUnitKind unit;
+      !unique !ordered attr MARTE_PrimitivesTypes.Real precision;
+    }
+
+    class NFP_Length extends NFP_Real {
+      !unique !ordered attr MeasurementUnits.LengthUnitKind unit;
+      !unique !ordered attr MARTE_PrimitivesTypes.Real precision;
+    }
+
+    class NFP_Area extends NFP_Real {
+      !unique !ordered attr MeasurementUnits.AreaUnitKind unit;
+      !unique !ordered attr MARTE_PrimitivesTypes.Real precision;
+    }
+
+    class ArrivalPattern {
+      !ordered ref PeriodicPattern periodic;
+      !ordered ref AperiodicPattern aperiodic;
+      !ordered ref BurstPattern burst;
+      !ordered ref IrregularPattern irregular;
+      !ordered ref ClosedPattern closed;
+      !ordered ref SporadicPattern sporadic;
+    }
+
+    class PeriodicPattern {
+      !ordered ref NFP_Duration period;
+      !ordered ref NFP_Duration jitter;
+      !ordered ref NFP_Duration phase;
+    }
+
+    class AperiodicPattern {
+      !ordered ref NFP_CommonType distribution;
+    }
+
+    class BurstPattern extends AperiodicPattern {
+      !ordered ref NFP_Duration minInterarrival;
+      !ordered ref NFP_Duration maxInterarrival;
+      !ordered ref NFP_Duration minEventInterval;
+      !ordered ref NFP_Duration maxEventInterval;
+      !ordered ref NFP_Integer burstSize;
+    }
+
+    class IrregularPattern extends AperiodicPattern {
+      !ordered ref NFP_Duration phase;
+      !ordered ref NFP_Duration[*] interarrivals;
+    }
+
+    class ClosedPattern {
+      !ordered ref NFP_Integer population;
+      !ordered ref NFP_Duration extDelay;
+    }
+
+    class SporadicPattern extends AperiodicPattern {
+      !ordered ref NFP_Duration minInterarrival;
+      !ordered ref NFP_Duration maxInterarrival;
+      !ordered ref NFP_Duration jitter;
+    }
+
+    class NFP_BoundedDuration extends NFP_CommonType {
+      !unique !ordered attr MARTE_PrimitivesTypes.Real[0..2] values;
+      !unique !ordered attr MeasurementUnits.TimeUnitKind unit;
+      !unique !ordered attr String clock;
+      !unique !ordered attr MARTE_PrimitivesTypes.Real precision;
+    }
+
+    class NFP_Percentage extends NFP_Real {
+      !unique !ordered attr String unit;
+    }
+
+    class NFP_Duration extends NFP_Real {
+      !unique !ordered attr MeasurementUnits.TimeUnitKind unit;
+      !unique !ordered attr String clock;
+      !unique !ordered attr MARTE_PrimitivesTypes.Real precision;
+    }
+
+  }
+
+  package MARTE_DataTypes {
+    class IntegerVector {
+      !unique !ordered attr Integer[*] vectorElem;
+    }
+
+    class IntegerMatrix {
+      !ordered ref IntegerVector[*] matrixElem;
+    }
+
+    class IntegerInterval {
+      !unique !ordered attr Integer[2] bound;
+    }
+
+    enum TransmModeKind {
+      simplex = 0;
+      halfDuplex = 0;
+      fullDuplex = 0;
+    }
+
+    class UtilityType {
+    }
+
+    class Array {
+    }
+
+    class Realnterval {
+      !unique !ordered attr MARTE_PrimitivesTypes.Real[2] bound;
+    }
+
+    class NFP_FrequencyInterval {
+      !ordered ref BasicNFP_Types.NFP_Frequency[2] bound;
+    }
+
+    class MARTE_DataTypes_Interval {
+    }
+
+    class NFP_NaturalInterval {
+      !ordered ref BasicNFP_Types.NFP_Natural[2] bound;
+    }
+
+    datatype VSL_Expression : "";
+
+  }
+
+  package TimeTypesLibrary {
+    enum TimeNatureKind {
+      discrete = 0;
+      dense = 0;
+    }
+
+    enum TimeInterpretationKind {
+      duration = 0;
+      instant = 0;
+    }
+
+  }
+
+  package TimeLibrary {
+    class TimedValueType {
+      !unique !ordered attr TUK unit;
+      !unique !ordered attr MARTE_PrimitivesTypes.Real value;
+      !unique !ordered attr ClockedValueSpecification expr;
+      !unique !ordered attr String onClock;
+    }
+
+    enum TUK {
+    }
+
+    datatype ClockedValueSpecification : "";
+
+    enum TimeLibrary_TimeUnitKind {
+      s = 0;
+      ms = 0;
+      us = 0;
+      ns = 0;
+      min = 0;
+      hrs = 0;
+      dys = 0;
+    }
+
+    enum TimeStandardKind {
+      TAI = 0;
+      UT0 = 0;
+      UT1 = 0;
+      UTC = 0;
+      Local = 0;
+      TT = 0;
+      TBD = 0;
+      TCG = 0;
+      TCB = 0;
+      Sidereal = 0;
+      GPS = 0;
+    }
+
+    enum LogicalTimeUnit {
+      tick = 0;
+    }
+
+    enum EventKind {
+      start = 0;
+      finish = 0;
+      send = 0;
+      receive = 0;
+      consume = 0;
+    }
+
+    class IdealClock {
+    }
+
+  }
+
+  package RS_Library {
+    class TilerSpecification {
+      !ordered ref MARTE_DataTypes.IntegerVector origin;
+      !ordered ref MARTE_DataTypes.IntegerMatrix[1] paving;
+      !ordered ref MARTE_DataTypes.IntegerVector fitting;
+    }
+
+    class ShapeSpecification {
+      !unique !ordered attr MARTE_PrimitivesTypes.UnlimitedNatural[*] size;
+    }
+
+  }
+
+  package MARTE_PrimitivesTypes {
+    datatype Integer : "";
+
+    datatype Boolean : "";
+
+    datatype UnlimitedNatural : "";
+
+    datatype String : "";
+
+    datatype DateTime : "";
+
+    datatype Real : "";
+
+  }
+
+}
+
+package uml {
+  abstract class Element {
+    !ordered ref Element[*]#owner ownedElement;
+    !ordered ref Element#ownedElement owner;
+    !ordered val Comment[*] ownedComment;
+  }
+
+  class Comment extends Element {
+    !unique !ordered attr String body;
+    !ordered ref Element[*] annotatedElement;
+  }
+
+  class Package extends Namespace, PackageableElement, TemplateableElement {
+    !ordered ref Type[*]#~package ownedType;
+    !ordered val PackageMerge[*]#receivingPackage packageMerge;
+    !ordered val PackageableElement[*] packagedElement;
+    !ordered ref Package[*]#nestingPackage nestedPackage;
+    !ordered ref Package#nestedPackage nestingPackage;
+    !ordered val ProfileApplication[*]#applyingPackage profileApplication;
+  }
+
+  abstract class NamedElement extends Element {
+    !unique !ordered attr String name;
+    !unique !ordered attr VisibilityKind visibility;
+    !unique !ordered attr String qualifiedName;
+    !ordered ref Dependency[*]#client clientDependency;
+    !ordered ref Namespace#ownedMember namespace;
+    !ordered val StringExpression nameExpression;
+  }
+
+  abstract class StructuralFeature extends Feature, TypedElement, MultiplicityElement {
+    !unique !ordered attr Boolean[1] isReadOnly;
+  }
+
+  abstract class ConnectableElement extends TypedElement, ParameterableElement {
+    ref ConnectorEnd[*] end;
+  }
+
+  abstract class TemplateableElement extends Element {
+    !ordered val TemplateBinding[*]#boundElement templateBinding;
+    !ordered val TemplateSignature#template ownedTemplateSignature;
+  }
+
+  class Property extends StructuralFeature, ConnectableElement, DeploymentTarget, TemplateableElement {
+    !ordered ref Class ~class;
+    !ordered ref DataType#ownedAttribute ~datatype;
+    !ordered ref Association#ownedEnd owningAssociation;
+    !ordered ref Association#memberEnd association;
+    !unique !ordered attr Boolean[1] isDerived;
+    !unique !ordered attr Boolean[1] isDerivedUnion;
+    !unique !ordered attr String default;
+    !unique !ordered attr AggregationKind[1] aggregation;
+    !unique !ordered attr Boolean[1] isComposite;
+    !ordered ref Property[*] redefinedProperty;
+    !ordered val ValueSpecification defaultValue;
+    !ordered ref Property opposite;
+    !ordered ref Property[*] subsettedProperty;
+    val Property[*]#associationEnd qualifier;
+    !ordered ref Property#qualifier associationEnd;
+  }
+
+  enum VisibilityKind {
+    public = 0;
+    private = 0;
+    protected = 0;
+    ~package = 0;
+  }
+
+  class Dependency extends PackageableElement, DirectedRelationship {
+    !ordered ref NamedElement[+] supplier;
+    !ordered ref NamedElement[+]#clientDependency client;
+  }
+
+  abstract class DirectedRelationship extends Relationship {
+    !ordered ref Element[+] source;
+    !ordered ref Element[+] target;
+  }
+
+  abstract class Relationship extends Element {
+    !ordered ref Element[+] relatedElement;
+  }
+
+  abstract class Namespace extends NamedElement {
+    !ordered val ElementImport[*]#importingNamespace elementImport;
+    !ordered val PackageImport[*]#importingNamespace packageImport;
+    !ordered val Constraint[*]#context ownedRule;
+    !ordered ref NamedElement[*] member;
+    !ordered ref PackageableElement[*] importedMember;
+    !ordered ref NamedElement[*]#namespace ownedMember;
+  }
+
+  class ElementImport extends DirectedRelationship {
+    !unique !ordered attr VisibilityKind[1] visibility;
+    !unique !ordered attr String alias;
+    !ordered ref PackageableElement[1] importedElement;
+    !ordered ref Namespace[1]#elementImport importingNamespace;
+  }
+
+  class PackageImport extends DirectedRelationship {
+    !unique !ordered attr VisibilityKind[1] visibility;
+    !ordered ref Package[1] importedPackage;
+    !ordered ref Namespace[1]#packageImport importingNamespace;
+  }
+
+  class Constraint extends PackageableElement {
+    ref Element[*] constrainedElement;
+    !ordered val ValueSpecification[1] specification;
+    !ordered ref Namespace#ownedRule context;
+  }
+
+  abstract class TypedElement extends NamedElement {
+    !ordered ref Type type;
+  }
+
+  abstract class Type extends PackageableElement {
+    !ordered ref Package#ownedType ~package;
+  }
+
+  class Association extends Classifier, Relationship {
+    !unique !ordered attr Boolean[1] isDerived;
+    val Property[*]#owningAssociation ownedEnd;
+    ref Type[+] endType;
+    ref Property[2..*]#association memberEnd;
+    !ordered ref Property[*] navigableOwnedEnd;
+  }
+
+  abstract class Classifier extends Namespace, RedefinableElement, Type, TemplateableElement {
+    !unique !ordered attr Boolean[1] isAbstract;
+    !ordered val Generalization[*]#specific generalization;
+    !ordered ref GeneralizationSet[*]#powertype powertypeExtent;
+    !ordered ref Feature[*]#featuringClassifier feature;
+    !ordered ref NamedElement[*] inheritedMember;
+    !ordered ref Classifier[*] redefinedClassifier;
+    !ordered ref Classifier[*] general;
+    !ordered val Substitution[*]#substitutingClassifier substitution;
+    !ordered ref Property[*] attribute;
+    !ordered ref CollaborationUse representation;
+    !ordered val CollaborationUse[*] collaborationUse;
+    !ordered val UseCase[*] ownedUseCase;
+    !ordered ref UseCase[*]#subject useCase;
+  }
+
+  abstract class RedefinableElement extends NamedElement {
+    !unique !ordered attr Boolean[1] isLeaf;
+    !ordered ref RedefinableElement[*] redefinedElement;
+    !ordered ref Classifier[*] redefinitionContext;
+  }
+
+  class TemplateBinding extends DirectedRelationship {
+    !ordered ref TemplateSignature[1] signature;
+    !ordered val TemplateParameterSubstitution[*]#templateBinding parameterSubstitution;
+    !ordered ref TemplateableElement[1]#templateBinding boundElement;
+  }
+
+  class TemplateSignature extends Element {
+    ref TemplateParameter[+] parameter;
+    val TemplateParameter[*]#signature ownedParameter;
+    !ordered ref TemplateableElement[1]#ownedTemplateSignature template;
+  }
+
+  class TemplateParameter extends Element {
+    !ordered ref TemplateSignature[1]#ownedParameter signature;
+    !ordered ref ParameterableElement[1]#templateParameter parameteredElement;
+    !ordered val ParameterableElement#owningTemplateParameter ownedParameteredElement;
+    !ordered ref ParameterableElement default;
+    !ordered val ParameterableElement ownedDefault;
+  }
+
+  abstract class ParameterableElement extends Element {
+    !ordered ref TemplateParameter#ownedParameteredElement owningTemplateParameter;
+    !ordered ref TemplateParameter#parameteredElement templateParameter;
+  }
+
+  class TemplateParameterSubstitution extends Element {
+    !ordered ref TemplateParameter[1] formal;
+    !ordered ref ParameterableElement[+] actual;
+    !ordered val ParameterableElement[*] ownedActual;
+    !ordered ref TemplateBinding[1]#parameterSubstitution templateBinding;
+  }
+
+  class Generalization extends DirectedRelationship {
+    !unique !ordered attr Boolean isSubstitutable;
+    !ordered ref Classifier[1] general;
+    !ordered ref GeneralizationSet[*]#generalization generalizationSet;
+    !ordered ref Classifier[1]#generalization specific;
+  }
+
+  class GeneralizationSet extends PackageableElement {
+    !unique !ordered attr Boolean[1] isCovering;
+    !unique !ordered attr Boolean[1] isDisjoint;
+    !ordered ref Classifier#powertypeExtent powertype;
+    !ordered ref Generalization[*]#generalizationSet generalization;
+  }
+
+  abstract class Feature extends RedefinableElement {
+    !unique !ordered attr Boolean[1] isStatic;
+    !ordered ref Classifier[*]#feature featuringClassifier;
+  }
+
+  class Substitution extends Realization {
+    !ordered ref Classifier[1] contract;
+    !ordered ref Classifier[1]#substitution substitutingClassifier;
+  }
+
+  abstract class PackageableElement extends NamedElement, ParameterableElement {
+  }
+
+  class PackageMerge extends DirectedRelationship {
+    !ordered ref Package[1] mergedPackage;
+    !ordered ref Package[1]#packageMerge receivingPackage;
+  }
+
+  class ProfileApplication extends DirectedRelationship {
+    !ordered ref Profile[1] appliedProfile;
+    !unique !ordered attr Boolean[1] isStrict;
+    !ordered ref Package[1]#profileApplication applyingPackage;
+  }
+
+  class Profile extends Package {
+    !ordered ref Stereotype[*] ownedStereotype;
+    !ordered ref ElementImport[*] metaclassReference;
+    !ordered ref PackageImport[*] metamodelReference;
+  }
+
+  class Stereotype extends Class {
+    !ordered val Image[*] icon;
+  }
+
+  class Class extends EncapsulatedClassifier, BehavioredClassifier {
+    val Classifier[*] nestedClassifier;
+    val Operation[*]#~class ownedOperation;
+    !ordered ref Class[*] superClass;
+    !unique !ordered attr Boolean[1] isActive;
+    !ordered val Reception[*] ownedReception;
+    !ordered ref Extension[*]#metaclass extension;
+  }
+
+  class StringExpression extends Expression, TemplateableElement {
+    !ordered val StringExpression[*]#owningExpression subExpression;
+    !ordered ref StringExpression#subExpression owningExpression;
+  }
+
+  class Expression extends ValueSpecification {
+    !unique !ordered attr String symbol;
+    val ValueSpecification[*] operand;
+  }
+
+  abstract class ValueSpecification extends PackageableElement, TypedElement {
+  }
+
+  abstract class BehavioredClassifier extends Classifier {
+    !ordered val Behavior[*] ownedBehavior;
+    !ordered ref Behavior classifierBehavior;
+    !ordered val InterfaceRealization[*]#implementingClassifier interfaceRealization;
+    !ordered val Trigger[*] ownedTrigger;
+  }
+
+  abstract class Behavior extends Class {
+    !unique !ordered attr Boolean[1] isReentrant;
+    !ordered ref Behavior[*] redefinedBehavior;
+    val Parameter[*] ownedParameter;
+    !ordered ref BehavioredClassifier context;
+    !ordered ref Constraint[*] precondition;
+    !ordered ref Constraint[*] postcondition;
+    !ordered val ParameterSet[*] ownedParameterSet;
+    !ordered ref BehavioralFeature#method specification;
+  }
+
+  abstract class MultiplicityElement extends Element {
+    !unique !ordered attr Boolean[1] isOrdered;
+    !unique !ordered attr Boolean[1] isUnique;
+    !unique !ordered attr MARTE_Library.MARTE_PrimitivesTypes.UnlimitedNatural upper;
+    !unique !ordered attr Integer lower;
+    !ordered val ValueSpecification upperValue;
+    !ordered val ValueSpecification lowerValue;
+  }
+
+  abstract class DeploymentTarget extends NamedElement {
+    !ordered val Deployment[*]#location deployment;
+    !ordered ref PackageableElement[*] deployedElement;
+  }
+
+  class DataType extends Classifier {
+    val Property[*]#~datatype ownedAttribute;
+    val Operation[*]#~datatype ownedOperation;
+  }
+
+  enum AggregationKind {
+    none = 0;
+    shared = 0;
+    composite = 0;
+  }
+
+  class CollaborationUse extends NamedElement {
+    !ordered ref Collaboration[1] type;
+    !ordered val Dependency[*] roleBinding;
+  }
+
+  class UseCase extends BehavioredClassifier {
+    !ordered val Include[*]#includingCase include;
+    !ordered val Extend[*]#extension extend;
+    !ordered val ExtensionPoint[*]#useCase extensionPoint;
+    !ordered ref Classifier[*]#useCase subject;
+  }
+
+  class Realization extends Abstraction {
+  }
+
+  class Abstraction extends Dependency {
+    !ordered val OpaqueExpression mapping;
+  }
+
+  class Image extends Element {
+    !unique !ordered attr String content;
+    !unique !ordered attr String location;
+    !unique !ordered attr String format;
+  }
+
+  class OpaqueExpression extends ValueSpecification {
+    !unique attr String[*] body;
+    attr String[*] language;
+    !ordered ref Parameter result;
+    !ordered ref Behavior behavior;
+  }
+
+  class Parameter extends ConnectableElement, MultiplicityElement {
+    !unique !ordered attr ParameterDirectionKind[1] direction;
+    !unique !ordered attr String default;
+    !ordered val ValueSpecification defaultValue;
+    !ordered ref Operation operation;
+    !ordered ref ParameterSet[*]#parameter parameterSet;
+    !unique !ordered attr Boolean[1] isException;
+    !unique !ordered attr Boolean[1] isStream;
+    !unique !ordered attr ParameterEffectKind effect;
+  }
+
+  abstract class EncapsulatedClassifier extends StructuredClassifier {
+    !ordered ref Port[*] ownedPort;
+  }
+
+  class Operation extends BehavioralFeature, ParameterableElement, TemplateableElement {
+    !ordered ref Interface#ownedOperation ~interface;
+    !ordered ref Class#ownedOperation ~class;
+    !unique !ordered attr Boolean[1] isQuery;
+    !unique !ordered attr Boolean[1] isOrdered;
+    !unique !ordered attr Boolean[1] isUnique;
+    !unique !ordered attr Integer lower;
+    !unique !ordered attr MARTE_Library.MARTE_PrimitivesTypes.UnlimitedNatural upper;
+    !ordered ref Constraint[*] precondition;
+    !ordered ref Constraint[*] postcondition;
+    !ordered ref Operation[*] redefinedOperation;
+    !ordered ref DataType#ownedOperation ~datatype;
+    !ordered ref Constraint bodyCondition;
+    !ordered ref Type type;
+  }
+
+  class Reception extends BehavioralFeature {
+    !ordered ref Signal signal;
+  }
+
+  class Extension extends Association {
+    !unique !ordered attr Boolean[1] isRequired;
+    !ordered ref Class[1]#extension metaclass;
+  }
+
+  class EnumerationLiteral extends InstanceSpecification {
+    !ordered ref Enumeration#ownedLiteral enumeration;
+  }
+
+  class ActivityPartition extends NamedElement, ActivityGroup {
+    !unique !ordered attr Boolean[1] isDimension;
+    !unique !ordered attr Boolean[1] isExternal;
+    !ordered ref ActivityNode[*]#inPartition node;
+    !ordered val ActivityPartition[*]#superPartition subpartition;
+    !ordered ref ActivityPartition#subpartition superPartition;
+    !ordered ref Element represents;
+    !ordered ref ActivityEdge[*]#inPartition edge;
+  }
+
+  class Enumeration extends DataType {
+    val EnumerationLiteral[*]#enumeration ownedLiteral;
+  }
+
+  class InstanceSpecification extends DeploymentTarget, PackageableElement, DeployedArtifact {
+    !ordered ref Classifier[*] classifier;
+    !ordered val Slot[*]#owningInstance slot;
+    !ordered val ValueSpecification specification;
+  }
+
+  abstract class BehavioralFeature extends Namespace, Feature {
+    val Parameter[*] ownedParameter;
+    !unique !ordered attr Boolean[1] isAbstract;
+    !ordered ref Behavior[*]#specification method;
+    !unique !ordered attr MARTE.MARTE_DesignModel.RTEMoCC.CallConcurrencyKind[1] concurrency;
+    !ordered ref Type[*] raisedException;
+    !ordered val ParameterSet[*] ownedParameterSet;
+  }
+
+  class Signal extends Classifier {
+    val Property[*] ownedAttribute;
+  }
+
+  class TimeExpression extends ValueSpecification {
+    !ordered ref ValueSpecification expr;
+    !ordered ref Observation[*] observation;
+  }
+
+  abstract class Observation extends PackageableElement {
+  }
+
+  class Duration extends ValueSpecification {
+    !ordered ref ValueSpecification expr;
+    !ordered ref Observation[*] observation;
+  }
+
+  class DurationInterval extends Interval {
+  }
+
+  class Interval extends ValueSpecification {
+    !ordered ref ValueSpecification[1] min;
+    !ordered ref ValueSpecification[1] max;
+  }
+
+  class TimeConstraint extends IntervalConstraint {
+    !unique !ordered attr Boolean firstEvent;
+  }
+
+  class IntervalConstraint extends Constraint {
+  }
+
+  class TimeInterval extends Interval {
+  }
+
+  class DurationConstraint extends IntervalConstraint {
+    !ordered attr Boolean[0..2] firstEvent;
+  }
+
+  class TimeObservation extends Observation {
+    !ordered ref NamedElement[1] event;
+    !unique !ordered attr Boolean[1] firstEvent;
+  }
+
+  class DurationObservation extends Observation {
+    !ordered ref NamedElement[1..2] event;
+    !ordered attr Boolean[0..2] firstEvent;
+  }
+
+  class ConnectorEnd extends MultiplicityElement {
+    !ordered ref Property definingEnd;
+    !ordered ref Property partWithPort;
+    !ordered ref ConnectableElement[1] role;
+  }
+
+  class TimeEvent extends Event {
+    !unique !ordered attr Boolean[1] isRelative;
+    !ordered val ValueSpecification[1] when;
+  }
+
+  abstract class Event extends PackageableElement {
+  }
+
+  class Port extends Property {
+    !unique !ordered attr Boolean[1] isBehavior;
+    !unique !ordered attr Boolean[1] isService;
+    !ordered ref Interface[*] required;
+    !ordered ref Port[*] redefinedPort;
+    !ordered ref Interface[*] provided;
+    !ordered ref ProtocolStateMachine protocol;
+  }
+
+  abstract class Action extends ExecutableNode {
+    ref OutputPin[*] output;
+    ref InputPin[*] input;
+    !ordered ref Classifier context;
+    !ordered val Constraint[*] localPrecondition;
+    !ordered val Constraint[*] localPostcondition;
+  }
+
+  class Message extends NamedElement {
+    !unique !ordered attr MessageKind[1] messageKind;
+    !unique !ordered attr MessageSort[1] messageSort;
+    !ordered ref MessageEnd receiveEvent;
+    !ordered ref MessageEnd sendEvent;
+    !ordered ref Connector connector;
+    !ordered ref Interaction[1]#message interaction;
+    val ValueSpecification[*] argument;
+    !ordered ref NamedElement signature;
+  }
+
+  class Lifeline extends NamedElement {
+    !ordered ref ConnectableElement represents;
+    !ordered ref Interaction[1]#lifeline interaction;
+    !ordered val ValueSpecification selector;
+    !ordered ref PartDecomposition decomposedAs;
+    !ordered ref InteractionFragment[*]#covered coveredBy;
+  }
+
+  abstract class ExecutionSpecification extends InteractionFragment {
+    !ordered ref OccurrenceSpecification[1] start;
+    !ordered ref OccurrenceSpecification[1] finish;
+  }
+
+  abstract class InvocationAction extends Action {
+    val InputPin[*] argument;
+    !ordered ref Port onPort;
+  }
+
+  class Connector extends Feature {
+    !ordered ref Association type;
+    !ordered ref Connector[*] redefinedConnector;
+    val ConnectorEnd[2..*] end;
+    !unique !ordered attr ConnectorKind kind;
+    !ordered ref Behavior[*] contract;
+  }
+
+  class Collaboration extends BehavioredClassifier, StructuredClassifier {
+    !ordered ref ConnectableElement[*] collaborationRole;
+  }
+
+  class Interface extends Classifier {
+    val Property[*] ownedAttribute;
+    val Operation[*]#~interface ownedOperation;
+    val Classifier[*] nestedClassifier;
+    !ordered ref Interface[*] redefinedInterface;
+    !ordered val Reception[*] ownedReception;
+    !ordered val ProtocolStateMachine protocol;
+  }
+
+  class InterfaceRealization extends Realization {
+    !ordered ref Interface[1] contract;
+    !ordered ref BehavioredClassifier[1]#interfaceRealization implementingClassifier;
+  }
+
+  class Trigger extends NamedElement {
+    !ordered ref Event[1] event;
+    !ordered ref Port[*] port;
+  }
+
+  class ProtocolStateMachine extends StateMachine {
+    !ordered val ProtocolConformance[*]#specificMachine conformance;
+  }
+
+  class StateMachine extends Behavior {
+    !ordered val Region[+]#stateMachine region;
+    !ordered ref State[*]#submachine submachineState;
+    !ordered val Pseudostate[*]#stateMachine connectionPoint;
+    !ordered ref StateMachine[*] extendedStateMachine;
+  }
+
+  class ProtocolConformance extends DirectedRelationship {
+    !ordered ref ProtocolStateMachine[1] generalMachine;
+    !ordered ref ProtocolStateMachine[1]#conformance specificMachine;
+  }
+
+  class Deployment extends Dependency {
+    !ordered ref DeployedArtifact[*] deployedArtifact;
+    !ordered val DeploymentSpecification[*]#deployment configuration;
+    !ordered ref DeploymentTarget[1]#deployment location;
+  }
+
+  class Include extends NamedElement, DirectedRelationship {
+    !ordered ref UseCase[1] addition;
+    !ordered ref UseCase[1]#include includingCase;
+  }
+
+  class Extend extends NamedElement, DirectedRelationship {
+    !ordered ref UseCase[1] extendedCase;
+    !ordered val Constraint condition;
+    ref ExtensionPoint[+] extensionLocation;
+    !ordered ref UseCase[1]#extend extension;
+  }
+
+  class ExtensionPoint extends RedefinableElement {
+    !ordered ref UseCase[1]#extensionPoint useCase;
+  }
+
+  class Region extends Namespace, RedefinableElement {
+    !ordered val Vertex[*]#container subvertex;
+    !ordered val Transition[*]#container transition;
+    !ordered ref State#region state;
+    !ordered ref Region extendedRegion;
+    !ordered ref StateMachine#region stateMachine;
+  }
+
+  abstract class StructuredClassifier extends Classifier {
+    val Property[*] ownedAttribute;
+    !ordered ref Property[*] part;
+    !ordered ref ConnectableElement[*] role;
+    !ordered val Connector[*] ownedConnector;
+  }
+
+  abstract class Vertex extends NamedElement {
+    !ordered ref Transition[*] incoming;
+    !ordered ref Transition[*] outgoing;
+    !ordered ref Region#subvertex container;
+  }
+
+  class Transition extends Namespace, RedefinableElement {
+    !unique !ordered attr TransitionKind[1] kind;
+    !ordered ref Region[1]#transition container;
+    !ordered ref Transition redefinedTransition;
+    !ordered ref Constraint guard;
+    !ordered val Behavior effect;
+    !ordered val Trigger[*] trigger;
+    !ordered ref Vertex[1] target;
+    !ordered ref Vertex[1] source;
+  }
+
+  enum TransitionKind {
+    internal = 0;
+    local = 0;
+    external = 0;
+  }
+
+  class State extends Namespace, RedefinableElement, Vertex {
+    !unique !ordered attr Boolean[1] isComposite;
+    !unique !ordered attr Boolean[1] isOrthogonal;
+    !unique !ordered attr Boolean[1] isSimple;
+    !unique !ordered attr Boolean[1] isSubmachineState;
+    !ordered ref StateMachine#submachineState submachine;
+    !ordered val ConnectionPointReference[*]#state connection;
+    !ordered val Pseudostate[*]#state connectionPoint;
+    !ordered ref State redefinedState;
+    !ordered val Constraint stateInvariant;
+    !ordered val Behavior entry;
+    !ordered val Behavior exit;
+    !ordered val Behavior doActivity;
+    !ordered val Trigger[*] deferrableTrigger;
+    !ordered val Region[*]#state region;
+  }
+
+  class ParameterSet extends NamedElement {
+    !ordered ref Parameter[+]#parameterSet parameter;
+    !ordered val Constraint[*] condition;
+  }
+
+  abstract class ActivityNode extends RedefinableElement {
+    !ordered ref StructuredActivityNode#node inStructuredNode;
+    !ordered ref Activity#node activity;
+    !ordered ref ActivityEdge[*]#source outgoing;
+    !ordered ref ActivityEdge[*]#target incoming;
+    !ordered ref ActivityPartition[*]#node inPartition;
+    !ordered ref InterruptibleActivityRegion[*]#node inInterruptibleRegion;
+    !ordered ref ActivityGroup[*]#containedNode inGroup;
+    !ordered ref ActivityNode[*] redefinedNode;
+  }
+
+  abstract class ActivityGroup extends Element {
+    !ordered ref ActivityGroup[*]#superGroup subgroup;
+    !ordered ref ActivityGroup#subgroup superGroup;
+    !ordered ref Activity#group inActivity;
+    !ordered ref ActivityEdge[*]#inGroup containedEdge;
+    !ordered ref ActivityNode[*]#inGroup containedNode;
+  }
+
+  enum ParameterDirectionKind {
+    in = 0;
+    inout = 0;
+    out = 0;
+    return = 0;
+  }
+
+  enum ParameterEffectKind {
+    create = 0;
+    read = 0;
+    update = 0;
+    delete = 0;
+  }
+
+  abstract class ActivityEdge extends RedefinableElement {
+    !ordered ref ActivityNode[1]#outgoing source;
+    !ordered ref ActivityNode[1]#incoming target;
+    !ordered ref ActivityEdge[*] redefinedEdge;
+    !ordered ref ActivityPartition[*]#edge inPartition;
+    !ordered val ValueSpecification[1] guard;
+    !ordered val ValueSpecification[1] weight;
+    !ordered ref InterruptibleActivityRegion#interruptingEdge interrupts;
+    !ordered ref StructuredActivityNode#edge inStructuredNode;
+    !ordered ref ActivityGroup[*]#containedEdge inGroup;
+    !ordered ref Activity#edge activity;
+  }
+
+  class InterruptibleActivityRegion extends ActivityGroup {
+    !ordered ref ActivityNode[*]#inInterruptibleRegion node;
+    !ordered ref ActivityEdge[*]#interrupts interruptingEdge;
+  }
+
+  abstract class DeployedArtifact extends NamedElement {
+  }
+
+  class Slot extends Element {
+    !ordered ref StructuralFeature[1] definingFeature;
+    val ValueSpecification[*] value;
+    !ordered ref InstanceSpecification[1]#slot owningInstance;
+  }
+
+  abstract class ExecutableNode extends ActivityNode {
+    !ordered val ExceptionHandler[*]#protectedNode handler;
+  }
+
+  class OutputPin extends Pin {
+  }
+
+  class Pin extends ObjectNode, MultiplicityElement {
+    !unique !ordered attr Boolean[1] isControl;
+  }
+
+  class InputPin extends Pin {
+  }
+
+  enum MessageKind {
+    complete = 0;
+    lost = 0;
+    found = 0;
+    unknown = 0;
+  }
+
+  class ExceptionHandler extends Element {
+    !ordered ref ExecutableNode[1] handlerBody;
+    !ordered ref ObjectNode[1] exceptionInput;
+    !ordered ref Classifier[+] exceptionType;
+    !ordered ref ExecutableNode[1]#handler protectedNode;
+  }
+
+  abstract class ObjectNode extends ActivityNode, TypedElement {
+    !unique !ordered attr ObjectNodeOrderingKind[1] ordering;
+    !unique !ordered attr Boolean[1] isControlType;
+    !ordered val ValueSpecification[1] upperBound;
+    !ordered ref State[*] inState;
+    !ordered ref Behavior selection;
+  }
+
+  enum ObjectNodeOrderingKind {
+    unordered = 0;
+    ~ordered = 0;
+    LIFO = 0;
+    FIFO = 0;
+  }
+
+  abstract class MessageEnd extends NamedElement {
+    !ordered ref Message message;
+  }
+
+  enum MessageSort {
+    synchCall = 0;
+    asynchCall = 0;
+    asynchSignal = 0;
+    createMessage = 0;
+    deleteMessage = 0;
+    reply = 0;
+  }
+
+  class Interaction extends Behavior, InteractionFragment {
+    !ordered val Lifeline[*]#interaction lifeline;
+    val InteractionFragment[*]#enclosingInteraction fragment;
+    !ordered val Action[*] action;
+    !ordered val Gate[*] formalGate;
+    !ordered val Message[*]#interaction message;
+  }
+
+  class PartDecomposition extends InteractionUse {
+  }
+
+  class InteractionUse extends InteractionFragment {
+    !ordered ref Interaction[1] refersTo;
+    !ordered val Gate[*] actualGate;
+    val Action[*] argument;
+  }
+
+  abstract class InteractionFragment extends NamedElement {
+    !ordered ref Lifeline[*]#coveredBy covered;
+    !ordered val GeneralOrdering[*] generalOrdering;
+    !ordered ref Interaction#fragment enclosingInteraction;
+    !ordered ref InteractionOperand#fragment enclosingOperand;
+  }
+
+  enum ConnectorKind {
+    assembly = 0;
+    delegation = 0;
+  }
+
+  class Pseudostate extends Vertex {
+    !unique !ordered attr PseudostateKind[1] kind;
+    !ordered ref StateMachine#connectionPoint stateMachine;
+    !ordered ref State#connectionPoint state;
+  }
+
+  enum PseudostateKind {
+    initial = 0;
+    deepHistory = 0;
+    shallowHistory = 0;
+    join = 0;
+    fork = 0;
+    junction = 0;
+    choice = 0;
+    entryPoint = 0;
+    exitPoint = 0;
+    terminate = 0;
+  }
+
+  class ConnectionPointReference extends Vertex {
+    !ordered ref Pseudostate[*] entry;
+    !ordered ref Pseudostate[*] exit;
+    !ordered ref State#connection state;
+  }
+
+  class StructuredActivityNode extends Action, Namespace, ActivityGroup {
+    !ordered val Variable[*]#scope variable;
+    !ordered val ActivityEdge[*]#inStructuredNode edge;
+    !unique !ordered attr Boolean[1] mustIsolate;
+    !ordered val ActivityNode[*]#inStructuredNode node;
+  }
+
+  class Variable extends ConnectableElement, MultiplicityElement {
+    !ordered ref StructuredActivityNode#variable scope;
+    !ordered ref Activity#variable activityScope;
+  }
+
+  class Activity extends Behavior {
+    !ordered ref StructuredActivityNode[*] structuredNode;
+    !ordered val Variable[*]#activityScope variable;
+    !ordered val ActivityNode[*]#activity node;
+    !unique !ordered attr Boolean[1] isReadOnly;
+    !ordered val ActivityEdge[*]#activity edge;
+    !ordered ref ActivityPartition[*] partition;
+    !unique !ordered attr Boolean[1] isSingleExecution;
+    !ordered val ActivityGroup[*]#inActivity group;
+  }
+
+  class OccurrenceSpecification extends InteractionFragment {
+    !ordered ref GeneralOrdering[*]#after toBefore;
+    !ordered ref Event[1] event;
+    !ordered ref GeneralOrdering[*]#before toAfter;
+  }
+
+  class DeploymentSpecification extends Artifact {
+    !unique !ordered attr String deploymentLocation;
+    !unique !ordered attr String executionLocation;
+    !ordered ref Deployment#configuration deployment;
+  }
+
+  class Gate extends MessageEnd {
+  }
+
+  class Artifact extends Classifier, DeployedArtifact {
+    !unique !ordered attr String fileName;
+    !ordered val Artifact[*] nestedArtifact;
+    !ordered val Manifestation[*] manifestation;
+    val Operation[*] ownedOperation;
+    val Property[*] ownedAttribute;
+  }
+
+  class GeneralOrdering extends NamedElement {
+    !ordered ref OccurrenceSpecification[1]#toAfter before;
+    !ordered ref OccurrenceSpecification[1]#toBefore after;
+  }
+
+  class Manifestation extends Abstraction {
+    !ordered ref PackageableElement[1] utilizedElement;
+  }
+
+  class InteractionOperand extends Namespace, InteractionFragment {
+    !ordered val InteractionConstraint guard;
+    val InteractionFragment[*]#enclosingOperand fragment;
+  }
+
+  class InteractionConstraint extends Constraint {
+    !ordered val ValueSpecification minint;
+    !ordered val ValueSpecification maxint;
+  }
+
+}
+

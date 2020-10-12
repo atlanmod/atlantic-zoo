@@ -1,0 +1,824 @@
+package Metamodel;
+
+package XHTML {
+  abstract class ValuedElement {
+    !unique !ordered attr String[1] value;
+  }
+
+  class CDATA extends ValuedElement {
+  }
+
+  class PCDATA extends ValuedElement {
+  }
+
+  class NMTOKEN extends ValuedElement {
+  }
+
+  class IDREF extends ValuedElement {
+  }
+
+  class IDREFS {
+    !ordered ref IDREF[*] idrefs;
+  }
+
+  class ID extends ValuedElement {
+  }
+
+  class EMPTY {
+  }
+
+  class ContentType extends CDATA {
+  }
+
+  class ContentTypes {
+    !ordered val ContentType[2..*] contentTypes;
+  }
+
+  class Charset extends CDATA {
+  }
+
+  class Charsets {
+    !ordered val Charset[2..*] charsets;
+  }
+
+  class LanguageCode extends NMTOKEN {
+  }
+
+  class Character extends CDATA {
+  }
+
+  class Number extends CDATA {
+  }
+
+  class LinkTypes extends CDATA {
+  }
+
+  class MediaDesc extends CDATA {
+  }
+
+  class URI extends CDATA {
+  }
+
+  class UriList {
+    !ordered ref URI[2..*] uris;
+  }
+
+  class Datetime extends CDATA {
+  }
+
+  class ScriptExpression extends CDATA {
+  }
+
+  class StyleSheet extends CDATA {
+  }
+
+  class Text extends CDATA {
+  }
+
+  class Length extends CDATA {
+  }
+
+  class MultiLength extends CDATA {
+  }
+
+  class Pixels extends CDATA {
+  }
+
+  enum Shape {
+    rect = 0;
+    circle = 0;
+    poly = 0;
+    default = 0;
+  }
+
+  class Coords {
+    !ordered val Length[2..*] lengths;
+  }
+
+  abstract class CoreAttrs {
+    !ordered val ID ~id;
+    !ordered val CDATA ~class;
+    !ordered val StyleSheet style;
+    !ordered val Text title;
+  }
+
+  enum Direction {
+    ltr = 0;
+    rtl = 0;
+  }
+
+  abstract class I18n {
+    !ordered val LanguageCode lang;
+    !ordered val LanguageCode xml:lang;
+    !unique !ordered attr Direction dir;
+  }
+
+  abstract class Events {
+    !ordered val ScriptExpression onclick;
+    !ordered val ScriptExpression ondblclick;
+    !ordered val ScriptExpression onmousedown;
+    !ordered val ScriptExpression onmouseup;
+    !ordered val ScriptExpression onmouseover;
+    !ordered val ScriptExpression onmousemove;
+    !ordered val ScriptExpression onmouseout;
+    !ordered val ScriptExpression onkeypress;
+    !ordered val ScriptExpression onkeydown;
+    !ordered val ScriptExpression onkeyup;
+  }
+
+  abstract class Attrs extends CoreAttrs, I18n, Events {
+  }
+
+  abstract class Focus {
+    !ordered val Character accesskey;
+    !ordered val Number tabindex;
+    !ordered val ScriptExpression onfocus;
+    !ordered val ScriptExpression onblur;
+  }
+
+  abstract class Specialpre extends Special, PreContent {
+  }
+
+  abstract class Special extends inline, ButtonContent {
+  }
+
+  abstract class Fontstyle extends inline, AContent, PreContent, ButtonContent {
+  }
+
+  abstract class Phrase extends inline, AContent, PreContent, ButtonContent {
+  }
+
+  abstract class Inlineforms extends inline, AContent, PreContent {
+  }
+
+  abstract class Miscinline extends Misc, Inline, AContent, PreContent {
+  }
+
+  abstract class Misc extends Block, Flow, FormContent, ButtonContent, ObjectElement, MapElementContent, FieldsetElement {
+  }
+
+  abstract class inline extends Inline {
+  }
+
+  abstract class Inline extends Flow, ObjectElement, FieldsetElement {
+    !ordered val PCDATA[*] pcdataInline;
+  }
+
+  abstract class Heading extends block, ButtonContent {
+  }
+
+  abstract class Lists extends block, ButtonContent {
+  }
+
+  abstract class Blocktext extends block, ButtonContent {
+  }
+
+  abstract class block extends Block, Flow, FormContent, ObjectElement, MapElementContent, FieldsetElement {
+  }
+
+  abstract class Block {
+  }
+
+  abstract class Flow {
+    !ordered val PCDATA[*] pcdataFlow;
+  }
+
+  abstract class AContent {
+    !ordered val PCDATA[*] pcdataAContent;
+  }
+
+  abstract class PreContent {
+    !ordered val PCDATA[*] pcdataPreContent;
+  }
+
+  abstract class FormContent {
+  }
+
+  abstract class ButtonContent {
+    !ordered val PCDATA[*] pcdataButtonContent;
+  }
+
+  class Html {
+    !ordered val I18n[1] i18n;
+    !ordered val ID ~id;
+    !ordered val URI[1] xmlns;
+    !ordered val Head[1]#html head;
+    !ordered val Body[1]#html body;
+  }
+
+  abstract class HeadMisc {
+  }
+
+  class Head {
+    !ordered val I18n[1] i18n;
+    !ordered val ID ~id;
+    !ordered val URI profile;
+    !ordered val HeadMisc[*] headmisc;
+    !ordered val HeadElement[1] headelement;
+    !ordered ref Html[1]#head html;
+  }
+
+  abstract class HeadElement {
+  }
+
+  class TitleHeadElement extends HeadElement {
+    !ordered val Title[1] title;
+    !ordered val HeadMisc[*] headmisc;
+    !ordered val BaseTitleHeadElement[+] baseTitleHeadElement;
+  }
+
+  class BaseTitleHeadElement {
+    !ordered val Base[1] base;
+    !ordered val HeadMisc[*] headmisc;
+  }
+
+  class BaseHeadElement extends HeadElement {
+    !ordered val Base[1] base;
+    !ordered val HeadMisc[*] headmisc;
+    !ordered val TitleBaseHeadElement[+] titleBaseHeadElement;
+  }
+
+  class TitleBaseHeadElement {
+    !ordered val Title[1] title;
+    !ordered val HeadMisc[*] headmisc;
+  }
+
+  class Title extends PCDATA {
+    !ordered val I18n[1] i18n;
+    !ordered val ID ~id;
+  }
+
+  class Base extends EMPTY {
+    !ordered val URI[1] href;
+    !ordered val ID ~id;
+  }
+
+  class Meta extends EMPTY, HeadMisc {
+    !ordered val I18n[1] i18n;
+    !ordered val ID ~id;
+    !ordered val CDATA httpequiv;
+    !ordered val CDATA name;
+    !ordered val CDATA content;
+    !ordered val CDATA scheme;
+  }
+
+  class Link extends EMPTY, Attrs, HeadMisc {
+    !ordered val Charset charset;
+    !ordered val URI href;
+    !ordered val LanguageCode hreflang;
+    !ordered val ContentType type;
+    !ordered val LinkTypes rel;
+    !ordered val LinkTypes rev;
+    !ordered val MediaDesc media;
+  }
+
+  class Style extends PCDATA, HeadMisc {
+    !ordered val I18n[1] i18n;
+    !ordered val ID ~id;
+    !ordered val ContentType[1] type;
+    !ordered val MediaDesc media;
+    !ordered val Text title;
+    !unique !ordered attr String[1] xml:space;
+  }
+
+  class Script extends PCDATA, Miscinline, HeadMisc {
+    !ordered val ID ~id;
+    !ordered val Charset charset;
+    !ordered val ContentType[1] type;
+    !ordered val URI src;
+    !unique !ordered attr String defer;
+    !unique !ordered attr String[1] xml:space;
+  }
+
+  class Noscript extends Attrs, Misc {
+    !ordered val Block[1] block;
+  }
+
+  class Body extends Attrs {
+    !ordered val Block[*] bodyElements;
+    !ordered val ScriptExpression onload;
+    !ordered val ScriptExpression onunload;
+    !ordered ref Html[1]#body html;
+  }
+
+  class Div extends Attrs, block, ButtonContent {
+    !ordered val Flow[*] divElements;
+  }
+
+  class P extends Attrs, block, ButtonContent {
+    !ordered val Inline[*] pElements;
+  }
+
+  class H1 extends Attrs, Heading {
+    !ordered val Inline[*] h1Elements;
+  }
+
+  class H2 extends Attrs, Heading {
+    !ordered val Inline[*] h2Elements;
+  }
+
+  class H3 extends Attrs, Heading {
+    !ordered val Inline[*] h3Elements;
+  }
+
+  class H4 extends Attrs, Heading {
+    !ordered val Inline[*] h4Elements;
+  }
+
+  class H5 extends Attrs, Heading {
+    !ordered val Inline[*] h5Elements;
+  }
+
+  class H6 extends Attrs, Heading {
+    !ordered val Inline[*] h6Elements;
+  }
+
+  class Ul extends Attrs, Lists {
+    !ordered val Li[+] li;
+  }
+
+  class Ol extends Attrs, Lists {
+    !ordered val Li[+] li;
+  }
+
+  class Li extends Attrs {
+    !ordered val Flow[*] liElements;
+  }
+
+  class Dl extends Attrs, Lists {
+    !ordered val DlElement[+] dlElements;
+  }
+
+  abstract class DlElement extends Attrs {
+  }
+
+  class Dt extends DlElement {
+    !ordered val Inline[*] dtElements;
+  }
+
+  class Dd extends DlElement {
+    !ordered val Flow[*] ddElements;
+  }
+
+  class Address extends Attrs, Blocktext {
+    !ordered val Inline[*] addressElements;
+  }
+
+  class Hr extends EMPTY, Attrs, Blocktext {
+  }
+
+  class Pre extends Attrs, Blocktext {
+    !ordered val PreContent[*] preElements;
+    !unique !ordered attr String[1] xml:space;
+  }
+
+  class Blockquote extends Attrs, Blocktext {
+    !ordered val Block[*] blockquoteElements;
+    !ordered val URI cite;
+  }
+
+  class Ins extends Attrs, Miscinline {
+    !ordered val Flow[*] flowelement;
+    !ordered val URI cite;
+    !ordered val Datetime datetime;
+  }
+
+  class Del extends Attrs, Miscinline {
+    !ordered val Flow[*] flowelement;
+    !ordered val URI cite;
+    !ordered val Datetime datetime;
+  }
+
+  class A extends Attrs, Focus, inline, PreContent {
+    !ordered val AContent[*] acontent;
+    !ordered val Charset charset;
+    !ordered val ContentType type;
+    !ordered val NMTOKEN name;
+    !ordered val URI href;
+    !ordered val LanguageCode hreflang;
+    !ordered val LinkTypes rel;
+    !ordered val LinkTypes rev;
+    !unique !ordered attr Shape[1] shape;
+    !ordered val Coords coords;
+  }
+
+  class Span extends Attrs, Specialpre {
+    !ordered ref Inline[*] spanElements;
+  }
+
+  class Bdo extends CoreAttrs, Events, Specialpre {
+    !ordered val Inline[*] bdoElements;
+    !ordered val LanguageCode lang;
+    !ordered val LanguageCode xml:lang;
+    !unique !ordered attr Direction[1] dir;
+  }
+
+  class Br extends EMPTY, CoreAttrs, Specialpre {
+  }
+
+  class Em extends Attrs, Phrase {
+    !ordered val Inline[*] emElements;
+  }
+
+  class Strong extends Attrs, Phrase {
+    !ordered val Inline[*] strongElements;
+  }
+
+  class Dfn extends Attrs, Phrase {
+    !ordered val Inline[*] dfnElements;
+  }
+
+  class Code extends Attrs, Phrase {
+    !ordered val Inline[*] codeElements;
+  }
+
+  class Samp extends Attrs, Phrase {
+    !ordered val Inline[*] sampElements;
+  }
+
+  class Kbd extends Attrs, Phrase {
+    !ordered val Inline[*] kbdElements;
+  }
+
+  class Var extends Attrs, Phrase {
+    !ordered val Inline[*] varElements;
+  }
+
+  class Cite extends Attrs, Phrase {
+    !ordered val Inline[*] citeElements;
+  }
+
+  class Abbr extends Attrs, Phrase {
+    !ordered val Inline[*] abbrElements;
+  }
+
+  class Acronym extends Attrs, Phrase {
+    !ordered val Inline[*] acronymElements;
+  }
+
+  class Q extends Attrs, Phrase {
+    !ordered val Inline[*] qElements;
+    !ordered val URI cite;
+  }
+
+  class Sub extends Attrs, Phrase {
+    !ordered val Inline[*] subElements;
+  }
+
+  class Sup extends Attrs, Phrase {
+    !ordered val Inline[*] supElements;
+  }
+
+  class Tt extends Attrs, Fontstyle {
+    !ordered val Inline[*] ttElements;
+  }
+
+  class I extends Attrs, Fontstyle {
+    !ordered val Inline[*] iElements;
+  }
+
+  class B extends Attrs, Fontstyle {
+    !ordered val Inline[*] bElements;
+  }
+
+  class Big extends Attrs, Fontstyle {
+    !ordered val Inline[*] bigElements;
+  }
+
+  class Small extends Attrs, Fontstyle {
+    !ordered val Inline[*] smallElements;
+  }
+
+  abstract class ObjectElement {
+    !ordered val PCDATA[*] objectpcdata;
+  }
+
+  class Object extends Attrs, Special, HeadMisc {
+    !ordered val ObjectElement[*] objectelement;
+    !unique !ordered attr Boolean declare;
+    !ordered val URI classid;
+    !ordered val URI codebase;
+    !ordered val URI data;
+    !ordered val ContentType type;
+    !ordered val ContentType codetype;
+    !ordered val UriList archive;
+    !ordered val Text standby;
+    !ordered val Length height;
+    !ordered val Length width;
+    !ordered val URI usemap;
+    !ordered val NMTOKEN name;
+    !ordered val Number tabindex;
+  }
+
+  enum ValueType {
+    data = 0;
+    ~ref = 0;
+    object = 0;
+  }
+
+  class Param extends EMPTY, ObjectElement {
+    !ordered val ID ~id;
+    !ordered val CDATA name;
+    !ordered val CDATA value;
+    !unique !ordered attr ValueType[1] valuetype;
+    !ordered val ContentType type;
+  }
+
+  class Img extends EMPTY, Attrs, Special {
+    !ordered val URI[1] src;
+    !ordered val Text[1] alt;
+    !ordered val URI longdesc;
+    !ordered val Length height;
+    !ordered val Length width;
+    !ordered val URI usemap;
+    !unique !ordered attr Boolean ismap;
+  }
+
+  class MapContent {
+    !ordered val MapElement[+] mapElements;
+  }
+
+  abstract class MapElement {
+  }
+
+  abstract class MapElementContent {
+  }
+
+  class Map extends I18n, Events, Specialpre {
+    !ordered val MapContent[1] mapelement;
+    !ordered val ID[1] ~id;
+    !ordered val CDATA ~class;
+    !ordered val StyleSheet style;
+    !ordered val Text title;
+    !ordered val NMTOKEN name;
+  }
+
+  class Area extends EMPTY, Attrs, Focus, MapElement {
+    !unique !ordered attr Shape[1] shape;
+    !ordered val Coords coords;
+    !ordered val URI href;
+    !unique !ordered attr Boolean nohref;
+    !ordered val Text[1] alt;
+  }
+
+  enum FomeMethod {
+    get = 0;
+    post = 0;
+  }
+
+  class Form extends Attrs, Block, ObjectElement, MapElementContent, FieldsetElement {
+    !ordered val FormContent[*] formelement;
+    !ordered val URI[1] action;
+    !unique !ordered attr FomeMethod[1] method;
+    !ordered val ContentType[1] enctype;
+    !ordered val ScriptExpression onsubmit;
+    !ordered val ScriptExpression onreset;
+    !ordered val ContentTypes accept;
+    !ordered val Charsets accept-charset;
+  }
+
+  class Label extends Attrs, Inlineforms {
+    !ordered val Inline[*] labelelements;
+    !ordered val IDREF[1] for;
+    !ordered val Character accesskey;
+    !ordered val ScriptExpression onfocus;
+    !ordered val ScriptExpression onblur;
+  }
+
+  enum InputType {
+    text = 0;
+    password = 0;
+    checkbox = 0;
+    radio = 0;
+    submit = 0;
+    reset = 0;
+    file = 0;
+    hidden = 0;
+    image = 0;
+    button = 0;
+  }
+
+  class Input extends EMPTY, Attrs, Focus, Inlineforms {
+    !unique !ordered attr InputType[1] type;
+    !ordered val CDATA name;
+    !ordered val CDATA value;
+    !unique !ordered attr Boolean checked;
+    !unique !ordered attr Boolean disabled;
+    !unique !ordered attr Boolean ~readonly;
+    !ordered val CDATA size;
+    !ordered val Number maxlength;
+    !ordered val URI src;
+    !ordered val CDATA alt;
+    !ordered val URI usemap;
+    !ordered val ScriptExpression onselect;
+    !ordered val ScriptExpression onchange;
+    !ordered val ContentTypes accept;
+  }
+
+  class Select extends Attrs, Inlineforms {
+    !ordered val SelectElement[+] selectelement;
+    !ordered val CDATA name;
+    !ordered val Number size;
+    !unique !ordered attr Boolean multiple;
+    !unique !ordered attr Boolean disabled;
+    !ordered val Number tabindex;
+    !ordered val ScriptExpression onfocus;
+    !ordered val ScriptExpression onblur;
+    !ordered val ScriptExpression onchange;
+  }
+
+  abstract class SelectElement {
+  }
+
+  class Optgroup extends SelectElement, Attrs {
+    !ordered val Option[+] options;
+    !unique !ordered attr Boolean disabled;
+    !ordered val Text[1] label;
+  }
+
+  class Option extends SelectElement, PCDATA, Attrs {
+    !unique !ordered attr Boolean selected;
+    !unique !ordered attr Boolean disabled;
+    !ordered val Text label;
+    !ordered val CDATA optionvalue;
+  }
+
+  class Textarea extends PCDATA, Attrs, Focus, Inlineforms {
+    !ordered val CDATA name;
+    !ordered val Number[1] rows;
+    !ordered val Number[1] cols;
+    !unique !ordered attr Boolean disabled;
+    !unique !ordered attr Boolean ~readonly;
+    !ordered val ScriptExpression onselect;
+    !ordered val ScriptExpression onchange;
+  }
+
+  abstract class FieldsetElement {
+    !ordered val PCDATA[*] fieldsetpcdata;
+  }
+
+  class Fieldset extends Attrs, block {
+    !ordered val FieldsetElement[*] fieldsetelements;
+  }
+
+  class Legend extends Attrs, FieldsetElement {
+    !ordered val Inline[*] legendelement;
+    !ordered val Character accesskey;
+  }
+
+  enum ButtonType {
+    button = 0;
+    submit = 0;
+    reset = 0;
+  }
+
+  class Button extends Attrs, Focus, Inlineforms {
+    !ordered val ButtonContent[*] buttoncontent;
+    !ordered val CDATA name;
+    !ordered val CDATA value;
+    !unique !ordered attr ButtonType[1] type;
+    !unique !ordered attr Boolean disabled;
+  }
+
+  enum TFrame {
+    ~void = 0;
+    above = 0;
+    below = 0;
+    hsides = 0;
+    lhs = 0;
+    rhs = 0;
+    vsides = 0;
+    box = 0;
+    border = 0;
+  }
+
+  enum TRules {
+    none = 0;
+    groups = 0;
+    rows = 0;
+    cols = 0;
+    all = 0;
+  }
+
+  enum CellHAlign {
+    left = 0;
+    center = 0;
+    right = 0;
+    justify = 0;
+    char = 0;
+  }
+
+  abstract class Cellhalign {
+    !unique !ordered attr CellHAlign align;
+    !ordered val Character char;
+    !ordered val Length charoff;
+  }
+
+  enum CellVAlign {
+    top = 0;
+    middle = 0;
+    bottom = 0;
+    baseline = 0;
+  }
+
+  abstract class Cellvalign {
+    !unique !ordered attr CellVAlign valign;
+  }
+
+  class Table extends Attrs, block, ButtonContent {
+    !ordered val Caption[+] caption;
+    !ordered val ColElement[1] colelement;
+    !ordered val Thead[1] thead;
+    !ordered val Tfoot[1] tfoot;
+    !ordered val TableElement[1] tableelement;
+    !ordered val Text summary;
+    !ordered val Length width;
+    !ordered val Pixels border;
+    !unique !ordered attr TFrame frame;
+    !unique !ordered attr TRules rules;
+    !ordered val Length cellspacing;
+    !ordered val Length cellpadding;
+  }
+
+  class ColElement {
+    !ordered val Col[*] cols;
+    !ordered val Colgroup[*] colgroup;
+  }
+
+  class TableElement {
+    !ordered val Tbody[+] tbody;
+    !ordered val Tr[+] tr;
+  }
+
+  class Caption extends Attrs {
+    !ordered val Inline[*] captionelement;
+  }
+
+  class Thead extends Attrs, Cellhalign, Cellvalign {
+    !ordered val Tr[+] tr;
+  }
+
+  class Tfoot extends Attrs, Cellhalign, Cellvalign {
+    !ordered val Tr[+] tr;
+  }
+
+  class Tbody extends Attrs, Cellhalign, Cellvalign {
+    !ordered val Tr[+] tr;
+  }
+
+  class Colgroup extends Attrs, Cellhalign, Cellvalign {
+    !ordered val Col[*] cols;
+    !ordered val Number[1] span;
+    !ordered val MultiLength width;
+  }
+
+  class Col extends EMPTY, Attrs, Cellhalign, Cellvalign {
+    !ordered val Number[1] span;
+    !ordered val MultiLength width;
+  }
+
+  class Tr extends Attrs, Cellhalign, Cellvalign {
+    !ordered val TrElement[+] trelements;
+  }
+
+  abstract class TrElement {
+  }
+
+  enum Scope {
+    row = 0;
+    col = 0;
+    rowgroup = 0;
+    colgroup = 0;
+  }
+
+  class Th extends TrElement, Attrs, Cellvalign, Cellhalign {
+    !ordered val Flow[*] thelement;
+    !ordered val Text abbr;
+    !ordered val CDATA axis;
+    !ordered val IDREFS headers;
+    !unique !ordered attr Scope scope;
+    !ordered val Number[1] rowspan;
+    !ordered val Number[1] colspan;
+  }
+
+  class Td extends TrElement, Attrs, Cellvalign, Cellhalign {
+    !ordered val Flow[*] tdelement;
+    !ordered val Text abbr;
+    !ordered val CDATA axis;
+    !ordered val IDREFS headers;
+    !unique !ordered attr Scope scope;
+    !ordered val Number[1] rowspan;
+    !ordered val Number[1] colspan;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+  datatype Boolean : "";
+
+}
+

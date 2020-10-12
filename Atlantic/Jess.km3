@@ -1,0 +1,238 @@
+-- @name		Jess
+-- @version		1.0
+-- @authors		Guillaume Doux (guillaume.doux <at> inria.fr)
+-- @date		2008/04/08
+-- @description	A metamodel for the Jess Rule Language.
+-- @see			http://www.jessrules.com/
+package Jess {
+
+	-- Every class should extend LocatedElement, directly or indirectly.
+	-- This is a technical constraint to support text-to-model traceability.
+	abstract class LocatedElement {
+		attribute location[0-1] : String;
+		attribute commentsBefore[*] ordered : String;
+		attribute commentsAfter[*] ordered : String;
+	}
+
+-- BEGIN DSL-specific classes (replace sample contents)
+	class Root extends LocatedElement {
+		reference expressions[*] ordered container : Expression;
+	}
+	
+	abstract class Expression extends LocatedElement {
+	}
+	
+	-- simple types
+	class Integ extends Expression {
+		attribute val: Integer;
+	}
+	
+	class Floa extends Expression {
+		attribute val : Double;
+	}
+	
+	class Str extends Expression {
+		attribute val : String;
+	}
+	
+	
+	abstract class Ident extends Expression {
+	}
+	
+	class ValidIdentifier extends Ident {
+		attribute val : String;
+	}
+	
+	class SlotName extends Ident {
+		attribute val : String;
+	}
+		
+	class JessVariable extends Ident {
+		attribute val : String;
+	}
+	
+	class TemplateExpression extends Expression {
+		reference templateName container: ValidIdentifier;
+		reference firstSlot container : SlotOp; -- the number of slots is 1..n
+		reference slotOp[*] ordered container : SlotOp;	-- the first slot is mandatory
+	}
+	
+	class SlotOp extends LocatedElement {
+		reference slotIdent container : SlotName;
+		reference operator container : ValidIdentifier;
+		reference exp container: Expression;
+	}
+	
+	
+	
+	-- 2 types of expressions
+	
+	-- expressions of definitions
+	abstract class DefinitionExp extends Expression {
+	}
+	
+	class GlobalDefinition extends DefinitionExp {
+		reference varDef[*] ordered container : VarDefinition;
+	}
+	
+	class VarDefinition extends LocatedElement {
+		reference jessVar container : JessVariable;
+		reference eq container : ValidIdentifier;
+		reference expression container : Expression;
+	}
+	
+	class FunctionDefinition extends DefinitionExp {
+		reference funcName container : ValidIdentifier;
+		reference parameters[*] ordered container : JessVariable;
+		reference expressions[*] ordered container : Expression;
+	}
+	
+	class AdviceDefinition extends DefinitionExp {
+		attribute direction : Advice;
+		reference op container: Ident;
+		reference advice[*] ordered container: Expression;
+	}
+	
+	class UnDefAdvice extends DefinitionExp {
+		reference op container: Expression;
+	} 
+	
+	class FactDefinition extends DefinitionExp {
+		reference factName container: ValidIdentifier;
+		reference documentation[0-1] container: Str;
+		reference fact[*] ordered container: Expression;
+	}
+	
+	class RuleDefinition extends DefinitionExp {
+		reference ruleName container: ValidIdentifier;
+		reference documentation[0-1] container: Str;
+		reference declare[0-1] container: DeclareRule;
+		reference conditions[*] ordered container: Expression;
+		reference functionCall[*] ordered container: UseFuncExp;
+	}
+	
+	class DeclareRule extends LocatedElement {
+		reference salience[0-1] container: Expression;
+		reference nodeIndexHash[0-1] container: Expression;
+		reference autoFocus[0-1] container: ValidIdentifier;
+		reference noLoop[0-1] container: ValidIdentifier;	
+	}
+	
+	class ModuleDefinition extends DefinitionExp {
+		reference moduleName container: ValidIdentifier;
+		reference documentation[0-1] container: Str;
+	}
+	
+	class QueryDefinition extends DefinitionExp {
+		reference queryName container: ValidIdentifier;
+		reference documentation[0-1] container: Str;
+		reference declare[0-1] container: DeclareVar;
+		reference expressions[*] ordered container: Expression;
+	}
+	
+	class DeclareVar extends LocatedElement {
+		reference var[*] ordered container: JessVariable;
+		reference node container: Expression;
+		reference max container: Expression;
+	}
+	
+	class TemplateDefinition extends DefinitionExp {
+		reference templateName container: ValidIdentifier;
+		reference inherits[*] ordered container: ValidIdentifier;
+		reference documentation[0-1] container: Str;
+		reference declareBloc[0-1] container: DeclareBloc;
+		reference slotDef[*] container: ASlotDef; 
+	}
+	
+	class DeclareBloc extends LocatedElement {
+		reference slotSpecific[0-1] container: ValidIdentifier;
+		reference backchainReaction[0-1] container: ValidIdentifier;
+		reference fromClass[0-1] container: ValidIdentifier;
+		reference includeVariable[0-1] container: ValidIdentifier;
+		reference order[0-1] container: ValidIdentifier;
+	}
+	
+	class ASlotDef extends LocatedElement {
+		reference slotName container: SlotName;
+		reference optionals[*] ordered container: SlotOptions;
+	}
+	
+	class SlotDef extends ASlotDef {
+	}
+	
+	class MultiSlotDef extends ASlotDef {
+	}
+	
+	class SlotOptions extends LocatedElement {
+		reference type container: ValidIdentifier;
+		reference def container: Expression;
+		reference defaultDyn container: Expression;
+		reference allowedValues[*] ordered container: Expression;
+	}
+	
+	-- expressions of use 
+	abstract class UseFuncExp extends Expression {
+	}
+	
+	class WhileExp extends UseFuncExp {
+		attribute hasDo : Boolean;
+		reference boolExp container: Expression;
+		reference actions[*] ordered container: Expression;
+	}
+	
+	class ForExp extends UseFuncExp {
+		reference initializer container: Expression;
+		reference condition container: Expression;
+		reference increment container: Expression;
+		reference expressions[*] ordered container: Expression;
+	}
+	
+	class ForeachExp extends UseFuncExp {
+		reference var container: JessVariable;
+		reference list container: Expression;
+		reference expressions[*] ordered container: Expression;
+	} 
+	
+	class FuncCall extends UseFuncExp {
+		reference funcName container : ValidIdentifier;
+		reference funcParam[*] ordered container : Expression;
+	}
+	
+	class EngineExp extends UseFuncExp {
+	}
+	
+	class ExitExp extends UseFuncExp {
+	}
+	
+	class IfExpression extends UseFuncExp {
+		reference ifthen container: ConditionAction;
+		reference elifthen[*] ordered container: ElifConditionAction;
+		reference else[*] container: Expression;
+	}
+	
+	
+	class ConditionAction extends LocatedElement {
+		reference condition container: Expression;
+		reference actions[*] ordered container: Expression;
+	}
+	
+	class ElifConditionAction extends LocatedElement {
+		reference condAct container: ConditionAction; 
+	}
+	
+	--enumerations
+	enumeration Advice {
+		literal before;
+		literal after;
+	}
+
+		
+-- END DSL-specific classes
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+	datatype Double;
+}

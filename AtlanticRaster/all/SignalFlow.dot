@@ -1,0 +1,64 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_SignalFlow"{
+labelloc=t
+color=black
+label=SignalFlow
+ node[shape=record];
+RootFolder[label="{RootFolder| | }"]
+;
+ node[shape=record];
+CompoundComponent[label="{CompoundComponent| | }"]
+ CompoundComponent->RootFolder[arrowhead=diamond,arrowtail=none,headlabel="rootFolder",taillabel="compoundComponent[*]",group=RootFolder,minlen=2,constraint=true,]
+ CompoundComponent->BaseComponent[arrowhead=onormal,group=BaseComponent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PrimitiveComponent[label="{PrimitiveComponent| | }"]
+ PrimitiveComponent->BaseComponent[arrowhead=onormal,group=BaseComponent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BaseComponent[label="{BaseComponent|name : String\nposition[0-1] : String| }"]
+ BaseComponent->CompoundComponent[arrowhead=diamond,arrowtail=none,headlabel="compoundComponent",taillabel="baseComponent[*]",group=CompoundComponent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InputPort[label="{InputPort| | }"]
+ InputPort->BaseComponent[arrowhead=diamond,arrowtail=none,headlabel="baseComponent",taillabel="inputPort[*]",group=BaseComponent,minlen=2,constraint=true,]
+ InputPort->PortBase[arrowhead=onormal,group=PortBase,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LocalPort[label="{LocalPort| | }"]
+ LocalPort->CompoundComponent[arrowhead=diamond,arrowtail=none,headlabel="compoundComponent",taillabel="localPort[*]",group=CompoundComponent,minlen=2,constraint=true,]
+ LocalPort->PortBase[arrowhead=onormal,group=PortBase,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OutputPort[label="{OutputPort| | }"]
+ OutputPort->BaseComponent[arrowhead=diamond,arrowtail=none,headlabel="baseComponent",taillabel="outputPort[*]",group=BaseComponent,minlen=2,constraint=true,]
+ OutputPort->PortBase[arrowhead=onormal,group=PortBase,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PortBase[label="{PortBase|name : String\nposition[0-1] : String| }"]
+ PortBase->AssociationPortBase_PortBase[arrowhead=none,arrowtail=none,headlabel="associationPortBase_PortBasedst",taillabel="dstPortBase[1-*]",group=AssociationPortBase_PortBase,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Signal[label="{Signal|name : String\nposition[0-1] : String| }"]
+ Signal->BaseComponent[arrowhead=diamond,arrowtail=none,headlabel="baseComponent",taillabel="signal[*]",group=BaseComponent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AssociationPortBase_PortBase[label="{AssociationPortBase_PortBase| | }"]
+ AssociationPortBase_PortBase->PortBase[arrowhead=none,arrowtail=none,headlabel="srcPortBase[1-*]",taillabel="associationPortBase_PortBasesrc",group=PortBase,minlen=2,constraint=false,]
+ AssociationPortBase_PortBase->Signal[arrowhead=none,arrowtail=none,headlabel="signal",taillabel="associationPortBase_PortBase",group=Signal,minlen=2,constraint=false,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

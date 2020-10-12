@@ -1,0 +1,82 @@
+package Metamodel;
+
+package ExtendedUMLCorePackage {
+  class Package extends ProviderClause {
+  }
+
+  class ProviderClause {
+    !ordered val CollaborationPackage[1] ownedEltColl;
+    !ordered ref InteractionPackage[*]#providerClause ownedEltInt;
+  }
+
+  class CollaborationPackage {
+    !ordered ref Collaboration[1] ownedElt;
+  }
+
+  class Collaboration {
+    !ordered val Interaction[*]#context interaction;
+    !ordered val AssociationRole[1] ownedEltAss;
+    !ordered val ClassifierRole[1] ownedEltClass;
+  }
+
+  class InteractionPackage {
+    !ordered ref ProviderClause[1]#ownedEltInt providerClause;
+    !ordered ref Interaction[1] ownedElt;
+  }
+
+  class Interaction {
+    !ordered ref Collaboration[1]#interaction context;
+    !ordered val Message[+]#interaction message;
+  }
+
+  class AssociationRole {
+    !ordered val AssociationEndRole[2]#associationRole connection;
+  }
+
+  class ClassifierRole {
+    !ordered val AssociationEndRole[*]#type associationEndRole;
+    !ordered ref Message[1]#receiver receiverMess;
+    !ordered ref Message[1]#sender senderMess;
+    !ordered val Operation[*]#classifierRole availableFeature;
+    !ordered ref Interface[1]#classifierRole base;
+  }
+
+  class AssociationEndRole {
+    !ordered ref AssociationRole[1]#connection associationRole;
+    !ordered ref ClassifierRole[1]#associationEndRole type;
+  }
+
+  class Message {
+    !ordered ref Message[*]#activator message;
+    !ordered ref Message#message activator;
+    !ordered ref Interaction[*]#message interaction;
+    !ordered ref ClassifierRole[1]#receiverMess receiver;
+    !ordered ref ClassifierRole[1]#senderMess sender;
+    !ordered ref Request[1]#message specification;
+  }
+
+  class Request {
+    !ordered ref Message[*]#specification message;
+  }
+
+  class Operation extends Request {
+    !ordered ref ClassifierRole[*]#availableFeature classifierRole;
+    !ordered ref Interface[1]#feature owner;
+  }
+
+  class Interface {
+    !ordered ref ClassifierRole[*]#base classifierRole;
+    !ordered val Operation[*]#owner feature;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

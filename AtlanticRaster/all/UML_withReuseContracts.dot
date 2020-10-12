@@ -1,0 +1,62 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_UMLWithReuseContrats"{
+labelloc=t
+color=black
+label=UMLWithReuseContrats
+ node[shape=record];
+ReuseContract[label="{ReuseContract| | }"]
+ ReuseContract->ProviderClause[arrowhead=vee,arrowtail=none,headlabel="supplier",group=ProviderClause,minlen=2,constraint=false,]
+ ReuseContract->ReuserClause[arrowhead=vee,arrowtail=none,headlabel="client",group=ReuserClause,minlen=2,constraint=false,]
+ ReuseContract->Dependency[arrowhead=onormal,group=Dependency,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Dependency[label="{Dependency| | }"]
+ Dependency->Dependency[arrowhead=diamond,arrowtail=none,headlabel="owningDependency[0-1]",taillabel="subDependency[*]",group=Dependency,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ProviderClause[label="{ProviderClause| | }"]
+ ProviderClause->Package[arrowhead=onormal,group=Package,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Package[label="{Package| | }"]
+;
+ node[shape=record];
+ReuserClause[label="{ReuserClause| | }"]
+ ReuserClause->Package[arrowhead=onormal,group=Package,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompositeProvider[label="{CompositeProvider| | }"]
+ CompositeProvider->ReuseContract[arrowhead=vee,arrowtail=diamond,headlabel="subcontract",group=ReuseContract,minlen=2,constraint=true,]
+ CompositeProvider->ProviderClause[arrowhead=onormal,group=ProviderClause,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BasicProvider[label="{BasicProvider| | }"]
+ BasicProvider->ProviderClause[arrowhead=onormal,group=ProviderClause,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompositeReuser[label="{CompositeReuser| | }"]
+ CompositeReuser->ReuserClause[arrowhead=vee,arrowtail=diamond,headlabel="subreuser[*]{ordered}",group=ReuserClause,minlen=2,constraint=true,]
+ CompositeReuser->ReuserClause[arrowhead=onormal,group=ReuserClause,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BasicReuser[label="{BasicReuser| | }"]
+ BasicReuser->ReuserClause[arrowhead=onormal,group=ReuserClause,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

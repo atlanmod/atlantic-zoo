@@ -1,0 +1,688 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'edas'>
+    <Class name = 'Thing' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Meta-Reviewer' isAbstract = 'false' supertypes = 'edas::Reviewer'/>
+    <Class name = 'Reviewer' isAbstract = 'false' supertypes = 'edas::ConferenceMember, edas::User, edas::Person'>
+      <Reference name = 'invites_co-reviewers' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Reviewer' opposite = ''/>
+      <Reference name = 'invited_by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Reviewer' opposite = ''/>
+      <Reference name = 'has_a_review_reference_or_expertise' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'edas::Thing' opposite = ''/>
+      <Reference name = 'writes_review' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Review' opposite = 'edas::Review::review_written_by'/>
+      <Reference name = 'hasReviewHistory' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::PersonalReviewHistory' opposite = 'edas::PersonalReviewHistory::isReviewHistoryOf'/>
+      <Reference name = 'assignedByAdministrator' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Administrator' opposite = ''/>
+      <Reference name = 'adjustBid' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Bid' opposite = 'edas::Bid::adjustedBy'/>
+      <Reference name = 'readPaper' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Paper' opposite = ''/>
+      <Reference name = 'hasBeenAssigned' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Paper' opposite = ''/>
+      <Reference name = 'writeReview' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Review' opposite = ''/>
+      <Reference name = 'assignExternalReviewer' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::ExternalReviewer' opposite = 'edas::ExternalReviewer::assignedByReviewer'/>
+    </Class>
+    <Class name = 'Decision' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Preference' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'ProgramCommittee' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'hasProgramCommitteeMember' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::ProgramCommitteeMember' opposite = 'edas::ProgramCommitteeMember::memberOfProgramCommittee'/>
+    </Class>
+    <Class name = 'Bid' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'adjustedBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Reviewer' opposite = ''/>
+    </Class>
+    <Class name = 'ConferenceChair' isAbstract = 'false' supertypes = 'edas::ConferenceMember, edas::Chairman'/>
+    <Class name = 'ConferenceMember' isAbstract = 'false' supertypes = 'edas::Person'>
+      <Reference name = 'memberOfConference' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference' opposite = ''/>
+    </Class>
+    <Class name = 'AssociatedChair' isAbstract = 'false' supertypes = 'edas::ConferenceMember, edas::Chairman'/>
+    <Class name = 'ProgramCommitteeMember' isAbstract = 'false' supertypes = 'edas::Person, edas::ConferenceMember'>
+      <Reference name = 'memberOfProgramCommittee' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::ProgramCommittee' opposite = 'edas::ProgramCommittee::hasProgramCommitteeMember'/>
+      <Attribute name = 'maxPapers' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'addedBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Administrator' opposite = ''/>
+    </Class>
+    <Class name = 'AuthorNotReviewer' isAbstract = 'false' supertypes = 'edas::Author'/>
+    <Class name = 'SubjectArea' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'ExternalReviewer' isAbstract = 'false' supertypes = 'edas::Person'>
+      <Reference name = 'assignedByReviewer' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Reviewer' opposite = ''/>
+    </Class>
+    <Class name = 'Chairman' isAbstract = 'false' supertypes = 'edas::Person, edas::ConferenceMember'/>
+    <Class name = 'ProgramCommitteeChair' isAbstract = 'false' supertypes = 'edas::ProgramCommitteeMember, edas::Chairman'>
+      <Reference name = 'endReview' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Review' opposite = ''/>
+    </Class>
+    <Class name = 'Acceptance' isAbstract = 'false' supertypes = 'edas::Decision'/>
+    <Class name = 'Rejection' isAbstract = 'false' supertypes = 'edas::Decision'/>
+    <Class name = 'Paper' isAbstract = 'false' supertypes = 'edas::Document, edas::article, edas::Regular_contribution, edas::Contribution'>
+      <Reference name = 'isWrittenBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Author' opposite = 'edas::Author::hasRelatedPaper'/>
+      <Reference name = 'isReviewedBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'edas::Person' opposite = ''/>
+      <Attribute name = 'full_paper_size' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'has_author' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::human' opposite = ''/>
+      <Reference name = 'hasCo-author' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Co-author' opposite = 'edas::Co-author::co-writePaper'/>
+      <Reference name = 'hasBid' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Bid' opposite = ''/>
+      <Reference name = 'hasDecision' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Decision' opposite = ''/>
+      <Reference name = 'assignedTo' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Reviewer' opposite = ''/>
+      <Reference name = 'hasSubjectArea' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::SubjectArea' opposite = ''/>
+      <Reference name = 'readByReviewer' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Reviewer' opposite = ''/>
+      <Attribute name = 'paperID' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::unsignedLong'/>
+      <Attribute name = 'title' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'hasAuthor' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Author' opposite = ''/>
+      <Reference name = 'acceptedBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Administrator' opposite = ''/>
+      <Reference name = 'rejectedBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Administrator' opposite = ''/>
+      <Reference name = 'readByMeta-Reviewer' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Meta-Reviewer' opposite = ''/>
+    </Class>
+    <Class name = 'Co-author' isAbstract = 'false' supertypes = 'edas::Author'>
+      <Reference name = 'co-writePaper' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Paper' opposite = ''/>
+    </Class>
+    <Class name = 'PaperAbstract' isAbstract = 'false' supertypes = 'edas::Paper'/>
+    <Class name = 'PaperFullVersion' isAbstract = 'false' supertypes = 'edas::Paper'/>
+    <Class name = 'Administrator' isAbstract = 'false' supertypes = 'edas::User, edas::Person'>
+      <Reference name = 'approve' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Event' opposite = ''/>
+      <Reference name = 'assign' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Role' opposite = 'edas::Role::assigned_by'/>
+      <Reference name = 'finalizePaperAssignment' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference' opposite = ''/>
+      <Reference name = 'runPaperAssignmentTools' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference' opposite = ''/>
+      <Reference name = 'enableVirtualMeeting' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference' opposite = ''/>
+      <Reference name = 'startReviewerBidding' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference' opposite = ''/>
+      <Reference name = 'assignReviewer' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Reviewer' opposite = ''/>
+      <Reference name = 'rejectPaper' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Paper' opposite = ''/>
+      <Reference name = 'enterConferenceDetails' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference' opposite = ''/>
+      <Reference name = 'printHardcopyMailingManifests' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference' opposite = ''/>
+      <Reference name = 'setMaxPapers' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::ProgramCommitteeMember' opposite = ''/>
+      <Reference name = 'enterReviewCriteria' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference' opposite = ''/>
+      <Reference name = 'acceptPaper' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Paper' opposite = ''/>
+      <Reference name = 'addProgramCommitteeMember' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::ProgramCommitteeMember' opposite = 'edas::ProgramCommitteeMember::addedBy'/>
+    </Class>
+    <Class name = 'Meta-Review' isAbstract = 'false' supertypes = 'edas::Review'/>
+    <DataType name = 'unsignedLong'/>
+    <DataType name = 'anyURI'/>
+    <Class name = 'Event' isAbstract = 'false' supertypes = 'edas::Thing'>
+      <Reference name = 'conists_of' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Event_Tracks' opposite = ''/>
+      <Reference name = 'confirmed_by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Approval_Email' opposite = 'edas::Approval_Email::confirm'/>
+      <Reference name = 'defined_by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Event_Setup' opposite = 'edas::Event_Setup::define'/>
+      <Reference name = 'approved_by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Administrator' opposite = 'edas::Administrator::approve'/>
+      <Attribute name = 'starts_on' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'ends_on' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'has_startdate' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::dateTime'/>
+      <Attribute name = 'has_enddate' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::dateTime'/>
+    </Class>
+    <Class name = 'Account' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'registred_by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Person' opposite = 'edas::Person::register'/>
+    </Class>
+    <Class name = 'Inforamtion' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'User' isAbstract = 'false' supertypes = 'edas::Person'>
+      <Reference name = 'recieve' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Document' opposite = 'edas::Document::recieved_by'/>
+      <Reference name = 'create' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'edas::Thing' opposite = ''/>
+      <Reference name = 'submit' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Document' opposite = 'edas::Document::submited__by'/>
+    </Class>
+    <Class name = 'Role' isAbstract = 'false' supertypes = 'edas::Thing'>
+      <Reference name = 'assigned_by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Administrator' opposite = 'edas::Administrator::assign'/>
+    </Class>
+    <Class name = 'Help_Request' isAbstract = 'false' supertypes = 'edas::Request'/>
+    <Class name = 'Person' isAbstract = 'false' supertypes = 'edas::Thing'>
+      <Reference name = 'hasConflictOfInterest' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Document' opposite = ''/>
+      <Attribute name = 'email' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'inverse_of_add' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'edas::Thing' opposite = ''/>
+      <Reference name = 'execute' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'edas::Thing' opposite = ''/>
+      <Reference name = 'get' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Inforamtion' opposite = ''/>
+      <Reference name = 'use' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Document' opposite = 'edas::Document::used_by'/>
+      <Reference name = 'register' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Account' opposite = 'edas::Account::registred_by'/>
+      <Reference name = 'modify' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'edas::Thing' opposite = ''/>
+      <Reference name = 'take_part_in' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Event' opposite = ''/>
+      <Reference name = 'remove' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'edas::Thing' opposite = ''/>
+      <Reference name = 'add' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Person' opposite = ''/>
+      <Reference name = 'send' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Activity' opposite = 'edas::Activity::sent_by'/>
+      <Reference name = 'added_by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Person' opposite = ''/>
+      <Reference name = 'attendeeAt' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::ConferenceEvent' opposite = 'edas::ConferenceEvent::hasAttendee'/>
+      <Reference name = 'isMemberOf' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference' opposite = 'edas::Conference::hasMember'/>
+      <Attribute name = 'hasFirstName' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'hasBiography' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'hasLastName' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'employedBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Organization' opposite = ''/>
+      <Attribute name = 'hasHomePage' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'hasSurname' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'hasFax' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'hasFirstName' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'hasPhone' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'hasEmail' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'contributes' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference_document' opposite = 'edas::Conference_document::has_authors'/>
+      <Attribute name = 'has_an_email' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'has_the_first_name' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'has_gender' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::EEnum'/>
+      <Attribute name = 'has_the_last_name' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Symposium' isAbstract = 'false' supertypes = 'edas::Event'/>
+    <Class name = 'Abstract' isAbstract = 'false' supertypes = 'edas::Paper'/>
+    <Class name = 'Document' isAbstract = 'false' supertypes = 'edas::Thing'>
+      <Reference name = 'relatesTo' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'edas::Thing' opposite = ''/>
+      <Reference name = 'recieved_by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::User' opposite = 'edas::User::recieve'/>
+      <Reference name = 'used_by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Person' opposite = 'edas::Person::use'/>
+      <Reference name = 'submited__by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::User' opposite = 'edas::User::submit'/>
+    </Class>
+    <Class name = 'Invited_Paper' isAbstract = 'false' supertypes = 'edas::Paper'/>
+    <Class name = 'Admin_Role' isAbstract = 'false' supertypes = 'edas::Role'/>
+    <Class name = 'Paper_Typologies' isAbstract = 'false' supertypes = 'edas::Event_Setup'/>
+    <Class name = 'Event_Setup' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'define' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Event' opposite = ''/>
+    </Class>
+    <Class name = 'Event_URL' isAbstract = 'false' supertypes = 'edas::URL'>
+      <Reference name = 'concerned' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Event' opposite = ''/>
+    </Class>
+    <Class name = 'Notification_Email' isAbstract = 'false' supertypes = 'edas::Email'/>
+    <Class name = 'Email' isAbstract = 'false' supertypes = 'edas::Document'/>
+    <Class name = 'Short_Paper' isAbstract = 'false' supertypes = 'edas::Paper'/>
+    <Class name = 'Author_Role' isAbstract = 'false' supertypes = 'edas::Role'/>
+    <Class name = 'Preview' isAbstract = 'false' supertypes = 'edas::Review_Form'/>
+    <Class name = 'Review_Form' isAbstract = 'false' supertypes = 'edas::Event_Setup'/>
+    <Class name = 'Committe_Role' isAbstract = 'false' supertypes = 'edas::Role'/>
+    <Class name = 'Group_Email' isAbstract = 'false' supertypes = 'edas::Email'/>
+    <Class name = 'Submission_Template' isAbstract = 'false' supertypes = 'edas::Event_Setup'/>
+    <Class name = 'Review_Form_Setup' isAbstract = 'false' supertypes = 'edas::Review_Form'/>
+    <Class name = 'Misc' isAbstract = 'false' supertypes = 'edas::Help_Request'/>
+    <Class name = 'Event_Creation' isAbstract = 'false' supertypes = 'edas::Activity'/>
+    <Class name = 'Approval_Email' isAbstract = 'false' supertypes = 'edas::Email'>
+      <Reference name = 'confirm' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Event' opposite = ''/>
+    </Class>
+    <Class name = 'Rejection_Email' isAbstract = 'false' supertypes = 'edas::Email'/>
+    <Class name = 'Submission' isAbstract = 'false' supertypes = 'edas::Document'/>
+    <Class name = 'Template' isAbstract = 'false' supertypes = 'edas::Document'/>
+    <Class name = 'Feature_Request' isAbstract = 'false' supertypes = 'edas::Help_Request'/>
+    <Class name = 'Event_Tracks' isAbstract = 'false' supertypes = 'edas::Event_Setup'/>
+    <Class name = 'Request' isAbstract = 'false' supertypes = 'edas::Activity'/>
+    <Class name = 'Activity' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'has_result' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'edas::Thing' opposite = ''/>
+      <Reference name = 'sent_by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Person' opposite = 'edas::Person::send'/>
+    </Class>
+    <Class name = 'Head_Role' isAbstract = 'false' supertypes = 'edas::Role'/>
+    <Class name = 'Detail' isAbstract = 'false' supertypes = 'edas::Thing'/>
+    <Class name = 'Corresponding_Author' isAbstract = 'false' supertypes = 'edas::Author'/>
+    <Class name = 'Reviewer_Role' isAbstract = 'false' supertypes = 'edas::Role'/>
+    <Class name = 'Event_Approval' isAbstract = 'false' supertypes = 'edas::Activity'/>
+    <Class name = 'Registration' isAbstract = 'false' supertypes = 'edas::Activity'/>
+    <Class name = 'Full_Paper' isAbstract = 'false' supertypes = 'edas::Paper'/>
+    <Class name = 'Research_Topic' isAbstract = 'false' supertypes = 'edas::Event_Setup'/>
+    <Class name = 'Description' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Conference' isAbstract = 'false' supertypes = 'edas::Event, edas::Thing, edas::Working_event'>
+      <Reference name = 'is_in_phase' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::phase_of_conference' opposite = ''/>
+      <Reference name = 'has_program' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::program' opposite = ''/>
+      <Reference name = 'hasMember' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Person' opposite = 'edas::Person::isMemberOf'/>
+      <Attribute name = 'hasName' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'endDate' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::dateTime'/>
+      <Attribute name = 'paperDueOn' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::dateTime'/>
+      <Attribute name = 'registrationDueOn' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::dateTime'/>
+      <Attribute name = 'manuscriptDueOn' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::dateTime'/>
+      <Attribute name = 'startDate' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::dateTime'/>
+      <Reference name = 'hasCountry' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Country' opposite = ''/>
+      <Reference name = 'hasConferenceMember' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::ConferenceMember' opposite = 'edas::ConferenceMember::memberOfConference'/>
+      <Reference name = 'paperAssignmentFinalizedBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Administrator' opposite = ''/>
+      <Reference name = 'reviewCriteriaEnteredBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Administrator' opposite = ''/>
+      <Reference name = 'paperAssignmentToolsRunBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Administrator' opposite = ''/>
+      <Reference name = 'virtualMeetingEnabledBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Administrator' opposite = ''/>
+      <Reference name = 'hardcopyMailingManifestsPrintedBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Administrator' opposite = ''/>
+      <Reference name = 'detailsEnteredBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Administrator' opposite = ''/>
+      <Reference name = 'reviewerBiddingStartedBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Administrator' opposite = ''/>
+      <Attribute name = 'date' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::date'/>
+      <Attribute name = 'reviewsPerPaper' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'logoURL' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::anyURI'/>
+      <Attribute name = 'acceptsHardcopySubmissions' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'siteURL' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::anyURI'/>
+    </Class>
+    <Class name = 'Assistance' isAbstract = 'false' supertypes = 'edas::Help_Request'/>
+    <Class name = 'Email_Template' isAbstract = 'false' supertypes = 'edas::Event_Setup'/>
+    <Class name = 'Conference_participant' isAbstract = 'false' supertypes = 'edas::Person'/>
+    <Class name = 'Active_conference_participant' isAbstract = 'false' supertypes = 'edas::Conference_contributor, edas::Conference_participant'>
+      <Reference name = 'gives_presentations' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Presentation' opposite = 'edas::Presentation::is_given_by'/>
+    </Class>
+    <Class name = 'Passive_conference_participant' isAbstract = 'false' supertypes = 'edas::Conference_participant'/>
+    <Class name = 'Review_expertise' isAbstract = 'false' supertypes = 'edas::Thing'>
+      <Reference name = 'has_a_submitted_contribution' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Submitted_contribution' opposite = 'edas::Submitted_contribution::has_a_review_expertise'/>
+      <Attribute name = 'has_an_expertise' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::EEnum'/>
+    </Class>
+    <Class name = 'Submitted_contribution' isAbstract = 'false' supertypes = 'edas::Written_contribution'>
+      <Reference name = 'has_a_review_expertise' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Review_expertise' opposite = 'edas::Review_expertise::has_a_submitted_contribution'/>
+    </Class>
+    <Class name = 'Regular_author' isAbstract = 'false' supertypes = 'edas::Conference_contributor'/>
+    <Class name = 'Conference_contributor' isAbstract = 'false' supertypes = 'edas::Person'/>
+    <Class name = 'Contribution_1th-author' isAbstract = 'false' supertypes = 'edas::Regular_author'/>
+    <Class name = 'Contribution_co-author' isAbstract = 'false' supertypes = 'edas::Regular_author'/>
+    <Class name = 'Conference_contribution' isAbstract = 'false' supertypes = 'edas::Conference_document'>
+      <Reference name = 'is_submitted_at' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference_volume' opposite = 'edas::Conference_volume::has_contributions'/>
+    </Class>
+    <Class name = 'Co-chair' isAbstract = 'false' supertypes = 'edas::Committee_member'>
+      <Reference name = 'was_a_committe_co-chair_of' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Committee' opposite = 'edas::Committee::has_a_committee_co-chair'/>
+    </Class>
+    <Class name = 'Committee' isAbstract = 'false' supertypes = 'edas::User'>
+      <Reference name = 'has_members' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Committee_member' opposite = 'edas::Committee_member::was_a_member_of'/>
+      <Reference name = 'was_a_committee_of' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference_volume' opposite = 'edas::Conference_volume::has_a_commtitee'/>
+      <Reference name = 'has_a_committee_co-chair' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Co-chair' opposite = 'edas::Co-chair::was_a_committe_co-chair_of'/>
+      <Reference name = 'has_a_committee_chair' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Chair' opposite = 'edas::Chair::was_a_committee_chair_of'/>
+    </Class>
+    <Class name = 'Committee_member' isAbstract = 'false' supertypes = 'edas::Person'>
+      <Reference name = 'was_a_member_of' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Committee' opposite = 'edas::Committee::has_members'/>
+    </Class>
+    <Class name = 'Abstract' isAbstract = 'false' supertypes = 'edas::Extended_abstract'>
+      <Reference name = 'is_the_1th_part_of' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'edas::Thing' opposite = ''/>
+    </Class>
+    <Class name = 'Extended_abstract' isAbstract = 'false' supertypes = 'edas::Regular_contribution'/>
+    <Class name = 'Important_dates' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'is_an_abstract_submission_date' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::date'/>
+      <Attribute name = 'is_a_full_paper_submission_date' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::date'/>
+      <Attribute name = 'is_an_ending_date' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::date'/>
+      <Attribute name = 'is_a_date_of_acceptance_announcement' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::date'/>
+      <Attribute name = 'is_a_date_of_camera_ready_paper_submission' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::date'/>
+      <Attribute name = 'is_a_starting_date' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::date'/>
+      <Reference name = 'belong_to_a_conference_volume' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference_volume' opposite = 'edas::Conference_volume::has_important_dates'/>
+    </Class>
+    <Class name = 'Invited_speaker' isAbstract = 'false' supertypes = 'edas::Conference_contributor'/>
+    <Class name = 'Conference_proceedings' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'has_an_ISBN' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'has_a_publisher' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Publisher' opposite = 'edas::Publisher::issues'/>
+      <Attribute name = 'has_a_volume' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Information_for_participants' isAbstract = 'false' supertypes = 'edas::Conference_document'/>
+    <Class name = 'Conference_document' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'has_authors' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Person' opposite = 'edas::Person::contributes'/>
+      <Attribute name = 'has_a_date_of_issue' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::date'/>
+    </Class>
+    <Class name = 'Regular_contribution' isAbstract = 'false' supertypes = 'edas::Written_contribution'/>
+    <Class name = 'Poster' isAbstract = 'false' supertypes = 'edas::Conference_contribution'/>
+    <Class name = 'Written_contribution' isAbstract = 'false' supertypes = 'edas::Conference_contribution'/>
+    <Class name = 'Conference_applicant' isAbstract = 'false' supertypes = 'edas::Person'/>
+    <Class name = 'Camera_ready_contribution' isAbstract = 'false' supertypes = 'edas::Accepted_contribution'/>
+    <Class name = 'Accepted_contribution' isAbstract = 'false' supertypes = 'edas::Reviewed_contribution'/>
+    <Class name = 'Program_committee' isAbstract = 'false' supertypes = 'edas::Committee'>
+      <Reference name = 'was_a_program_committee_of' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference_volume' opposite = 'edas::Conference_volume::has_a_program_committee'/>
+    </Class>
+    <Class name = 'Organizing_committee' isAbstract = 'false' supertypes = 'edas::Committee'>
+      <Reference name = 'was_an_organizing_committee_of' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference_volume' opposite = 'edas::Conference_volume::has_an_organizing_committee'/>
+    </Class>
+    <Class name = 'Steering_committee' isAbstract = 'false' supertypes = 'edas::Committee'>
+      <Reference name = 'was_a_steering_committee_of' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference_volume' opposite = 'edas::Conference_volume::has_a_steering_committee'/>
+    </Class>
+    <Class name = 'Conference_volume' isAbstract = 'false' supertypes = 'edas::Conference'>
+      <Reference name = 'has_parts' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference_part' opposite = 'edas::Conference_part::is_part_of_conference_volumes'/>
+      <Reference name = 'has_workshops' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Workshop' opposite = ''/>
+      <Reference name = 'has_tracks' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Track' opposite = ''/>
+      <Reference name = 'has_tutorials' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Tutorial' opposite = ''/>
+      <Reference name = 'has_a_commtitee' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Committee' opposite = 'edas::Committee::was_a_committee_of'/>
+      <Reference name = 'has_a_steering_committee' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Steering_committee' opposite = 'edas::Steering_committee::was_a_steering_committee_of'/>
+      <Reference name = 'has_an_organizing_committee' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Organizing_committee' opposite = 'edas::Organizing_committee::was_an_organizing_committee_of'/>
+      <Reference name = 'has_important_dates' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Important_dates' opposite = 'edas::Important_dates::belong_to_a_conference_volume'/>
+      <Reference name = 'has_contributions' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference_contribution' opposite = 'edas::Conference_contribution::is_submitted_at'/>
+      <Attribute name = 'has_a_location' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'has_a_program_committee' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Program_committee' opposite = 'edas::Program_committee::was_a_program_committee_of'/>
+    </Class>
+    <Class name = 'Call_for_paper' isAbstract = 'false' supertypes = 'edas::Conference_document'/>
+    <Class name = 'Conference_announcement' isAbstract = 'false' supertypes = 'edas::Conference_document'/>
+    <Class name = 'Invited_talk' isAbstract = 'false' supertypes = 'edas::Presentation'/>
+    <Class name = 'Conference_part' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'has_a_track-workshop-tutorial_topic' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Topic' opposite = ''/>
+      <Reference name = 'is_part_of_conference_volumes' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference_volume' opposite = 'edas::Conference_volume::has_parts'/>
+      <Reference name = 'has_a_track-workshop-tutorial_chair' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Track-workshop_chair' opposite = 'edas::Track-workshop_chair::was_a_track-workshop_chair_of'/>
+    </Class>
+    <Class name = 'Presentation' isAbstract = 'false' supertypes = 'edas::Conference_contribution'>
+      <Reference name = 'is_given_by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Active_conference_participant' opposite = 'edas::Active_conference_participant::gives_presentations'/>
+    </Class>
+    <Class name = 'Chair' isAbstract = 'false' supertypes = 'edas::Committee_member'>
+      <Reference name = 'was_a_committee_chair_of' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Committee' opposite = 'edas::Committee::has_a_committee_chair'/>
+    </Class>
+    <Class name = 'Track' isAbstract = 'false' supertypes = 'edas::Conference_part'/>
+    <Class name = 'Rejected_contribution' isAbstract = 'false' supertypes = 'edas::Reviewed_contribution'/>
+    <Class name = 'Reviewed_contribution' isAbstract = 'false' supertypes = 'edas::Submitted_contribution'>
+      <Reference name = 'has_a_review' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Review' opposite = 'edas::Review::reviews'/>
+    </Class>
+    <Class name = 'Late_paid_applicant' isAbstract = 'false' supertypes = 'edas::Paid_applicant'/>
+    <Class name = 'Paid_applicant' isAbstract = 'false' supertypes = 'edas::Registeered_applicant'/>
+    <Class name = 'Early_paid_applicant' isAbstract = 'false' supertypes = 'edas::Paid_applicant'/>
+    <Class name = 'Organizer' isAbstract = 'false' supertypes = 'edas::Thing'/>
+    <Class name = 'Call_for_participation' isAbstract = 'false' supertypes = 'edas::Conference_document'/>
+    <Class name = 'Publisher' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'issues' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference_proceedings' opposite = 'edas::Conference_proceedings::has_a_publisher'/>
+    </Class>
+    <Class name = 'Registeered_applicant' isAbstract = 'false' supertypes = 'edas::Conference_applicant'/>
+    <Class name = 'Track-workshop_chair' isAbstract = 'false' supertypes = 'edas::Person'>
+      <Reference name = 'was_a_track-workshop_chair_of' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference_part' opposite = 'edas::Conference_part::has_a_track-workshop-tutorial_chair'/>
+    </Class>
+    <Class name = 'Conference_www' isAbstract = 'false' supertypes = 'edas::Conference_document'>
+      <Attribute name = 'has_a_URL' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Conference_fees' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Review_preference' isAbstract = 'false' supertypes = 'edas::Thing'>
+      <Reference name = 'has_a_topic_or_a_submission_contribution' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'edas::Thing' opposite = ''/>
+      <Attribute name = 'has_a_degree' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Enumeration name = 'EEnum'>
+      <EnumLiteral name = 'male'/>
+      <EnumLiteral name = 'female'/>
+      <EnumLiteral name = 'high'/>
+      <EnumLiteral name = 'medium'/>
+      <EnumLiteral name = 'low'/>
+      <EnumLiteral name = 'very high'/>
+    </Enumeration>
+    <Class name = 'Accepted_Paper' isAbstract = 'false' supertypes = 'edas::Paper'/>
+    <Class name = 'Rejected_Paper' isAbstract = 'false' supertypes = 'edas::Paper'/>
+    <Class name = 'Undecided_Paper' isAbstract = 'false' supertypes = 'edas::Paper'/>
+    <Class name = 'Manual_Paper_Assignment' isAbstract = 'false' supertypes = 'edas::paper_assignment'>
+      <Reference name = 'manually_assign_paper' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'edas::Program_Committee_member' opposite = ''/>
+    </Class>
+    <Class name = 'Program_Committee_member' isAbstract = 'false' supertypes = 'edas::human'/>
+    <Class name = 'paper_assignment' isAbstract = 'false' supertypes = 'edas::activity'>
+      <Reference name = 'assign_paper' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Program_Committee_member' opposite = ''/>
+      <Reference name = 'is_performed_by' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::human' opposite = ''/>
+    </Class>
+    <Class name = 'intensity' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'start_date_of_camera-ready_submission' isAbstract = 'false' supertypes = 'edas::camera-ready_submission_date'/>
+    <Class name = 'camera-ready_submission_date' isAbstract = 'false' supertypes = 'edas::date'/>
+    <Class name = 'date_of_notification' isAbstract = 'false' supertypes = 'edas::date'/>
+    <Class name = 'date' isAbstract = 'false' supertypes = 'edas::Thing'/>
+    <Class name = 'Contact_Person' isAbstract = 'false' supertypes = 'edas::human'/>
+    <Class name = 'bidding_of_reviewer' isAbstract = 'false' supertypes = 'edas::activity'>
+      <Reference name = 'is_performed_by' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::human' opposite = ''/>
+    </Class>
+    <Class name = 'activity' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'is_followed_by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::activity' opposite = ''/>
+      <Reference name = 'is_monitored_by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::human' opposite = ''/>
+      <Reference name = 'has_intensity' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::intensity' opposite = ''/>
+      <Reference name = 'has_result' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::article' opposite = ''/>
+      <Reference name = 'is_performed_by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::human' opposite = 'edas::human::performs_activity'/>
+      <Reference name = 'is_supervised_by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::human' opposite = 'edas::human::supervises'/>
+    </Class>
+    <Class name = 'URL' isAbstract = 'false' supertypes = 'edas::Thing'/>
+    <Class name = 'conference_setup' isAbstract = 'false' supertypes = 'edas::Thing'>
+      <Reference name = 'sets_member' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::human' opposite = ''/>
+      <Reference name = 'is_made_by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::human' opposite = ''/>
+      <Reference name = 'includes_topic' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::topic' opposite = ''/>
+      <Reference name = 'sets_date' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::date' opposite = ''/>
+      <Reference name = 'sets_URL' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::URL' opposite = ''/>
+    </Class>
+    <Class name = 'human' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'is_author_of' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::article' opposite = 'edas::article::has_author'/>
+      <Reference name = 'performs_activity' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::activity' opposite = 'edas::activity::is_performed_by'/>
+      <Reference name = 'is_employed_in' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::institute' opposite = ''/>
+      <Reference name = 'has_topic_of_interest' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::topic' opposite = ''/>
+      <Reference name = 'supervises' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::activity' opposite = 'edas::activity::is_supervised_by'/>
+      <Attribute name = 'e-mail' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'last_name' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'first_name' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'managing_of_conference_process' isAbstract = 'false' supertypes = 'edas::activity'/>
+    <Class name = 'Program_Committee_Chair' isAbstract = 'false' supertypes = 'edas::human'/>
+    <Class name = 'reviewing_proces' isAbstract = 'false' supertypes = 'edas::activity'/>
+    <Class name = 'end_date_of_camera-ready_submission' isAbstract = 'false' supertypes = 'edas::camera-ready_submission_date'/>
+    <Class name = 'abstract_submission_date' isAbstract = 'false' supertypes = 'edas::date'/>
+    <Class name = 'group_email' isAbstract = 'false' supertypes = 'edas::article'/>
+    <Class name = 'Senior_Reviewer_URL' isAbstract = 'false' supertypes = 'edas::URL'/>
+    <Class name = 'notification' isAbstract = 'false' supertypes = 'edas::activity'>
+      <Reference name = 'has_result' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::article' opposite = ''/>
+      <Reference name = 'is_performed_by' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::human' opposite = ''/>
+    </Class>
+    <Class name = 'notification_email' isAbstract = 'false' supertypes = 'edas::article'/>
+    <Class name = 'Chair_URL' isAbstract = 'false' supertypes = 'edas::URL'/>
+    <Class name = 'abstract_of_paper' isAbstract = 'false' supertypes = 'edas::article'/>
+    <Class name = 'submission_process' isAbstract = 'false' supertypes = 'edas::activity'>
+      <Reference name = 'is_performed_by' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::human' opposite = ''/>
+    </Class>
+    <Class name = 'topic' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'lower_tier_reviewing_process' isAbstract = 'false' supertypes = 'edas::reviewing_proces'/>
+    <Class name = 'start_date_of_conference' isAbstract = 'false' supertypes = 'edas::date_of_conference'/>
+    <Class name = 'date_of_conference' isAbstract = 'false' supertypes = 'edas::date'/>
+    <Class name = 'Senior_Program_Committee_member' isAbstract = 'false' supertypes = 'edas::Program_Committee_member'>
+      <Reference name = 'supervises' lower = '0' upper = '4' isOrdered = 'true' isContainer = 'false' type = 'edas::activity' opposite = ''/>
+    </Class>
+    <Class name = 'end_date_of_abstract_submission' isAbstract = 'false' supertypes = 'edas::abstract_submission_date'/>
+    <Class name = 'phase_of_conference' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Regular_Program_Committee_member' isAbstract = 'false' supertypes = 'edas::Program_Committee_member'/>
+    <Class name = 'start_date_of_full_paper_submission' isAbstract = 'false' supertypes = 'edas::full_paper_submission_date'/>
+    <Class name = 'full_paper_submission_date' isAbstract = 'false' supertypes = 'edas::date'/>
+    <Class name = 'start_date_of_abstract_submission' isAbstract = 'false' supertypes = 'edas::abstract_submission_date'/>
+    <Class name = 'end_date_of_conference' isAbstract = 'false' supertypes = 'edas::date_of_conference'/>
+    <Class name = 'review_form' isAbstract = 'false' supertypes = 'edas::article'>
+      <Reference name = 'is_created_in' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::activity' opposite = ''/>
+    </Class>
+    <Class name = 'Automatic_Paper_Assignment' isAbstract = 'false' supertypes = 'edas::paper_assignment'>
+      <Reference name = 'automatically_assign_paper' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'edas::Program_Committee_member' opposite = ''/>
+    </Class>
+    <Class name = 'institute' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'classification' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'summary_of_reviews' isAbstract = 'false' supertypes = 'edas::article'>
+      <Reference name = 'is_created_in' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::activity' opposite = ''/>
+    </Class>
+    <Class name = 'upper_tier_reviewing_process' isAbstract = 'false' supertypes = 'edas::reviewing_proces'>
+      <Reference name = 'is_performed_by' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::human' opposite = ''/>
+    </Class>
+    <Class name = 'end_date_of_full_paper_submission' isAbstract = 'false' supertypes = 'edas::full_paper_submission_date'/>
+    <Class name = 'acceptance_notification_email' isAbstract = 'false' supertypes = 'edas::notification_email'/>
+    <Class name = 'rejection_notification_email' isAbstract = 'false' supertypes = 'edas::notification_email'/>
+    <Class name = 'Contact_Person_URL' isAbstract = 'false' supertypes = 'edas::URL'/>
+    <Class name = 'Regular_Reviewer_URL' isAbstract = 'false' supertypes = 'edas::URL'/>
+    <Class name = 'Trip' isAbstract = 'false' supertypes = 'edas::Social_event'/>
+    <Class name = 'Banquet' isAbstract = 'false' supertypes = 'edas::Social_event'/>
+    <Class name = 'Reception' isAbstract = 'false' supertypes = 'edas::Social_event'/>
+    <Class name = 'Social_event' isAbstract = 'false' supertypes = 'edas::Event'/>
+    <Class name = 'Contribution' isAbstract = 'false' supertypes = 'edas::Thing'>
+      <Reference name = 'writtenBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Author' opposite = 'edas::Author::writes'/>
+      <Reference name = 'dealsWith' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Topic' opposite = ''/>
+      <Attribute name = 'remark' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'abstract' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'contactEmail' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'hasKeyword' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'hasTitle' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'City' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Country' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Company' isAbstract = 'false' supertypes = 'edas::Organization'/>
+    <Class name = 'University' isAbstract = 'false' supertypes = 'edas::Organization'/>
+    <Class name = 'Scholar' isAbstract = 'false' supertypes = 'edas::Person'>
+      <Reference name = 'studyAt' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::University' opposite = ''/>
+    </Class>
+    <Class name = 'Poster' isAbstract = 'false' supertypes = 'edas::Contribution'/>
+    <Class name = 'Short_paper' isAbstract = 'false' supertypes = 'edas::Contribution'/>
+    <Class name = 'Reviewing_results_event' isAbstract = 'false' supertypes = 'edas::Administrative_event'/>
+    <Class name = 'Administrative_event' isAbstract = 'false' supertypes = 'edas::Event'>
+      <Reference name = 'follows' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Administrative_event' opposite = ''/>
+      <Reference name = 'parallel_with' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Administrative_event' opposite = ''/>
+    </Class>
+    <Class name = 'Reviewing_event' isAbstract = 'false' supertypes = 'edas::Administrative_event'/>
+    <Class name = 'Registration_of_participants_event' isAbstract = 'false' supertypes = 'edas::Administrative_event'/>
+    <Class name = 'Submission_event' isAbstract = 'false' supertypes = 'edas::Administrative_event'/>
+    <Class name = 'Camera_Ready_event' isAbstract = 'false' supertypes = 'edas::Administrative_event'/>
+    <Class name = 'Workshop' isAbstract = 'false' supertypes = 'edas::Working_event, edas::Conference_part, edas::Event, edas::AcademicEvent'/>
+    <Class name = 'Tutorial' isAbstract = 'false' supertypes = 'edas::Working_event, edas::Conference_part'/>
+    <Class name = 'Working_event' isAbstract = 'false' supertypes = 'edas::Event'>
+      <Reference name = 'hasTopic' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Topic' opposite = 'edas::Topic::isTopicOf'/>
+      <Reference name = 'hasAdministrativeEvent' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Administrative_event' opposite = ''/>
+    </Class>
+    <Class name = 'Member' isAbstract = 'false' supertypes = 'edas::Participant'/>
+    <Class name = 'Participant' isAbstract = 'false' supertypes = 'edas::Person'>
+      <Attribute name = 'earlyRegistration' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'Member_PC' isAbstract = 'false' supertypes = 'edas::Person'>
+      <Reference name = 'expertOn' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Topic' opposite = ''/>
+      <Reference name = 'reviewes' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Contribution' opposite = ''/>
+    </Class>
+    <Class name = 'Chair_PC' isAbstract = 'false' supertypes = 'edas::Person'/>
+    <Class name = 'Student' isAbstract = 'false' supertypes = 'edas::Participant'/>
+    <Class name = 'Science_Worker' isAbstract = 'false' supertypes = 'edas::Person'/>
+    <Class name = 'Assistant' isAbstract = 'false' supertypes = 'edas::Person'/>
+    <Class name = 'Volunteer' isAbstract = 'false' supertypes = 'edas::Person'/>
+    <Class name = 'Regular' isAbstract = 'false' supertypes = 'edas::Participant'/>
+    <DataType name = 'positiveInteger'/>
+    <Class name = 'pc_meeting' isAbstract = 'false' supertypes = 'edas::Event'/>
+    <Class name = 'session' isAbstract = 'false' supertypes = 'edas::Event'/>
+    <Class name = 'chair' isAbstract = 'false' supertypes = 'edas::Person'>
+      <Reference name = 'assigns_reviewers_to_article' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Reviewer' opposite = ''/>
+      <Reference name = 'creates_program' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::program' opposite = 'edas::program::program_created_by'/>
+    </Class>
+    <Class name = 'abstract' isAbstract = 'false' supertypes = 'edas::Document'>
+      <Reference name = 'part_of_article' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::article' opposite = 'edas::article::has_abstract'/>
+    </Class>
+    <Class name = 'article' isAbstract = 'false' supertypes = 'edas::Document'>
+      <Reference name = 'goes_through' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::activity' opposite = ''/>
+      <Reference name = 'is_sent_to' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::human' opposite = ''/>
+      <Reference name = 'is_created_in' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::activity' opposite = ''/>
+      <Reference name = 'structure_created_by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::human' opposite = ''/>
+      <Reference name = 'has_author' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::human' opposite = 'edas::human::is_author_of'/>
+      <Reference name = 'gives_classification' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::classification' opposite = ''/>
+      <Reference name = 'article_written_by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Author' opposite = 'edas::Author::writes_article'/>
+      <Reference name = 'has_reviewer' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Reviewer' opposite = ''/>
+      <Reference name = 'has_abstract' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::abstract' opposite = 'edas::abstract::part_of_article'/>
+    </Class>
+    <Class name = 'Review' isAbstract = 'false' supertypes = 'edas::article, edas::Conference_document, edas::Document'>
+      <Reference name = 'writtenBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Reviewer' opposite = ''/>
+      <Reference name = 'reviews' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Reviewed_contribution' opposite = 'edas::Reviewed_contribution::has_a_review'/>
+      <Reference name = 'gives_classification' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::classification' opposite = ''/>
+      <Reference name = 'is_created_in' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::activity' opposite = ''/>
+      <Reference name = 'review_written_by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Reviewer' opposite = 'edas::Reviewer::writes_review'/>
+    </Class>
+    <Class name = 'participant' isAbstract = 'false' supertypes = 'edas::Person'>
+      <Reference name = 'submits_to_conference' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference' opposite = ''/>
+    </Class>
+    <Class name = 'program' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'program_created_by' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::chair' opposite = 'edas::chair::creates_program'/>
+      <Reference name = 'has_session' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::session' opposite = ''/>
+    </Class>
+    <Class name = 'SlideSet' isAbstract = 'false' supertypes = 'edas::Document'/>
+    <Class name = 'Programme' isAbstract = 'false' supertypes = 'edas::Document'>
+      <Reference name = 'belongsToEvent' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::ConferenceEvent' opposite = 'edas::ConferenceEvent::hasProgramme'/>
+    </Class>
+    <Class name = 'MealMenu' isAbstract = 'false' supertypes = 'edas::Document'>
+      <Reference name = 'isMenuOf' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::MealEvent' opposite = 'edas::MealEvent::hasMenu'/>
+    </Class>
+    <Class name = 'Topic' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'belongs_to_a_review_reference' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Review_preference' opposite = ''/>
+      <Reference name = 'is_a_topis_of_conference_parts' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Conference_part' opposite = 'edas::Conference_part::has_a_track-workshop-tutorial_topic'/>
+      <Reference name = 'isTopicOf' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Working_event' opposite = 'edas::Working_event::hasTopic'/>
+    </Class>
+    <Class name = 'ConferenceEvent' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'hasAttendee' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Person' opposite = 'edas::Person::attendeeAt'/>
+      <Reference name = 'hasLocation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Place' opposite = 'edas::Place::isLocationOf'/>
+      <Reference name = 'hasProgramme' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Programme' opposite = 'edas::Programme::belongsToEvent'/>
+      <Attribute name = 'hasEndDateTime' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::dateTime'/>
+      <Attribute name = 'hasStartDateTime' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::dateTime'/>
+    </Class>
+    <Class name = 'Call' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'forEvent' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::AcademicEvent' opposite = 'edas::AcademicEvent::hasCall'/>
+      <Reference name = 'isInitiatedBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'edas::Person' opposite = ''/>
+      <Attribute name = 'hasSubmissionInstructions' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'hasSubmissionDeadline' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'edas::dateTime'/>
+    </Class>
+    <Class name = 'ReviewRating' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Organization' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'isProviderOf' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Sponsorship' opposite = 'edas::Sponsorship::providedBy'/>
+    </Class>
+    <Class name = 'ReviewForm' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'PersonalHistory' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Sponsorship' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'providedBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Organization' opposite = 'edas::Organization::isProviderOf'/>
+      <Attribute name = 'hasCostCurrency' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'hasCostAmount' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'ReviewQuestion' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'ConferenceSession' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'ContactInformation' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'hasCity' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'hasStreet' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'hasPostalCode' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'hasPhone' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Place' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'isLocationOf' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::ConferenceEvent' opposite = 'edas::ConferenceEvent::hasLocation'/>
+    </Class>
+    <Class name = 'WeekRejectRating' isAbstract = 'false' supertypes = 'edas::ReviewRating'/>
+    <Class name = 'AcceptRating' isAbstract = 'false' supertypes = 'edas::ReviewRating'/>
+    <Class name = 'AccpetIfRoomRating' isAbstract = 'false' supertypes = 'edas::ReviewRating'/>
+    <Class name = 'RejectRating' isAbstract = 'false' supertypes = 'edas::ReviewRating'/>
+    <Class name = 'MealEvent' isAbstract = 'false' supertypes = 'edas::NonAcademicEvent'>
+      <Reference name = 'hasMenu' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::MealMenu' opposite = 'edas::MealMenu::isMenuOf'/>
+    </Class>
+    <Class name = 'NonAcademicEvent' isAbstract = 'false' supertypes = 'edas::ConferenceEvent'/>
+    <Class name = 'BreakEvent' isAbstract = 'false' supertypes = 'edas::NonAcademicEvent'/>
+    <Class name = 'ParallelAndDistributedComputingTopic' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'WirelessCommunicationsTopic' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'OperatingTopicsystems' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'ComputerNetworksTopic' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'SatelliteAndSpaceCommunicationsTopic' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'CADTopic' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'MultimediaTopic' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'CommunicationsTopic' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'PowerlineTransmissionTopic' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'AntennasTopic' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'PerformanceTopic' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'SignalProcessingTopic' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'MicroelectronicsTopic' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'TestOnlyTopic' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'RadioCommunicationsTopic' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'ComputerArchitectureTopic' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'MedicineTopic' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'SecurityTopic' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'MobileComputingTopic' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'CryptographyTopic' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'CommunicationTheoryTopic' isAbstract = 'false' supertypes = 'edas::Topic'/>
+    <Class name = 'ConferenceChair' isAbstract = 'false' supertypes = 'edas::Person'/>
+    <Class name = 'Author' isAbstract = 'false' supertypes = 'edas::Person, edas::User, edas::ConferenceMember'>
+      <Reference name = 'submitPaper' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Paper' opposite = ''/>
+      <Reference name = 'writePaper' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Paper' opposite = ''/>
+      <Reference name = 'writes' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Contribution' opposite = 'edas::Contribution::writtenBy'/>
+      <Reference name = 'writes_article' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::article' opposite = 'edas::article::article_written_by'/>
+      <Reference name = 'assigns_article_to_conference' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::article' opposite = ''/>
+      <Reference name = 'hasRelatedPaper' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Paper' opposite = 'edas::Paper::isWrittenBy'/>
+    </Class>
+    <Class name = 'DiningPlace' isAbstract = 'false' supertypes = 'edas::Place'/>
+    <Class name = 'Presenter' isAbstract = 'false' supertypes = 'edas::Author'/>
+    <Class name = 'AcademiaOrganization' isAbstract = 'false' supertypes = 'edas::Organization'/>
+    <Class name = 'IndustryOrganization' isAbstract = 'false' supertypes = 'edas::Organization'/>
+    <Class name = 'NGO' isAbstract = 'false' supertypes = 'edas::Organization'/>
+    <Class name = 'GovernmentOrganization' isAbstract = 'false' supertypes = 'edas::Organization'/>
+    <Class name = 'ComputerNetworksEnterpriseTopic' isAbstract = 'false' supertypes = 'edas::ComputerNetworksTopic'/>
+    <Class name = 'ComputerNetworksSwitchingTopic' isAbstract = 'false' supertypes = 'edas::ComputerNetworksTopic'/>
+    <Class name = 'ComputerNetworksSensorTopic' isAbstract = 'false' supertypes = 'edas::ComputerNetworksTopic'/>
+    <Class name = 'ComputerNetworksSecurityTopic' isAbstract = 'false' supertypes = 'edas::ComputerNetworksTopic'/>
+    <Class name = 'ComputerNetworksOpticalTopic' isAbstract = 'false' supertypes = 'edas::ComputerNetworksTopic'/>
+    <Class name = 'ComputerNetworksMeasurementsTopic' isAbstract = 'false' supertypes = 'edas::ComputerNetworksTopic'/>
+    <Class name = 'ComputerNetworksManagementTopic' isAbstract = 'false' supertypes = 'edas::ComputerNetworksTopic'/>
+    <Class name = 'ComputerNetworksAapplicationsTopic' isAbstract = 'false' supertypes = 'edas::ComputerNetworksTopic'/>
+    <Class name = 'ActivePaper' isAbstract = 'false' supertypes = 'edas::Paper'>
+      <Reference name = 'hasRating' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::ReviewRating' opposite = ''/>
+    </Class>
+    <Class name = 'PendingPaper' isAbstract = 'false' supertypes = 'edas::Paper'/>
+    <Class name = 'WithdrawnPaper' isAbstract = 'false' supertypes = 'edas::Paper'/>
+    <Class name = 'RejectedPaper' isAbstract = 'false' supertypes = 'edas::Paper'/>
+    <Class name = 'AcceptedPaper' isAbstract = 'false' supertypes = 'edas::Paper'>
+      <Reference name = 'relatedToEvent' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::PaperPresentation' opposite = 'edas::PaperPresentation::relatedToPaper'/>
+    </Class>
+    <Class name = 'PublishedPaper' isAbstract = 'false' supertypes = 'edas::Paper'/>
+    <Class name = 'Attendee' isAbstract = 'false' supertypes = 'edas::Person'/>
+    <Class name = 'CoffeeBreak' isAbstract = 'false' supertypes = 'edas::BreakEvent'/>
+    <Class name = 'FreeTimeBreak' isAbstract = 'false' supertypes = 'edas::BreakEvent'/>
+    <Class name = 'MealBreak' isAbstract = 'false' supertypes = 'edas::BreakEvent'/>
+    <Class name = 'ClosingTalk' isAbstract = 'false' supertypes = 'edas::TalkEvent'/>
+    <Class name = 'WelcomeTalk' isAbstract = 'false' supertypes = 'edas::TalkEvent'/>
+    <Class name = 'TalkEvent' isAbstract = 'false' supertypes = 'edas::AcademicEvent'/>
+    <Class name = 'SessionChair' isAbstract = 'false' supertypes = 'edas::Person'/>
+    <Class name = 'TPCMember' isAbstract = 'false' supertypes = 'edas::Person'/>
+    <Class name = 'TwoLevelConference' isAbstract = 'false' supertypes = 'edas::Conference'/>
+    <Class name = 'CallForPapers' isAbstract = 'false' supertypes = 'edas::Call'/>
+    <Class name = 'TextualReviewQuestion' isAbstract = 'false' supertypes = 'edas::ReviewQuestion'/>
+    <Class name = 'NumericalReviewQuestion' isAbstract = 'false' supertypes = 'edas::ReviewQuestion'/>
+    <Class name = 'OrganizationalMeeting' isAbstract = 'false' supertypes = 'edas::AcademicEvent'/>
+    <Class name = 'PaperPresentation' isAbstract = 'false' supertypes = 'edas::AcademicEvent'>
+      <Reference name = 'relatedToPaper' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::AcceptedPaper' opposite = 'edas::AcceptedPaper::relatedToEvent'/>
+    </Class>
+    <Class name = 'AcademicEvent' isAbstract = 'false' supertypes = 'edas::ConferenceEvent'>
+      <Reference name = 'hasCall' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Call' opposite = 'edas::Call::forEvent'/>
+    </Class>
+    <Class name = 'PersonalPublicationHistory' isAbstract = 'false' supertypes = 'edas::PersonalHistory'/>
+    <Class name = 'Excursion' isAbstract = 'false' supertypes = 'edas::SocialEvent'/>
+    <Class name = 'SocialEvent' isAbstract = 'false' supertypes = 'edas::NonAcademicEvent'/>
+    <Class name = 'CallForReviews' isAbstract = 'false' supertypes = 'edas::Call'/>
+    <Class name = 'PersonalReviewHistory' isAbstract = 'false' supertypes = 'edas::PersonalHistory'>
+      <Reference name = 'isReviewHistoryOf' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'edas::Reviewer' opposite = 'edas::Reviewer::hasReviewHistory'/>
+    </Class>
+    <Class name = 'ConferenceVenuePlace' isAbstract = 'false' supertypes = 'edas::Place'/>
+    <Class name = 'CallForManuscripts' isAbstract = 'false' supertypes = 'edas::Call'/>
+    <Class name = 'Reception' isAbstract = 'false' supertypes = 'edas::SocialEvent'/>
+    <Class name = 'SingleLevelConference' isAbstract = 'false' supertypes = 'edas::Conference'/>
+    <Class name = 'MeetingRoomPlace' isAbstract = 'false' supertypes = 'edas::Place'/>
+    <Class name = 'AccommodationPlace' isAbstract = 'false' supertypes = 'edas::Place'/>
+    <Class name = 'RatedPapers' isAbstract = 'false' supertypes = 'edas::ActivePaper'/>
+    <Class name = 'TravelGrant' isAbstract = 'false' supertypes = 'edas::Sponsorship'/>
+    <Class name = 'ConferenceDinner' isAbstract = 'false' supertypes = 'edas::MealEvent'/>
+    <DataType name = 'dateTime'/>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

@@ -1,0 +1,60 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'TaskUsiXML'>
+    <Class name = 'Task' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'category' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'frequency' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'importance' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'structurationLevel' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'complexityLevel' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'criticity' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'centrality' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'terminationValue' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'taskType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'taskItem' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'decompositionTasks' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'TaskUsiXML::Task' opposite = 'TaskUsiXML::Task::decomposedTask'/>
+      <Reference name = 'decomposedTask' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'TaskUsiXML::Task' opposite = 'TaskUsiXML::Task::decompositionTasks'/>
+      <Reference name = 'leftOperator' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'TaskUsiXML::BinaryOperator' opposite = 'TaskUsiXML::BinaryOperator::rightTask'/>
+      <Reference name = 'rightOperator' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'TaskUsiXML::BinaryOperator' opposite = 'TaskUsiXML::BinaryOperator::leftTask'/>
+      <Reference name = 'decoration' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'TaskUsiXML::UnaryOperator' opposite = 'TaskUsiXML::UnaryOperator::decoratedTask'/>
+    </Class>
+    <Class name = 'Operator' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'BinaryOperator' isAbstract = 'false' supertypes = 'TaskUsiXML::Operator'>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'TaskUsiXML::BinaryType'/>
+      <Reference name = 'leftTask' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'TaskUsiXML::Task' opposite = 'TaskUsiXML::Task::rightOperator'/>
+      <Reference name = 'rightTask' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'TaskUsiXML::Task' opposite = 'TaskUsiXML::Task::leftOperator'/>
+    </Class>
+    <Class name = 'UnaryOperator' isAbstract = 'false' supertypes = 'TaskUsiXML::Operator'>
+      <Attribute name = 'UnaryType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'TaskUsiXML::UnaryType'/>
+      <Reference name = 'decoratedTask' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'TaskUsiXML::Task' opposite = 'TaskUsiXML::Task::decoration'/>
+    </Class>
+    <Class name = 'FiniteInteration' isAbstract = 'false' supertypes = 'TaskUsiXML::UnaryOperator'>
+      <Attribute name = 'interation' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Enumeration name = 'BinaryType'>
+      <EnumLiteral name = 'Enabling'/>
+      <EnumLiteral name = 'Disabling'/>
+      <EnumLiteral name = 'SuspendResume'/>
+      <EnumLiteral name = 'OrderIndependence'/>
+      <EnumLiteral name = 'IndependentConcurrency'/>
+      <EnumLiteral name = 'ConcurencyWithInformationPassing'/>
+      <EnumLiteral name = 'UnderterministicChoice'/>
+      <EnumLiteral name = 'EnablingWithInformationPassing'/>
+    </Enumeration>
+    <Enumeration name = 'UnaryType'>
+      <EnumLiteral name = 'Optional'/>
+      <EnumLiteral name = 'Iteration'/>
+      <EnumLiteral name = 'finitIteration'/>
+    </Enumeration>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

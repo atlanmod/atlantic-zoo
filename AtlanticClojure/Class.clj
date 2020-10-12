@@ -1,0 +1,5 @@
+( defstruct NamedElt :name )
+( defstruct Classifier :name )
+( defstruct DataType :name )
+( defstruct Class :isAbstract :name )
+( defstruct Attribute :multiValued :type :owner :name )

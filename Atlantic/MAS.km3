@@ -1,0 +1,150 @@
+-- @name		MAS (Multi-Agent System)
+-- @version		1.0
+-- @domains		Multi-Agent
+-- @authors		SIMON Eric(simon.eric3@gmail.com)
+-- @date		2006/07/17
+-- @description	This metamodel proposes a unifying MAS (Multi-Agent System) metamodel. It is composed by merging the most significant contributions of ADELFE, Gaia and PASSI.
+-- @see			A Study of some Multi-Agent Meta-Models
+-- @see 		Authors: Carole Bernon, Massimo Cossentino, Marie-Pierre Gleizes, Paola Turci, Franco Zambonelli
+-- @see 		http://www.jamesodell.com/AOSE04-proceedings/AOSE04-08.pdf, p14
+
+package MAS {
+
+ class Agent {
+ 	reference service[*] : Service;
+ 	reference non_Functionnal_Requirement[*] : "Non Functionnal Requirement";
+ 	reference requirement[1-*] : Requirement;
+ 	reference belongs[0-1] : Organization;
+ 	reference cooperationRules[*] : CooperationRules;
+ 	reference fipa_Platform_Agent : "FIPA-Platform Agent" 	oppositeOf agentF;
+ 	reference role container : Role oppositeOf agentR;
+ 	reference representation[0-1] container : Representation oppositeOf agentRep;
+ 	reference characteristic[0-1] container : Characteristic oppositeOf agentC;
+ 	reference skill[0-1] container : Skill oppositeOf agentS;
+ 	reference aptitude[0-1]	container : Aptitude oppositeOf agentA;
+ }
+ 
+ class Service {
+ 	attribute inputs : String;
+ 	attribute outputs : String;
+ 	attribute "pre-conditions"	: String;
+ 	attribute "post-conditions"	: String;
+ }
+ 
+ class "Non Functionnal Requirement" {}
+ class Requirement {}
+ 
+ class Organization {
+ 	reference observes[*] : "Organizational Structure";
+ 	reference organizational_Structure : "Organizational Structure"oppositeOf organization;
+ }
+ 
+ class "Organizational Structure" {
+ 	reference organization[*] container : Organization oppositeOf organizational_Structure;
+ }
+ 
+ class SafetyRule extends "Organizational Structure" {}
+ class LivenessRule extends "Organizational Structure" {}
+ 
+ class CooperationRules {
+ 	reference ncs container : NCS oppositeOf cooperationRules;
+ }
+ 
+ class NCS {
+ 	reference cooperationRules : CooperationRules oppositeOf ncs;
+ }
+ 
+ class "FIPA-Platform Agent" 	{
+ 	reference  agentF	: Agent 	oppositeOf fipa_Platform_Agent;
+ 	reference fipa_Platform_Task[*] container : "FIPA-Platform Task" oppositeOf fipa_Platform_AgentF;
+ }
+ 
+ class  "FIPA-Platform Task" {
+ 	reference fipa_Platform_AgentF : "FIPA-Platform Agent" oppositeOf  fipa_Platform_Task;
+ 	reference task : Task oppositeOf fipa_Platform_TaskT;
+ }
+ 
+ class Task {
+ 	attribute name : String;
+ 	reference fipa_Platform_TaskT :  "FIPA-Platform Task" oppositeOf task;
+ }
+ 
+ class	Role {
+ 	reference agentR 			: Agent oppositeOf role; 
+ 	reference activity[1-*] 	: Task;
+ 	reference actsOn[*] 		: Resource;
+ 	reference scenario[1-*]	: Scenario;
+ 	reference participant[*]	: Communication;
+ 	reference has[1-*] 		: Responsibility; 
+ }
+ 
+ class Representation {
+ 	reference agentRep : Agent oppositeOf representation;
+ 	reference ontology[0-1] : Ontology;
+ 	reference environnement :Environnement;
+ }
+ 
+ class Characteristic {
+ 	reference agentC : Agent oppositeOf characteristic;
+ }
+ class Skill {
+ 	reference agentS : Agent oppositeOf skill;
+ }
+ class Aptitude {
+ 	reference agentA : Agent oppositeOf aptitude;
+ }
+ 
+ class Ontology {
+ 	reference environnement : Environnement;
+ }
+ 
+ class Concept extends Ontology {}
+ class Predicat extends Ontology {}
+ class Action extends Ontology {}
+ 
+ class Environnement {
+ 	reference resource container : Resource oppositeOf environnement;
+ }
+ 
+ class Responsibility {}
+ class LivenessProperty extends Responsibility {}
+ class SafetyProperty extends Responsibility {}
+ 
+ class Resource {
+ 	attribute name : String;
+ 	reference environnement : Environnement oppositeOf resource;
+ 	reference action : Action;
+ }
+ 
+ class Communication {
+ 	attribute name : String;
+ 	reference "Exchanged Knoledge" : Ontology;
+ 	reference scenario[1-*] : Scenario; 
+ 	reference aip :AIP;
+ 	reference message[*] container : Message oppositeOf communication;
+ }
+ 
+ class AIP {
+ 	attribute name : String;
+ 	reference performative container : Performative oppositeOf aip;
+ }
+ 
+ class Performative {
+ 	reference aip : AIP oppositeOf performative;
+ }
+ 
+ class Message {
+ 	reference communication : Communication oppositeOf message;
+ 	reference Comm_Act : Performative;
+ }
+ 
+ class Scenario {}
+ 
+}
+ 
+ 
+package PrimitiveTypes {
+	datatype String;
+}
+
+ 

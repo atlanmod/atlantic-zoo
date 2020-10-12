@@ -1,0 +1,77 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_KM3"{
+labelloc=t
+color=black
+label=KM3
+ node[shape=record];
+LocatedElement[label="{/LocatedElement/|location : String| }"]
+;
+ node[shape=record];
+ModelElement[label="{/ModelElement/|name : String| }"]
+ ModelElement->Package[arrowhead=diamond,arrowtail=none,headlabel="package",taillabel="contents[*]{ordered}",group=Package,minlen=2,constraint=true,]
+ ModelElement->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Classifier[label="{Classifier| | }"]
+ Classifier->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataType[label="{DataType| | }"]
+ DataType->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Enumeration[label="{Enumeration| | }"]
+ Enumeration->EnumLiteral[arrowhead=vee,arrowtail=diamond,headlabel="literals[*]{ordered}",group=EnumLiteral,minlen=2,constraint=true,]
+ Enumeration->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EnumLiteral[label="{EnumLiteral| | }"]
+ EnumLiteral->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Class[label="{Class|isAbstract : Boolean| }"]
+ Class->Class[arrowhead=vee,arrowtail=none,headlabel="supertypes[*]",group=Class,minlen=2,constraint=false,]
+ Class->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StructuralFeature[label="{StructuralFeature|lower : Integer\nupper : Integer\nisOrdered : Boolean\nisUnique : Boolean| }"]
+ StructuralFeature->Class[arrowhead=diamond,arrowtail=none,headlabel="owner",taillabel="structuralFeatures[*]{ordered}",group=Class,minlen=2,constraint=true,]
+ StructuralFeature->Classifier[arrowhead=vee,arrowtail=none,headlabel="type",group=Classifier,minlen=2,constraint=false,]
+ StructuralFeature->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Attribute[label="{Attribute| | }"]
+ Attribute->StructuralFeature[arrowhead=onormal,group=StructuralFeature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Reference[label="{Reference|isContainer : Boolean| }"]
+ Reference->Reference[arrowhead=vee,arrowtail=none,headlabel="opposite[0-1]",group=Reference,minlen=2,constraint=false,]
+ Reference->StructuralFeature[arrowhead=onormal,group=StructuralFeature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Package[label="{Package| | }"]
+ Package->Metamodel[arrowhead=diamond,arrowtail=none,headlabel="metamodel",taillabel="contents[*]{ordered}",group=Metamodel,minlen=2,constraint=true,]
+ Package->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Metamodel[label="{Metamodel| | }"]
+ Metamodel->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

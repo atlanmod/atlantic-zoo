@@ -1,0 +1,414 @@
+-- @name		SysML (OMG System Modeling Language)
+-- @version		1.0	
+-- @domains		Architecture Description, Real-time, SoS (System of System), View, Viewpoint
+-- @authors		Albin Jossic (jossic.albin <at> gmail.com) 
+-- @date		2006/06/06	
+-- @description	A metamodel of SysML in km3. SysML is an acronym for Systems Modeling Language. It is an OMG standard to design systems and it became an UML profile. The currently version of specifications is dating from the 3rd May 2006.
+-- @see			http://syseng.omg.org/SysML.htm
+-- @see			http://www.sysml.org/
+-- @see			http://www.omgsysml.org/
+-- @see			http://www.omg.org/cgi-bin/apps/doc?ptc/06-05-03.pdf
+-- @see 		"Recommended Practice for Architectural description of Softwrare-Intensive Systems", IEEE Std 1471-2000, IEEE, 2000.
+
+--@begin package SysML
+package SysML {
+	
+	--@begin Entity
+	abstract class Entity {}
+	--@end class Entity
+	
+	--@begin class NamedElement
+	--@comment UML4SysML::NamedElement
+	abstract class NamedElement extends Entity {
+		attribute name : String;
+	}
+	--@end class NamedElement
+	
+	--@begin package Model Elements
+	--@begin class Dependency
+	--@comment UML4SysML::Dependency
+	class Dependency extends NamedElement {}
+	--@end class Dependency
+	
+	--@begin class Conform
+	class Conform extends Dependency {
+		reference target : Viewpoint;
+		reference source : View;	
+	}
+	--@end class Conform
+	
+	--@begin class Package
+	--@comment UML4SysML::Package
+	class Package extends NamedElement {}
+	--@end class Package
+	
+	--@begin class View
+	class View extends Package {
+		reference conformsTo : Viewpoint;
+	}
+	--@end class View
+	
+	--@begin class Class
+	--@comment UML4SysML::Class
+	class Class extends Classifier {
+		attribute name : String ;
+	}
+	--@end class Class
+	
+	--@begin class Viewpoint
+	class Viewpoint extends Class {
+		attribute stakeholders[*] : String;
+		attribute purpose : String;
+		attribute concerns[*] : String;
+		attribute languages[*] : String;
+		attribute methods[*] : String;
+	}
+	--@end class Viewpoint
+	
+	--@begin class Comment
+	--@comment UML4SysML::Comment
+	class Comment extends Entity {
+		attribute content : String;
+	}
+	--@end class Comment
+	
+	--@begin class Rationale
+	class Rationale extends Comment {}
+	--@end class Rationale
+	
+	--@begin class Problem
+	class Problem extends Comment {}
+	--@end class Problem
+	--@end package Model Elements
+	
+	--@begin package Blocks
+	--@begin class Block
+	class Block extends Class {
+		attribute isEncapsulated : Boolean;
+	}
+	--@end class Block
+	
+	--@begin class ConstraintBlock
+	class ConstraintBlock extends Block {}
+	--@end class ConstraintBlock
+	--@end package Blocks
+	
+	--@begin package SysML properties
+	--@begin class Property
+	--@comment UML4SysML::Property
+	class Property extends Entity {}
+	--@end class Property
+	
+	--@begin class BlockProperty
+	class BlockProperty extends Property {}
+	--@end class BlockProperty
+	
+	--@begin class ConstraintProperty
+	class ConstraintProperty extends BlockProperty {}
+	--@end class ConstraintProperty
+	
+	--@begin class DistributedProperty
+	class DistributedProperty extends BlockProperty {}
+	--@end class DistributedProperty
+	--@end package SysML properties
+	
+	--@begin package SysML value types
+	--@begin class DataType
+	--@comment UML4SysML::DataType
+	class DataType extends Entity {}
+	--@end class DataType
+	
+	--@begin class ValueType
+	class ValueType extends DataType {
+		reference unit[0-1] : Unit;
+		reference dimension[0-1] : Dimension;
+	}
+	--@end class ValueType
+	
+	--@begin class Unit
+	class Unit extends ValueType {}
+	--@end class Unit
+	
+	--@begin class Dimension
+	class Dimension extends ValueType {}
+	--@end class Dimension	
+	--@end package SysML value types
+	
+	--@begin package SysML connectors ends
+	--@begin class ConnectorEnd
+	--@comment UML4SysML::ConnectorEnd
+	class ConnectorEnd extends Entity {}
+	--@end class DataType
+	
+	--@begin class NestedConnectorEnd
+	class NestedConnectorEnd extends ConnectorEnd {
+		reference propertyPath[2-*] ordered container : Property;
+	}
+	--@end class NestedConnectorEnd
+	--@end package SysML connectors ends
+	
+	--@begin package SysML Ports and Flows
+	--@begin Port Stereotype
+	--@begin class Port
+	--@comment UML4SysML::Port
+	class Port extends Property {
+		attribute isBehavior : Boolean;
+	}
+	--@end class Port
+	
+	--@begin class FlowPort
+	class FlowPort extends Port {
+		attribute isAtomic : Boolean;
+		attribute direction[0-1] : FlowDirection;
+		attribute isConjugated[0-1] : Boolean;
+	}
+	--@end class FlowPort
+	
+	--@begin class FlowProperty
+	class FlowProperty extends Property {
+		attribute direction[0-1] : FlowDirection;
+	}
+	--@end class FlowProperty
+	
+	--@begin class Interface
+	--@comment UML4SysML::Interface
+	class Interface extends Entity {}
+	--@end class Interface
+	
+	--@begin class FlowSpecification
+	class FlowSpecification extends Interface {
+		reference ownedFlowProperty[*] container : FlowProperty;
+	}
+	--@end class FlowSpecification
+	
+	--@begin enumeration FlowDirection
+	enumeration FlowDirection {
+		literal in;
+		literal out;
+		literal inout;
+	}
+	--@end class enumeration FlowDirection
+	--@end Port Stereotype
+	
+	--@begin ItemFlow Stereotype
+	--@begin class Classifier
+	--@comment UML4SysML::Classifier
+	class Classifier extends Entity {}
+	--@end class Classifier
+	
+	--@begin class InformationItem
+	--@comment UML4SysML::InformationItem
+	class InformationItem extends Classifier {
+		reference represented[*] : Classifier;
+	}
+	--@end class InformationItem
+	
+	--@begin class InformationFlow
+	--@comment UML4SysML::InformationFlow
+	class InformationFlow extends Entity {
+		reference conveyed[1-*] : Classifier;
+		reference source[1-*] : NamedElement;
+		reference target[1-*] : NamedElement;
+	}
+	--@end class InformationFlow
+	
+	--@begin class ItemFlow
+	class ItemFlow extends InformationFlow {
+		reference itemProperty[0-1] : BlockProperty;
+	}
+	--@end class ItemFlow	
+	--@end ItemFlow Stereotype
+	--@end package SysML Ports and Flows
+	
+	--@begin package Activities
+	--@begin class Parameter
+	--@comment UML4SysML::Parameter
+	class Parameter extends Entity {}
+	--@end class Parameter
+	
+	--@begin class ActivityEdge
+	--@comment UML4SysML::ActivityEdge
+	class ActivityEdge extends Entity {}
+	--@end class ActivityEdge
+	
+	--@begin class ParameterSet
+	--@comment UML4SysML::ParameterSet
+	class ParameterSet extends Entity {}
+	--@end class ParameterSet
+	
+	--@begin class Optional
+	class Optional extends Parameter {}
+	--@end class Optional
+	
+	--@begin class Rate
+	class Rate extends Parameter, ActivityEdge {
+		reference instance : InstanceSpecification;
+	}
+	--@end class Rate
+	
+	--@begin class InstanceSpecification
+	class InstanceSpecification extends Entity {}
+	--@end class InstanceSpecification
+	
+	--@begin class Continous
+	class Continous extends Rate {}
+	--@end class Continous
+	
+	--@begin class Discrete
+	class Discrete extends Rate {}
+	--@end class Discrete
+	
+	--@begin class Probability
+	class Probability extends ActivityEdge, ParameterSet {
+		reference probability : ValueSpecification;
+	}
+	--@end class Probability
+	
+	--@begin class ValueSpecification
+	class ValueSpecification extends Entity {}
+	--@end class ValueSpecification
+	
+	--@begin class Behavior
+	--@comment UML4SysML::Behavior
+	class Behavior extends Entity {}
+	--@end class Behavior
+	
+	--@begin class Operation
+	--@comment UML4SysML::Operation
+	class Operation extends Entity {}
+	--@end class Operation
+	
+	--@begin class ControlOperation
+	class ControlOperation extends Behavior, Operation {}
+	--@end class ControlOperation
+	
+	--@begin class ObjectNode
+	--@comment UML4SysML::ObjectNode
+	class ObjectNode extends Entity {}
+	--@end class ObjectNode
+	
+	--@begin class NoBuffer
+	class NoBuffer extends ObjectNode {}
+	--@end class NoBuffer
+	
+	--@begin class Overwrite
+	class Overwrite extends ObjectNode {}
+	--@end class Overwrite
+	--@end package Activities
+	
+	--@begin package Allocation
+	--@begin class Abstraction
+	--@comment UML4SysML::Abstraction
+	class Abstraction extends Entity {}
+	--@end class Abstraction
+	
+	--@begin class Allocate
+	class Allocate extends Abstraction {}
+	--@end class Allocate
+	
+	--@begin class Allocated
+	class Allocated extends NamedElement {
+		reference allocatedFrom[*] : NamedElement;
+		reference allocatedTo[*] : NamedElement;
+	}
+	--@end class Allocated
+	
+	--@begin class ActivityPartition
+	--@comment UML4SysML::ActivityPartition
+	class ActivityPartition extends Entity {}
+	--@end class ActivityPartition
+	
+	--@begin class AllocateActivityPartition
+	class AllocateActivityPartition extends ActivityPartition {}
+	--@end class AllocateActivityPartition
+	--@end package Allocation
+	
+	--@begin package Requirements 
+	--@begin class Trace
+	--@comment UML4SysML::Trace
+	class Trace extends Entity {}
+	--@end class Trace
+	
+	--@begin class DeriveReqt
+	class DeriveReqt extends Trace {}
+	--@end class DeriveReqt
+	
+	--@begin class Verify
+	class Verify extends Trace {}
+	--@end class Verify
+	
+	--@begin class Copy
+	class Copy extends Trace {}
+	--@end class Copy
+	
+	--@begin class Realization
+	--@comment UML4SysML::Realization
+	class Realization extends Entity {}
+	--@end class Realization
+	
+	--@begin class Satisfy
+	class Satisfy extends Realization {}
+	--@end class Satisfy
+	
+	--@begin class Requirement
+	class Requirement extends Class {
+		attribute text : String;
+		attribute id : String;
+		reference derived[*] : Requirement;
+		reference derivedFrom[*] : Requirement;
+		reference satisfiedBy[*] : NamedElement;
+		reference refinedBy[*] : NamedElement;
+		reference tracedTo[*] : NamedElement;
+		reference verifiedBy[*] : TestCase;
+		reference master : Requirement;		
+	}
+	--@end class Requirement
+	
+	--@begin class TestCase
+	class TestCase extends Behavior, Operation {}
+	--@end class TestCase
+	
+	--@begin class RequirementRelated
+	class RequirementRelated extends NamedElement {
+		reference verifies[*] : Requirement;
+		reference tracedFrom[*] : Requirement;
+		reference satisfies[*] : Requirement;
+		reference refines[*] : Requirement;
+	}
+	--@end class RequirementRelated
+	--@end package Requirements 
+	
+	--@begin package distribution
+	--@begin class BasicInterval
+	class BasicInterval extends DistributedProperty {
+		attribute min : Integer;
+		attribute max : Integer;
+	}
+	--@end class BasicInterval
+	
+	--@begin class Interval
+	class Interval extends BasicInterval {}
+	--@end class Interval
+	
+	--@begin class Uniform
+	class Uniform extends BasicInterval {}
+	--@end class Uniform
+	
+	--@begin class Normal
+	class Normal extends DistributedProperty {
+		attribute mean : Integer;
+		attribute standardDeviation : Integer;
+	}
+	--@end class Normal
+	--@end package distribution
+	
+}
+--@end package SysML
+
+--@begin package PrimitiveType
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+	datatype Boolean;
+}
+--@end package PrimitiveType

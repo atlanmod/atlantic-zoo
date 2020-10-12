@@ -1,0 +1,95 @@
+package Metamodel;
+
+package CSM {
+  class CSM {
+    !ordered val Step[+] step;
+    !ordered val GeneralResource[+] generalResource;
+    !ordered val Scenarion[+] scenarion;
+  }
+
+  class GeneralResource {
+    !ordered ref ResourceAcquire[*]#generalResource resourceAcquire;
+    !ordered ref ResourceRelease[*]#generalResource resourceRelease;
+  }
+
+  class Step extends Scenarion {
+    !ordered ref PathConnection#post postPath;
+    !ordered ref PathConnection#pre prePath;
+    !ordered ref ActiveResource[1]#step activeResource;
+  }
+
+  class Scenarion {
+    !ordered val Step[+] step;
+    !ordered ref Start[+] root;
+  }
+
+  class Start extends Step {
+    !ordered ref Workload#start workload;
+  }
+
+  class End extends Step {
+  }
+
+  class ResourceAcquire extends Step {
+    !ordered ref GeneralResource[1]#resourceAcquire generalResource;
+  }
+
+  class ResourceRelease extends Step {
+    !ordered ref GeneralResource[1]#resourceRelease generalResource;
+  }
+
+  class Workload {
+    !ordered ref Start[1]#workload start;
+  }
+
+  class Component extends PassiveResource {
+  }
+
+  class ProcessingResource extends ActiveResource {
+  }
+
+  class ExternalService extends ActiveResource {
+  }
+
+  class ActiveResource extends GeneralResource {
+    !ordered ref Step[*]#activeResource step;
+  }
+
+  class PassiveResource extends GeneralResource {
+  }
+
+  class Message {
+  }
+
+  class PathConnection {
+    !ordered ref Message message;
+    !ordered ref Step[*]#postPath post;
+    !ordered ref Step[*]#prePath pre;
+  }
+
+  class Join extends PathConnection {
+  }
+
+  class Fork extends PathConnection {
+  }
+
+  class Merge extends PathConnection {
+  }
+
+  class Branch extends PathConnection {
+  }
+
+  class Seqence extends PathConnection {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+}
+

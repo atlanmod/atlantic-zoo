@@ -1,0 +1,68 @@
+-- @name		Java Project
+-- @version		1.0
+-- @authors		Brahim Loukil (Brahim-Khalil.Loukil <at> univ-nantes.fr)
+-- @date		2008
+-- @description	A metamodel allowing the Java Project representation.
+
+package JavaProject {
+
+	class JavaProject extends NamedElement {
+		reference ownedPackageFragment[*] ordered container : PackageFragment;
+	}
+
+	class PackageFragment extends NamedElement {
+		reference ownedCompilationUnit[*] ordered container : CompilationUnit;
+	}
+
+	class CompilationUnit extends NamedElement {
+		reference importDeclaration[*] ordered container : ImportDeclaration;
+		reference ownedType[*] ordered container : Type;
+		reference declaration[0-1] container : PackageDeclaration;
+	}
+
+	class ImportDeclaration extends NamedElement {
+		
+	}
+
+	class Type extends JavaElement {
+		reference nestedType[*] ordered container : Type;
+		reference ownedSuperType[*] ordered : Type;
+		attribute elementName[0-1] : String ;
+		attribute member_kind[0-1] : MEMBER_KIND;
+		reference methods[*] ordered container : Method;
+		reference fields[*] ordered container : Field;
+	}
+
+	class Field extends JavaElement {
+		
+	}
+
+	class Method extends JavaElement {
+		attribute returnType[0-1] : String ;
+		attribute parametersName[*] ordered unique : String ;
+		attribute parametersType[*] ordered unique :  String;
+	}
+
+	abstract class JavaElement extends NamedElement {
+		
+	}
+
+	enumeration MEMBER_KIND {
+		literal "class";
+		literal enum;
+		literal interface;
+		literal Annotation;
+	}
+
+	abstract class NamedElement {
+		attribute name[0-1] : String;
+	}
+
+	class PackageDeclaration extends NamedElement {
+		
+	}
+	
+}
+package PrimitiveTypes {
+    datatype String;
+}

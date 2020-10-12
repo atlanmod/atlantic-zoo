@@ -1,0 +1,129 @@
+-- @name		CSM
+-- @version		1.0
+-- @authors		Youssef Srour (Srour.youssef@gmail.com)
+-- @date		2006/07/28
+-- @description	This metamodel describes "CSM", that is a metamodel developed from the Real-Time and Distributed Systems Group at Carleton University to integrate performance annotations into software models.
+-- @see  		V. Cortellessa, How far are we from the definition of a common software performance ontology? (http://delivery.acm.org/10.1145/1080000/1071044/p195-cortellessa.pdf?key1=1071044&key2=4930095511&coll=&dl=ACM&CFID=15151515&CFTOKEN=6184618)
+-- @see			D.B. Petriu, M. Woodside, A Metamodel for Generating Performance Models from UML Designs, Proc. of UML Conference, LNCS 3273, pp 41-53, (2004)
+
+package CSM {
+
+-- Begin class CSM
+	class CSM {
+		reference step [1-*] container : Step;
+		reference generalResource [1-*] container : GeneralResource;
+		reference scenarion [1-*] container : Scenarion;
+	}-- End class CSM
+
+-- Begin class GeneralResource
+	class GeneralResource {
+		reference resourceAcquire [*] : ResourceAcquire oppositeOf generalResource;
+		reference resourceRelease [*] : ResourceRelease oppositeOf generalResource;
+	}-- End class GeneralResource
+
+-- Begin class Step
+	class Step extends Scenarion {
+		reference postPath [0-1] : PathConnection oppositeOf post;
+		reference prePath [0-1] : PathConnection oppositeOf pre;
+		reference activeResource : ActiveResource oppositeOf step;
+	}-- End class Step
+
+-- Begin class Scenarion
+	class Scenarion {
+		reference step [1-*] container : Step;
+		reference root[1-*] : Start;
+		
+	}-- End class Scenarion
+
+-- Begin class Start
+	class Start extends Step {
+		reference workload [0-1] : Workload oppositeOf start; 
+	}-- End class Start
+
+-- Begin class End
+	class End extends Step {
+		
+	}-- End class End
+
+-- Begin class ResourceAcquire
+	class ResourceAcquire extends Step {
+		reference generalResource : GeneralResource oppositeOf resourceAcquire;
+	}-- End class ResourceAcquire
+
+-- Begin class ResourceRelease
+	class ResourceRelease extends Step {
+		reference generalResource : GeneralResource oppositeOf resourceRelease;
+	}-- End class ResourceRelease
+
+-- Begin class Workload
+	class Workload {
+		reference start : Start oppositeOf workload;
+	}-- End class Workload
+
+-- Begin class Component
+	class Component extends PassiveResource{
+		
+	}-- End class Component
+
+-- Begin class ProcessingResource
+	class ProcessingResource extends ActiveResource {
+		
+	}-- End class ProcessingResource
+
+-- Begin class ExternalService
+	class ExternalService extends ActiveResource {
+		
+	}-- End class ExternalService
+
+-- Begin class ActiveResource
+	class ActiveResource extends GeneralResource {
+		reference step[*] : Step oppositeOf activeResource;
+	}-- End class ActiveResource
+
+-- Begin class PassiveResource
+	class PassiveResource extends GeneralResource {
+		
+	}-- End class PassiveResource
+
+-- Begin class Message
+	class Message {
+		
+	}-- End class Message
+	
+-- Begin class PathConnection
+	class PathConnection {
+		reference message[0-1] : Message;
+		reference post [*] : Step oppositeOf postPath;
+		reference pre [*] : Step oppositeOf prePath; 
+	}-- End class PathConnection
+
+-- Begin class Join
+	class Join extends PathConnection {
+		
+	}-- End class Join
+
+-- Begin class Fork
+	class Fork extends PathConnection {
+		
+	}-- End class Fork
+
+-- Begin class Merge
+	class Merge extends PathConnection {
+		
+	}-- End class Merge
+
+-- Begin class Branch
+	class Branch extends PathConnection {
+		
+	}-- End class Branch
+
+-- Begin class Seqence
+	class Seqence extends PathConnection {
+		
+	}-- End class Seqence
+}
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+	datatype Integer;
+}

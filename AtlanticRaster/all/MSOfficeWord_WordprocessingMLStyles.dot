@@ -1,0 +1,358 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_WordprocessingMLStyles"{
+labelloc=t
+color=black
+label=WordprocessingMLStyles
+ node[shape=record];
+DateTimeType[label="{DateTimeType|year : Integer\nmonth : Integer\nday : Integer\nhour : Integer\nminute : Integer\nsecond : Integer| }"]
+;
+ node[shape=record];
+VersionType[label="{VersionType|n : Integer\nnn : Integer| }"]
+;
+ node[shape=record];
+ValueType[label="{/ValueType/| | }"]
+;
+ node[shape=record];
+StringValue[label="{StringValue|value : String| }"]
+ StringValue->ValueType[arrowhead=onormal,group=ValueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FloatValue[label="{FloatValue|value : Double| }"]
+ FloatValue->ValueType[arrowhead=onormal,group=ValueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DateTimeTypeValue[label="{DateTimeTypeValue| | }"]
+ DateTimeTypeValue->DateTimeType[arrowhead=vee,arrowtail=none,headlabel="value",group=DateTimeType,minlen=2,constraint=false,]
+ DateTimeTypeValue->ValueType[arrowhead=onormal,group=ValueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BooleanValue[label="{BooleanValue|value : Boolean| }"]
+ BooleanValue->ValueType[arrowhead=onormal,group=ValueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DocumentPropertiesCollection[label="{DocumentPropertiesCollection|title[0-1] : String\nsubject[0-1] : String\nkeywords[0-1] : String\ndescription[0-1] : String\ncategory[0-1] : String\nauthor[0-1] : String\nlastAuthor[0-1] : String\nmanager[0-1] : String\ncompany[0-1] : String\nhyperlinkBase[0-1] : String\nrevision[0-1] : Integer\npresentationFormat[0-1] : String\nguid[0-1] : String\nappName[0-1] : String\ntotalTime[0-1] : Integer\npages[0-1] : Integer\nwords[0-1] : Integer\ncharacters[0-1] : Integer\ncharactersWithSpaces[0-1] : Integer\nbytes[0-1] : Integer\nlines[0-1] : Integer\nparagraphs[0-1] : Integer| }"]
+ DocumentPropertiesCollection->WordDocument[arrowhead=diamond,arrowtail=none,headlabel="dp_wordDocument",taillabel="wd_docProperties[0-1]",group=WordDocument,minlen=2,constraint=true,]
+ DocumentPropertiesCollection->VersionType[arrowhead=vee,arrowtail=diamond,headlabel="version[0-1]",group=VersionType,minlen=2,constraint=true,]
+ DocumentPropertiesCollection->DateTimeType[arrowhead=vee,arrowtail=diamond,headlabel="lastPrinted[0-1]",group=DateTimeType,minlen=2,constraint=true,]
+ DocumentPropertiesCollection->DateTimeType[arrowhead=vee,arrowtail=diamond,headlabel="created[0-1]",group=DateTimeType,minlen=2,constraint=true,]
+ DocumentPropertiesCollection->DateTimeType[arrowhead=vee,arrowtail=diamond,headlabel="lastSaved[0-1]",group=DateTimeType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CustomDocumentPropertiesCollection[label="{CustomDocumentPropertiesCollection| | }"]
+ CustomDocumentPropertiesCollection->WordDocument[arrowhead=diamond,arrowtail=none,headlabel="cdp_wordDocument",taillabel="wd_customDocProperties[0-1]",group=WordDocument,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CustomDocumentProperty[label="{CustomDocumentProperty|name : String| }"]
+ CustomDocumentProperty->CustomDocumentPropertiesCollection[arrowhead=diamond,arrowtail=none,headlabel="customDocumentProperty_cdpe",taillabel="customDocumentProperties[1-*]",group=CustomDocumentPropertiesCollection,minlen=2,constraint=true,]
+ CustomDocumentProperty->ValueType[arrowhead=vee,arrowtail=diamond,headlabel="value",group=ValueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SmartTagType[label="{SmartTagType|namespaceuri : String\nname : String\nurl[0-1] : String| }"]
+ SmartTagType->SmartTagsCollection[arrowhead=diamond,arrowtail=none,headlabel="smartTagType_ste",taillabel="smartTagTypes[*]",group=SmartTagsCollection,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SmartTagsCollection[label="{SmartTagsCollection| | }"]
+ SmartTagsCollection->WordDocument[arrowhead=diamond,arrowtail=none,headlabel="st_wordDocument",taillabel="wd_smartTags[0-1]",group=WordDocument,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StringProperty[label="{StringProperty| | }"]
+ StringProperty->StringType[arrowhead=onormal,group=StringType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StringType[label="{StringType|val : String| }"]
+;
+ node[shape=record];
+UnderlineProperty[label="{UnderlineProperty|val[0-1] : UnderlineValues\ncolor[0-1] : String| }"]
+;
+ node[shape=record];
+WordDocument[label="{WordDocument| | }"]
+ WordDocument->StringProperty[arrowhead=vee,arrowtail=diamond,headlabel="ignoreSubtree[0-1]",group=StringProperty,minlen=2,constraint=true,]
+ WordDocument->StringProperty[arrowhead=vee,arrowtail=diamond,headlabel="ignoreElements[0-1]",group=StringProperty,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DocPrElt[label="{DocPrElt| | }"]
+ DocPrElt->WordDocument[arrowhead=diamond,arrowtail=none,headlabel="dpe_wordDocument",taillabel="docPr[0-1]",group=WordDocument,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BodyElt[label="{BodyElt| | }"]
+ BodyElt->WordDocument[arrowhead=diamond,arrowtail=none,headlabel="be_wordDocument",taillabel="body",group=WordDocument,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BlockLevelElt[label="{/BlockLevelElt/| | }"]
+ BlockLevelElt->BodyElt[arrowhead=diamond,arrowtail=none,headlabel="ble_bodyElt",taillabel="blockLevelElts[*]{ordered}",group=BodyElt,minlen=2,constraint=true,]
+ BlockLevelElt->NoteElt[arrowhead=diamond,arrowtail=none,headlabel="ble_note",taillabel="n_blockLevelElts[1-*]{ordered}",group=NoteElt,minlen=2,constraint=true,]
+ BlockLevelElt->TableCellElt[arrowhead=diamond,arrowtail=none,headlabel="ble_tableCellElt",taillabel="tce_content[1-*]{ordered}",group=TableCellElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BlockLevelChunkElt[label="{/BlockLevelChunkElt/| | }"]
+ BlockLevelChunkElt->BlockLevelElt[arrowhead=onormal,group=BlockLevelElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ParaElt[label="{ParaElt| | }"]
+ ParaElt->BlockLevelChunkElt[arrowhead=onormal,group=BlockLevelChunkElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ParaPrElt[label="{ParaPrElt|keepNext[0-1] : OnOffType\nkeepLines[0-1] : OnOffType\npageBreakBefore[0-1] : OnOffType\nsupressLineNumbers[0-1] : OnOffType\nsuppressAutoHyphens[0-1] : OnOffType\ncontextualSpacing[0-1] : OnOffType\nbidi[0-1] : OnOffType\njustification[0-1] : JustificationValue| }"]
+ ParaPrElt->ParaElt[arrowhead=diamond,arrowtail=none,headlabel="ppe_pElt",taillabel="pPr[0-1]",group=ParaElt,minlen=2,constraint=true,]
+ ParaPrElt->StyleElt[arrowhead=none,arrowtail=none,headlabel="ppe_styleElt",taillabel="se_pPr[0-1]",group=StyleElt,minlen=2,constraint=false,]
+ ParaPrElt->StringProperty[arrowhead=vee,arrowtail=diamond,headlabel="pStyle[0-1]",group=StringProperty,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ParaContentElt[label="{/ParaContentElt/| | }"]
+ ParaContentElt->ParaElt[arrowhead=diamond,arrowtail=none,headlabel="pce_pElt",taillabel="pContentElts[*]{ordered}",group=ParaElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RunElt[label="{RunElt| | }"]
+ RunElt->ParaContentElt[arrowhead=onormal,group=ParaContentElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RunPrElt[label="{RunPrElt|bold[0-1] : OnOffType\nbold_cs[0-1] : OnOffType\nitalic[0-1] : OnOffType\nitalic_cs[0-1] : OnOffType\ncapitals[0-1] : OnOffType\nsmallCapitals[0-1] : OnOffType\nstrike[0-1] : OnOffType\ndoubleStrike[0-1] : OnOffType\noutline[0-1] : OnOffType\nshadow[0-1] : OnOffType\nemboss[0-1] : OnOffType\nimprint[0-1] : OnOffType\nnoProof[0-1] : OnOffType\nvanish[0-1] : OnOffType\nspecVanish[0-1] : OnOffType\nrtl[0-1] : OnOffType\ncs[0-1] : OnOffType\ncolor[0-1] : String\nhighlight[0-1] : HighlightColorValues\nverticalAlign[0-1] : VerticalAlignRunType| }"]
+ RunPrElt->RunElt[arrowhead=diamond,arrowtail=none,headlabel="rpe_rElt",taillabel="rPr[0-1]",group=RunElt,minlen=2,constraint=true,]
+ RunPrElt->StyleElt[arrowhead=none,arrowtail=none,headlabel="rpe_styleElt",taillabel="se_rPr[0-1]",group=StyleElt,minlen=2,constraint=false,]
+ RunPrElt->StringProperty[arrowhead=vee,arrowtail=diamond,headlabel="rStyle[0-1]",group=StringProperty,minlen=2,constraint=true,]
+ RunPrElt->UnderlineProperty[arrowhead=vee,arrowtail=none,headlabel="underline[0-1]",group=UnderlineProperty,minlen=2,constraint=false,]
+;
+ node[shape=record];
+LangElt[label="{LangElt|val[0-1] : String\nbidi[0-1] : String| }"]
+ LangElt->RunPrElt[arrowhead=none,arrowtail=none,headlabel="le_runPrElt",taillabel="language[0-1]",group=RunPrElt,minlen=2,constraint=false,]
+;
+ node[shape=record];
+RunContentElt[label="{/RunContentElt/| | }"]
+ RunContentElt->RunElt[arrowhead=diamond,arrowtail=none,headlabel="rce_rElt",taillabel="rContentElts[*]{ordered}",group=RunElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BreakElt[label="{BreakElt|type[0-1] : BreakType| }"]
+ BreakElt->RunContentElt[arrowhead=onormal,group=RunContentElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Text[label="{Text| | }"]
+ Text->RunContentElt[arrowhead=onormal,group=RunContentElt,minlen=2,constraint=true,]
+ Text->StringType[arrowhead=onormal,group=StringType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DelText[label="{DelText| | }"]
+ DelText->RunContentElt[arrowhead=onormal,group=RunContentElt,minlen=2,constraint=true,]
+ DelText->StringType[arrowhead=onormal,group=StringType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InstrText[label="{InstrText| | }"]
+ InstrText->RunContentElt[arrowhead=onormal,group=RunContentElt,minlen=2,constraint=true,]
+ InstrText->StringType[arrowhead=onormal,group=StringType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DelInstrText[label="{DelInstrText| | }"]
+ DelInstrText->RunContentElt[arrowhead=onormal,group=RunContentElt,minlen=2,constraint=true,]
+ DelInstrText->StringType[arrowhead=onormal,group=StringType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NoBreakHyphen[label="{NoBreakHyphen| | }"]
+ NoBreakHyphen->RunContentElt[arrowhead=onormal,group=RunContentElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SoftHyphen[label="{SoftHyphen| | }"]
+ SoftHyphen->RunContentElt[arrowhead=onormal,group=RunContentElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnotationRef[label="{AnnotationRef| | }"]
+ AnnotationRef->RunContentElt[arrowhead=onormal,group=RunContentElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FootnoteRef[label="{FootnoteRef| | }"]
+ FootnoteRef->RunContentElt[arrowhead=onormal,group=RunContentElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EndnoteRef[label="{EndnoteRef| | }"]
+ EndnoteRef->RunContentElt[arrowhead=onormal,group=RunContentElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Separator[label="{Separator| | }"]
+ Separator->RunContentElt[arrowhead=onormal,group=RunContentElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ContinuationSeparator[label="{ContinuationSeparator| | }"]
+ ContinuationSeparator->RunContentElt[arrowhead=onormal,group=RunContentElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PgNum[label="{PgNum| | }"]
+ PgNum->RunContentElt[arrowhead=onormal,group=RunContentElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Cr[label="{Cr| | }"]
+ Cr->RunContentElt[arrowhead=onormal,group=RunContentElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Footnote[label="{Footnote| | }"]
+ Footnote->RunContentElt[arrowhead=onormal,group=RunContentElt,minlen=2,constraint=true,]
+ Footnote->NoteElt[arrowhead=onormal,group=NoteElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Endnote[label="{Endnote| | }"]
+ Endnote->RunContentElt[arrowhead=onormal,group=RunContentElt,minlen=2,constraint=true,]
+ Endnote->NoteElt[arrowhead=onormal,group=NoteElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NoteElt[label="{/NoteElt/|type[0-1] : NoteValue\nsuppressRef[0-1] : OnOffType| }"]
+;
+ node[shape=record];
+Picture[label="{Picture| | }"]
+ Picture->RunContentElt[arrowhead=onormal,group=RunContentElt,minlen=2,constraint=true,]
+ Picture->PictureType[arrowhead=onormal,group=PictureType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Symbol[label="{Symbol| | }"]
+ Symbol->RunContentElt[arrowhead=onormal,group=RunContentElt,minlen=2,constraint=true,]
+ Symbol->SymElt[arrowhead=onormal,group=SymElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SymElt[label="{SymElt| | }"]
+ SymElt->StringType[arrowhead=vee,arrowtail=diamond,headlabel="font",group=StringType,minlen=2,constraint=true,]
+ SymElt->StringType[arrowhead=vee,arrowtail=diamond,headlabel="char",group=StringType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Tab[label="{Tab| | }"]
+ Tab->RunContentElt[arrowhead=onormal,group=RunContentElt,minlen=2,constraint=true,]
+ Tab->TabElt[arrowhead=onormal,group=TabElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FldChar[label="{FldChar| | }"]
+ FldChar->RunContentElt[arrowhead=onormal,group=RunContentElt,minlen=2,constraint=true,]
+ FldChar->FldCharElt[arrowhead=onormal,group=FldCharElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FldCharElt[label="{FldCharElt|fldCharType : FldCharTypeProperty\nfldLock : OnOffType| }"]
+ FldCharElt->StringType[arrowhead=vee,arrowtail=diamond,headlabel="fldData[0-1]",group=StringType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TableElt[label="{TableElt| | }"]
+ TableElt->BlockLevelChunkElt[arrowhead=onormal,group=BlockLevelChunkElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TablePrElt[label="{TablePrElt| | }"]
+ TablePrElt->TableElt[arrowhead=diamond,arrowtail=none,headlabel="tpe_tblElt",taillabel="tblPr",group=TableElt,minlen=2,constraint=true,]
+ TablePrElt->StyleElt[arrowhead=none,arrowtail=none,headlabel="tpe_styleElt",taillabel="se_tblPr[0-1]",group=StyleElt,minlen=2,constraint=false,]
+;
+ node[shape=record];
+TableGridElt[label="{TableGridElt| | }"]
+ TableGridElt->TableElt[arrowhead=diamond,arrowtail=none,headlabel="tge_tblElt",taillabel="tblGrid",group=TableElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TableContentElt[label="{TableContentElt| | }"]
+ TableContentElt->TableElt[arrowhead=diamond,arrowtail=none,headlabel="tce_tblElt",taillabel="tblContent[1-*]{ordered}",group=TableElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RowElt[label="{RowElt| | }"]
+ RowElt->TableContentElt[arrowhead=diamond,arrowtail=none,headlabel="re_tblContentElt",taillabel="tr[*]{ordered}",group=TableContentElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TablePrExElt[label="{TablePrExElt| | }"]
+ TablePrExElt->RowElt[arrowhead=diamond,arrowtail=none,headlabel="tpee_rowElt",taillabel="tblPrEx[0-1]",group=RowElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TableRowPrElt[label="{TableRowPrElt| | }"]
+ TableRowPrElt->RowElt[arrowhead=diamond,arrowtail=none,headlabel="tpe_rowElt",taillabel="trPr[0-1]",group=RowElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RowContentElt[label="{RowContentElt| | }"]
+ RowContentElt->RowElt[arrowhead=diamond,arrowtail=none,headlabel="rce_rowElt",taillabel="rowContent[1-*]{ordered}",group=RowElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TableCellElt[label="{TableCellElt| | }"]
+ TableCellElt->RowContentElt[arrowhead=diamond,arrowtail=none,headlabel="tce_rowContentElt",taillabel="tc[*]{ordered}",group=RowContentElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TableCellPrElt[label="{TableCellPrElt| | }"]
+ TableCellPrElt->TableCellElt[arrowhead=diamond,arrowtail=none,headlabel="tcpe_tableCellElt",taillabel="tcPr[0-1]",group=TableCellElt,minlen=2,constraint=true,]
+ TableCellPrElt->StyleElt[arrowhead=none,arrowtail=none,headlabel="tcpe_styleElt",taillabel="se_tcPr[0-1]",group=StyleElt,minlen=2,constraint=false,]
+;
+ node[shape=record];
+FontsListElt[label="{FontsListElt| | }"]
+ FontsListElt->WordDocument[arrowhead=diamond,arrowtail=none,headlabel="fle_wordDocument",taillabel="fonts[0-1]",group=WordDocument,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FontsElt[label="{FontsElt|hint : HintType| }"]
+ FontsElt->FontsListElt[arrowhead=diamond,arrowtail=none,headlabel="fse_fontsListElt",taillabel="defaultFonts[0-1]",group=FontsListElt,minlen=2,constraint=true,]
+ FontsElt->RunPrElt[arrowhead=diamond,arrowtail=none,headlabel="fse_runPrElt",taillabel="rFonts[0-1]",group=RunPrElt,minlen=2,constraint=true,]
+ FontsElt->StringType[arrowhead=vee,arrowtail=diamond,headlabel="ascii",group=StringType,minlen=2,constraint=true,]
+ FontsElt->StringType[arrowhead=vee,arrowtail=diamond,headlabel="h_ansi",group=StringType,minlen=2,constraint=true,]
+ FontsElt->StringType[arrowhead=vee,arrowtail=diamond,headlabel="fareast",group=StringType,minlen=2,constraint=true,]
+ FontsElt->StringType[arrowhead=vee,arrowtail=diamond,headlabel="cs",group=StringType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FontElt[label="{FontElt| | }"]
+ FontElt->FontsListElt[arrowhead=diamond,arrowtail=none,headlabel="fe_fontsListElt",taillabel="fonts[*]{ordered}",group=FontsListElt,minlen=2,constraint=true,]
+ FontElt->StringType[arrowhead=vee,arrowtail=diamond,headlabel="name",group=StringType,minlen=2,constraint=true,]
+ FontElt->StringProperty[arrowhead=vee,arrowtail=diamond,headlabel="altName[0-1]",group=StringProperty,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StylesElt[label="{StylesElt|versionOfBuiltInStylenames[0-1] : Double| }"]
+ StylesElt->WordDocument[arrowhead=diamond,arrowtail=none,headlabel="se_wordDocument",taillabel="styles[0-1]",group=WordDocument,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StyleElt[label="{StyleElt|type[0-1] : StyleKindValue\ndefault[0-1] : OnOffType\nsti[0-1] : Double\nautoRedefine[0-1] : OnOffType\nhidden[0-1] : OnOffType\nsemiHidden[0-1] : OnOffType\nlocked[0-1] : OnOffType\npersonal[0-1] : OnOffType\npersonalCompose[0-1] : OnOffType\npersonalReply[0-1] : OnOffType| }"]
+ StyleElt->StylesElt[arrowhead=none,arrowtail=none,headlabel="se_stylesElt",taillabel="styles[*]",group=StylesElt,minlen=2,constraint=false,]
+ StyleElt->StringType[arrowhead=vee,arrowtail=diamond,headlabel="styleId[0-1]",group=StringType,minlen=2,constraint=true,]
+ StyleElt->StringProperty[arrowhead=vee,arrowtail=diamond,headlabel="name[0-1]",group=StringProperty,minlen=2,constraint=true,]
+ StyleElt->StringProperty[arrowhead=vee,arrowtail=diamond,headlabel="aliases[0-1]",group=StringProperty,minlen=2,constraint=true,]
+ StyleElt->StringProperty[arrowhead=vee,arrowtail=diamond,headlabel="basedOn[0-1]",group=StringProperty,minlen=2,constraint=true,]
+ StyleElt->StringProperty[arrowhead=vee,arrowtail=diamond,headlabel="next[0-1]",group=StringProperty,minlen=2,constraint=true,]
+ StyleElt->StringProperty[arrowhead=vee,arrowtail=diamond,headlabel="link[0-1]",group=StringProperty,minlen=2,constraint=true,]
+ StyleElt->StringType[arrowhead=vee,arrowtail=diamond,headlabel="rsid[0-1]",group=StringType,minlen=2,constraint=true,]
+ StyleElt->TableRowPrElt[arrowhead=none,arrowtail=none,headlabel="se_trPr[0-1]",taillabel="trpe_styleElt",group=TableRowPrElt,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ListsElt[label="{ListsElt| | }"]
+ ListsElt->WordDocument[arrowhead=diamond,arrowtail=none,headlabel="le_wordDocument",taillabel="lists[0-1]",group=WordDocument,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SectPrElt[label="{SectPrElt| | }"]
+ SectPrElt->BodyElt[arrowhead=diamond,arrowtail=none,headlabel="spe_bodyElt",taillabel="sectPr[0-1]",group=BodyElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RunLevelElt[label="{RunLevelElt| | }"]
+ RunLevelElt->TableContentElt[arrowhead=diamond,arrowtail=none,headlabel="rle_tblContentElt",taillabel="tce_runLevelElts[0-1]",group=TableContentElt,minlen=2,constraint=true,]
+ RunLevelElt->RowContentElt[arrowhead=diamond,arrowtail=none,headlabel="rle_rowContentElt",taillabel="rce_runLevelElts[0-1]",group=RowContentElt,minlen=2,constraint=true,]
+ RunLevelElt->BlockLevelChunkElt[arrowhead=onormal,group=BlockLevelChunkElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CfChunk[label="{CfChunk| | }"]
+ CfChunk->BlockLevelElt[arrowhead=onormal,group=BlockLevelElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleFieldElt[label="{SimpleFieldElt| | }"]
+ SimpleFieldElt->ParaContentElt[arrowhead=onormal,group=ParaContentElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+HLinkElt[label="{HLinkElt| | }"]
+ HLinkElt->ParaContentElt[arrowhead=onormal,group=ParaContentElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SubDocElt[label="{SubDocElt| | }"]
+ SubDocElt->ParaContentElt[arrowhead=onormal,group=ParaContentElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PictureType[label="{PictureType| | }"]
+;
+ node[shape=record];
+TabElt[label="{TabElt| | }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

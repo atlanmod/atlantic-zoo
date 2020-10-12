@@ -1,0 +1,94 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'HPROF'>
+    <Class name = 'LocatedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'location' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsBefore' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsAfter' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Profile' isAbstract = 'false' supertypes = 'HPROF::LocatedElement'>
+      <Attribute name = 'header' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'threadActions' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'HPROF::ThreadAction' opposite = ''/>
+      <Reference name = 'traces' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'HPROF::Trace' opposite = ''/>
+      <Reference name = 'times' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'HPROF::Times' opposite = ''/>
+      <Reference name = 'methods' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'HPROF::Method' opposite = ''/>
+    </Class>
+    <Class name = 'Method' isAbstract = 'false' supertypes = 'HPROF::LocatedElement'>
+      <Attribute name = 'fullyQualifiedName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'stackTraceElements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'HPROF::StackTraceElement' opposite = 'HPROF::StackTraceElement::method'/>
+    </Class>
+    <Class name = 'ThreadAction' isAbstract = 'true' supertypes = 'HPROF::LocatedElement'>
+      <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'ThreadStart' isAbstract = 'false' supertypes = 'HPROF::ThreadAction'>
+      <Attribute name = 'obj' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'group' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ThreadEnd' isAbstract = 'false' supertypes = 'HPROF::ThreadAction'/>
+    <Class name = 'Trace' isAbstract = 'false' supertypes = 'HPROF::LocatedElement'>
+      <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'threadId' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'HPROF::StackTraceElement' opposite = 'HPROF::StackTraceElement::trace'/>
+      <Reference name = 'times' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'HPROF::Time' opposite = 'HPROF::Time::trace'/>
+    </Class>
+    <Class name = 'StackTraceElement' isAbstract = 'false' supertypes = 'HPROF::LocatedElement'>
+      <Reference name = 'method' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'HPROF::Method' opposite = 'HPROF::Method::stackTraceElements'/>
+      <Attribute name = 'fileName' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'line' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'trace' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'HPROF::Trace' opposite = 'HPROF::Trace::elements'/>
+    </Class>
+    <Class name = 'Times' isAbstract = 'false' supertypes = 'HPROF::LocatedElement'>
+      <Attribute name = 'unit' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'total' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'date' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'HPROF::Date' opposite = ''/>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'HPROF::Time' opposite = ''/>
+    </Class>
+    <Class name = 'Time' isAbstract = 'false' supertypes = 'HPROF::LocatedElement'>
+      <Attribute name = 'rank' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'self' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+      <Attribute name = 'accum' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+      <Attribute name = 'count' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'trace' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'HPROF::Trace' opposite = 'HPROF::Trace::times'/>
+      <Reference name = 'method' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'HPROF::Method' opposite = ''/>
+    </Class>
+    <Class name = 'Date' isAbstract = 'false' supertypes = 'HPROF::LocatedElement'>
+      <Attribute name = 'day' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'HPROF::Day'/>
+      <Attribute name = 'month' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'HPROF::Month'/>
+      <Attribute name = 'dayOfMonth' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'hour' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'minutes' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'seconds' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'year' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Enumeration name = 'Day'>
+      <EnumLiteral name = 'Monday'/>
+      <EnumLiteral name = 'Tuesday'/>
+      <EnumLiteral name = 'Wednesday'/>
+      <EnumLiteral name = 'Thursday'/>
+      <EnumLiteral name = 'Friday'/>
+      <EnumLiteral name = 'Saturday'/>
+      <EnumLiteral name = 'Sunday'/>
+    </Enumeration>
+    <Enumeration name = 'Month'>
+      <EnumLiteral name = 'January'/>
+      <EnumLiteral name = 'February'/>
+      <EnumLiteral name = 'March'/>
+      <EnumLiteral name = 'April'/>
+      <EnumLiteral name = 'May'/>
+      <EnumLiteral name = 'June'/>
+      <EnumLiteral name = 'July'/>
+      <EnumLiteral name = 'August'/>
+      <EnumLiteral name = 'September'/>
+      <EnumLiteral name = 'October'/>
+      <EnumLiteral name = 'November'/>
+      <EnumLiteral name = 'December'/>
+    </Enumeration>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Double'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

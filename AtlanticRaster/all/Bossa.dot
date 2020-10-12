@@ -1,0 +1,525 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_Bossa"{
+labelloc=t
+color=black
+label=Bossa
+ node[shape=record];
+BossaProgramm[label="{BossaProgramm| | }"]
+ BossaProgramm->Scheduler[arrowhead=vee,arrowtail=diamond,headlabel="scheduler",group=Scheduler,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Scheduler[label="{/Scheduler/|defaultAtt : Boolean\nhigh_Res : Boolean\nlow_Res : Boolean\nid : String| }"]
+;
+ node[shape=record];
+NormalScheduler[label="{NormalScheduler| | }"]
+ NormalScheduler->SchedulerDecl[arrowhead=vee,arrowtail=diamond,headlabel="schedulerDecl",group=SchedulerDecl,minlen=2,constraint=true,]
+ NormalScheduler->Scheduler[arrowhead=onormal,group=Scheduler,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VirtualScheduler[label="{VirtualScheduler| | }"]
+ VirtualScheduler->VSchdulerDecl[arrowhead=vee,arrowtail=diamond,headlabel="vschedulerDecl",group=VSchdulerDecl,minlen=2,constraint=true,]
+ VirtualScheduler->Scheduler[arrowhead=onormal,group=Scheduler,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AbstractSchedulerDecl[label="{/AbstractSchedulerDecl/| | }"]
+ AbstractSchedulerDecl->ConstDef[arrowhead=vee,arrowtail=diamond,headlabel="constDef[*]",group=ConstDef,minlen=2,constraint=true,]
+ AbstractSchedulerDecl->TypeDef[arrowhead=vee,arrowtail=diamond,headlabel="typeDef[*]",group=TypeDef,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SchedulerDecl[label="{SchedulerDecl| | }"]
+ SchedulerDecl->ProcessDef[arrowhead=vee,arrowtail=diamond,headlabel="processDef",group=ProcessDef,minlen=2,constraint=true,]
+ SchedulerDecl->AbstractSchedulerDecl[arrowhead=onormal,group=AbstractSchedulerDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VSchdulerDecl[label="{VSchdulerDecl| | }"]
+ VSchdulerDecl->SchedulerDef[arrowhead=vee,arrowtail=diamond,headlabel="schedulerDef",group=SchedulerDef,minlen=2,constraint=true,]
+ VSchdulerDecl->AbstractSchedulerDecl[arrowhead=onormal,group=AbstractSchedulerDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConstDef[label="{ConstDef|id : String| }"]
+ ConstDef->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expr",group=Expression,minlen=2,constraint=true,]
+ ConstDef->BossaTypeExpr[arrowhead=vee,arrowtail=diamond,headlabel="bossaTypeExpr",group=BossaTypeExpr,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TypeDef[label="{TypeDef| | }"]
+ TypeDef->EnumRange[arrowhead=vee,arrowtail=diamond,headlabel="enumRang",group=EnumRange,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EnumRange[label="{EnumRange| | }"]
+ EnumRange->EnumDef[arrowhead=vee,arrowtail=diamond,headlabel="enumDef[0-1]",group=EnumDef,minlen=2,constraint=true,]
+ EnumRange->RangeDef[arrowhead=vee,arrowtail=diamond,headlabel="rangeDef[0-1]",group=RangeDef,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EnumDef[label="{EnumDef|theIds[1-*] : String| }"]
+;
+ node[shape=record];
+BagId[label="{BagId|theValue : String| }"]
+;
+ node[shape=record];
+RangeDef[label="{RangeDef| | }"]
+ RangeDef->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expr[22]",group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ProcessDef[label="{ProcessDef| | }"]
+;
+ node[shape=record];
+SchedulerDef[label="{SchedulerDef| | }"]
+;
+ node[shape=record];
+ProcessVarDecl[label="{ProcessVarDecl|id : String| }"]
+ ProcessVarDecl->ProcessDef[arrowhead=diamond,arrowtail=none,headlabel="processDef",taillabel="processVarDecl[1-*]",group=ProcessDef,minlen=2,constraint=true,]
+ ProcessVarDecl->SchedulerDef[arrowhead=diamond,arrowtail=none,headlabel="schedulerDef",taillabel="processVarDecl[1-*]",group=SchedulerDef,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Timer_ProcessVarDecl[label="{Timer_ProcessVarDecl| | }"]
+ Timer_ProcessVarDecl->ProcessVarDecl[arrowhead=onormal,group=ProcessVarDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+System_ProcessVarDecl[label="{System_ProcessVarDecl|system : Boolean| }"]
+ System_ProcessVarDecl->TypeExpr[arrowhead=vee,arrowtail=diamond,headlabel="typeExpr",group=TypeExpr,minlen=2,constraint=true,]
+ System_ProcessVarDecl->ProcessVarDecl[arrowhead=onormal,group=ProcessVarDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Normal_ProcessVarDecl[label="{Normal_ProcessVarDecl| | }"]
+ Normal_ProcessVarDecl->TypeExpr[arrowhead=vee,arrowtail=diamond,headlabel="typeExpr",group=TypeExpr,minlen=2,constraint=true,]
+ Normal_ProcessVarDecl->ProcessVarDecl[arrowhead=onormal,group=ProcessVarDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+HandlerDef[label="{HandlerDef|id : String| }"]
+ HandlerDef->Scheduler[arrowhead=diamond,arrowtail=none,headlabel="scheduler",taillabel="handlerDef",group=Scheduler,minlen=2,constraint=true,]
+ HandlerDef->OnHandlerDef[arrowhead=vee,arrowtail=diamond,headlabel="onHandlerDef[1-*]",group=OnHandlerDef,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InterfaceDef[label="{InterfaceDef| | }"]
+ InterfaceDef->ComposantOfInterFunc[arrowhead=vee,arrowtail=diamond,headlabel="composantOfInterFunc[1-*]",group=ComposantOfInterFunc,minlen=2,constraint=true,]
+ InterfaceDef->Scheduler[arrowhead=diamond,arrowtail=none,headlabel="scheduler",taillabel="interfaceDef",group=Scheduler,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FunctionDef[label="{FunctionDef| | }"]
+ FunctionDef->ComposantOfInterFunc[arrowhead=vee,arrowtail=diamond,headlabel="composantOfInterFunc[1-*]",group=ComposantOfInterFunc,minlen=2,constraint=true,]
+ FunctionDef->Scheduler[arrowhead=diamond,arrowtail=none,headlabel="scheduler",taillabel="functionDef",group=Scheduler,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Expression[label="{/Expression/| | }"]
+;
+ node[shape=record];
+Integer_Expression[label="{Integer_Expression|theValue : Integer| }"]
+ Integer_Expression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Id_Expression[label="{Id_Expression|id : String| }"]
+ Id_Expression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+State_Expression[label="{State_Expression|theValue : String| }"]
+ State_Expression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+True_Expression[label="{True_Expression| | }"]
+ True_Expression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+False_Expression[label="{False_Expression| | }"]
+ False_Expression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Unop_Expression[label="{Unop_Expression| | }"]
+ Unop_Expression->Unop[arrowhead=vee,arrowtail=diamond,headlabel="unop",group=Unop,minlen=2,constraint=true,]
+ Unop_Expression->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expr",group=Expression,minlen=2,constraint=true,]
+ Unop_Expression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Etoile_Expression[label="{Etoile_Expression| | }"]
+ Etoile_Expression->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expr",group=Expression,minlen=2,constraint=true,]
+ Etoile_Expression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExpId_Expression[label="{ExpId_Expression|id : String| }"]
+ ExpId_Expression->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expr",group=Expression,minlen=2,constraint=true,]
+ ExpId_Expression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Select_Expression[label="{Select_Expression| | }"]
+ Select_Expression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FnName_Expression[label="{FnName_Expression| | }"]
+ FnName_Expression->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expr[*]",group=Expression,minlen=2,constraint=true,]
+ FnName_Expression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Empty_Expression[label="{Empty_Expression| | }"]
+ Empty_Expression->ClassState[arrowhead=vee,arrowtail=diamond,headlabel="classState",group=ClassState,minlen=2,constraint=true,]
+ Empty_Expression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SRCOnSched_Expression[label="{SRCOnSched_Expression| | }"]
+ SRCOnSched_Expression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SchedulerOf_Expression[label="{SchedulerOf_Expression| | }"]
+ SchedulerOf_Expression->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expr",group=Expression,minlen=2,constraint=true,]
+ SchedulerOf_Expression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+In_Expression[label="{In_Expression|in : Boolean| }"]
+ In_Expression->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expr",group=Expression,minlen=2,constraint=true,]
+ In_Expression->ClassState[arrowhead=vee,arrowtail=diamond,headlabel="classState",group=ClassState,minlen=2,constraint=true,]
+ In_Expression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parenthese_Expression[label="{Parenthese_Expression| | }"]
+ Parenthese_Expression->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expr",group=Expression,minlen=2,constraint=true,]
+ Parenthese_Expression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Binop_Expression[label="{Binop_Expression| | }"]
+ Binop_Expression->Id_Expression[arrowhead=vee,arrowtail=diamond,headlabel="id_Expression",group=Id_Expression,minlen=2,constraint=true,]
+ Binop_Expression->Compo_Binop_Expression[arrowhead=vee,arrowtail=diamond,headlabel="compo_Binop_Expression",group=Compo_Binop_Expression,minlen=2,constraint=true,]
+ Binop_Expression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Compo_Binop_Expression[label="{Compo_Binop_Expression| | }"]
+ Compo_Binop_Expression->Binop[arrowhead=vee,arrowtail=diamond,headlabel="binop",group=Binop,minlen=2,constraint=true,]
+ Compo_Binop_Expression->Id_Expression[arrowhead=vee,arrowtail=diamond,headlabel="id_Expression",group=Id_Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ValDecl[label="{ValDecl|id : String| }"]
+ ValDecl->AbstractSchedulerDecl[arrowhead=diamond,arrowtail=none,headlabel="abstractSchedulerDecl",taillabel="valDecl[*]",group=AbstractSchedulerDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Normal_ValDecl[label="{Normal_ValDecl| | }"]
+ Normal_ValDecl->NonProcType[arrowhead=vee,arrowtail=diamond,headlabel="nonProcType[0-1]",group=NonProcType,minlen=2,constraint=true,]
+ Normal_ValDecl->ValDecl[arrowhead=onormal,group=ValDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+System_ValDecl[label="{System_ValDecl| | }"]
+ System_ValDecl->NonProcType[arrowhead=vee,arrowtail=diamond,headlabel="nonProcType[0-1]",group=NonProcType,minlen=2,constraint=true,]
+ System_ValDecl->ValDecl[arrowhead=onormal,group=ValDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Timer_ValDecl[label="{Timer_ValDecl| | }"]
+ Timer_ValDecl->ValDecl[arrowhead=onormal,group=ValDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FunDecl[label="{FunDecl| | }"]
+ FunDecl->ParameterType[arrowhead=vee,arrowtail=diamond,headlabel="parameterTypes[0-1]",group=ParameterType,minlen=2,constraint=true,]
+ FunDecl->NonProcType[arrowhead=vee,arrowtail=diamond,headlabel="nonProcType[0-1]",group=NonProcType,minlen=2,constraint=true,]
+ FunDecl->AbstractSchedulerDecl[arrowhead=diamond,arrowtail=none,headlabel="abstractSchedulerDecl",taillabel="funDecl[*]",group=AbstractSchedulerDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StateDef[label="{StateDef| | }"]
+ StateDef->ClassNameStorage[arrowhead=vee,arrowtail=diamond,headlabel="classNameStorage[1-*]",group=ClassNameStorage,minlen=2,constraint=true,]
+ StateDef->AbstractSchedulerDecl[arrowhead=diamond,arrowtail=none,headlabel="abstractSchedulerDecl",taillabel="stateDef",group=AbstractSchedulerDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ClassNameStorage[label="{ClassNameStorage|id : String| }"]
+ ClassNameStorage->ClassName[arrowhead=vee,arrowtail=diamond,headlabel="className",group=ClassName,minlen=2,constraint=true,]
+ ClassNameStorage->Storage[arrowhead=vee,arrowtail=diamond,headlabel="storage[0-1]",group=Storage,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OrderDef[label="{OrderDef| | }"]
+ OrderDef->KeyCritDecls[arrowhead=vee,arrowtail=diamond,headlabel="keyCritDecl",group=KeyCritDecls,minlen=2,constraint=true,]
+ OrderDef->CritDecls[arrowhead=vee,arrowtail=diamond,headlabel="critDecls",group=CritDecls,minlen=2,constraint=true,]
+ OrderDef->AbstractSchedulerDecl[arrowhead=diamond,arrowtail=none,headlabel="abstractSchedulerDecl",taillabel="orderDef[0-1]",group=AbstractSchedulerDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AdmissionDef[label="{AdmissionDef| | }"]
+ AdmissionDef->ValDef[arrowhead=vee,arrowtail=diamond,headlabel="valDef[*]",group=ValDef,minlen=2,constraint=true,]
+ AdmissionDef->AdmCrit[arrowhead=vee,arrowtail=diamond,headlabel="admCrit",group=AdmCrit,minlen=2,constraint=true,]
+ AdmissionDef->AttachDetach[arrowhead=vee,arrowtail=diamond,headlabel="attachDetach[0-1]",group=AttachDetach,minlen=2,constraint=true,]
+ AdmissionDef->AbstractSchedulerDecl[arrowhead=diamond,arrowtail=none,headlabel="abstractSchedulerDecl",taillabel="admissionDef[0-1]",group=AbstractSchedulerDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TraceDef[label="{TraceDef| | }"]
+ TraceDef->TraceEvent[arrowhead=vee,arrowtail=diamond,headlabel="traceEvent[0-1]",group=TraceEvent,minlen=2,constraint=true,]
+ TraceDef->TraceExpr[arrowhead=vee,arrowtail=diamond,headlabel="traceExpr[0-1]",group=TraceExpr,minlen=2,constraint=true,]
+ TraceDef->TraceTest[arrowhead=vee,arrowtail=diamond,headlabel="traceTest[0-1]",group=TraceTest,minlen=2,constraint=true,]
+ TraceDef->AbstractSchedulerDecl[arrowhead=diamond,arrowtail=none,headlabel="abstractSchedulerDecl",taillabel="traceDef[0-1]",group=AbstractSchedulerDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TypeExpr[label="{TypeExpr|id[0-1] : String| }"]
+ TypeExpr->BossaTypeExpr[arrowhead=vee,arrowtail=diamond,headlabel="bossaTypeExpr[0-1]",group=BossaTypeExpr,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TypeOrVoid[label="{TypeOrVoid|isVoid : Boolean| }"]
+ TypeOrVoid->TypeExpr[arrowhead=vee,arrowtail=diamond,headlabel="typeExpr[0-1]",group=TypeExpr,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ParameterType[label="{ParameterType| | }"]
+ ParameterType->TypeExpr[arrowhead=vee,arrowtail=diamond,headlabel="typeExpr[1-*]",group=TypeExpr,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Storage[label="{/Storage/| | }"]
+;
+ node[shape=record];
+Process_Storage[label="{Process_Storage| | }"]
+ Process_Storage->Storage[arrowhead=onormal,group=Storage,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Scheduler_Storage[label="{Scheduler_Storage| | }"]
+ Scheduler_Storage->StateVisibility[arrowhead=vee,arrowtail=diamond,headlabel="stateVisibility[0-1]",group=StateVisibility,minlen=2,constraint=true,]
+ Scheduler_Storage->Storage[arrowhead=onormal,group=Storage,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Queue_Storage[label="{Queue_Storage| | }"]
+ Queue_Storage->StateVisibility[arrowhead=vee,arrowtail=diamond,headlabel="stateVisibility[0-1]",group=StateVisibility,minlen=2,constraint=true,]
+ Queue_Storage->QueueType[arrowhead=vee,arrowtail=diamond,headlabel="queueType[0-1]",group=QueueType,minlen=2,constraint=true,]
+ Queue_Storage->Storage[arrowhead=onormal,group=Storage,minlen=2,constraint=true,]
+;
+ node[shape=record];
+KeyCritDecls[label="{KeyCritDecls| | }"]
+ KeyCritDecls->CompoKeyCritDecls[arrowhead=vee,arrowtail=diamond,headlabel="compoKeyCritDecls[1-*]",group=CompoKeyCritDecls,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompoKeyCritDecls[label="{CompoKeyCritDecls| | }"]
+ CompoKeyCritDecls->CritDecl[arrowhead=vee,arrowtail=diamond,headlabel="critDecl",group=CritDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CritDecls[label="{CritDecls| | }"]
+ CritDecls->CritDecl[arrowhead=vee,arrowtail=diamond,headlabel="critDecl[1-*]",group=CritDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CritDecl[label="{/CritDecl/| | }"]
+ CritDecl->Critop[arrowhead=vee,arrowtail=diamond,headlabel="critop",group=Critop,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CritDeclWhithId[label="{CritDeclWhithId|id : String| }"]
+ CritDeclWhithId->CritDecl[arrowhead=onormal,group=CritDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CritDeclWhithoutId[label="{CritDeclWhithoutId| | }"]
+ CritDeclWhithoutId->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expr[23]",group=Expression,minlen=2,constraint=true,]
+ CritDeclWhithoutId->CritDecl[arrowhead=onormal,group=CritDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ValDef[label="{ValDef|id : String| }"]
+ ValDef->TypeExpr[arrowhead=vee,arrowtail=diamond,headlabel="typeExpr",group=TypeExpr,minlen=2,constraint=true,]
+ ValDef->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expr",group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AdmCrit[label="{AdmCrit| | }"]
+ AdmCrit->ParamVarDecl[arrowhead=vee,arrowtail=diamond,headlabel="paramVarDecl[*]",group=ParamVarDecl,minlen=2,constraint=true,]
+ AdmCrit->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expr",group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AttachDetach[label="{AttachDetach| | }"]
+ AttachDetach->ProcParam[arrowhead=vee,arrowtail=diamond,headlabel="procParam1",group=ProcParam,minlen=2,constraint=true,]
+ AttachDetach->ProcParam[arrowhead=vee,arrowtail=diamond,headlabel="procParam2",group=ProcParam,minlen=2,constraint=true,]
+ AttachDetach->SeqStmt[arrowhead=vee,arrowtail=diamond,headlabel="seqStmt1",group=SeqStmt,minlen=2,constraint=true,]
+ AttachDetach->SeqStmt[arrowhead=vee,arrowtail=diamond,headlabel="seqStmt2",group=SeqStmt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ParamVarDecl[label="{ParamVarDecl|id : String| }"]
+ ParamVarDecl->TypeExpr[arrowhead=vee,arrowtail=diamond,headlabel="typeExpr",group=TypeExpr,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SeqStmt[label="{SeqStmt| | }"]
+ SeqStmt->ValDef[arrowhead=vee,arrowtail=diamond,headlabel="valDef[*]",group=ValDef,minlen=2,constraint=true,]
+ SeqStmt->Statment[arrowhead=vee,arrowtail=diamond,headlabel="stmt[*]",group=Statment,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TraceEvent[label="{TraceEvent| | }"]
+ TraceEvent->EventName[arrowhead=vee,arrowtail=diamond,headlabel="eventName[1-*]",group=EventName,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TraceExpr[label="{TraceExpr|id[1-*] : String| }"]
+;
+ node[shape=record];
+TraceTest[label="{TraceTest| | }"]
+ TraceTest->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expr",group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ProcParam[label="{ProcParam|id : String\nprocess : Boolean\nscheduler : Boolean| }"]
+;
+ node[shape=record];
+Statment[label="{/Statment/| | }"]
+;
+ node[shape=record];
+IfStmt[label="{IfStmt| | }"]
+ IfStmt->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expr",group=Expression,minlen=2,constraint=true,]
+ IfStmt->SeqStmt[arrowhead=vee,arrowtail=diamond,headlabel="seqStmt[12]",group=SeqStmt,minlen=2,constraint=true,]
+ IfStmt->Statment[arrowhead=onormal,group=Statment,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ForStmt[label="{/ForStmt/| | }"]
+ ForStmt->Statment[arrowhead=onormal,group=Statment,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ForeachForStmt[label="{ForeachForStmt|id : String\nisIn : Boolean| }"]
+ ForeachForStmt->ClassState[arrowhead=vee,arrowtail=diamond,headlabel="classState[*]",group=ClassState,minlen=2,constraint=true,]
+ ForeachForStmt->SeqStmt[arrowhead=vee,arrowtail=diamond,headlabel="seqStmt",group=SeqStmt,minlen=2,constraint=true,]
+ ForeachForStmt->ForStmt[arrowhead=onormal,group=ForStmt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ForEachIncreasingForStmt[label="{ForEachIncreasingForStmt|id : String| }"]
+ ForEachIncreasingForStmt->SeqStmt[arrowhead=vee,arrowtail=diamond,headlabel="seqStmt",group=SeqStmt,minlen=2,constraint=true,]
+ ForEachIncreasingForStmt->ForStmt[arrowhead=onormal,group=ForStmt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ForEachDecreasingForStmt[label="{ForEachDecreasingForStmt|id : String| }"]
+ ForEachDecreasingForStmt->SeqStmt[arrowhead=vee,arrowtail=diamond,headlabel="seqStmt",group=SeqStmt,minlen=2,constraint=true,]
+ ForEachDecreasingForStmt->ForStmt[arrowhead=onormal,group=ForStmt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReturnStmt[label="{ReturnStmt| | }"]
+ ReturnStmt->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expr[0-1]",group=Expression,minlen=2,constraint=true,]
+ ReturnStmt->Statment[arrowhead=onormal,group=Statment,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SwitchStmt[label="{SwitchStmt| | }"]
+ SwitchStmt->LocExpr[arrowhead=vee,arrowtail=diamond,headlabel="locExpr",group=LocExpr,minlen=2,constraint=true,]
+ SwitchStmt->ComposantOfSwitchStmt[arrowhead=vee,arrowtail=diamond,headlabel="composantOfSwitchStmt[*]",group=ComposantOfSwitchStmt,minlen=2,constraint=true,]
+ SwitchStmt->Statment[arrowhead=onormal,group=Statment,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AssignStmt[label="{AssignStmt| | }"]
+ AssignStmt->LocExpr[arrowhead=vee,arrowtail=diamond,headlabel="locExpr",group=LocExpr,minlen=2,constraint=true,]
+ AssignStmt->AssignUnop[arrowhead=vee,arrowtail=diamond,headlabel="assignUnop[0-1]",group=AssignUnop,minlen=2,constraint=true,]
+ AssignStmt->AssignBinop[arrowhead=vee,arrowtail=diamond,headlabel="assignBinop[0-1]",group=AssignBinop,minlen=2,constraint=true,]
+ AssignStmt->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expr[0-1]",group=Expression,minlen=2,constraint=true,]
+ AssignStmt->Statment[arrowhead=onormal,group=Statment,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MoveStmt[label="{/MoveStmt/|isHead : Boolean\nisTail : Boolean| }"]
+ MoveStmt->MoveExpr[arrowhead=vee,arrowtail=diamond,headlabel="moveExpr",group=MoveExpr,minlen=2,constraint=true,]
+ MoveStmt->Statment[arrowhead=onormal,group=Statment,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NormalMoveStmt[label="{NormalMoveStmt| | }"]
+ NormalMoveStmt->StateRef[arrowhead=vee,arrowtail=diamond,headlabel="stateRef",group=StateRef,minlen=2,constraint=true,]
+ NormalMoveStmt->MoveStmt[arrowhead=onormal,group=MoveStmt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ForwardMoveStmt[label="{ForwardMoveStmt| | }"]
+ ForwardMoveStmt->MoveStmt[arrowhead=onormal,group=MoveStmt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StateRef[label="{StateRef|stateRef : String| }"]
+;
+ node[shape=record];
+DeferStmt[label="{DeferStmt|deferStmt : String| }"]
+ DeferStmt->Statment[arrowhead=onormal,group=Statment,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PrimStmt[label="{PrimStmt| | }"]
+ PrimStmt->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expr[*]",group=Expression,minlen=2,constraint=true,]
+ PrimStmt->Statment[arrowhead=onormal,group=Statment,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ErrorStmt[label="{ErrorStmt|errorType : String| }"]
+ ErrorStmt->Statment[arrowhead=onormal,group=Statment,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BreakStmt[label="{BreakStmt| | }"]
+ BreakStmt->Statment[arrowhead=onormal,group=Statment,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LocExpr[label="{LocExpr|stateName : String\nid[*] : String| }"]
+;
+ node[shape=record];
+MoveExpr[label="{/MoveExpr/| | }"]
+;
+ node[shape=record];
+Select_MoveExpr[label="{Select_MoveExpr| | }"]
+ Select_MoveExpr->MoveExpr[arrowhead=onormal,group=MoveExpr,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SatateName_MoveExpr[label="{SatateName_MoveExpr| | }"]
+ SatateName_MoveExpr->MoveExpr[arrowhead=onormal,group=MoveExpr,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ID_MoveExpr[label="{ID_MoveExpr|id : String| }"]
+ ID_MoveExpr->MoveExpr[arrowhead=onormal,group=MoveExpr,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IDSource_MoveExpr[label="{IDSource_MoveExpr|id : String| }"]
+ IDSource_MoveExpr->MoveExpr[arrowhead=onormal,group=MoveExpr,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IDTarget_MoveExpr[label="{IDTarget_MoveExpr|id : String| }"]
+ IDTarget_MoveExpr->MoveExpr[arrowhead=onormal,group=MoveExpr,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ClassState[label="{ClassState|state : Boolean| }"]
+ ClassState->ClassName[arrowhead=vee,arrowtail=diamond,headlabel="className[0-1]",group=ClassName,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OnHandlerDef[label="{OnHandlerDef| | }"]
+ OnHandlerDef->EventName[arrowhead=vee,arrowtail=diamond,headlabel="eventName[*]",group=EventName,minlen=2,constraint=true,]
+ OnHandlerDef->SeqStmt[arrowhead=vee,arrowtail=diamond,headlabel="seqStmt",group=SeqStmt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EventName[label="{EventName|eventNameLeft : String\neventNameRight : String| }"]
+;
+ node[shape=record];
+ComposantOfSwitchStmt[label="{ComposantOfSwitchStmt| | }"]
+ ComposantOfSwitchStmt->ClassState[arrowhead=vee,arrowtail=diamond,headlabel="classState[1-*]",group=ClassState,minlen=2,constraint=true,]
+ ComposantOfSwitchStmt->SeqStmt[arrowhead=vee,arrowtail=diamond,headlabel="seqStmt",group=SeqStmt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ComposantOfInterFunc[label="{ComposantOfInterFunc|id : String| }"]
+ ComposantOfInterFunc->TypeOrVoid[arrowhead=vee,arrowtail=diamond,headlabel="typeOrVoid",group=TypeOrVoid,minlen=2,constraint=true,]
+ ComposantOfInterFunc->ParamVarDecl[arrowhead=vee,arrowtail=diamond,headlabel="paramVarDecl[*]",group=ParamVarDecl,minlen=2,constraint=true,]
+ ComposantOfInterFunc->SeqStmt[arrowhead=vee,arrowtail=diamond,headlabel="seqStmt",group=SeqStmt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BossaTypeExpr[label="{BossaTypeExpr|bossaTypeExpr : String| }"]
+;
+ node[shape=record];
+QueueType[label="{/QueueType/| | }"]
+;
+ node[shape=record];
+Normal_QueueType[label="{Normal_QueueType| | }"]
+ Normal_QueueType->QueueType[arrowhead=onormal,group=QueueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Fifo_QueueType[label="{Fifo_QueueType| | }"]
+ Fifo_QueueType->QueueType[arrowhead=onormal,group=QueueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Lifo_QueueType[label="{Lifo_QueueType| | }"]
+ Lifo_QueueType->QueueType[arrowhead=onormal,group=QueueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Critop[label="{Critop|lowest : Boolean\nhighest : Boolean| }"]
+;
+ node[shape=record];
+StateVisibility[label="{StateVisibility|public[0-1] : Boolean\nprivate[0-1] : Boolean| }"]
+;
+ node[shape=record];
+ClassName[label="{ClassName|className : String| }"]
+;
+ node[shape=record];
+NonProcType[label="{NonProcType|system : Boolean\nstruct : Boolean\nid : Boolean\nnonProcType : String| }"]
+;
+ node[shape=record];
+Unop[label="{Unop|plus : Boolean\nminus : Boolean\nexcl : Boolean\ntild : Boolean| }"]
+;
+ node[shape=record];
+Binop[label="{Binop|plus : Boolean\nminus : Boolean\nstar : Boolean\nslash : Boolean\npercentage : Boolean\ndoubleAnd : Boolean\ndoubleVerticalBar : Boolean\nand : Boolean\neq : Boolean\nne : Boolean\nlt : Boolean\ngt : Boolean\nle : Boolean\nge : Boolean\ndoubleLt : Boolean\ndoubleGt : Boolean| }"]
+;
+ node[shape=record];
+AssignUnop[label="{AssignUnop|doublePlus : Boolean\ndoubleMoins : Boolean| }"]
+;
+ node[shape=record];
+AssignBinop[label="{AssignBinop|affect : Boolean\nplusEqual : Boolean\nmoinsEqual : Boolean\nstarEqual : Boolean\nslashEqual : Boolean\npercentageEqual : Boolean\nandEqual : Boolean\norEqual : Boolean\ndoubleLtEqual : Boolean\ndoubleGtEqual : Boolean| }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

@@ -1,0 +1,202 @@
+-- ******************************************************************************
+-- Copyright (c) 2007 Laboratoire d'Informatique de Grenoble (LIG). 
+-- All rights reserved. This program and the accompanying materials 
+-- are made available under the terms of the Eclipse Public License v1.0 
+-- which accompanies this distribution, and is available at
+-- http://www.eclipse.org/legal/epl-v10.html
+-- 
+-- Contributors: 
+-- 	LIG - Initial implementation
+-- 	INRIA - Revision
+--  @author : Jean-Sébastien Sottet
+-- ******************************************************************************
+-- 
+-- @name		XUL Interactor
+-- @version		1.0
+-- @domains		Graphical User Interfaces
+-- @author 		Jean-Sébastien Sottet( jean-sebastien.sottet <at> inria <dot> fr )
+-- @date		2007/02/08
+-- @description	This metamodel is inspired by the XUL language but it is generic to all WIMP widget based User Interfaces.
+--				It describes a User Interfaces in terms of Interactors (e.g., button, windows, icons, list, etc.).
+--				It can be easily user for targetting any web interactor-based languages such as XUL, HTML, XAML, etc.
+-- @see https://developer.mozilla.org/en/XUL
+
+package XULInteractorMetaModel {
+
+	class UIModel {
+		reference windows[0-1] container : Windows;
+		reference functions[*] ordered container : Function oppositeOf functionUIModel;
+	}
+
+	class Windows extends Container {
+		attribute id[0-1] : String;
+		attribute title[0-1] : String;
+		attribute orient[0-1] : Orients;
+		attribute style[0-1] : String;
+		reference headers[*] ordered container : HeaderCss;
+		reference headersJScript[*] ordered : HeaderJScript;
+	}
+
+	class Button extends Containement {
+		attribute tooltiptext[0-1] : String;
+		attribute image[0-1] : String;
+	}
+
+	enumeration Orients {
+		literal horizontal;
+		literal vertical;
+	}
+
+	class Image extends Containement {
+		attribute src[0-1] : String;
+	}
+
+	class RadioGroup extends Containement {
+		reference radiobuttons[*] ordered container : Radio;
+	}
+
+	class Radio extends Interactor {
+		attribute id[0-1] : String;
+		attribute label[0-1] : String;
+		attribute selected[0-1] : Boolean;
+		attribute disabled[0-1] : Boolean;
+	}
+
+	class ListBox extends Containement {
+		attribute rows[0-1] : Integer;
+		reference listitems[*] ordered container : ListItem;
+	}
+
+	class ListItem extends Interactor {
+		attribute label[0-1] : String;
+		attribute value[0-1] : String;
+	}
+
+	class MenuList extends Containement {
+		reference menuitems[*] ordered container : MenuItem;
+	}
+
+	class MenuItem extends Interactor {
+		attribute label[0-1] : String;
+	}
+
+	class vbox extends Container {
+		
+	}
+
+	class hbox extends Container {
+		
+	}
+
+	class Containement extends Interactor {
+		attribute style[0-1] : String;
+		attribute accesskey[0-1] : String;
+		attribute "class"[0-1] : String;
+		attribute maxlength[0-1] : Integer;
+		attribute label[0-1] : String;
+		attribute orient[0-1] : Orients;
+		attribute minlength[0-1] : String;
+		attribute onclick[0-1] : String;
+		attribute disabled[0-1] : String;
+	}
+
+	class GroupBox extends Container {
+		
+	}
+
+	class Container extends Interactor {
+		reference xulInteractors[*] ordered container : Interactor;
+	}
+
+	class Interactor {
+		attribute flex[0-1] : Integer;
+		attribute id[0-1] : String;
+		attribute stat[0-1] : String;
+		attribute style[0-1] : String;
+		reference events[*] ordered container : Event;
+	}
+
+	class TabBox extends Containement {
+		reference tabPanels[*] ordered container : Interactor;
+	}
+
+	class TextBox extends Containement {
+		attribute multiline[0-1] : Boolean;
+		attribute value[0-1] : String;
+	}
+
+	class Spacer extends Containement {
+		
+	}
+
+	class Label extends Containement {
+		attribute value[0-1] : String;
+		attribute control[0-1] : String;
+	}
+
+	class Grid extends Containement {
+		reference columns[*] ordered container : column;
+		reference rows[*] ordered container : row;
+	}
+
+	class row extends Container {
+		
+	}
+
+	class column extends Container {
+		
+	}
+
+	class CheckBox extends Containement {
+		attribute checked[0-1] : Boolean;
+	}
+
+	class Caption extends Containement {
+		attribute label[0-1] : String ;
+	}
+
+	class Description extends Containement {
+		attribute value[0-1] : String;
+	}
+
+	class HeaderCss {
+		attribute ref[0-1] : String;
+		attribute type[0-1] : String;
+	}
+
+	class HeaderJScript {
+		attribute ref[0-1] : String;
+	}
+
+	class TabPanel extends Container {
+		attribute id[0-1] : String;
+		attribute orient[0-1] : Orients;
+	}
+
+	class Event {
+		reference functionCallParameters[*] ordered container : Parameter;
+		attribute functionCalledName[0-1] : String;
+		attribute name[0-1] : String;
+	}
+
+	class Parameter {
+		attribute value[0-1] : String;
+		attribute name[0-1] : String;
+	}
+
+	class onClick extends Event {
+		
+	}
+
+	class Function {
+		attribute name[0-1] : String;
+		reference functionUIModel : UIModel oppositeOf functions;
+		attribute body[0-1] : String;
+	}
+}
+
+package primitivetype {
+	datatype String;
+	datatype Integer;
+	datatype Boolean;
+}

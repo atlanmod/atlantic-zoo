@@ -1,0 +1,63 @@
+package Metamodel;
+
+package SEEDesign {
+  class LogFile {
+    !unique !ordered attr String[1] file;
+    !ordered ref LogFile[1] instance;
+    !ordered ref Logger[1]#logFile logger;
+  }
+
+  class Logger {
+    !ordered ref Logger[1] instance;
+    !ordered ref Expression[1]#logger expression;
+    !ordered ref LogFile[1]#logger logFile;
+  }
+
+  class Expression {
+    !unique !ordered attr Boolean[1] loggingOn;
+    !ordered ref Logger[1]#expression logger;
+  }
+
+  class Literal extends Expression {
+    !unique !ordered attr Integer[1] value;
+  }
+
+  class VariableExpression extends Literal {
+    !unique !ordered attr String[1] name;
+  }
+
+  class NumberExpression extends Literal {
+  }
+
+  class UnaryOperator extends Expression {
+    !ordered val Expression[1] operand;
+  }
+
+  class UnaryPlusOp extends UnaryOperator {
+  }
+
+  class UnaryMinusOp extends UnaryOperator {
+  }
+
+  class BinaryOperator extends Expression {
+    !ordered val Expression[1] operand1;
+    !ordered val Expression[1] operand2;
+  }
+
+  class PlusOperator extends BinaryOperator {
+  }
+
+  class MinusOperator extends BinaryOperator {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

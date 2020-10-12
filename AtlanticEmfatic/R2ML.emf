@@ -1,0 +1,669 @@
+package Metamodel;
+
+package R2ML {
+  enum CollectionTypes {
+    individual = 0;
+    set = 0;
+    orderedSet = 0;
+    bag = 0;
+    sequence = 0;
+  }
+
+  enum PredicateCategory {
+    closed = 0;
+    open = 0;
+    partial = 0;
+  }
+
+  enum ExternalVocabularyLanguage {
+    RDFS = 0;
+    UML = 0;
+    OWL = 0;
+  }
+
+  enum PredicateType {
+    ObjectClassificationPredicate = 0;
+    AttributionPredicate = 0;
+    AssociationPredicate = 0;
+    ReferencePropertyPredicate = 0;
+    EqualityPredicate = 0;
+    InequalityPredicate = 0;
+    DatatypePredicate = 0;
+    DataClassificationPredicate = 0;
+  }
+
+  class ReactionRuleSet extends RuleSet {
+    !ordered val Rules.ReactionRule[*] rules;
+  }
+
+  class ProductionRuleSet extends RuleSet {
+    !ordered val Rules.ProductionRule[*] rules;
+  }
+
+  class EventType {
+    !unique !ordered attr String[1] eventTypeID;
+  }
+
+  abstract class RuleSet {
+    !ordered ref Terms.TerBasic.Variables.Variable[*] variables;
+    !ordered ref Vocabulary.VocBuiltin.ExternalVocabulary externalVocabulary;
+    !ordered val Vocabulary.VocBasic.Vocabulary vocabularies;
+    !unique !ordered attr String ruleSetID;
+  }
+
+  class RuleBase {
+    !ordered val Vocabulary.VocBasic.Vocabulary vocabularies;
+    !ordered ref Vocabulary.VocBuiltin.ExternalVocabulary[*] externalVocabulaires;
+    !ordered val RuleSet[*] rules;
+    !unique !ordered attr String[1] ruleBaseID;
+  }
+
+  class IntegrityRuleSet extends RuleSet {
+    !ordered val Rules.IntegrityRule[*] rules;
+  }
+
+  class DerivationRuleSet extends RuleSet {
+    !ordered val Rules.DerivationRule[*] rules;
+  }
+
+  package Abstract {
+    abstract class AbstractTransformationRule extends Rule {
+    }
+
+    class AbstractProductionRule extends Rule {
+    }
+
+    class AbstractReactionRule extends Rule {
+    }
+
+    class AbstractDerivationRule extends Rule {
+    }
+
+    abstract class AbstractIntegrityRule extends Rule {
+    }
+
+    abstract class Rule {
+      !unique !ordered attr String[1] ruleID;
+    }
+
+  }
+
+  package Rules {
+    class DerivationRule extends Abstract.AbstractDerivationRule {
+      !ordered val Formulas.qf.AndOrNafNegFormula[+] conditions;
+      !ordered val Formulas.qf.LiteralConjunction[+] conclusions;
+    }
+
+    class ReactionRule extends Abstract.AbstractReactionRule {
+      !ordered val Formulas.qf.AndOrNafNegFormula[*] conditions;
+      !ordered val Actions.ActionExpression[1] producedAction;
+      !ordered val Formulas.qf.AndOrNafNegFormula postconditon;
+      !ordered val Events.EventExpression[1] triggeringEvent;
+    }
+
+    class ProductionRule extends Abstract.AbstractProductionRule {
+      !ordered ref Formulas.qf.AndOrNafNegFormula[+] conditions;
+      !ordered ref Formulas.qf.AndOrNafNegFormula postcondition;
+      !ordered ref Actions.ActionExpression[1] producedAction;
+    }
+
+    class DeonticIntegrityRule extends IntegrityRule {
+    }
+
+    class AlethicIntegrityRule extends IntegrityRule {
+    }
+
+    abstract class IntegrityRule extends Abstract.AbstractIntegrityRule {
+      !ordered ref Formulas.QuantifiedFormula[1] constraint;
+    }
+
+  }
+
+  package Atoms {
+    abstract class DataAtom extends Atom {
+    }
+
+    abstract class ObjectAtom extends Atom {
+    }
+
+    abstract class Atom extends Formulas.LogicalFormula, Formulas.qf.AndOrNafNegFormula {
+      !unique !ordered attr Boolean[1] isNegated;
+    }
+
+    package AtBasic {
+      class DataClassificationAtom extends DataAtom {
+        !ordered ref Vocabulary.VocBasic.Datatype[1] type;
+        !ordered ref Terms.DataTerm[1] term;
+      }
+
+      class DatatypePredicateAtom extends DataAtom {
+        !ordered ref Vocabulary.VocBasic.DatatypePredicate[1] predicate;
+        ref Terms.DataTerm[2..*] dataArguments;
+      }
+
+      class InequalityAtom extends ObjectAtom {
+        !ordered ref Terms.ObjectTerm[2..*] terms;
+      }
+
+      class EqualityAtom extends ObjectAtom {
+        !ordered ref Terms.ObjectTerm[2..*] terms;
+      }
+
+      class ObjectClassificationAtom extends ObjectAtom {
+        !ordered ref Terms.ObjectTerm[1] term;
+        !ordered ref Vocabulary.VocBasic.Class[1] type;
+      }
+
+      class GenericAtom extends Atom {
+        !ordered ref Vocabulary.VocRelational.GenericPredicate[1] predicate;
+        ref Terms.Term[*] arguments;
+      }
+
+    }
+
+    package AtRelational {
+      abstract class Slot {
+      }
+
+      class PropertyAtom extends ObjectAtom {
+        !ordered ref Vocabulary.VocBasic.Property[1] property;
+        !ordered ref Terms.Term[1] value;
+        !ordered ref Terms.ObjectTerm[1] subject;
+      }
+
+      class DataSlot extends Slot {
+        !ordered ref Terms.DataTerm[1] value;
+        !ordered ref Vocabulary.VocBasic.Attribute[1] attribute;
+      }
+
+      class ObjectSlot extends Slot {
+        !ordered ref Terms.ObjectTerm[1] object;
+        !ordered ref Vocabulary.VocBasic.ReferenceProperty[1] referenceProperty;
+      }
+
+      class ReferencePropertyAtom extends ObjectAtom {
+        !ordered ref Terms.ObjectTerm[1] object;
+        !ordered ref Vocabulary.VocBasic.ReferenceProperty[1] referenceProperty;
+        !ordered ref Terms.ObjectTerm[1] subject;
+      }
+
+      class AttributionAtom extends ObjectAtom {
+        !ordered ref Vocabulary.VocBasic.Attribute[1] attribute;
+        !ordered ref Terms.ObjectTerm[1] subject;
+        !ordered ref Terms.DataTerm[1] dataValue;
+      }
+
+      class ObjectDescriptionAtom extends ObjectAtom {
+        !ordered ref Vocabulary.VocBasic.Class[*] type;
+        !ordered val ObjectSlot[*] objects;
+        !ordered ref Terms.ObjectTerm[1] subject;
+        !ordered val Slot[*] slots;
+        !ordered ref Vocabulary.VocBasic.Class[1] baseType;
+      }
+
+      class AssociationAtom extends ObjectAtom {
+        !ordered ref Vocabulary.VocRelational.AssociationPredicate[1] associationPredicate;
+        ref Terms.DataTerm[*] dataArguments;
+        ref Terms.ObjectTerm[2..*] objectArguments;
+      }
+
+    }
+
+  }
+
+  package Vocabulary {
+    package VocExternal {
+    }
+
+    package VocFunctional {
+      class DatatypeFunction extends Function {
+        !unique !ordered attr String ap;
+      }
+
+      class GenericFunction extends Function {
+      }
+
+      abstract class Function extends VocBasic.VocabularyEntry {
+        !unique !ordered attr Integer[1] arity;
+      }
+
+      class DataOperation extends Operation {
+        !ordered ref VocBasic.Datatype returnType;
+      }
+
+      class ObjectOperation extends Operation {
+        !ordered ref VocBasic.Class returnType;
+      }
+
+      abstract class Operation extends Function {
+        !ordered ref VocBasic.Class contextType;
+        ref VocBasic.Type[*] arguments;
+      }
+
+      class EnumerationDatatype extends VocBasic.Datatype {
+        !ordered val VocBasic.DataLiteral[*] literals;
+      }
+
+    }
+
+    package VocBuiltin {
+      class ExternalVocabulary {
+        !unique !ordered attr String[1] externalVocabularyID;
+        !unique !ordered attr ExternalVocabularyLanguage[1] externalVocabularyLanguage;
+      }
+
+    }
+
+    package VocBasic {
+      class GenericEntityName extends Terms.GenericTerm {
+        !ordered ref Class classRef;
+      }
+
+      abstract class VocabularyEntry {
+        !unique !ordered attr String[1] name;
+      }
+
+      class Vocabulary {
+        !ordered val VocabularyEntry[+] entries;
+      }
+
+      abstract class Property extends Predicate {
+        !ordered ref Type range;
+        !ordered ref Class domain;
+      }
+
+      class DatatypePredicate extends Predicate {
+        !unique !ordered attr String vp;
+        !unique !ordered attr Integer[1] arity;
+      }
+
+      abstract class Predicate extends VocabularyEntry {
+        !unique !ordered attr PredicateCategory predicateCategory;
+      }
+
+      class Attribute extends Property {
+        !ordered ref Class type;
+        !unique !ordered attr String np;
+      }
+
+      class TypedLiteral extends DataLiteral {
+        !ordered ref Datatype[1] type;
+      }
+
+      class PlainLiteral extends DataLiteral {
+        !unique !ordered attr String languageTag;
+      }
+
+      abstract class DataLiteral extends Terms.DataTerm {
+        !unique !ordered attr String[1] lexicalValue;
+      }
+
+      class ReferenceProperty extends Property {
+        !unique !ordered attr String vp;
+        !unique !ordered attr String domrm;
+        !unique !ordered attr String rgrn;
+      }
+
+      class ObjectName extends VocabularyEntry, Terms.ObjectTerm {
+        !ordered ref Class classRef;
+      }
+
+      class Datatype extends Type {
+      }
+
+      class Class extends Type {
+        !unique !ordered attr String np;
+      }
+
+      class Type extends Predicate {
+      }
+
+    }
+
+    package VocRelational {
+      class AssociationPredicate extends VocBasic.Predicate {
+        ref VocBasic.Type[*] arguments;
+        !unique !ordered attr String vp;
+      }
+
+      class GenericPredicate extends VocBasic.Predicate {
+        !unique !ordered attr String vp;
+      }
+
+    }
+
+  }
+
+  package Events {
+    class SOAPMessageBody {
+      !ordered val SOAPMessageBodyChild[*] children;
+    }
+
+    class SOAPConversationalMsgEvtExpression extends SOAPMessageEventExpression {
+    }
+
+    class SOAPRPCResponseMsgEvtExpression extends SOAPMessageEventExpression {
+    }
+
+    class SOAPRPCRequestMsgEvtExpression extends SOAPMessageEventExpression {
+    }
+
+    class SOAPMessageHeaderBlock {
+      !unique !ordered attr String[1] nameSpaceName;
+      !unique !ordered attr String[1] localName;
+      !unique !ordered attr String encodingStyle;
+      !unique !ordered attr Boolean mustUnderstand;
+      !unique !ordered attr String role;
+      !unique !ordered attr Boolean relay;
+    }
+
+    class SOAPMessageHeader {
+      !ordered val SOAPMessageHeaderBlock[*] headerBlocks;
+    }
+
+    class SOAPMessageBodyChild {
+      !unique !ordered attr String[1] localName;
+      !unique !ordered attr String nameSpaceName;
+      !unique !ordered attr String encodingStyle;
+    }
+
+    class EveryYearTimeEventExpression extends PeriodicTimeEventExpression {
+      !unique !ordered attr Integer[1] dayOfYear;
+      !unique !ordered attr String time;
+    }
+
+    class EveryMonthTimeEventExpression extends PeriodicTimeEventExpression {
+      !unique !ordered attr Integer[1] dayOfMonth;
+      !unique !ordered attr String time;
+    }
+
+    class EveryWeekTimeEventExpression extends PeriodicTimeEventExpression {
+      !unique !ordered attr Integer[1] dayOfWeek;
+      !unique !ordered attr String[1] time;
+    }
+
+    class EveryDayTimeEventExpression extends PeriodicTimeEventExpression {
+      !unique !ordered attr String[1] time;
+    }
+
+    class EveryHourTimeEventExpression extends PeriodicTimeEventExpression {
+      !unique !ordered attr Integer[1] minute;
+      !unique !ordered attr Integer second;
+    }
+
+    class EveryMinuteTimeEventExpression extends PeriodicTimeEventExpression {
+      !unique !ordered attr Integer[1] second;
+    }
+
+    class MessageEventExpression extends ActionEventExpression {
+      !unique !ordered attr String[1] sender;
+      !unique !ordered attr String[1] receiver;
+    }
+
+    class SOAPMessageEventExpression extends MessageEventExpression {
+      !ordered val SOAPMessageBody[1] body;
+      !ordered val SOAPMessageHeader header;
+    }
+
+    class PeriodicTimeEventExpression extends TimeEventExpression {
+    }
+
+    class SingularTimeEventExpression extends TimeEventExpression {
+      !unique !ordered attr Integer[1] dateTime;
+    }
+
+    class ActionEventExpression extends AtomicEventExpression {
+      !unique !ordered attr String[1] actor;
+    }
+
+    abstract class TimeEventExpression extends AtomicEventExpression {
+    }
+
+    class ParallelEventExpression extends EventExpression {
+      !ordered val EventExpression[*] expressions;
+      !unique !ordered attr String[1] timeWindow;
+    }
+
+    class SequenceEventExpression extends EventExpression {
+      val EventExpression[*] expressions;
+      !unique !ordered attr Integer[1] timeWindow;
+    }
+
+    class ChoiceEventExpression extends EventExpression {
+      !ordered val EventExpression[+] expressions;
+      !unique !ordered attr Integer[1] minOccurs;
+      !unique !ordered attr Integer[1] maxOccurs;
+      !unique !ordered attr String[1] timeWindow;
+    }
+
+    class AtomicEventExpression extends EventExpression {
+      !ordered val Terms.Term[*] arguments;
+      !ordered ref EventType[1] type;
+    }
+
+    class AndNotEventExpression extends EventExpression {
+      val EventExpression[*] expressions;
+      !unique !ordered attr String[1] timeWndow;
+    }
+
+    abstract class EventExpression {
+      !unique !ordered attr String[1] startDateTime;
+      !unique !ordered attr String[1] duration;
+      !unique !ordered attr String[1] occurDateTime;
+    }
+
+  }
+
+  package Actions {
+    class InvokeActionExpression extends ActionExpression {
+      !ordered ref Vocabulary.VocFunctional.Operation[1] operation;
+      ref Terms.Term[*] arguments;
+      !ordered ref Terms.ObjectTerm contextArgument;
+    }
+
+    class SOAPRPCAction extends SOAPAction {
+      ref Terms.Term[*] arguments;
+    }
+
+    class SOAPAction extends MessageAction {
+      !ordered ref Vocabulary.VocFunctional.Operation[1] operation;
+    }
+
+    class DeleteActionExpression extends ActionExpression {
+      !ordered ref Terms.ObjectTerm[1] contextArgument;
+      !ordered ref Vocabulary.VocBasic.Class[1] context;
+    }
+
+    class CreateActionExpression extends ActionExpression {
+      !ordered ref Atoms.AtRelational.Slot[*] slots;
+      !ordered ref Vocabulary.VocBasic.Class[1] context;
+    }
+
+    class AssignActionExpression extends ActionExpression {
+      !ordered ref Terms.ObjectTerm[1] contextArgument;
+      !ordered ref Vocabulary.VocBasic.Property[1] property;
+    }
+
+    class MessageAction extends ActionExpression {
+    }
+
+    abstract class ActionExpression {
+    }
+
+  }
+
+  package Formulas {
+    class AtLeastAndAtMostQuantifiedFormula extends QuantifiedFormula {
+      !unique !ordered attr Integer[1] maxCardinality;
+      !unique !ordered attr Integer[1] minCardinality;
+    }
+
+    class AtMostQuantifiedFormula extends QuantifiedFormula {
+      !unique !ordered attr Integer[1] maxCardinality;
+    }
+
+    class AtLeastQuantifiedFormula extends QuantifiedFormula {
+      !unique !ordered attr Integer[1] minCardinality;
+    }
+
+    class Conjuction extends LogicalFormula {
+      !ordered val LogicalFormula[2..*] formulas;
+    }
+
+    class UniversallyQuantifiedFormula extends QuantifiedFormula {
+    }
+
+    class StrongNegation extends Negation, LogicalFormula {
+      !ordered val LogicalFormula[1] formula;
+    }
+
+    abstract class QuantifiedFormula extends LogicalFormula {
+      !ordered val LogicalFormula[1] formula;
+      !ordered ref Terms.TerBasic.Variables.Variable[+] variables;
+    }
+
+    class NegationAsFailure extends Negation, LogicalFormula {
+      !ordered val LogicalFormula[1] formula;
+    }
+
+    class Negation {
+    }
+
+    abstract class LogicalFormula {
+    }
+
+    class Implication extends LogicalFormula {
+      !ordered val LogicalFormula[1] consequent;
+      !ordered val LogicalFormula[1] antecedent;
+    }
+
+    class ExistentiallyQuantifiedFormula extends QuantifiedFormula {
+    }
+
+    class Disjunction extends LogicalFormula {
+      !ordered val LogicalFormula[2..*] formulas;
+    }
+
+    package qf {
+      class QFStrongNegation extends QFNegation {
+      }
+
+      class QFNegationAsFailure extends QFNegation {
+      }
+
+      class QFNegation extends AndOrNafNegFormula {
+        !ordered val AndOrNafNegFormula[1] formula;
+      }
+
+      class LiteralConjunction {
+        !ordered val Atoms.Atom[+] atoms;
+      }
+
+      class QFDisjunction extends AndOrNafNegFormula {
+        !ordered val AndOrNafNegFormula[2..*] formulas;
+      }
+
+      class QFConjunction extends AndOrNafNegFormula {
+        !ordered val AndOrNafNegFormula[2..*] formulas;
+      }
+
+      abstract class AndOrNafNegFormula {
+      }
+
+    }
+
+  }
+
+  package Terms {
+    abstract class GenericTerm extends Term {
+    }
+
+    abstract class Term {
+      !unique !ordered attr CollectionTypes typeCategory;
+    }
+
+    abstract class ObjectTerm extends Term {
+    }
+
+    abstract class DataTerm extends Term {
+    }
+
+    package TerBasic {
+      package Variables {
+        abstract class Variable {
+          !unique !ordered attr String[1] name;
+        }
+
+        class ObjectVariable extends Variable, ObjectTerm {
+          !ordered ref Vocabulary.VocBasic.Class classRef;
+        }
+
+        class DataVariable extends Variable, DataTerm {
+          !ordered ref Vocabulary.VocBasic.Datatype datatypeRef;
+        }
+
+        class GenericVariable extends GenericTerm, Variable {
+          !ordered ref Vocabulary.VocBasic.Type typeRef;
+        }
+
+      }
+
+    }
+
+    package TerFunctional {
+      class DatatypeFunctionTerm extends DataFunctionTerm {
+        !ordered ref Vocabulary.VocFunctional.DatatypeFunction[1] function;
+        ref DataTerm[+] dataArguments;
+      }
+
+      abstract class DataFunctionTerm extends DataTerm {
+      }
+
+      class AttributeFunctionTerm extends DataFunctionTerm {
+        !ordered ref ObjectTerm[1] contextArgument;
+        !ordered ref Vocabulary.VocBasic.Attribute[1] attribute;
+      }
+
+      class DataOperationTerm extends DataFunctionTerm {
+        !ordered ref Vocabulary.VocFunctional.DataOperation[1] dataOperationRef;
+        !ordered ref ObjectTerm contextArgument;
+        ref Term[*] arguments;
+      }
+
+      class ReferencePropertyFunctionTerm extends ObjectTerm {
+        !ordered ref ObjectTerm[1] contextArgument;
+        !ordered ref Vocabulary.VocBasic.ReferenceProperty[1] referencePropertyRef;
+      }
+
+      class ObjectOperationTerm extends ObjectTerm {
+        !ordered ref Vocabulary.VocFunctional.ObjectOperation[1] operation;
+        !ordered ref Term[*] arguments;
+        !ordered ref ObjectTerm contextArgument;
+      }
+
+      class GenericFunctionTerm extends GenericTerm {
+        ref GenericTerm[*] arguments;
+        !ordered ref Vocabulary.VocFunctional.GenericFunction[1] functor;
+      }
+
+    }
+
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype Long : "";
+
+  datatype Float : "";
+
+  datatype Double : "";
+
+  datatype Boolean : "";
+
+  datatype String : "";
+
+}
+

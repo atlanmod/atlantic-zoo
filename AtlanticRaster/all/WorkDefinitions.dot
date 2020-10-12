@@ -1,0 +1,56 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_WorkDefinitions"{
+labelloc=t
+color=black
+label=WorkDefinitions
+ node[shape=record];
+WorkDefinition[label="{WorkDefinition| | }"]
+ WorkDefinition->WorkDefinition[arrowhead=none,arrowtail=none,headlabel="subWorks[*]",taillabel="parentWorks[*]",group=WorkDefinition,minlen=2,constraint=false,]
+ WorkDefinition->ProcessPerformer[arrowhead=diamond,arrowtail=none,headlabel="owner",taillabel="features[*]",group=ProcessPerformer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ProcessPerformer[label="{ProcessPerformer| | }"]
+;
+ node[shape=record];
+Role[label="{Role| | }"]
+ Role->WorkProduct[arrowhead=none,arrowtail=none,headlabel="products[*]",taillabel="responsible",group=WorkProduct,minlen=2,constraint=false,]
+ Role->ProcessPerformer[arrowhead=onormal,group=ProcessPerformer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+WorkProduct[label="{WorkProduct| | }"]
+;
+ node[shape=record];
+Lifecycle[label="{Lifecycle| | }"]
+ Lifecycle->WorkDefinition[arrowhead=onormal,group=WorkDefinition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Phase[label="{Phase| | }"]
+ Phase->Lifecycle[arrowhead=diamond,arrowtail=none,headlabel="lifeCycle",taillabel="phases[1-*]",group=Lifecycle,minlen=2,constraint=true,]
+ Phase->WorkDefinition[arrowhead=onormal,group=WorkDefinition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Iteration[label="{Iteration| | }"]
+ Iteration->Phase[arrowhead=diamond,arrowtail=none,headlabel="phase",taillabel="iterations[1-*]",group=Phase,minlen=2,constraint=true,]
+ Iteration->WorkDefinition[arrowhead=onormal,group=WorkDefinition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Activity[label="{Activity| | }"]
+ Activity->Iteration[arrowhead=diamond,arrowtail=none,headlabel="iteration",taillabel="activities[1-*]",group=Iteration,minlen=2,constraint=true,]
+ Activity->Step[arrowhead=vee,arrowtail=diamond,headlabel="steps[*]",group=Step,minlen=2,constraint=true,]
+ Activity->WorkDefinition[arrowhead=onormal,group=WorkDefinition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Step[label="{Step| | }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+
+}
+}

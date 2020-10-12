@@ -1,0 +1,54 @@
+package Metamodel;
+
+package ControllerUML {
+  class ControllerAttribute {
+    !ordered ref Controller[1]#controllerAttribute controller;
+  }
+
+  class Controller {
+    !ordered ref ControllerAttribute[*]#controller controllerAttribute;
+    !ordered val StateMachine[1] behavior;
+  }
+
+  class StateMachine {
+    !ordered val State[*] states;
+  }
+
+  class State {
+    !ordered val State[*]#theContainer substates;
+    !ordered ref State#substates theContainer;
+    !ordered val StateTransition[*]#source outGoing;
+    !ordered ref StateTransition[*]#target incoming;
+  }
+
+  class SubControllerState extends State {
+    !ordered ref Controller[1] controller;
+  }
+
+  class ViewState extends State {
+  }
+
+  class StateTransition {
+    !ordered ref State[1]#outGoing source;
+    !ordered ref State[1]#incoming target;
+    !ordered ref Event[1] trigger;
+    !ordered val StateMachineAction effect;
+  }
+
+  class StateMachineAction {
+  }
+
+  class Event {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+}
+

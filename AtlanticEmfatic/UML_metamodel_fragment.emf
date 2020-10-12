@@ -1,0 +1,70 @@
+package Metamodel;
+
+package UMLMetamodelFragment {
+  class Class {
+    !ordered ref Generalization[1] parent;
+    !ordered ref Generalization[1] child;
+    !ordered ref Dependency[1]#client dependency;
+  }
+
+  class Generalization {
+  }
+
+  class Dependency {
+    !ordered ref StateMachine[1] supplier;
+    !ordered ref Class[1]#dependency client;
+    !ordered ref Stereotype[1]#extendedElement stereotype;
+  }
+
+  class Stereotype {
+    !unique !ordered attr String[1] baseClass;
+    !ordered ref Dependency[1]#stereotype extendedElement;
+  }
+
+  class StateMachine {
+    !ordered ref Class[1] context;
+    !ordered val State[1]#stateMachine top;
+  }
+
+  class State extends StateVertex {
+    !ordered ref StateMachine#top stateMachine;
+    !ordered val Transition[1] internal;
+  }
+
+  class CompositeState extends State {
+    !ordered val StateVertex[1]#compositeState subvertex;
+  }
+
+  class SimpleState extends State {
+  }
+
+  class FinalState extends State {
+  }
+
+  class StateVertex {
+    !ordered ref CompositeState#subvertex compositeState;
+  }
+
+  class PseudoState extends StateVertex {
+  }
+
+  class Transition {
+    !ordered ref Event trigger;
+    !ordered ref StateVertex[1] source;
+    !ordered ref StateVertex[1] target;
+  }
+
+  class Event {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

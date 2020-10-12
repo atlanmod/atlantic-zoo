@@ -1,0 +1,335 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_MiningMart"{
+labelloc=t
+color=black
+label=MiningMart
+ node[shape=record];
+LinkPackage[label="{LinkPackage|type : InOut| }"]
+ LinkPackage->DataObject[arrowhead=none,arrowtail=none,headlabel="dataObject",taillabel="linkPackageCaseRepresentation",group=DataObject,minlen=2,constraint=false,]
+ LinkPackage->ColumnSet[arrowhead=none,arrowtail=none,headlabel="columnSet[0-1]",taillabel="linkPackage[0-1]",group=ColumnSet,minlen=2,constraint=false,]
+;
+ subgraph "cluster_SimplfiedMiningMart"{
+labelloc=t
+color=black
+label=SimplfiedMiningMart
+ node[shape=record];
+ModelElement[label="{ModelElement| | }"]
+;
+ node[shape=record];
+Classifier[label="{Classifier| | }"]
+ Classifier->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StructuralFeature[label="{StructuralFeature| | }"]
+ StructuralFeature->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Class[label="{Class|name : String| }"]
+ Class->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataType[label="{DataType| | }"]
+ DataType->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Attribute[label="{Attribute| | }"]
+ Attribute->Class[arrowhead=diamond,arrowtail=none,headlabel="class",taillabel="attributes[1-*]",group=Class,minlen=2,constraint=true,]
+ Attribute->DataType[arrowhead=none,arrowtail=none,headlabel="has",taillabel="attribute",group=DataType,minlen=2,constraint=false,]
+ Attribute->StructuralFeature[arrowhead=onormal,group=StructuralFeature,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_DataRepresentation"{
+labelloc=t
+color=black
+label=DataRepresentation
+ node[shape=record];
+Column[label="{Column|name : String| }"]
+ Column->DataType[arrowhead=vee,arrowtail=none,headlabel="dataType",group=DataType,minlen=2,constraint=false,]
+ Column->BaseAttribute[arrowhead=vee,arrowtail=none,headlabel="corespondsToBaseAttribute",group=BaseAttribute,minlen=2,constraint=false,]
+ Column->LinkPackage[arrowhead=none,arrowtail=none,headlabel="linkPackage[0-1]",taillabel="column[0-1]",group=LinkPackage,minlen=2,constraint=false,]
+ Column->Attribute[arrowhead=onormal,group=Attribute,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ColumnSet[label="{ColumnSet|number : Integer\nfile : String\ndbConnectString : String\nuser : String| }"]
+ ColumnSet->Column[arrowhead=none,arrowtail=none,headlabel="hasColumn[1-*]",taillabel="belongsToColumnSet",group=Column,minlen=2,constraint=false,]
+ ColumnSet->Key[arrowhead=none,arrowtail=none,headlabel="hasKey[1-*]",taillabel="isAssociatedToColumnSet",group=Key,minlen=2,constraint=false,]
+ ColumnSet->Class[arrowhead=onormal,group=Class,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ColumnStatistics[label="{ColumnStatistics|unique : Integer\nmissing : Integer\nmin : Integer\nmax : Integer\naverage : Integer\nstandarDeviation : Integer\ndistributionValue : String\ndistributionCount : Integer\ndistributionMin : Integer\ndistributionMax : Integer| }"]
+ ColumnStatistics->Column[arrowhead=vee,arrowtail=none,headlabel="forColumn",group=Column,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ColumnSetStatistics[label="{ColumnSetStatistics|allNumber : Integer\nordinalNumber : Integer\nnominalNumber : Integer\ntimeNumber : Integer| }"]
+ ColumnSetStatistics->ColumnSet[arrowhead=vee,arrowtail=none,headlabel="forColumnSet",group=ColumnSet,minlen=2,constraint=false,]
+ ColumnSetStatistics->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Snapshot[label="{Snapshot| | }"]
+ Snapshot->ColumnSet[arrowhead=onormal,group=ColumnSet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Table[label="{Table| | }"]
+ Table->ColumnSet[arrowhead=onormal,group=ColumnSet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+View[label="{View| | }"]
+ View->ColumnSet[arrowhead=onormal,group=ColumnSet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Key[label="{Key|isUsedForIndex : Boolean| }"]
+ Key->Column[arrowhead=none,arrowtail=none,headlabel="hasColumn[1-*]",taillabel="keys[*]",group=Column,minlen=2,constraint=false,]
+ Key->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ForeignKey[label="{ForeignKey| | }"]
+ ForeignKey->Table[arrowhead=vee,arrowtail=none,headlabel="isConnectionTo[0-1]",group=Table,minlen=2,constraint=false,]
+ ForeignKey->RelationShip[arrowhead=none,arrowtail=none,headlabel="correspondsToRelationShip[0-1]",taillabel="correspondsToForeignKey[1-*]",group=RelationShip,minlen=2,constraint=false,]
+ ForeignKey->Key[arrowhead=onormal,group=Key,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PrimaryKey[label="{PrimaryKey| | }"]
+ PrimaryKey->Key[arrowhead=onormal,group=Key,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Concept[label="{Concept|subConceptRestriction : String| }"]
+ Concept->Concept[arrowhead=vee,arrowtail=none,headlabel="isA",group=Concept,minlen=2,constraint=false,]
+ Concept->RelationShip[arrowhead=none,arrowtail=none,headlabel="ToConcept",taillabel="ToConcept",group=RelationShip,minlen=2,constraint=false,]
+ Concept->ColumnSet[arrowhead=none,arrowtail=none,headlabel="correspondsToColumnSet[0-1]",taillabel="correspondsToConcept[0-1]",group=ColumnSet,minlen=2,constraint=false,]
+ Concept->Class[arrowhead=onormal,group=Class,minlen=2,constraint=true,]
+ Concept->Parameter[arrowhead=onormal,group=Parameter,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RelationShip[label="{RelationShip|subRelationShipRestriction : String\ndefined : String| }"]
+ RelationShip->RelationShip[arrowhead=vee,arrowtail=none,headlabel="isA",group=RelationShip,minlen=2,constraint=false,]
+ RelationShip->ColumnSet[arrowhead=none,arrowtail=none,headlabel="correspondsToColumnSet[0-1]",taillabel="correspondsToRelationShip[0-1]",group=ColumnSet,minlen=2,constraint=false,]
+ RelationShip->Concept[arrowhead=none,arrowtail=none,headlabel="FromConcept",taillabel="FromConcept",group=Concept,minlen=2,constraint=false,]
+ RelationShip->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+ RelationShip->Parameter[arrowhead=onormal,group=Parameter,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FeatureAttribute[label="{FeatureAttribute|name : String\nrelevanceForMining : Boolean| }"]
+ FeatureAttribute->DataType[arrowhead=vee,arrowtail=none,headlabel="attributeType",group=DataType,minlen=2,constraint=false,]
+ FeatureAttribute->Concept[arrowhead=vee,arrowtail=diamond,headlabel="belongsToConcept",group=Concept,minlen=2,constraint=true,]
+ FeatureAttribute->Column[arrowhead=vee,arrowtail=none,headlabel="correspondsToColumns[1-*]",group=Column,minlen=2,constraint=false,]
+ FeatureAttribute->Attribute[arrowhead=onormal,group=Attribute,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BaseAttribute[label="{BaseAttribute| | }"]
+ BaseAttribute->MultiColumnFeature[arrowhead=diamond,arrowtail=none,headlabel="isPartMultiColumnFeature[0-1]",taillabel="consitsOfBaseAttributes[*]",group=MultiColumnFeature,minlen=2,constraint=true,]
+ BaseAttribute->DomainDataType[arrowhead=none,arrowtail=none,headlabel="domainDataType",taillabel="baseAttributeD",group=DomainDataType,minlen=2,constraint=false,]
+ BaseAttribute->FeatureAttribute[arrowhead=onormal,group=FeatureAttribute,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MultiColumnFeature[label="{MultiColumnFeature| | }"]
+ MultiColumnFeature->FeatureAttribute[arrowhead=onormal,group=FeatureAttribute,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Value[label="{Value| | }"]
+ Value->DomainDataType[arrowhead=vee,arrowtail=none,headlabel="domainDataType",group=DomainDataType,minlen=2,constraint=false,]
+ Value->UserInput[arrowhead=vee,arrowtail=diamond,headlabel="belongsToUserInput[1-*]",group=UserInput,minlen=2,constraint=true,]
+ Value->LinkPackage[arrowhead=none,arrowtail=none,headlabel="linkPackage[0-1]",taillabel="value[0-1]",group=LinkPackage,minlen=2,constraint=false,]
+ Value->Attribute[arrowhead=onormal,group=Attribute,minlen=2,constraint=true,]
+ Value->Parameter[arrowhead=onormal,group=Parameter,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UserInput[label="{UserInput| | }"]
+ UserInput->Value[arrowhead=vee,arrowtail=none,headlabel="containsValues[1-*]",group=Value,minlen=2,constraint=false,]
+ UserInput->Class[arrowhead=onormal,group=Class,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Ordinal[label="{Ordinal| | }"]
+ Ordinal->DomainDataType[arrowhead=onormal,group=DomainDataType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Scalar[label="{Scalar| | }"]
+ Scalar->Ordinal[arrowhead=onormal,group=Ordinal,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Time[label="{Time| | }"]
+ Time->Scalar[arrowhead=onormal,group=Scalar,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Binary[label="{Binary| | }"]
+ Binary->Scalar[arrowhead=onormal,group=Scalar,minlen=2,constraint=true,]
+ Binary->Nominal[arrowhead=onormal,group=Nominal,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Categorial[label="{Categorial| | }"]
+ Categorial->Nominal[arrowhead=onormal,group=Nominal,minlen=2,constraint=true,]
+;
+ node[shape=record];
+KeyAttribute[label="{KeyAttribute| | }"]
+ KeyAttribute->Nominal[arrowhead=onormal,group=Nominal,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TimeGroup[label="{TimeGroup| | }"]
+ TimeGroup->KeyAttribute[arrowhead=onormal,group=KeyAttribute,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Spatial[label="{Spatial| | }"]
+ Spatial->KeyAttribute[arrowhead=onormal,group=KeyAttribute,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Constant[label="{Constant| | }"]
+ Constant->Nominal[arrowhead=onormal,group=Nominal,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RoleRestriction[label="{RoleRestriction|name : String\nmin : Integer\nmax : Integer| }"]
+ RoleRestriction->RelationShip[arrowhead=vee,arrowtail=none,headlabel="restrictionForRelationShip",group=RelationShip,minlen=2,constraint=false,]
+ RoleRestriction->Concept[arrowhead=vee,arrowtail=none,headlabel="restrictionForConcept",group=Concept,minlen=2,constraint=false,]
+ RoleRestriction->Concept[arrowhead=vee,arrowtail=none,headlabel="restrictionToConcept",group=Concept,minlen=2,constraint=false,]
+ RoleRestriction->Concept[arrowhead=vee,arrowtail=none,headlabel="belongsToConcept",group=Concept,minlen=2,constraint=false,]
+ RoleRestriction->Attribute[arrowhead=onormal,group=Attribute,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DomainDataType[label="{DomainDataType| | }"]
+ DomainDataType->DataType[arrowhead=onormal,group=DataType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Nominal[label="{Nominal| | }"]
+ Nominal->DomainDataType[arrowhead=onormal,group=DomainDataType,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_CaseRepresentation"{
+labelloc=t
+color=black
+label=CaseRepresentation
+ node[shape=record];
+Case[label="{Case|name : String\ncaseMode : Boolean\ndocumentation : String| }"]
+ Case->Parameter[arrowhead=vee,arrowtail=none,headlabel="caseInput",group=Parameter,minlen=2,constraint=false,]
+ Case->Concept[arrowhead=vee,arrowtail=none,headlabel="caseOutput",group=Concept,minlen=2,constraint=false,]
+ Case->Concept[arrowhead=vee,arrowtail=none,headlabel="population",group=Concept,minlen=2,constraint=false,]
+ Case->FeatureAttribute[arrowhead=vee,arrowtail=none,headlabel="targetAttributes",group=FeatureAttribute,minlen=2,constraint=false,]
+ Case->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Step[label="{Step|name : String\ndescription : String| }"]
+ Step->Case[arrowhead=diamond,arrowtail=none,headlabel="belongsToCase",taillabel="listOfStep[1-*]",group=Case,minlen=2,constraint=true,]
+ Step->Operator[arrowhead=vee,arrowtail=none,headlabel="embedsOperator",group=Operator,minlen=2,constraint=false,]
+ Step->Step[arrowhead=vee,arrowtail=none,headlabel="predecessors[*]",group=Step,minlen=2,constraint=false,]
+ Step->Step[arrowhead=vee,arrowtail=none,headlabel="successors[*]",group=Step,minlen=2,constraint=false,]
+ Step->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LoopStep[label="{LoopStep| | }"]
+ LoopStep->FeatureAttribute[arrowhead=vee,arrowtail=none,headlabel="iterationSet[*]{ordered}",group=FeatureAttribute,minlen=2,constraint=false,]
+ LoopStep->FeatureAttribute[arrowhead=vee,arrowtail=none,headlabel="outputSet[*]{ordered}",group=FeatureAttribute,minlen=2,constraint=false,]
+ LoopStep->Step[arrowhead=onormal,group=Step,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MultiStep[label="{MultiStep|iterationCondition : String| }"]
+ MultiStep->Step[arrowhead=onormal,group=Step,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Operator[label="{/Operator/|loopable : Boolean\nnumberOfInputParameters : Integer\nnumberOfOutputParameters : Integer\nmanual : Boolean\ntool : String| }"]
+ Operator->Parameter[arrowhead=vee,arrowtail=none,headlabel="input[1-*]{ordered}",group=Parameter,minlen=2,constraint=false,]
+ Operator->Parameter[arrowhead=vee,arrowtail=none,headlabel="output[1-*]{ordered}",group=Parameter,minlen=2,constraint=false,]
+ Operator->ExecutionElement[arrowhead=vee,arrowtail=none,headlabel="realizes",group=ExecutionElement,minlen=2,constraint=false,]
+ Operator->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parameter[label="{Parameter|name : String\nplace : String\nparameterType : ParameterType| }"]
+ Parameter->Operator[arrowhead=vee,arrowtail=none,headlabel="belongsToOperator",group=Operator,minlen=2,constraint=false,]
+;
+ node[shape=record];
+FeatureConstruction[label="{FeatureConstruction|scalingFactor : Integer| }"]
+ FeatureConstruction->Operator[arrowhead=onormal,group=Operator,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataMinStep[label="{DataMinStep| | }"]
+ DataMinStep->Operator[arrowhead=onormal,group=Operator,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TimeOperator[label="{TimeOperator| | }"]
+ TimeOperator->Operator[arrowhead=onormal,group=Operator,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FeatureSelection[label="{FeatureSelection| | }"]
+ FeatureSelection->Operator[arrowhead=onormal,group=Operator,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MultiRelFeatureConstr[label="{MultiRelFeatureConstr| | }"]
+ MultiRelFeatureConstr->Operator[arrowhead=onormal,group=Operator,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RowSelection[label="{RowSelection| | }"]
+ RowSelection->Operator[arrowhead=onormal,group=Operator,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Agregation[label="{Agregation| | }"]
+ Agregation->MultiRelFeatureConstr[arrowhead=onormal,group=MultiRelFeatureConstr,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Scaling[label="{Scaling| | }"]
+ Scaling->FeatureConstruction[arrowhead=onormal,group=FeatureConstruction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Discretization[label="{Discretization| | }"]
+ Discretization->FeatureConstruction[arrowhead=onormal,group=FeatureConstruction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Segmentation[label="{Segmentation| | }"]
+ Segmentation->RowSelection[arrowhead=onormal,group=RowSelection,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Sampling[label="{Sampling| | }"]
+ Sampling->RowSelection[arrowhead=onormal,group=RowSelection,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExecutionElement[label="{ExecutionElement| | }"]
+ ExecutionElement->DataObject[arrowhead=none,arrowtail=none,headlabel="source",taillabel="source",group=DataObject,minlen=2,constraint=false,]
+;
+ node[shape=record];
+DataObject[label="{DataObject| | }"]
+ DataObject->ExecutionElement[arrowhead=none,arrowtail=none,headlabel="target",taillabel="target",group=ExecutionElement,minlen=2,constraint=false,]
+;
+ node[shape=record];
+MSLTool[label="{MSLTool| | }"]
+ MSLTool->ExecutionElement[arrowhead=onormal,group=ExecutionElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TransformationGroup[label="{TransformationGroup| | }"]
+ TransformationGroup->ExecutionElement[arrowhead=onormal,group=ExecutionElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Transformation[label="{Transformation| | }"]
+ Transformation->TransformationGroup[arrowhead=diamond,arrowtail=none,headlabel="transformationGroup",taillabel="transformation[*]",group=TransformationGroup,minlen=2,constraint=true,]
+ Transformation->ExecutionElement[arrowhead=onormal,group=ExecutionElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Function[label="{Function|nameOf : String\nsignature : String| }"]
+ Function->Transformation[arrowhead=onormal,group=Transformation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StoredProcedure[label="{StoredProcedure|nameOf : String\nsignature : String| }"]
+ StoredProcedure->Transformation[arrowhead=onormal,group=Transformation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SQLQuery[label="{SQLQuery|where[*] : String| }"]
+ SQLQuery->Column[arrowhead=vee,arrowtail=none,headlabel="select[1-*]",group=Column,minlen=2,constraint=false,]
+ SQLQuery->ColumnSet[arrowhead=vee,arrowtail=none,headlabel="from[1-*]",group=ColumnSet,minlen=2,constraint=false,]
+ SQLQuery->Transformation[arrowhead=onormal,group=Transformation,minlen=2,constraint=true,]
+;
+
+}
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+Real[label="{&#171;DataType&#187;\nReal|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+
+}
+}

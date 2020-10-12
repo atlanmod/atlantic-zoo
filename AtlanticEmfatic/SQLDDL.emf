@@ -1,0 +1,89 @@
+package Metamodel;
+
+package SQLDDL {
+  abstract class LocatedElement {
+    !unique !ordered attr String[1] location;
+    !unique !ordered attr String[*] commentsBefore;
+    !unique !ordered attr String[*] commentsAfter;
+  }
+
+  abstract class NamedElement extends LocatedElement {
+    !unique !ordered attr String[1] name;
+  }
+
+  class Database extends NamedElement {
+    val Table[*]#database tables;
+  }
+
+  class Table extends NamedElement {
+    !ordered ref Database[1]#tables database;
+    !ordered ref ForeignKey[*]#referencedTable referencedBy;
+    val TableElement[*]#table elements;
+    val Parameter[*]#table parameters;
+  }
+
+  abstract class TableElement extends LocatedElement {
+    !ordered ref Table[1]#elements table;
+  }
+
+  class Column extends TableElement {
+    !ordered ref ForeignKey[*]#referencedColumns referencedBy;
+    !unique !ordered attr String[1] name;
+    !ordered val Type[1] type;
+    !unique !ordered attr Boolean[1] canBeNull;
+    !ordered val Value default;
+    !ordered ref Key[*]#columns keys;
+  }
+
+  abstract class Key extends TableElement {
+    !unique !ordered attr Boolean[1] isUnique;
+    !unique !ordered attr String name;
+    ref Column[+]#keys columns;
+  }
+
+  class SimpleKey extends Key {
+  }
+
+  class PrimaryKey extends Key {
+  }
+
+  class ForeignKey extends Key {
+    !ordered ref Table[1]#referencedBy referencedTable;
+    !ordered ref Column[+]#referencedBy referencedColumns;
+  }
+
+  class Type extends NamedElement {
+    !unique !ordered attr Integer[0..2] length;
+    !unique !ordered attr Boolean[1] isUnsigned;
+  }
+
+  class Parameter extends NamedElement {
+    !ordered ref Table[1]#parameters table;
+    !ordered val Value value;
+  }
+
+  abstract class Value extends LocatedElement {
+  }
+
+  class IntegerVal extends Value {
+    !unique !ordered attr Integer[1] value;
+  }
+
+  class NullVal extends Value {
+  }
+
+  class StringVal extends Value {
+    !unique !ordered attr String[1] value;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

@@ -1,0 +1,66 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'PL/I'>
+    <Class name = 'PLIClassifier' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'typedElements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PL/I::PLIElement' opposite = 'PL/I::PLIElement::sharedType'/>
+    </Class>
+    <Class name = 'PLISimpleType' isAbstract = 'false' supertypes = 'PL/I::PLIClassifier'>
+      <Reference name = 'alias' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PL/I::PLIAlias' opposite = 'PL/I::PLIAlias::type'/>
+    </Class>
+    <Class name = 'PLINamedType' isAbstract = 'false' supertypes = 'PL/I::PLIClassifier'/>
+    <Class name = 'PLIComposedType' isAbstract = 'false' supertypes = 'PL/I::PLIClassifier'>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PL/I::PLIElement' opposite = 'PL/I::PLIElement::group'/>
+    </Class>
+    <Class name = 'PLIAlias' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PL/I::PLISimpleType' opposite = 'PL/I::PLISimpleType::alias'/>
+      <Reference name = 'contains' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PL/I::PLIAttribute' opposite = ''/>
+    </Class>
+    <Class name = 'PLIAttribute' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'PLIComputationalType' isAbstract = 'false' supertypes = 'PL/I::PLISimpleType'/>
+    <Class name = 'PLINonComputationalType' isAbstract = 'false' supertypes = 'PL/I::PLISimpleType'/>
+    <Class name = 'PLIElement' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'level' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'sharedType' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PL/I::PLIClassifier' opposite = 'PL/I::PLIClassifier::typedElements'/>
+      <Reference name = 'group' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PL/I::PLIComposedType' opposite = 'PL/I::PLIComposedType::elements'/>
+      <Reference name = 'initial' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PL/I::PLIElementInitialValue' opposite = ''/>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PL/I::PLISourceText' opposite = ''/>
+      <Reference name = 'array' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PL/I::PLIArray' opposite = 'PL/I::PLIArray::arrayOf'/>
+    </Class>
+    <Class name = 'PLIElementInitialValue' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'initialValue' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'PLISourceText' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'source' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'fileName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'PLIArray' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'arrayOf' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PL/I::PLIElement' opposite = 'PL/I::PLIElement::array'/>
+    </Class>
+    <Class name = 'PLIFixedBoundArray' isAbstract = 'false' supertypes = 'PL/I::PLIArray'>
+      <Attribute name = 'IBound' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'uBound' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'referredTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PL/I::PLIElement' opposite = ''/>
+    </Class>
+    <Class name = 'PLIFixedLboundArray' isAbstract = 'false' supertypes = 'PL/I::PLIArray'>
+      <Attribute name = 'IBound' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'uBoundToAllocate' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'referredTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PL/I::PLIElement' opposite = ''/>
+    </Class>
+    <Class name = 'PLIHBoundArray' isAbstract = 'false' supertypes = 'PL/I::PLIArray'>
+      <Attribute name = 'uBound' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'IBoundToAllocate' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'referredTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PL/I::PLIElement' opposite = ''/>
+    </Class>
+    <Class name = 'PLIVariableBoundArray' isAbstract = 'false' supertypes = 'PL/I::PLIArray'>
+      <Attribute name = 'IBoundToAllocate' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'hBoundToAllocate' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'referredTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PL/I::PLIElement' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Integer'/>
+  </Package>
+</Metamodel>

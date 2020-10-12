@@ -1,0 +1,49 @@
+-- @name		SimpleRDBMS
+-- @version		0.2
+-- @domains		QVT, Relational Data Base
+-- @authors		Ivan Kurtev (ivan.kurtev@univ-nantes.fr)
+-- @description	The metamodel used in the example was provided in the last QVT submission.
+
+
+package SimpleRDBMS {
+
+  abstract class RModelElement {
+    attribute kind : String;
+    attribute name : String;
+  }
+  
+  class Schema extends RModelElement {
+    reference tables[*] container : Table oppositeOf schema;
+  }
+  
+  class Table extends RModelElement {
+    reference schema[1-1] : Schema oppositeOf tables;
+    reference column[*] container : Column oppositeOf owner;
+    reference key[*] container: Key oppositeOf owner;
+    reference foreignKey[*] container: ForeignKey oppositeOf owner;
+  }
+  
+  class Column extends RModelElement {
+    attribute type : String;
+    reference owner[1-1] : Table oppositeOf column;
+    reference key[*] : Key oppositeOf column;
+    reference foreignKey[*] : ForeignKey oppositeOf column;
+  }
+  
+  class Key extends RModelElement {
+    reference owner[1-1] : Table oppositeOf key;
+    reference column[*] : Column oppositeOf key;
+    reference refersToOpposite[*] : ForeignKey oppositeOf refersTo;
+  }
+  
+  class ForeignKey extends RModelElement {
+    reference column[*] : Column oppositeOf foreignKey;
+    reference owner[1-1] : Table oppositeOf foreignKey;
+    reference refersTo[1-1] : Key oppositeOf refersToOpposite;
+  }
+  
+}
+
+package PrimitiveTypes {
+  datatype String;
+}

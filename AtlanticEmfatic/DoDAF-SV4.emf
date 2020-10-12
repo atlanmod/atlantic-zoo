@@ -1,0 +1,221 @@
+package Metamodel;
+
+package DoDAF {
+  abstract class Element {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] description;
+    !unique !ordered attr String[1] view;
+  }
+
+  class DoDAFModel extends Element {
+    !ordered val Document[*] document;
+    !ordered val SystemFunctionalityDescription[*] sfd;
+    !ordered val AMSpecification[*] amSpecification;
+    !ordered val SystemDocument[*] sd;
+    !ordered val Task[*] task;
+    !ordered val InformationAssetDocument[*] iaDocument;
+    !ordered val Position[*] position;
+    !ordered val Occupation[*] occupation;
+    !ordered val ArchitectureDocument[*] ad;
+    !ordered val System[*] system;
+    !ordered val AM[*] am;
+    !ordered val SystemPAStandard[*] spas;
+    !ordered val InformationTechnologyStandard[*] its;
+    !ordered val OperationalRolePA[*] orpa;
+    !ordered val PersonTypeCapabilityNorm[*] ptcn;
+  }
+
+  class Document extends Element {
+    !unique !ordered attr String[1] type;
+    !ordered ref InformationAssetDocument[*] cites;
+    !ordered ref SystemDocument[*] describes;
+    !ordered val ArchitectureDocument[*] records;
+    !ordered val IE[*] isTheReferenceFor;
+    !ordered val PA[*] isThePrimaryReferenceFor;
+  }
+
+  class SystemFunctionalityDescription extends Document {
+  }
+
+  class FunctionalSpecification extends Document {
+    !ordered val SystemDocument[1] mayBeA;
+  }
+
+  class AMSpecification extends Document {
+    !ordered val FunctionalSpecification[*] isUsedIn;
+  }
+
+  class SystemDocument extends Element {
+  }
+
+  class ArchitectureDocument extends Element {
+  }
+
+  class System extends Element {
+    !ordered val SystemPA[*] isDesignedToProvide;
+    !ordered ref SystemDocument[*] isDescribedBy;
+  }
+
+  class SystemPA extends Element {
+    !ordered ref SystemPAStandard[*] isDefinedUsing;
+  }
+
+  class IE extends Element {
+    !ordered ref AMIERole[*] isAssociatedWith;
+    !ordered ref IE[*]#isSubordinateOf isOrdinateOf;
+    !ordered ref IE[*]#isOrdinateOf isSubordinateOf;
+  }
+
+  class AMIERole extends Element {
+    !ordered ref AMPA[*] defines;
+    !ordered val AMIERoleGraphic[*] isRepresentedBy;
+  }
+
+  class AMIERoleGraphic extends Element {
+  }
+
+  class Input extends AMIERole {
+    !ordered val Output[*] isTheInputThatIsDefinedBy;
+    !unique !ordered attr String[1] source;
+    !unique !ordered attr String[1] destination;
+    !unique !ordered attr String[1] information;
+  }
+
+  class Output extends AMIERole {
+    !unique !ordered attr String[1] source;
+    !unique !ordered attr String[1] destination;
+    !unique !ordered attr String[1] information;
+  }
+
+  class InformationAssetDocument extends Element {
+  }
+
+  class AMPA extends Element {
+    !ordered ref AMPA[*]#isSubordinateOf isOrdinateOf;
+    !ordered ref AMPA[*]#isOrdinateOf isSubordinateOf;
+    !ordered val AMIERole[*] defines;
+    !ordered val AMPAGraphic[*] isRepresentedBy;
+  }
+
+  class AMPAGraphic extends Element {
+  }
+
+  class PA extends Element {
+    !ordered ref PA[*]#isChildFor isParentFor;
+    !ordered ref PA[*]#isParentFor isChildFor;
+    !ordered ref AMPA[*] isIncludedIn;
+    !ordered ref SystemPA[*] isAssignedTo;
+    !ordered val ArchitectureBusinessSubFunction[*] represents;
+    !ordered ref PATask[*] correspondsTo;
+    !ordered val PACapability[*] has;
+    !ordered ref OperationalRolePA[*] isPerformedBy;
+  }
+
+  class PACapability extends Element {
+  }
+
+  class AM extends InformationAsset {
+    !unique !ordered attr String[1] type;
+    !ordered val PATask[*] isCitedBy;
+    !ordered ref AMSpecification[*] specifies;
+    !ordered val AMPA[*] includes;
+    !ordered ref SystemFunctionalityDescription[*] isUsedToDescribe;
+    !ordered val LineOfBusiness[*] defines;
+  }
+
+  class InformationAsset extends Element {
+    !ordered ref InformationAssetDocument[*] isCitedIn;
+    !ordered val DataStore[*] describes;
+  }
+
+  class DataStore extends PA {
+  }
+
+  class SystemFunction extends PA {
+  }
+
+  class SystemPAStandard extends Element {
+    !ordered ref InformationTechnologyStandard[*] isUsedToDefine;
+  }
+
+  class InformationTechnologyStandard extends Element {
+    !ordered ref SystemPAStandard[*] isUsedToDefine;
+  }
+
+  class LineOfBusiness extends Element {
+    !ordered ref Task[*] appliesToTask;
+    !ordered val BusinessSubfunction[*] appliesToBS;
+  }
+
+  class Task extends Element {
+    !unique !ordered attr String[1] levelIdentifier;
+    !unique !ordered attr String[1] references;
+    !unique !ordered attr String[1] cost;
+    !ordered ref PATask[*] correspondsTo;
+    !ordered ref TaskMissionArea[*] supports;
+  }
+
+  class HumanBehaviourTask extends Task {
+  }
+
+  class OperationalCapabilityTask extends Task {
+  }
+
+  class TaskMissionArea extends Task {
+    !ordered val OperationalCapabilityTask[*] hasContributionFrom;
+  }
+
+  class PATask extends Task {
+  }
+
+  class BusinessSubfunction extends Element {
+    !ordered ref ArchitectureBusinessSubFunction[*] appliesTo;
+  }
+
+  class ArchitectureBusinessSubFunction extends Element {
+  }
+
+  class OperationalRolePA extends Element {
+  }
+
+  class OperationalRole extends Element {
+    !ordered val OperationalRolePA[*] performs;
+    !ordered val OrganizationTypeOperationalRole[*] isPerformedByOTOR;
+    !ordered val OrganizationOperationalRole[*] isPerformedByOOR;
+  }
+
+  class OrganizationTypeOperationalRole extends Element {
+  }
+
+  class OrganizationOperationalRole extends Element {
+  }
+
+  class Occupation extends Element {
+    !ordered val OperationalRole[*] mayBeCitedForOR;
+    !ordered val PersonType[*] mayBeCitedForPT;
+  }
+
+  class PersonType extends Element {
+    !ordered val OperationalRole[*] mayBeCitedFor;
+    !ordered val PersonTypeCapabilityNorm[*] performsTo;
+    !ordered val Skill[*] can;
+  }
+
+  class PersonTypeCapabilityNorm extends Element {
+  }
+
+  class Skill extends Element {
+    !ordered val OperationalRole[*] mayBeCitedFor;
+  }
+
+  class Position extends Element {
+    !ordered val OperationalRole[*] mayBeCitedFor;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+}
+

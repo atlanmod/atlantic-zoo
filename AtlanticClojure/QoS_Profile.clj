@@ -1,0 +1,7 @@
+( defstruct QoSComponent :operations )
+( defstruct Operation )
+( defstruct QoSProfile :for )
+( defstruct CompoundProfile :simpleProfile :for )
+( defstruct SimpleProfile :compoundProfile :uses :provides :for )
+( defstruct QoSStatement )
+( defstruct ProfileTransition :from :to :compoundProfile )

@@ -1,0 +1,50 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'EclipsePlugIn'>
+    <Class name = 'Application' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'version' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'author' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'extensionPoints' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'EclipsePlugIn::ExtensionPoint' opposite = 'EclipsePlugIn::ExtensionPoint::application'/>
+    </Class>
+    <Class name = 'ExtensionPoint' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'application' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'EclipsePlugIn::Application' opposite = 'EclipsePlugIn::Application::extensionPoints'/>
+      <Reference name = 'descriptions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'EclipsePlugIn::Description' opposite = 'EclipsePlugIn::Description::extensionPoints'/>
+      <Reference name = 'plugIn' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'EclipsePlugIn::PlugIn' opposite = 'EclipsePlugIn::PlugIn::extensionPoints'/>
+    </Class>
+    <Class name = 'Description' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'xmlSchema' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'extensionPoints' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'EclipsePlugIn::ExtensionPoint' opposite = 'EclipsePlugIn::ExtensionPoint::descriptions'/>
+    </Class>
+    <Class name = 'Extension' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'isConfiguredInto' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'EclipsePlugIn::ExtensionPoint' opposite = ''/>
+    </Class>
+    <Class name = 'PlugIn' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'displayableName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'version' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'supplier' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'configures' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'EclipsePlugIn::Extension' opposite = ''/>
+      <Reference name = 'extensionPoints' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'EclipsePlugIn::ExtensionPoint' opposite = 'EclipsePlugIn::ExtensionPoint::plugIn'/>
+      <Reference name = 'requires' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'EclipsePlugIn::PlugIn' opposite = ''/>
+      <Reference name = 'uses' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'EclipsePlugIn::Librairy' opposite = 'EclipsePlugIn::Librairy::plugIn'/>
+    </Class>
+    <Class name = 'Librairy' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'plugIn' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'EclipsePlugIn::PlugIn' opposite = 'EclipsePlugIn::PlugIn::uses'/>
+      <Reference name = 'classes' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'EclipsePlugIn::Class' opposite = 'EclipsePlugIn::Class::librairy'/>
+    </Class>
+    <Class name = 'Class' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'librairy' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'EclipsePlugIn::Librairy' opposite = 'EclipsePlugIn::Librairy::classes'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

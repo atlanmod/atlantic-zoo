@@ -1,0 +1,1328 @@
+package Metamodel;
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype UnlimitedNatural : "";
+
+  datatype Sequence : "";
+
+  datatype Set : "";
+
+}
+
+package uml2 {
+  abstract class Element {
+    !ordered ref Element[*]#owner ownedElement;
+    !ordered ref Element#ownedElement owner;
+    !ordered val Comment[*] ownedComment;
+  }
+
+  abstract class MultiplicityElement extends Element {
+    !unique !ordered attr Boolean isOrdered;
+    !unique !ordered attr Boolean isUnique;
+    !unique !ordered attr Integer lower;
+    !unique !ordered attr PrimitiveTypes.UnlimitedNatural upper;
+    !ordered val ValueSpecification upperValue;
+    !ordered val ValueSpecification lowerValue;
+  }
+
+  abstract class NamedElement extends TemplateableElement {
+    !unique !ordered attr String name;
+    !unique !ordered attr String qualifiedName;
+    !unique !ordered attr VisibilityKind visibility;
+    !ordered ref Dependency[*]#client clientDependency;
+    !ordered val StringExpression nameExpression;
+  }
+
+  abstract class Namespace extends NamedElement {
+    !ordered ref NamedElement[*] member;
+    !ordered val Constraint[*]#namespace ownedRule;
+    !ordered ref PackageableElement[*] importedMember;
+    !ordered val ElementImport[*]#importingNamespace elementImport;
+    !ordered val PackageImport[*]#importingNamespace packageImport;
+  }
+
+  class OpaqueExpression extends ValueSpecification {
+    !unique !ordered attr String body;
+    !unique !ordered attr String language;
+    !ordered ref Parameter result;
+    !ordered ref Behavior behavior;
+  }
+
+  abstract class ValueSpecification extends TypedElement, ParameterableElement {
+  }
+
+  class Expression extends OpaqueExpression {
+    !unique !ordered attr String symbol;
+    val ValueSpecification[*] operand;
+  }
+
+  class Comment extends TemplateableElement {
+    !unique !ordered attr String body;
+    !ordered ref Element[*] annotatedElement;
+    !ordered val StringExpression bodyExpression;
+  }
+
+  abstract class DirectedRelationship extends Relationship {
+    !ordered ref Element[+] source;
+    !ordered ref Element[+] target;
+  }
+
+  abstract class Relationship extends Element {
+    !ordered ref Element[+] relatedElement;
+  }
+
+  class Class extends BehavioredClassifier, EncapsulatedClassifier {
+    val Operation[*]#class_ ownedOperation;
+    !ordered ref Class[*] superClass;
+    !ordered ref Extension[*]#metaclass extension;
+    val Classifier[*] nestedClassifier;
+    !unique !ordered attr Boolean isActive;
+    !ordered val Reception[*] ownedReception;
+  }
+
+  abstract class Type extends PackageableElement {
+    !ordered ref Package#ownedType ~package;
+  }
+
+  class Property extends StructuralFeature, ConnectableElement, DeploymentTarget {
+    !unique !ordered attr String default;
+    !unique !ordered attr Boolean isComposite;
+    !unique !ordered attr Boolean isDerived;
+    !ordered ref Class class_;
+    !ordered ref Property opposite;
+    !unique !ordered attr Boolean isDerivedUnion;
+    !ordered ref Association#ownedEnd owningAssociation;
+    !ordered ref Property[*] redefinedProperty;
+    !ordered ref Property[*] subsettedProperty;
+    !ordered ref DataType#ownedAttribute ~datatype;
+    !ordered ref Association#memberEnd association;
+    !unique !ordered attr AggregationKind aggregation;
+    !ordered val ValueSpecification defaultValue;
+    val Property[*]#associationEnd qualifier;
+    !ordered ref Property#qualifier associationEnd;
+  }
+
+  class Operation extends BehavioralFeature, TypedElement, MultiplicityElement, ParameterableElement {
+    val Parameter[*]#operation ownedParameter;
+    !ordered ref Class#ownedOperation class_;
+    !unique !ordered attr Boolean isQuery;
+    !ordered ref DataType#ownedOperation ~datatype;
+    !ordered ref Constraint[*] precondition;
+    !ordered ref Constraint[*] postcondition;
+    !ordered ref Operation[*] redefinedOperation;
+    !ordered ref Constraint bodyCondition;
+  }
+
+  abstract class TypedElement extends NamedElement {
+    !ordered ref Type type;
+  }
+
+  class Parameter extends ConnectableElement, TypedElement, MultiplicityElement {
+    !ordered ref Operation#ownedParameter operation;
+    !unique !ordered attr String default;
+    !unique !ordered attr ParameterDirectionKind direction;
+    !ordered val ValueSpecification defaultValue;
+    !unique !ordered attr Boolean isException;
+    !unique !ordered attr Boolean isStream;
+    !unique !ordered attr ParameterEffectKind effect;
+    !ordered ref ParameterSet[*]#parameter parameterSet;
+  }
+
+  class Package extends Namespace, PackageableElement {
+    !ordered ref Package[*]#nestingPackage nestedPackage;
+    !ordered ref Package#nestedPackage nestingPackage;
+    !ordered ref Type[*]#~package ownedType;
+    !ordered val PackageableElement[*] ownedMember;
+    !ordered val PackageMerge[*]#mergingPackage packageMerge;
+    !ordered ref ProfileApplication[*] appliedProfile;
+    !ordered val PackageMerge[*] packageExtension;
+  }
+
+  class Enumeration extends DataType {
+    val EnumerationLiteral[*]#enumeration ownedLiteral;
+  }
+
+  class DataType extends Classifier {
+    val Property[*]#~datatype ownedAttribute;
+    val Operation[*]#~datatype ownedOperation;
+  }
+
+  class EnumerationLiteral extends InstanceSpecification {
+    !ordered ref Enumeration#ownedLiteral enumeration;
+  }
+
+  class PrimitiveType extends DataType {
+  }
+
+  abstract class Classifier extends Namespace, Type, RedefinableElement {
+    !ordered ref Feature[*]#featuringClassifier feature;
+    !unique !ordered attr Boolean isAbstract;
+    !ordered ref NamedElement[*] inheritedMember;
+    !ordered ref Classifier[*] general;
+    !ordered val Generalization[*]#specific generalization;
+    !ordered ref Property[*] attribute;
+    !ordered ref Classifier[*] redefinedClassifier;
+    !ordered val Substitution[*]#substitutingClassifier substitution;
+    !ordered ref GeneralizationSet[*]#powertype powertypeExtent;
+    !ordered val UseCase[*] ownedUseCase;
+    !ordered ref UseCase[*]#subject useCase;
+    !ordered ref CollaborationOccurrence representation;
+    !ordered val CollaborationOccurrence[*] occurrence;
+  }
+
+  abstract class Feature extends RedefinableElement {
+    !ordered ref Classifier[*]#feature featuringClassifier;
+    !unique !ordered attr Boolean isStatic;
+  }
+
+  class Constraint extends PackageableElement {
+    !ordered ref Namespace context;
+    !ordered ref Namespace#ownedRule namespace;
+    !ordered val ValueSpecification[1] specification;
+    ref Element[*] constrainedElement;
+  }
+
+  enum VisibilityKind {
+    ~package = 0;
+    private = 0;
+    protected = 0;
+    public = 0;
+  }
+
+  class LiteralBoolean extends LiteralSpecification {
+    !unique !ordered attr Boolean value;
+  }
+
+  abstract class LiteralSpecification extends ValueSpecification {
+  }
+
+  class LiteralString extends LiteralSpecification {
+    !unique !ordered attr String value;
+  }
+
+  class LiteralNull extends LiteralSpecification {
+  }
+
+  class LiteralInteger extends LiteralSpecification {
+    !unique !ordered attr Integer value;
+  }
+
+  class LiteralUnlimitedNatural extends LiteralSpecification {
+    !unique !ordered attr PrimitiveTypes.UnlimitedNatural value;
+  }
+
+  abstract class BehavioralFeature extends Namespace, Feature {
+    ref Parameter[*] parameter;
+    !ordered val Parameter[*] formalParameter;
+    val Parameter[*] returnResult;
+    !ordered ref Type[*] raisedException;
+    !unique !ordered attr Boolean isAbstract;
+    !ordered ref Behavior[*]#specification method;
+    !unique !ordered attr CallConcurrencyKind concurrency;
+  }
+
+  abstract class StructuralFeature extends Feature, TypedElement, MultiplicityElement {
+    !unique !ordered attr Boolean isReadOnly;
+  }
+
+  class InstanceSpecification extends PackageableElement, DeploymentTarget, DeployedArtifact {
+    !ordered val Slot[*]#owningInstance slot;
+    !ordered ref Classifier[*] classifier;
+    !ordered val ValueSpecification specification;
+  }
+
+  class Slot extends Element {
+    !ordered ref InstanceSpecification[1]#slot owningInstance;
+    val ValueSpecification[*] value;
+    !ordered ref StructuralFeature[1] definingFeature;
+  }
+
+  class InstanceValue extends ValueSpecification {
+    !ordered ref InstanceSpecification[1] instance;
+  }
+
+  abstract class RedefinableElement extends NamedElement {
+    ref Classifier[*] redefinitionContext;
+    !unique !ordered attr Boolean isLeaf;
+  }
+
+  class Generalization extends DirectedRelationship {
+    !ordered ref Classifier[1]#generalization specific;
+    !ordered ref Classifier[1] general;
+    !unique !ordered attr Boolean isSubstitutable;
+    !ordered ref GeneralizationSet[*]#generalization generalizationSet;
+  }
+
+  abstract class PackageableElement extends NamedElement, ParameterableElement {
+    !unique !ordered attr VisibilityKind packageableElement_visibility;
+  }
+
+  class ElementImport extends DirectedRelationship {
+    !unique !ordered attr VisibilityKind visibility;
+    !unique !ordered attr String alias;
+    !ordered ref PackageableElement[1] importedElement;
+    !ordered ref Namespace[1]#elementImport importingNamespace;
+  }
+
+  class PackageImport extends DirectedRelationship {
+    !unique !ordered attr VisibilityKind visibility;
+    !ordered ref Package[1] importedPackage;
+    !ordered ref Namespace[1]#packageImport importingNamespace;
+  }
+
+  class Association extends Classifier, Relationship {
+    !unique !ordered attr Boolean isDerived;
+    val Property[*]#owningAssociation ownedEnd;
+    !ordered ref Type[+] endType;
+    ref Property[2..*]#association memberEnd;
+  }
+
+  class PackageMerge extends DirectedRelationship {
+    !ordered ref Package[1]#packageMerge mergingPackage;
+    !ordered ref Package[1] mergedPackage;
+  }
+
+  class Stereotype extends Class {
+  }
+
+  class Profile extends Package {
+    !ordered ref Stereotype[*] ownedStereotype;
+    !ordered ref ElementImport[*] metaclassReference;
+    !ordered ref PackageImport[*] metamodelReference;
+  }
+
+  class ProfileApplication extends PackageImport {
+    !ordered ref Profile[1] importedProfile;
+  }
+
+  class Extension extends Association {
+    !unique !ordered attr Boolean isRequired;
+    !ordered ref Class[1]#extension metaclass;
+  }
+
+  class ExtensionEnd extends Property {
+  }
+
+  enum ParameterDirectionKind {
+    in = 0;
+    inout = 0;
+    out = 0;
+    return = 0;
+  }
+
+  enum AggregationKind {
+    composite = 0;
+    none = 0;
+    shared = 0;
+  }
+
+  abstract class Behavior extends Class {
+    !unique !ordered attr Boolean isReentrant;
+    !ordered ref BehavioredClassifier#ownedBehavior context;
+    !ordered ref Behavior[*] redefinedBehavior;
+    !ordered ref BehavioralFeature#method specification;
+    val Parameter[*] parameter;
+    ref Parameter[*] formalParameter;
+    ref Parameter[*] returnResult;
+    !ordered ref Constraint[*] precondition;
+    !ordered ref Constraint[*] postcondition;
+    !ordered val ParameterSet[*] ownedParameterSet;
+  }
+
+  abstract class BehavioredClassifier extends Classifier {
+    !ordered val Behavior[*]#context ownedBehavior;
+    !ordered ref Behavior classifierBehavior;
+    !ordered val Implementation[*]#implementingClassifier implementation;
+    !ordered val Trigger[*] ownedTrigger;
+    !ordered val StateMachine[*]#stateMachine_redefinitionContext ownedStateMachine;
+  }
+
+  class Activity extends Behavior {
+    !unique !ordered attr String body;
+    !unique !ordered attr String language;
+    !ordered val ActivityEdge[*]#activity edge;
+    !ordered val ActivityGroup[*]#activityGroup_activity group;
+    !ordered val ActivityNode[*]#activity node;
+    ref Action[*] action;
+    !ordered ref StructuredActivityNode[*] structuredNode;
+    !unique !ordered attr Boolean isSingleExecution;
+    !unique !ordered attr Boolean isReadOnly;
+  }
+
+  class Permission extends Dependency {
+  }
+
+  class Dependency extends PackageableElement, DirectedRelationship {
+    !ordered ref NamedElement[+]#clientDependency client;
+    !ordered ref NamedElement[+] supplier;
+  }
+
+  class Usage extends Dependency {
+  }
+
+  class Abstraction extends Dependency {
+    !ordered val OpaqueExpression mapping;
+  }
+
+  class Realization extends Abstraction {
+    !ordered ref Component#realization abstraction;
+    !ordered ref Classifier[1] realizingClassifier;
+  }
+
+  class Substitution extends Realization {
+    !ordered ref Classifier[1] contract;
+    !ordered ref Classifier[1]#substitution substitutingClassifier;
+  }
+
+  class GeneralizationSet extends PackageableElement {
+    !unique !ordered attr Boolean isCovering;
+    !unique !ordered attr Boolean isDisjoint;
+    !ordered ref Classifier#powertypeExtent powertype;
+    !ordered ref Generalization[*]#generalizationSet generalization;
+  }
+
+  class AssociationClass extends Class, Association {
+  }
+
+  class InformationItem extends Classifier {
+    !ordered ref Classifier[*] represented;
+  }
+
+  class InformationFlow extends PackageableElement, DirectedRelationship {
+    !ordered ref Relationship[*] realization;
+    !ordered ref Classifier[+] conveyed;
+  }
+
+  class Model extends Package {
+    !unique !ordered attr String viewpoint;
+  }
+
+  class ConnectorEnd extends MultiplicityElement {
+    !ordered ref Property definingEnd;
+    !ordered ref ConnectableElement#end role;
+    !ordered ref Property partWithPort;
+  }
+
+  abstract class ConnectableElement extends NamedElement, ParameterableElement {
+    !ordered ref ConnectorEnd[*]#role end;
+  }
+
+  class Connector extends Feature {
+    !ordered ref Association type;
+    !ordered ref Connector[*] redefinedConnector;
+    val ConnectorEnd[2..*] end;
+    !unique !ordered attr ConnectorKind kind;
+    !ordered ref Behavior[*] contract;
+  }
+
+  abstract class StructuredClassifier extends Classifier {
+    val Property[*] ownedAttribute;
+    !ordered ref Property[*] part;
+    !ordered ref ConnectableElement[*] role;
+    !ordered val Connector[*] ownedConnector;
+  }
+
+  abstract class ActivityEdge extends RedefinableElement {
+    !ordered ref Activity#edge activity;
+    !ordered ref ActivityNode[1]#outgoing source;
+    !ordered ref ActivityNode[1]#incoming target;
+    !ordered ref ActivityGroup[*] inGroup;
+    !ordered val ValueSpecification[1] guard;
+    !ordered ref ActivityEdge[*] redefinedElement;
+    !ordered ref StructuredActivityNode#containedEdge inStructuredNode;
+    !ordered ref ActivityPartition[*]#containedEdge inPartition;
+    !ordered val ValueSpecification[1] weight;
+    !ordered ref InterruptibleActivityRegion#interruptingEdge interrupts;
+  }
+
+  abstract class ActivityGroup extends Element {
+    !ordered ref ActivityGroup superGroup;
+    !ordered ref Activity#group activityGroup_activity;
+  }
+
+  abstract class ActivityNode extends RedefinableElement {
+    !ordered ref ActivityEdge[*]#source outgoing;
+    !ordered ref ActivityEdge[*]#target incoming;
+    !ordered ref ActivityGroup[*] inGroup;
+    !ordered ref Activity#node activity;
+    !ordered ref ActivityNode[*] redefinedElement;
+    !ordered ref StructuredActivityNode#containedNode inStructuredNode;
+    !ordered ref ActivityPartition[*]#containedNode inPartition;
+    !ordered ref InterruptibleActivityRegion[*]#containedNode inInterruptibleRegion;
+  }
+
+  class Action extends ExecutableNode {
+    !unique !ordered attr String effect;
+    ref OutputPin[*] output;
+    ref InputPin[*] input;
+    !ordered ref Classifier context;
+    !ordered val Constraint[*] localPrecondition;
+    !ordered val Constraint[*] localPostcondition;
+  }
+
+  abstract class ObjectNode extends ActivityNode, TypedElement {
+    !unique !ordered attr ObjectNodeOrderingKind ordering;
+    !ordered val ValueSpecification[1] upperBound;
+    !ordered ref State[*] inState;
+    !ordered ref Behavior selection;
+  }
+
+  abstract class ControlNode extends ActivityNode {
+  }
+
+  class ControlFlow extends ActivityEdge {
+  }
+
+  class ObjectFlow extends ActivityEdge {
+    !unique !ordered attr Boolean isMulticast;
+    !unique !ordered attr Boolean isMultireceive;
+    !ordered ref Behavior transformation;
+    !ordered ref Behavior selection;
+  }
+
+  class InitialNode extends ControlNode {
+  }
+
+  abstract class FinalNode extends ControlNode {
+  }
+
+  class ActivityFinalNode extends FinalNode {
+  }
+
+  class DecisionNode extends ControlNode {
+    !ordered ref Behavior decisionInput;
+  }
+
+  class MergeNode extends ControlNode {
+  }
+
+  abstract class ExecutableNode extends ActivityNode {
+    !ordered val ExceptionHandler[*]#protectedNode handler;
+  }
+
+  class OutputPin extends Pin {
+  }
+
+  class InputPin extends Pin {
+  }
+
+  abstract class Pin extends ObjectNode, MultiplicityElement {
+  }
+
+  class ActivityParameterNode extends ObjectNode {
+    !ordered ref Parameter[1] parameter;
+  }
+
+  class ValuePin extends InputPin {
+    !ordered val ValueSpecification[1] value;
+  }
+
+  class Interface extends Classifier {
+    val Property[*] ownedAttribute;
+    val Operation[*] ownedOperation;
+    !ordered ref Interface[*] redefinedInterface;
+    val Classifier[*] nestedClassifier;
+    !ordered val Reception[*] ownedReception;
+    !ordered val ProtocolStateMachine protocol;
+  }
+
+  class Implementation extends Realization {
+    !ordered ref Interface[1] contract;
+    !ordered ref BehavioredClassifier[1]#implementation implementingClassifier;
+  }
+
+  class Artifact extends Classifier, DeployedArtifact {
+    !unique !ordered attr String fileName;
+    !ordered val Artifact[*] nestedArtifact;
+    !ordered val Manifestation[*] manifestation;
+    val Operation[*] ownedOperation;
+    val Property[*] ownedAttribute;
+  }
+
+  class Manifestation extends Abstraction {
+    !ordered ref PackageableElement[1] utilizedElement;
+  }
+
+  class Actor extends Classifier {
+  }
+
+  class Extend extends NamedElement, DirectedRelationship {
+    !ordered ref UseCase[1] extendedCase;
+    !ordered ref UseCase[1]#extend extension;
+    !ordered val Constraint condition;
+    ref ExtensionPoint[+] extensionLocation;
+  }
+
+  class UseCase extends BehavioredClassifier {
+    !ordered val Include[*]#includingCase include;
+    !ordered val Extend[*]#extension extend;
+    !ordered val ExtensionPoint[*]#useCase extensionPoint;
+    !ordered ref Classifier[*]#useCase subject;
+  }
+
+  class ExtensionPoint extends RedefinableElement {
+    !ordered ref UseCase[1]#extensionPoint useCase;
+  }
+
+  class Include extends NamedElement, DirectedRelationship {
+    !ordered ref UseCase[1]#include includingCase;
+    !ordered ref UseCase[1] addition;
+  }
+
+  class CollaborationOccurrence extends NamedElement {
+    !ordered ref Collaboration[1] type;
+    !ordered val Dependency[*] roleBinding;
+  }
+
+  class Collaboration extends BehavioredClassifier, StructuredClassifier {
+    !ordered ref ConnectableElement[*] collaborationRole;
+  }
+
+  class Port extends Property {
+    !unique !ordered attr Boolean isBehavior;
+    !unique !ordered attr Boolean isService;
+    !ordered ref Interface[*] required;
+    !ordered ref Port[*] redefinedPort;
+    !ordered ref Interface[*] provided;
+    !ordered ref ProtocolStateMachine protocol;
+  }
+
+  abstract class EncapsulatedClassifier extends StructuredClassifier {
+    !ordered val Port[*] ownedPort;
+  }
+
+  enum CallConcurrencyKind {
+    guarded = 0;
+    concurrent = 0;
+    sequential = 0;
+  }
+
+  class CallTrigger extends MessageTrigger {
+    !ordered ref Operation[1] operation;
+  }
+
+  abstract class MessageTrigger extends Trigger {
+  }
+
+  class ChangeTrigger extends Trigger {
+    !ordered val ValueSpecification[1] changeExpression;
+  }
+
+  abstract class Trigger extends NamedElement {
+    !ordered ref Port[*] port;
+  }
+
+  class Reception extends BehavioralFeature {
+    !ordered ref Signal signal;
+  }
+
+  class Signal extends Classifier {
+    val Property[*] ownedAttribute;
+  }
+
+  class SignalTrigger extends MessageTrigger {
+    ref Signal[*] signal;
+  }
+
+  class TimeTrigger extends Trigger {
+    !unique !ordered attr Boolean isRelative;
+    !ordered val ValueSpecification[1] when;
+  }
+
+  class AnyTrigger extends MessageTrigger {
+  }
+
+  class Variable extends ConnectableElement, TypedElement, MultiplicityElement {
+    !ordered ref StructuredActivityNode[1]#variable scope;
+  }
+
+  class StructuredActivityNode extends Action, Namespace, ActivityGroup {
+    !ordered val Variable[*]#scope variable;
+    val ActivityNode[*]#inStructuredNode containedNode;
+    val ActivityEdge[*]#inStructuredNode containedEdge;
+    !unique !ordered attr Boolean mustIsolate;
+  }
+
+  class ConditionalNode extends StructuredActivityNode {
+    !unique !ordered attr Boolean isDeterminate;
+    !unique !ordered attr Boolean isAssured;
+    !ordered val Clause[+] clause;
+    val OutputPin[*] result;
+  }
+
+  class Clause extends Element {
+    !ordered ref ActivityNode[*] test;
+    !ordered ref ActivityNode[*] body;
+    !ordered ref Clause[*]#successorClause predecessorClause;
+    !ordered ref Clause[*]#predecessorClause successorClause;
+    !ordered ref OutputPin[1] decider;
+    !ordered ref OutputPin[*] bodyOutput;
+  }
+
+  class LoopNode extends StructuredActivityNode {
+    !unique !ordered attr Boolean isTestedFirst;
+    !ordered ref ActivityNode[*] bodyPart;
+    !ordered ref ActivityNode[*] setupPart;
+    !ordered ref OutputPin[1] decider;
+    !ordered ref ActivityNode[*] test;
+    val OutputPin[*] result;
+    val OutputPin[*] loopVariable;
+    !ordered ref OutputPin[*] bodyOutput;
+    val InputPin[*] loopVariableInput;
+  }
+
+  class Interaction extends Behavior, InteractionFragment {
+    !ordered val Lifeline[*]#interaction lifeline;
+    !ordered val Message[*]#interaction message;
+    val InteractionFragment[*]#enclosingInteraction fragment;
+    !ordered val Gate[*] formalGate;
+  }
+
+  abstract class InteractionFragment extends NamedElement {
+    ref Lifeline[*]#coveredBy covered;
+    !ordered val GeneralOrdering[*] generalOrdering;
+    !ordered ref Interaction#fragment enclosingInteraction;
+    !ordered ref InteractionOperand#fragment enclosingOperand;
+  }
+
+  class Lifeline extends NamedElement {
+    !ordered ref InteractionFragment[*]#covered coveredBy;
+    !ordered ref ConnectableElement[1] represents;
+    !ordered ref Interaction[1]#lifeline interaction;
+    !ordered val OpaqueExpression selector;
+    !ordered ref PartDecomposition decomposedAs;
+  }
+
+  class Message extends NamedElement {
+    !unique !ordered attr MessageKind messageKind;
+    !unique !ordered attr MessageSort messageSort;
+    !ordered ref MessageEnd#receiveMessage receiveEvent;
+    !ordered ref MessageEnd#sendMessage sendEvent;
+    !ordered ref Connector connector;
+    !ordered ref Interaction[1]#message interaction;
+    !ordered ref NamedElement signature;
+    !ordered val ValueSpecification[*] argument;
+  }
+
+  class GeneralOrdering extends NamedElement {
+    !ordered ref EventOccurrence[1]#toAfter before;
+    !ordered ref EventOccurrence[1]#toBefore after;
+  }
+
+  enum MessageKind {
+    found = 0;
+    lost = 0;
+    unknown = 0;
+    complete = 0;
+  }
+
+  enum MessageSort {
+    synchSignal = 0;
+    synchCall = 0;
+    asynchCall = 0;
+    asynchSignal = 0;
+  }
+
+  abstract class MessageEnd extends NamedElement {
+    !ordered ref Message#receiveEvent receiveMessage;
+    !ordered ref Message#sendEvent sendMessage;
+  }
+
+  class EventOccurrence extends InteractionFragment, MessageEnd {
+    !ordered ref ExecutionOccurrence[*]#start startExec;
+    !ordered ref ExecutionOccurrence[*]#finish finishExec;
+    !ordered ref GeneralOrdering[*]#before toAfter;
+    !ordered ref GeneralOrdering[*]#after toBefore;
+  }
+
+  class ExecutionOccurrence extends InteractionFragment {
+    !ordered ref EventOccurrence[1]#startExec start;
+    !ordered ref EventOccurrence[1]#finishExec finish;
+    ref Behavior[*] behavior;
+  }
+
+  class StateInvariant extends InteractionFragment {
+    !ordered val Constraint[1] invariant;
+  }
+
+  class Stop extends EventOccurrence {
+  }
+
+  class TemplateSignature extends Element {
+    !ordered ref TemplateParameter[+] parameter;
+    !ordered val TemplateParameter[*]#signature ownedParameter;
+    !ordered ref TemplateSignature[*]#nestingSignature nestedSignature;
+    !ordered ref TemplateSignature#nestedSignature nestingSignature;
+    !ordered ref TemplateableElement[1]#ownedTemplateSignature template;
+  }
+
+  class TemplateParameter extends Element {
+    !ordered ref TemplateSignature[1]#ownedParameter signature;
+    !ordered ref ParameterableElement[1]#templateParameter parameteredElement;
+    !ordered val ParameterableElement#owningParameter ownedParameteredElement;
+    !ordered ref ParameterableElement default;
+    !ordered val ParameterableElement ownedDefault;
+  }
+
+  abstract class TemplateableElement extends Element {
+    !ordered val TemplateBinding[*]#boundElement templateBinding;
+    !ordered val TemplateSignature#template ownedTemplateSignature;
+  }
+
+  class StringExpression extends TemplateableElement {
+    !ordered val StringExpression[*]#owningExpression subExpression;
+    !ordered ref StringExpression#subExpression owningExpression;
+  }
+
+  abstract class ParameterableElement extends Element {
+    !ordered ref TemplateParameter#parameteredElement templateParameter;
+    !ordered ref TemplateParameter#ownedParameteredElement owningParameter;
+  }
+
+  class TemplateBinding extends DirectedRelationship {
+    !ordered ref TemplateableElement[1]#templateBinding boundElement;
+    !ordered ref TemplateSignature[1] signature;
+    !ordered val TemplateParameterSubstitution[*]#templateBinding parameterSubstitution;
+  }
+
+  class TemplateParameterSubstitution extends Element {
+    !ordered ref TemplateParameter[1] formal;
+    !ordered ref TemplateBinding[1]#parameterSubstitution templateBinding;
+    !ordered ref ParameterableElement[+] actual;
+    !ordered val ParameterableElement[*] ownedActual;
+  }
+
+  class OperationTemplateParameter extends TemplateParameter {
+  }
+
+  class ClassifierTemplateParameter extends TemplateParameter {
+    !unique !ordered attr Boolean allowSubstitutable;
+  }
+
+  abstract class ParameterableClassifier extends Classifier {
+  }
+
+  class RedefinableTemplateSignature extends RedefinableElement, TemplateSignature {
+  }
+
+  abstract class TemplateableClassifier extends Classifier {
+  }
+
+  class ConnectableElementTemplateParameter extends TemplateParameter {
+  }
+
+  class ForkNode extends ControlNode {
+  }
+
+  class JoinNode extends ControlNode {
+    !unique !ordered attr Boolean isCombineDuplicate;
+    !ordered val ValueSpecification[1] joinSpec;
+  }
+
+  class FlowFinalNode extends FinalNode {
+  }
+
+  class CentralBufferNode extends ObjectNode {
+  }
+
+  class ActivityPartition extends NamedElement, ActivityGroup {
+    !unique !ordered attr Boolean isDimension;
+    !unique !ordered attr Boolean isExternal;
+    ref ActivityEdge[*]#inPartition containedEdge;
+    ref ActivityNode[*]#inPartition containedNode;
+    !ordered val ActivityPartition[*]#superPartition subgroup;
+    !ordered ref ActivityPartition#subgroup superPartition;
+    !ordered ref Element represents;
+  }
+
+  class ExpansionNode extends ObjectNode {
+    !ordered ref ExpansionRegion#outputElement regionAsOutput;
+    !ordered ref ExpansionRegion#inputElement regionAsInput;
+  }
+
+  class ExpansionRegion extends StructuredActivityNode {
+    !unique !ordered attr ExpansionKind mode;
+    !ordered ref ExpansionNode[*]#regionAsOutput outputElement;
+    !ordered ref ExpansionNode[+]#regionAsInput inputElement;
+  }
+
+  enum ExpansionKind {
+    parallel = 0;
+    iterative = 0;
+    stream = 0;
+  }
+
+  class ExceptionHandler extends Element {
+    !ordered ref ExecutableNode[1]#handler protectedNode;
+    !ordered ref ExecutableNode[1] handlerBody;
+    !ordered ref ObjectNode[1] exceptionInput;
+    !ordered ref Classifier[+] exceptionType;
+  }
+
+  class InteractionOccurrence extends InteractionFragment {
+    !ordered ref Interaction[1] refersTo;
+    !ordered val Gate[*] actualGate;
+    !ordered val InputPin[*] argument;
+  }
+
+  class Gate extends MessageEnd {
+  }
+
+  class PartDecomposition extends InteractionOccurrence {
+  }
+
+  class InteractionOperand extends Namespace, InteractionFragment {
+    !ordered val InteractionConstraint guard;
+    !ordered val InteractionFragment[*]#enclosingOperand fragment;
+  }
+
+  class InteractionConstraint extends Constraint {
+    !ordered val ValueSpecification minint;
+    !ordered val ValueSpecification maxint;
+  }
+
+  enum InteractionOperator {
+    consider = 0;
+    par = 0;
+    opt = 0;
+    loop = 0;
+    alt = 0;
+    break = 0;
+    assert = 0;
+    strict = 0;
+    seq = 0;
+    ignore = 0;
+    neg = 0;
+    critical = 0;
+  }
+
+  class CombinedFragment extends InteractionFragment {
+    !unique !ordered attr InteractionOperator interactionOperator;
+    !ordered val InteractionOperand[+] operand;
+    !ordered val Gate[*] cfragmentGate;
+  }
+
+  class Continuation extends InteractionFragment {
+    !unique !ordered attr Boolean setting;
+  }
+
+  class StateMachine extends Behavior {
+    !ordered val Region[+]#stateMachine region;
+    !ordered val Pseudostate[*] connectionPoint;
+    !ordered ref StateMachine extendedStateMachine;
+    !ordered ref BehavioredClassifier#ownedStateMachine stateMachine_redefinitionContext;
+  }
+
+  class Region extends Namespace, RedefinableElement {
+    !ordered val Vertex[*]#container subvertex;
+    !ordered val Transition[*]#container transition;
+    !ordered ref StateMachine#region stateMachine;
+    !ordered ref State#region state;
+    !ordered ref Region extendedRegion;
+  }
+
+  class Pseudostate extends Vertex {
+    !unique !ordered attr PseudostateKind kind;
+  }
+
+  class State extends Namespace, RedefinableElement, Vertex {
+    !unique !ordered attr Boolean isComposite;
+    !unique !ordered attr Boolean isOrthogonal;
+    !unique !ordered attr Boolean isSimple;
+    !unique !ordered attr Boolean isSubmachineState;
+    !ordered ref StateMachine submachine;
+    !ordered val ConnectionPointReference[*] connection;
+    !ordered ref State redefinedState;
+    !ordered ref Trigger[*] deferrableTrigger;
+    !ordered val Region[*]#state region;
+    !ordered val Activity entry;
+    !ordered val Activity exit;
+    !ordered val Activity doActivity;
+    !ordered val Constraint stateInvariant;
+  }
+
+  abstract class Vertex extends NamedElement {
+    !ordered ref Region#subvertex container;
+    !ordered ref Transition[*]#source outgoing;
+    !ordered ref Transition[*]#target incoming;
+  }
+
+  class ConnectionPointReference extends Vertex {
+    !ordered ref Pseudostate[*] entry;
+    !ordered ref Pseudostate[*] exit;
+  }
+
+  class Transition extends RedefinableElement {
+    !unique !ordered attr TransitionKind kind;
+    !ordered ref Region[1]#transition container;
+    !ordered ref Vertex[1]#outgoing source;
+    !ordered ref Vertex[1]#incoming target;
+    !ordered ref Transition redefinedTransition;
+    !ordered ref Trigger[*] trigger;
+    !ordered val Constraint guard;
+    !ordered val Activity effect;
+  }
+
+  enum TransitionKind {
+    internal = 0;
+    local = 0;
+    external = 0;
+  }
+
+  enum PseudostateKind {
+    deepHistory = 0;
+    shallowHistory = 0;
+    choice = 0;
+    join = 0;
+    exitPoint = 0;
+    terminate = 0;
+    fork = 0;
+    junction = 0;
+    initial = 0;
+    entryPoint = 0;
+  }
+
+  class FinalState extends State {
+  }
+
+  class CreateObjectAction extends Action {
+    !ordered ref Classifier[1] classifier;
+    !ordered val OutputPin[1] result;
+  }
+
+  class DestroyObjectAction extends Action {
+    !unique !ordered attr Boolean isDestroyLinks;
+    !unique !ordered attr Boolean isDestroyOwnedObjects;
+    !ordered val InputPin[1] target;
+  }
+
+  class TestIdentityAction extends Action {
+    !ordered val InputPin[1] first;
+    !ordered val InputPin[1] second;
+    !ordered val OutputPin[1] result;
+  }
+
+  class ReadSelfAction extends Action {
+    !ordered val OutputPin[1] result;
+  }
+
+  abstract class StructuralFeatureAction extends Action {
+    !ordered ref StructuralFeature[1] structuralFeature;
+    !ordered val InputPin[1] object;
+  }
+
+  class ReadStructuralFeatureAction extends StructuralFeatureAction {
+    !ordered val OutputPin[1] result;
+  }
+
+  abstract class WriteStructuralFeatureAction extends StructuralFeatureAction {
+    !ordered val InputPin[1] value;
+  }
+
+  class ClearStructuralFeatureAction extends StructuralFeatureAction {
+  }
+
+  class RemoveStructuralFeatureValueAction extends WriteStructuralFeatureAction {
+  }
+
+  class AddStructuralFeatureValueAction extends WriteStructuralFeatureAction {
+    !unique !ordered attr Boolean isReplaceAll;
+    !ordered val InputPin insertAt;
+  }
+
+  abstract class LinkAction extends Action {
+    !ordered val LinkEndData[2..*] endData;
+  }
+
+  class LinkEndData extends Element {
+    !ordered ref InputPin value;
+    !ordered ref Property[1] end;
+    val QualifierValue[*] qualifier;
+  }
+
+  class ReadLinkAction extends LinkAction {
+    !ordered val OutputPin[1] result;
+  }
+
+  class LinkEndCreationData extends LinkEndData {
+    !unique !ordered attr Boolean isReplaceAll;
+    !ordered ref InputPin insertAt;
+  }
+
+  class CreateLinkAction extends WriteLinkAction {
+  }
+
+  abstract class WriteLinkAction extends LinkAction {
+  }
+
+  class DestroyLinkAction extends WriteLinkAction {
+  }
+
+  class ClearAssociationAction extends Action {
+    !ordered val InputPin[1] object;
+    !ordered ref Association[1] association;
+  }
+
+  abstract class VariableAction extends Action {
+    !ordered ref Variable[1] variable;
+  }
+
+  class ReadVariableAction extends VariableAction {
+    !ordered val OutputPin[1] result;
+  }
+
+  abstract class WriteVariableAction extends VariableAction {
+    !ordered val InputPin[1] value;
+  }
+
+  class ClearVariableAction extends VariableAction {
+  }
+
+  class AddVariableValueAction extends WriteVariableAction {
+    !unique !ordered attr Boolean isReplaceAll;
+    !ordered val InputPin insertAt;
+  }
+
+  class RemoveVariableValueAction extends WriteVariableAction {
+  }
+
+  class ApplyFunctionAction extends Action {
+    !ordered ref PrimitiveFunction[1] function;
+    !ordered val InputPin[*] argument;
+    val OutputPin[*] result;
+  }
+
+  class PrimitiveFunction extends PackageableElement {
+    !unique !ordered attr String body;
+    !unique !ordered attr String language;
+  }
+
+  abstract class CallAction extends InvocationAction {
+    !unique !ordered attr Boolean isSynchronous;
+    val OutputPin[*] result;
+  }
+
+  abstract class InvocationAction extends Action {
+    val InputPin[*] argument;
+    !ordered ref Port onPort;
+  }
+
+  class SendSignalAction extends InvocationAction {
+    !ordered val InputPin[1] target;
+    !ordered ref Signal[1] signal;
+  }
+
+  class BroadcastSignalAction extends InvocationAction {
+    !ordered ref Signal[1] signal;
+  }
+
+  class SendObjectAction extends InvocationAction {
+    !ordered val InputPin[1] target;
+    !ordered val InputPin[1] request;
+  }
+
+  class CallOperationAction extends CallAction {
+    !ordered ref Operation[1] operation;
+    !ordered val InputPin[1] target;
+  }
+
+  class CallBehaviorAction extends CallAction {
+    !ordered ref Behavior[1] behavior;
+  }
+
+  class TimeExpression extends ValueSpecification {
+    !unique !ordered attr Boolean firstTime;
+    !ordered ref NamedElement event;
+  }
+
+  class Duration extends ValueSpecification {
+    !unique !ordered attr Boolean firstTime;
+    !ordered ref NamedElement[0..2] event;
+  }
+
+  class TimeObservationAction extends WriteStructuralFeatureAction {
+    val TimeExpression[*] now;
+  }
+
+  class DurationInterval extends Interval {
+  }
+
+  class Interval extends ValueSpecification {
+    ref ValueSpecification[*] min;
+    ref ValueSpecification[*] max;
+  }
+
+  class TimeConstraint extends IntervalConstraint {
+  }
+
+  class IntervalConstraint extends Constraint {
+  }
+
+  class TimeInterval extends Interval {
+  }
+
+  class DurationObservationAction extends WriteStructuralFeatureAction {
+    val Duration[*] duration;
+  }
+
+  class DurationConstraint extends IntervalConstraint {
+  }
+
+  class DataStoreNode extends CentralBufferNode {
+  }
+
+  enum ParameterEffectKind {
+    update = 0;
+    read = 0;
+    delete = 0;
+    create = 0;
+  }
+
+  class InterruptibleActivityRegion extends ActivityGroup {
+    !ordered ref ActivityEdge[*]#interrupts interruptingEdge;
+    ref ActivityNode[*]#inInterruptibleRegion containedNode;
+  }
+
+  enum ObjectNodeOrderingKind {
+    FIFO = 0;
+    unordered = 0;
+    ~ordered = 0;
+    LIFO = 0;
+  }
+
+  class ParameterSet extends NamedElement {
+    !ordered ref Parameter[+]#parameterSet parameter;
+    !ordered val Constraint[*] condition;
+  }
+
+  class Component extends Class {
+    !unique !ordered attr Boolean isIndirectlyInstantiated;
+    !ordered ref Interface[*] required;
+    !ordered ref Interface[*] provided;
+    !ordered val Realization[*]#abstraction realization;
+    !ordered val PackageableElement[*] ownedMember;
+  }
+
+  enum ConnectorKind {
+    delegation = 0;
+    assembly = 0;
+  }
+
+  class Deployment extends Dependency {
+    !ordered ref DeployedArtifact[*] deployedArtifact;
+    !ordered ref DeploymentTarget[1]#deployment location;
+    !ordered val DeploymentSpecification[*] configuration;
+  }
+
+  abstract class DeployedArtifact extends NamedElement {
+  }
+
+  abstract class DeploymentTarget extends NamedElement {
+    !ordered val Deployment[*]#location deployment;
+    !ordered ref PackageableElement[*] deployedElement;
+  }
+
+  class Node extends Class, DeploymentTarget {
+    !ordered val Node[*] nestedNode;
+  }
+
+  class Device extends Node {
+  }
+
+  class ExecutionEnvironment extends Node {
+  }
+
+  class CommunicationPath extends Association {
+  }
+
+  class ProtocolConformance extends DirectedRelationship {
+    !ordered ref ProtocolStateMachine[1]#conformance specificMachine;
+    !ordered ref ProtocolStateMachine[1] generalMachine;
+  }
+
+  class ProtocolStateMachine extends StateMachine {
+    !ordered val ProtocolConformance[*]#specificMachine conformance;
+  }
+
+  class ProtocolTransition extends Transition {
+    !ordered val Constraint postCondition;
+    !ordered ref Operation[*] referred;
+    !ordered ref Constraint preCondition;
+  }
+
+  class ReadExtentAction extends Action {
+    !ordered val OutputPin[1] result;
+    !ordered ref Classifier[1] classifier;
+  }
+
+  class ReclassifyObjectAction extends Action {
+    !unique !ordered attr Boolean isReplaceAll;
+    !ordered ref Classifier[*] oldClassifier;
+    !ordered ref Classifier[*] newClassifier;
+    !ordered val InputPin[1] object;
+  }
+
+  class ReadIsClassifiedObjectAction extends Action {
+    !unique !ordered attr Boolean isDirect;
+    !ordered ref Classifier[1] classifier;
+    !ordered val OutputPin[1] result;
+    !ordered val InputPin[1] object;
+  }
+
+  class StartOwnedBehaviorAction extends Action {
+    !ordered val InputPin[1] object;
+  }
+
+  class QualifierValue extends Element {
+    !ordered ref Property[1] qualifier;
+    !ordered ref InputPin[1] value;
+  }
+
+  class ReadLinkObjectEndAction extends Action {
+    !ordered val InputPin[1] object;
+    !ordered ref Property[1] end;
+    !ordered val OutputPin[1] result;
+  }
+
+  class ReadLinkObjectEndQualifierAction extends Action {
+    !ordered val InputPin[1] object;
+    !ordered val OutputPin[1] result;
+    !ordered ref Property[1] qualifier;
+  }
+
+  class CreateLinkObjectAction extends CreateLinkAction {
+    !ordered val OutputPin[1] result;
+  }
+
+  class AcceptEventAction extends Action {
+    ref Trigger[*] trigger;
+    !ordered ref OutputPin[*] result;
+  }
+
+  class AcceptCallAction extends AcceptEventAction {
+    !ordered ref OutputPin[1] returnInformation;
+  }
+
+  class ReplyAction extends Action {
+    !ordered ref CallTrigger[1] replyToCall;
+    !ordered ref InputPin[*] replyValue;
+    !ordered ref InputPin[1] returnInformation;
+  }
+
+  class RaiseExceptionAction extends Action {
+    !ordered ref InputPin[1] exception;
+  }
+
+  class DeploymentSpecification extends Artifact {
+    !unique !ordered attr String deploymentLocation;
+    !unique !ordered attr String executionLocation;
+  }
+
+}
+

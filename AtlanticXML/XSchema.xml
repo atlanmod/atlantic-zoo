@@ -1,0 +1,109 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'XSchema'>
+    <Enumeration name = 'AttributeUseType'>
+      <EnumLiteral name = 'null'/>
+      <EnumLiteral name = 'optional'/>
+      <EnumLiteral name = 'prohibited'/>
+      <EnumLiteral name = 'required'/>
+    </Enumeration>
+    <Class name = 'AnnotedElement' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'annotations' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'XSchema::Annotation' opposite = 'XSchema::Annotation::annotedElement'/>
+    </Class>
+    <Class name = 'Annotation' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'documentations' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'XSchema::Documentation' opposite = ''/>
+      <Reference name = 'applicationInfos' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'XSchema::ApplicationInfo' opposite = ''/>
+      <Reference name = 'annotedElement' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XSchema::AnnotedElement' opposite = 'XSchema::AnnotedElement::annotations'/>
+    </Class>
+    <Class name = 'Documentation' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'text' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ApplicationInfo' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'text' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'NamedElement' isAbstract = 'true' supertypes = 'XSchema::AnnotedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'XSchema' isAbstract = 'false' supertypes = 'XSchema::AnnotedElement'>
+      <Attribute name = 'namespace' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'contents' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'XSchema::XSchemaContentElement' opposite = 'XSchema::XSchemaContentElement::schema'/>
+    </Class>
+    <Class name = 'XSchemaContentElement' isAbstract = 'true' supertypes = 'XSchema::NamedElement'>
+      <Reference name = 'schema' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XSchema::XSchema' opposite = 'XSchema::XSchema::contents'/>
+    </Class>
+    <Class name = 'Parameters' isAbstract = 'true' supertypes = 'XSchema::XSchemaContentElement'>
+      <Reference name = 'typeRef' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XSchema::AbstractType' opposite = ''/>
+      <Reference name = 'typeContain' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'XSchema::AbstractType' opposite = 'XSchema::AbstractType::container'/>
+      <Attribute name = 'fixed' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'default' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Element' isAbstract = 'false' supertypes = 'XSchema::Parameters, XSchema::AtomicContent'>
+      <Reference name = 'references' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'XSchema::ElementRef' opposite = 'XSchema::ElementRef::referencedElement'/>
+    </Class>
+    <Class name = 'Occurable' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'minOccurs' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'maxOccurs' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'AbstractContent' isAbstract = 'true' supertypes = 'XSchema::Occurable'>
+      <Reference name = 'container' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XSchema::Container' opposite = 'XSchema::Container::contents'/>
+      <Reference name = 'complexType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XSchema::ComplexType' opposite = 'XSchema::ComplexType::content'/>
+    </Class>
+    <Class name = 'Container' isAbstract = 'true' supertypes = 'XSchema::AbstractContent'>
+      <Reference name = 'contents' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'XSchema::AbstractContent' opposite = 'XSchema::AbstractContent::container'/>
+    </Class>
+    <Class name = 'AtomicContent' isAbstract = 'true' supertypes = 'XSchema::AbstractContent'/>
+    <Class name = 'ElementRef' isAbstract = 'false' supertypes = 'XSchema::AtomicContent'>
+      <Reference name = 'referencedElement' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XSchema::Element' opposite = 'XSchema::Element::references'/>
+    </Class>
+    <Class name = 'GroupRef' isAbstract = 'false' supertypes = 'XSchema::AtomicContent'>
+      <Reference name = 'referencedGroup' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XSchema::Group' opposite = 'XSchema::Group::references'/>
+    </Class>
+    <Class name = 'All' isAbstract = 'false' supertypes = 'XSchema::Container'/>
+    <Class name = 'Group' isAbstract = 'false' supertypes = 'XSchema::XSchemaContentElement, XSchema::Container'>
+      <Reference name = 'references' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'XSchema::GroupRef' opposite = 'XSchema::GroupRef::referencedGroup'/>
+    </Class>
+    <Class name = 'Choice' isAbstract = 'false' supertypes = 'XSchema::Container'/>
+    <Class name = 'Sequence' isAbstract = 'false' supertypes = 'XSchema::Container'/>
+    <Class name = 'AbstractAttributeGroupContent' isAbstract = 'true' supertypes = 'XSchema::Occurable'>
+      <Reference name = 'container' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XSchema::AttributeGroup' opposite = 'XSchema::AttributeGroup::contents'/>
+      <Reference name = 'complexType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XSchema::ComplexType' opposite = 'XSchema::ComplexType::attributes'/>
+    </Class>
+    <Class name = 'AttributeGroup' isAbstract = 'false' supertypes = 'XSchema::AbstractAttributeGroupContent, XSchema::XSchemaContentElement'>
+      <Reference name = 'contents' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'XSchema::AbstractAttributeGroupContent' opposite = 'XSchema::AbstractAttributeGroupContent::container'/>
+      <Reference name = 'references' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'XSchema::AttributeGroupRef' opposite = 'XSchema::AttributeGroupRef::referencedAttributeGroup'/>
+    </Class>
+    <Class name = 'AttributeGroupRef' isAbstract = 'false' supertypes = 'XSchema::AtomicAttributeGroupContent'>
+      <Reference name = 'referencedAttributeGroup' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XSchema::AttributeGroup' opposite = 'XSchema::AttributeGroup::references'/>
+    </Class>
+    <Class name = 'AtomicAttributeGroupContent' isAbstract = 'true' supertypes = 'XSchema::AbstractAttributeGroupContent'/>
+    <Class name = 'Attribute' isAbstract = 'false' supertypes = 'XSchema::Parameters, XSchema::AtomicAttributeGroupContent'>
+      <Attribute name = 'use' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'XSchema::AttributeUseType'/>
+      <Reference name = 'references' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'XSchema::AttributeRef' opposite = 'XSchema::AttributeRef::referencedAttribute'/>
+    </Class>
+    <Class name = 'AttributeRef' isAbstract = 'false' supertypes = 'XSchema::AtomicAttributeGroupContent'>
+      <Reference name = 'referencedAttribute' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XSchema::Attribute' opposite = 'XSchema::Attribute::references'/>
+    </Class>
+    <Class name = 'AbstractType' isAbstract = 'true' supertypes = 'XSchema::XSchemaContentElement'>
+      <Reference name = 'container' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XSchema::Parameters' opposite = 'XSchema::Parameters::typeContain'/>
+    </Class>
+    <Class name = 'SimpleType' isAbstract = 'false' supertypes = 'XSchema::AbstractType'>
+      <Reference name = 'extensions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'XSchema::ComplexTypeSimpleContent' opposite = 'XSchema::ComplexTypeSimpleContent::base'/>
+    </Class>
+    <Class name = 'ComplexType' isAbstract = 'false' supertypes = 'XSchema::AbstractType'>
+      <Reference name = 'extensions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'XSchema::ComplexTypeComplexContent' opposite = 'XSchema::ComplexTypeComplexContent::base'/>
+      <Reference name = 'content' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'XSchema::AbstractContent' opposite = 'XSchema::AbstractContent::complexType'/>
+      <Reference name = 'attributes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'XSchema::AbstractAttributeGroupContent' opposite = 'XSchema::AbstractAttributeGroupContent::complexType'/>
+    </Class>
+    <Class name = 'ComplexTypeSimpleContent' isAbstract = 'false' supertypes = 'XSchema::ComplexType'>
+      <Reference name = 'base' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XSchema::SimpleType' opposite = 'XSchema::SimpleType::extensions'/>
+    </Class>
+    <Class name = 'ComplexTypeComplexContent' isAbstract = 'false' supertypes = 'XSchema::ComplexType'>
+      <Reference name = 'base' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XSchema::ComplexType' opposite = 'XSchema::ComplexType::extensions'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'Boolean'/>
+  </Package>
+</Metamodel>

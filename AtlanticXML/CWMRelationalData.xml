@@ -1,0 +1,73 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'CWMRelationalData'>
+    <Class name = 'QueryExpression' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'expresssion' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'CheckConstraint' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'constraintElements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'CWMRelationalData::Column' opposite = 'CWMRelationalData::Column::column_constraints'/>
+      <Reference name = 'constrainedElements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'CWMRelationalData::Table' opposite = 'CWMRelationalData::Table::table_constraints'/>
+    </Class>
+    <Class name = 'Column' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'precision' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'scale' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'isNullable' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'length' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'collectionName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'characterSetName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'column_constraints' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'CWMRelationalData::CheckConstraint' opposite = 'CWMRelationalData::CheckConstraint::constraintElements'/>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CWMRelationalData::SQLDataType' opposite = 'CWMRelationalData::SQLDataType::structuralFeatures'/>
+      <Reference name = 'owner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CWMRelationalData::ColumnSet' opposite = 'CWMRelationalData::ColumnSet::features'/>
+      <Reference name = 'optionScopeColumnSet' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CWMRelationalData::NamedColumnSet' opposite = 'CWMRelationalData::NamedColumnSet::optionScopeColumn'/>
+    </Class>
+    <Class name = 'ColumnSet' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'features' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'CWMRelationalData::Column' opposite = 'CWMRelationalData::Column::owner'/>
+    </Class>
+    <Class name = 'NamedColumnSet' isAbstract = 'false' supertypes = 'CWMRelationalData::ColumnSet'>
+      <Reference name = 'optionScopeColumn' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CWMRelationalData::Column' opposite = 'CWMRelationalData::Column::optionScopeColumnSet'/>
+      <Reference name = 'triggers' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'CWMRelationalData::Trigger' opposite = 'CWMRelationalData::Trigger::namedColumnSet'/>
+    </Class>
+    <Class name = 'QueryColumnSet' isAbstract = 'false' supertypes = 'CWMRelationalData::ColumnSet'>
+      <Reference name = 'query' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'CWMRelationalData::QueryExpression' opposite = ''/>
+    </Class>
+    <Class name = 'Table' isAbstract = 'false' supertypes = 'CWMRelationalData::NamedColumnSet'>
+      <Attribute name = 'isTemporary' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'temporaryScope' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'isSystem' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'table_constraints' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'CWMRelationalData::CheckConstraint' opposite = 'CWMRelationalData::CheckConstraint::constrainedElements'/>
+    </Class>
+    <Class name = 'View' isAbstract = 'false' supertypes = 'CWMRelationalData::NamedColumnSet'>
+      <Attribute name = 'isReadOnly' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'checkOption' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'queryExpression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'CWMRelationalData::QueryExpression' opposite = ''/>
+    </Class>
+    <Class name = 'Trigger' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'namedColumnSet' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CWMRelationalData::NamedColumnSet' opposite = 'CWMRelationalData::NamedColumnSet::triggers'/>
+    </Class>
+    <Class name = 'SQLDataType' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'typeNumber' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'structuralFeatures' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'CWMRelationalData::Column' opposite = 'CWMRelationalData::Column::type'/>
+    </Class>
+    <Class name = 'SQLDistinctType' isAbstract = 'false' supertypes = 'CWMRelationalData::SQLDataType'>
+      <Attribute name = 'length' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'precision' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'scale' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'sqlSimpleType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CWMRelationalData::SQLSimpleType' opposite = 'CWMRelationalData::SQLSimpleType::sqlDistinctTypes'/>
+    </Class>
+    <Class name = 'SQLSimpleType' isAbstract = 'false' supertypes = 'CWMRelationalData::SQLDataType'>
+      <Attribute name = 'characterMaximumLength' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'characterOctetLength' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'numericPrecision' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'numericPrecisionRadix' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'numericScale' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'dateTimePrecision' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'sqlDistinctTypes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'CWMRelationalData::SQLDistinctType' opposite = 'CWMRelationalData::SQLDistinctType::sqlSimpleType'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Double'/>
+  </Package>
+</Metamodel>

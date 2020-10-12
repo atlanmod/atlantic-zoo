@@ -1,0 +1,52 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'JAVA'>
+    <Class name = 'Modifier' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'visibility' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'state' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Class' isAbstract = 'false' supertypes = 'JAVA::Modifier'>
+      <Reference name = 'superClass' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'JAVA::Class' opposite = ''/>
+      <Reference name = 'implement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'JAVA::Interface' opposite = 'JAVA::Interface::implementedBy'/>
+      <Reference name = 'methods' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'JAVA::Method' opposite = 'JAVA::Method::class'/>
+      <Reference name = 'fields' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'JAVA::Field' opposite = 'JAVA::Field::class'/>
+    </Class>
+    <Class name = 'Interface' isAbstract = 'false' supertypes = 'JAVA::Modifier'>
+      <Reference name = 'superInterface' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'JAVA::Interface' opposite = ''/>
+      <Reference name = 'implementedBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'JAVA::Class' opposite = 'JAVA::Class::implement'/>
+      <Reference name = 'abstractMethods' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'JAVA::Method' opposite = 'JAVA::Method::interface'/>
+      <Reference name = 'constants' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'JAVA::Field' opposite = 'JAVA::Field::interface'/>
+    </Class>
+    <Class name = 'Method' isAbstract = 'false' supertypes = 'JAVA::Modifier'>
+      <Attribute name = 'share' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'class' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'JAVA::Class' opposite = 'JAVA::Class::methods'/>
+      <Reference name = 'interface' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'JAVA::Interface' opposite = 'JAVA::Interface::abstractMethods'/>
+      <Reference name = 'resultOf' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'JAVA::Type' opposite = ''/>
+      <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'JAVA::Parameter' opposite = 'JAVA::Parameter::owner'/>
+    </Class>
+    <Class name = 'Field' isAbstract = 'false' supertypes = 'JAVA::Modifier'>
+      <Attribute name = 'share' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'class' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'JAVA::Class' opposite = 'JAVA::Class::fields'/>
+      <Reference name = 'interface' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'JAVA::Interface' opposite = 'JAVA::Interface::constants'/>
+      <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'JAVA::Value' opposite = ''/>
+      <Reference name = 'typeOf' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'JAVA::Type' opposite = ''/>
+    </Class>
+    <Class name = 'Value' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Parameter' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'typeOf' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'JAVA::Type' opposite = ''/>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'JAVA::Method' opposite = 'JAVA::Method::parameters'/>
+    </Class>
+    <Class name = 'Type' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'ReferenceType' isAbstract = 'false' supertypes = 'JAVA::Type'>
+      <Reference name = 'reference' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'JAVA::Class' opposite = ''/>
+    </Class>
+    <Class name = 'PrimitiveType' isAbstract = 'false' supertypes = 'JAVA::Type'/>
+    <Class name = 'Int' isAbstract = 'false' supertypes = 'JAVA::PrimitiveType'/>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+  </Package>
+</Metamodel>

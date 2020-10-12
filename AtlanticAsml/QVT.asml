@@ -1,0 +1,925 @@
+abstract class TemplateExp extends LiteralExp
+  // bindsTo IsContainer
+  var bindsTo as Set of Variable
+  // _where IsContainer
+  var _where as Set of OclExpression
+
+class ObjectTemplateExp extends TemplateExp
+  // part IsContainer
+  var part as Set of PropertyTemplateItem
+  var referredClass as Set of _Class
+
+class CollectionTemplateExp extends TemplateExp
+  var kind as Set of CollectionKind
+  // part IsContainer
+  var part as Set of OclExpression
+  var referredCollectionType as Set of CollectionType
+  var _match as Set of OclExpression
+
+class PropertyTemplateItem extends Element
+  var objContainer as Set of ObjectTemplateExp
+  // value IsContainer
+  var value as Set of OclExpression
+  var referredProperty as Set of _Property
+
+class ImperativeIterateExp extends ImperativeLoopExp
+  // target IsContainer
+  var target as Set of Variable
+
+class AssignExp extends ImperativeExpression
+  var isReset as Set of Boolean
+  // value IsContainer
+  var value as Set of OclExpression
+  // left IsContainer
+  var left as Set of OclExpression
+  // defaultValue IsContainer
+  var defaultValue as Set of OclExpression
+
+class BlockExp extends ImperativeExpression
+  // body IsContainer
+  var body as Set of OclExpression
+
+class SwitchExp extends CallExp
+  // alternativePart IsContainer
+  var alternativePart as Set of AltExp
+  // elsePart IsContainer
+  var elsePart as Set of OclExpression
+
+class VariableInitExp extends ImperativeExpression
+  var withResult as Set of Boolean
+  // referredVariable IsContainer
+  var referredVariable as Set of Variable
+
+class WhileExp extends ImperativeExpression
+  // condition IsContainer
+  var condition as Set of OclExpression
+  // body IsContainer
+  var body as Set of OclExpression
+
+class ComputeExp extends ImperativeExpression
+  // returnedElement IsContainer
+  var returnedElement as Set of Variable
+  // body IsContainer
+  var body as Set of OclExpression
+
+class AltExp extends ImperativeExpression
+  // condition IsContainer
+  var condition as Set of OclExpression
+  // body IsContainer
+  var body as Set of OclExpression
+
+class UnlinkExp extends ImperativeExpression
+  // target IsContainer
+  var target as Set of OclExpression
+  // item IsContainer
+  var item as Set of OclExpression
+
+class ReturnExp extends ImperativeExpression
+  // value IsContainer
+  var value as Set of OclExpression
+
+class BreakExp extends ImperativeExpression
+
+class TryExp extends ImperativeExpression
+  // tryBody IsContainer
+  var tryBody as Set of OclExpression
+  var _exception as Set of _Type
+  // exceptBody IsContainer
+  var exceptBody as Set of OclExpression
+
+class RaiseExp extends ImperativeExpression
+  var _exception as Set of _Type
+
+class ContinueExp extends ImperativeExpression
+
+class ForExp extends ImperativeLoopExp
+
+class TupleExp extends ImperativeExpression
+  // element IsContainer
+  var element as Set of OclExpression
+
+class Typedef extends _Class
+  var base as Set of _Type
+  // condition IsContainer
+  var condition as Set of OclExpression
+
+class InstantiationExp extends ImperativeExpression
+  var instantiatedClass as Set of _Class
+  var extent as Set of Variable
+  // argument IsContainer
+  var argument as Set of OclExpression
+
+class DictionaryType extends CollectionType
+  var keyType as Set of _Type
+
+class DictLiteralExp extends LiteralExp
+  // part IsContainer
+  var part as Set of DictLiteralPart
+
+class DictLiteralPart extends Element
+  // key IsContainer
+  var key as Set of OclExpression
+  // value IsContainer
+  var value as Set of OclExpression
+
+class TemplateParameterType extends _Type
+  var specification as Set of String
+
+class LogExp extends ImperativeExpression
+  var text as Set of String
+  var level as Set of Integer
+  // condition IsContainer
+  var condition as Set of OclExpression
+  var element as Set of Element
+
+class AssertExp extends ImperativeExpression
+  var severity as Set of SeverityKind
+  // log IsContainer
+  var log as Set of LogExp
+  // assertion IsContainer
+  var assertion as Set of OclExpression
+
+abstract class ImperativeLoopExp extends LoopExp
+  // condition IsContainer
+  var condition as Set of OclExpression
+
+class CollectorExp extends ImperativeLoopExp
+  // target IsContainer
+  var target as Set of Variable
+
+abstract class ImperativeExpression extends OclExpression
+
+class UnpackExp extends ImperativeExpression
+  // variable IsContainer
+  var variable as Set of Variable
+
+class AnonymousTupleType extends _Class
+  var elementType as Set of _Type
+
+class AnonymousTupleLiteralExp extends LiteralExp
+  // part IsContainer
+  var part as Set of AnonymousTupleLiteralPart
+
+class AnonymousTupleLiteralPart extends Element
+  // value IsContainer
+  var value as Set of OclExpression
+
+class ListType extends CollectionType
+
+class _Class extends _Type
+  var isAbstract as Set of Boolean
+  // ownedAttribute IsContainer
+  var ownedAttribute as Set of _Property
+  // ownedOperation IsContainer
+  var ownedOperation as Set of Operation
+  var superClass as Set of _Class
+
+abstract class DataType extends _Type
+
+abstract class Element extends _Object
+  var tag as Set of Tag
+  // ownedComment IsContainer
+  var ownedComment as Set of Comment
+
+class Tag extends Element
+  var value as Set of String
+  var name as Set of String
+  var element as Set of Element
+  var transformation as Set of Transformation
+  var owner as Set of Module
+
+class _Enumeration extends DataType
+  // ownedLiteral IsContainer
+  var ownedLiteral as Set of EnumerationLiteral
+
+abstract class NamedElement extends Element
+  var name as Set of String
+
+class Extent extends _Object
+
+class _Object
+
+class Operation extends MultiplicityElement
+  var _class as Set of _Class
+  // ownedParameter IsContainer
+  var ownedParameter as Set of Parameter
+  var raisedException as Set of _Type
+
+abstract class MultiplicityElement
+  var isOrdered as Set of Boolean
+  var isUnique as Set of Boolean
+  var lower as Set of Integer
+  var upper as Set of UnlimitedNatural
+
+class Package extends NamedElement
+  var uri as Set of String
+  // ownedType IsContainer
+  var ownedType as Set of _Type
+  var nestedPackage as Set of Package
+
+abstract class _Type extends NamedElement
+  var package as Set of Package
+
+class Parameter extends MultiplicityElement
+  var operation as Set of Operation
+
+class EnumerationLiteral extends NamedElement
+  var _enumeration as Set of _Enumeration
+
+class _Property extends MultiplicityElement
+  var isReadOnly as Set of Boolean
+  var isDerived as Set of Boolean
+  var isComposite as Set of Boolean
+  var isId as Set of Boolean
+  var default as Set of String
+  var _Class as Set of _Class
+  var opposite as Set of _Property
+  var module as Set of Module
+
+abstract class TypedElement extends NamedElement
+  var _type as Set of _Type
+
+class PrimitiveType extends DataType
+
+class URIExtent extends Extent
+
+class Comment extends Element
+  var annotatedElement as Set of NamedElement
+
+class MappingBody extends OperationBody
+  // initSection IsContainer
+  var initSection as Set of OclExpression
+  // endSection IsContainer
+  var endSection as Set of OclExpression
+
+class Helper extends ImperativeOperation
+  var isQuery as Set of Boolean
+
+class ResolveExp extends CallExp
+  var one as Set of Boolean
+  var isInverse as Set of Boolean
+  var isDeferred as Set of Boolean
+  // condition IsContainer
+  var condition as Set of OclExpression
+
+class ResolveInExp extends ResolveExp
+  var inMapping as Set of MappingOperation
+
+class OperationalTransformation extends Module
+  var intermediateClass as Set of _Class
+  var refined as Set of Transformation
+  var intermediateProperty as Set of _Property
+  // modelParameter IsContainer
+  var modelParameter as Set of ModelParameter
+  var entry as Set of EntryOperation
+  // relation IsContainer
+  var relation as Set of Relation
+
+class MappingParameter extends VarParameter
+  var refinedDomain as Set of RelationDomain
+  var extent as Set of ModelParameter
+
+class MappingOperation extends ImperativeOperation
+  var disjunct as Set of MappingOperation
+  var refinedRelation as Set of Relation
+  var merged as Set of MappingOperation
+  var inherited as Set of MappingOperation
+  // when IsContainer
+  var when as Set of OclExpression
+
+class MappingCallExp extends ImperativeCallExp
+  var isStrict as Set of Boolean
+
+class Constructor extends ImperativeOperation
+
+class ContextualProperty extends _Property
+  var context as Set of _Class
+  var overridden as Set of _Property
+
+class EntryOperation extends ImperativeOperation
+
+class ImperativeCallExp extends OperationCallExp
+  var isVirtual as Set of Boolean
+
+class ImperativeOperation extends Operation
+  var isBlackbox as Set of Boolean
+  // context IsContainer
+  var context as Set of VarParameter
+  // result IsContainer
+  var result as Set of VarParameter
+  var overridden as Set of ImperativeOperation
+  // body IsContainer
+  var body as Set of OperationBody
+
+class Library extends Module
+
+class ModelParameter extends VarParameter
+
+class ModelType extends _Class
+  var conformanceKind as Set of String
+  var metamodel as Set of Package
+  // additionalCondition IsContainer
+  var additionalCondition as Set of OclExpression
+
+class Module extends _Class
+  var isBlackbox as Set of Boolean
+  // ownedTag IsContainer
+  var ownedTag as Set of Tag
+  var configProperty as Set of _Property
+  // moduleImport IsContainer
+  var moduleImport as Set of ModuleImport
+  var usedModelType as Set of ModelType
+
+class ModuleImport extends Element
+  var kind as Set of ImportKind
+  var binding as Set of ModelType
+  var module as Set of Module
+  var importedModule as Set of Module
+
+class VarParameter extends Parameter
+  var kind as Set of DirectionKind
+  var ctxOwner as Set of ImperativeOperation
+  var resOwner as Set of ImperativeOperation
+
+class OperationBody extends Element
+  var operation as Set of ImperativeOperation
+  // content IsContainer
+  var content as Set of OclExpression
+
+class ConstructorBody extends OperationBody
+
+class ObjectExp extends InstantiationExp
+  var referredObject as Set of Variable
+  // body IsContainer
+  var body as Set of ConstructorBody
+
+abstract class Area
+  // guardPattern IsContainer
+  var guardPattern as Set of GuardPattern
+  // bottomPattern IsContainer
+  var bottomPattern as Set of BottomPattern
+
+class Assignment
+  var isDefault as Set of Boolean
+  var bottomPattern as Set of BottomPattern
+  // slotExpression IsContainer
+  var slotExpression as Set of OclExpression
+  // value IsContainer
+  var value as Set of OclExpression
+  var targetProperty as Set of _Property
+
+class BottomPattern extends CorePattern
+  var area as Set of Area
+  // assignment IsContainer
+  var assignment as Set of Assignment
+  // realizedVariable IsContainer
+  var realizedVariable as Set of RealizedVariable
+  // enforcementOperation IsContainer
+  var enforcementOperation as Set of EnforcementOperation
+
+class GuardPattern extends CorePattern
+  var area as Set of Area
+
+class Mapping extends Rule
+  var specification as Set of Mapping
+  var local as Set of Mapping
+  var context as Set of Mapping
+
+class RealizedVariable extends Variable
+
+class CoreDomain extends Domain
+
+class CorePattern extends Pattern
+
+class EnforcementOperation
+  var enforcementMode as Set of EnforcementMode
+  var bottomPattern as Set of BottomPattern
+  var operationCallExp as Set of OperationCallExp
+
+class Domain extends NamedElement
+  var isCheckable as Set of Boolean
+  var isEnforceable as Set of Boolean
+  var rule as Set of Rule
+  var typedModel as Set of TypedModel
+
+class Transformation extends _Class
+  // ownedTag IsContainer
+  var ownedTag as Set of Tag
+  // modelParameter IsContainer
+  var modelParameter as Set of TypedModel
+  // rule IsContainer
+  var rule as Set of Rule
+  var _extends as Set of Transformation
+
+class TypedModel extends NamedElement
+  var transformation as Set of Transformation
+  var usedPackage as Set of Package
+  var dependsOn as Set of TypedModel
+
+class Rule extends NamedElement
+  // domain IsContainer
+  var domain as Set of Domain
+  var transformation as Set of Transformation
+  var overrides as Set of Rule
+
+class Pattern extends Element
+  // predicate IsContainer
+  var predicate as Set of Predicate
+  // bindsTo IsContainer
+  var bindsTo as Set of Variable
+  var whenOwner as Set of Relation
+  var whereOwner as Set of Relation
+
+class Predicate extends Element
+  // conditionExpression IsContainer
+  var conditionExpression as Set of OclExpression
+  var pattern as Set of Pattern
+
+class _Function extends Operation
+  // queryExpression IsContainer
+  var queryExpression as Set of OclExpression
+
+class FunctionParameter extends Parameter
+
+class RelationalTransformation extends Transformation
+  // ownedKey IsContainer
+  var ownedKey as Set of Key
+
+class Relation extends Rule
+  var isTopLevel as Set of Boolean
+  // variable IsContainer
+  var variable as Set of Variable
+  var operationalImpl as Set of RelationImplementation
+  // _where IsContainer
+  var _where as Set of Pattern
+  // when IsContainer
+  var when as Set of Pattern
+
+class RelationDomain extends Domain
+  // pattern IsContainer
+  var pattern as Set of DomainPattern
+  var rootVariable as Set of Variable
+
+class DomainPattern extends Pattern
+  // templateExpression IsContainer
+  var templateExpression as Set of TemplateExp
+
+class RelationImplementation extends Element
+  var relation as Set of Relation
+  var impl as Set of Operation
+  var inDirectionOf as Set of TypedModel
+
+class Key extends Element
+  var identifies as Set of _Class
+  var part as Set of _Property
+  var transformation as Set of RelationalTransformation
+
+class BooleanLiteralExp extends PrimitiveLiteralExp
+  var booleanSymbol as Set of Boolean
+
+abstract class CallExp extends OclExpression
+  // source IsContainer
+  var source as Set of OclExpression
+
+abstract class OclExpression extends TypedElement
+  var tryBodyOwner as Set of TryExp
+
+class UnlimitedNaturalExp extends NumericLiteralExp
+  var symbol as Set of UnlimitedNatural
+
+class IfExp extends OclExpression
+  // condition IsContainer
+  var condition as Set of OclExpression
+  // thenExpression IsContainer
+  var thenExpression as Set of OclExpression
+  // elseExpression IsContainer
+  var elseExpression as Set of OclExpression
+
+class LetExp extends OclExpression
+  // _in IsContainer
+  var _in as Set of OclExpression
+  // variable IsContainer
+  var variable as Set of Variable
+
+class Variable extends TypedElement
+  // initExpression IsContainer
+  var initExpression as Set of OclExpression
+  var LetExp as Set of LetExp
+  var computeOwner as Set of ComputeExp
+  var bindParameter as Set of Parameter
+
+class PropertyCallExp extends FeaturePropertyCall
+  var referredProperty as Set of _Property
+
+class VariableExp extends OclExpression
+  var referredVariable as Set of Variable
+
+class TypeExp extends OclExpression
+  var referredType as Set of _Type
+
+abstract class LoopExp extends CallExp
+  // body IsContainer
+  var body as Set of OclExpression
+  // iterator IsContainer
+  var iterator as Set of Variable
+
+class IteratorExp extends LoopExp
+
+class StringLiteralExp extends PrimitiveLiteralExp
+  var stringSymbol as Set of String
+
+class IntegerLiteralExp extends NumericLiteralExp
+  var integerSymbol as Set of Integer
+
+class OperationCallExp extends FeaturePropertyCall
+  // argument IsContainer
+  var argument as Set of OclExpression
+  var referredOperation as Set of Operation
+
+class RealLiteralExp extends NumericLiteralExp
+  var realSymbol as Set of Real
+
+abstract class LiteralExp extends OclExpression
+
+class IterateExp extends LoopExp
+  // result IsContainer
+  var result as Set of Variable
+
+abstract class PrimitiveLiteralExp extends LiteralExp
+
+abstract class NumericLiteralExp extends PrimitiveLiteralExp
+
+class CollectionLiteralExp extends LiteralExp
+  var kind as Set of CollectionKind
+  // part IsContainer
+  var part as Set of CollectionLiteralPart
+
+abstract class CollectionLiteralPart extends TypedElement
+  var CollectionLiteralExp as Set of CollectionLiteralExp
+
+class CollectionItem extends CollectionLiteralPart
+  // item IsContainer
+  var item as Set of OclExpression
+
+class CollectionRange extends CollectionLiteralPart
+  // first IsContainer
+  var first as Set of OclExpression
+  // last IsContainer
+  var last as Set of OclExpression
+
+class TupleLiteralExp extends LiteralExp
+  // part IsContainer
+  var part as Set of TupleLiteralPart
+
+class NullLiteralExp extends LiteralExp
+
+class ExpressionInOcl extends OpaqueExpression
+  // bodyExpression IsContainer
+  var bodyExpression as Set of OclExpression
+  // context IsContainer
+  var context as Set of Variable
+  // resultVariable IsContainer
+  var resultVariable as Set of Variable
+  // parameterVariable IsContainer
+  var parameterVariable as Set of Variable
+
+class OpaqueExpression
+
+class InvalidLiteralExp extends LiteralExp
+
+abstract class FeaturePropertyCall extends CallExp
+
+class TupleLiteralPart extends TypedElement
+  var TupleLiteralExp as Set of TupleLiteralExp
+  // _attribute IsContainer
+  var _attribute as Set of _Property
+
+class BagType extends CollectionType
+
+abstract class CollectionType extends DataType
+  var elementType as Set of _Type
+
+class EnumLiteralExp extends LiteralExp
+  var referredEnumLiteral as Set of EnumerationLiteral
+
+class InvalidType extends _Type
+
+class OrderedSetType extends CollectionType
+
+class SequenceType extends CollectionType
+
+class SetType extends CollectionType
+
+class TupleType extends _Class
+
+class VoidType extends _Type
+
+class AnyType extends _Class
+
+enum SeverityKind
+  error
+  fatal
+  warning
+
+enum DirectionKind
+  _in
+  _inout
+  _out
+
+enum ImportKind
+  extension
+  access
+
+enum EnforcementMode
+  Deletion
+  Creation
+
+enum CollectionKind
+  OrderedSet
+  _Set
+  Bag
+  Sequence
+
+var TemplateExp_Universe as Set of TemplateExp
+
+var ObjectTemplateExp_Universe as Set of ObjectTemplateExp
+
+var CollectionTemplateExp_Universe as Set of CollectionTemplateExp
+
+var PropertyTemplateItem_Universe as Set of PropertyTemplateItem
+
+var ImperativeIterateExp_Universe as Set of ImperativeIterateExp
+
+var AssignExp_Universe as Set of AssignExp
+
+var BlockExp_Universe as Set of BlockExp
+
+var SwitchExp_Universe as Set of SwitchExp
+
+var VariableInitExp_Universe as Set of VariableInitExp
+
+var WhileExp_Universe as Set of WhileExp
+
+var ComputeExp_Universe as Set of ComputeExp
+
+var AltExp_Universe as Set of AltExp
+
+var UnlinkExp_Universe as Set of UnlinkExp
+
+var ReturnExp_Universe as Set of ReturnExp
+
+var BreakExp_Universe as Set of BreakExp
+
+var TryExp_Universe as Set of TryExp
+
+var RaiseExp_Universe as Set of RaiseExp
+
+var ContinueExp_Universe as Set of ContinueExp
+
+var ForExp_Universe as Set of ForExp
+
+var TupleExp_Universe as Set of TupleExp
+
+var Typedef_Universe as Set of Typedef
+
+var InstantiationExp_Universe as Set of InstantiationExp
+
+var DictionaryType_Universe as Set of DictionaryType
+
+var DictLiteralExp_Universe as Set of DictLiteralExp
+
+var DictLiteralPart_Universe as Set of DictLiteralPart
+
+var TemplateParameterType_Universe as Set of TemplateParameterType
+
+var LogExp_Universe as Set of LogExp
+
+var AssertExp_Universe as Set of AssertExp
+
+var ImperativeLoopExp_Universe as Set of ImperativeLoopExp
+
+var CollectorExp_Universe as Set of CollectorExp
+
+var ImperativeExpression_Universe as Set of ImperativeExpression
+
+var UnpackExp_Universe as Set of UnpackExp
+
+var AnonymousTupleType_Universe as Set of AnonymousTupleType
+
+var AnonymousTupleLiteralExp_Universe as Set of AnonymousTupleLiteralExp
+
+var AnonymousTupleLiteralPart_Universe as Set of AnonymousTupleLiteralPart
+
+var ListType_Universe as Set of ListType
+
+var _Class_Universe as Set of _Class
+
+var DataType_Universe as Set of DataType
+
+var Element_Universe as Set of Element
+
+var Tag_Universe as Set of Tag
+
+var _Enumeration_Universe as Set of _Enumeration
+
+var NamedElement_Universe as Set of NamedElement
+
+var Extent_Universe as Set of Extent
+
+var _Object_Universe as Set of _Object
+
+var Operation_Universe as Set of Operation
+
+var MultiplicityElement_Universe as Set of MultiplicityElement
+
+var Package_Universe as Set of Package
+
+var _Type_Universe as Set of _Type
+
+var Parameter_Universe as Set of Parameter
+
+var EnumerationLiteral_Universe as Set of EnumerationLiteral
+
+var _Property_Universe as Set of _Property
+
+var TypedElement_Universe as Set of TypedElement
+
+var PrimitiveType_Universe as Set of PrimitiveType
+
+var URIExtent_Universe as Set of URIExtent
+
+var Comment_Universe as Set of Comment
+
+var MappingBody_Universe as Set of MappingBody
+
+var Helper_Universe as Set of Helper
+
+var ResolveExp_Universe as Set of ResolveExp
+
+var ResolveInExp_Universe as Set of ResolveInExp
+
+var OperationalTransformation_Universe as Set of OperationalTransformation
+
+var MappingParameter_Universe as Set of MappingParameter
+
+var MappingOperation_Universe as Set of MappingOperation
+
+var MappingCallExp_Universe as Set of MappingCallExp
+
+var Constructor_Universe as Set of Constructor
+
+var ContextualProperty_Universe as Set of ContextualProperty
+
+var EntryOperation_Universe as Set of EntryOperation
+
+var ImperativeCallExp_Universe as Set of ImperativeCallExp
+
+var ImperativeOperation_Universe as Set of ImperativeOperation
+
+var Library_Universe as Set of Library
+
+var ModelParameter_Universe as Set of ModelParameter
+
+var ModelType_Universe as Set of ModelType
+
+var Module_Universe as Set of Module
+
+var ModuleImport_Universe as Set of ModuleImport
+
+var VarParameter_Universe as Set of VarParameter
+
+var OperationBody_Universe as Set of OperationBody
+
+var ConstructorBody_Universe as Set of ConstructorBody
+
+var ObjectExp_Universe as Set of ObjectExp
+
+var Area_Universe as Set of Area
+
+var Assignment_Universe as Set of Assignment
+
+var BottomPattern_Universe as Set of BottomPattern
+
+var GuardPattern_Universe as Set of GuardPattern
+
+var Mapping_Universe as Set of Mapping
+
+var RealizedVariable_Universe as Set of RealizedVariable
+
+var CoreDomain_Universe as Set of CoreDomain
+
+var CorePattern_Universe as Set of CorePattern
+
+var EnforcementOperation_Universe as Set of EnforcementOperation
+
+var Domain_Universe as Set of Domain
+
+var Transformation_Universe as Set of Transformation
+
+var TypedModel_Universe as Set of TypedModel
+
+var Rule_Universe as Set of Rule
+
+var Pattern_Universe as Set of Pattern
+
+var Predicate_Universe as Set of Predicate
+
+var _Function_Universe as Set of _Function
+
+var FunctionParameter_Universe as Set of FunctionParameter
+
+var RelationalTransformation_Universe as Set of RelationalTransformation
+
+var Relation_Universe as Set of Relation
+
+var RelationDomain_Universe as Set of RelationDomain
+
+var DomainPattern_Universe as Set of DomainPattern
+
+var RelationImplementation_Universe as Set of RelationImplementation
+
+var Key_Universe as Set of Key
+
+var BooleanLiteralExp_Universe as Set of BooleanLiteralExp
+
+var CallExp_Universe as Set of CallExp
+
+var OclExpression_Universe as Set of OclExpression
+
+var UnlimitedNaturalExp_Universe as Set of UnlimitedNaturalExp
+
+var IfExp_Universe as Set of IfExp
+
+var LetExp_Universe as Set of LetExp
+
+var Variable_Universe as Set of Variable
+
+var PropertyCallExp_Universe as Set of PropertyCallExp
+
+var VariableExp_Universe as Set of VariableExp
+
+var TypeExp_Universe as Set of TypeExp
+
+var LoopExp_Universe as Set of LoopExp
+
+var IteratorExp_Universe as Set of IteratorExp
+
+var StringLiteralExp_Universe as Set of StringLiteralExp
+
+var IntegerLiteralExp_Universe as Set of IntegerLiteralExp
+
+var OperationCallExp_Universe as Set of OperationCallExp
+
+var RealLiteralExp_Universe as Set of RealLiteralExp
+
+var LiteralExp_Universe as Set of LiteralExp
+
+var IterateExp_Universe as Set of IterateExp
+
+var PrimitiveLiteralExp_Universe as Set of PrimitiveLiteralExp
+
+var NumericLiteralExp_Universe as Set of NumericLiteralExp
+
+var CollectionLiteralExp_Universe as Set of CollectionLiteralExp
+
+var CollectionLiteralPart_Universe as Set of CollectionLiteralPart
+
+var CollectionItem_Universe as Set of CollectionItem
+
+var CollectionRange_Universe as Set of CollectionRange
+
+var TupleLiteralExp_Universe as Set of TupleLiteralExp
+
+var NullLiteralExp_Universe as Set of NullLiteralExp
+
+var ExpressionInOcl_Universe as Set of ExpressionInOcl
+
+var OpaqueExpression_Universe as Set of OpaqueExpression
+
+var InvalidLiteralExp_Universe as Set of InvalidLiteralExp
+
+var FeaturePropertyCall_Universe as Set of FeaturePropertyCall
+
+var TupleLiteralPart_Universe as Set of TupleLiteralPart
+
+var BagType_Universe as Set of BagType
+
+var CollectionType_Universe as Set of CollectionType
+
+var EnumLiteralExp_Universe as Set of EnumLiteralExp
+
+var InvalidType_Universe as Set of InvalidType
+
+var OrderedSetType_Universe as Set of OrderedSetType
+
+var SequenceType_Universe as Set of SequenceType
+
+var SetType_Universe as Set of SetType
+
+var TupleType_Universe as Set of TupleType
+
+var VoidType_Universe as Set of VoidType
+
+var AnyType_Universe as Set of AnyType
+
+Main()

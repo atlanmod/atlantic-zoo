@@ -1,0 +1,218 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'PNML'>
+    <Class name = 'IdedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'URI' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Color' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'AnyElement' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'text' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'NCName' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Enumeration name = 'RotationType'>
+      <EnumLiteral name = 'rtvertical'/>
+      <EnumLiteral name = 'rthorizontal'/>
+      <EnumLiteral name = 'rtdiagonal'/>
+    </Enumeration>
+    <Enumeration name = 'ShapeType'>
+      <EnumLiteral name = 'shtline'/>
+      <EnumLiteral name = 'shtcurve'/>
+    </Enumeration>
+    <Enumeration name = 'StyleType'>
+      <EnumLiteral name = 'sttsolid'/>
+      <EnumLiteral name = 'sttdash'/>
+      <EnumLiteral name = 'sttdot'/>
+    </Enumeration>
+    <Enumeration name = 'DecorationType'>
+      <EnumLiteral name = 'dtunderligne'/>
+      <EnumLiteral name = 'dtoverligne'/>
+      <EnumLiteral name = 'dtlinethrough'/>
+    </Enumeration>
+    <Enumeration name = 'AlignType'>
+      <EnumLiteral name = 'atleft'/>
+      <EnumLiteral name = 'atcenter'/>
+      <EnumLiteral name = 'atright'/>
+    </Enumeration>
+    <Class name = 'PNMLDocument' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'xmlns' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::URI' opposite = ''/>
+      <Reference name = 'nets' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PNML::NetElement' opposite = 'PNML::NetElement::document'/>
+      <Reference name = 'modules' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Module' opposite = 'PNML::Module::document'/>
+    </Class>
+    <Class name = 'Module' isAbstract = 'false' supertypes = 'PNML::IdedElement'>
+      <Reference name = 'interfaces' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Interface' opposite = 'PNML::Interface::module'/>
+      <Reference name = 'netcontents' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PNML::NetContent' opposite = 'PNML::NetContent::module'/>
+      <Reference name = 'document' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::PNMLDocument' opposite = 'PNML::PNMLDocument::modules'/>
+    </Class>
+    <Class name = 'Interface' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'module' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::Module' opposite = 'PNML::Module::interfaces'/>
+      <Reference name = 'importplace' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PNML::Node' opposite = ''/>
+      <Reference name = 'exportplace' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PNML::Reference' opposite = ''/>
+      <Reference name = 'importtransition' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PNML::Node' opposite = ''/>
+      <Reference name = 'exporttransition' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PNML::Reference' opposite = ''/>
+    </Class>
+    <Class name = 'NetElement' isAbstract = 'false' supertypes = 'PNML::IdedElement'>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::URI' opposite = ''/>
+      <Reference name = 'document' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::PNMLDocument' opposite = 'PNML::PNMLDocument::nets'/>
+      <Reference name = 'contents' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PNML::NetContent' opposite = 'PNML::NetContent::net'/>
+      <Reference name = 'tools' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PNML::ToolSpecific' opposite = 'PNML::ToolSpecific::net'/>
+      <Reference name = 'netgraphics' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::NetGraphics' opposite = 'PNML::NetGraphics::net'/>
+      <Reference name = 'name' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Name' opposite = 'PNML::Name::net'/>
+    </Class>
+    <Class name = 'NetContent' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'net' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::NetElement' opposite = 'PNML::NetElement::contents'/>
+      <Reference name = 'name' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Name' opposite = 'PNML::Name::netcontent'/>
+      <Reference name = 'page' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::Page' opposite = 'PNML::Page::contents'/>
+      <Reference name = 'module' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::Module' opposite = 'PNML::Module::netcontents'/>
+    </Class>
+    <Class name = 'ToolSpecific' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'tool' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'version' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'anyelement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PNML::AnyElement' opposite = ''/>
+      <Reference name = 'net' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::NetElement' opposite = 'PNML::NetElement::tools'/>
+      <Reference name = 'arc' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::Arc' opposite = 'PNML::Arc::tools'/>
+      <Reference name = 'node' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::Node' opposite = 'PNML::Node::tools'/>
+      <Reference name = 'page' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::Page' opposite = 'PNML::Page::tools'/>
+    </Class>
+    <Class name = 'LabeledElement' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'labels' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Label' opposite = 'PNML::Label::namedelement'/>
+      <Reference name = 'annotationgraphics' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::AnnotationGraphics' opposite = 'PNML::AnnotationGraphics::namedelement'/>
+    </Class>
+    <Class name = 'Label' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'text' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'namedelement' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::LabeledElement' opposite = 'PNML::LabeledElement::labels'/>
+    </Class>
+    <Class name = 'Name' isAbstract = 'false' supertypes = 'PNML::LabeledElement'>
+      <Reference name = 'net' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::NetElement' opposite = 'PNML::NetElement::name'/>
+      <Reference name = 'netcontent' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::NetContent' opposite = 'PNML::NetContent::name'/>
+    </Class>
+    <Class name = 'Inscription' isAbstract = 'false' supertypes = 'PNML::LabeledElement'>
+      <Reference name = 'arc' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::Arc' opposite = 'PNML::Arc::inscription'/>
+    </Class>
+    <Class name = 'InitialMarking' isAbstract = 'false' supertypes = 'PNML::LabeledElement'>
+      <Reference name = 'place' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::Place' opposite = 'PNML::Place::initialmarking'/>
+    </Class>
+    <Class name = 'NetContentElement' isAbstract = 'true' supertypes = 'PNML::NetContent'>
+      <Reference name = 'node' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Node' opposite = 'PNML::Node::netcontentelement'/>
+    </Class>
+    <Class name = 'Arc' isAbstract = 'false' supertypes = 'PNML::NetContent, PNML::IdedElement'>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::NetContentElement' opposite = ''/>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::NetContentElement' opposite = ''/>
+      <Reference name = 'tools' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PNML::ToolSpecific' opposite = 'PNML::ToolSpecific::arc'/>
+      <Reference name = 'edgegraphics' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::EdgeGraphics' opposite = 'PNML::EdgeGraphics::arc'/>
+      <Reference name = 'inscription' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Inscription' opposite = 'PNML::Inscription::arc'/>
+    </Class>
+    <Class name = 'Page' isAbstract = 'false' supertypes = 'PNML::NetContent, PNML::IdedElement'>
+      <Reference name = 'contents' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PNML::NetContent' opposite = 'PNML::NetContent::page'/>
+      <Reference name = 'tools' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PNML::ToolSpecific' opposite = 'PNML::ToolSpecific::page'/>
+      <Reference name = 'pagegraphics' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::PageGraphics' opposite = 'PNML::PageGraphics::page'/>
+    </Class>
+    <Class name = 'Reference' isAbstract = 'true' supertypes = 'PNML::Node'>
+      <Reference name = 'instance' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Node' opposite = ''/>
+      <Reference name = 'ref' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::NCName' opposite = ''/>
+      <Reference name = 'importnode' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::ImportNode' opposite = 'PNML::ImportNode::ref'/>
+    </Class>
+    <Class name = 'ReferencePlace' isAbstract = 'false' supertypes = 'PNML::NetContent, PNML::Reference'/>
+    <Class name = 'ReferenceTransition' isAbstract = 'false' supertypes = 'PNML::NetContent, PNML::Reference'/>
+    <Class name = 'Instance' isAbstract = 'false' supertypes = 'PNML::NetContent, PNML::IdedElement'>
+      <Reference name = 'ref' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::URI' opposite = ''/>
+      <Reference name = 'importplace' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PNML::ImportNode' opposite = 'PNML::ImportNode::instanceplace'/>
+      <Reference name = 'importtransition' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PNML::ImportNode' opposite = 'PNML::ImportNode::instancetransition'/>
+    </Class>
+    <Class name = 'ImportNode' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'parameter' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::NCName' opposite = ''/>
+      <Reference name = 'ref' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Reference' opposite = 'PNML::Reference::importnode'/>
+      <Reference name = 'instanceplace' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::Instance' opposite = 'PNML::Instance::importplace'/>
+      <Reference name = 'instancetransition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::Instance' opposite = 'PNML::Instance::importtransition'/>
+    </Class>
+    <Class name = 'Node' isAbstract = 'false' supertypes = 'PNML::IdedElement'>
+      <Reference name = 'netcontentelement' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::NetContentElement' opposite = 'PNML::NetContentElement::node'/>
+      <Reference name = 'tools' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PNML::ToolSpecific' opposite = 'PNML::ToolSpecific::node'/>
+      <Reference name = 'nodegraphics' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::NodeGraphics' opposite = 'PNML::NodeGraphics::node'/>
+    </Class>
+    <Class name = 'Place' isAbstract = 'false' supertypes = 'PNML::NetContentElement'>
+      <Reference name = 'initialmarking' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::InitialMarking' opposite = 'PNML::InitialMarking::place'/>
+    </Class>
+    <Class name = 'Transition' isAbstract = 'false' supertypes = 'PNML::NetContentElement'/>
+    <Class name = 'Graphics' isAbstract = 'true' supertypes = ''/>
+    <Class name = 'NetGraphics' isAbstract = 'false' supertypes = 'PNML::Graphics'>
+      <Reference name = 'net' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::NetElement' opposite = 'PNML::NetElement::netgraphics'/>
+    </Class>
+    <Class name = 'NodeGraphics' isAbstract = 'false' supertypes = 'PNML::Graphics'>
+      <Reference name = 'node' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::Node' opposite = 'PNML::Node::nodegraphics'/>
+      <Reference name = 'position' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Position' opposite = 'PNML::Position::nodegraphics'/>
+      <Reference name = 'dimension' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Dimension' opposite = 'PNML::Dimension::nodegraphics'/>
+      <Reference name = 'fill' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Fill' opposite = 'PNML::Fill::nodegraphics'/>
+      <Reference name = 'line' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Line' opposite = 'PNML::Line::nodegraphics'/>
+    </Class>
+    <Class name = 'EdgeGraphics' isAbstract = 'false' supertypes = 'PNML::Graphics'>
+      <Reference name = 'arc' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::Arc' opposite = 'PNML::Arc::edgegraphics'/>
+      <Reference name = 'position' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Position' opposite = 'PNML::Position::edgegraphics'/>
+      <Reference name = 'fill' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Fill' opposite = 'PNML::Fill::edgegraphics'/>
+      <Reference name = 'line' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Line' opposite = 'PNML::Line::edgegraphics'/>
+    </Class>
+    <Class name = 'AnnotationGraphics' isAbstract = 'false' supertypes = 'PNML::Graphics'>
+      <Reference name = 'namedelement' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::LabeledElement' opposite = 'PNML::LabeledElement::annotationgraphics'/>
+      <Reference name = 'offset' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Offset' opposite = 'PNML::Offset::annotationgraphics'/>
+      <Reference name = 'font' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Font' opposite = 'PNML::Font::annotationgraphics'/>
+      <Reference name = 'fill' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Fill' opposite = 'PNML::Fill::annotationgraphics'/>
+      <Reference name = 'line' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Line' opposite = 'PNML::Line::annotationgraphics'/>
+    </Class>
+    <Class name = 'PageGraphics' isAbstract = 'false' supertypes = 'PNML::Graphics'>
+      <Reference name = 'page' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::Page' opposite = 'PNML::Page::pagegraphics'/>
+    </Class>
+    <Class name = 'Coordinate' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'x' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'y' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'Position' isAbstract = 'false' supertypes = 'PNML::Coordinate'>
+      <Reference name = 'nodegraphics' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::NodeGraphics' opposite = 'PNML::NodeGraphics::position'/>
+      <Reference name = 'edgegraphics' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::EdgeGraphics' opposite = 'PNML::EdgeGraphics::position'/>
+    </Class>
+    <Class name = 'Offset' isAbstract = 'false' supertypes = 'PNML::Coordinate'>
+      <Reference name = 'annotationgraphics' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::AnnotationGraphics' opposite = 'PNML::AnnotationGraphics::offset'/>
+    </Class>
+    <Class name = 'Dimension' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'width' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'height' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'nodegraphics' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::NodeGraphics' opposite = 'PNML::NodeGraphics::dimension'/>
+    </Class>
+    <Class name = 'Fill' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'gradientrotation' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PNML::RotationType'/>
+      <Reference name = 'interiorcolor' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Color' opposite = ''/>
+      <Reference name = 'gradientcolor' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Color' opposite = ''/>
+      <Reference name = 'image' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::URI' opposite = ''/>
+      <Reference name = 'nodegraphics' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::NodeGraphics' opposite = 'PNML::NodeGraphics::fill'/>
+      <Reference name = 'edgegraphics' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::EdgeGraphics' opposite = 'PNML::EdgeGraphics::fill'/>
+      <Reference name = 'annotationgraphics' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::AnnotationGraphics' opposite = 'PNML::AnnotationGraphics::fill'/>
+    </Class>
+    <Class name = 'Line' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'color' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Color' opposite = ''/>
+      <Attribute name = 'width' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'shape' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PNML::ShapeType'/>
+      <Attribute name = 'style' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PNML::StyleType'/>
+      <Reference name = 'nodegraphics' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::NodeGraphics' opposite = 'PNML::NodeGraphics::line'/>
+      <Reference name = 'edgegraphics' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::EdgeGraphics' opposite = 'PNML::EdgeGraphics::line'/>
+      <Reference name = 'annotationgraphics' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::AnnotationGraphics' opposite = 'PNML::AnnotationGraphics::line'/>
+    </Class>
+    <Class name = 'Font' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'family' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'style' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'weight' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'size' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'decoration' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PNML::DecorationType'/>
+      <Attribute name = 'align' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PNML::AlignType'/>
+      <Attribute name = 'rotation' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'annotationgraphics' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::AnnotationGraphics' opposite = 'PNML::AnnotationGraphics::font'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

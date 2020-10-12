@@ -1,0 +1,8 @@
+( defstruct Actor )
+( defstruct UseCase :include :extend )
+( defstruct Extend :extension )
+( defstruct Include :includingCase )
+( defstruct UseCaseContainer )
+( defstruct BehavioredClassifier )
+( defstruct NamedElement )
+( defstruct Association )

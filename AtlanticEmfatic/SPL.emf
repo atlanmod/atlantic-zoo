@@ -1,0 +1,466 @@
+package Metamodel;
+
+package SPL {
+  abstract class LocatedElement {
+    !unique !ordered attr String[1] location;
+    !unique attr String[*] commentsBefore;
+    !unique attr String[*] commentsAfter;
+  }
+
+  class Program extends LocatedElement {
+    !ordered val Service[1] service;
+  }
+
+  class Service extends LocatedElement {
+    !unique !ordered attr String[1] name;
+    val Declaration[*] declarations;
+    val Session[*] sessions;
+  }
+
+  abstract class Session extends LocatedElement {
+  }
+
+  class Registration extends Session {
+    val Declaration[*] declarations;
+    val Session[*] sessions;
+  }
+
+  class Dialog extends Session {
+    val Declaration[*] declarations;
+    val Method[+] methods;
+  }
+
+  class Event extends Session {
+    !unique !ordered attr String[1] eventId;
+    val Declaration[*] declarations;
+    val Method[+] methods;
+  }
+
+  class Method extends Session {
+    !ordered val TypeExpression[1] type;
+    !unique !ordered attr Enum.Direction[1] direction;
+    !ordered val MethodName[1] methodName;
+    val Argument[*] arguments;
+    val Statement[+] statements;
+    val Branch[+] branches;
+  }
+
+  class Argument extends VariableDeclaration {
+  }
+
+  abstract class MethodName extends LocatedElement {
+  }
+
+  class SIPMethodName extends MethodName {
+    !unique !ordered attr Enum.SIPMethod[1] name;
+  }
+
+  class ControlMethodName extends MethodName {
+    !unique !ordered attr Enum.ControlMethod[1] name;
+  }
+
+  class Branch extends LocatedElement {
+    val Statement[+] statements;
+  }
+
+  class DefaultBranch extends Branch {
+  }
+
+  class NamedBranch extends Branch {
+    !unique attr String[+] name;
+  }
+
+  abstract class TypeExpression extends LocatedElement {
+  }
+
+  class SimpleType extends TypeExpression {
+    !unique !ordered attr Enum.PrimitiveType[1] type;
+  }
+
+  class SequenceType extends TypeExpression {
+    !unique !ordered attr Enum.Modifier modifier;
+    !unique !ordered attr Enum.PrimitiveType[1] type;
+    !unique !ordered attr Integer size;
+  }
+
+  class DefinedType extends TypeExpression {
+    !unique !ordered attr String[1] typeName;
+  }
+
+  abstract class Declaration extends LocatedElement {
+    !unique !ordered attr String[1] name;
+  }
+
+  class VariableDeclaration extends Declaration {
+    !ordered val TypeExpression[1] type;
+    !ordered val Expression initExp;
+  }
+
+  abstract class FunctionDeclaration extends Declaration {
+    !ordered val TypeExpression[1] returnType;
+    val Argument[*] arguments;
+  }
+
+  class RemoteFunctionDeclaration extends FunctionDeclaration {
+    !unique !ordered attr Enum.FunctionLocation[1] functionLocation;
+  }
+
+  class LocalFunctionDeclaration extends FunctionDeclaration {
+    val Statement[+] statements;
+  }
+
+  class StructureDeclaration extends Declaration {
+    val Argument[+] properties;
+  }
+
+  class StructureProperty extends LocatedElement {
+    !unique !ordered attr String[1] name;
+    !ordered val TypeExpression[1] type;
+  }
+
+  class FunctionCall extends LocatedElement {
+    !ordered ref FunctionDeclaration[1] function;
+    val Expression[*] parameters;
+  }
+
+  abstract class Statement extends LocatedElement {
+  }
+
+  class CompoundStat extends Statement {
+    !ordered val Statement[+] statements;
+  }
+
+  class SetStat extends Statement {
+    !ordered val Place[1] target;
+    !ordered val Expression[1] setValue;
+  }
+
+  class DeclarationStat extends Statement {
+    !ordered val Declaration[1] declaration;
+  }
+
+  class ReturnStat extends Statement {
+    !ordered val Expression returnedValue;
+    !ordered ref NamedBranch branch;
+  }
+
+  class IfStat extends Statement {
+    !ordered val Expression[1] condition;
+    val Statement[+] thenStatements;
+    val Statement[*] elseStatements;
+  }
+
+  class WhenStat extends Statement {
+    !ordered val Variable[1] idExp;
+    val WhenHeader[+] whenHeaders;
+    val Statement[+] statements;
+    val Statement[*] elseStatements;
+  }
+
+  class ForeachStat extends Statement {
+    !unique !ordered attr String[1] iteratorName;
+    !ordered val Expression[1] sequenceExp;
+    val Statement[+] statements;
+  }
+
+  class SelectStat extends Statement {
+    !ordered val Expression[1] matchedExp;
+    val SelectCase[*] selectCases;
+    !ordered val SelectDefault selectDefault;
+  }
+
+  class FunctionCallStat extends Statement {
+    !ordered val FunctionCall[1] functionCall;
+  }
+
+  class ContinueStat extends Statement {
+  }
+
+  class BreakStat extends Statement {
+  }
+
+  class PushStat extends Statement {
+    !ordered val Place[1] target;
+    !ordered val Expression[1] pushedValue;
+  }
+
+  class WhenHeader extends VariableDeclaration {
+    !unique !ordered attr String[1] headerId;
+    !ordered val Constant value;
+  }
+
+  abstract class SelectMember extends LocatedElement {
+    val Statement[*] statements;
+  }
+
+  class SelectDefault extends SelectMember {
+  }
+
+  class SelectCase extends SelectMember {
+    val Constant[+] values;
+  }
+
+  abstract class Expression extends LocatedElement {
+  }
+
+  class ConstantExp extends Expression {
+    !ordered val Constant[1] value;
+  }
+
+  class OperatorExp extends Expression {
+    !unique !ordered attr String[1] opName;
+    !ordered val Expression[1] leftExp;
+    !ordered val Expression rightExp;
+  }
+
+  class ForwardExp extends Expression {
+    !unique !ordered attr Boolean[1] isParallel;
+    !ordered val Expression exp;
+  }
+
+  class WithExp extends Expression {
+    !ordered val Expression[1] exp;
+    val MessageField[+] msgFields;
+  }
+
+  class BlockExp extends Expression {
+    !ordered val Expression[1] exp;
+  }
+
+  class ReasonExp extends Expression {
+  }
+
+  class BODYExp extends Expression {
+  }
+
+  class RequestURIExp extends Expression {
+  }
+
+  class PopExp extends Expression {
+    !ordered val Place[1] source;
+  }
+
+  class FunctionCallExp extends Expression {
+    !ordered val FunctionCall[1] functionCall;
+  }
+
+  abstract class Place extends Expression {
+  }
+
+  class SIPHeaderPlace extends Place {
+    !unique !ordered attr Enum.SIPHeader[1] header;
+  }
+
+  abstract class VariablePlace extends Place {
+  }
+
+  class PropertyCallPlace extends VariablePlace {
+    !unique !ordered attr String[1] propName;
+    !ordered val VariablePlace[1] source;
+  }
+
+  class Variable extends VariablePlace {
+    !ordered ref Declaration[1] source;
+  }
+
+  abstract class MessageField extends LocatedElement {
+    !ordered val Expression[1] exp;
+  }
+
+  class ReasonMessageField extends MessageField {
+  }
+
+  class HeadedMessageField extends MessageField {
+    !unique !ordered attr String[1] headerId;
+  }
+
+  abstract class Constant extends LocatedElement {
+  }
+
+  class BooleanConstant extends Constant {
+    !unique !ordered attr Boolean[1] value;
+  }
+
+  class IntegerConstant extends Constant {
+    !unique !ordered attr Integer[1] value;
+  }
+
+  class StringConstant extends Constant {
+    !unique !ordered attr String[1] value;
+  }
+
+  class URIConstant extends Constant {
+    !unique !ordered attr String[1] uri;
+  }
+
+  class SequenceConstant extends Constant {
+    val Constant[*] values;
+  }
+
+  class ResponseConstant extends Constant {
+    !ordered val Response[1] response;
+  }
+
+  abstract class Response extends LocatedElement {
+  }
+
+  class SuccessResponse extends Response {
+    !unique !ordered attr Enum.SuccessKind[1] successKind;
+  }
+
+  class ErrorResponse extends Response {
+  }
+
+  class ClientErrorResponse extends ErrorResponse {
+    !unique !ordered attr Enum.ClientErrorKind errorKind;
+  }
+
+  class GlobalErrorResponse extends ErrorResponse {
+    !unique !ordered attr Enum.GlobalErrorKind errorKind;
+  }
+
+  class RedirectionErrorResponse extends ErrorResponse {
+    !unique !ordered attr Enum.RedirectionErrorKind errorKind;
+  }
+
+  class ServerErrorResponse extends ErrorResponse {
+    !unique !ordered attr Enum.ServerErrorKind errorKind;
+  }
+
+}
+
+package Enum {
+  enum Direction {
+    inout = 0;
+    in = 0;
+    out = 0;
+  }
+
+  enum SIPMethod {
+    ACK = 0;
+    BYE = 0;
+    CANCEL = 0;
+    INVITE = 0;
+    NOTIFY = 0;
+    OPTIONS = 0;
+    REACK = 0;
+    REGISTER = 0;
+    REINVITE = 0;
+    REREGISTER = 0;
+    RESUBSCRIBE = 0;
+    SUBSCRIBE = 0;
+  }
+
+  enum ControlMethod {
+    deploy = 0;
+    undeploy = 0;
+    uninvite = 0;
+    unregister = 0;
+    unsubscribe = 0;
+  }
+
+  enum PrimitiveType {
+    ~void = 0;
+    bool = 0;
+    int = 0;
+    request = 0;
+    response = 0;
+    string = 0;
+    time = 0;
+    uri = 0;
+  }
+
+  enum Modifier {
+    LIFO = 0;
+    FIFO = 0;
+  }
+
+  enum FunctionLocation {
+    remote = 0;
+    local = 0;
+  }
+
+  enum SIPHeader {
+    CALL_ID = 0;
+    CONTACT = 0;
+    CSEQ = 0;
+    EVENT = 0;
+    FROM = 0;
+    MAX_FORWARDS = 0;
+    SUBSCRIPTION_STATE = 0;
+    TO = 0;
+    VIA = 0;
+  }
+
+  enum SuccessKind {
+    OK = 0;
+    ACCEPTED = 0;
+  }
+
+  enum ClientErrorKind {
+    ADDRESS_INCOMPLETE = 0;
+    AMBIGUOUS = 0;
+    BAD_EXTENSION = 0;
+    BAD_REQUEST = 0;
+    BUSY_HERE = 0;
+    CALL_OR_TRANSACTION_DOES_NOT_EXIST = 0;
+    EXTENSION_REQUIRED = 0;
+    FORBIDDEN = 0;
+    GONE = 0;
+    INTERVAL_TOO_BRIEF = 0;
+    LOOP_DETECTED = 0;
+    METHOD_NOT_ALLOWED = 0;
+    NOT_ACCEPTABLE_HERE = 0;
+    NOT_ACCEPTABLE = 0;
+    NOT_FOUND = 0;
+    PAYMENT_REQUIRED = 0;
+    PROXY_AUTHENTICATION_REQUIRED = 0;
+    REQUESTURI_TOO_LONG = 0;
+    REQUEST_ENTITY_TOO_LARGE = 0;
+    REQUEST_PENDING = 0;
+    REQUEST_TERMINATED = 0;
+    REQUEST_TIMEOUT = 0;
+    TEMPORARILY_UNAVAILABLE = 0;
+    TOO_MANY_HOPS = 0;
+    UNAUTHORIZED = 0;
+    UNDECIPHERABLE = 0;
+    UNSUPPORTED_MEDIA_TYPE = 0;
+    UNSUPPORTED_URI_SCHEME = 0;
+  }
+
+  enum GlobalErrorKind {
+    BUSY_EVERYWHERE = 0;
+    DECLINE = 0;
+    DOES_NOT_EXIST_ANYWHERE = 0;
+    NOT_ACCEPTABLE = 0;
+  }
+
+  enum RedirectionErrorKind {
+    ALTERNATIVE_SERVICE = 0;
+    MOVED_PERMANENTLY = 0;
+    MOVED_TEMPORARILY = 0;
+    MULTIPLE_CHOICES = 0;
+    USE_PROXY = 0;
+  }
+
+  enum ServerErrorKind {
+    BAD_GATEWAY = 0;
+    MESSAGE_TOO_LARGE = 0;
+    NOT_IMPLEMENTED = 0;
+    SERVER_INTERNAL_ERROR = 0;
+    SERVER_TIMEOUT = 0;
+    SERVICE_UNAVAILABLE = 0;
+    VERSION_NOT_SUPPORTED = 0;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+  datatype Boolean : "";
+
+}
+

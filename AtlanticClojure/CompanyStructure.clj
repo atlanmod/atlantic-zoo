@@ -1,0 +1,7 @@
+( defstruct Company :corporateHQ )
+( defstruct CorporateHQ :corporateHQBackOffice )
+( defstruct Store :storeBackOffice )
+( defstruct CorporateHQBackOffice )
+( defstruct StoreBackOffice )
+( defstruct Employee )
+( defstruct CashRegister )

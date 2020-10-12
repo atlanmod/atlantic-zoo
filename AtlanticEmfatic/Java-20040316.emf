@@ -1,0 +1,56 @@
+package Metamodel;
+
+package JAVA {
+  abstract class JavaElement {
+    !unique !ordered attr String[1] name;
+  }
+
+  abstract class ClassFeature extends JavaElement {
+    !unique !ordered attr Boolean[1] isFinal;
+  }
+
+  abstract class ClassMember extends ClassFeature {
+    !ordered ref JavaClass[1]#members owner;
+    !ordered ref JavaClass[1]#typedElements type;
+    !unique !ordered attr Boolean[1] isStatic;
+    !unique !ordered attr Boolean[1] isPublic;
+  }
+
+  class Field extends ClassMember {
+  }
+
+  class JavaClass extends ClassFeature {
+    !ordered val ClassMember[*]#owner members;
+    !ordered ref Package[1]#classes ~package;
+    !ordered ref ClassMember[*]#type typedElements;
+    !ordered ref FeatureParameter[*]#type parameters;
+    !unique !ordered attr Boolean[1] isAbstract;
+    !unique !ordered attr Boolean[1] isStatic;
+    !unique !ordered attr Boolean[1] isPublic;
+  }
+
+  class Method extends ClassMember {
+    val FeatureParameter[*]#method parameters;
+  }
+
+  class Package extends JavaElement {
+    !ordered val JavaClass[*]#~package classes;
+  }
+
+  class PrimitiveType extends JavaClass {
+  }
+
+  class FeatureParameter extends ClassFeature {
+    !ordered ref JavaClass[1]#parameters type;
+    !ordered ref Method[1]#parameters method;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+}
+

@@ -1,0 +1,119 @@
+<project name="KM32Clojure" default="transformAll" basedir=".">
+
+	<property name="sourcePath" value="../../New metamodels/km3/"/>
+	<property name="targetPath" value="C:/Workspaces/MetamodelZoo_wkspace/New metamodels/Clojure/"/>
+	<property name="projectPath" value="" />
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+	</taskdef>
+	
+	<target name="transformAll" depends="loadModels">
+
+		<!-- loop over all km3 models -->
+		<for param="e">
+		  <path>
+		    <fileset dir="C:/Workspaces/MetamodelZoo_wkspace/New metamodels/km3/" includes="*.km3"/>
+		  </path>
+		  <sequential>
+		  	<!-- executes the transformations -->
+			<antcall target="condition" inheritall="true" inheritrefs="true">
+				<param name="sample" value="@{e}"/>
+			</antcall>
+		  </sequential>
+		</for>
+	</target>
+
+	<target name="condition">
+	  	<basename property="name" file="${sample}" suffix=".km3"/>
+		<property name="sourceModel" value="${sourcePath}${name}.km3"/>
+		<property name="targetModel" value="${targetPath}${name}.clj"/>
+		<property name="targetModelInstance" value="${targetPath}${name}.clj.KM3Instance.clj"/>
+		
+		<uptodate property="isUpToDate" srcfile="${sourceModel}" targetfile="${targetModel}"/>
+		
+	  	<if>
+	  	 <not>
+			 <equals arg1="${isUpToDate}" arg2="true" />
+		 </not>
+		 <then>
+			<antcall target="transformOne" inheritall="true" inheritrefs="true">
+				<param name="name" value="${name}"/>
+				<param name="sourceModel" value="${sourceModel}"/>
+				<param name="targetModel" value="${targetModel}"/>
+			</antcall>
+		 </then>
+		</if>
+
+	</target>
+	
+	<target name="transformOne">
+		<!--property name="targetModel" value="${targetPath}build/tmp/${name}.graphml"/-->
+
+		<echo message="********************************"/>
+		<echo message="*** Transforming  ${name}.km3 ***"/>
+		<echo message="--------------------------------"/>
+		
+		<am3.loadModel modelHandler="EMF" name="${sample}" metamodel="KM3" path="${sourceModel}.xmi">
+			<!--injector name="ebnf">
+				<param name="name" value="KM3"/>
+			</injector-->			
+		</am3.loadModel>
+
+		<am3.atl path="/org.eclipse.am3.zoos.atlanticClojure/build/km32Clojure.atl">
+				<inModel name="IN" model="${sample}"/>
+				<inModel name="KM3" model="KM3"/>
+				<inModel name="Clojure" model="Clojure"/>
+				<outModel name="OUT" model="out_Clojure" metamodel="Clojure"/>
+		</am3.atl>
+
+		<am3.atl path="/org.eclipse.am3.zoos.atlanticClojure/build/km32ClojureInstance.atl">
+				<inModel name="IN" model="${sample}"/>
+				<inModel name="KM3" model="KM3"/>
+				<inModel name="Clojure" model="Clojure"/>
+				<outModel name="OUT" model="outInstance_Clojure" metamodel="Clojure"/>
+		</am3.atl>
+
+
+		<!-- Saving clojureSyntax model -->
+		<am3.saveModel model="out_Clojure" path="${targetModel}">
+			<extractor name="ebnf">
+				<param name="format" value="clojureSyntax.tcs"/>
+				<param name="indentString" value="&#9;"/>
+				<param name="identEsc" value=""/>
+				<param name="stringDelim" value="&quot;"/>
+				<param name="decimalFormat" value="0.##############"/>
+				<param name="serializeComments" value="true"/>
+			</extractor>
+		</am3.saveModel>
+
+		<!-- Saving clojureSyntax model -->
+		<am3.saveModel model="outInstance_Clojure" path="${targetModelInstance}">
+			<extractor name="ebnf">
+				<param name="format" value="clojureSyntax.tcs"/>
+				<param name="indentString" value="&#9;"/>
+				<param name="identEsc" value=""/>
+				<param name="stringDelim" value="&quot;"/>
+				<param name="decimalFormat" value="0.##############"/>
+				<param name="serializeComments" value="true"/>
+			</extractor>
+		</am3.saveModel>		
+		<echo message="--------- END ${name}.km3 ---------"/>
+
+	</target>
+
+	<target name="loadModels">
+		
+		<!-- Loading TCS metamodel -->
+		<am3.loadModel modelHandler="EMF" name="TCS" metamodel="MOF" path="/org.eclipse.am3.zoos.atlanticClojure/build/TCS.ecore"/>
+
+		<!-- Loading clojureSyntax.tcs model -->
+		<am3.loadModel modelHandler="EMF" name="clojureSyntax.tcs" metamodel="TCS" path="/org.eclipse.am3.zoos.atlanticClojure/build/clojureSyntax.tcs.xmi"/>
+			
+		<!-- Load KM3 metamodel -->
+		<am3.loadModel modelHandler="EMF" name="KM3" metamodel="MOF" nsUri="http://www.eclipse.org/gmt/2005/KM3" />
+
+		<!-- Load MGA metamodel -->
+		<am3.loadModel modelHandler="EMF" name="Clojure" metamodel="MOF" path="/org.eclipse.am3.zoos.atlanticClojure/build/clojureSyntax.ecore" />
+
+	</target>
+</project>

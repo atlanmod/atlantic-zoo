@@ -1,0 +1,398 @@
+-- @name		MATLAB
+-- @version		1.2
+-- @authors		Youssef Srour (srour.youssef@gmail.com)
+-- @date		26/06/2006
+-- @description	This metamodel describes Matlab.
+-- @see			http://www.isis.vanderbilt.edu/Projects/mobies/Presentations/Mobies-PI-01-2001.ppt
+-- @see			http://www.isis.vanderbilt.edu/Projects/mobies/MatlabUDM.html
+-- @see			http://rieke-server.physiol.washington.edu/~lab/people/Fred/Classes/545/matlab/diffeqSim1_mlab5.mdl
+-- @see			http://www.control.auc.dk/~henrik/CyNC/Flowctrl_test.mdl
+-- @see			http://www.sal.tkk.fi/Opinnot/Mat-2.129/Laskarit03/lh2t6_lin.mdl
+-- @see 		http://iridia.ulb.ac.be/~famimo/private/Waste_Water.mdl
+-- @see 		http://www.ece.cmu.edu/~ece578/matlab-files/motor_speed.mdl
+
+package Matlab {
+
+-- Begin Class Matlab (the basic class)
+	class Matlab {
+		reference model[*] container : Model;
+	}--End class Matlab
+	
+-- Begin Class BlockDefaults
+	class BlockDefaults {
+		attribute blockDefaults : String;
+    	reference model : Model oppositeOf blockDefaults;
+	}--End class BlockDefaults
+	
+-- Begin Class Model 
+	class Model {
+		attribute name : String;
+		
+		reference matlab : Matlab; 
+    	reference annotationDefaults[*] container : AnnotationDefaults oppositeOf model;
+		reference system[*] container : System oppositeOf model;
+		reference blockDefaults[*] container : BlockDefaults oppositeOf model;
+		reference lineDefaults[*] container : LineDefaults oppositeOf model;
+		reference simulink : Simulink oppositeOf models;	
+	}--End class Model
+	
+-- Begin Class AnnotationDefaults 
+	class AnnotationDefaults {
+		attribute annotationDefaults : String;
+		
+    	reference model : Model oppositeOf annotationDefaults;
+	}--End class AnnotationDefaults
+	
+-- Begin Class LineDefaults 
+	class LineDefaults {
+		attribute lineDefaults : String;
+		
+    	reference model : Model oppositeOf lineDefaults;
+    }--End class AnnotationDefaults
+	
+-- Begin Class System 
+	class System {
+		attribute name : String;
+		
+		reference blocks[*] container : Block oppositeOf mySystem;
+		reference lines[*] container : Line oppositeOf system;
+		reference annotations[*] container : Annotation oppositeOf system;
+    	reference model : Model oppositeOf system;
+    	reference parentSubsystem : Subsystem oppositeOf system;
+    }--End class System
+    
+-- Begin Class Subsystem 
+    class Subsystem extends Block {
+    	reference system container : System oppositeOf parentSubsystem;
+	}--End class Subsystem
+    
+-- Begin Class Block 
+    class Block extends BlockDefaults {
+		attribute name : String;
+		attribute blockType : String;
+		attribute description : String;
+		attribute priority : String;
+		attribute tag : String;
+		attribute position : String;
+		
+    	reference mySystem : System oppositeOf blocks;
+    	reference ports[*] container : Port oppositeOf portBlock;		
+	}--End class Block
+	
+-- Begin Class Annotation 
+	class Annotation extends AnnotationDefaults {
+		attribute position : String;
+		attribute text : String;
+		
+    	reference system : System oppositeOf annotations;
+	}--End class Annotation
+	
+-- Begin Class Line 
+	class Line extends LineDefaults {
+		attribute points : String;
+		attribute id[0-1] : String;
+		
+		reference srcPort[0-1] : OutputPort oppositeOf owningLine;
+    	reference system : System oppositeOf lines;
+	}--End class Line
+	
+-- Begin Class DirectLine 
+	class DirectLine extends Line {
+    	reference destPort1[0-1] : InputPort oppositeOf owningDirectLine;
+	}--End class DirectLine
+	
+-- Begin Class InputPort 
+	class InputPort extends Port {
+		reference owningDirectLine[0-1] : DirectLine oppositeOf destPort1;
+    	reference owningDirectBranch[0-1] : DirectBranch oppositeOf destPort;
+	}--End class InputPort
+	
+-- Begin Class Branch 
+	class Branch {
+		attribute points : String;
+		
+    	reference branchedLine : BranchedLine oppositeOf branchs;
+    	reference nestedBranch : NestedBranch oppositeOf branchs;
+	}--End class Branch
+	
+	class BranchedLine extends Line {
+    	reference branchs[*] container : Branch oppositeOf branchedLine;
+	}--End class BranchedLine
+	
+-- Begin Class Primitive 
+	class Primitive extends Block {
+		attribute id[0-1] : String;
+		
+    	reference parameters[*] container : Parameter oppositeOf primitive;
+    	reference refPort[0-1] : Port oppositeOf primitive;
+	}--End class Primitive
+	
+-- Begin Class Port 
+	class Port{
+		attribute id[0-1] : String;
+		attribute number : String;
+		
+		reference portBlock : Block oppositeOf ports;
+		reference primitive[0-1] : Primitive oppositeOf refPort;
+	}--End class Port
+	
+-- Begin Class Reference
+	class Reference extends Block {
+		attribute sourceType : String;
+		attribute sourceBlock : String;
+		
+    	reference parameters[*] container : Parameter oppositeOf le_reference;		
+	}--End class Reference
+	
+-- Begin Class Masked 
+	class Masked extends Subsystem {    	
+	}--End class Masked
+	
+-- Begin Class Normal 
+	class Normal extends Subsystem {    	
+	}--End class Normal
+	
+-- Begin Class Parameter 
+	class Parameter {
+		attribute name : String;
+		
+    	reference le_reference : Reference oppositeOf parameters;
+    	reference primitive : Primitive oppositeOf parameters;
+	}--End class Parameter
+	
+-- Begin Class OutputPort 
+	class OutputPort extends Port {
+    	reference owningLine[0-1] : Line oppositeOf srcPort;
+	}--End class OutputPort
+	
+-- Begin Class Type 
+	class Type extends Parameter {
+    	attribute value : String;   	
+	}--End class Type
+	
+	-- Begin Class Double 	
+	class Double extends Parameter {
+    	attribute value : String;    	
+	}--End class Double
+	
+-- Begin Class INteger 	
+	class INteger extends Parameter {
+       	attribute value : String;	
+	}--End class INteger
+	
+-- Begin Class Enumeration 
+	class Enumeration extends Parameter {
+    	attribute value : String;    	
+	}--End class Enumeration
+	
+-- Begin Class BOolean 
+	class BOolean extends Parameter {
+    	attribute value : TrueFalse;    	
+	}--End class BOolean
+	
+-- Begin enumeration TrueFalse 
+	enumeration TrueFalse {
+ 		literal True;
+ 		literal False;
+ 	}--End enumeration TrueFalse
+ 	
+-- Begin Class Text 
+	class Text extends Parameter {
+    	attribute value : String;
+	}--End class Text
+	
+-- Begin Class Vector 
+	class Vector extends Parameter {
+    	attribute value : String;    	
+	}--End class Vector
+	
+-- Begin Class DirectBranch 
+	class DirectBranch extends Branch {
+    	attribute id[0-1] : String;
+    	
+    	reference destPort[0-1] : InputPort oppositeOf owningDirectBranch;
+	}--End class DirectBranch
+	
+-- Begin Class NestedBranch 
+	class NestedBranch extends Branch {
+    	reference branchs[*] container : Branch oppositeOf nestedBranch;		
+	}--End class NestedBranch
+	
+-- Begin Class Machine 
+	class Machine{
+	   	attribute name : String;
+    	attribute id : String;
+    	
+    	reference events[*] container : Event oppositeOf machine;
+    	reference data[*] container : Data oppositeOf machine;
+    	reference instances[*] container : Instance oppositeOf machine;
+    	reference targets[*] container : Target oppositeOf machine;
+    	reference stateFlow : StateFlow oppositeOf machines;    	
+	}--End class Machine
+
+-- Begin Class Junction 
+	class Junction{
+    	attribute _id[0-1] : String;
+    	attribute id : String;
+    	attribute type : String;
+    	attribute position : String;
+    	
+    	reference state : State oppositeOf junctions;
+    	reference chart : Chart oppositeOf junctions;
+	}--End class Event
+
+-- Begin Class Transition 	
+	class Transition{
+    	attribute _id[0-1] : String;
+    	attribute dataLimites : String;
+    	attribute id : String;
+    	attribute trigger : String;
+    	attribute condition : String;
+    	attribute conditionAction : String;
+    	attribute action : String;
+    	
+    	reference chart : Chart oppositeOf transitions;
+    	reference state : State oppositeOf transitions;
+	}--End class Transition
+	
+-- Begin Class Event 
+	class Event {
+    	attribute name : String;
+    	attribute id : String;
+    	attribute scope : String;
+    	attribute description : String;
+    	attribute trigger : String;
+    	
+    	reference machine : Machine oppositeOf events;
+    	reference chart : Chart oppositeOf events;
+    	reference state : State oppositeOf events;
+    	
+	}--End class Event
+	
+-- Begin Class Data 
+	class Data {
+		attribute name : String;
+    	attribute id : String;
+    	attribute scope : String;
+    	attribute description : String;
+    	attribute units : String;
+    	attribute dataType : String;
+    	
+    	reference props[*] container : Props oppositeOf data;
+    	reference state : State oppositeOf data;
+    	reference chart : Chart oppositeOf data;
+    	reference machine : Machine oppositeOf data;
+	}--End class Data
+	
+-- Begin Class Instance 
+	class Instance {
+    	attribute _id[0-1] : String;
+    	attribute id : String;
+    	attribute name : String; 
+    	
+    	reference machine : Machine oppositeOf instances;  	
+	}--End class Instance
+	
+-- Begin Class Target 
+	class Target {
+    	attribute name : String;
+    	attribute id : String;
+    	attribute codeCommand : String;
+    	attribute description : String;
+    	attribute makeCommand : String;
+    	attribute codeFlags : String;
+    	attribute checksumOld : String;
+    	
+    	reference machine : Machine oppositeOf targets;	
+	}--End class Target
+	
+-- Begin Class Chart 
+	class Chart {
+    	attribute name : String;
+    	attribute id : String;
+    	attribute _id[0-1] : String;
+    	attribute decomposotion : String;
+    	attribute updateMethode : String;
+    	attribute sampleTime : String;
+    	
+    	reference junctions[*] container : Junction oppositeOf chart;
+    	reference events[*] container : Event oppositeOf chart;
+    	reference transitions[*] container : Transition oppositeOf chart;
+    	reference data[*] container : Data oppositeOf chart;
+    	reference states[*] container : State oppositeOf chart;
+    }--End class Chart
+	
+-- Begin Class State 
+	class State {
+    	attribute name : String;
+    	attribute id : String;
+    	attribute _id[0-1] : String;
+    	attribute type : String;
+    	attribute entryAction : String;
+    	attribute exitAction : String;
+    	attribute duringAction : String;
+    	attribute eventActions : String;
+    	attribute decomposition : String;
+    	attribute position : String;
+    	
+    	reference junctions[*] container : Junction oppositeOf state;
+    	reference events[*] container : Event oppositeOf state;
+    	reference transitions[*] container : Transition oppositeOf state;
+    	reference data[*] container : Data oppositeOf state;
+    	reference chart : Chart oppositeOf states;
+    	reference states[*] container : State;
+    	
+    }--End class State
+	
+-- Begin Class Props 
+	class Props {
+    	attribute initialValue : String;
+    	
+    	reference arrays[*] container : Array oppositeOf props;
+    	reference ranges[*] container : Range oppositeOf props;
+    	reference data : Data oppositeOf props;
+	}--End class Props
+	
+-- Begin Class Range 
+	class Range {
+    	attribute maximum : String;
+    	attribute minimum : String;
+    	
+    	reference props : Props oppositeOf ranges;		
+	}--End class Range
+	
+-- Begin Class Array 
+	class Array {
+    	attribute firstIndex : String;
+    	attribute size : String;
+    	
+    	reference props : Props oppositeOf arrays;		
+	}--End class Array
+	
+-- Begin Class StateFlow 
+	class StateFlow {
+    	attribute stateFlow : String;
+    	
+    	reference machines[*] container : Machine oppositeOf stateFlow;
+    	reference simulink : Simulink oppositeOf stateFlows;	
+	}--End class StateFlow
+	
+-- Begin Class TransitionTerminal 
+	class TransitionTerminal {
+    	attribute _id[0-1] : String;		
+	}--End class TransitionTerminal
+	
+-- Begin Class Simulink 
+	class Simulink {
+    	attribute simulink[0-1] : String;
+    	
+    	reference stateFlows[*] container : StateFlow oppositeOf simulink;
+    	reference models[*] container : Model oppositeOf simulink;				
+	}--End class Simulink
+
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+}

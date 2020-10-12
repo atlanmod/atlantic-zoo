@@ -1,0 +1,65 @@
+package Metamodel;
+
+package Editor {
+  abstract class LocatedElement {
+    !unique !ordered attr String[1] location;
+  }
+
+  class Editor extends LocatedElement {
+    !unique !ordered attr String[1] extension;
+    !ordered val AbstractElement[*] abstractElements;
+  }
+
+  abstract class AbstractElement extends LocatedElement {
+    !unique !ordered attr String[1] type;
+    !ordered val Format format;
+  }
+
+  class Block extends AbstractElement {
+    !unique !ordered attr String[1] blockbegin;
+    !unique !ordered attr String[1] blockend;
+  }
+
+  class GroupElement extends AbstractElement {
+    !ordered val Indent indent;
+    !ordered val Element[*] element;
+  }
+
+  class Element extends LocatedElement {
+    !unique !ordered attr String[1] element;
+    !ordered ref GroupElement[1] groupElement;
+  }
+
+  class Format extends LocatedElement {
+    !ordered val Color color;
+    !ordered val Font font;
+  }
+
+  class Color extends LocatedElement {
+    !unique !ordered attr Integer[1] red;
+    !unique !ordered attr Integer[1] green;
+    !unique !ordered attr Integer[1] blue;
+  }
+
+  class Font extends LocatedElement {
+    !unique !ordered attr String[1] font;
+    !unique !ordered attr Boolean[1] bold;
+    !unique !ordered attr Boolean[1] italic;
+  }
+
+  class Indent extends LocatedElement {
+    !unique !ordered attr String[1] retrait;
+    !ordered ref GroupElement[1] groupElementIndent;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+  datatype Boolean : "";
+
+}
+

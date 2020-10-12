@@ -1,0 +1,85 @@
+-- @name		Amble
+-- @version		1.1
+-- @domains		Distributed programs, Objective Caml library
+-- @authors		David Touzet (david.touzet@univ-nantes.fr)
+-- @date		2005/05/30
+-- @description	This metamodel describes Amble which is a distributed programming language based on Objective Caml. Amble enables to specify a distributed program in terms of processes that run concurrently. These processes are designed as states machines that are connected to each other by means of networks. Each network specifies a set of channels. The source process of a channel is allowed to write to its target process. An Amble program is composed of a single ".ml" file that includes the definition of the different process types that are involved in the program, as well as a set of ".topo" files (one for each considered network) that specifies the topology of the defined networks.
+-- @see			http://home.gna.org/amble/
+
+package Amble {
+
+	abstract class Element {
+		attribute name : String; 
+	}
+	
+	class Program extends Element {
+		reference processes [*] container : Process;
+		reference networks [*] container : Network;
+	}
+ 
+	class Process extends Element {
+		attribute minId : Integer;
+		attribute maxId : Integer;
+		attribute instancesNb : Integer;
+		reference states [*] container : State;
+		reference transitions [*] container : Transition;
+		reference initial [0-1] container : Action;
+		reference variables [*] container : Variable;
+		reference connectedTo [*] : Network;
+	}
+ 
+	class State extends Element {
+		attribute isInitial : Boolean;
+		reference incoming [*] : Transition oppositeOf target;
+		reference outgoing [*] : Transition oppositeOf source;
+	}
+ 
+	abstract class Transition {
+		reference guard [0-1] container : Guard;
+		reference action [0-1] container : Action;
+		reference source : State oppositeOf outgoing;
+		reference target : State oppositeOf incoming;
+	}
+ 
+	class Trans extends Transition {
+		reference waitFor : Message;
+	}
+ 
+	class Strans extends Transition {
+	}
+ 
+	class Transall extends Transition {
+		reference waitFor : Message;
+	}
+ 
+	class Guard extends Element {
+	}
+ 
+	class Action extends Element {
+	}
+ 
+	class Network extends Element {
+		reference channels [*] container : Channel;
+	}
+ 
+	class Channel extends Element {
+		reference messages [*] container : Message;
+		reference source : Process;
+		reference target : Process;
+	}
+
+	class Message extends Element {
+	}
+
+	class Variable extends Element {
+		attribute type : String;
+		attribute initValue : String;
+	}
+ 
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype String;
+	datatype Integer;
+}

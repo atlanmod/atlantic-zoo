@@ -1,0 +1,79 @@
+-- @name 		OCL Operations
+-- @domains 	OCL
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/07/10
+-- @description This metamodel describes OCL Operations
+-- @see 		This metamodel has been extracted from information available in the following article:
+-- @see 		Article "A Metamodel for OCL"
+-- @see 		by Mark Richters and Martin Gogolla
+-- @see 		Page 161, Section 5, Fig. 9 Metamodel for OCL Operations
+-- @see 		Lecture Notes in Computer Science 1723
+-- @see 		Robert France, Bernhard Rumpe (Eds.)
+-- @see 		The Unified Modeling Language UML 99: Beyond the standard
+
+package OCLOperations {
+	abstract class OperationExp {}
+	
+	class PropertyOperation extends OperationExp {
+		attribute isMarkedPre : Boolean;
+		reference source container : OclExpression oppositeOf propertyOperations;
+	}
+
+	class OclOperation extends OperationExp {
+		reference arguments container : OclExpression oppositeOf oclOperations;
+	}
+	
+	class ConstExp extends OperationExp {}
+	
+	class IntegerConstExp extends ConstExp {
+		attribute value : Integer;
+	}
+	
+	class StringConstExp extends ConstExp {
+		attribute value : String;
+	}
+	
+	class RealConstExp extends ConstExp {
+		attribute value : Double;
+	}
+	
+	class AttributeExp extends PropertyOperation {
+		reference attr container : Attribute oppositeOf attrExp;
+	}
+	
+	class Attribute {
+		reference attrExp [*] : AttributeExp oppositeOf attr;
+	}
+	
+	class NaviguationExp extends PropertyOperation {
+		reference assEnd container : AssocationEnd oppositeOf navExp;
+		reference qualifierValues container : OclExpression oppositeOf naviguationExps;
+	}
+	
+	class AssocationEnd {
+		reference navExp [*] : NaviguationExp oppositeOf assEnd;
+	}
+	
+	class ClassifierOperation extends PropertyOperation {
+		reference op container : Operation oppositeOf classOp;
+		reference arguments container : OclExpression oppositeOf classifierOperations;
+	}
+	
+	class Operation {
+		reference classOp [*] : ClassifierOperation oppositeOf op;
+	}
+
+	abstract class OclExpression {
+		reference propertyOperations [*] : PropertyOperation oppositeOf source;
+		reference naviguationExps [*] : NaviguationExp oppositeOf qualifierValues;
+		reference classifierOperations [*] ordered : ClassifierOperation oppositeOf arguments;
+		reference oclOperations [*] ordered : OclOperation oppositeOf arguments;
+	}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+	datatype Double;
+}

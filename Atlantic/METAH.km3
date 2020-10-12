@@ -1,0 +1,136 @@
+-- @name 		MetaH
+-- @version 	1.0
+-- @domains 	developping new architectural design and analysis tools
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/05/27
+-- @description High-level software and hardware architecture specification language
+-- @see 		This metamodel has been extracted from information available on this site : http://www.sei.cmu.edu/pub/documents/98.reports/pdf/98sr006.pdf
+
+package MetaH {
+
+	--@begin METAHFile
+	class METAHFile {
+		reference entries[*] container : METAHEntry;
+	}
+	--@end METAHFile
+	
+	--@begin METAHEntry
+	abstract class METAHEntry {
+	}
+	--@end METAHEntry
+
+
+	--@begin Package
+	--@comments MetaH package objects are used to describe collections of subprograms and statically allocated
+	--@comments and persistent data. Package objects may be shareable across processes and may contain ports.
+	class Package extends METAHEntry {
+		attribute packName : String;
+		reference data [*] ordered container : Data; 
+	} 
+	--@end Package
+	
+	--@begin PackageImplementation
+	class PackageImplementation extends METAHEntry {
+		attribute implementationName : String;
+		attribute implements : String;
+		reference attributes [*] ordered container : Attribute; 
+	}
+	--@end PackageImplementation
+	
+	--@begin Data
+	--@comments Type define in a Package
+	class Data {
+		attribute dataName : String;
+	}
+	--@end Data
+
+	--@begin Attribute
+	class Attribute {
+		attribute attName : String;
+		attribute attValue : Integer;
+		attribute attValueType : String;
+		attribute attType : String;
+	}
+	--@end Attribute
+	
+	--@begin ProcessDeclaration
+	--@comments A MetaH process describes a single, schedulable thread of execution. There are two subclasses of
+	--@comments MetaH processes, periodic processes and aperiodic processes 
+	class ProcessDeclaration extends METAHEntry {
+		attribute procDecName : String;
+		reference ports [*] ordered container : Port;
+	}
+	--@end ProcessDeclaration
+	
+	--@beginProcessImplementation
+	class ProcessImplementation extends METAHEntry {
+		attribute procImpName : String;
+		attribute declaration : String;
+		reference processAttributes [*] ordered container : ProcessAttribute;
+	}
+	--@end ProcessImplementation
+	
+	--@begin ProcessAttribute
+	class ProcessAttribute {
+		attribute attName : String;
+		attribute attValue : Integer;
+		attribute attValueType : String;
+	}
+	--@end ProcessAttribute
+	
+	--@begin Process
+	class Process  {
+		attribute procName : String;
+		attribute periodic : String;
+		attribute declaration : String;
+		attribute implementation : String;
+	}
+	--@end Process
+	
+	--@begin Port
+	--@comments A port represents a point of contact between a process/macro and its environment.
+	class Port {
+		attribute portName : String;
+		attribute portCom : String;
+		attribute portPackage : String;
+		attribute portType : String;		
+	}
+	--@end Port
+	
+	--@begin Connection
+	--@comments The connections part of an implementation specification declares connections between the interface
+	--@comments elements of the various components in an implementation.
+	class Connection extends METAHEntry {		
+		attribute compSrc : String; 
+		attribute portSrc : String; 
+		attribute compDest : String; 
+		attribute portDest : String; 
+	}
+	--@end Connection
+		
+	--@begin MacroDeclaration
+	--@comments A macro object is a hierarchical structuring mechanism, largely a syntactic feature to help structure
+	--@comments large specifications that has little individual semantic impact. A macro object may contain
+	--@comments process, macro, and connections between objects in the interfaces of these components.
+ 	class MacroDeclaration extends METAHEntry {
+		attribute name : String;
+		reference ports [*] ordered container : Port;
+	}
+	--@end MacroDeclaration
+	
+	--@begin MacroImplementation
+	class MacroImplementation extends METAHEntry {
+		attribute macroImpName : String;
+		attribute declaration : String;
+		reference process [*] ordered container : Process;
+		reference connections [*] ordered container : Connection;
+	}
+	--@end MacroImplementation
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}
+

@@ -1,0 +1,991 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<rdf:RDF xmlns:rdf = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:rdfs = 'http://www.w3.org/2000/01/rdf-schema#' xmlns:xsd = 'http://www.w3.org/2001/XMLSchema#' xmlns:owl = 'http://www.w3.org/2002/07/owl#' xmlns = 'http://example.org/SimplfiedMiningMart#' xml:base = 'http://example.org/SimplfiedMiningMart'>
+  <owl:Ontology rdf:about = 'SimplfiedMiningMart'/>
+  <owl:Ontology rdf:about = 'DataRepresentation'/>
+  <owl:Class rdf:ID = 'DomainDataType'>
+    <rdfs:label>DomainDataType</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#DataType'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#DomainDataType.baseAttributeD'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Snapshot'>
+    <rdfs:label>Snapshot</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#ColumnSet'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'MultiColumnFeature'>
+    <rdfs:label>MultiColumnFeature</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#FeatureAttribute'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#MultiColumnFeature.consitsOfBaseAttributes'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Classifier'>
+    <rdfs:label>Classifier</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#ModelElement'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Ordinal'>
+    <rdfs:label>Ordinal</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#DomainDataType'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'BaseAttribute'>
+    <rdfs:label>BaseAttribute</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#FeatureAttribute'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#BaseAttribute.domainDataType'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#BaseAttribute.isPartMultiColumnFeature'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#BaseAttribute.isPartMultiColumnFeature'/>
+        <owl:maxCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:maxCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Value'>
+    <rdfs:label>Value</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Attribute'/>
+    <rdfs:subClassOf rdf:resource = '#Parameter'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Value.name'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Value.belongsToUserInput'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Value.domainDataType'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Concept'>
+    <rdfs:label>Concept</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Class'/>
+    <rdfs:subClassOf rdf:resource = '#Parameter'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Concept.subConceptRestriction'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Concept.correspondsToColumnSet'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Concept.correspondsToColumnSet'/>
+        <owl:maxCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:maxCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Concept.ToConcept'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Concept.isA'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Concept.FromConcept'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'TimeGroup'>
+    <rdfs:label>TimeGroup</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#KeyAttribute'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'ModelElement'>
+    <rdfs:label>ModelElement</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID = 'StructuralFeature'>
+    <rdfs:label>StructuralFeature</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#ModelElement'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Key'>
+    <rdfs:label>Key</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#ModelElement'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Key.isUsedForIndex'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Key.hasColumn'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Key.isAssociatedToColumnSet'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'PrimaryKey'>
+    <rdfs:label>PrimaryKey</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Key'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'ColumnSet'>
+    <rdfs:label>ColumnSet</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Class'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnSet.dbConnectString'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnSet.number'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnSet.file'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnSet.user'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnSet.correspondsToConcept'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnSet.correspondsToConcept'/>
+        <owl:maxCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:maxCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnSet.correspondsToRelationShip'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnSet.correspondsToRelationShip'/>
+        <owl:maxCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:maxCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnSet.hasColumn'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnSet.hasKey'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Class'>
+    <rdfs:label>Class</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Classifier'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Class.name'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Class.attributes'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Categorial'>
+    <rdfs:label>Categorial</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Nominal'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'FeatureAttribute'>
+    <rdfs:label>FeatureAttribute</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Attribute'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#FeatureAttribute.name'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#FeatureAttribute.relevanceForMining'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#FeatureAttribute.correspondsToColumns'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#FeatureAttribute.attributeType'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#FeatureAttribute.belongsToConcept'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'RoleRestriction'>
+    <rdfs:label>RoleRestriction</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Attribute'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#RoleRestriction.name'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#RoleRestriction.min'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#RoleRestriction.max'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#RoleRestriction.restrictionForRelationShip'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#RoleRestriction.belongsToConcept'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#RoleRestriction.restrictionForConcept'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#RoleRestriction.restrictionToConcept'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'View'>
+    <rdfs:label>View</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#ColumnSet'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Spatial'>
+    <rdfs:label>Spatial</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#KeyAttribute'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Column'>
+    <rdfs:label>Column</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Attribute'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Column.name'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Column.corespondsToBaseAttribute'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Column.keys'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Column.dataType'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Column.belongsToColumnSet'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'ColumnSetStatistics'>
+    <rdfs:label>ColumnSetStatistics</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#ModelElement'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnSetStatistics.allNumber'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnSetStatistics.ordinalNumber'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnSetStatistics.nominalNumber'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnSetStatistics.timeNumber'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnSetStatistics.forColumnSet'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Parameter'>
+    <rdfs:label>Parameter</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID = 'DataType'>
+    <rdfs:label>DataType</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Classifier'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#DataType.attribute'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Table'>
+    <rdfs:label>Table</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#ColumnSet'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Binary'>
+    <rdfs:label>Binary</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Scalar'/>
+    <rdfs:subClassOf rdf:resource = '#Nominal'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Nominal'>
+    <rdfs:label>Nominal</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#DomainDataType'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Time'>
+    <rdfs:label>Time</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Scalar'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'ForeignKey'>
+    <rdfs:label>ForeignKey</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Key'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ForeignKey.isConnectionTo'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ForeignKey.isConnectionTo'/>
+        <owl:maxCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:maxCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ForeignKey.correspondsToRelationShip'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ForeignKey.correspondsToRelationShip'/>
+        <owl:maxCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:maxCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Attribute'>
+    <rdfs:label>Attribute</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#StructuralFeature'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Attribute.has'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Attribute.class'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'RelationShip'>
+    <rdfs:label>RelationShip</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#ModelElement'/>
+    <rdfs:subClassOf rdf:resource = '#Parameter'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#RelationShip.subRelationShipRestriction'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#RelationShip.defined'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#RelationShip.name'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#RelationShip.isA'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#RelationShip.FromConcept'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#RelationShip.correspondsToForeignKey'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#RelationShip.correspondsToColumnSet'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#RelationShip.correspondsToColumnSet'/>
+        <owl:maxCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:maxCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#RelationShip.ToConcept'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Scalar'>
+    <rdfs:label>Scalar</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Ordinal'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'ColumnStatistics'>
+    <rdfs:label>ColumnStatistics</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnStatistics.distributionCount'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnStatistics.unique'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnStatistics.average'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnStatistics.distributionMin'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnStatistics.min'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnStatistics.max'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnStatistics.standarDeviation'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnStatistics.distributionValue'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnStatistics.missing'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnStatistics.distributionMax'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ColumnStatistics.forColumn'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'KeyAttribute'>
+    <rdfs:label>KeyAttribute</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Nominal'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Constant'>
+    <rdfs:label>Constant</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Nominal'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'UserInput'>
+    <rdfs:label>UserInput</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Class'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#UserInput.containsValues'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:DatatypeProperty rdf:ID = 'FeatureAttribute.name'>
+    <rdfs:domain rdf:resource = '#FeatureAttribute'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#string'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'ColumnStatistics.distributionValue'>
+    <rdfs:domain rdf:resource = '#ColumnStatistics'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#string'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'ColumnStatistics.min'>
+    <rdfs:domain rdf:resource = '#ColumnStatistics'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'RoleRestriction.name'>
+    <rdfs:domain rdf:resource = '#RoleRestriction'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#string'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'ColumnSetStatistics.timeNumber'>
+    <rdfs:domain rdf:resource = '#ColumnSetStatistics'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'ColumnSet.number'>
+    <rdfs:domain rdf:resource = '#ColumnSet'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'ColumnStatistics.standarDeviation'>
+    <rdfs:domain rdf:resource = '#ColumnStatistics'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'ColumnSet.user'>
+    <rdfs:domain rdf:resource = '#ColumnSet'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#string'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'RoleRestriction.max'>
+    <rdfs:domain rdf:resource = '#RoleRestriction'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'ColumnStatistics.distributionCount'>
+    <rdfs:domain rdf:resource = '#ColumnStatistics'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'RoleRestriction.min'>
+    <rdfs:domain rdf:resource = '#RoleRestriction'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'Value.name'>
+    <rdfs:domain rdf:resource = '#Value'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#string'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'ColumnSetStatistics.nominalNumber'>
+    <rdfs:domain rdf:resource = '#ColumnSetStatistics'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'ColumnStatistics.unique'>
+    <rdfs:domain rdf:resource = '#ColumnStatistics'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'ColumnSetStatistics.allNumber'>
+    <rdfs:domain rdf:resource = '#ColumnSetStatistics'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'ColumnStatistics.distributionMin'>
+    <rdfs:domain rdf:resource = '#ColumnStatistics'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'ColumnSet.dbConnectString'>
+    <rdfs:domain rdf:resource = '#ColumnSet'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#string'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'ColumnStatistics.distributionMax'>
+    <rdfs:domain rdf:resource = '#ColumnStatistics'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'ColumnSet.file'>
+    <rdfs:domain rdf:resource = '#ColumnSet'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#string'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'RelationShip.subRelationShipRestriction'>
+    <rdfs:domain rdf:resource = '#RelationShip'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#string'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'Column.name'>
+    <rdfs:domain rdf:resource = '#Column'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#string'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'ColumnSetStatistics.ordinalNumber'>
+    <rdfs:domain rdf:resource = '#ColumnSetStatistics'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'FeatureAttribute.relevanceForMining'>
+    <rdfs:domain rdf:resource = '#FeatureAttribute'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#boolean'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'RelationShip.defined'>
+    <rdfs:domain rdf:resource = '#RelationShip'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#string'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'RelationShip.name'>
+    <rdfs:domain rdf:resource = '#RelationShip'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#string'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'ColumnStatistics.missing'>
+    <rdfs:domain rdf:resource = '#ColumnStatistics'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'Concept.subConceptRestriction'>
+    <rdfs:domain rdf:resource = '#Concept'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#string'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'ColumnStatistics.average'>
+    <rdfs:domain rdf:resource = '#ColumnStatistics'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'ColumnStatistics.max'>
+    <rdfs:domain rdf:resource = '#ColumnStatistics'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'Key.isUsedForIndex'>
+    <rdfs:domain rdf:resource = '#Key'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#boolean'/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID = 'Class.name'>
+    <rdfs:domain rdf:resource = '#Class'/>
+    <rdfs:range rdf:resource = 'http://www.w3.org/2001/XMLSchema#string'/>
+  </owl:DatatypeProperty>
+  <owl:ObjectProperty rdf:ID = 'RelationShip.correspondsToForeignKey'>
+    <rdfs:domain rdf:resource = '#RelationShip'/>
+    <rdfs:range rdf:resource = '#ForeignKey'/>
+    <owl:inverseOf rdf:resource = '#ForeignKey.correspondsToRelationShip'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ColumnSetStatistics.forColumnSet'>
+    <rdfs:domain rdf:resource = '#ColumnSetStatistics'/>
+    <rdfs:range rdf:resource = '#ColumnSet'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'RoleRestriction.restrictionToConcept'>
+    <rdfs:domain rdf:resource = '#RoleRestriction'/>
+    <rdfs:range rdf:resource = '#Concept'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'RelationShip.correspondsToColumnSet'>
+    <rdfs:domain rdf:resource = '#RelationShip'/>
+    <rdfs:range rdf:resource = '#ColumnSet'/>
+    <owl:inverseOf rdf:resource = '#ColumnSet.correspondsToRelationShip'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ColumnStatistics.forColumn'>
+    <rdfs:domain rdf:resource = '#ColumnStatistics'/>
+    <rdfs:range rdf:resource = '#Column'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'UserInput.containsValues'>
+    <rdfs:domain rdf:resource = '#UserInput'/>
+    <rdfs:range rdf:resource = '#Value'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'FeatureAttribute.belongsToConcept'>
+    <rdfs:domain rdf:resource = '#FeatureAttribute'/>
+    <rdfs:range rdf:resource = '#Concept'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ForeignKey.isConnectionTo'>
+    <rdfs:domain rdf:resource = '#ForeignKey'/>
+    <rdfs:range rdf:resource = '#Table'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Column.keys'>
+    <rdfs:domain rdf:resource = '#Column'/>
+    <rdfs:range rdf:resource = '#Key'/>
+    <owl:inverseOf rdf:resource = '#Key.hasColumn'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ForeignKey.correspondsToRelationShip'>
+    <rdfs:domain rdf:resource = '#ForeignKey'/>
+    <rdfs:range rdf:resource = '#RelationShip'/>
+    <owl:inverseOf rdf:resource = '#RelationShip.correspondsToForeignKey'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'BaseAttribute.domainDataType'>
+    <rdfs:domain rdf:resource = '#BaseAttribute'/>
+    <rdfs:range rdf:resource = '#DomainDataType'/>
+    <owl:inverseOf rdf:resource = '#DomainDataType.baseAttributeD'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Value.belongsToUserInput'>
+    <rdfs:domain rdf:resource = '#Value'/>
+    <rdfs:range rdf:resource = '#UserInput'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Value.domainDataType'>
+    <rdfs:domain rdf:resource = '#Value'/>
+    <rdfs:range rdf:resource = '#DomainDataType'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Key.hasColumn'>
+    <rdfs:domain rdf:resource = '#Key'/>
+    <rdfs:range rdf:resource = '#Column'/>
+    <owl:inverseOf rdf:resource = '#Column.keys'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'DomainDataType.baseAttributeD'>
+    <rdfs:domain rdf:resource = '#DomainDataType'/>
+    <rdfs:range rdf:resource = '#BaseAttribute'/>
+    <owl:inverseOf rdf:resource = '#BaseAttribute.domainDataType'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Concept.FromConcept'>
+    <rdfs:domain rdf:resource = '#Concept'/>
+    <rdfs:range rdf:resource = '#RelationShip'/>
+    <owl:inverseOf rdf:resource = '#RelationShip.FromConcept'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ColumnSet.hasKey'>
+    <rdfs:domain rdf:resource = '#ColumnSet'/>
+    <rdfs:range rdf:resource = '#Key'/>
+    <owl:inverseOf rdf:resource = '#Key.isAssociatedToColumnSet'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'DataType.attribute'>
+    <rdfs:domain rdf:resource = '#DataType'/>
+    <rdfs:range rdf:resource = '#Attribute'/>
+    <owl:inverseOf rdf:resource = '#Attribute.has'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'FeatureAttribute.attributeType'>
+    <rdfs:domain rdf:resource = '#FeatureAttribute'/>
+    <rdfs:range rdf:resource = '#DataType'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'RoleRestriction.belongsToConcept'>
+    <rdfs:domain rdf:resource = '#RoleRestriction'/>
+    <rdfs:range rdf:resource = '#Concept'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Class.attributes'>
+    <rdfs:domain rdf:resource = '#Class'/>
+    <rdfs:range rdf:resource = '#Attribute'/>
+    <owl:inverseOf rdf:resource = '#Attribute.class'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Concept.ToConcept'>
+    <rdfs:domain rdf:resource = '#Concept'/>
+    <rdfs:range rdf:resource = '#RelationShip'/>
+    <owl:inverseOf rdf:resource = '#RelationShip.ToConcept'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'RoleRestriction.restrictionForConcept'>
+    <rdfs:domain rdf:resource = '#RoleRestriction'/>
+    <rdfs:range rdf:resource = '#Concept'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'MultiColumnFeature.consitsOfBaseAttributes'>
+    <rdfs:domain rdf:resource = '#MultiColumnFeature'/>
+    <rdfs:range rdf:resource = '#BaseAttribute'/>
+    <owl:inverseOf rdf:resource = '#BaseAttribute.isPartMultiColumnFeature'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ColumnSet.hasColumn'>
+    <rdfs:domain rdf:resource = '#ColumnSet'/>
+    <rdfs:range rdf:resource = '#Column'/>
+    <owl:inverseOf rdf:resource = '#Column.belongsToColumnSet'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'RelationShip.FromConcept'>
+    <rdfs:domain rdf:resource = '#RelationShip'/>
+    <rdfs:range rdf:resource = '#Concept'/>
+    <owl:inverseOf rdf:resource = '#Concept.FromConcept'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Column.belongsToColumnSet'>
+    <rdfs:domain rdf:resource = '#Column'/>
+    <rdfs:range rdf:resource = '#ColumnSet'/>
+    <owl:inverseOf rdf:resource = '#ColumnSet.hasColumn'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'RelationShip.ToConcept'>
+    <rdfs:domain rdf:resource = '#RelationShip'/>
+    <rdfs:range rdf:resource = '#Concept'/>
+    <owl:inverseOf rdf:resource = '#Concept.ToConcept'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'RoleRestriction.restrictionForRelationShip'>
+    <rdfs:domain rdf:resource = '#RoleRestriction'/>
+    <rdfs:range rdf:resource = '#RelationShip'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'FeatureAttribute.correspondsToColumns'>
+    <rdfs:domain rdf:resource = '#FeatureAttribute'/>
+    <rdfs:range rdf:resource = '#Column'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ColumnSet.correspondsToConcept'>
+    <rdfs:domain rdf:resource = '#ColumnSet'/>
+    <rdfs:range rdf:resource = '#Concept'/>
+    <owl:inverseOf rdf:resource = '#Concept.correspondsToColumnSet'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Key.isAssociatedToColumnSet'>
+    <rdfs:domain rdf:resource = '#Key'/>
+    <rdfs:range rdf:resource = '#ColumnSet'/>
+    <owl:inverseOf rdf:resource = '#ColumnSet.hasKey'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ColumnSet.correspondsToRelationShip'>
+    <rdfs:domain rdf:resource = '#ColumnSet'/>
+    <rdfs:range rdf:resource = '#RelationShip'/>
+    <owl:inverseOf rdf:resource = '#RelationShip.correspondsToColumnSet'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Attribute.class'>
+    <rdfs:domain rdf:resource = '#Attribute'/>
+    <rdfs:range rdf:resource = '#Class'/>
+    <owl:inverseOf rdf:resource = '#Class.attributes'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'BaseAttribute.isPartMultiColumnFeature'>
+    <rdfs:domain rdf:resource = '#BaseAttribute'/>
+    <rdfs:range rdf:resource = '#MultiColumnFeature'/>
+    <owl:inverseOf rdf:resource = '#MultiColumnFeature.consitsOfBaseAttributes'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Concept.correspondsToColumnSet'>
+    <rdfs:domain rdf:resource = '#Concept'/>
+    <rdfs:range rdf:resource = '#ColumnSet'/>
+    <owl:inverseOf rdf:resource = '#ColumnSet.correspondsToConcept'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Concept.isA'>
+    <rdfs:domain rdf:resource = '#Concept'/>
+    <rdfs:range rdf:resource = '#Concept'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Column.corespondsToBaseAttribute'>
+    <rdfs:domain rdf:resource = '#Column'/>
+    <rdfs:range rdf:resource = '#BaseAttribute'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Column.dataType'>
+    <rdfs:domain rdf:resource = '#Column'/>
+    <rdfs:range rdf:resource = '#DataType'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'RelationShip.isA'>
+    <rdfs:domain rdf:resource = '#RelationShip'/>
+    <rdfs:range rdf:resource = '#RelationShip'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Attribute.has'>
+    <rdfs:domain rdf:resource = '#Attribute'/>
+    <rdfs:range rdf:resource = '#DataType'/>
+    <owl:inverseOf rdf:resource = '#DataType.attribute'/>
+  </owl:ObjectProperty>
+  <owl:FunctionalProperty rdf:about = '#DomainDataType.baseAttributeD'/>
+  <owl:FunctionalProperty rdf:about = '#Value.domainDataType'/>
+  <owl:FunctionalProperty rdf:about = '#ColumnSet.file'/>
+  <owl:FunctionalProperty rdf:about = '#RelationShip.defined'/>
+  <owl:FunctionalProperty rdf:about = '#Value.name'/>
+  <owl:FunctionalProperty rdf:about = '#Column.corespondsToBaseAttribute'/>
+  <owl:FunctionalProperty rdf:about = '#ColumnSet.user'/>
+  <owl:FunctionalProperty rdf:about = '#ColumnStatistics.distributionValue'/>
+  <owl:FunctionalProperty rdf:about = '#FeatureAttribute.name'/>
+  <owl:FunctionalProperty rdf:about = '#RoleRestriction.max'/>
+  <owl:FunctionalProperty rdf:about = '#DataType.attribute'/>
+  <owl:FunctionalProperty rdf:about = '#Concept.isA'/>
+  <owl:FunctionalProperty rdf:about = '#Concept.subConceptRestriction'/>
+  <owl:FunctionalProperty rdf:about = '#ColumnSetStatistics.timeNumber'/>
+  <owl:FunctionalProperty rdf:about = '#RelationShip.isA'/>
+  <owl:FunctionalProperty rdf:about = '#ColumnSetStatistics.ordinalNumber'/>
+  <owl:FunctionalProperty rdf:about = '#ColumnSetStatistics.nominalNumber'/>
+  <owl:FunctionalProperty rdf:about = '#ColumnStatistics.distributionMin'/>
+  <owl:FunctionalProperty rdf:about = '#ColumnSet.number'/>
+  <owl:FunctionalProperty rdf:about = '#ColumnStatistics.standarDeviation'/>
+  <owl:FunctionalProperty rdf:about = '#RelationShip.ToConcept'/>
+  <owl:FunctionalProperty rdf:about = '#ColumnStatistics.distributionMax'/>
+  <owl:FunctionalProperty rdf:about = '#Attribute.has'/>
+  <owl:FunctionalProperty rdf:about = '#Column.dataType'/>
+  <owl:FunctionalProperty rdf:about = '#BaseAttribute.domainDataType'/>
+  <owl:FunctionalProperty rdf:about = '#RoleRestriction.belongsToConcept'/>
+  <owl:FunctionalProperty rdf:about = '#ColumnStatistics.unique'/>
+  <owl:FunctionalProperty rdf:about = '#RoleRestriction.restrictionForRelationShip'/>
+  <owl:FunctionalProperty rdf:about = '#RelationShip.FromConcept'/>
+  <owl:FunctionalProperty rdf:about = '#RelationShip.name'/>
+  <owl:FunctionalProperty rdf:about = '#ColumnSet.dbConnectString'/>
+  <owl:FunctionalProperty rdf:about = '#FeatureAttribute.relevanceForMining'/>
+  <owl:FunctionalProperty rdf:about = '#RelationShip.subRelationShipRestriction'/>
+  <owl:FunctionalProperty rdf:about = '#Column.belongsToColumnSet'/>
+  <owl:FunctionalProperty rdf:about = '#ColumnStatistics.missing'/>
+  <owl:FunctionalProperty rdf:about = '#ColumnStatistics.max'/>
+  <owl:FunctionalProperty rdf:about = '#ColumnStatistics.min'/>
+  <owl:FunctionalProperty rdf:about = '#ColumnStatistics.average'/>
+  <owl:FunctionalProperty rdf:about = '#FeatureAttribute.belongsToConcept'/>
+  <owl:FunctionalProperty rdf:about = '#Concept.FromConcept'/>
+  <owl:FunctionalProperty rdf:about = '#RoleRestriction.name'/>
+  <owl:FunctionalProperty rdf:about = '#RoleRestriction.restrictionForConcept'/>
+  <owl:FunctionalProperty rdf:about = '#ColumnStatistics.forColumn'/>
+  <owl:FunctionalProperty rdf:about = '#ColumnStatistics.distributionCount'/>
+  <owl:FunctionalProperty rdf:about = '#Concept.ToConcept'/>
+  <owl:FunctionalProperty rdf:about = '#ColumnSetStatistics.allNumber'/>
+  <owl:FunctionalProperty rdf:about = '#RoleRestriction.min'/>
+  <owl:FunctionalProperty rdf:about = '#RoleRestriction.restrictionToConcept'/>
+  <owl:FunctionalProperty rdf:about = '#Attribute.class'/>
+  <owl:FunctionalProperty rdf:about = '#Column.name'/>
+  <owl:FunctionalProperty rdf:about = '#ColumnSetStatistics.forColumnSet'/>
+  <owl:FunctionalProperty rdf:about = '#FeatureAttribute.attributeType'/>
+  <owl:FunctionalProperty rdf:about = '#Key.isAssociatedToColumnSet'/>
+  <owl:FunctionalProperty rdf:about = '#Class.name'/>
+  <owl:FunctionalProperty rdf:about = '#Key.isUsedForIndex'/>
+</rdf:RDF>

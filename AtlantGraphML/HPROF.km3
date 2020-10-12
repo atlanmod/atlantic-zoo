@@ -1,0 +1,119 @@
+-- @name		HPROF
+-- @version		1.0
+-- @authors		Frédéric Jouault (frederic.jouault <at> inria.fr)
+-- @date		2009/09/09
+-- @description	Metamodel representing profile data(e.g., Thread, traces, etc) produced by the HPROF Java profiler.
+-- @see http://java.sun.com/developer/technicalArticles/Programming/HPROF.html
+package HPROF {
+
+	-- Every class should extend LocatedElement, directly or indirectly.
+	-- This is a technical constraint to support text-to-model traceability.
+	abstract class LocatedElement {
+		attribute location[0-1] : String;
+		attribute commentsBefore[*] ordered : String;
+		attribute commentsAfter[*] ordered : String;
+	}
+
+-- BEGIN DSL-specific classes (replace sample contents)
+	class Profile extends LocatedElement {
+		attribute header : String;
+		reference threadActions[*] ordered container : ThreadAction;
+		reference traces[*] ordered container : Trace;
+		reference times container : Times;
+
+		reference methods[*] ordered container : Method;
+	}
+	
+	class Method extends LocatedElement {
+		attribute fullyQualifiedName : String;
+
+		reference stackTraceElements[*] : StackTraceElement oppositeOf method;
+	}
+
+	abstract class ThreadAction extends LocatedElement {
+		attribute id : Integer;
+	}
+	
+	class ThreadStart extends ThreadAction {
+		attribute obj : Integer;
+		attribute name : String;
+		attribute group : String;
+	}
+	
+	class ThreadEnd extends ThreadAction {}
+
+	class Trace extends LocatedElement {
+		attribute id : Integer;
+		attribute threadId : Integer;
+		reference elements[*] ordered container : StackTraceElement oppositeOf trace;
+
+		reference times[*] : Time oppositeOf trace;
+	}
+
+	class StackTraceElement extends LocatedElement {
+		reference method : Method oppositeOf stackTraceElements;
+		attribute fileName[0-1] : String;
+		attribute line : Integer;
+
+		reference trace : Trace oppositeOf elements;
+	}
+
+	class Times extends LocatedElement {
+		attribute unit : String;
+		attribute total : Integer;
+		reference date container : Date;
+		reference elements[*] container : Time;
+	}
+
+	class Time extends LocatedElement {
+		attribute rank : Integer;
+		attribute self : Double;
+		attribute accum : Double;
+		attribute count : Integer;
+		reference trace : Trace oppositeOf times;
+		reference method : Method;	-- should be the first method of the associated Trace
+	}
+
+	class Date extends LocatedElement {
+		attribute day : Day;
+		attribute month : Month;
+		attribute dayOfMonth : Integer;
+		attribute hour : Integer;
+		attribute minutes : Integer;
+		attribute seconds : Integer;
+		attribute year : Integer;
+	}
+
+	enumeration Day {
+		literal Monday;
+		literal Tuesday;
+		literal Wednesday;
+		literal Thursday;
+		literal Friday;
+		literal Saturday;
+		literal Sunday;
+	}
+
+	enumeration Month {
+		literal January;
+		literal February;
+		literal March;
+		literal April;
+		literal May;
+		literal June;
+		literal July;
+		literal August;
+		literal September;
+		literal October;
+		literal November;
+		literal December;
+	}
+-- END DSL-specific classes
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Double;
+	datatype Integer;
+	datatype String;
+}

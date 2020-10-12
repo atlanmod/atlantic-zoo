@@ -1,0 +1,101 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_ClassDiagram"{
+labelloc=t
+color=black
+label=ClassDiagram
+ node[shape=record];
+Class[label="{Class| | }"]
+ Class->Classifier[arrowhead=vee,arrowtail=diamond,headlabel="nestedClassifier[*]{ordered}",group=Classifier,minlen=2,constraint=true,]
+ Class->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Property[label="{Property|aggregation[0-1] : AggregationKind| }"]
+ Property->TypedElement[arrowhead=onormal,group=TypedElement,minlen=2,constraint=true,]
+ Property->MultiplicityElement[arrowhead=onormal,group=MultiplicityElement,minlen=2,constraint=true,]
+ Property->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Operation[label="{Operation| | }"]
+ Operation->Parameter[arrowhead=vee,arrowtail=diamond,headlabel="ownedParmeter[*]{ordered}",group=Parameter,minlen=2,constraint=true,]
+ Operation->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Interface[label="{Interface| | }"]
+ Interface->Classifier[arrowhead=vee,arrowtail=diamond,headlabel="nestedClassifier[*]{ordered}",group=Classifier,minlen=2,constraint=true,]
+ Interface->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Classifier[label="{/Classifier/| | }"]
+ Classifier->Property[arrowhead=vee,arrowtail=diamond,headlabel="ownedProperty[*]{ordered}",group=Property,minlen=2,constraint=true,]
+ Classifier->Operation[arrowhead=vee,arrowtail=diamond,headlabel="ownedOperation[*]{ordered}",group=Operation,minlen=2,constraint=true,]
+ Classifier->Generalization[arrowhead=vee,arrowtail=diamond,headlabel="ownedElement[*]{ordered}",group=Generalization,minlen=2,constraint=true,]
+ Classifier->PackagedElement[arrowhead=onormal,group=PackagedElement,minlen=2,constraint=true,]
+ Classifier->type[arrowhead=onormal,group=type,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Package[label="{Package| | }"]
+ Package->PackagedElement[arrowhead=vee,arrowtail=diamond,headlabel="ownedPackagedElement[*]{ordered}",group=PackagedElement,minlen=2,constraint=true,]
+ Package->PackagedElement[arrowhead=onormal,group=PackagedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Association[label="{Association| | }"]
+ Association->Property[arrowhead=vee,arrowtail=diamond,headlabel="ownedEnd[*]{ordered}",group=Property,minlen=2,constraint=true,]
+ Association->Property[arrowhead=vee,arrowtail=none,headlabel="memberEnd[*]{ordered}",group=Property,minlen=2,constraint=false,]
+ Association->PackagedElement[arrowhead=onormal,group=PackagedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PackagedElement[label="{/PackagedElement/| | }"]
+ PackagedElement->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parameter[label="{Parameter|direction[0-1] : ParameterDirectionKind| }"]
+ Parameter->TypedElement[arrowhead=onormal,group=TypedElement,minlen=2,constraint=true,]
+ Parameter->MultiplicityElement[arrowhead=onormal,group=MultiplicityElement,minlen=2,constraint=true,]
+ Parameter->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataType[label="{DataType| | }"]
+ DataType->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Enumeration[label="{Enumeration| | }"]
+ Enumeration->EnumerationLiteral[arrowhead=vee,arrowtail=diamond,headlabel="ownedLiteral[*]{ordered}",group=EnumerationLiteral,minlen=2,constraint=true,]
+ Enumeration->DataType[arrowhead=onormal,group=DataType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+type[label="{/type/| | }"]
+ type->PackagedElement[arrowhead=onormal,group=PackagedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TypedElement[label="{/TypedElement/| | }"]
+ TypedElement->type[arrowhead=vee,arrowtail=none,headlabel="type[0-1]",group=type,minlen=2,constraint=false,]
+;
+ node[shape=record];
+MultiplicityElement[label="{/MultiplicityElement/|upper[0-1] : Int\nlower[0-1] : Int| }"]
+;
+ node[shape=record];
+EnumerationLiteral[label="{EnumerationLiteral| | }"]
+ EnumerationLiteral->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NamedElement[label="{/NamedElement/|name[0-1] : String| }"]
+;
+ node[shape=record];
+Generalization[label="{Generalization| | }"]
+ Generalization->Classifier[arrowhead=vee,arrowtail=none,headlabel="general[0-1]",group=Classifier,minlen=2,constraint=false,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Int[label="{&#171;DataType&#187;\nInt|}"]
+;
+
+}
+}

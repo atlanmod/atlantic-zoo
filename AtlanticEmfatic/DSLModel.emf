@@ -1,0 +1,81 @@
+package Metamodel;
+
+package DSLModel {
+  class Model {
+    !unique !ordered attr String[1] domainModel;
+    val ModelElement[*] contents;
+  }
+
+  abstract class Element {
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr String[1] ~id;
+  }
+
+  class ModelElement extends Element {
+    !ordered ref EmbeddingLink[1]#elements parentLink;
+    !ordered val Property[*]#owner properties;
+    !ordered val EmbeddingLink[*]#owner embeddinglinks;
+    !ordered val ReferenceLink[*]#owner referencelinks;
+  }
+
+  class ModelElementLink extends ModelElement {
+    !ordered ref ReferenceLink[*]#modelElement links;
+  }
+
+  class EmbeddingLink extends NamedElement {
+    !ordered ref ModelElement#embeddinglinks owner;
+    !ordered val ModelElement[*]#parentLink elements;
+  }
+
+  class ReferenceLink extends Element {
+    !ordered ref ModelElement#referencelinks owner;
+    !ordered ref ModelElementLink[1]#links modelElement;
+    !ordered val Role[2]#owner roles;
+  }
+
+  abstract class NamedElement {
+    !unique !ordered attr String[1] name;
+  }
+
+  class Property extends NamedElement {
+    !ordered ref ModelElement[1]#properties owner;
+    !ordered val Value[1] value;
+  }
+
+  class Role extends NamedElement {
+    !ordered ref ModelElement[1] element;
+    !ordered ref ReferenceLink[1]#roles owner;
+  }
+
+  abstract class Value {
+  }
+
+  class IntegerValue extends Value {
+    !unique !ordered attr Integer[1] value;
+  }
+
+  class DoubleValue extends Value {
+    !unique !ordered attr PrimitiveTypes.Double[1] value;
+  }
+
+  class BooleanValue extends Value {
+    !unique !ordered attr Boolean[1] value;
+  }
+
+  class StringValue extends Value {
+    !unique !ordered attr String[1] value;
+  }
+
+  package PrimitiveTypes {
+    datatype Boolean : "";
+
+    datatype Integer : "";
+
+    datatype String : "";
+
+    datatype Double : "";
+
+  }
+
+}
+

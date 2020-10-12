@@ -1,0 +1,42 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'JAVA'>
+    <Class name = 'JavaElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ClassFeature' isAbstract = 'true' supertypes = 'JAVA::JavaElement'>
+      <Attribute name = 'isFinal' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'ClassMember' isAbstract = 'true' supertypes = 'JAVA::ClassFeature'>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'JAVA::JavaClass' opposite = 'JAVA::JavaClass::members'/>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'JAVA::JavaClass' opposite = 'JAVA::JavaClass::typedElements'/>
+      <Attribute name = 'isStatic' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isPublic' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'Field' isAbstract = 'false' supertypes = 'JAVA::ClassMember'/>
+    <Class name = 'JavaClass' isAbstract = 'false' supertypes = 'JAVA::ClassFeature'>
+      <Reference name = 'members' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'JAVA::ClassMember' opposite = 'JAVA::ClassMember::owner'/>
+      <Reference name = 'package' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'JAVA::Package' opposite = 'JAVA::Package::classes'/>
+      <Reference name = 'typedElements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'JAVA::ClassMember' opposite = 'JAVA::ClassMember::type'/>
+      <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'JAVA::FeatureParameter' opposite = 'JAVA::FeatureParameter::type'/>
+      <Attribute name = 'isAbstract' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isStatic' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isPublic' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'Method' isAbstract = 'false' supertypes = 'JAVA::ClassMember'>
+      <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'JAVA::FeatureParameter' opposite = 'JAVA::FeatureParameter::method'/>
+    </Class>
+    <Class name = 'Package' isAbstract = 'false' supertypes = 'JAVA::JavaElement'>
+      <Reference name = 'classes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'JAVA::JavaClass' opposite = 'JAVA::JavaClass::package'/>
+    </Class>
+    <Class name = 'PrimitiveType' isAbstract = 'false' supertypes = 'JAVA::JavaClass'/>
+    <Class name = 'FeatureParameter' isAbstract = 'false' supertypes = 'JAVA::ClassFeature'>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'JAVA::JavaClass' opposite = 'JAVA::JavaClass::parameters'/>
+      <Reference name = 'method' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'JAVA::Method' opposite = 'JAVA::Method::parameters'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+  </Package>
+</Metamodel>

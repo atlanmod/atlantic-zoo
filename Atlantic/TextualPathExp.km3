@@ -1,0 +1,35 @@
+-- @name			TextualPathExp
+-- @version			1.0
+-- @domains			Path Expression
+-- @authors			David Touzet (david.touzet@univ-nantes.fr)
+-- @date			2005/07/18	
+-- @description		The TextualPathExp metamodel describes the structure of a path expression in its textual form. A TextualPathExp contains a Path, which, in its turn, can contain from one to several Transitions. A Transition can be defined as a multiple or a single Transition. It is an abstract entity that can be either a PrimitiveTransition or an AlternativeTransition. A PrimitiveTransition is characterized by its name. An AlternativeTransition contains a number of alternative Paths.
+
+package TextualPathExp {
+
+	class TextualPathExp {
+		reference path container : Path;
+	}
+	
+	class Path {
+		reference transitions [1-*] ordered container : Transition;
+	}
+	
+	abstract class Transition {
+		attribute isMultiple : Boolean;
+	}
+	
+	class AlternativeTrans extends Transition {
+		reference altPaths [1-*] ordered container : Path;
+	}
+	
+	class PrimitiveTrans extends Transition {
+		attribute name : String;
+	}
+
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+}

@@ -1,0 +1,416 @@
+syntax VB {
+
+	primitiveTemplate identifier for String default using NAME:
+		value = "%token%";
+
+	primitiveTemplate identifierOrKeyword for String default using NAME orKeyword:
+		value = "%token%";
+
+	primitiveTemplate stringSymbol for String using STRING:
+		value = "%token%",
+		serializer="'\'' + %value%.toCString() + '\''";
+
+	primitiveTemplate integerSymbol for Integer default using INT:
+		value = "Integer.valueOf(%token%)";
+
+	primitiveTemplate floatSymbol for Double default using FLOAT:
+		value = "Double.valueOf(%token%)";
+
+	primitiveTemplate booleanSymbol for Boolean default using BOOLEAN:
+		value = "Boolean.valueOf(%token%)";
+
+
+
+
+
+	template VBFile main
+		:	[ namespaces ] {indentIncr = 0, nbNL = 1, startNL = false}
+		;
+	
+	template Namespace
+		:	"Namespace" name
+			[
+				classes
+				interfaces
+				enumerations
+			] {nbNL = 2}
+			"End" "Namespace"
+		;
+	
+	template Class
+		:
+			"#" "Region" "\"" "Class" name "\"" [ [
+				(isAbstract ? "MustInherit")
+				"Class" "[" name "]"
+				(isDefined(superclass) ? ":" "Inherits" "[" superclass{refersTo = name} "]") 
+				[
+					fields
+				] {nbNL = 2, startNbNL = 1}
+				"End" "Class"
+			] {nbNL = 0, endNL = false, indentIncr = 0} ] "#End" "Region"
+		;
+		
+	template Field
+		:	"Public" "[" name "]" "As"
+				(isMultiple ?
+						"List(Of" type_name ")" --type{refersTo = name, as = identifierOrKeyword} ")"
+					:
+						type_name --type{refersTo = name, as = identifierOrKeyword}
+				)
+		;
+	
+	template Interface
+		:
+			"#" "Region" "\"" "Interface" name "\"" [ [
+				"Interface" name
+				(isDefined(superclasses) ? ":" "Inherits"
+				superclasses{refersTo = name, separator = ","}) 
+				[
+					properties
+				] {nbNL = 2, startNbNL = 1}
+				"End" "Interface"
+			] {nbNL = 0, endNL = false, indentIncr = 0} ] "#End" "Region"
+		;
+	
+	template Property
+		:	"Property" name "As"
+			(isMultiple ?
+					"List(Of" type_name--type{refersTo = name, as = identifierOrKeyword} ")"
+				:
+					type_name --type{refersTo = name, as = identifierOrKeyword}
+			)
+		;
+
+	template Enumeration
+		:	
+			"#" "Region" "\"" "Enum" name "\"" [ [
+				"Enum" name
+					[literals]
+				"End" "Enum"
+			] {nbNL = 0, endNL = false} ] "#End" "Region"
+		;
+		
+	template Literal
+		:	"[" name "]"
+		;
+
+	keywords {
+		kwFor	= "for";
+		kwAs = "As";
+		kwByRef = "ByRef";
+		kwByVal = "ByVal";
+		kwDate = "Date";
+		kwElse = "Else";
+		
+		kwError = "Error";
+		kwFalse = "False";
+		kwFor =	"For";
+		kwFriend = "Friend";
+		kwGet =	"Get";
+		
+		kwIs = "Is";
+		
+		kwLet = "Let";
+		
+		kwMe = "Me";
+		
+		kwNew = "New";
+		kwNext = "Next";
+		kwNothing = "Nothing";
+		
+		kwOn = "On";
+		kwOption = "Option";
+		kwOptional = "Optional";
+		kwParamArray = "ParamArray";
+		kwPrivate = "Private";
+		kwProperty = "Property";
+		kwPublic = "Public";
+		kwResume = "Resume";
+		
+		kwSet = "Set";
+		kwStatic = "Static";
+		kwStep = "Step";
+		kwString = "String";
+		kwThen = "Then";
+		
+		kwTo = "To";
+		kwTrue = "True";
+		kwWithEvents = "WithEvents";
+		
+		kwCall = "Call";
+		kwConst = "Const" ;
+		kwDate = "Date";
+		kwDeclare  = "Declare";
+		kwDim = "Dim";
+		kwDo = "Do";
+		kwLoop = "Loop";
+		kwEnd = "End";
+		kwEnum = "Enum";
+		kwErase = "Erase";
+		kwError = "Error";
+		kwEvent = "Event";
+		kwExit = "Exit";
+		kwEach = "Each";
+		kwNext = "Next";
+		kwFor = "For";
+		kwFunction = "Function";
+		kwGet =	"Get";
+		kwGoSub = "GoSub";
+		kwReturn = "Return";
+		kwGoTo = "GoTo";
+		
+		kwIf = "If";
+		kwThen = "Then";
+		kwElse = "Else";
+		kwImplements = "Implements";
+		kwLet = "Let";
+		
+		kwError = "Error";
+		kwOn = "On";
+		
+		kwOption = "Option";
+		
+		kwPrivate =	"Private";
+		kwProperty = "Property";
+		kwGet = "Get";
+		kwProperty = "Property";
+		kwLet = "Let";
+		kwProperty  = "Property";
+		kwSet = "Set";
+		kwByVal = "ByVal";
+		kwByRef = "ByRef";
+		kwPublic = "Public";
+		
+		kwRaiseEvent = "RaiseEvent";
+		kwReDim = "ReDim";
+		
+		kwResume = "Resume";
+		kwSelect = "Select";
+		kwCase = "Case";
+		kwSet =	"Set";
+		kwStatic = "Static";
+		kwStop = "Stop";
+		kwSub = "Sub";
+		kwWhile = "While";
+		kwWend = "Wend";
+		kwWith = "With";
+		kwXOr = "XOr";
+		kwNot = "Not";
+		kwBool = "boolean";
+		kwChar = "char";
+		kwInteger = "integer";
+		kwLong = "long";
+		kwShort = "short";
+		kwModule = "Module";
+		
+	}
+	
+	symbols {
+	
+		excl		= "!";
+		coma		= ","	: leftNone, rightSpace;
+		lparen		= "("	: leftNone;
+		rparen		= ")"	: rightSpace;
+		lcurly		= "{"	: leftSpace;
+		rcurly		= "}";
+		semi		= ";";
+		colon		= ":"	: leftSpace, rightSpace;
+
+		-- operator symbols
+		minus		= "-";
+		star		= "*";
+		slash		= "/";
+		plus		= "+";
+--		mod		= "mod";		
+		gt		= ">";
+		minusgt		= "->"	: leftSpace, rightSpace;
+		gtminus		= "<-"	: leftSpace, rightSpace;
+		lt		= "<"	: leftSpace, rightSpace;
+		ge		= ">=";
+		le		= "<=";
+		ne		= "!=";
+		eq		= "=";
+		coloneq		= ":=";
+		sharp	= "#"	: rightNone;
+		rsquare	= "["	: leftSpace, rightNone;
+		lsquare	= "]"	: leftNone, rightSpace;
+	}
+
+operators {
+	
+		priority 0 {
+			opNot = excl, 1;		-- no corresponding symbol => symbol is the keyword defined by the quoted string (which is also the name)
+			opMinus1 = minus, 1;
+		}
+
+		priority 1 {
+			opStar = star, 2;
+			opSlash = slash, 2;
+			opMod = "mod", 2;
+		}
+
+		priority 2 {
+			opPlus = plus, 2;
+			opMinus2 = minus, 2;
+		}
+
+		priority 3 {
+			opEq = eq, 2;
+			opGt = gt, 2;
+			opLt = lt, 2;
+			opGe = ge, 2;
+			opLe = le, 2;
+			opNe = ne, 2;
+			opAnd = "and", 2;			
+			opOr = "or", 2;
+		}
+		
+	}
+
+	lexer = "
+class ASMLexer extends Lexer;
+
+options {
+	k = 2;
+	charVocabulary = '\\0' .. '\\u00FF';
+	testLiterals = false;
+}
+
+{
+
+	protected Token makeToken(int t) {
+		org.atl.engine.injectors.ebnf.LocationToken ret = null;
+
+		tokenObjectClass = org.atl.engine.injectors.ebnf.LocationToken.class;
+		ret = (org.atl.engine.injectors.ebnf.LocationToken)super.makeToken(t);
+		ret.setEndLine(getLine());
+		ret.setEndColumn(getColumn());
+
+		return ret;
+	}
+
+}
+
+
+protected
+NL
+	:	(	'\\r' '\\n'
+		|	'\\n' '\\r'	//Improbable
+		|	'\\r'
+		|	'\\n'
+		)
+	{newline();}
+	;
+
+WS
+	:	(	' '
+		|	'\\t'
+		|	NL
+		)
+	{ $setType(Token.SKIP); }
+	;
+
+COMMENT
+	:	\"--\"
+		(~(	'\\r'
+		|	'\\n'
+		))*
+		({LA(1) != EOF_CHAR}? NL)?
+	{ $setType(Token.SKIP); }
+	;
+
+protected
+DIGIT
+	:	'0'..'9'
+	;
+
+protected
+ALPHA
+	:	'a'..'z'
+	|	'A'..'Z'
+	|	'_'
+	//For Unicode compatibility (from 0000 to 00ff)
+	|	'\\u00C0' .. '\\u00D6'
+	|	'\\u00D8' .. '\\u00F6'
+	|	'\\u00F8' .. '\\u00FF'
+	;
+
+protected
+SNAME
+options {
+	testLiterals = true;
+}
+	:	(ALPHA) (ALPHA | DIGIT)*
+;
+
+NAME
+	:	s:SNAME {if(s.getType() != SNAME) $setType(s.getType());}
+	{
+	if($getText.equals(\"true\")) $setType(BOOLEAN);
+	if($getText.equals(\"false\")) $setType(BOOLEAN);
+	}
+	;
+
+INT
+	:	(DIGIT)+
+		(('.' DIGIT)=> '.' (DIGIT)+ {$setType(FLOAT);})?
+	;
+
+protected
+ESC
+	:	'\\\\'!
+		(	'n' {$setText(\"\\n\");}
+		|	'r' {$setText(\"\\r\");}
+		|	't' {$setText(\"\\t\");}
+		|	'b' {$setText(\"\\b\");}
+		|	'f' {$setText(\"\\f\");}
+		|	'\"' {$setText(\"\\\"\");}
+		|	'\\'' {$setText(\"\\'\");}
+		|	'\\\\' {$setText(\"\\\\\");}
+		|	(
+				('0'..'3')
+				(
+					options {
+						warnWhenFollowAmbig = false;
+					}
+				:	('0'..'7')
+					(
+						options {
+							warnWhenFollowAmbig = false;
+						}
+					:	'0'..'7'
+					)?
+				)?
+			|	('4'..'7')
+				(
+					options {
+						warnWhenFollowAmbig = false;
+					}
+				:	('0'..'7')
+				)?
+			)
+				{
+					String s = $getText;
+					int i;
+					int ret = 0;
+					String ans;
+					for (i=0; i<s.length(); ++i)
+						ret = ret*8 + s.charAt(i) - '0';
+					ans = String.valueOf((char) ret);
+					$setText(ans);
+				}
+		)
+	;
+
+STRING
+	:	'\\\"'!
+		(	ESC
+		|	'\\n' {newline();}
+		|	~('\\\\'|'\\\"'|'\\n')
+		)*
+		'\\\"'!
+	;
+
+	";
+
+}

@@ -1,0 +1,54 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_SimpleUML"{
+labelloc=t
+color=black
+label=SimpleUML
+ node[shape=record];
+UMLModelElement[label="{/UMLModelElement/|kind : String\nname : String| }"]
+;
+ node[shape=record];
+Attribute[label="{Attribute| | }"]
+ Attribute->Class[arrowhead=diamond,arrowtail=none,headlabel="owner",taillabel="attribute[*]",group=Class,minlen=2,constraint=true,]
+ Attribute->UMLModelElement[arrowhead=onormal,group=UMLModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Package[label="{Package| | }"]
+ Package->UMLModelElement[arrowhead=onormal,group=UMLModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PackageElement[label="{/PackageElement/| | }"]
+ PackageElement->Package[arrowhead=diamond,arrowtail=none,headlabel="namespace",taillabel="elements[*]",group=Package,minlen=2,constraint=true,]
+ PackageElement->UMLModelElement[arrowhead=onormal,group=UMLModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Classifier[label="{/Classifier/| | }"]
+ Classifier->Attribute[arrowhead=none,arrowtail=none,headlabel="typeOpposite[*]",taillabel="type",group=Attribute,minlen=2,constraint=false,]
+ Classifier->PackageElement[arrowhead=onormal,group=PackageElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Class[label="{Class| | }"]
+ Class->Class[arrowhead=none,arrowtail=none,headlabel="generalOpposite[*]",taillabel="general[*]",group=Class,minlen=2,constraint=false,]
+ Class->Association[arrowhead=none,arrowtail=none,headlabel="forward[*]",taillabel="destination",group=Association,minlen=2,constraint=false,]
+ Class->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PrimitiveDataType[label="{PrimitiveDataType| | }"]
+ PrimitiveDataType->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Association[label="{Association| | }"]
+ Association->Class[arrowhead=none,arrowtail=none,headlabel="source",taillabel="reverse[*]",group=Class,minlen=2,constraint=false,]
+ Association->PackageElement[arrowhead=onormal,group=PackageElement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

@@ -1,0 +1,159 @@
+package Metamodel;
+
+package MAS {
+  class Agent {
+    !ordered ref Service[*] service;
+    !ordered ref Non Functionnal Requirement[*] non_Functionnal_Requirement;
+    !ordered ref Requirement[+] requirement;
+    !ordered ref Organization belongs;
+    !ordered ref CooperationRules[*] cooperationRules;
+    !ordered ref FIPA-Platform Agent[1]#agentF fipa_Platform_Agent;
+    !ordered val Role[1]#agentR role;
+    !ordered val Representation#agentRep representation;
+    !ordered val Characteristic#agentC characteristic;
+    !ordered val Skill#agentS skill;
+    !ordered val Aptitude#agentA aptitude;
+  }
+
+  class Service {
+    !unique !ordered attr String[1] inputs;
+    !unique !ordered attr String[1] outputs;
+    !unique !ordered attr String[1] pre-conditions;
+    !unique !ordered attr String[1] post-conditions;
+  }
+
+  class Non Functionnal Requirement {
+  }
+
+  class Requirement {
+  }
+
+  class Organization {
+    !ordered ref Organizational Structure[*] observes;
+    !ordered ref Organizational Structure[1]#organization organizational_Structure;
+  }
+
+  class Organizational Structure {
+    !ordered val Organization[*]#organizational_Structure organization;
+  }
+
+  class SafetyRule extends Organizational Structure {
+  }
+
+  class LivenessRule extends Organizational Structure {
+  }
+
+  class CooperationRules {
+    !ordered val NCS[1]#cooperationRules ncs;
+  }
+
+  class NCS {
+    !ordered ref CooperationRules[1]#ncs cooperationRules;
+  }
+
+  class FIPA-Platform Agent {
+    !ordered ref Agent[1]#fipa_Platform_Agent agentF;
+    !ordered val FIPA-Platform Task[*]#fipa_Platform_AgentF fipa_Platform_Task;
+  }
+
+  class FIPA-Platform Task {
+    !ordered ref FIPA-Platform Agent[1]#fipa_Platform_Task fipa_Platform_AgentF;
+    !ordered ref Task[1]#fipa_Platform_TaskT task;
+  }
+
+  class Task {
+    !unique !ordered attr String[1] name;
+    !ordered ref FIPA-Platform Task[1]#task fipa_Platform_TaskT;
+  }
+
+  class Role {
+    !ordered ref Agent[1]#role agentR;
+    !ordered ref Task[+] activity;
+    !ordered ref Resource[*] actsOn;
+    !ordered ref Scenario[+] scenario;
+    !ordered ref Communication[*] participant;
+    !ordered ref Responsibility[+] has;
+  }
+
+  class Representation {
+    !ordered ref Agent[1]#representation agentRep;
+    !ordered ref Ontology ontology;
+    !ordered ref Environnement[1] environnement;
+  }
+
+  class Characteristic {
+    !ordered ref Agent[1]#characteristic agentC;
+  }
+
+  class Skill {
+    !ordered ref Agent[1]#skill agentS;
+  }
+
+  class Aptitude {
+    !ordered ref Agent[1]#aptitude agentA;
+  }
+
+  class Ontology {
+    !ordered ref Environnement[1] environnement;
+  }
+
+  class Concept extends Ontology {
+  }
+
+  class Predicat extends Ontology {
+  }
+
+  class Action extends Ontology {
+  }
+
+  class Environnement {
+    !ordered val Resource[1]#environnement resource;
+  }
+
+  class Responsibility {
+  }
+
+  class LivenessProperty extends Responsibility {
+  }
+
+  class SafetyProperty extends Responsibility {
+  }
+
+  class Resource {
+    !unique !ordered attr String[1] name;
+    !ordered ref Environnement[1]#resource environnement;
+    !ordered ref Action[1] action;
+  }
+
+  class Communication {
+    !unique !ordered attr String[1] name;
+    !ordered ref Ontology[1] Exchanged Knoledge;
+    !ordered ref Scenario[+] scenario;
+    !ordered ref AIP[1] aip;
+    !ordered val Message[*]#communication message;
+  }
+
+  class AIP {
+    !unique !ordered attr String[1] name;
+    !ordered val Performative[1]#aip performative;
+  }
+
+  class Performative {
+    !ordered ref AIP[1]#performative aip;
+  }
+
+  class Message {
+    !ordered ref Communication[1]#message communication;
+    !ordered ref Performative[1] Comm_Act;
+  }
+
+  class Scenario {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+}
+

@@ -1,0 +1,146 @@
+package Metamodel;
+
+package Perceptory {
+  class RelationSchip {
+    !ordered val Characteristic[*]#relationSchip affectCharacteristic;
+    !ordered ref Constraint#relationSchip constraint;
+    !ordered ref Steriotype[*]#relationSchip steriotype;
+    !ordered ref Package[*]#relationSchip packages;
+    !ordered ref Package[2]#connectedRelationSchip associatePackages;
+  }
+
+  class ConstrainedRelationSchip {
+  }
+
+  class Aggregation extends Association {
+  }
+
+  class Composition extends Association {
+  }
+
+  class Association extends RelationSchip {
+  }
+
+  class Generalisation extends RelationSchip {
+  }
+
+  class Dependency extends RelationSchip {
+  }
+
+  class AssociationEnd {
+  }
+
+  class Package {
+    !ordered ref Steriotype#thePackage steriotype;
+    !ordered val Package[*]#parent children;
+    !ordered ref Package[1]#children parent;
+    !ordered val Class[*]#packages classes;
+    !ordered val RelationSchip[*]#packages relationSchip;
+    !ordered ref RelationSchip[*]#associatePackages connectedRelationSchip;
+  }
+
+  class Steriotype {
+    !ordered ref DescriptiveAttribute[*]#steriotype descriptiveAttribute;
+    !ordered ref Operation[*]#steriotype operations;
+    !ordered ref RelationSchip[*]#steriotype relationSchip;
+    !ordered ref Class[*]#steriotype theClass;
+    !ordered ref Package[*]#steriotype thePackage;
+  }
+
+  class Class {
+    !ordered val Characteristic[*]#theClass characteristic;
+    !ordered val MetaData#theClass details;
+    !ordered ref Operation[1]#affectFeature operations;
+    !ordered val Operation[*]#behaviour myOperations;
+    !ordered ref Constraint[*]#theClass constraint;
+    !ordered ref Steriotype#theClass steriotype;
+    !ordered ref Package[*]#classes packages;
+  }
+
+  class Constraint {
+    !ordered ref Characteristic[1]#constraint caracteristic;
+    !ordered ref Class[1]#constraint theClass;
+    !ordered ref RelationSchip[*]#constraint relationSchip;
+  }
+
+  class Operation {
+    !ordered val MetaData#operations detail;
+    !ordered val Characteristic[+]#operations inCharacteristic;
+    !ordered val Class[*]#operations affectFeature;
+    !ordered ref Steriotype#operations steriotype;
+    !ordered ref Class[1]#myOperations behaviour;
+  }
+
+  class Characteristic {
+    !ordered val MetaData#characteristic details;
+    !ordered val BusnissRule#characteristic rule;
+    !ordered ref Operation[1]#inCharacteristic operations;
+    !ordered ref Class[1]#characteristic theClass;
+    !ordered ref RelationSchip[1]#affectCharacteristic relationSchip;
+    !ordered ref Constraint#caracteristic constraint;
+  }
+
+  class BusnissRule {
+    !ordered ref Characteristic[1]#rule characteristic;
+  }
+
+  class MetaData {
+    !ordered val Source#metaData source;
+    !ordered ref Characteristic[1]#details characteristic;
+    !ordered ref Operation[1]#detail operations;
+    !ordered ref Class[1]#details theClass;
+  }
+
+  class Source {
+    !ordered ref MetaData[1]#source metaData;
+  }
+
+  class Domain {
+    !ordered ref DescriptiveAttribute[+]#domain descriptiveAttribute;
+  }
+
+  class DescriptiveAttribute extends Characteristic {
+    !ordered val Temporality#descriptiveAttributet tempsDef;
+    !ordered val Geometry#descriptiveAttributeg specialDef;
+    !ordered ref Steriotype#descriptiveAttribute steriotype;
+    !ordered ref Domain#descriptiveAttribute domain;
+  }
+
+  class Geometry extends PerceptorySteriotype, Characteristic {
+    !ordered ref Temporality#geometry tempsDef;
+    !ordered ref DescriptiveAttribute[1]#specialDef descriptiveAttributeg;
+  }
+
+  class Temporality extends PerceptorySteriotype, Characteristic {
+    !ordered ref Geometry#tempsDef geometry;
+    !ordered ref DescriptiveAttribute[1]#tempsDef descriptiveAttributet;
+  }
+
+  class VisualInfo extends PerceptorySteriotype, Characteristic {
+  }
+
+  class Value {
+    !ordered ref EnumeratedDomain[1]#value enumeratedDomain;
+  }
+
+  class RangeDomain extends Domain {
+  }
+
+  class EnumeratedDomain extends Domain {
+    !ordered val Value[+]#enumeratedDomain value;
+  }
+
+  class PerceptorySteriotype extends Steriotype {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+}
+

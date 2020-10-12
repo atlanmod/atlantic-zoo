@@ -1,0 +1,62 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'PetriNet'>
+    <Class name = 'LocatedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'location' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'NamedElement' isAbstract = 'true' supertypes = 'PetriNet::LocatedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'PetriNet' isAbstract = 'false' supertypes = 'PetriNet::NamedElement'>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PetriNet::Element' opposite = 'PetriNet::Element::net'/>
+      <Reference name = 'arcs' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PetriNet::Arc' opposite = 'PetriNet::Arc::net'/>
+      <Reference name = 'execs' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::Execution' opposite = 'PetriNet::Execution::net'/>
+    </Class>
+    <Class name = 'Element' isAbstract = 'true' supertypes = 'PetriNet::NamedElement'>
+      <Reference name = 'net' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::PetriNet' opposite = 'PetriNet::PetriNet::elements'/>
+    </Class>
+    <Class name = 'Place' isAbstract = 'false' supertypes = 'PetriNet::Element'>
+      <Reference name = 'incomingArc' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::TransitionToPlace' opposite = 'PetriNet::TransitionToPlace::to'/>
+      <Reference name = 'outgoingArc' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::PlaceToTransition' opposite = 'PetriNet::PlaceToTransition::from'/>
+    </Class>
+    <Class name = 'Transition' isAbstract = 'false' supertypes = 'PetriNet::Element'>
+      <Reference name = 'incomingArc' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::PlaceToTransition' opposite = 'PetriNet::PlaceToTransition::to'/>
+      <Reference name = 'outgoingArc' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::TransitionToPlace' opposite = 'PetriNet::TransitionToPlace::from'/>
+    </Class>
+    <Class name = 'Arc' isAbstract = 'true' supertypes = 'PetriNet::NamedElement'>
+      <Attribute name = 'weight' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'net' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::PetriNet' opposite = 'PetriNet::PetriNet::arcs'/>
+    </Class>
+    <Class name = 'PlaceToTransition' isAbstract = 'false' supertypes = 'PetriNet::Arc'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::Place' opposite = 'PetriNet::Place::outgoingArc'/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::Transition' opposite = 'PetriNet::Transition::incomingArc'/>
+    </Class>
+    <Class name = 'TransitionToPlace' isAbstract = 'false' supertypes = 'PetriNet::Arc'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::Transition' opposite = 'PetriNet::Transition::outgoingArc'/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::Place' opposite = 'PetriNet::Place::incomingArc'/>
+    </Class>
+    <Class name = 'Execution' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'net' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::PetriNet' opposite = 'PetriNet::PetriNet::execs'/>
+      <Reference name = 'markings' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PetriNet::Marking' opposite = 'PetriNet::Marking::exec'/>
+      <Reference name = 'movements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PetriNet::Movement' opposite = 'PetriNet::Movement::exec'/>
+    </Class>
+    <Class name = 'Token' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'placedAt' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::Place' opposite = ''/>
+      <Reference name = 'marking' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::Marking' opposite = 'PetriNet::Marking::tokens'/>
+    </Class>
+    <Class name = 'Marking' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'exec' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::Execution' opposite = 'PetriNet::Execution::markings'/>
+      <Reference name = 'tokens' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PetriNet::Token' opposite = 'PetriNet::Token::marking'/>
+    </Class>
+    <Class name = 'Movement' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'exec' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::Execution' opposite = 'PetriNet::Execution::movements'/>
+      <Reference name = 'fire' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::Transition' opposite = ''/>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::Marking' opposite = ''/>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PetriNet::Marking' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Integer'/>
+  </Package>
+</Metamodel>

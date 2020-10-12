@@ -1,0 +1,149 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_ODPNV"{
+labelloc=t
+color=black
+label=ODPNV
+ node[shape=record];
+Node[label="{Node|location : String| }"]
+ Node->Nucleus[arrowhead=vee,arrowtail=diamond,headlabel="manager",group=Nucleus,minlen=2,constraint=true,]
+ Node->Capsule[arrowhead=vee,arrowtail=diamond,headlabel="capsules[*]",group=Capsule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Nucleus[label="{Nucleus| | }"]
+ Nucleus->EngineeringObject[arrowhead=none,arrowtail=none,headlabel="otherEngObjects[*]",taillabel="nodeManager",group=EngineeringObject,minlen=2,constraint=false,]
+ Nucleus->EngineeringObject[arrowhead=onormal,group=EngineeringObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Capsule[label="{Capsule| | }"]
+ Capsule->EngineeringObject[arrowhead=vee,arrowtail=diamond,headlabel="otherEngObjects[*]",group=EngineeringObject,minlen=2,constraint=true,]
+ Capsule->CapsuleManager[arrowhead=vee,arrowtail=diamond,headlabel="capsuleManager",group=CapsuleManager,minlen=2,constraint=true,]
+ Capsule->ClusterManager[arrowhead=vee,arrowtail=diamond,headlabel="clusterManagers[*]",group=ClusterManager,minlen=2,constraint=true,]
+ Capsule->Cluster[arrowhead=vee,arrowtail=diamond,headlabel="clusters[*]",group=Cluster,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EngineeringObject[label="{EngineeringObject| | }"]
+;
+ node[shape=record];
+CapsuleManager[label="{CapsuleManager| | }"]
+ CapsuleManager->ClusterManager[arrowhead=none,arrowtail=none,headlabel="cmClusterManagers[*]",taillabel="capsuleManager",group=ClusterManager,minlen=2,constraint=false,]
+ CapsuleManager->EngineeringObject[arrowhead=onormal,group=EngineeringObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Cluster[label="{Cluster| | }"]
+ Cluster->BEO[arrowhead=vee,arrowtail=diamond,headlabel="clusterBeos[*]",group=BEO,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ClusterManager[label="{ClusterManager| | }"]
+ ClusterManager->Cluster[arrowhead=none,arrowtail=none,headlabel="clusters[1-*]",taillabel="clusterManager",group=Cluster,minlen=2,constraint=false,]
+ ClusterManager->BEO[arrowhead=none,arrowtail=none,headlabel="clustermanagerBeos[*]",taillabel="beoManager",group=BEO,minlen=2,constraint=false,]
+ ClusterManager->EngineeringObject[arrowhead=onormal,group=EngineeringObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BEO[label="{BEO| | }"]
+ BEO->Nucleus[arrowhead=none,arrowtail=none,headlabel="beoNodeManager",taillabel="beos[*]",group=Nucleus,minlen=2,constraint=false,]
+ BEO->BEO[arrowhead=none,arrowtail=none,headlabel="locallyBoundObjects[*]",taillabel="localbinds[*]",group=BEO,minlen=2,constraint=false,]
+ BEO->Stub[arrowhead=none,arrowtail=none,headlabel="beoStub[*]",taillabel="stBeo",group=Stub,minlen=2,constraint=false,]
+ BEO->EngineeringObject[arrowhead=onormal,group=EngineeringObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Stub[label="{Stub| | }"]
+ Stub->Channel[arrowhead=diamond,arrowtail=none,headlabel="stChannel",taillabel="chStub[2-*]",group=Channel,minlen=2,constraint=true,]
+ Stub->Binder[arrowhead=none,arrowtail=none,headlabel="stBinder",taillabel="chBinder",group=Binder,minlen=2,constraint=false,]
+ Stub->EngineeringObject[arrowhead=onormal,group=EngineeringObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Binder[label="{Binder| | }"]
+ Binder->Channel[arrowhead=diamond,arrowtail=none,headlabel="bdChannel",taillabel="chBinder[2-*]",group=Channel,minlen=2,constraint=true,]
+ Binder->EngineeringObject[arrowhead=onormal,group=EngineeringObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ProtocolObject[label="{ProtocolObject|type : String| }"]
+ ProtocolObject->Channel[arrowhead=diamond,arrowtail=none,headlabel="poChannel",taillabel="chPObject[2-*]",group=Channel,minlen=2,constraint=true,]
+ ProtocolObject->Binder[arrowhead=none,arrowtail=none,headlabel="poBinder",taillabel="bdProtocolObject[1-*]",group=Binder,minlen=2,constraint=false,]
+ ProtocolObject->Interceptor[arrowhead=none,arrowtail=none,headlabel="poInterceptor[*]",taillabel="intProtocolObject[22]",group=Interceptor,minlen=2,constraint=false,]
+ ProtocolObject->ProtocolObject[arrowhead=vee,arrowtail=none,headlabel="poBoundProtocolObject[*]",group=ProtocolObject,minlen=2,constraint=false,]
+ ProtocolObject->EngineeringObject[arrowhead=onormal,group=EngineeringObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Interceptor[label="{Interceptor| | }"]
+ Interceptor->Channel[arrowhead=diamond,arrowtail=none,headlabel="intChannel",taillabel="chInterceptor[*]",group=Channel,minlen=2,constraint=true,]
+ Interceptor->EngineeringObject[arrowhead=onormal,group=EngineeringObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Channel[label="{Channel| | }"]
+ Channel->BEO[arrowhead=none,arrowtail=none,headlabel="chEndPoint[2-*]",taillabel="beoChannel[*]",group=BEO,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ClientServerChannel[label="{ClientServerChannel| | }"]
+ ClientServerChannel->Channel[arrowhead=onormal,group=Channel,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ControllingObject[label="{ControllingObject| | }"]
+ ControllingObject->EngineeringObject[arrowhead=onormal,group=EngineeringObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SecurityAuthority[label="{SecurityAuthority| | }"]
+ SecurityAuthority->ControllingObject[arrowhead=onormal,group=ControllingObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ManagementAuthority[label="{ManagementAuthority| | }"]
+ ManagementAuthority->ControllingObject[arrowhead=onormal,group=ControllingObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AddressingAuthority[label="{AddressingAuthority| | }"]
+ AddressingAuthority->ControllingObject[arrowhead=onormal,group=ControllingObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NamingAuthority[label="{NamingAuthority| | }"]
+ NamingAuthority->ControllingObject[arrowhead=onormal,group=ControllingObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ControlledObject[label="{ControlledObject| | }"]
+ ControlledObject->Domain[arrowhead=none,arrowtail=none,headlabel="cdoDomain[*]",taillabel="domMember[*]",group=Domain,minlen=2,constraint=false,]
+ ControlledObject->EngineeringObject[arrowhead=onormal,group=EngineeringObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Domain[label="{Domain| | }"]
+ Domain->Domain[arrowhead=none,arrowtail=none,headlabel="subDomain[*]",taillabel="parentDomain",group=Domain,minlen=2,constraint=false,]
+ Domain->ControllingObject[arrowhead=none,arrowtail=none,headlabel="domControllingObject",taillabel="coDomain[*]",group=ControllingObject,minlen=2,constraint=false,]
+;
+ node[shape=record];
+SecurityDomain[label="{SecurityDomain| | }"]
+ SecurityDomain->Domain[arrowhead=onormal,group=Domain,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ManagementDomain[label="{ManagementDomain| | }"]
+ ManagementDomain->Domain[arrowhead=onormal,group=Domain,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AddressingDomain[label="{AddressingDomain| | }"]
+ AddressingDomain->Domain[arrowhead=onormal,group=Domain,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NamingDomain[label="{NamingDomain| | }"]
+ NamingDomain->Domain[arrowhead=onormal,group=Domain,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EngineeringInterfaceReferenceManagementDomain[label="{EngineeringInterfaceReferenceManagementDomain| | }"]
+ EngineeringInterfaceReferenceManagementDomain->EngineeringInterfaceReference[arrowhead=none,arrowtail=none,headlabel="eirmdReference[*]",taillabel="eirManagementDomain",group=EngineeringInterfaceReference,minlen=2,constraint=false,]
+ EngineeringInterfaceReferenceManagementDomain->EngineeringInterfaceReferenceManagementPolicy[arrowhead=none,arrowtail=none,headlabel="eirmdManagementPolicy",taillabel="eirmpManagementDomain[*]",group=EngineeringInterfaceReferenceManagementPolicy,minlen=2,constraint=false,]
+ EngineeringInterfaceReferenceManagementDomain->NamingDomain[arrowhead=onormal,group=NamingDomain,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EngineeringInterfaceReferenceManagementPolicy[label="{EngineeringInterfaceReferenceManagementPolicy| | }"]
+;
+ node[shape=record];
+EngineeringInterfaceReference[label="{EngineeringInterfaceReference| | }"]
+;
+
+} subgraph "cluster_datatypes"{
+labelloc=t
+color=black
+label=datatypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

@@ -1,0 +1,343 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_ACG"{
+labelloc=t
+color=black
+label=ACG
+ node[shape=record];
+LocatedElement[label="{/LocatedElement/|location : String\ncommentsBefore[*] : String\ncommentsAfter[*] : String| }"]
+;
+ node[shape=record];
+ACG[label="{ACG|metamodel : String\nstartsWith : String| }"]
+ ACG->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ACGElement[label="{/ACGElement/| | }"]
+ ACGElement->ACG[arrowhead=diamond,arrowtail=none,headlabel="acg",taillabel="elements{ordered}",group=ACG,minlen=2,constraint=true,]
+ ACGElement->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Function[label="{Function|context : String\nname : String| }"]
+ Function->Parameter[arrowhead=vee,arrowtail=diamond,headlabel="parameters[*]{ordered}",group=Parameter,minlen=2,constraint=true,]
+ Function->Expression[arrowhead=vee,arrowtail=diamond,headlabel="body",group=Expression,minlen=2,constraint=true,]
+ Function->ACGElement[arrowhead=onormal,group=ACGElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Attribute[label="{Attribute|context : String\nname : String| }"]
+ Attribute->Expression[arrowhead=vee,arrowtail=diamond,headlabel="body",group=Expression,minlen=2,constraint=true,]
+ Attribute->ACGElement[arrowhead=onormal,group=ACGElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parameter[label="{Parameter| | }"]
+ Parameter->VariableDecl[arrowhead=onormal,group=VariableDecl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Node[label="{/Node/|element : String\nmode[0-1] : String| }"]
+ Node->Expression[arrowhead=vee,arrowtail=diamond,headlabel="guard[0-1]",group=Expression,minlen=2,constraint=true,]
+ Node->ACGElement[arrowhead=onormal,group=ACGElement,minlen=2,constraint=true,]
+ Node->StatementBlock[arrowhead=onormal,group=StatementBlock,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ASMNode[label="{ASMNode| | }"]
+ ASMNode->Expression[arrowhead=vee,arrowtail=diamond,headlabel="name",group=Expression,minlen=2,constraint=true,]
+ ASMNode->Node[arrowhead=onormal,group=Node,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CodeNode[label="{CodeNode| | }"]
+ CodeNode->Node[arrowhead=onormal,group=Node,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleNode[label="{SimpleNode| | }"]
+ SimpleNode->Node[arrowhead=onormal,group=Node,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StatementBlock[label="{/StatementBlock/| | }"]
+ StatementBlock->Statement[arrowhead=vee,arrowtail=diamond,headlabel="statements[*]{ordered}",group=Statement,minlen=2,constraint=true,]
+ StatementBlock->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Statement[label="{/Statement/| | }"]
+ Statement->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompoundStat[label="{/CompoundStat/| | }"]
+ CompoundStat->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+ CompoundStat->StatementBlock[arrowhead=onormal,group=StatementBlock,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ForEachStat[label="{ForEachStat| | }"]
+ ForEachStat->VariableDecl[arrowhead=vee,arrowtail=diamond,headlabel="iterator",group=VariableDecl,minlen=2,constraint=true,]
+ ForEachStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="collection",group=Expression,minlen=2,constraint=true,]
+ ForEachStat->CompoundStat[arrowhead=onormal,group=CompoundStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OnceStat[label="{OnceStat| | }"]
+ OnceStat->CompoundStat[arrowhead=onormal,group=CompoundStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VariableStat[label="{VariableStat| | }"]
+ VariableStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="definition",group=Expression,minlen=2,constraint=true,]
+ VariableStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="name",group=Expression,minlen=2,constraint=true,]
+ VariableStat->CompoundStat[arrowhead=onormal,group=CompoundStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperationStat[label="{OperationStat| | }"]
+ OperationStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="context",group=Expression,minlen=2,constraint=true,]
+ OperationStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="name",group=Expression,minlen=2,constraint=true,]
+ OperationStat->CompoundStat[arrowhead=onormal,group=CompoundStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConditionalStat[label="{ConditionalStat| | }"]
+ ConditionalStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="condition",group=Expression,minlen=2,constraint=true,]
+ ConditionalStat->Statement[arrowhead=vee,arrowtail=diamond,headlabel="elseStatements[*]{ordered}",group=Statement,minlen=2,constraint=true,]
+ ConditionalStat->CompoundStat[arrowhead=onormal,group=CompoundStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LetStat[label="{LetStat| | }"]
+ LetStat->VariableDecl[arrowhead=vee,arrowtail=diamond,headlabel="variable",group=VariableDecl,minlen=2,constraint=true,]
+ LetStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="value",group=Expression,minlen=2,constraint=true,]
+ LetStat->CompoundStat[arrowhead=onormal,group=CompoundStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnalyzeStat[label="{AnalyzeStat|mode[0-1] : String| }"]
+ AnalyzeStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="target",group=Expression,minlen=2,constraint=true,]
+ AnalyzeStat->CompoundStat[arrowhead=onormal,group=CompoundStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReportStat[label="{ReportStat|severity : Severity| }"]
+ ReportStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="message",group=Expression,minlen=2,constraint=true,]
+ ReportStat->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FieldStat[label="{FieldStat| | }"]
+ FieldStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="name",group=Expression,minlen=2,constraint=true,]
+ FieldStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="type",group=Expression,minlen=2,constraint=true,]
+ FieldStat->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ParamStat[label="{ParamStat| | }"]
+ ParamStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="name",group=Expression,minlen=2,constraint=true,]
+ ParamStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="type",group=Expression,minlen=2,constraint=true,]
+ ParamStat->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EmitStat[label="{/EmitStat/| | }"]
+ EmitStat->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LabelStat[label="{LabelStat|name : String| }"]
+ LabelStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="id[0-1]",group=Expression,minlen=2,constraint=true,]
+ LabelStat->EmitStat[arrowhead=onormal,group=EmitStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NewStat[label="{NewStat| | }"]
+ NewStat->EmitStat[arrowhead=onormal,group=EmitStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DupStat[label="{DupStat| | }"]
+ DupStat->EmitStat[arrowhead=onormal,group=EmitStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DupX1Stat[label="{DupX1Stat| | }"]
+ DupX1Stat->EmitStat[arrowhead=onormal,group=EmitStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PopStat[label="{PopStat| | }"]
+ PopStat->EmitStat[arrowhead=onormal,group=EmitStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SwapStat[label="{SwapStat| | }"]
+ SwapStat->EmitStat[arrowhead=onormal,group=EmitStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IterateStat[label="{IterateStat| | }"]
+ IterateStat->EmitStat[arrowhead=onormal,group=EmitStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EndIterateStat[label="{EndIterateStat| | }"]
+ EndIterateStat->EmitStat[arrowhead=onormal,group=EmitStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GetAsmStat[label="{GetAsmStat| | }"]
+ GetAsmStat->EmitStat[arrowhead=onormal,group=EmitStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FindMEStat[label="{FindMEStat| | }"]
+ FindMEStat->EmitStat[arrowhead=onormal,group=EmitStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PushTStat[label="{PushTStat| | }"]
+ PushTStat->EmitStat[arrowhead=onormal,group=EmitStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PushFStat[label="{PushFStat| | }"]
+ PushFStat->EmitStat[arrowhead=onormal,group=EmitStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EmitWithOperandStat[label="{/EmitWithOperandStat/| | }"]
+ EmitWithOperandStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="operand",group=Expression,minlen=2,constraint=true,]
+ EmitWithOperandStat->EmitStat[arrowhead=onormal,group=EmitStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PushStat[label="{PushStat| | }"]
+ PushStat->EmitWithOperandStat[arrowhead=onormal,group=EmitWithOperandStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PushIStat[label="{PushIStat| | }"]
+ PushIStat->EmitWithOperandStat[arrowhead=onormal,group=EmitWithOperandStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PushDStat[label="{PushDStat| | }"]
+ PushDStat->EmitWithOperandStat[arrowhead=onormal,group=EmitWithOperandStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LoadStat[label="{LoadStat| | }"]
+ LoadStat->EmitWithOperandStat[arrowhead=onormal,group=EmitWithOperandStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StoreStat[label="{StoreStat| | }"]
+ StoreStat->EmitWithOperandStat[arrowhead=onormal,group=EmitWithOperandStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CallStat[label="{CallStat| | }"]
+ CallStat->EmitWithOperandStat[arrowhead=onormal,group=EmitWithOperandStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PCallStat[label="{PCallStat| | }"]
+ PCallStat->EmitWithOperandStat[arrowhead=onormal,group=EmitWithOperandStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SuperCallStat[label="{SuperCallStat| | }"]
+ SuperCallStat->EmitWithOperandStat[arrowhead=onormal,group=EmitWithOperandStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GetStat[label="{GetStat| | }"]
+ GetStat->EmitWithOperandStat[arrowhead=onormal,group=EmitWithOperandStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SetStat[label="{SetStat| | }"]
+ SetStat->EmitWithOperandStat[arrowhead=onormal,group=EmitWithOperandStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EmitWithLabelRefStat[label="{/EmitWithLabelRefStat/| | }"]
+ EmitWithLabelRefStat->LabelStat[arrowhead=vee,arrowtail=none,headlabel="label",group=LabelStat,minlen=2,constraint=false,]
+ EmitWithLabelRefStat->EmitStat[arrowhead=onormal,group=EmitStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IfStat[label="{IfStat| | }"]
+ IfStat->EmitWithLabelRefStat[arrowhead=onormal,group=EmitWithLabelRefStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GotoStat[label="{GotoStat| | }"]
+ GotoStat->EmitWithLabelRefStat[arrowhead=onormal,group=EmitWithLabelRefStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VariableDecl[label="{VariableDecl|name : String| }"]
+ VariableDecl->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Expression[label="{/Expression/| | }"]
+ Expression->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VariableExp[label="{VariableExp| | }"]
+ VariableExp->VariableDecl[arrowhead=vee,arrowtail=none,headlabel="variable",group=VariableDecl,minlen=2,constraint=false,]
+ VariableExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SelfExp[label="{SelfExp| | }"]
+ SelfExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LastExp[label="{LastExp| | }"]
+ LastExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IfExp[label="{IfExp| | }"]
+ IfExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="condition",group=Expression,minlen=2,constraint=true,]
+ IfExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="thenExp",group=Expression,minlen=2,constraint=true,]
+ IfExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="elseExp",group=Expression,minlen=2,constraint=true,]
+ IfExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IsAExp[label="{IsAExp|type : String| }"]
+ IsAExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="source",group=Expression,minlen=2,constraint=true,]
+ IsAExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LetExp[label="{LetExp| | }"]
+ LetExp->VariableDecl[arrowhead=vee,arrowtail=diamond,headlabel="variable",group=VariableDecl,minlen=2,constraint=true,]
+ LetExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="value",group=Expression,minlen=2,constraint=true,]
+ LetExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="in",group=Expression,minlen=2,constraint=true,]
+ LetExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PropertyCallExp[label="{/PropertyCallExp/|name : String| }"]
+ PropertyCallExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="source",group=Expression,minlen=2,constraint=true,]
+ PropertyCallExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NavigationExp[label="{NavigationExp| | }"]
+ NavigationExp->PropertyCallExp[arrowhead=onormal,group=PropertyCallExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IteratorExp[label="{IteratorExp| | }"]
+ IteratorExp->VariableDecl[arrowhead=vee,arrowtail=diamond,headlabel="iterator",group=VariableDecl,minlen=2,constraint=true,]
+ IteratorExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="body",group=Expression,minlen=2,constraint=true,]
+ IteratorExp->PropertyCallExp[arrowhead=onormal,group=PropertyCallExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperationCallExp[label="{OperationCallExp| | }"]
+ OperationCallExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="arguments[*]{ordered}",group=Expression,minlen=2,constraint=true,]
+ OperationCallExp->PropertyCallExp[arrowhead=onormal,group=PropertyCallExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperatorCallExp[label="{OperatorCallExp| | }"]
+ OperatorCallExp->OperationCallExp[arrowhead=onormal,group=OperationCallExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LiteralExp[label="{/LiteralExp/| | }"]
+ LiteralExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OclUndefinedExp[label="{OclUndefinedExp| | }"]
+ OclUndefinedExp->LiteralExp[arrowhead=onormal,group=LiteralExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CollectionExp[label="{/CollectionExp/| | }"]
+ CollectionExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="elements[*]{ordered}",group=Expression,minlen=2,constraint=true,]
+ CollectionExp->LiteralExp[arrowhead=onormal,group=LiteralExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SequenceExp[label="{SequenceExp| | }"]
+ SequenceExp->CollectionExp[arrowhead=onormal,group=CollectionExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BooleanExp[label="{BooleanExp|value : Boolean| }"]
+ BooleanExp->LiteralExp[arrowhead=onormal,group=LiteralExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IntegerExp[label="{IntegerExp|value : Integer| }"]
+ IntegerExp->LiteralExp[arrowhead=onormal,group=LiteralExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StringExp[label="{StringExp|value : String| }"]
+ StringExp->LiteralExp[arrowhead=onormal,group=LiteralExp,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

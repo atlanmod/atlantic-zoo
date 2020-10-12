@@ -1,0 +1,185 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_bmm"{
+labelloc=t
+color=black
+label=bmm
+ node[shape=record];
+Assessment[label="{Assessment| | }"]
+ Assessment->Assessment[arrowhead=none,arrowtail=none,headlabel="usingAssessment[*]",taillabel="usedAssessment",group=Assessment,minlen=2,constraint=false,]
+ Assessment->MotivationElement[arrowhead=onormal,group=MotivationElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MotivationElement[label="{/MotivationElement/|name : String\ndescription : String| }"]
+;
+ node[shape=record];
+Directive[label="{Directive| | }"]
+ Directive->Assessment[arrowhead=none,arrowtail=none,headlabel="motivatingAssessment[*]",taillabel="motivatedDirective",group=Assessment,minlen=2,constraint=false,]
+ Directive->Means[arrowhead=onormal,group=Means,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Means[label="{Means| | }"]
+ Means->Assessment[arrowhead=none,arrowtail=none,headlabel="judgingAssessment[*]",taillabel="affectedMeans",group=Assessment,minlen=2,constraint=false,]
+ Means->MotivationElement[arrowhead=onormal,group=MotivationElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OrganizationUnit[label="{OrganizationUnit| | }"]
+ OrganizationUnit->Assessment[arrowhead=none,arrowtail=none,headlabel="madeAssessment[*]",taillabel="assessingOrganizationUnit",group=Assessment,minlen=2,constraint=false,]
+ OrganizationUnit->Means[arrowhead=none,arrowtail=none,headlabel="establishedMeans[*]",taillabel="establishingOrganizationUnit",group=Means,minlen=2,constraint=false,]
+ OrganizationUnit->MotivationElement[arrowhead=onormal,group=MotivationElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+End[label="{End| | }"]
+ End->Assessment[arrowhead=none,arrowtail=none,headlabel="judgingAssessment[*]",taillabel="affectedEnd",group=Assessment,minlen=2,constraint=false,]
+ End->OrganizationUnit[arrowhead=none,arrowtail=none,headlabel="definingOrganizationUnit[*]",taillabel="definedEnd",group=OrganizationUnit,minlen=2,constraint=false,]
+ End->MotivationElement[arrowhead=onormal,group=MotivationElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BusinessProcess[label="{BusinessProcess| | }"]
+ BusinessProcess->OrganizationUnit[arrowhead=none,arrowtail=none,headlabel="responsibleOrganizationUnit[*]",taillabel="managedBusinessProces",group=OrganizationUnit,minlen=2,constraint=false,]
+ BusinessProcess->MotivationElement[arrowhead=onormal,group=MotivationElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Offering[label="{Offering| | }"]
+ Offering->BusinessProcess[arrowhead=none,arrowtail=none,headlabel="deliveringBusinessProcess[*]",taillabel="deliveredOffering",group=BusinessProcess,minlen=2,constraint=false,]
+ Offering->FixedAsset[arrowhead=onormal,group=FixedAsset,minlen=2,constraint=true,]
+ Offering->Asset[arrowhead=onormal,group=Asset,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Asset[label="{Asset| | }"]
+ Asset->Directive[arrowhead=none,arrowtail=none,headlabel="governingDirective[*]",taillabel="governedAsset",group=Directive,minlen=2,constraint=false,]
+ Asset->OrganizationUnit[arrowhead=none,arrowtail=none,headlabel="responsibleOrganizationUnit[*]",taillabel="managedAsset",group=OrganizationUnit,minlen=2,constraint=false,]
+ Asset->BusinessProcess[arrowhead=none,arrowtail=none,headlabel="managingBusinessProcess[*]",taillabel="managedAsset",group=BusinessProcess,minlen=2,constraint=false,]
+ Asset->MotivationElement[arrowhead=onormal,group=MotivationElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CourseOfAction[label="{CourseOfAction| | }"]
+ CourseOfAction->CourseOfAction[arrowhead=none,arrowtail=none,headlabel="enablingCourseOfAction[*]",taillabel="enabledCourseOfAction",group=CourseOfAction,minlen=2,constraint=false,]
+ CourseOfAction->CourseOfAction[arrowhead=none,arrowtail=none,headlabel="broaderCourseOfAction[*]",taillabel="moreSpecficCourseOfAction",group=CourseOfAction,minlen=2,constraint=false,]
+ CourseOfAction->Offering[arrowhead=none,arrowtail=none,headlabel="definedOffering[*]",taillabel="definingCourseOfAction",group=Offering,minlen=2,constraint=false,]
+ CourseOfAction->BusinessProcess[arrowhead=none,arrowtail=none,headlabel="realizingBusinessProcess",taillabel="realizedCourseOfAction",group=BusinessProcess,minlen=2,constraint=false,]
+ CourseOfAction->Directive[arrowhead=none,arrowtail=none,headlabel="governingDirective[*]",taillabel="governedCourseOfAction",group=Directive,minlen=2,constraint=false,]
+ CourseOfAction->Directive[arrowhead=none,arrowtail=none,headlabel="baseDirective[*]",taillabel="derivedCourseOfAction",group=Directive,minlen=2,constraint=false,]
+ CourseOfAction->Asset[arrowhead=none,arrowtail=none,headlabel="deployedAsset[*]",taillabel="deployingCourseOfAction",group=Asset,minlen=2,constraint=false,]
+ CourseOfAction->Means[arrowhead=onormal,group=Means,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DesiredResult[label="{DesiredResult| | }"]
+ DesiredResult->DesiredResult[arrowhead=none,arrowtail=none,headlabel="broaderDesiredResult[*]",taillabel="moreSpecificDesiredResult",group=DesiredResult,minlen=2,constraint=false,]
+ DesiredResult->Directive[arrowhead=none,arrowtail=none,headlabel="supportingDirective[*]",taillabel="supportedDesiredResult",group=Directive,minlen=2,constraint=false,]
+ DesiredResult->CourseOfAction[arrowhead=none,arrowtail=none,headlabel="supportingCourseOfAction[*]",taillabel="supportedDesiredResult",group=CourseOfAction,minlen=2,constraint=false,]
+ DesiredResult->End[arrowhead=onormal,group=End,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Liability[label="{Liability| | }"]
+ Liability->OrganizationUnit[arrowhead=none,arrowtail=none,headlabel="responsibleOrganizationUnit[*]",taillabel="managedLiability",group=OrganizationUnit,minlen=2,constraint=false,]
+ Liability->CourseOfAction[arrowhead=none,arrowtail=none,headlabel="dischargingCourseOfAction[*]",taillabel="dischargedLiability",group=CourseOfAction,minlen=2,constraint=false,]
+ Liability->MotivationElement[arrowhead=onormal,group=MotivationElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Resource[label="{Resource| | }"]
+ Resource->Offering[arrowhead=none,arrowtail=none,headlabel="requiringOffering[*]",taillabel="requiredResource",group=Offering,minlen=2,constraint=false,]
+ Resource->Liability[arrowhead=none,arrowtail=none,headlabel="claimingLiability[*]",taillabel="claimedResource",group=Liability,minlen=2,constraint=false,]
+ Resource->Asset[arrowhead=onormal,group=Asset,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FixedAsset[label="{FixedAsset| | }"]
+ FixedAsset->Offering[arrowhead=none,arrowtail=none,headlabel="usingOffering[*]",taillabel="usedAsset",group=Offering,minlen=2,constraint=false,]
+ FixedAsset->Resource[arrowhead=none,arrowtail=none,headlabel="providedResource[*]",taillabel="providingFixedAsset",group=Resource,minlen=2,constraint=false,]
+ FixedAsset->Asset[arrowhead=onormal,group=Asset,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BusinessPolicy[label="{BusinessPolicy| | }"]
+ BusinessPolicy->BusinessPolicy[arrowhead=none,arrowtail=none,headlabel="broaderBusinessPolicy[*]",taillabel="moreSpecificBusinessPolicy",group=BusinessPolicy,minlen=2,constraint=false,]
+ BusinessPolicy->BusinessProcess[arrowhead=none,arrowtail=none,headlabel="governedBusinessProcess[*]",taillabel="governingBusinessPolicy",group=BusinessProcess,minlen=2,constraint=false,]
+ BusinessPolicy->Directive[arrowhead=onormal,group=Directive,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BusinessRule[label="{BusinessRule| | }"]
+ BusinessRule->BusinessProcess[arrowhead=none,arrowtail=none,headlabel="guidedBusinessProcess[*]",taillabel="guidingBusinessRule",group=BusinessProcess,minlen=2,constraint=false,]
+ BusinessRule->BusinessPolicy[arrowhead=none,arrowtail=none,headlabel="baseBusinessPolicy[*]",taillabel="derivedBusinessRule",group=BusinessPolicy,minlen=2,constraint=false,]
+ BusinessRule->Directive[arrowhead=onormal,group=Directive,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Tactic[label="{Tactic| | }"]
+ Tactic->BusinessRule[arrowhead=none,arrowtail=none,headlabel="enforcedBusinessRule[*]",taillabel="effectingTactic",group=BusinessRule,minlen=2,constraint=false,]
+ Tactic->CourseOfAction[arrowhead=onormal,group=CourseOfAction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Strategy[label="{Strategy| | }"]
+ Strategy->OrganizationUnit[arrowhead=none,arrowtail=none,headlabel="determinedOrganizationUnit[*]",taillabel="determiningStrategy",group=OrganizationUnit,minlen=2,constraint=false,]
+ Strategy->Tactic[arrowhead=none,arrowtail=none,headlabel="implementingTactic[*]",taillabel="implementedStrategy",group=Tactic,minlen=2,constraint=false,]
+ Strategy->CourseOfAction[arrowhead=onormal,group=CourseOfAction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Mission[label="{Mission| | }"]
+ Mission->Strategy[arrowhead=none,arrowtail=none,headlabel="componentStrategy[*]",taillabel="plannedMission",group=Strategy,minlen=2,constraint=false,]
+ Mission->Means[arrowhead=onormal,group=Means,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Vision[label="{Vision| | }"]
+ Vision->Mission[arrowhead=none,arrowtail=none,headlabel="deliveringMission[*]",taillabel="operativeVision",group=Mission,minlen=2,constraint=false,]
+ Vision->End[arrowhead=onormal,group=End,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Goal[label="{Goal| | }"]
+ Goal->Vision[arrowhead=none,arrowtail=none,headlabel="amplifiedVision[0-1]",taillabel="amplifyingGoal",group=Vision,minlen=2,constraint=false,]
+ Goal->DesiredResult[arrowhead=onormal,group=DesiredResult,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Objective[label="{Objective| | }"]
+ Objective->Goal[arrowhead=none,arrowtail=none,headlabel="quantifiedGoal[*]",taillabel="quantifyingObjective",group=Goal,minlen=2,constraint=false,]
+ Objective->DesiredResult[arrowhead=onormal,group=DesiredResult,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Influencer[label="{Influencer| | }"]
+ Influencer->Assessment[arrowhead=none,arrowtail=none,headlabel="judgingAssessment[*]",taillabel="judgedInfluencer",group=Assessment,minlen=2,constraint=false,]
+ Influencer->OrganizationUnit[arrowhead=none,arrowtail=none,headlabel="recognizingOrganizationUnit[1-*]",taillabel="recognizedInfluencer",group=OrganizationUnit,minlen=2,constraint=false,]
+ Influencer->MotivationElement[arrowhead=onormal,group=MotivationElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InfluencerCategory[label="{InfluencerCategory| | }"]
+ InfluencerCategory->Influencer[arrowhead=none,arrowtail=none,headlabel="categorizedInfluencer[*]",taillabel="categorizingInfluencerCategory",group=Influencer,minlen=2,constraint=false,]
+ InfluencerCategory->MotivationElement[arrowhead=onormal,group=MotivationElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InfluencingOrganization[label="{InfluencingOrganization| | }"]
+ InfluencingOrganization->OrganizationUnit[arrowhead=none,arrowtail=none,headlabel="influencingOrganizationUnit[0-1]",taillabel="internalInfluencingOrganization",group=OrganizationUnit,minlen=2,constraint=false,]
+ InfluencingOrganization->Influencer[arrowhead=none,arrowtail=none,headlabel="providedInfluencer[*]",taillabel="sourceInfluencingOrganization",group=Influencer,minlen=2,constraint=false,]
+ InfluencingOrganization->MotivationElement[arrowhead=onormal,group=MotivationElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OrganizationCategory[label="{OrganizationCategory| | }"]
+ OrganizationCategory->InfluencingOrganization[arrowhead=none,arrowtail=none,headlabel="categorizedInfluencingOrganization[*]",taillabel="categorizingOrganizationCategory",group=InfluencingOrganization,minlen=2,constraint=false,]
+ OrganizationCategory->MotivationElement[arrowhead=onormal,group=MotivationElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PotentialImpact[label="{PotentialImpact| | }"]
+ PotentialImpact->Assessment[arrowhead=none,arrowtail=none,headlabel="identifyingAssessment[*]",taillabel="identifiedPotentialImpact",group=Assessment,minlen=2,constraint=false,]
+ PotentialImpact->Directive[arrowhead=none,arrowtail=none,headlabel="motivatedDirective[*]",taillabel="motivatingPotentialImpact",group=Directive,minlen=2,constraint=false,]
+ PotentialImpact->MotivationElement[arrowhead=onormal,group=MotivationElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Regulation[label="{Regulation| | }"]
+ Regulation->Directive[arrowhead=none,arrowtail=none,headlabel="regulatingDirective[0-1]",taillabel="directiveRegulation",group=Directive,minlen=2,constraint=false,]
+ Regulation->Influencer[arrowhead=onormal,group=Influencer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AssessmentCategory[label="{AssessmentCategory| | }"]
+ AssessmentCategory->Assessment[arrowhead=none,arrowtail=none,headlabel="categorizedAssessment[*]",taillabel="categorizingAssessmentCategory",group=Assessment,minlen=2,constraint=false,]
+ AssessmentCategory->MotivationElement[arrowhead=onormal,group=MotivationElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PotentialReward[label="{PotentialReward| | }"]
+ PotentialReward->PotentialImpact[arrowhead=onormal,group=PotentialImpact,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Risk[label="{Risk| | }"]
+ Risk->PotentialImpact[arrowhead=onormal,group=PotentialImpact,minlen=2,constraint=true,]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

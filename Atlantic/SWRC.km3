@@ -1,0 +1,291 @@
+-- @name		SWRC
+-- @version		1	
+-- @domains		Bibliography
+-- @authors		Guillaume Hillairet (g.hillairet@gmail.com)
+-- @date		2006/07/18
+-- @description	This metamodel describes SWRC ontology. The SWRC (Semantic Web for Research Communities) is an ontology for modeling entities of research communities such as persons, organisations, publications (bibliographic metadata) and their relationships. It is used in numerous applications and projects including the AIFB portal, Bibster and the SemIPort project. More details about the modeling of the SWRC ontology can be found in: York Sure, Stephan Bloehdorn, Peter Haase, Jens Hartmann, Daniel Oberle. The SWRC Ontology - Semantic Web for Research Communities. In Proceedings of the 12th Portuguese Conference on Artificial Intelligence (EPIA 2005). Springer, Covilha, Portugal, December 2005. 
+-- @see			http://ontoware.org/projects/swrc/
+
+package SWRC {
+	--@begin Publication
+	class Bibliography {
+		reference publications[*] container : Publication;
+	}
+	
+	abstract class Publication {
+		attribute title : String;
+		attribute "abstract" : String;
+		attribute keywords : String;
+		attribute note : String;
+		attribute year : Integer;
+	}
+	class Article extends Publication {
+		reference author[1-*] : Person;
+		attribute journal : String;
+		attribute month : String;
+		attribute number : Integer;
+		attribute pages : String;
+		attribute volume : Integer;
+	}
+	class Book extends Publication {
+		attribute month : String;
+		attribute number : Integer;
+		attribute volume : Integer;
+		attribute series : String;
+		attribute source : String;
+		attribute address : String;
+		attribute edition : String;
+		attribute isbn : String;
+		attribute price : String;
+		reference editor : Person;
+		reference publisher : Organization;
+		reference author[1-*] : Person;
+		
+	}
+	class InBook extends Publication {
+		reference author[1-*] : Person;
+		reference publisher : Organization;
+		reference editor : Person;
+		attribute month : String;
+		attribute number : Integer;
+		attribute pages : String;
+		attribute volume : Integer;
+		attribute series : String;
+		attribute chapter : String;
+		attribute type : String;
+		attribute address : String;
+	}
+	class Booklet extends Publication {
+		reference author[1-*] : Person;
+		attribute month : String;
+		attribute address : String;
+		attribute edition : String;
+		attribute howpublished : String;		
+	}
+	class InCollection extends Publication {
+		reference editor : Person;
+		reference author[1-*] : Person;
+		reference publisher : Organization;
+		attribute month : String;
+		attribute number : Integer;
+		attribute pages : String;
+		attribute address : String;
+		attribute edition : String;
+		attribute volume : Integer;
+		attribute series : String;
+		attribute chapter : String;
+		attribute type : String;
+		attribute booktitle : String;
+	}
+	class InProceedings extends Publication {
+		reference editor : Person;
+		reference author[1-*] : Person;
+		attribute month : String;
+		attribute number : Integer;
+		attribute pages : String;
+		attribute address : String;
+		attribute volume : Integer;
+		attribute series : String;
+		attribute booktitle : String;
+		reference organization : Organization;
+		reference publisher : Organization;
+	}
+	class Proceedings extends Publication {
+		reference editor : Person;
+		reference publisher : Organization;
+		reference organization : Organization;
+		attribute month : String;
+		attribute number : String;
+		attribute volume : String;
+		attribute address : String;
+		attribute series : String;
+	}
+	class Manual extends Publication {
+		reference author[1-*] : Person;
+		reference organization : Organization;
+		attribute month : String;
+		attribute address : String;
+		attribute edition : String;
+	}
+	class Misc extends Publication {
+		attribute month : String;
+		attribute howpublished : String;
+	}
+	class Unpublished extends Publication {
+		reference author[1-*] : Person;
+		attribute month : String;
+	}
+	abstract class Thesis extends Publication {
+		reference author[1-*] : Person;
+		reference school : University;
+		attribute month : String;
+		attribute address : String;
+		attribute type : String;
+	}
+	class MasterThesis extends Thesis {}
+	class PhDThesis extends Thesis {}
+	abstract class Report extends Publication {
+		reference author[*] : Person;
+	}
+	class ProjectReport extends Report {
+		reference describesProject : Project oppositeOf projectInfo;
+	}
+	class TechnicalReport extends Report {
+		attribute series : String;
+		reference organization : Organization;
+	}
+	--@end Publication
+		
+	--@begin Event
+	class Event {
+		attribute name : String;
+		attribute date : String;
+		attribute eventTitle : String;
+		attribute location : String;
+		reference atEvent : Event oppositeOf hasPartEvent;
+		reference hasPartEvent : Event oppositeOf atEvent;
+	}
+	class Conference extends Event {
+		attribute series : String;
+	}
+	class Workshop extends Event {
+		attribute series : String;
+	}
+	class Exhibition extends Event {}
+	class Lecture extends Event {
+		reference givenBy : Person;
+	}
+	class Meeting extends Event {
+		attribute title : String;
+		reference participant[*] : Person;
+	}
+	class ProjectMeeting extends Meeting {}
+	--@end Event
+	
+	--@begin Person
+	class Person {
+		attribute address : String;
+		attribute name : String;
+		attribute email : String;
+		attribute fax : String;
+		attribute homepage : String;
+		attribute phone : String;
+		attribute photo : String;
+	}
+	
+	--@begin Employee
+	class Employee extends Person {
+		reference affiliation : Organization oppositeOf employs;
+	}
+	class Manager extends Employee {}
+	class AdministrativeStaff extends Employee {}
+	class TechnicalStaff extends Employee {}
+	--@end Employee
+	
+	--@begin AcademicStaff
+	class AcademicStaff extends Person {
+		reference cooperateWith[*] : AcademicStaff;
+		reference editor : Publication;
+		reference headOf : Project oppositeOf head;
+		reference headOfGroup : ResearchGroup oppositeOf head;
+		reference memberOfPC : Event;
+		reference organizerOrChairOf : Event;
+		reference publication[*] : Publication;
+		reference supervises[*] : PhDStudent oppositeOf supervisor;
+		reference worksAtProject : ResearchTopic oppositeOf isWorkedOnBy;
+	}
+	class Lecturer extends AcademicStaff {}
+	--@begin FacultyMember
+	class FacultyMember extends AcademicStaff {}
+	--@end AcademicStaff
+	class FullProfessor extends FacultyMember {}
+	class AssistantProfessor extends FacultyMember {}
+	class AssociateProfessor extends FacultyMember {}
+	--@end FacultyMember
+	
+	--@begin Student
+	class Student extends Person {
+		reference studiesAt : University;
+	}
+	class Undergraduate extends Student {}
+	class Graduate extends Student {}
+	class PhDStudent extends Graduate {
+		reference publication[*] : Publication;
+		reference worksAtProject : Project;
+		reference supervisor : AcademicStaff oppositeOf supervises;
+	}
+	--@end Student
+	--@end Person
+
+	--@begin Organization
+	class Organization {
+		attribute location : String;
+		attribute name : String;
+		reference carriesOut[*] : Project oppositeOf carriedOutBy;
+		reference develops[*] : Product oppositeOf developedBy;
+		reference employs[*] : Employee oppositeOf affiliation;
+		reference finances[*] : Project oppositeOf financedBy;
+		reference publishes[*] : Publication;
+		reference technicalReport[*] : TechnicalReport;
+	}
+	class ResearchGroup extends Organization {
+		reference head : AcademicStaff oppositeOf headOfGroup;
+		reference member[*] : Employee;
+	}
+	class Association extends Organization {}
+	class Department extends Organization {
+		reference hasParts : Institute;
+	}
+	class Institute extends Organization {
+		reference cooperateWith : Institute;
+		reference hasParts[*] : ResearchGroup;
+	}
+	class Enterprise extends Organization {}
+	class University extends Organization {
+		reference hasParts[*] : Department;
+		reference student[*] container : Student;
+	}
+	--@end Organization
+
+	--@begin Project
+	abstract class Project {
+		attribute name : String;
+		reference carriedOutBy : Organization oppositeOf carriesOut;
+		reference financedBy : Organization oppositeOf finances;
+		reference head : AcademicStaff oppositeOf headOf;
+		reference isAbout[1-*] : ResearchTopic oppositeOf dealWithIn;
+		reference member[*] : Person;
+		reference projectInfo[*] : ProjectReport oppositeOf describesProject;
+	}
+	class ResearchProject extends Project {}
+	class DevelopmentProject extends Project {}
+	class SoftwareProject extends Project {
+		reference product : Product;
+	}
+	--@end Project	
+
+	--@begin Product
+	class Product {
+		attribute name : String;
+		reference developedBy : Organization oppositeOf develops;
+	}
+	class SoftwareComponent extends Product {
+		attribute hasPrice : Integer;
+	}
+	--@end Product
+	
+	--@begin Topic
+	class Topic {
+		attribute name : String;
+	}
+	class ResearchTopic extends Topic {
+		reference dealWithIn : Project oppositeOf isAbout;
+		reference isWorkedOnBy[*] : AcademicStaff oppositeOf worksAtProject;
+	}
+	--@end Topic
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+}

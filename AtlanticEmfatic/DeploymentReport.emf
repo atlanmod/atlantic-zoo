@@ -1,0 +1,234 @@
+package Metamodel;
+
+package DeploymentReport {
+  class DeploymentReport {
+    !ordered ref DeploymentImport[*] ~import;
+    !ordered ref Applications applications;
+    !ordered ref Binding binding;
+    !ordered ref LogicalServers logicalServers;
+    !ordered ref ErrorCollection errors;
+  }
+
+  class DeploymentImport {
+    !ordered ref SimpleName[1] alias;
+    !ordered val ImportNamespaceIdentity[1]#~import identity;
+  }
+
+  class ImportNamespaceIdentity extends NamespaceIdentity {
+    !ordered ref DeploymentImport[1]#identity ~import;
+  }
+
+  class NamespaceIdentity {
+    !ordered ref Path[1] name;
+    !ordered ref FourPartVersionType version;
+    !ordered ref PublicKeyType publicKey;
+    !ordered ref PublicKeyTokenType publicKeyToken;
+    !ordered ref CultureNeutral culture;
+    !unique !ordered attr Platform platform;
+  }
+
+  class Applications {
+    !ordered ref OuterSystem[*] system;
+    !ordered ref Application[*] application;
+  }
+
+  class LogicalServers {
+    !ordered ref Zone[*] zone;
+    !ordered ref LogicalServer[*] logicalServer;
+  }
+
+  class OuterSystem {
+    !ordered ref OuterSystem[*] system;
+    !ordered ref Application[*] application;
+    !unique !ordered attr String[1] name;
+  }
+
+  class Binding {
+    !ordered ref Zone[*] zone;
+    !ordered ref BoundLogicalServer[*] boundLogicalServer;
+  }
+
+  class Zone {
+    !ordered ref Zone[*] zone;
+    !ordered ref BoundLogicalServer[*] boundLogicalServer;
+    !ordered ref LogicalServer[*] logicalServer;
+    !unique !ordered attr String[1] name;
+  }
+
+  class ReportObject {
+    !ordered val SequenceReport[*]#report sequence;
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] definition;
+    !unique !ordered attr String[1] ~extends;
+    !ordered ref Guid[1] instanceId;
+    !unique !ordered attr String hostedOn;
+  }
+
+  class SequenceReport {
+    !ordered ref ReportObject[1]#sequence report;
+    !ordered ref Setting[1] setting;
+    !ordered ref ReportSystem[*] system;
+    !ordered ref ReportResource[*] resource;
+    !ordered ref ReportEndpoint[*] endpoint;
+  }
+
+  class BoundLogicalServer {
+    !ordered ref Setting[*] setting;
+    !ordered ref Application[*] application;
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] definition;
+    !unique !ordered attr String[1] ~extends;
+  }
+
+  class LogicalServer extends ReportObject {
+  }
+
+  class Application extends ReportObject {
+  }
+
+  class ReportSystem extends ReportObject {
+  }
+
+  class ReportResource extends ReportObject {
+  }
+
+  class ReportEndpoint extends ReportObject {
+  }
+
+  class Setting {
+    !ordered ref SettingInstanceValue[*] value;
+    !ordered ref SettingFacet[*] facet;
+    !ordered ref SettingAttributes[1] settingAttributes;
+  }
+
+  class SettingFacet {
+    !ordered ref SettingInstanceValue value;
+    !ordered ref SettingAttributes[1] settingAttributes;
+  }
+
+  class SettingInstanceValue {
+    !unique !ordered attr String[*] contents;
+    !unique !ordered attr Boolean null;
+  }
+
+  class SettingAttributes {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] definition;
+    !unique !ordered attr SettingState state;
+    !unique !ordered attr Boolean fixed;
+    !unique !ordered attr Boolean list;
+    !unique !ordered attr Boolean null;
+    !unique !ordered attr Boolean secure;
+    !unique !ordered attr Boolean failedToSerialize;
+  }
+
+  class SettingValue {
+    !unique !ordered attr String[*] contents;
+    !unique !ordered attr Boolean Null;
+    !unique !ordered attr Boolean Secure;
+  }
+
+  class ErrorCollection {
+    !ordered ref DocumentError[*] documentError;
+    !ordered ref DocumentResolutionError[*] documentResolutionError;
+    !ordered ref DocumentConstraintError[*] documentConstraintError;
+  }
+
+  class DocumentError {
+    !ordered ref Description[*] description;
+    !unique !ordered attr Integer[1] Code;
+    !unique !ordered attr Integer[1] Level;
+    !unique !ordered attr String File;
+  }
+
+  class DocumentResolutionError extends DocumentError {
+    !unique !ordered attr String[1] Statement;
+  }
+
+  class DocumentConstraintError extends DocumentError {
+    !ordered ref FailedInput[*] failedInput;
+    !unique !ordered attr String[1] constraintMember;
+    !unique !ordered attr String[1] constraintDefinition;
+    !unique !ordered attr String targetInstancePath;
+    !unique !ordered attr String ownerInstancePath;
+    !unique !ordered attr String constraintErrorCode;
+    !unique !ordered attr String constraintErrorMessage;
+  }
+
+  class FailedInput {
+    !unique !ordered attr String[*] contents;
+  }
+
+  class Description {
+    !unique !ordered attr String[*] contents;
+  }
+
+  class Guid extends Element {
+  }
+
+  class SimpleName extends Element {
+  }
+
+  class Path extends Element {
+  }
+
+  class FourPartVersionType extends Element {
+  }
+
+  class PublicKeyType extends Element {
+  }
+
+  class PublicKeyTokenType extends Element {
+  }
+
+  class Culture extends Element {
+  }
+
+  class CultureNeutral extends Element {
+  }
+
+  enum ProcessorArchitectures {
+    x86 = 0;
+    ia64 = 0;
+    amd64 = 0;
+    wow64 = 0;
+    msil = 0;
+    shx = 0;
+    arm = 0;
+    data = 0;
+  }
+
+  enum Platform {
+    x86 = 0;
+    ia64 = 0;
+    amd64 = 0;
+    wow64 = 0;
+    msil = 0;
+    shx = 0;
+    arm = 0;
+    data = 0;
+    * = 0;
+    neutral = 0;
+  }
+
+  enum SettingState {
+    Set = 0;
+    NotSet = 0;
+    Error = 0;
+  }
+
+  class Element {
+    !unique !ordered attr String[1] value;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+  datatype Boolean : "";
+
+}
+

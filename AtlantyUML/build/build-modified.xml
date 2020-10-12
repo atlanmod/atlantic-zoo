@@ -1,0 +1,105 @@
+<!-- How to configure this ant script:
+	Run as->Ant Build...
+		Set:
+			- Base directory
+			- Run in same JRE
+			- Refresh
+
+			- ANTLR jar (?)
+			- ant contrib jar
+-->
+<project name="atlantyUML" default="transformAll">
+
+	<property name="sourcePath" value="C:/Workspaces/MetamodelZoo_wkspace/New metamodels/UML2/"/>
+	<property name="targetPath" value="C:/Workspaces/MetamodelZoo_wkspace/New metamodels/yUML/"/>
+	<property name="projectPath" value="" />
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+	</taskdef>
+	
+	<target name="transformAll" depends="loadModels">
+		<!--<antcall target="transformOne" inheritall="true" inheritrefs="true">
+			<param name="sample" value="../../org.eclipse.am3.zoos.atlantic/ATOM"/>
+		</antcall>
+		-->
+		<!-- loop over all uml models -->
+		
+		<for param="e">
+		  <path>
+		    <fileset dir="C:/Workspaces/MetamodelZoo_wkspace/New metamodels/UML2/" includes="*.uml"/>
+		    
+		  </path>
+		  <sequential>
+			<antcall target="condition" inheritall="true" inheritrefs="true">
+				<param name="sample" value="@{e}"/>
+			</antcall>
+		  </sequential>
+		</for>		
+		
+	</target>
+
+	<target name="condition">
+	  	<basename property="name" file="${sample}" suffix=".uml"/>
+		<property name="sourceModel" value="${sourcePath}${name}.uml"/>
+		<property name="targetModel" value="${targetPath}${name}.yuml"/>
+		
+		<uptodate property="isUpToDate" srcfile="${sourceModel}" targetfile="${targetModel}"/>
+		
+	  	<if>
+	  	 <not>
+			 <equals arg1="${isUpToDate}" arg2="true" />
+		 </not>
+		 <then>
+			<antcall target="transformOne" inheritall="true" inheritrefs="true">
+				<param name="name" value="${name}"/>
+				<param name="sourceModel" value="${sourceModel}"/>
+				<param name="targetModel" value="${targetModel}"/>
+			</antcall>
+		 </then>
+		</if>
+
+	</target>
+	
+	<!-- parameters: sample -->
+	<target name="transformOne">
+
+		<echo message="Transforming ${name}"/>
+		
+		<!-- Load Ecore metamodel -->
+		<echo message="Loading ${sourceModel}" />
+		<am3.loadModel modelHandler="EMF" name="${sample}" metamodel="%EMF" path="${sourceModel}" />
+		
+		<!-- Transform UML model into yUML model -->
+		<echo message="Transforming ${name}.uml to ${name}.yuml" />
+		<am3.atl path="/org.eclipse.am3.zoos.atlantyUML/build/UML2yUML.asm" vm="EMF-specific VM">
+			<inModel name="IN" model="${sample}"/>
+			<inModel name="UML" model="UML"/>
+			<inModel name="yUML" model="yUML"/>
+			<outModel name="OUT" model="target" metamodel="yUML"/>
+		</am3.atl>
+		
+		<!-- Extract and save yUML model -->
+		<echo message="Extracting ${targetModel}" />
+		<am3.loadModel modelHandler="EMF" name="yUML.tcs" metamodel="TCS" path="/org.eclipse.am3.zoos.atlantyUML/build/yUML.tcs.xmi"/>
+		<am3.saveModel model="target" path="${targetModel}">
+<!--
+-->			<extractor name="ebnf">
+				<param name="format" value="yUML.tcs"/> 
+				<param name="indentString" value="&#9;"/> 
+				<param name="kwCheckIgnoreCase" value="true"/> 
+			</extractor>
+
+		</am3.saveModel>
+
+	</target>
+
+	<target name="loadModels">
+		<!-- Load UML metamodel-->
+		<am3.loadModel modelHandler="EMF" name="UML" metamodel="MOF" nsUri="http://www.eclipse.org/uml2/2.1.0/UML"/>
+		<!-- Load yUML metamodel-->
+		<am3.loadModel modelHandler="EMF" name="yUML" metamodel="MOF" path="/org.eclipse.am3.zoos.atlantyUML/build/yUML.ecore"/>
+		<!-- Load TCS metamodel-->
+		<am3.loadModel modelHandler="EMF" name="TCS" metamodel="MOF" path="/org.eclipse.am3.zoos.atlantyUML/build/TCS.ecore"/>
+	</target>	
+
+</project>

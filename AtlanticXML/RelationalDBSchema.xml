@@ -1,0 +1,30 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'RelationalDBSchema'>
+    <Class name = 'NamedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'DataBase' isAbstract = 'false' supertypes = 'RelationalDBSchema::NamedElement'>
+      <Attribute name = 'SGBDname' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'tables' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'RelationalDBSchema::Table' opposite = 'RelationalDBSchema::Table::database'/>
+    </Class>
+    <Class name = 'Table' isAbstract = 'false' supertypes = 'RelationalDBSchema::NamedElement'>
+      <Reference name = 'database' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RelationalDBSchema::DataBase' opposite = 'RelationalDBSchema::DataBase::tables'/>
+      <Reference name = 'columns' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'RelationalDBSchema::Column' opposite = 'RelationalDBSchema::Column::owner'/>
+      <Reference name = 'key' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RelationalDBSchema::Column' opposite = 'RelationalDBSchema::Column::keyOf'/>
+    </Class>
+    <Class name = 'Column' isAbstract = 'false' supertypes = 'RelationalDBSchema::NamedElement'>
+      <Attribute name = 'dataType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'null' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'defaultValue' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RelationalDBSchema::Table' opposite = 'RelationalDBSchema::Table::columns'/>
+      <Reference name = 'keyOf' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RelationalDBSchema::Table' opposite = 'RelationalDBSchema::Table::key'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Double'/>
+  </Package>
+</Metamodel>

@@ -1,0 +1,85 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'yUML'>
+    <Class name = 'LocatedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'location' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsBefore' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsAfter' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Model' isAbstract = 'false' supertypes = 'yUML::LocatedElement'>
+      <Reference name = 'classes' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'yUML::Class' opposite = ''/>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'yUML::ModelElement' opposite = 'yUML::ModelElement::model'/>
+    </Class>
+    <Class name = 'Class' isAbstract = 'false' supertypes = 'yUML::LocatedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ModelElement' isAbstract = 'true' supertypes = 'yUML::LocatedElement'>
+      <Reference name = 'model' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'yUML::Model' opposite = 'yUML::Model::elements'/>
+    </Class>
+    <Class name = 'ColorableElement' isAbstract = 'true' supertypes = 'yUML::ModelElement'>
+      <Attribute name = 'color' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ClassReference' isAbstract = 'false' supertypes = 'yUML::ColorableElement'>
+      <Reference name = 'class' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'yUML::Class' opposite = ''/>
+      <Attribute name = 'stereotype' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'definition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'yUML::ClassDefinition' opposite = ''/>
+    </Class>
+    <Enumeration name = 'AssociationType'>
+      <EnumLiteral name = 'simpleAssociation'/>
+      <EnumLiteral name = 'aggregation'/>
+      <EnumLiteral name = 'composition'/>
+    </Enumeration>
+    <Class name = 'Relationship' isAbstract = 'true' supertypes = 'yUML::ModelElement'>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'yUML::ClassReference' opposite = ''/>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'yUML::ClassReference' opposite = ''/>
+    </Class>
+    <Class name = 'ClassDefinition' isAbstract = 'false' supertypes = 'yUML::LocatedElement'>
+      <Reference name = 'attributes' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'yUML::Attribute' opposite = ''/>
+      <Reference name = 'methods' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'yUML::Method' opposite = ''/>
+    </Class>
+    <Class name = 'Association' isAbstract = 'false' supertypes = 'yUML::Relationship'>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'yUML::AssociationType'/>
+      <Reference name = 'sourceCardinality' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'yUML::Cardinality' opposite = ''/>
+      <Attribute name = 'sourceLabel' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'navigableSource' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'sourceVisibility' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'yUML::Visibility'/>
+      <Reference name = 'targetCardinality' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'yUML::Cardinality' opposite = ''/>
+      <Attribute name = 'targetLabel' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'navigableTarget' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'targetVisibility' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'yUML::Visibility'/>
+    </Class>
+    <Class name = 'Inheritance' isAbstract = 'false' supertypes = 'yUML::Relationship'/>
+    <Class name = 'Cardinality' isAbstract = 'false' supertypes = 'yUML::LocatedElement'>
+      <Attribute name = 'lowerBound' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'upperBound' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Enumeration name = 'Visibility'>
+      <EnumLiteral name = 'unspecified'/>
+      <EnumLiteral name = 'public'/>
+      <EnumLiteral name = 'private'/>
+      <EnumLiteral name = 'protected'/>
+      <EnumLiteral name = 'package'/>
+    </Enumeration>
+    <Class name = 'ClassMember' isAbstract = 'true' supertypes = 'yUML::LocatedElement'>
+      <Attribute name = 'visibility' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'yUML::Visibility'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Attribute' isAbstract = 'false' supertypes = 'yUML::ClassMember'>
+      <Attribute name = 'type' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Method' isAbstract = 'false' supertypes = 'yUML::ClassMember'>
+      <Attribute name = 'arguments' lower = '0' upper = '-1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Note' isAbstract = 'false' supertypes = 'yUML::ColorableElement'>
+      <Attribute name = 'text' lower = '0' upper = '-1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'NoteAssociation' isAbstract = 'false' supertypes = 'yUML::Relationship'>
+      <Reference name = 'note' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'yUML::Note' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

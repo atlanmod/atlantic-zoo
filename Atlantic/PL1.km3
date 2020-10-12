@@ -1,0 +1,88 @@
+-- @name		PL/1
+-- @version		0.1
+-- @domains		programming language
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/11
+-- @description	This basic metamodel describes PL/1. PL/1 (Programming Language One) was developed as an IBM product in the mid sixties, and was originally named NPL (New Programming Language). Until the time this new language was developed, all previous languages had focused on one particular area of application, such as science, artificial intelligence, or business. PL/I was not designed to be used in the same way. It was the first large scale attempt to design a language that could be used in a variety of application areas.  Significant Language Features: PL/1 is completely free form and has no reserved keywords;  It precisely defines it is data types without regard for any hardware; PL/1 is a block-oriented language, consisting of packages, begin blocks, and statements. This type of structure allows the programmer to produce highly-modular applications; PL/1 contains control structures. For example, SELECT...WHEN...OTHERWISE allow logical operations, and DO statements allow units to be executed unconditionally one time, forever, or while a condition is true or until a condition becomes true; PL/1 supports arrays, structures, unions, arrays of structures or unions, structures or unions of arrays, and combinations thereof; PL/1 provides four different storage classes: AUTOMATIC, STATIC, CONTROLLED, and BASED.
+
+package "PL/I" {
+
+	class PLIClassifier {
+		attribute name : String;
+		reference typedElements[*] : PLIElement oppositeOf sharedType;
+	}
+	
+	class PLISimpleType extends PLIClassifier {
+		reference alias : PLIAlias oppositeOf type;
+	}
+	
+	class PLINamedType extends PLIClassifier {}
+	
+	class PLIComposedType extends PLIClassifier {
+		reference elements[*] container : PLIElement oppositeOf group;
+	}
+	
+	class PLIAlias {
+		reference type container : PLISimpleType oppositeOf alias;
+		reference contains[1-*] container : PLIAttribute;
+	}
+	
+	class PLIAttribute {}
+	
+	class PLIComputationalType extends PLISimpleType {}
+	
+	class PLINonComputationalType extends PLISimpleType {}
+	
+	class PLIElement {
+		attribute level : String;
+		attribute name : String;
+		reference sharedType[0-1] : PLIClassifier oppositeOf typedElements;
+		reference group[0-1] : PLIComposedType oppositeOf elements;
+		reference initial[0-1] : PLIElementInitialValue;
+		reference source : PLISourceText;
+		reference array[0-1] container : PLIArray oppositeOf arrayOf;
+	}
+	
+	class PLIElementInitialValue {
+		attribute initialValue : String;
+	}
+	
+	class PLISourceText {
+		attribute source : String;
+		attribute fileName : String;
+	}
+	
+	class PLIArray {
+		reference arrayOf[0-1] : PLIElement oppositeOf array;
+	}
+	
+	class PLIFixedBoundArray extends PLIArray {
+		attribute IBound : Integer;
+		attribute uBound : Integer;
+		reference referredTo : PLIElement;
+	}
+	
+	class PLIFixedLboundArray extends PLIArray {
+		attribute IBound : Integer;
+		attribute uBoundToAllocate : String;
+		reference referredTo : PLIElement;
+	}
+	
+	class PLIHBoundArray extends PLIArray {
+		attribute uBound : Integer;
+		attribute IBoundToAllocate : String;
+		reference referredTo : PLIElement;
+	}
+	
+	class PLIVariableBoundArray extends PLIArray {
+		attribute IBoundToAllocate : String;
+		attribute hBoundToAllocate : String;
+		reference referredTo : PLIElement;
+	}
+	
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+}

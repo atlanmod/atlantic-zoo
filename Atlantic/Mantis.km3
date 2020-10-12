@@ -1,0 +1,121 @@
+-- @name		Mantis 
+-- @version		1.1
+-- @domains		Software, Quality control, Bug tracking
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com)
+-- @date		2005/07/11
+-- @description	This metamodel describes the structure used by Mantis, a web-based bugtracking system written in PHP and using MySQL database, to import/export data in XML.
+-- @see			mantis.xsd, http://www.mantisbt.org/mantis/view.php?id=4024 at the bottom of the page
+
+package Mantis {
+
+	-- @begin Special types
+
+	-- @comment Defines the different possible types of relationship between two bugs.
+	enumeration RelationshipType {
+		literal "rt_related to";
+		literal "rt_parent of";
+		literal "rt_child of";
+		literal "rt_duplicate of";
+		literal "rt_has duplicate";		
+	}
+
+	-- @end Special types
+
+
+	-- @begin Mantis general structure
+
+	-- @comment Defines the root element that contains the bugs.
+	class MantisRoot {
+		reference issues[*] ordered container : Issue oppositeOf i_mantisRoot;
+	}
+	
+	-- @comment Defines the abstract concept of an element with an identifying number.
+	abstract class IdentifiedElt {
+		attribute id : Integer;
+	}
+
+	-- @comment Defines the abstract concept of an element with a boolean that can indicate if this element is private or not.
+	abstract class PrivateElt {
+		attribute private[0-1] : Boolean;
+	}
+	
+	-- @comment Defines a bug (a bug is an "Issue" in Mantis).
+	class Issue extends IdentifiedElt, PrivateElt {
+		reference i_mantisRoot : MantisRoot oppositeOf issues;
+
+		-- @comment All the information related to a bug.
+		reference project container : ValueWithId;
+		attribute category : String;
+		reference priority container : ValueWithId;
+		reference severity container : ValueWithId;
+		reference status container : ValueWithId;
+		reference reporter container : Person;
+		attribute summary : String;
+		attribute description : String;
+		attribute version[0-1] : String;
+		attribute build[0-1] : String;
+		attribute platform[0-1] : String;
+		attribute os[0-1] : String;
+		attribute osVersion[0-1] : String;
+		reference reproducibility container : ValueWithId;
+		attribute stepsToReproduce[0-1] : String;
+		attribute additionalInfo[0-1] : String;
+		attribute dateSubmitted : Integer;
+		reference assignedTo[0-1] container : Person;
+		reference projection[0-1] container : ValueWithId;
+		reference eta[0-1] container : ValueWithId;
+		reference resolution[0-1] container : ValueWithId;
+		attribute fixedInVersion[0-1] : String;
+		reference attachments[*] ordered container : Attachment;
+		reference relationships[*] ordered container : Relationship;
+		reference notes[*] ordered container : Note;
+		attribute lastUpdate : Integer;		
+	} 
+
+	-- @comment Defines an element composed of an identifier associated to a value.
+	class ValueWithId extends IdentifiedElt {
+		attribute value : String;
+	}
+
+	-- @comment Defines a person by using his identifier, his login and his complete name (contained in the attribute "value").
+	class Person extends ValueWithId {
+		attribute login : String;
+	}
+
+	-- @coment Defines a relationship between two bugs.
+	class Relationship extends IdentifiedElt  {
+		attribute type : RelationshipType ;
+	}
+
+	-- @comment Defines the abstract concept of an element with a "timestamp" value.
+	abstract class TimeStampedElt {
+		attribute timestamp : Integer;
+	}
+
+	-- @comment Defines a note (a comment) associated to a bug.
+	class Note extends TimeStampedElt, PrivateElt {
+		reference author container : Person;
+		attribute text : String;
+	}
+
+	-- @comment Defines an attachment of type "file" associated to a bug.
+	class Attachment extends TimeStampedElt {
+		attribute filename : String;
+		attribute size : Integer;
+		attribute contentType : String;
+		attribute downloadUrl : String;
+	}
+	
+	-- @end Mantis general structure
+
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

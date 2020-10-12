@@ -1,0 +1,5 @@
+( defstruct Node )
+( defstruct Device )
+( defstruct ExecutionEnvironment )
+( defstruct Specification )
+( defstruct CommunicationLink )

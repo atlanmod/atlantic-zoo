@@ -1,0 +1,131 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'LQN'>
+    <Class name = 'LQN' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'comment' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'author' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'created_On' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'LQN::Date'/>
+      <Attribute name = 'modified_On' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'LQN::Date'/>
+      <Reference name = 'task' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'LQN::Task' opposite = 'LQN::Task::lqn'/>
+      <Reference name = 'processor' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'LQN::Processor' opposite = 'LQN::Processor::lqn'/>
+    </Class>
+    <Class name = 'Task' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'LQN::TaskType'/>
+      <Attribute name = 'priority' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'mutliplicity' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'replicas' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'entry' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'LQN::Entry' opposite = 'LQN::Entry::task'/>
+      <Reference name = 'processor' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Processor' opposite = 'LQN::Processor::task'/>
+      <Reference name = 'lqn' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'LQN::LQN' opposite = 'LQN::LQN::task'/>
+      <Reference name = 'activity' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Activity' opposite = 'LQN::Activity::task'/>
+    </Class>
+    <Class name = 'Processor' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'scheduling' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'LQN::SchedulingType'/>
+      <Attribute name = 'mutliplicity' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'replicas' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'spped' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'task' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Task' opposite = 'LQN::Task::processor'/>
+      <Reference name = 'lqn' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'LQN::LQN' opposite = 'LQN::LQN::processor'/>
+    </Class>
+    <Class name = 'Entry' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'num_Phase' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'arrival_Rate' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'contained_In' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'LQN::Task'/>
+      <Attribute name = 'replay_To' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'LQN::Entry'/>
+      <Reference name = 'callreceives' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Call' opposite = 'LQN::Call::entryreceives'/>
+      <Reference name = 'callsends' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Call' opposite = 'LQN::Call::entrysends'/>
+      <Reference name = 'phase' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Phase' opposite = 'LQN::Phase::entry'/>
+      <Reference name = 'activity' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'LQN::Activity' opposite = 'LQN::Activity::entry'/>
+      <Reference name = 'task' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Task' opposite = 'LQN::Task::entry'/>
+    </Class>
+    <Class name = 'Phase' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'number' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'LQN::PhaseType'/>
+      <Attribute name = 'think_Time' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'execution_Demand' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'COV' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'entry' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Entry' opposite = 'LQN::Entry::phase'/>
+      <Reference name = 'activity' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Activity' opposite = 'LQN::Activity::phase'/>
+    </Class>
+    <Class name = 'Activity' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'arrival_Rate' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'contained_In' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'LQN::Task'/>
+      <Attribute name = 'replay_To' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'LQN::Entry'/>
+      <Reference name = 'linkPrecedes' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Link' opposite = 'LQN::Link::activityPrecedes'/>
+      <Reference name = 'linkfollows' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Link' opposite = 'LQN::Link::activityfollows'/>
+      <Reference name = 'call' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Call' opposite = 'LQN::Call::activity'/>
+      <Reference name = 'phase' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Phase' opposite = 'LQN::Phase::activity'/>
+      <Reference name = 'entry' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Entry' opposite = 'LQN::Entry::activity'/>
+      <Reference name = 'task' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Task' opposite = 'LQN::Task::activity'/>
+    </Class>
+    <Class name = 'Link' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'LQN::LinkType'/>
+      <Attribute name = 'mean_Links' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'fromActivity' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'LQN::Activity'/>
+      <Attribute name = 'toActivity' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'LQN::Activity'/>
+      <Reference name = 'activityPrecedes' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Activity' opposite = 'LQN::Activity::linkPrecedes'/>
+      <Reference name = 'activityfollows' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Activity' opposite = 'LQN::Activity::linkfollows'/>
+    </Class>
+    <Class name = 'CallPhase' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'mean_Calls' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'refers_To' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'LQN::Phase'/>
+      <Reference name = 'call' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Call' opposite = 'LQN::Call::callPhase'/>
+    </Class>
+    <Class name = 'Call' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'toEntry' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'LQN::Entry'/>
+      <Attribute name = 'num_Phases' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'LQN::CallType'/>
+      <Reference name = 'callPhase' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'LQN::CallPhase' opposite = 'LQN::CallPhase::call'/>
+      <Reference name = 'activity' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Activity' opposite = 'LQN::Activity::call'/>
+      <Reference name = 'entryreceives' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Entry' opposite = 'LQN::Entry::callreceives'/>
+      <Reference name = 'entrysends' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'LQN::Entry' opposite = 'LQN::Entry::callsends'/>
+    </Class>
+    <Class name = 'EntryCall' isAbstract = 'false' supertypes = 'LQN::Call'>
+      <Attribute name = 'from_Entry' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'LQN::Entry'/>
+    </Class>
+    <Class name = 'ActivityCall' isAbstract = 'false' supertypes = 'LQN::Call'>
+      <Attribute name = 'fromActivity' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'LQN::Activity'/>
+    </Class>
+    <Class name = 'Date' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'day' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'month' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'year' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Enumeration name = 'SchedulingType'>
+      <EnumLiteral name = 'FCFS'/>
+      <EnumLiteral name = 'preemptive_Priority'/>
+      <EnumLiteral name = 'head_of_line'/>
+      <EnumLiteral name = 'random'/>
+    </Enumeration>
+    <Enumeration name = 'PhaseType'>
+      <EnumLiteral name = 'stochastic'/>
+      <EnumLiteral name = 'deterministic'/>
+    </Enumeration>
+    <Enumeration name = 'CallType'>
+      <EnumLiteral name = 'synchronous'/>
+      <EnumLiteral name = 'asynchronous'/>
+      <EnumLiteral name = 'forwording'/>
+    </Enumeration>
+    <Enumeration name = 'LinkType'>
+      <EnumLiteral name = 'and_Fork'/>
+      <EnumLiteral name = 'and_join'/>
+      <EnumLiteral name = 'basic'/>
+      <EnumLiteral name = 'or_Fork'/>
+      <EnumLiteral name = 'or_join'/>
+    </Enumeration>
+    <Enumeration name = 'TaskType'>
+      <EnumLiteral name = 'a_reference'/>
+      <EnumLiteral name = 'non_reference'/>
+    </Enumeration>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+  </Package>
+</Metamodel>

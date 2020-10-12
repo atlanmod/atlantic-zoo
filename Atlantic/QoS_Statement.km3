@@ -1,0 +1,46 @@
+-- @name 		QoS Statement
+-- @domains 	Quality of Service
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/07/10
+-- @description This metamodel describes a metamodel for a QoS Statement
+-- @see 		This metamodel has been extracted from information available in the following article:
+-- @see 		Article "Modelling QoS : Towards a UML Profile"
+-- @see 		by Jan Oyvind Aagedal, Earl F. Ecklund
+-- @see 		Page 281, Section 3.2.3, Fig. 4. Conceptual model for QoS Statement
+-- @see 		Lecture Notes in Computer Science 2460
+-- @see 		Jean-Marc Jézéquel, Heinrich Hussman, Stephen Cook
+-- @see 		UML 2002 - The Unified Modeling Language
+
+package QoSStatement {
+	class QoSStatement {
+		reference relation : CoumpoundQoSStatement oppositeOf statement;
+		reference parameter [*] ordered container : Parameter;
+	}
+	
+	class SingleQoSStatement extends QoSStatement {
+		reference contraint container : QoSContraint;
+	}
+	
+	class CoumpoundQoSStatement extends QoSStatement {
+		reference statement [2-*] container : QoSStatement oppositeOf relation;
+	}
+	
+	class Parameter {}
+
+	class QoSContraint { 
+		reference qualification : QualificationKind;
+	}
+
+	class QualificationKind extends QoSCharacteristic {
+		attribute value : String;
+	}
+	
+	class QoSCharacteristic {
+	}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

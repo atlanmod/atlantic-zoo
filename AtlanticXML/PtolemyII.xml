@@ -1,0 +1,56 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'PtolemyII'>
+    <Class name = 'EDataType' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'NamedObject' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Attribute' isAbstract = 'false' supertypes = 'PtolemyII::NamedObject'>
+      <Reference name = 'att_container' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PtolemyII::Entity' opposite = 'PtolemyII::Entity::attributes'/>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Entity' isAbstract = 'false' supertypes = 'PtolemyII::NamedObject'>
+      <Reference name = 'attributes' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'PtolemyII::Attribute' opposite = 'PtolemyII::Attribute::att_container'/>
+      <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'PtolemyII::Parameter' opposite = 'PtolemyII::Parameter::pa_container'/>
+      <Reference name = 'ports' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'PtolemyII::Port' opposite = 'PtolemyII::Port::po_container'/>
+    </Class>
+    <Class name = 'Port' isAbstract = 'false' supertypes = 'PtolemyII::NamedObject'>
+      <Reference name = 'po_container' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PtolemyII::Entity' opposite = 'PtolemyII::Entity::ports'/>
+      <Reference name = 'links' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PtolemyII::Relation' opposite = 'PtolemyII::Relation::ports'/>
+    </Class>
+    <Class name = 'Relation' isAbstract = 'false' supertypes = 'PtolemyII::NamedObject'>
+      <Reference name = 'ports' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PtolemyII::Port' opposite = 'PtolemyII::Port::links'/>
+    </Class>
+    <Class name = 'Director' isAbstract = 'false' supertypes = 'PtolemyII::NamedObject'>
+      <Reference name = 'ca_container' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PtolemyII::CompositeActor' opposite = 'PtolemyII::CompositeActor::directors'/>
+    </Class>
+    <Class name = 'Parameter' isAbstract = 'false' supertypes = 'PtolemyII::Attribute'>
+      <Reference name = 'pa_container' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PtolemyII::Entity' opposite = 'PtolemyII::Entity::parameters'/>
+      <Reference name = 'dataType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PtolemyII::EDataType' opposite = ''/>
+    </Class>
+    <Class name = 'ComponentPort' isAbstract = 'false' supertypes = 'PtolemyII::Port'/>
+    <Class name = 'ComponentRelation' isAbstract = 'false' supertypes = 'PtolemyII::Relation'>
+      <Reference name = 're_container' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PtolemyII::CompositeEntity' opposite = 'PtolemyII::CompositeEntity::relations'/>
+    </Class>
+    <Class name = 'ComponentEntity' isAbstract = 'false' supertypes = 'PtolemyII::Attribute'>
+      <Reference name = 'ce_container' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PtolemyII::CompositeEntity' opposite = 'PtolemyII::CompositeEntity::containees'/>
+    </Class>
+    <Class name = 'AtomicActor' isAbstract = 'false' supertypes = 'PtolemyII::ComponentEntity'/>
+    <Class name = 'CompositeEntity' isAbstract = 'false' supertypes = 'PtolemyII::ComponentEntity'>
+      <Reference name = 'containees' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'PtolemyII::ComponentEntity' opposite = 'PtolemyII::ComponentEntity::ce_container'/>
+      <Reference name = 'relations' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'PtolemyII::ComponentRelation' opposite = 'PtolemyII::ComponentRelation::re_container'/>
+    </Class>
+    <Class name = 'WorkSpace' isAbstract = 'false' supertypes = 'PtolemyII::CompositeEntity'/>
+    <Class name = 'CompositeActor' isAbstract = 'false' supertypes = 'PtolemyII::CompositeEntity'>
+      <Reference name = 'directors' lower = '0' upper = '2' isOrdered = 'false' isContainer = 'false' type = 'PtolemyII::Director' opposite = 'PtolemyII::Director::ca_container'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Double'/>
+  </Package>
+</Metamodel>

@@ -1,0 +1,87 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_OCLExpression"{
+labelloc=t
+color=black
+label=OCLExpression
+ node[shape=record];
+ModelElement[label="{/ModelElement/| | }"]
+ ModelElement->SyncChart[arrowhead=none,arrowtail=none,headlabel="behavior[*]",taillabel="context[0-1]",group=SyncChart,minlen=2,constraint=false,]
+;
+ node[shape=record];
+SyncChart[label="{SyncChart| | }"]
+ SyncChart->ReferenceState[arrowhead=none,arrowtail=none,headlabel="referenceState[*]",taillabel="subSyncChart",group=ReferenceState,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ReferenceState[label="{ReferenceState| | }"]
+ ReferenceState->Stg[arrowhead=diamond,arrowtail=none,headlabel="containers[0-1]",taillabel="referenceState[*]",group=Stg,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Arc[label="{/Arc/|isImmediate : Boolean\npriority : Integer| }"]
+ Arc->Vertex[arrowhead=none,arrowtail=none,headlabel="source",taillabel="outcoming[*]",group=Vertex,minlen=2,constraint=false,]
+ Arc->Stg[arrowhead=diamond,arrowtail=none,headlabel="stg[0-1]",taillabel="arc[*]",group=Stg,minlen=2,constraint=true,]
+ Arc->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Vertex[label="{/Vertex/| | }"]
+ Vertex->Arc[arrowhead=none,arrowtail=none,headlabel="incoming[*]",taillabel="target",group=Arc,minlen=2,constraint=false,]
+ Vertex->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PseudoState[label="{PseudoState| | }"]
+ PseudoState->PseudoStateKind[arrowhead=vee,arrowtail=none,headlabel="kind",group=PseudoStateKind,minlen=2,constraint=false,]
+ PseudoState->Vertex[arrowhead=onormal,group=Vertex,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PseudoStateKind[label="{PseudoStateKind| | }"]
+;
+ node[shape=record];
+State[label="{State|isFinal : Boolean| }"]
+ State->Vertex[arrowhead=onormal,group=Vertex,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleState[label="{SimpleState| | }"]
+ SimpleState->State[arrowhead=onormal,group=State,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompositeState[label="{CompositeState|canTerminate : Boolean\nisSuspendable : Boolean| }"]
+ CompositeState->State[arrowhead=onormal,group=State,minlen=2,constraint=true,]
+ CompositeState->ReferenceState[arrowhead=onormal,group=ReferenceState,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Stg[label="{Stg|withFinal : Boolean| }"]
+ Stg->CompositeState[arrowhead=none,arrowtail=none,headlabel="compositeState",taillabel="stg[1-*]",group=CompositeState,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Transition[label="{Transition| | }"]
+ Transition->TransitionKind[arrowhead=vee,arrowtail=none,headlabel="kind",group=TransitionKind,minlen=2,constraint=false,]
+ Transition->Arc[arrowhead=onormal,group=Arc,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TransitionKind[label="{TransitionKind| | }"]
+;
+ node[shape=record];
+PseudoTransition[label="{PseudoTransition| | }"]
+ PseudoTransition->PseudoTransitionKind[arrowhead=vee,arrowtail=none,headlabel="kind",group=PseudoTransitionKind,minlen=2,constraint=false,]
+ PseudoTransition->Arc[arrowhead=onormal,group=Arc,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PseudoTransitionKind[label="{PseudoTransitionKind| | }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

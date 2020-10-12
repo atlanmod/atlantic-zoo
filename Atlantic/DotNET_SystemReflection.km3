@@ -1,0 +1,268 @@
+-- @name		DotNET System Reflection
+-- @version		1.2
+-- @domains		Microsoft DotNET
+-- @authors		Jean-Marc Prieur (j-m.prieur <at> wanadoo.fr), Régis Chevrel (chevrel.regis <at> gmail.com) [1], Hugo Brunelière (hugo.bruneliere <at> gmail.com)[1] ; Albin Jossic (albin.jossic <at> gmail.com)[1] ;[1] ATLAS team (Nantes, France)
+-- @date		2006/04/05
+-- @description	The Sytem.Reflection namespace from DotNET framework	
+
+
+--@begin package .Net System.Reflection Assembly
+package DNSR {
+
+	--@begin Named Element
+	abstract class NamedElement {
+		attribute name : String ;
+	}
+	--@end  Named Element
+
+	--@begin Assembly root element
+	class Assembly extends NamedElement {
+		attribute location : String ;
+		attribute imageRuntimeVersion : String ;
+		attribute evidence : String ;
+		attribute codeBase : String ;	
+		reference entryPoint : MethodInfo ;
+		reference modules[0-*] container : Module oppositeOf assembly ;
+		reference manifestModule subsets modules : Module ;
+		reference referencedAssembly[0-*] : Assembly ; 
+		reference manifest container : ManifestResource oppositeOf assembly;
+	}
+	
+	class ManifestResource {
+		attribute content : String ;
+		reference assembly : Assembly oppositeOf manifest ;
+	}
+	--@end Assembly root element
+
+	--@begin Module
+	class Module extends NamedElement {
+		attribute qualifiedName : String ;
+		attribute scopeName : String ;
+		reference assembly : Assembly oppositeOf modules ;
+		reference types[0-*] container : Type oppositeOf module ;
+	}
+	--@end Module
+	
+	-- @begin MemberInfo
+	abstract class MemberInfo extends NamedElement {
+		attribute memberType : MemberTypes ;
+		reference declaringType : Type oppositeOf members;
+	}
+
+	class PropertyInfo extends MemberInfo {
+		reference propertyType : Type ;
+		attribute attributes[0-*] : PropertyAttributes ;
+	}
+
+	class FieldInfo extends MemberInfo {
+		reference fieldType : Type ;
+		attribute  attributes[0-*] : FieldAttributes ;
+	}
+
+	class EventInfo extends MemberInfo {
+		attribute isMulticast[0-1] : Boolean ;
+		attribute attributes[0-1] : EventAttributes ;
+		reference eventHandlerType : Type ;	
+	}
+	
+	class ParameterInfo extends NamedElement {
+		attribute defaultValue[0-1] : String ;
+		attribute position : Integer ;
+		attribute attributes[0-*] : ParameterAttributes ;
+		reference parameterType : Type ;
+		reference member : MethodBase oppositeOf parameters ;
+	}
+
+	--@begin Method Base
+	abstract class MethodBase extends MemberInfo {
+		attribute attributes[0-*] : MethodAttributes ;
+		reference parameters[0-*] container : ParameterInfo oppositeOf member ;
+	}
+
+	class MethodInfo extends MethodBase {
+		reference returnType[0-1] : Type ;
+	}
+
+	class ConstructorInfo extends MethodBase {
+	}
+	--@end Method Base
+	
+	class Type extends MemberInfo {
+		attribute namespace : String ;
+		attribute genericParameterAttributes[0-*] : GenericParameterAttributes ;
+		attribute typeAttributes[0-*] : TypeAttributes ;
+		reference baseType[0-1] : Type ;
+		reference module : Module oppositeOf types;
+		reference interfaces[0-*] : Type ;
+		reference members[0-*] container : MemberInfo oppositeOf declaringType ;
+	}
+	-- @end MemberInfo
+	
+	-- @begin Enumeration
+	enumeration EventAttributes {
+		literal None ;
+		literal ReservedMask ;
+		literal RTSpecialName ;
+		literal SpecialName ;	
+	}
+	
+	enumeration FieldAttributes {
+		literal FieldAccessMask ;
+		literal PrivateScope ;
+		literal Private ;
+		literal Assembly ;
+		literal Family ;
+		literal FamANDAssem ;
+		literal FamORAssem ;
+		literal Public ;
+		literal Shared ;
+		literal InitOnly ;
+		literal Literal ;
+		literal NotSerialized ;
+		literal SpecialName ;
+		literal PinvokeImpl ;
+		literal ReservedMask ;
+		literal RTSpecialName ;
+		literal HasFieldMarshal ;
+		literal HasDefault ;
+		literal HasFieldRVA ;
+		literal Static ;
+	}
+
+	enumeration GenericParameterAttributes {
+		literal HasElementType ;
+		literal Abstract ;
+		literal AnsiClass ;
+		literal AutoClass ;
+		literal AutoLayout ;
+		literal ByRef ;
+		literal Class ;
+		literal COMObject ;
+		literal Contextful ;
+		literal Enum ;
+		literal ExplicitLayout ;
+		literal Import ;
+		literal Interface ;
+		literal LayoutSequential ;
+		literal MarshalByRef ;
+		literal NestedAssembly ;
+		literal NestedFamADNAssem ;
+		literal NestedFamily ;
+		literal NestedFamORAssem ;
+		literal NestedPrivate ;
+		literal NestedPublic ;
+		literal NotPublic ;
+		literal Pointer ;
+		literal Primitive ;
+		literal Public ;
+		literal Sealed ;
+		literal Serializable ;
+		literal SpecialName ;
+		literal UnicodeClass ;
+		literal ValueType ;
+	}
+
+	enumeration MemberTypes {
+		literal Constructor ;
+		literal Event ;
+		literal Field ;
+		literal Method ;
+		literal Property ;
+		literal TypeInfo ;
+		literal Custom ;
+		literal NestedType ;
+		literal All ;
+	}
+
+	enumeration MethodAttributes {
+		literal Abstract ;
+		literal Assembly ;
+		literal ChekedAccessOnOverride ;
+		literal FamADNAssem ;
+		literal Family ;
+		literal FamORAssem ;
+		literal Final ;
+		literal HasSecurity ;
+		literal HideBySig ;
+		literal MemberAccessMask ;
+		literal NewSlot ;
+		literal PInvokeImpl ;
+		literal Private ;
+		literal PrivateScope ;
+		literal Public ;
+		literal RequiredSecObject ;
+		literal ReservedMask ;
+		literal ReuseSlot ;
+		literal RTSpecialName ;
+		literal SpecialName ;
+		literal Static ;
+		literal UnmanagedExport ;
+		literal Virtual ;
+		literal VtableLayoutMask ;
+	}
+
+	enumeration ParameterAttributes {
+		literal HasDefault ;
+		literal HasDefaultMArshal; 
+		literal In ;
+		literal Lcid ;
+		literal None ;
+		literal Optional ;
+		literal Out ;
+		literal Reserved3 ;
+		literal Reserved4 ;
+		literal ReservedMask ;
+		literal RetVal ;
+	}
+		
+	enumeration PropertyAttributes {
+		literal NotSupported ;
+		literal Optional ;
+		literal Read ;
+		literal Required ;
+		literal Write ;	
+	}
+	
+	enumeration TypeAttributes {
+		literal Abstract ;
+		literal AnsiClass ;
+		literal AutoClass ;
+		literal AutoLayout ;
+		literal BeforFieldInit ;
+		literal Class ;
+		literal ClassSemanticsMask ;
+		literal ExplicitLayout ;
+		literal HasSecutity ;
+		literal Import ;
+		literal Interface ;
+		literal LayoutMask ;
+		literal NestedAssembly ;
+		literal NestedFamADNAssem ;
+		literal NestedFamily ;
+		literal NestedFamORAssem ;
+		literal NestedPrivate ;
+		literal NestedPublic ;
+		literal NotPublic ;
+		literal Public ;
+		literal ReservedMask ;
+		literal RTSpecialName ;
+		literal Sealed ;
+		literal SequentialLayout ;
+		literal Serializable ;
+		literal SpecialName ;
+		literal StringFormatMask ;
+		literal UnicodeClass ;
+		literal VisibilityMask ;
+	}
+	-- @end Enumeration
+	
+}
+--@end package .Net System.Reflection Assembly
+
+--@begin package Primitive Types
+package PrimitiveTypes {
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+}
+--@end package Primitive Types

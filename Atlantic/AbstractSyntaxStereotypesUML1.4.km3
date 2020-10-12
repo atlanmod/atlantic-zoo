@@ -1,0 +1,67 @@
+-- @name 		Abstract Syntax for Stereotypes in UML 1.4
+-- @domains 	UML
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/07/10
+-- @description This metamodel fragment describes an abstract syntax for stereotypes in UML 1.4
+-- @see 		This metamodel fragment has been extracted from information available in the following article:
+-- @see 		Article "Analysis of UML Stereotypes within the UML Metamodel"
+-- @see 		by Martin Gogolla, Brian Henderson-Sellers
+-- @see 		Page 85, Section 1, Fig. 1. Abstract Syntax for Stereotypes in UML 1.4
+-- @see 		Lecture Notes in Computer Science 2460
+-- @see 		Jean Marc Jézéquel, Heinrich Hussman, Stephen Cook
+-- @see 		UML 2002 - The Unified Modeling Language
+
+package AbstractSynthax {
+	class ModelElement {
+		reference referenceTag [*] : TaggedValue oppositeOf referenceValue;
+		reference stereotype [*] : Stereotype oppositeOf extendedElement;
+		reference constraint [*] : Constraint oppositeOf constrainedElement;
+		reference taggedValue [*] container : TaggedValue;
+	}
+	
+	class Constraint {
+		reference constrainedElement [*] ordered : ModelElement oppositeOf constraint;
+		reference constrainedStereotype [0-1] : Stereotype oppositeOf stereotypeConstraint;
+	}
+	
+	class TaggedValue {
+		attribute dataValue : String;
+		reference referenceValue [*] : ModelElement oppositeOf referenceTag;
+		reference type : TagDefinition oppositeOf typedValue;
+	}
+	
+	class TagDefinition extends ModelElement {
+		attribute tagType : String;
+		reference multiplicity : Multiplicity;
+		reference typedValue [*] : TaggedValue oppositeOf type;
+		reference owner [0-1] : Stereotype oppositeOf definedTag;
+	}
+	
+	class Multiplicity {
+		attribute value : String;
+	}
+	
+	class GeneralizableElement {}
+	
+	class Stereotype extends GeneralizableElement {
+		reference icon : Geometry;
+		reference baseClass [*] : Name;
+		reference definedTag [*] container : TagDefinition oppositeOf  owner;
+		reference stereotypeConstraint [*] container : Constraint oppositeOf  constrainedStereotype;
+		reference extendedElement [*] : ModelElement oppositeOf stereotype;
+	}
+	
+	class Geometry  {
+		attribute value : String;
+	}
+	
+	class Name  {
+		attribute value : String;
+	}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

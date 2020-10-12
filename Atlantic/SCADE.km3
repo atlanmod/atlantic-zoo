@@ -1,0 +1,783 @@
+-- @name			SCADE
+-- @version			1.0
+-- @domains			SCADE
+-- @authors			SIMON Eric(simon.eric3@gmail.com)
+-- @date			2006/07/11
+-- @description		This metamodel is not the official version supported by the SCADE suite. SCADE is a commercial product from the Esterel Technologies Company. It stands for Safety Critical Application Development Environment. ESTEREL Technologie has provided the sources necessary to implement in KM3 the SCADE metamodel.
+-- @see				http://en.wikipedia.org/wiki/SCADE
+-- @see				http://www.esterel-technologies.com/technology/getting-started/index.html
+-- @see				http://www.esterel-technologies.com/products/scade-suite/
+
+-- @begin SCADE
+package SCADE {
+
+ --@comment the class "ListString" is equivalent with list<string> 
+ class ListString {
+ 	attribute value : String ;
+ }
+
+ --@comment the class "ListInteger" is equivalent with list<integer> 
+ class ListInteger {
+ 	attribute value : Integer ;
+ } 
+ 
+ -- @label Model, Session, Block, Type, Model_Storage, Composition, Inheritance, Type_Maps, Constant_and_Variable_Maps, MTC_Core, MTC_Persistance_and_SCADE_Links, MTC_Composition, MTC_Inheritance
+ class Model extends Object, MtcEntity {
+ 	-- attribute name    : String ; exist in the superclass Object
+ 	attribute library 	: Boolean ;
+ 	attribute pathname 	: String ;
+ 	reference descriptor[0-1] 		: Descriptor 		oppositeOf modelD;
+ 	reference project[0-1]    		: Project;
+ 	reference fileRef[0-1]    		: FileRef;
+ 	reference storageUnitM[*] container : StorageUnit 	oppositeOf modelS;
+	reference enumsBlock container 	: ConstBlock 		oppositeOf modelC;
+	reference importedOperator[*]  	: Operator 			oppositeOf modelO;
+    reference client[*]           	: Model 			oppositeOf libraries;
+    reference libraries[*]         	: Model 			oppositeOf client;
+    reference allLibry[*]          	: Model ; -- with the contraint self.libraries.isEmpty();
+ 	reference typeM[*] container 	: Type 				oppositeOf model;
+  	reference model                	: Model; -- the attribute DefinedIn in the reference is equal to "ScadeFl.cd"
+ 	reference coverageFileM    		: CoverageFile  	oppositeOf modelCov;
+ 	reference criterionFileM   		: CriterionFile		oppositeOf modelCri;
+ 	reference root   container 		: Instance     		oppositeOf modelI;
+ 	reference all[*] container 		: Operator     		oppositeOf modelOp;
+ 	reference application      		: MtcApplication 	oppositeOf modelM ; 
+ 	reference "reference"[*]		container	: Reference;
+ 	reference tmpNode[*]			container 	: Node 				oppositeOf modelN;
+ 	reference constBlockK[0-1]		container 	: ConstBlock		oppositeOf keyC;
+	reference node[0-1]				container 	: Node				oppositeOf key;	
+	reference varBlockK[0-1]		container 	: VarBlock			oppositeOf keyVB;
+	reference typeBlock[0-1]		container 	: TypeBlock			oppositeOf key;
+	reference refinement[0-1] 		container 	: NamedType			oppositeOf keyM;
+	reference implementation[0-1] 	container 	: Implementation 	oppositeOf key;
+ 	reference constant [0-1] 		: Constant;
+ 	reference allConstant [0-1] 	: Constant;
+ 	reference allvariable [0-1] 	: GlobalVariable;
+ 	reference variable [0-1] 		: GlobalVariable;
+ 	reference allConstVar [0-1] 	: ConstVar;
+ 	reference constVar [0-1] 		: ConstVar;
+ 	reference constBlock [0-1] 		container 	: ConstBlock 	oppositeOf key;
+ 	reference varBlock [0-1] 		container 	: VarBlock 		oppositeOf key;
+ 	reference allNamedType [0-1] 	container 	: NamedType;
+ 	reference namedType [0-1] 		container 	: NamedType;
+ }
+ 
+
+ -- @label Model, Type, Composition, Inheritance
+ class Implementation extends Object {
+	-- attribute name : String; exist in the superclass object
+	reference key				 : Model oppositeOf implementation;
+ 	reference namedTypeI[1-*]	 : NamedType oppositeOf implementation;
+ }
+ 
+ -- @label Model, Block, Constant, Variable_Maps, Inheritance
+ class ConstBlock extends ModelBlock{
+    reference modelC	: Model      	oppositeOf enumsBlock; -- is contained by the superclass ModelBlock
+	reference keyC		: Model 		oppositeOf constBlockK;
+ 	reference key 		: Model		 	oppositeOf constBlock;
+	reference constant [0-1] container : Constant oppositeOf key;
+ 	
+ }
+
+ -- @label Model, Block, Constant, Variable_Maps, Inheritance
+ class VarBlock extends ModelBlock{
+ 	reference variable [0-1] container 	: GlobalVariable oppositeOf key;
+ 	reference keyVB    				: Model    		oppositeOf varBlockK;
+ 	reference key    				: Model 	 	oppositeOf varBlock;
+ }
+  
+ -- @label Model, Variable, Composition, Inheritance, Constant_and_Variable_Maps
+ class GlobalVariable extends Variable {
+ 	reference key[0-1] : VarBlock oppositeOf variable; 
+ }
+
+ -- @label Model, Block, Type_Maps, Inheritance
+ class TypeBlock extends ModelBlock {
+ 	reference type [0-1] container : NamedType oppositeOf key;
+ 	reference key     			: Model		oppositeOf typeBlock;
+ }
+ 
+ -- @label Session, Model_Storage, MTC_Persistance_and_SCADE_Links, Composition
+ class Session {
+ 	reference descriptor 		: Descriptor;
+ 	reference model[0-1] 		: Model;
+ 	reference loadsModel[*] 	: Model;
+ 	attribute DefinedIn : String ; -- it equals to "ScxadeFl.cd"
+ 	reference loader 	container : Loader oppositeOf session;
+ }
+ 
+ -- @label Model_Storage, Composition, Inheritance
+ class Descriptor extends Object {
+ 	attribute modelFileName  	: String ; -- type is pathname But this class is not representated
+	attribute sernFileName   	: String ; -- type is pathname But this class is not representated
+	attribute sernPersistAs 	: String ; -- type is pathname But this class is not representated
+	attribute rnetFileName   	: String ;
+	attribute rnetPersistAs 	: String ;
+	attribute occBase       	: Integer ; -- initialized to 0
+	attribute size          	: Integer ; -- initialized to 0
+	attribute nameVerify    	: Boolean ; -- initialized to FALSE
+	attribute checked       	: Boolean ; -- initialized to FALSE
+	-- "attributes libraryModels & annTypeFiles : list<string>" replace by a reference of ListString 
+	reference libraryModels[*]  	: ListString ;
+	reference annTypeFiles[*]   	: ListString ;
+	reference modelD          		: Model oppositeOf descriptor ;
+ }
+
+ -- @label Model_Storage, Composition, Inheritance
+ class StorageUnit extends Object {
+ 	attribute saoFileName   	: String ; -- type is pathname But this class is not representated
+	attribute annFileName   	: String ; -- type is pathname But this class is not representated 
+	attribute persistAs     	: String ; -- type is pathname But this class is not representated 
+	attribute loaded        	: Boolean ;
+	attribute saoModified   	: Boolean ;
+	attribute annModified   	: Boolean ;
+	reference fileRef    		: FileRef;
+	reference modelS     		: Model 					oppositeOf storageUnitM;
+	reference element[*] 		: StorageElement 	oppositeOf storageUnitE;
+ }
+ -- @label Model_Storage, Composition, Inheritance
+ abstract class StorageElement extends Annotable {
+ 	reference storageUnitE : StorageUnit oppositeOf element;
+ }
+ 
+ -- @label Model_Storage, Inheritance
+ abstract class Object {
+	attribute name    : String ;
+	attribute runLine : Integer ; -- initialized to 0 
+ }
+
+ -- @label Block, Model_Storage, Inheritance
+ abstract class Block extends StorageElement {
+ 	attribute zoomCoeff 	: Integer;
+ 	attribute fromat			: String;
+ 	attribute lanscape 	: Boolean;
+ 	-- attribute name : String; exist in superclass StorageElement
+ 	attribute defaultPageFormat : Boolean; -- initialized to TRUE 
+ } 
+
+ -- @label Block, Model_Storage, Inheritance
+ class NodeBlock extends Block {
+ 	reference node[1-1] : Node;
+ }
+
+ -- @label Block, Model_Storage, Inheritance
+ abstract class ModelBlock extends Block {
+ 	-- "attribute columnsSize : list<int>" replace by a reference of ListInteger
+	reference columnsSize[*] ordered container : ListInteger;
+	reference model                                                   : Model;
+ }
+
+ -- @label Variable, Equation, Expression, Parameter, Composition, Inheritance, Expression_Maps
+ abstract class Expression extends Object {
+ 	reference label[0-1] container 		: Label 			oppositeOf expression;
+ 	reference exprContactE 				: ExprContact 		oppositeOf initValue;
+ 	reference exprCallE[0-1]  			: ExprCall 			oppositeOf parameter;
+	reference dependance [0-1] : ConstVar;
+	reference subExprId[*]		 		: ExprId;
+ 	reference paramArray[0-1]	 		: ParamArray 		oppositeOf value;
+ 	reference constant[0-1] 			: Constant 			oppositeOf value;
+ 	reference equationE[0-1]			: Equation 			oppositeOf right;
+ 	reference assertionE[0-1] 			: Assertion 		oppositeOf expression;
+ }
+ 
+ -- @label Expression
+ class Label extends Object {
+ 	-- attribute name : String ; the attibute name exists in the superclass Object
+ 	reference expression[1-1] : Expression oppositeOf  label ;
+ }
+
+ -- @label Expression, Expression_Maps, Composition, Inheritance
+ class ExprNull extends Expression {}
+
+ -- @label Expression, Expression_Maps, Composition, Inheritance
+ class ConstValue extends Expression {
+ 	attribute value : String;
+ 	reference kind : Object; -- type is CVKind But this class is not representated
+ }
+ 
+ -- @label Expression, Expression_Maps, Composition, Inheritance
+ class ExprContact extends Expression {
+ 	reference boolAct 				container : ExprId 		oppositeOf exprContactEI;
+ 	reference initValue[*] ordered 	container : Expression 	oppositeOf exprContactE;
+ 	reference calledOpr 			container : ExprCall 	oppositeOf exprContactEC;
+ }
+ 
+ -- @label Expression, Expression_Maps, Composition, Inheritance
+ class ExprCall extends Expression {
+ 	attribute numOcc 		: Integer ; -- initialized to the constant NULL_...
+ 	attribute predefOpr 	: Integer ; -- initialized to 0
+ 	reference parameter[*] ordered container 	: Expression 	oppositeOf exprCallE;
+ 	reference exprContactEC 					: ExprContact 	oppositeOf calledOpr;
+ 	reference operator[0-1] 					: Operator;
+ }
+ 
+ -- @label Model, Operator_and_Node, Parameter, Expression, Type, Composition, MTC_Core, MTC_Persistance_and_SCADE_Links, MTC_Composition, MTC_Inheritance
+ class Operator extends StorageElement, MtcEntity {
+ 	-- attribute name 			: String ; the attribute name exists in the superclass StorageElement
+	attribute category		: String ;
+	attribute conversion 	: Boolean ; -- initialized to FALSE
+	attribute state      		: Boolean ; -- initialized to FALSE
+ 	attribute index 			: Integer ; -- initialized to 0
+ 	--reference operatorKey : OperatorKey oppositeOf operatorK;
+ 	reference variable[0-1] : LocalVariable;
+	reference input[*] 	ordered container  	: LocalVariable 	oppositeOf  operatorI;
+	reference output[*] ordered container 	: LocalVariable 	oppositeOf  operatorO;
+	reference hidden[*] ordered container 	: LocalVariable 	oppositeOf  operatorH;
+  	reference client[*] 					: EqBlock			oppositeOf calledOperator;
+	reference modelO 	  					: Model 		 	oppositeOf importedOperator;
+ 	reference modelOp   					: Model     		oppositeOf all;
+ 	reference criterionO[0-1] 				: Criterion 		oppositeOf operatorC;
+ 	reference intanceO[*]     				: Instance  		oppositeOf operatorI;
+ 	reference operator        				: Operator; -- the attribute DefinedIn in the reference is equal to "ScadeFl.cd"
+ }
+   
+ -- @label Expression, Inheritance, Expression_Maps, Graphical_Properties
+ class ExprId extends Expression {
+ 	reference exprContactEI : ExprContact oppositeOf boolAct;
+ 	reference "reference" : ConstVar;
+  }
+  
+ -- @label Variable, Operator_and_Node, Composition, Inheritance
+ class LocalVariable extends Variable {
+ 	attribute optional  	: Boolean ; -- initialized to FALSE
+ 	attribute const     	: Boolean ; -- initialized to FALSE
+ 	attribute probe     	: Boolean ; -- initialized to FALSE
+ 	attribute pure      	: Boolean ; -- initialized to FALSE
+ 	attribute initValue 	: String ;
+	reference operatorI[0-1] 	: Operator 	oppositeOf input;
+	reference operatorO[0-1] 	: Operator 	oppositeOf output;
+	reference operatorH[0-1] 	: Operator 	oppositeOf hidden;
+	reference nodeL[0-1]     	: Node 		oppositeOf local;
+	reference nodeI[0-1]     	: Node 		oppositeOf internal;
+ }
+
+ -- @label Model, Block, Operator_and_Node, Inheritance, Composition and State_Machine
+ class Node extends Operator {
+	reference nodeKind : Object ; -- type is SC_NK_TEXT... But this class is not representated
+ 	reference eqBlock[0-1] 		container  	: EqBlock 		oppositeOf key;
+ 	reference paramBlock[0-1] 	container 	: ParamBlock 	oppositeOf key;
+	reference local[*] container    	: LocalVariable 	oppositeOf nodeL;
+	reference internal[*] container 	: LocalVariable 	oppositeOf nodeI;
+	reference key 						: Model 			oppositeOf node;
+	 reference stateMachine[0-1] 		: StateMachine; 
+	reference modelN 					: Model 			oppositeOf tmpNode;
+ }
+
+ -- @label Block, Operator_and_Node, Parameter, Composition, Inheritance  
+ class ParamBlock extends NodeBlock {
+  	reference key : Node oppositeOf paramBlock;
+ 	-- "attribute columnsSize : list<integer>" replace by a reference of ListInteger
+	reference columnsSize[*] 	ordered container : ListInteger;
+	reference array[1-*] 		ordered container : ParamArray oppositeOf paramBlock;
+ }
+
+ -- @label Parameter, Composition, Inheritance
+ class ParamArray extends Annotable {
+ 	-- "attribute notes : list<string>" replace by a reference of ListString 
+ 	reference notes[*] ordered container : ListString;
+ 	reference paramBlock 	: ParamBlock oppositeOf array;
+ 	reference operator 		: Operator;
+ 	reference value[*] ordered container : Expression oppositeOf paramArray;
+ }
+
+ -- @label Variable, Expression, Inheritance, Constant_and_Variable_Maps, Expression_Maps
+ class ConstVar extends Annotable {
+ 	-- attribute name : String; the attribute name exists in the superclass Annotable
+	reference kind : Object; -- type is CVrKind But this class is not representated
+ 	reference type[1-1] 	: Type 		oppositeOf constVar;
+ 	reference client[*]		: EqBlock	oppositeOf referencedId;
+ }
+
+ -- @label Model, Type, Composition, Inheritance, Constant_and_Variable_Maps
+ class Constant extends ConstVar {
+ 	attribute imported : Boolean; -- initialized to FALSE
+ 	reference value[0-1] container 	: Expression 		oppositeOf constant;
+ 	reference "enumeration"[0-1] 	: Enumeration 		oppositeOf value;
+	reference key[0-1] 				: ConstBlock 		oppositeOf constant;
+ }
+
+ --@label Variable, Equation, Inheritance, Graphical_Properties
+ class Variable extends ConstVar {
+ 	reference clock[0-1] : Variable;
+	reference definition[*] : Equation oppositeOf left;
+ }
+ 
+ -- @label Variable, Type, Composition, Inheritance
+ abstract class Type extends Annotable {
+	reference usedType[*]			: Type;
+ 	reference model					: Model				oppositeOf typeM;
+ 	reference namedTypeT[*]			: NamedType 		oppositeOf definition;
+ 	reference tableT[*]				: Table 			oppositeOf typeT;
+ 	reference compositeElementT[*]	: CompositeElement 	oppositeOf typeC;
+ 	reference constVar[*] 			: ConstVar 			oppositeOf type;
+ }
+ -- @label Type, Composition, Inheritance
+ class Table extends Type {
+ 	attribute size : Integer; -- initialized to 0
+ 	reference typeT[0-1] : Type oppositeOf tableT;
+ }
+
+ -- @label Model, Expression, Type, Composition, Inheritance, Type_Maps
+ class NamedType extends Type {
+ 	--attribute name : String ; the attribute name exists in the superclass Type
+ 	reference kind				 	: Object	; -- type is NTKind But this class is not representated
+ 	reference refinement[*]			: NamedType 		oppositeOf refined;
+ 	reference refined[*]			: NamedType 		oppositeOf refinement;
+ 	reference to[0-1]  				: Operator;
+ 	reference from[0-1] 			: Operator;
+ 	reference implementation[0-1] 	: Implementation 	oppositeOf namedTypeI;
+ 	reference definition[0-1] 		: Type 				oppositeOf namedTypeT;
+ 	reference keyM 					: Model  			oppositeOf refinement;
+ 	reference key  					: TypeBlock			oppositeOf type;
+ }
+
+ -- @label Type, Composition, Inheritance
+ class Enumeration extends Type {
+ reference value[1-*] ordered container : Constant oppositeOf "enumeration";
+ }
+
+ -- @label Type, Composition, Inheritance
+ abstract class Composite extends Type {
+ 	reference element[0-1] container 	: CompositeElement	oppositeOf key;
+ }
+
+ -- @label Type, Composition, Inheritance
+ class CompositeElement extends Object {
+ 	--attribute name : String ; the attribute name exists in the superclass Object
+ 	reference typeC[0-1] : Type oppositeOf compositeElementT;
+ 	reference key : Composite oppositeOf element;
+ }
+ 
+ -- @label Type, Composition, Inheritance
+ class Structure extends Composite {}
+ 
+ -- @label Type, Composition, Inheritance
+ class Tuple extends Composite {}
+
+ -- @label Variable, Block, Operator_and_Node, Equation, Composition, Inheritance
+ class EqBlock extends NodeBlock {
+ 	reference equation[1-*] container	: Equation 		oppositeOf eqBlock;
+ 	reference assertion[0-1] container	: Assertion 	oppositeOf key;
+  	reference key               		: Node 			oppositeOf eqBlock;
+  	reference calledOperator[*] 		: Operator 		oppositeOf client;
+ 	reference referencedId[*] 			: ConstVar 		oppositeOf client;
+ }
+
+ -- @label Equation, Composition, Inheritance and Graphical_Properties
+ class Equation extends Annotable {
+ 	attribute rotation 		: Integer ; -- initialized to 0
+ 	attribute symetrical 	: Boolean ;
+ 	attribute terminator 	: Boolean ; -- initialized to FALSE
+ 	reference eqBlock 					: EqBlock 		oppositeOf equation;
+ 	reference left[*] ordered 			: Variable 		oppositeOf definition;
+ 	reference right[0-1] 	container 	: Expression	oppositeOf equationE; 
+  	reference outEdge[*] 	container  	: Edge 			oppositeOf dstEquation;
+ 	reference position[0-1] container 	: RPoint;
+ 	reference size[0-1] 	container  	: RSize;
+ }
+
+ -- @label Equation, Composition, Inheritance and Graphical_Properties
+ class Assertion extends Annotable {
+ 	--attribute name : String ; the attribute name exists in the superclass Annotable
+ 	reference key[0-1] 						: EqBlock	 	oppositeOf assertion;
+ 	reference expression[1-1]	container 	: Expression 	oppositeOf assertionE;
+ 	reference edge[0-1]         			: Edge			oppositeOf assertion;
+ 	reference position[0-1] 	container 	: RPoint;
+ }
+
+ -- @label Project, Inheritance, Annotable
+ abstract class Annotable extends Object {
+ 	reference propA[*] ordered container : Prop  oppositeOf entity ;
+ 	attribute DefinedIn : String ; -- equal "IAnnot.cd<2>"
+ }
+ 
+ -- @label Project
+ class Prop {
+	 attribute name : String ;
+ 	-- "attribute values : list<string>" replace by a reference of ListString
+ 	reference values[*] ordered container : ListString ;
+ 	reference entity :  Annotable oppositeOf  propA ;
+ 	reference configurationP[0-1]  : Configuration oppositeOf propC;
+ }
+ 
+ -- @label Project
+ class Configuration {
+ 	attribute name : String ;
+	reference propC[*] ordered 	container : Prop 	oppositeOf configurationP;
+	reference projectC 			container : Project	oppositeOf configuration;
+ }
+ 
+ -- @label Project
+ class Project extends Annotable {
+ 	attribute pathname : String ;
+ 	reference configuration[*] ordered container : Configuration oppositeOf projectC;
+ 	reference fileRef[*] : FileRef;
+ 	reference owner[*] ordered container : Element oppositeOf root;
+ 	-- attribute DefinedIn : String ; this attribute is define in the superclass Annotable, but this value is changed into "Project.cd"
+ }
+ 
+ -- @label Project, MTC_Core
+ abstract class Element extends MtcEntity {
+	attribute name 				: String ;
+	attribute derived 			: Boolean ;
+ 	attribute ident       		: String ;
+	attribute description 		: String ;
+	reference root[0-1]	 		: Project 	oppositeOf owner;
+	reference folder[0-1]	 	: Folder 	oppositeOf element;
+ 	reference criterionE  		: Criterion oppositeOf element;
+ }
+ 
+ 
+ -- @label Project, Model_Storage
+ class FileRef extends Element {
+ 	attribute  pathname 	: String ;
+	attribute persistAs 	: String ;
+	attribute DefinedIn 	: String ; -- equal "Project.cd"
+ }
+ 
+ -- @label Project
+ class Folder extends Element {
+ 	attribute extensions : String ;
+ 	reference element[*] ordered container : Element oppositeOf folder; 
+ }
+
+ -- @label Inheritance, Composition
+ abstract class Reference {}
+ 
+ -- @label Inheritance
+ class TypeReference     	extends Reference {}
+ 
+ -- @label Inheritance
+ class OperatorReference 	extends Reference {}
+ 
+ -- @label Inheritance
+ class VariableReference 	extends Reference {}
+
+ -- @label Inheritance	
+ class Error   {}
+ 
+ -- @label Graphical_Properties, Composition, Inheritance
+ class Edge extends Object {
+	attribute leftVarIndex     	: Integer ;
+	attribute labelOrientation 	: Integer ;
+	reference leftVar           : Variable;
+	reference rightExpression 	: ExprId;
+	reference srcEquation   	: Equation;
+	reference assertion[0-1] 	container 	: Assertion oppositeOf edge;
+	reference position[*] 		container  	: RPoint;
+	reference dstEquation    	: Equation oppositeOf outEdge;
+ }
+ 
+ -- @label Graphical_Properties
+ class RPoint {}
+ 
+ -- @label Graphical_Properties
+ class RSize {}
+
+ -- @label State_Machine_Inheritence
+ abstract class Entity{
+	attribute DefinedIn : String ; -- it equals to "Base.cd"	
+ }
+
+ -- @label State_Machine_Inheritence
+ abstract class StateObj extends Entity {}
+ 
+ -- @label State_Machine_Inheritence
+ abstract class GraphicalObject extends StateObj {}
+ 
+ -- @label State_Machine_Inheritence
+ abstract class StInputOutput extends GraphicalObject {
+ 	attribute name     	: String ;
+ 	attribute type     	: String ;
+ 	attribute clock    	: Boolean ;
+ 	attribute const    	: Boolean ;
+ 	attribute optional 	: Boolean ;
+ }
+ 
+ -- @label State_Machine_Inheritence
+ class StInitInput 	extends StInputOutput {}
+ 
+ -- @label State_Machine_Inheritence
+ class StInput 		extends StInputOutput {}
+ 
+ -- @label State_Machine_Inheritence
+ class StOutput 	extends StInputOutput {}
+ 
+ 
+ -- @label State_Machine_Inheritence, State_Machine  
+ class Transition extends GraphicalObject {
+ --  the attribute "DefinedIn" of Transition by the superclass of Entity is equal to "StateApi.cd"
+ 	attribute conditions : String ;
+ 	attribute transKind  : Integer ;
+ 	reference state1   : State oppositeOf transition1 ; -- the names of associations are unreadable on the graphical meta-models
+ 	reference state2   : State oppositeOf transition2 ; -- the names of associations are unreadable on the graphical meta-models
+ }
+
+ -- @label State_Machine_Inheritence, State_Machine
+ class State extends GraphicalObject {
+ --  the attribute "DefinedIn" of State by the superclass of Entity is  equal to "StateApi.cd"
+ 	attribute name         : String ;
+ 	attribute cx              : Double ; -- equivalent to real
+ 	attribute cy              : Double ; -- equivalent to real
+ 	reference transition1[*] ordered 	: Transition oppositeOf state1; -- the names of associations are unreadable on the graphical meta-models
+ 	reference transition2[*]         	: Transition oppositeOf state2; -- the names of associations are unreadable on the graphical meta-models
+ 	reference stOutput               	: StOutput;
+ }
+
+ -- @label State_Machine_Inheritence, State_Machine
+ class InitialStPtr extends GraphicalObject {
+ --  the attribute "DefinedIn" of InitialStPtr by the superclass of Entity is  equal to "StateApi.cd"
+ 	attribute cx             	: Double ; -- equivalent to real
+ 	attribute cy             	: Double ; -- equivalent to real
+ 	reference state 			: State ;  -- the names of associations are unreadable on the graphical meta-models
+ }
+
+ -- @label Model, Expression, State_Machine
+ class StateMachine extends Object {
+  reference initialStPtr  	: InitialStPtr;
+  reference state[*]      	: State;
+  reference transition[*] 	: Transition;
+ }
+ 
+ -- @label State_Machine_Inheritence
+ abstract class Base {
+ 	attribute DefineIn : String; -- it equals to "Base.cd"
+ }
+
+ -- @label State_Machine_Inheritence
+ class StateBase extends Base {}
+
+ -- @label Notes
+ class AnnNote {
+ 	attribute name     : String ;
+ 	attribute modified : Boolean ;
+ 	reference annNoteType   	: AnnNoteType;
+ 	reference annotable       	: Annotable;
+	reference annAttValue[1-*] ordered container : AnnAttValue oppositeOf annNote;
+ }
+
+ -- @label Notes, Notes_Attribute_Values
+ abstract class AnnAttValue {
+ 	reference annNote 			: AnnNote oppositeOf annAttValue;
+ 	reference annAttDefinition 	: AnnAttDefinition;
+ }
+
+ -- @label Notes, Annotable
+ class AnnNoteType {
+ 	attribute name : String ;
+ 	reference annAttDefinition[0-1] container	: AnnAttDefinition 	oppositeOf key;
+ 	reference annAttGroup[0-1] container  		: AnnAttGroup	  	oppositeOf key;
+ 	reference key 								: AnnotSchema	 	oppositeOf annNoteType;
+ }
+ 
+ -- @label Notes, Annotable
+ class AnnAttDefinition {
+ 	attribute name : String ;
+ 	attribute type : Integer ;	
+ 	reference annAttGroup : AnnAttGroup;
+ 	reference key         : AnnNoteType oppositeOf annAttDefinition;
+ 	--reference annAttDefinitionKey : AnnotSchemaKey oppositeOf annotSchemaK 
+ 	reference annProperty[0-1] container : AnnProperty oppositeOf key;
+ }
+
+ -- @label Notes_Attribute_Values
+ class AnnAttIntValue extends AnnAttValue {
+ 	attribute value : Integer ;
+ }
+
+ -- @label Notes_Attribute_Values
+ class AnnAttBoolValue extends AnnAttValue {
+ 	attribute value : Boolean ;
+ }
+
+ -- @label Notes_Attribute_Values
+ class AnnAttCharValue extends AnnAttValue {
+ 	attribute value : Char ;
+ }
+
+ -- @label Notes_Attribute_Values
+ class AnnAttRealValue extends AnnAttValue {
+ 	attribute value : Double ;
+ }
+
+ -- @label Notes_Attribute_Values
+ class AnnAttStringValue extends AnnAttValue {
+ 	attribute value : String ;
+ }
+
+ -- @label Notes_Attribute_Values
+ class AnnAttFileValue extends AnnAttStringValue {}
+
+ -- @label Notes_Attribute_Values
+ class AnnAttDateValue extends AnnAttStringValue {}
+
+ -- @label Notes_Attribute_Values
+ class AnnAttOidValue extends AnnAttStringValue {}
+
+ -- @label Notes_Attribute_Values
+ class AnnAttEnumValue extends AnnAttStringValue {}
+ 
+ -- @label Annotable, Notes_Property_Values
+ class AnnProperty {
+ 	attribute name 	: String ;
+ 	attribute type 	: Integer ;
+ 	reference key  : AnnAttDefinition oppositeOf annProperty;
+ }
+
+ -- @label Notes_Property_Values
+ class AnnPropertyInt extends AnnProperty {
+ 	attribute value : Integer ;
+ }
+ 
+ -- @label Notes_Property_Values
+ class AnnPropertyBool extends AnnProperty {
+ 	attribute value : Boolean ;
+ }
+
+ -- @label Notes_Property_Values 
+ class AnnPropertyChar extends AnnProperty {
+ 	attribute value : Char ;
+ }
+ 
+ -- @label Notes_Property_Values 
+ class AnnPropertyReal extends AnnProperty {
+ 	attribute value : Double ;
+ }
+
+ -- @label Notes_Property_Values
+ class AnnPropertyString extends AnnProperty {
+ 	attribute value : String ;
+ }
+
+ -- @label Notes_Property_Values
+ class AnnPropertyEnum extends AnnProperty {
+ 	reference value : Object ;
+ }
+
+ -- @label Annotable
+ class AnnotSchema {
+ 	attribute pathname : String ; -- type is SPATH... But this class is not representated
+ 	reference annNoteType container 	: AnnNoteType 	oppositeOf key;
+	reference annCategory container 	: AnnCategory 	oppositeOf key;	
+ }
+ 
+ -- @label Annotable
+ class AnnCategory {
+ 	attribute name : String ;
+ 	reference key  							: AnnotSchema oppositeOf annCategory;
+ 	reference anootability[*] container 	: Annotability;
+ }
+ 
+ -- @label Annotable
+ class Annotability {
+ 	attribute minCardinality 	: Integer ;
+ 	attribute maxCardinality 	: Integer ;
+ 	attribute defaultNote    	: Boolean ;
+ 	reference annNoteType  		: AnnNoteType;
+ }
+ 
+ -- @label Annotable
+ class AnnAttGroup {
+ 	attribute name 	: String ;
+ 	reference key	: AnnNoteType oppositeOf annAttGroup;
+ }
+
+ -- @label MTC_Persistence_and_SCADE_Links
+ abstract class File extends MtcEntity {}
+
+ -- @label MTC_Persistence_and_SCADE_Links, MTC_Composition
+ class MtcApplication {
+ 	reference coverageFileCov[*] 		container  	: CoverageFile  oppositeOf application;
+ 	reference criterionFileCri[*]		container  	: CriterionFile oppositeOf application;
+ 	reference modelM             		container  	: Model         oppositeOf application; 
+ }
+
+ -- @label MTC_Core, MTC_Persistence_and_SCADE_Links, MTC_Composition, MTC_Inheritance
+ class CoverageFile extends File {
+ 	reference record[0-1] 		container 	: Record       		oppositeOf key;
+	reference modelCov       	container 	: Model          	oppositeOf coverageFileM;
+	reference application        			: MtcApplication  	oppositeOf coverageFileCov;
+	reference recordCov[0-1]	container 	: Record          	oppositeOf coverageFileR;
+ }
+ 
+ -- @label MTC_Core, MTC_Persistence_and_SCADE_Links, MTC_Composition, MTC_Inheritance
+ class CriterionFile extends File {
+ 	reference application             		: MtcApplication  	oppositeOf criterionFileCri;
+	reference modelCri      	container 	: Model           	oppositeOf criterionFileM;
+	reference criterionC[*] 	container 	: Criterion       	oppositeOf criterionFileC;
+ }
+ 
+ -- @label MTC_Persistence_and_SCADE_Links, MTC_Inheritance
+ abstract class MtcEntity {
+ 	reference file[0-1] : File;
+ }
+
+ -- @label MTC_Inheritance 
+ class HistoryEntry  extends MtcEntity {}
+ 
+ -- @label MTC_Core, MTC_Composition, MTC_Inheritance
+ class Criterion extends MtcEntity {
+ 	attribute ident       	: String ;
+ 	attribute name        	: String ;
+ 	attribute description 	: String ;
+ 	reference criterionFileC 				: CriterionFile 	oppositeOf criterionC;
+ 	reference operatorC                    	: Operator      	oppositeOf criterionO;
+ 	reference element[*] ordered container 	: Element       	oppositeOf criterionE;
+ }
+ 
+ -- @label MTC_Core, MTC_Composition, MTC_Inheritance
+ class Instance extends MtcEntity {
+ 	attribute index : Integer ; -- initialized to 0
+ 	attribute occ   : String ;
+ 	reference modelI              : Model            oppositeOf root;
+ 	reference operatorI           : Operator		 oppositeOf intanceO;
+ 	reference associationClassI   : AssociationClass oppositeOf instanceA;
+ 	reference caller              : Instance         oppositeOf called;
+ 	reference called[*] container : Instance         oppositeOf caller;
+ 	reference origin[0-1]         : Instance         oppositeOf related;
+ 	reference related[*]          : Instance         oppositeOf origin;
+ }
+ 
+ -- @label MTC_Core
+ class AssociationClass {
+	reference resultA      : Result 	oppositeOf associationClassRs;
+	reference recordA[*]   : Record  	oppositeOf associationClassRc;
+	reference instanceA[*] : Instance 	oppositeOf associationClassI;
+ }
+
+ -- @label MTC_Core, MTC_Composition, MTC_Inheritance
+ class Result extends MtcEntity {
+ 	attribute elementCount : Integer;
+ 	reference associationClassRs 	: AssociationClass 	oppositeOf resultA;
+ 	reference record             	: Record       		oppositeOf result;
+ }
+ 
+ -- @label MTC_Core, MTC_Composition, MTC_Inheritance
+ class Record extends MtcEntity {
+ 	attribute creator     	: String ;
+ 	attribute name        	: String ;
+ 	attribute date      	: String ;
+ 	attribute author      	: String ;
+ 	attribute description 	: String ;
+ 	reference key       	    	: CoverageFile   	oppositeOf record;
+ 	reference associationClassRc  	: AssociationClass  oppositeOf recordA;
+ 	reference coverageFileR       	: CoverageFile      oppositeOf recordCov;
+ 	reference result[*] container 	: Result            oppositeOf record;
+ }
+
+ -- @label Inheritance, Composition
+ class Loader {
+ 	reference descriptor[0-1] container	: Descriptor;
+ 	reference session : Session oppositeOf loader;
+ }
+
+}
+ -- @end SCADE
+ 
+package PrimitiveTypes { 
+	datatype String;
+	datatype Integer;
+	datatype Boolean;
+	datatype Char;
+	datatype Double;
+}

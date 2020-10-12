@@ -1,0 +1,157 @@
+package Metamodel;
+
+package SimplfiedMiningMart {
+  class ModelElement {
+  }
+
+  class Classifier extends ModelElement {
+  }
+
+  class StructuralFeature extends ModelElement {
+  }
+
+  class Class extends Classifier {
+    !unique !ordered attr String[1] name;
+    !ordered val Attribute[+]#~class attributes;
+  }
+
+  class DataType extends Classifier {
+    !ordered ref Attribute[1]#has attribute;
+  }
+
+  class Attribute extends StructuralFeature {
+    !ordered ref Class[1]#attributes ~class;
+    !ordered ref DataType[1]#attribute has;
+  }
+
+}
+
+package CaseRepresentation {
+  class Case extends SimplfiedMiningMart.ModelElement {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr Boolean[1] caseMode;
+    !ordered ref Parameter[1] caseInput;
+    !unique !ordered attr String[1] documentation;
+    !ordered val Step[+]#belongsToCase listOfStep;
+  }
+
+  class Step extends SimplfiedMiningMart.ModelElement {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] description;
+    !ordered ref Case[1]#listOfStep belongsToCase;
+    !ordered ref Operator[1] embedsOperator;
+    !ordered ref Step[*] predecessors;
+    !ordered ref Step[*] successors;
+  }
+
+  class LoopStep extends Step {
+  }
+
+  class MultiStep extends Step {
+    !unique !ordered attr String[1] iterationCondition;
+  }
+
+  abstract class Operator extends SimplfiedMiningMart.ModelElement {
+    !unique !ordered attr Boolean[1] loopable;
+    !unique !ordered attr Integer[1] numberOfInputParameters;
+    !unique !ordered attr Integer[1] numberOfOutputParameters;
+    !unique !ordered attr Boolean[1] manual;
+    !unique !ordered attr String[1] tool;
+    ref Parameter[+] input;
+    ref Parameter[+] output;
+    !ordered ref ExecutionElement[1] realizes;
+  }
+
+  class Parameter {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] place;
+    !ordered ref ParameterType[1] parameterType;
+    !ordered ref Operator[1] belongsToOperator;
+  }
+
+  enum ParameterType {
+    Value = 0;
+    Concept = 0;
+    RelationShip = 0;
+    FeatureAttribute = 0;
+  }
+
+  class FeatureConstruction extends Operator {
+    !unique !ordered attr Integer[1] scalingFactor;
+  }
+
+  class DataMinStep extends Operator {
+  }
+
+  class TimeOperator extends Operator {
+  }
+
+  class FeatureSelection extends Operator {
+  }
+
+  class MultiRelFeatureConstr extends Operator {
+  }
+
+  class RowSelection extends Operator {
+  }
+
+  class Agregation extends MultiRelFeatureConstr {
+  }
+
+  class Scaling extends FeatureConstruction {
+  }
+
+  class Discretization extends FeatureConstruction {
+  }
+
+  class Segmentation extends RowSelection {
+  }
+
+  class Sampling extends RowSelection {
+  }
+
+  class ExecutionElement {
+    !ordered ref DataObject[1]#source source;
+    !ordered ref DataObject[1]#target target;
+  }
+
+  class DataObject {
+    !ordered ref ExecutionElement[1]#source source;
+    !ordered ref ExecutionElement[1]#target target;
+  }
+
+  class MSL-Tool extends ExecutionElement {
+  }
+
+  class TransformationGroup extends ExecutionElement {
+    !ordered val Transformation[*]#transformationGroup transformation;
+  }
+
+  class Transformation extends ExecutionElement {
+    !ordered ref TransformationGroup[1]#transformation transformationGroup;
+  }
+
+  class Function extends Transformation {
+    !unique !ordered attr String[1] nameOf;
+    !unique !ordered attr String[1] signature;
+  }
+
+  class StoredProcedure extends Transformation {
+    !unique !ordered attr String[1] nameOf;
+    !unique !ordered attr String[1] signature;
+  }
+
+  class SQLQuery extends Transformation {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+}
+

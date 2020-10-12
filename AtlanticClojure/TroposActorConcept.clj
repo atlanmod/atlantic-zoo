@@ -1,0 +1,7 @@
+( defstruct Actor )
+( defstruct Goal :wanter :plan )
+( defstruct SoftGoal :wanter :plan )
+( defstruct HardGoal :wanter :plan )
+( defstruct Dependency :dependee :depender )
+( defstruct Plan :isFulfilled :capableOf )
+( defstruct Resource :use :dependencyWR :dependencyR )

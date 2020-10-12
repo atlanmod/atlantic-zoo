@@ -1,0 +1,152 @@
+package Metamodel;
+
+package LQN {
+  class LQN {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] comment;
+    !unique !ordered attr String[1] author;
+    !unique !ordered attr Date[1] created_On;
+    !unique !ordered attr Date[1] modified_On;
+    !ordered val Task[+]#lqn task;
+    !ordered val Processor[+]#lqn processor;
+  }
+
+  class Task {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr TaskType[1] type;
+    !unique !ordered attr Integer[1] priority;
+    !unique !ordered attr Integer[1] mutliplicity;
+    !unique !ordered attr Integer[1] replicas;
+    !ordered val Entry[+]#task entry;
+    !ordered ref Processor[1]#task processor;
+    !ordered ref LQN[1]#task lqn;
+    !ordered ref Activity[+]#task activity;
+  }
+
+  class Processor {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr SchedulingType[1] scheduling;
+    !unique !ordered attr Integer[1] mutliplicity;
+    !unique !ordered attr Integer[1] replicas;
+    !unique !ordered attr Integer[1] spped;
+    !ordered ref Task[1]#processor task;
+    !ordered ref LQN[1]#processor lqn;
+  }
+
+  class Entry {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr Integer[1] num_Phase;
+    !unique !ordered attr Integer[1] arrival_Rate;
+    !unique !ordered attr Task[1] contained_In;
+    !unique !ordered attr Entry[1] replay_To;
+    !ordered ref Call[1]#entryreceives callreceives;
+    !ordered ref Call[1]#entrysends callsends;
+    !ordered ref Phase[+]#entry phase;
+    !ordered val Activity#entry activity;
+    !ordered ref Task[1]#entry task;
+  }
+
+  class Phase {
+    !unique !ordered attr Integer[1] number;
+    !unique !ordered attr PhaseType[1] type;
+    !unique !ordered attr Integer[1] think_Time;
+    !unique !ordered attr Integer[1] execution_Demand;
+    !unique !ordered attr Integer[1] COV;
+    !ordered ref Entry[1]#phase entry;
+    !ordered ref Activity[1]#phase activity;
+  }
+
+  class Activity {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr Integer[1] arrival_Rate;
+    !unique !ordered attr Task[1] contained_In;
+    !unique !ordered attr Entry[1] replay_To;
+    !ordered ref Link[+]#activityPrecedes linkPrecedes;
+    !ordered ref Link[+]#activityfollows linkfollows;
+    !ordered ref Call[*]#activity call;
+    !ordered ref Phase[1]#activity phase;
+    !ordered ref Entry[1]#activity entry;
+    !ordered ref Task[1]#activity task;
+  }
+
+  class Link {
+    !unique !ordered attr LinkType[1] type;
+    !unique !ordered attr Integer[1] mean_Links;
+    !unique !ordered attr Activity[1] fromActivity;
+    !unique !ordered attr Activity[1] toActivity;
+    !ordered ref Activity[1]#linkPrecedes activityPrecedes;
+    !ordered ref Activity[1]#linkfollows activityfollows;
+  }
+
+  class CallPhase {
+    !unique !ordered attr Integer[1] mean_Calls;
+    !unique !ordered attr Phase[1] refers_To;
+    !ordered ref Call[+]#callPhase call;
+  }
+
+  class Call {
+    !unique !ordered attr Entry[1] toEntry;
+    !unique !ordered attr Integer[1] num_Phases;
+    !unique !ordered attr CallType[1] type;
+    !ordered ref CallPhase[+]#call callPhase;
+    !ordered ref Activity[1]#call activity;
+    !ordered ref Entry#callreceives entryreceives;
+    !ordered ref Entry#callsends entrysends;
+  }
+
+  class EntryCall extends Call {
+    !unique !ordered attr Entry[1] from_Entry;
+  }
+
+  class ActivityCall extends Call {
+    !unique !ordered attr Activity[1] fromActivity;
+  }
+
+  class Date {
+    !unique !ordered attr String[1] day;
+    !unique !ordered attr String[1] month;
+    !unique !ordered attr String[1] year;
+  }
+
+  enum SchedulingType {
+    FCFS = 0;
+    preemptive_Priority = 0;
+    head_of_line = 0;
+    random = 0;
+  }
+
+  enum PhaseType {
+    stochastic = 0;
+    deterministic = 0;
+  }
+
+  enum CallType {
+    synchronous = 0;
+    asynchronous = 0;
+    forwording = 0;
+  }
+
+  enum LinkType {
+    and_Fork = 0;
+    and_join = 0;
+    basic = 0;
+    or_Fork = 0;
+    or_join = 0;
+  }
+
+  enum TaskType {
+    a_reference = 0;
+    non_reference = 0;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+}
+

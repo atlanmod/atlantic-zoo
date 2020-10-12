@@ -1,0 +1,68 @@
+package Metamodel;
+
+package AWKPrograms {
+  class AWKProgram {
+    !unique !ordered attr String[1] name;
+    !ordered ref File[1] input;
+    !ordered ref File[1] output;
+    !ordered ref Script[1] script;
+  }
+
+  class File {
+    !unique !ordered attr String[1] name;
+    val Record[*]#r_file records;
+  }
+
+  class Record {
+    !ordered ref File[1]#records r_file;
+    val Field[*]#f_record fields;
+  }
+
+  class Field {
+    !unique !ordered attr String[1] value;
+    !ordered ref Record[1]#fields f_record;
+  }
+
+  class Script {
+    !unique !ordered attr String[1] name;
+    val Rule[*]#r_script rules;
+  }
+
+  class Rule {
+    !ordered ref Script[1]#rules r_script;
+    !ordered ref Pattern[1] pattern;
+    !ordered ref Action[1] action;
+  }
+
+  class Pattern {
+    !unique !ordered attr String[1] regularExpression;
+  }
+
+  class Action {
+    val Instruction[*]#i_action instructions;
+  }
+
+  class Instruction {
+    !unique !ordered attr String[1] value;
+    !ordered ref Action[1]#instructions i_action;
+  }
+
+  class InitialRule extends Rule {
+  }
+
+  class FinalRule extends Rule {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

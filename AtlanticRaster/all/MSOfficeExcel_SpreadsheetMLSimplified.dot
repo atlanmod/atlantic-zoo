@@ -1,0 +1,91 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_SpreadsheetMLSimplified"{
+labelloc=t
+color=black
+label=SpreadsheetMLSimplified
+ node[shape=record];
+DateTimeType[label="{DateTimeType|year : Integer\nmonth : Integer\nday : Integer\nhour : Integer\nminute : Integer\nsecond : Integer| }"]
+;
+ node[shape=record];
+ValueType[label="{/ValueType/| | }"]
+ ValueType->Data[arrowhead=diamond,arrowtail=none,headlabel="vt_data",taillabel="value",group=Data,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StringValue[label="{StringValue|value : String| }"]
+ StringValue->ValueType[arrowhead=onormal,group=ValueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NumberValue[label="{NumberValue|value : Double| }"]
+ NumberValue->ValueType[arrowhead=onormal,group=ValueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DateTimeTypeValue[label="{DateTimeTypeValue| | }"]
+ DateTimeTypeValue->DateTimeType[arrowhead=vee,arrowtail=diamond,headlabel="value",group=DateTimeType,minlen=2,constraint=true,]
+ DateTimeTypeValue->ValueType[arrowhead=onormal,group=ValueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BooleanValue[label="{BooleanValue|value : Boolean| }"]
+ BooleanValue->ValueType[arrowhead=onormal,group=ValueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ErrorValue[label="{ErrorValue| | }"]
+ ErrorValue->ValueType[arrowhead=onormal,group=ValueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Workbook[label="{Workbook| | }"]
+;
+ node[shape=record];
+Worksheet[label="{Worksheet|name : String| }"]
+ Worksheet->Workbook[arrowhead=diamond,arrowtail=none,headlabel="ws_workbook",taillabel="wb_worksheets[*]{ordered}",group=Workbook,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Table[label="{Table| | }"]
+ Table->Worksheet[arrowhead=diamond,arrowtail=none,headlabel="t_worksheet",taillabel="ws_table[0-1]",group=Worksheet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TableElement[label="{/TableElement/|index[0-1] : Integer| }"]
+;
+ node[shape=record];
+ColOrRowElement[label="{/ColOrRowElement/|hidden[0-1] : Boolean\nspan[0-1] : Integer| }"]
+ ColOrRowElement->TableElement[arrowhead=onormal,group=TableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Column[label="{Column|autoFitWidth[0-1] : Boolean\nwidth[0-1] : Double| }"]
+ Column->Table[arrowhead=diamond,arrowtail=none,headlabel="c_table",taillabel="t_cols[*]{ordered}",group=Table,minlen=2,constraint=true,]
+ Column->ColOrRowElement[arrowhead=onormal,group=ColOrRowElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Row[label="{Row|autoFitHeight[0-1] : Boolean\nheight[0-1] : Double| }"]
+ Row->Table[arrowhead=diamond,arrowtail=none,headlabel="r_table",taillabel="t_rows[*]{ordered}",group=Table,minlen=2,constraint=true,]
+ Row->ColOrRowElement[arrowhead=onormal,group=ColOrRowElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Cell[label="{Cell|arrayRange[0-1] : String\nformula[0-1] : String\nhRef[0-1] : String\nmergeAcross[0-1] : Double\nmergeDown[0-1] : Double| }"]
+ Cell->Row[arrowhead=diamond,arrowtail=none,headlabel="c_row",taillabel="r_cells[*]{ordered}",group=Row,minlen=2,constraint=true,]
+ Cell->TableElement[arrowhead=onormal,group=TableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Data[label="{Data| | }"]
+ Data->Cell[arrowhead=diamond,arrowtail=none,headlabel="d_cell",taillabel="c_data[0-1]",group=Cell,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

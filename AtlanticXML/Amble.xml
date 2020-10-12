@@ -1,0 +1,60 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'Amble'>
+    <Class name = 'Element' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Program' isAbstract = 'false' supertypes = 'Amble::Element'>
+      <Reference name = 'processes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Amble::Process' opposite = ''/>
+      <Reference name = 'networks' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Amble::Network' opposite = ''/>
+    </Class>
+    <Class name = 'Process' isAbstract = 'false' supertypes = 'Amble::Element'>
+      <Attribute name = 'minId' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'maxId' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'instancesNb' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'states' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Amble::State' opposite = ''/>
+      <Reference name = 'transitions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Amble::Transition' opposite = ''/>
+      <Reference name = 'initial' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Amble::Action' opposite = ''/>
+      <Reference name = 'variables' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Amble::Variable' opposite = ''/>
+      <Reference name = 'connectedTo' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Amble::Network' opposite = ''/>
+    </Class>
+    <Class name = 'State' isAbstract = 'false' supertypes = 'Amble::Element'>
+      <Attribute name = 'isInitial' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'incoming' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Amble::Transition' opposite = 'Amble::Transition::target'/>
+      <Reference name = 'outgoing' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Amble::Transition' opposite = 'Amble::Transition::source'/>
+    </Class>
+    <Class name = 'Transition' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'guard' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Amble::Guard' opposite = ''/>
+      <Reference name = 'action' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Amble::Action' opposite = ''/>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Amble::State' opposite = 'Amble::State::outgoing'/>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Amble::State' opposite = 'Amble::State::incoming'/>
+    </Class>
+    <Class name = 'Trans' isAbstract = 'false' supertypes = 'Amble::Transition'>
+      <Reference name = 'waitFor' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Amble::Message' opposite = ''/>
+    </Class>
+    <Class name = 'Strans' isAbstract = 'false' supertypes = 'Amble::Transition'/>
+    <Class name = 'Transall' isAbstract = 'false' supertypes = 'Amble::Transition'>
+      <Reference name = 'waitFor' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Amble::Message' opposite = ''/>
+    </Class>
+    <Class name = 'Guard' isAbstract = 'false' supertypes = 'Amble::Element'/>
+    <Class name = 'Action' isAbstract = 'false' supertypes = 'Amble::Element'/>
+    <Class name = 'Network' isAbstract = 'false' supertypes = 'Amble::Element'>
+      <Reference name = 'channels' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Amble::Channel' opposite = ''/>
+    </Class>
+    <Class name = 'Channel' isAbstract = 'false' supertypes = 'Amble::Element'>
+      <Reference name = 'messages' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Amble::Message' opposite = ''/>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Amble::Process' opposite = ''/>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Amble::Process' opposite = ''/>
+    </Class>
+    <Class name = 'Message' isAbstract = 'false' supertypes = 'Amble::Element'/>
+    <Class name = 'Variable' isAbstract = 'false' supertypes = 'Amble::Element'>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'initValue' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'String'/>
+    <DataType name = 'Integer'/>
+  </Package>
+</Metamodel>

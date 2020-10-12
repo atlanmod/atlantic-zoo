@@ -1,0 +1,69 @@
+package Metamodel;
+
+package PNML {
+  abstract class LocatedElement {
+    !unique !ordered attr String[1] location;
+  }
+
+  abstract class IdedElement extends LocatedElement {
+    !unique !ordered attr String[1] ~id;
+  }
+
+  class URI extends LocatedElement {
+    !unique !ordered attr String[1] value;
+  }
+
+  class PNMLDocument extends LocatedElement {
+    !ordered val URI[1] xmlns;
+    !ordered val NetElement[+]#document nets;
+  }
+
+  class NetElement extends IdedElement {
+    !ordered val URI[1] type;
+    !ordered ref PNMLDocument[1]#nets document;
+    !ordered val NetContent[*]#net contents;
+    !ordered val Name#net name;
+  }
+
+  abstract class NetContent extends LocatedElement {
+    !ordered ref NetElement[1]#contents net;
+    !ordered val Name#netContent name;
+  }
+
+  abstract class LabeledElement extends LocatedElement {
+    !ordered val Label[*]#labeledElement labels;
+  }
+
+  class Label extends LocatedElement {
+    !unique !ordered attr String[1] text;
+    !ordered ref LabeledElement[1]#labels labeledElement;
+  }
+
+  class Name extends LabeledElement {
+    !ordered ref NetElement#name net;
+    !ordered ref NetContent#name netContent;
+  }
+
+  abstract class NetContentElement extends NetContent, IdedElement {
+  }
+
+  class Arc extends NetContent, IdedElement {
+    !ordered ref NetContentElement[1] source;
+    !ordered ref NetContentElement[1] target;
+  }
+
+  class Place extends NetContentElement {
+  }
+
+  class Transition extends NetContentElement {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

@@ -1,0 +1,389 @@
+abstract class LocatedElement
+  var location as Set of String
+  var commentsBefore as Set of String
+  var commentsAfter as Set of String
+
+abstract class VB_LangElement extends LocatedElement
+
+class VB_Content extends VB_LangElement
+  var hasVersion as Set of Boolean
+  var version as Set of String
+  var hasClass as Set of Boolean
+  var hasBeginEnd as Set of Boolean
+  // beginEndGlobalVariables IsContainer
+  var beginEndGlobalVariables as Set of VB_GlobalVariable
+  // globalVariables IsContainer
+  var globalVariables as Set of VB_GlobalVariable
+  // elements IsContainer
+  var elements as Set of VB_ContentElement
+
+class VB_GlobalVariable extends VB_LangElement
+  var name as Set of String
+  // value IsContainer
+  var value as Set of VB_Expression
+
+abstract class VB_ContentElement extends VB_LangElement
+
+class VB_FileAttribute extends VB_ContentElement
+  var name as Set of String
+  // initialValue IsContainer
+  var initialValue as Set of VB_Expression
+
+class VB_Option extends VB_ContentElement
+  var name as Set of String
+  var hasEnablement as Set of Boolean
+  var enablement as Set of EnablementEnum
+
+class VB_Imports extends VB_ContentElement
+  // imports IsContainer
+  var imports as Set of VB_FullTypeRef
+
+class VB_Implements extends VB_ContentElement
+  // _implements IsContainer
+  var _implements as Set of VB_FullTypeRef
+
+class VB_Assembly extends VB_ContentElement
+  // call IsContainer
+  var call as Set of VB_Call
+
+class VB_Class extends VB_ContentElement
+  var isFriend as Set of Boolean
+  var hasVisibility as Set of Boolean
+  var visibility as Set of VisibilityEnum
+  var name as Set of String
+  var hasInherits as Set of Boolean
+  // inherits IsContainer
+  var inherits as Set of VB_FullTypeRef
+  // features IsContainer
+  var features as Set of VB_Feature
+
+class VB_Module extends VB_ContentElement
+  var name as Set of String
+  // features IsContainer
+  var features as Set of VB_Feature
+
+abstract class VB_Type extends VB_LangElement
+
+abstract class VB_Data extends VB_LangElement
+
+class VB_SimpleType extends VB_ContentElement
+  var visibility as Set of VisibilityEnum
+  var name as Set of String
+  // features IsContainer
+  var features as Set of VB_Feature
+
+class VB_Enum extends VB_ContentElement
+  var visibility as Set of VisibilityEnum
+  var name as Set of String
+  // features IsContainer
+  var features as Set of VB_Feature
+
+class VB_PreprocIf extends VB_ContentElement
+  // condition IsContainer
+  var condition as Set of VB_Expression
+  // features IsContainer
+  var features as Set of VB_Feature
+
+abstract class VB_Feature extends VB_Data
+
+class VB_Region extends VB_Feature
+  var name as Set of String
+  // features IsContainer
+  var features as Set of VB_Feature
+
+class VB_Sub extends VB_Feature
+  var hasAnnotation as Set of Boolean
+  var isFriend as Set of Boolean
+  var hasVisibility as Set of Boolean
+  var visibility as Set of VisibilityEnum
+  var isOverloads as Set of Boolean
+  var isOverrides as Set of Boolean
+  var name as Set of String
+  var hasHandles as Set of Boolean
+  // annotation IsContainer
+  var annotation as Set of VB_Call
+  // parameters IsContainer
+  var parameters as Set of VB_Parameter
+  // handles IsContainer
+  var handles as Set of VB_FullTypeRef
+  // statements IsContainer
+  var statements as Set of VB_Statement
+
+class VB_Function extends VB_Feature
+  var isFriend as Set of Boolean
+  var hasVisibility as Set of Boolean
+  var visibility as Set of VisibilityEnum
+  var name as Set of String
+  // parameters IsContainer
+  var parameters as Set of VB_Parameter
+  // _return IsContainer
+  var _return as Set of VB_FullTypeRef
+  // statements IsContainer
+  var statements as Set of VB_Statement
+
+class VB_DeclareFunction extends VB_Feature
+  var hasVisibility as Set of Boolean
+  var visibility as Set of VisibilityEnum
+  var isAuto as Set of Boolean
+  var name as Set of String
+  var lib as Set of String
+  var isAlias as Set of Boolean
+  var alias as Set of String
+  // parameters IsContainer
+  var parameters as Set of VB_Parameter
+  // _return IsContainer
+  var _return as Set of VB_FullTypeRef
+
+class VB_DeclareSub extends VB_Feature
+  var hasVisibility as Set of Boolean
+  var visibility as Set of VisibilityEnum
+  var isAuto as Set of Boolean
+  var name as Set of String
+  var lib as Set of String
+  var isAlias as Set of Boolean
+  var alias as Set of String
+  // parameters IsContainer
+  var parameters as Set of VB_Parameter
+
+class VB_Parameter extends VB_Data
+  var isOptional as Set of Boolean
+  var hasQualifier as Set of Boolean
+  var qualifier as Set of QualifierEnum
+  var name as Set of String
+  var isArray as Set of Boolean
+  var hasType as Set of Boolean
+  var hasInitialValue as Set of Boolean
+  // arrayExpression IsContainer
+  var arrayExpression as Set of VB_Expression
+  // _type IsContainer
+  var _type as Set of VB_FullTypeRef
+  // value IsContainer
+  var value as Set of VB_Expression
+
+class VB_Property extends VB_Feature
+  var visibility as Set of VisibilityEnum
+  var isShared as Set of Boolean
+  var isGetOnly as Set of Boolean
+  var isSet as Set of Boolean
+  var isLet as Set of Boolean
+  var name as Set of String
+  // parameters IsContainer
+  var parameters as Set of VB_Parameter
+  // _type IsContainer
+  var _type as Set of VB_FullTypeRef
+  // modifiers IsContainer
+  var modifiers as Set of VB_Modifier
+  // statements IsContainer
+  var statements as Set of VB_Statement
+
+abstract class VB_Modifier extends VB_LangElement
+
+class VB_Set extends VB_Modifier
+  var hasParameters as Set of Boolean
+  // parameters IsContainer
+  var parameters as Set of VB_Parameter
+  // statements IsContainer
+  var statements as Set of VB_Statement
+
+class VB_Get extends VB_Modifier
+  var hasParameters as Set of Boolean
+  // parameters IsContainer
+  var parameters as Set of VB_Parameter
+  // statements IsContainer
+  var statements as Set of VB_Statement
+
+class VB_Attribute extends VB_Feature
+  var hasVisibility as Set of Boolean
+  var visibility as Set of VisibilityEnum
+  var hasQualifier as Set of Boolean
+  var qualifier as Set of Qualifier_2Enum
+  var isFriend as Set of Boolean
+  var isWithEvents as Set of Boolean
+  var isShared as Set of Boolean
+  var name as Set of String
+  var isArray as Set of Boolean
+  var hasType as Set of Boolean
+  var hasInitialValue as Set of Boolean
+  var hasNext as Set of Boolean
+  // arrayExpressions IsContainer
+  var arrayExpressions as Set of VB_Expression
+  // _type IsContainer
+  var _type as Set of VB_Expression
+  // initialValue IsContainer
+  var initialValue as Set of VB_Expression
+
+class VB_GraphicalElement extends VB_ContentElement
+  var name as Set of String
+  // _type IsContainer
+  var _type as Set of VB_FullTypeRef
+  // fields IsContainer
+  var fields as Set of VB_GraphicalField
+  // children IsContainer
+  var children as Set of VB_GraphicalElement
+
+abstract class VB_GraphicalField extends VB_LangElement
+
+class VB_GraphicalPropertySet extends VB_GraphicalField
+  var name as Set of String
+  var hasArguments as Set of Boolean
+  var hasBrackets as Set of Boolean
+  // arguments IsContainer
+  var arguments as Set of VB_Expression
+  // fields IsContainer
+  var fields as Set of VB_GraphicalField
+
+class VB_GraphicalProperty extends VB_Data
+  // _property IsContainer
+  var _property as Set of VB_FullDataRef
+  // value IsContainer
+  var value as Set of VB_Expression
+
+abstract class VB_Statement extends VB_Modifier
+
+class VB_Call extends VB_Statement
+  // expression IsContainer
+  var expression as Set of VB_FullDataRef
+  // arguments IsContainer
+  var arguments as Set of VB_CallArgument
+
+abstract class VB_CallArgument extends VB_LangElement
+
+class VB_CallEmptyArgument extends VB_CallArgument
+
+class VB_CallExpressionArgument extends VB_CallArgument
+  var hasSeparator as Set of Boolean
+  // expression IsContainer
+  var expression as Set of VB_Expression
+
+class VB_Case extends VB_LangElement
+  var hasSeparator as Set of Boolean
+  // values IsContainer
+  var values as Set of VB_Expression
+  // statements IsContainer
+  var statements as Set of VB_Statement
+
+class VB_RawBody extends VB_Statement
+  var value as Set of String
+
+abstract class VB_Expression extends VB_LangElement
+
+class VB_AssignmentExpression extends VB_Expression
+  // variable IsContainer
+  var variable as Set of VB_FullDataRef
+  // expression IsContainer
+  var expression as Set of VB_Expression
+
+class VB_TypeOfExpression extends VB_Expression
+  // variable IsContainer
+  var variable as Set of VB_FullDataRef
+  // _type IsContainer
+  var _type as Set of VB_FullTypeRef
+
+class VB_OperatorExpression extends VB_Expression
+  var operatorName as Set of String
+  // leftHand IsContainer
+  var leftHand as Set of VB_Expression
+  // rightHand IsContainer
+  var rightHand as Set of VB_Expression
+
+class VB_NewExpression extends VB_Expression
+  var hasArguments as Set of Boolean
+  var hasInitialization as Set of Boolean
+  // _type IsContainer
+  var _type as Set of VB_FullTypeRef
+  // arguments IsContainer
+  var arguments as Set of VB_Expression
+  // initializations IsContainer
+  var initializations as Set of VB_Expression
+
+class VB_NotExpression extends VB_Expression
+  // expression IsContainer
+  var expression as Set of VB_Expression
+
+class VB_NegativeExpression extends VB_Expression
+  // expression IsContainer
+  var expression as Set of VB_Expression
+
+class VB_ParenthesisExpression extends VB_Expression
+  // expression IsContainer
+  var expression as Set of VB_Expression
+
+class VB_TabValuesExpression extends VB_Expression
+  // arguments IsContainer
+  var arguments as Set of VB_Expression
+
+class VB_ByValExpression extends VB_Expression
+  // value IsContainer
+  var value as Set of VB_Expression
+
+abstract class VB_Value extends VB_Expression
+
+class VB_NegativeValue extends VB_Value
+  // value IsContainer
+  var value as Set of VB_Value
+
+class VB_VariableSystem extends VB_Value
+  var name as Set of NameEnum
+
+abstract class VB_Literal extends VB_Value
+  var value as Set of String
+
+class VB_Literal_Literal extends VB_Literal
+
+class VB_Literal_Number extends VB_Literal
+
+class VB_Literal_Value extends VB_Literal
+
+class VB_FullTypeRef extends VB_LangElement
+  // members IsContainer
+  var members as Set of VB_TypeRef
+
+class VB_TypeRef extends VB_LangElement
+  var typeValue as Set of String
+  var _type as Set of VB_LangElement
+
+class VB_FullDataRef extends VB_Expression
+  var self as Set of Boolean
+  var hasRecSet as Set of Boolean
+  // members IsContainer
+  var members as Set of VB_DataRef
+  // recSetMember IsContainer
+  var recSetMember as Set of VB_DataRef
+
+class VB_DataRef extends VB_LangElement
+  var dataValue as Set of String
+  var hasArguments as Set of Boolean
+  var hasRefMarker as Set of Boolean
+  var hasSubMarker as Set of Boolean
+  var data as Set of VB_LangElement
+  // arguments IsContainer
+  var arguments as Set of VB_CallArgument
+
+class VB_LabelRef extends VB_LangElement
+  var labelValue as Set of String
+  var label as Set of VB_LangElement
+
+enum EnablementEnum
+  Off
+  On
+
+enum VisibilityEnum
+  _private
+  _protected
+  _public
+
+enum QualifierEnum
+  byRef
+  byVal
+
+enum Qualifier_2Enum
+  static
+  _const
+  dim
+
+enum NameEnum
+  trueLit
+  falseLit
+  nothing
+
+Main()

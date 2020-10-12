@@ -1,0 +1,143 @@
+universe XSchema_AnnotedElement
+
+	function annotations(a : XSchema_AnnotedElement, b : XSchema_Annotation) -> Bool
+
+	universe XSchema_Annotation
+
+	function documentations(a : XSchema_Annotation, b : XSchema_Documentation) -> Bool
+
+	function applicationInfos(a : XSchema_Annotation, b : XSchema_ApplicationInfo) -> Bool
+
+	function annotedElement(a : XSchema_Annotation, b : XSchema_AnnotedElement) -> Bool
+
+	function order(a : XSchema_Annotation, b : XSchema_Documentation) -> Integer
+
+	function order(a : XSchema_Annotation, b : XSchema_ApplicationInfo) -> Integer
+
+	universe XSchema_Documentation
+
+	function text(a : XSchema_Documentation, b : String) -> Bool
+
+	universe XSchema_ApplicationInfo
+
+	function text(a : XSchema_ApplicationInfo, b : String) -> Bool
+
+	universe XSchema_NamedElement < XSchema_AnnotedElement
+
+	function name(a : XSchema_NamedElement, b : String) -> Bool
+
+	universe XSchema_XSchema < XSchema_AnnotedElement
+
+	function namespace(a : XSchema_XSchema, b : String) -> Bool
+
+	function contents(a : XSchema_XSchema, b : XSchema_XSchemaContentElement) -> Bool
+
+	universe XSchema_XSchemaContentElement < XSchema_NamedElement
+
+	function schema(a : XSchema_XSchemaContentElement, b : XSchema_XSchema) -> Bool
+
+	universe XSchema_Parameters < XSchema_XSchemaContentElement
+
+	function typeRef(a : XSchema_Parameters, b : XSchema_AbstractType) -> Bool
+
+	function typeContain(a : XSchema_Parameters, b : XSchema_AbstractType) -> Bool
+
+	function fixed(a : XSchema_Parameters, b : String) -> Bool
+
+	function default(a : XSchema_Parameters, b : String) -> Bool
+
+	universe XSchema_Element < XSchema_Parameters XSchema_AtomicContent
+
+	function references(a : XSchema_Element, b : XSchema_ElementRef) -> Bool
+
+	universe XSchema_Occurable
+
+	function minOccurs(a : XSchema_Occurable, b : String) -> Bool
+
+	function maxOccurs(a : XSchema_Occurable, b : String) -> Bool
+
+	universe XSchema_AbstractContent < XSchema_Occurable
+
+	function container(a : XSchema_AbstractContent, b : XSchema_Container) -> Bool
+
+	function complexType(a : XSchema_AbstractContent, b : XSchema_ComplexType) -> Bool
+
+	universe XSchema_Container < XSchema_AbstractContent
+
+	function contents(a : XSchema_Container, b : XSchema_AbstractContent) -> Bool
+
+	function order(a : XSchema_Container, b : XSchema_AbstractContent) -> Integer
+
+	universe XSchema_AtomicContent < XSchema_AbstractContent
+
+	universe XSchema_ElementRef < XSchema_AtomicContent
+
+	function referencedElement(a : XSchema_ElementRef, b : XSchema_Element) -> Bool
+
+	universe XSchema_GroupRef < XSchema_AtomicContent
+
+	function referencedGroup(a : XSchema_GroupRef, b : XSchema_Group) -> Bool
+
+	universe XSchema_All < XSchema_Container
+
+	universe XSchema_Group < XSchema_XSchemaContentElement XSchema_Container
+
+	function references(a : XSchema_Group, b : XSchema_GroupRef) -> Bool
+
+	universe XSchema_Choice < XSchema_Container
+
+	universe XSchema_Sequence < XSchema_Container
+
+	universe XSchema_AbstractAttributeGroupContent < XSchema_Occurable
+
+	function container(a : XSchema_AbstractAttributeGroupContent, b : XSchema_AttributeGroup) -> Bool
+
+	function complexType(a : XSchema_AbstractAttributeGroupContent, b : XSchema_ComplexType) -> Bool
+
+	universe XSchema_AttributeGroup < XSchema_AbstractAttributeGroupContent XSchema_XSchemaContentElement
+
+	function contents(a : XSchema_AttributeGroup, b : XSchema_AbstractAttributeGroupContent) -> Bool
+
+	function references(a : XSchema_AttributeGroup, b : XSchema_AttributeGroupRef) -> Bool
+
+	function order(a : XSchema_AttributeGroup, b : XSchema_AbstractAttributeGroupContent) -> Integer
+
+	universe XSchema_AttributeGroupRef < XSchema_AtomicAttributeGroupContent
+
+	function referencedAttributeGroup(a : XSchema_AttributeGroupRef, b : XSchema_AttributeGroup) -> Bool
+
+	universe XSchema_AtomicAttributeGroupContent < XSchema_AbstractAttributeGroupContent
+
+	universe XSchema_Attribute < XSchema_Parameters XSchema_AtomicAttributeGroupContent
+
+	function use(a : XSchema_Attribute, b : XSchema_AttributeUseType) -> Bool
+
+	function references(a : XSchema_Attribute, b : XSchema_AttributeRef) -> Bool
+
+	universe XSchema_AttributeRef < XSchema_AtomicAttributeGroupContent
+
+	function referencedAttribute(a : XSchema_AttributeRef, b : XSchema_Attribute) -> Bool
+
+	universe XSchema_AbstractType < XSchema_XSchemaContentElement
+
+	function container(a : XSchema_AbstractType, b : XSchema_Parameters) -> Bool
+
+	universe XSchema_SimpleType < XSchema_AbstractType
+
+	function extensions(a : XSchema_SimpleType, b : XSchema_ComplexTypeSimpleContent) -> Bool
+
+	universe XSchema_ComplexType < XSchema_AbstractType
+
+	function extensions(a : XSchema_ComplexType, b : XSchema_ComplexTypeComplexContent) -> Bool
+
+	function content(a : XSchema_ComplexType, b : XSchema_AbstractContent) -> Bool
+
+	function attributes(a : XSchema_ComplexType, b : XSchema_AbstractAttributeGroupContent) -> Bool
+
+	universe XSchema_ComplexTypeSimpleContent < XSchema_ComplexType
+
+	function base_(a : XSchema_ComplexTypeSimpleContent, b : XSchema_SimpleType) -> Bool
+
+	universe XSchema_ComplexTypeComplexContent < XSchema_ComplexType
+
+	function base_(a : XSchema_ComplexTypeComplexContent, b : XSchema_ComplexType) -> Bool

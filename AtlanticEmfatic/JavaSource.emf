@@ -1,0 +1,32 @@
+package Metamodel;
+
+package JavaSource {
+  class JavaSource {
+    !ordered val ClassDeclaration[+] classes;
+  }
+
+  abstract class NamedElement {
+    !unique !ordered attr String[1] name;
+  }
+
+  class ClassDeclaration extends NamedElement {
+    !ordered ref ClassDeclaration superclass;
+    !ordered val MethodDefinition[*]#~class methods;
+  }
+
+  class MethodDefinition extends NamedElement {
+    !ordered ref ClassDeclaration[1]#methods ~class;
+    !ordered val MethodInvocation[*] invocations;
+  }
+
+  class MethodInvocation {
+    !ordered ref MethodDefinition[1] method;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+}
+

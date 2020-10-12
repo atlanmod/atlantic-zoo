@@ -1,0 +1,169 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_ODPEV"{
+labelloc=t
+color=black
+label=ODPEV
+ node[shape=record];
+EnterpriseObject[label="{EnterpriseObject| | }"]
+ EnterpriseObject->Role[arrowhead=none,arrowtail=none,headlabel="eoRoles[*]",taillabel="rolefillers[*]",group=Role,minlen=2,constraint=false,]
+ EnterpriseObject->Action[arrowhead=none,arrowtail=none,headlabel="eoActorActions[1-*]",taillabel="actActorRoleFillers[*]",group=Action,minlen=2,constraint=false,]
+ EnterpriseObject->EO_A_R[arrowhead=none,arrowtail=none,headlabel="eoEOAR[*]",taillabel="eoarSubject[*]",group=EO_A_R,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ODPSystem[label="{ODPSystem| | }"]
+ ODPSystem->Scope[arrowhead=none,arrowtail=none,headlabel="odpBehaviour",taillabel="scOdpSystem",group=Scope,minlen=2,constraint=false,]
+ ODPSystem->EnterpriseSpecification[arrowhead=none,arrowtail=none,headlabel="odpSpecifier",taillabel="esDescribedSystems[1-*]",group=EnterpriseSpecification,minlen=2,constraint=false,]
+ ODPSystem->EnterpriseObject[arrowhead=onormal,group=EnterpriseObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Party[label="{Party| | }"]
+ Party->AccountableAction[arrowhead=none,arrowtail=none,headlabel="ptyAccountableAction[*]",taillabel="aaAccountableParty[1-*]",group=AccountableAction,minlen=2,constraint=false,]
+ Party->EO_P_D[arrowhead=none,arrowtail=none,headlabel="ptyEOPD",taillabel="eopdPrincipal",group=EO_P_D,minlen=2,constraint=false,]
+ Party->EnterpriseObject[arrowhead=onormal,group=EnterpriseObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Objective[label="{Objective| | }"]
+ Objective->ODPSystem[arrowhead=none,arrowtail=none,headlabel="objFulfiller[0-1]",taillabel="odpObjectives[1-*]",group=ODPSystem,minlen=2,constraint=false,]
+ Objective->Objective[arrowhead=none,arrowtail=none,headlabel="objRefinement[0-1]",taillabel="objRefiners[*]",group=Objective,minlen=2,constraint=false,]
+ Objective->Process[arrowhead=none,arrowtail=none,headlabel="objAchievers[*]",taillabel="prObjectives[1-*]",group=Process,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Scope[label="{Scope| | }"]
+;
+ node[shape=record];
+EnterpriseSpecification[label="{EnterpriseSpecification| | }"]
+;
+ node[shape=record];
+FieldOfApplication[label="{FieldOfApplication| | }"]
+ FieldOfApplication->EnterpriseSpecification[arrowhead=none,arrowtail=none,headlabel="faEnterpriseSpecifications",taillabel="esContext",group=EnterpriseSpecification,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Policy[label="{Policy| | }"]
+ Policy->Role[arrowhead=none,arrowtail=none,headlabel="poRole[*]",taillabel="roleConstrainer[*]",group=Role,minlen=2,constraint=false,]
+ Policy->EnterpriseObject[arrowhead=none,arrowtail=none,headlabel="poEnterpriseObject[*]",taillabel="eoPolicy[*]",group=EnterpriseObject,minlen=2,constraint=false,]
+;
+ node[shape=record];
+PolicyEnvelope[label="{PolicyEnvelope| | }"]
+ PolicyEnvelope->Behaviour[arrowhead=none,arrowtail=none,headlabel="pePolicySetter",taillabel="bePolicyEnvelope[0-1]",group=Behaviour,minlen=2,constraint=false,]
+ PolicyEnvelope->Behaviour[arrowhead=none,arrowtail=none,headlabel="peBehaviour[0-1]",taillabel="beConstrainer[0-1]",group=Behaviour,minlen=2,constraint=false,]
+ PolicyEnvelope->PolicyValue[arrowhead=vee,arrowtail=diamond,headlabel="peValues[1-*]{ordered}",group=PolicyValue,minlen=2,constraint=true,]
+ PolicyEnvelope->Policy[arrowhead=onormal,group=Policy,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PolicyValue[label="{PolicyValue| | }"]
+ PolicyValue->PolicyEnvelope[arrowhead=none,arrowtail=none,headlabel="pvValue",taillabel="peCurrentValue",group=PolicyEnvelope,minlen=2,constraint=false,]
+ PolicyValue->Policy[arrowhead=onormal,group=Policy,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AssigmentPolicy[label="{AssigmentPolicy| | }"]
+ AssigmentPolicy->EO_A_R[arrowhead=none,arrowtail=none,headlabel="apEOAR[*]",taillabel="eoarGovernor[*]",group=EO_A_R,minlen=2,constraint=false,]
+ AssigmentPolicy->Policy[arrowhead=onormal,group=Policy,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Contract[label="{Contract| | }"]
+ Contract->Policy[arrowhead=none,arrowtail=none,headlabel="ctPolicies",taillabel="poSpecifier",group=Policy,minlen=2,constraint=false,]
+ Contract->Objective[arrowhead=none,arrowtail=none,headlabel="ctObjective",taillabel="objSpecifier",group=Objective,minlen=2,constraint=false,]
+ Contract->Behaviour[arrowhead=none,arrowtail=none,headlabel="ctBehaviours[1-*]",taillabel="beSpecifiers[1-*]",group=Behaviour,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Process[label="{Process| | }"]
+ Process->Step[arrowhead=none,arrowtail=none,headlabel="prDetails[1-*]",taillabel="stGraphs[1-*]",group=Step,minlen=2,constraint=false,]
+ Process->Policy[arrowhead=none,arrowtail=none,headlabel="prConstrainer[*]",taillabel="poProcess[*]",group=Policy,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Step[label="{Step| | }"]
+ Step->Process[arrowhead=none,arrowtail=none,headlabel="stAbstraction[0-1]",taillabel="prRefinement[0-1]",group=Process,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Action[label="{Action| | }"]
+ Action->Behaviour[arrowhead=none,arrowtail=none,headlabel="actBehaviours[1-*]",taillabel="beActions[1-*]",group=Behaviour,minlen=2,constraint=false,]
+ Action->EnterpriseObject[arrowhead=none,arrowtail=none,headlabel="actArtefactRoleFillers[*]",taillabel="eoArtefactActions[1-*]",group=EnterpriseObject,minlen=2,constraint=false,]
+ Action->EnterpriseObject[arrowhead=none,arrowtail=none,headlabel="actResourceRoleFillers[*]",taillabel="eoResourceActions[1-*]",group=EnterpriseObject,minlen=2,constraint=false,]
+ Action->Step[arrowhead=onormal,group=Step,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AccountableAction[label="{/AccountableAction/| | }"]
+ AccountableAction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Prescription[label="{Prescription| | }"]
+ Prescription->AccountableAction[arrowhead=onormal,group=AccountableAction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Commitment[label="{Commitment| | }"]
+ Commitment->AccountableAction[arrowhead=onormal,group=AccountableAction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Declaration[label="{Declaration| | }"]
+ Declaration->AccountableAction[arrowhead=onormal,group=AccountableAction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Evaluation[label="{Evaluation| | }"]
+ Evaluation->AccountableAction[arrowhead=onormal,group=AccountableAction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Delegation[label="{Delegation| | }"]
+ Delegation->EO_P_D[arrowhead=none,arrowtail=none,headlabel="dlgEOPD",taillabel="eopdAction",group=EO_P_D,minlen=2,constraint=false,]
+ Delegation->AccountableAction[arrowhead=onormal,group=AccountableAction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Behaviour[label="{Behaviour| | }"]
+ Behaviour->Objective[arrowhead=none,arrowtail=none,headlabel="beObjectives[1-*]",taillabel="objFulfillers[1-*]",group=Objective,minlen=2,constraint=false,]
+ Behaviour->Role[arrowhead=none,arrowtail=none,headlabel="beIdentifier[0-1]",taillabel="roleBehaviour",group=Role,minlen=2,constraint=false,]
+ Behaviour->Policy[arrowhead=none,arrowtail=none,headlabel="bePolicyConstrainer[*]",taillabel="poBehaviour[*]",group=Policy,minlen=2,constraint=false,]
+ Behaviour->Policy[arrowhead=none,arrowtail=none,headlabel="bePolicy[*]",taillabel="poChanger[*]",group=Policy,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Community[label="{Community| | }"]
+ Community->CommunityObject[arrowhead=none,arrowtail=none,headlabel="coAbstraction[0-1]",taillabel="cobjRefinement",group=CommunityObject,minlen=2,constraint=false,]
+ Community->EnterpriseObject[arrowhead=none,arrowtail=none,headlabel="coMembers[*]",taillabel="eoConfigurations[*]",group=EnterpriseObject,minlen=2,constraint=false,]
+ Community->Policy[arrowhead=none,arrowtail=none,headlabel="coPolicy[*]",taillabel="poOwner",group=Policy,minlen=2,constraint=false,]
+;
+ node[shape=record];
+CommunityObject[label="{CommunityObject| | }"]
+ CommunityObject->EnterpriseObject[arrowhead=onormal,group=EnterpriseObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Role[label="{Role| | }"]
+ Role->Community[arrowhead=none,arrowtail=none,headlabel="roleSpecifier",taillabel="coCommunityRoles[*]",group=Community,minlen=2,constraint=false,]
+ Role->EO_A_R[arrowhead=none,arrowtail=none,headlabel="roleEOAR[*]",taillabel="eoarSubjectRole[1-*]",group=EO_A_R,minlen=2,constraint=false,]
+;
+ node[shape=record];
+InterfaceRole[label="{InterfaceRole| | }"]
+ InterfaceRole->Role[arrowhead=onormal,group=Role,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Violation[label="{Violation| | }"]
+ Violation->Rule[arrowhead=none,arrowtail=none,headlabel="vioProhibitor",taillabel="ruViolation[*]",group=Rule,minlen=2,constraint=false,]
+ Violation->Behaviour[arrowhead=onormal,group=Behaviour,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Rule[label="{/Rule/| | }"]
+;
+ node[shape=record];
+Obligation[label="{Obligation| | }"]
+ Obligation->Rule[arrowhead=onormal,group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Authorisation[label="{Authorisation| | }"]
+ Authorisation->Rule[arrowhead=onormal,group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Permission[label="{Permission| | }"]
+ Permission->Rule[arrowhead=onormal,group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Prohibition[label="{Prohibition| | }"]
+ Prohibition->Rule[arrowhead=onormal,group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EO_A_R[label="{EO_A_R| | }"]
+;
+ node[shape=record];
+EO_P_D[label="{EO_P_D| | }"]
+ EO_P_D->EnterpriseObject[arrowhead=none,arrowtail=none,headlabel="eopdAgent",taillabel="eoEOPD",group=EnterpriseObject,minlen=2,constraint=false,]
+;
+
+}
+}

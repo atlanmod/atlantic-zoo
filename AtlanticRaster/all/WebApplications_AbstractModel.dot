@@ -1,0 +1,65 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_WebApplication"{
+labelloc=t
+color=black
+label=WebApplication
+ node[shape=record];
+HyperLink[label="{HyperLink| | }"]
+ HyperLink->ServerPage[arrowhead=none,arrowtail=none,headlabel="server[*]",taillabel="link[*]",group=ServerPage,minlen=2,constraint=false,]
+;
+ subgraph "cluster_Client"{
+labelloc=t
+color=black
+label=Client
+ node[shape=record];
+ClientPage[label="{ClientPage| | }"]
+ ClientPage->HyperLink[arrowhead=vee,arrowtail=none,headlabel="hyperlink",group=HyperLink,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ClientPageModule[label="{ClientPageModule| | }"]
+ ClientPageModule->ClientPage[arrowhead=vee,arrowtail=diamond,headlabel="consistsOf",group=ClientPage,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LogicInterface[label="{LogicInterface| | }"]
+ LogicInterface->ClientPageModule[arrowhead=onormal,group=ClientPageModule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DesignElement[label="{DesignElement| | }"]
+ DesignElement->ClientPageModule[arrowhead=onormal,group=ClientPageModule,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Server"{
+labelloc=t
+color=black
+label=Server
+ node[shape=record];
+ServerPage[label="{ServerPage| | }"]
+ ServerPage->BusinessLogic[arrowhead=vee,arrowtail=none,headlabel="useBusinessLogic",group=BusinessLogic,minlen=2,constraint=false,]
+ ServerPage->DesignTemplate[arrowhead=vee,arrowtail=none,headlabel="useDesignTemplate",group=DesignTemplate,minlen=2,constraint=false,]
+ ServerPage->ClientPage[arrowhead=vee,arrowtail=none,headlabel="generates[*]",group=ClientPage,minlen=2,constraint=false,]
+;
+ node[shape=record];
+BusinessLogic[label="{BusinessLogic| | }"]
+;
+ node[shape=record];
+DesignTemplate[label="{DesignTemplate| | }"]
+;
+
+}
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

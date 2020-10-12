@@ -1,0 +1,1040 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_express"{
+labelloc=t
+color=black
+label=express
+ node[shape=record];
+Dummy[label="{&#171;DataType&#187;\nDummy|}"]
+;
+ subgraph "cluster_rules"{
+labelloc=t
+color=black
+label=rules
+ node[shape=record];
+ONEOFConstraint[label="{ONEOFConstraint| | }"]
+ ONEOFConstraint->SubtypeConstraint[arrowhead=onormal,group=SubtypeConstraint,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SupertypeRule[label="{SupertypeRule|assertsAbstract : Boolean| }"]
+ SupertypeRule->EntityType[arrowhead=vee,arrowtail=none,headlabel="namedSupertype",group=EntityType,minlen=2,constraint=false,]
+ SupertypeRule->CommonElement[arrowhead=onormal,group=CommonElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SubtypeConstraint[label="{SubtypeConstraint| | }"]
+ SubtypeConstraint->Expression[arrowhead=vee,arrowtail=diamond,headlabel="equivalentRule",group=Expression,minlen=2,constraint=true,]
+ SubtypeConstraint->SupertypeRule[arrowhead=diamond,arrowtail=none,headlabel="collection",taillabel="constraints",group=SupertypeRule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Extent[label="{Extent| | }"]
+ Extent->SubtypeConstraint[arrowhead=none,arrowtail=none,headlabel="constraints[*]",taillabel="constrainedSubtypes",group=SubtypeConstraint,minlen=2,constraint=false,]
+ Extent->EntityInstance[arrowhead=vee,arrowtail=none,headlabel="content[*]",group=EntityInstance,minlen=2,constraint=false,]
+ Extent->Population[arrowhead=vee,arrowtail=none,headlabel="withinPopulation",group=Population,minlen=2,constraint=false,]
+ Extent->ScopedId[arrowhead=vee,arrowtail=diamond,headlabel="id",group=ScopedId,minlen=2,constraint=true,]
+ Extent->SETValue[arrowhead=onormal,group=SETValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TOTAL_OVERConstraint[label="{TOTAL_OVERConstraint| | }"]
+ TOTAL_OVERConstraint->SubtypeConstraint[arrowhead=onormal,group=SubtypeConstraint,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ANDConstraint[label="{ANDConstraint| | }"]
+ ANDConstraint->SubtypeConstraint[arrowhead=onormal,group=SubtypeConstraint,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GlobalRule[label="{GlobalRule| | }"]
+ GlobalRule->Statement[arrowhead=vee,arrowtail=diamond,headlabel="supportingBody[0-1]",group=Statement,minlen=2,constraint=true,]
+ GlobalRule->Extent[arrowhead=none,arrowtail=none,headlabel="constrainedExtents[1-*]",taillabel="constraintRules",group=Extent,minlen=2,constraint=false,]
+ GlobalRule->NamedRule[arrowhead=vee,arrowtail=diamond,headlabel="containsRules[1-*]",group=NamedRule,minlen=2,constraint=true,]
+ GlobalRule->SchemaElement[arrowhead=onormal,group=SchemaElement,minlen=2,constraint=true,]
+ GlobalRule->AlgorithmScope[arrowhead=onormal,group=AlgorithmScope,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NamedRule[label="{NamedRule|position : Integer| }"]
+ NamedRule->Expression[arrowhead=vee,arrowtail=diamond,headlabel="assertsExpression",group=Expression,minlen=2,constraint=true,]
+ NamedRule->LocalElement[arrowhead=onormal,group=LocalElement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_statements"{
+labelloc=t
+color=black
+label=statements
+ node[shape=record];
+ProcedureCall[label="{ProcedureCall| | }"]
+ ProcedureCall->Procedure[arrowhead=vee,arrowtail=none,headlabel="invokes",group=Procedure,minlen=2,constraint=false,]
+ ProcedureCall->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SkipStatement[label="{SkipStatement| | }"]
+ SkipStatement->ControlStatement[arrowhead=onormal,group=ControlStatement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AliasStatement[label="{AliasStatement| | }"]
+ AliasStatement->VARExpression[arrowhead=vee,arrowtail=none,headlabel="bindsToReference",group=VARExpression,minlen=2,constraint=false,]
+ AliasStatement->Statement[arrowhead=vee,arrowtail=diamond,headlabel="body",group=Statement,minlen=2,constraint=true,]
+ AliasStatement->AliasVariable[arrowhead=vee,arrowtail=diamond,headlabel="aliasVariable",group=AliasVariable,minlen=2,constraint=true,]
+ AliasStatement->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+ AliasStatement->LocalScope[arrowhead=onormal,group=LocalScope,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ControlVariable[label="{ControlVariable| | }"]
+ ControlVariable->Expression[arrowhead=vee,arrowtail=none,headlabel="boundValue",group=Expression,minlen=2,constraint=false,]
+ ControlVariable->Expression[arrowhead=vee,arrowtail=none,headlabel="initialValue",group=Expression,minlen=2,constraint=false,]
+ ControlVariable->Expression[arrowhead=vee,arrowtail=none,headlabel="increment",group=Expression,minlen=2,constraint=false,]
+ ControlVariable->NamedVariable[arrowhead=onormal,group=NamedVariable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AliasVariable[label="{AliasVariable| | }"]
+ AliasVariable->VARExpression[arrowhead=vee,arrowtail=none,headlabel="referent[0-1]",group=VARExpression,minlen=2,constraint=false,]
+ AliasVariable->NamedVariable[arrowhead=onormal,group=NamedVariable,minlen=2,constraint=true,]
+ AliasVariable->VARVariable[arrowhead=onormal,group=VARVariable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ControlStatement[label="{/ControlStatement/| | }"]
+ ControlStatement->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VARCell[label="{VARCell|id : Identifier| }"]
+ VARCell->VARVariable[arrowhead=vee,arrowtail=none,headlabel="refersTo",group=VARVariable,minlen=2,constraint=false,]
+ VARCell->VARExpression[arrowhead=onormal,group=VARExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NullStatement[label="{NullStatement| | }"]
+ NullStatement->ControlStatement[arrowhead=onormal,group=ControlStatement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VARExpression[label="{/VARExpression/|text[0-1] : ExpressText| }"]
+;
+ node[shape=record];
+AttributeCell[label="{AttributeCell|id : Identifier| }"]
+ AttributeCell->ExplicitAttribute[arrowhead=vee,arrowtail=none,headlabel="refersTo",group=ExplicitAttribute,minlen=2,constraint=false,]
+ AttributeCell->VARExpression[arrowhead=vee,arrowtail=diamond,headlabel="baseEntity",group=VARExpression,minlen=2,constraint=true,]
+ AttributeCell->VARExpression[arrowhead=onormal,group=VARExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StatementBlock[label="{StatementBlock|delimited : Boolean| }"]
+ StatementBlock->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CaseAction[label="{CaseAction|isDefault : Boolean| }"]
+ CaseAction->Expression[arrowhead=vee,arrowtail=none,headlabel="labelValue[*]",group=Expression,minlen=2,constraint=false,]
+ CaseAction->Statement[arrowhead=vee,arrowtail=diamond,headlabel="action[0-1]",group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MemberCell[label="{MemberCell| | }"]
+ MemberCell->Expression[arrowhead=vee,arrowtail=none,headlabel="indexValue",group=Expression,minlen=2,constraint=false,]
+ MemberCell->VARExpression[arrowhead=vee,arrowtail=diamond,headlabel="baseAggregate",group=VARExpression,minlen=2,constraint=true,]
+ MemberCell->VARExpression[arrowhead=onormal,group=VARExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RepeatStatement[label="{RepeatStatement| | }"]
+ RepeatStatement->Expression[arrowhead=vee,arrowtail=none,headlabel="whileExpression[0-1]",group=Expression,minlen=2,constraint=false,]
+ RepeatStatement->ControlVariable[arrowhead=vee,arrowtail=diamond,headlabel="controlVariable[0-1]",group=ControlVariable,minlen=2,constraint=true,]
+ RepeatStatement->Expression[arrowhead=vee,arrowtail=none,headlabel="untilExpression[0-1]",group=Expression,minlen=2,constraint=false,]
+ RepeatStatement->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+ RepeatStatement->LocalScope[arrowhead=onormal,group=LocalScope,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GroupCell[label="{GroupCell|id : Identifier| }"]
+ GroupCell->VARExpression[arrowhead=vee,arrowtail=diamond,headlabel="baseEntity",group=VARExpression,minlen=2,constraint=true,]
+ GroupCell->SingleEntityType[arrowhead=vee,arrowtail=none,headlabel="refersTo",group=SingleEntityType,minlen=2,constraint=false,]
+ GroupCell->VARExpression[arrowhead=onormal,group=VARExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VariableCell[label="{VariableCell|id : Identifier| }"]
+ VariableCell->Variable[arrowhead=vee,arrowtail=none,headlabel="refersTo",group=Variable,minlen=2,constraint=false,]
+ VariableCell->VARExpression[arrowhead=onormal,group=VARExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CaseStatement[label="{CaseStatement| | }"]
+ CaseStatement->CaseAction[arrowhead=vee,arrowtail=diamond,headlabel="cases[1-*]",group=CaseAction,minlen=2,constraint=true,]
+ CaseStatement->Expression[arrowhead=vee,arrowtail=none,headlabel="selectionExpression",group=Expression,minlen=2,constraint=false,]
+ CaseStatement->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IfStatement[label="{IfStatement| | }"]
+ IfStatement->Expression[arrowhead=vee,arrowtail=diamond,headlabel="ifCondition",group=Expression,minlen=2,constraint=true,]
+ IfStatement->Statement[arrowhead=vee,arrowtail=diamond,headlabel="elseActions[0-1]",group=Statement,minlen=2,constraint=true,]
+ IfStatement->Statement[arrowhead=vee,arrowtail=diamond,headlabel="thenActions",group=Statement,minlen=2,constraint=true,]
+ IfStatement->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EscapeStatement[label="{EscapeStatement| | }"]
+ EscapeStatement->ControlStatement[arrowhead=onormal,group=ControlStatement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReturnStatement[label="{ReturnStatement| | }"]
+ ReturnStatement->Expression[arrowhead=vee,arrowtail=none,headlabel="returnValue[0-1]",group=Expression,minlen=2,constraint=false,]
+ ReturnStatement->ControlStatement[arrowhead=onormal,group=ControlStatement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Assignment[label="{Assignment| | }"]
+ Assignment->Expression[arrowhead=vee,arrowtail=none,headlabel="assignedValue",group=Expression,minlen=2,constraint=false,]
+ Assignment->VARExpression[arrowhead=vee,arrowtail=none,headlabel="variable",group=VARExpression,minlen=2,constraint=false,]
+ Assignment->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_mof"{
+labelloc=t
+color=black
+label=mof
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+
+} subgraph "cluster_expressions"{
+labelloc=t
+color=black
+label=expressions
+ node[shape=record];
+Selector[label="{/Selector/| | }"]
+ Selector->Expression[arrowhead=vee,arrowtail=none,headlabel="entityInstance",group=Expression,minlen=2,constraint=false,]
+ Selector->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RepeatCount[label="{RepeatCount| | }"]
+ RepeatCount->Expression[arrowhead=vee,arrowtail=none,headlabel="derivation[0-1]",group=Expression,minlen=2,constraint=false,]
+;
+ node[shape=record];
+EnumItemRef[label="{EnumItemRef|id : Identifier| }"]
+ EnumItemRef->EnumerationItem[arrowhead=vee,arrowtail=none,headlabel="refersTo",group=EnumerationItem,minlen=2,constraint=false,]
+ EnumItemRef->Primary[arrowhead=onormal,group=Primary,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Literal[label="{Literal| | }"]
+ Literal->SimpleValue[arrowhead=vee,arrowtail=none,headlabel="refersTo",group=SimpleValue,minlen=2,constraint=false,]
+ Literal->Primary[arrowhead=onormal,group=Primary,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BinaryIndex[label="{BinaryIndex| | }"]
+ BinaryIndex->Expression[arrowhead=vee,arrowtail=none,headlabel="firstBit",group=Expression,minlen=2,constraint=false,]
+ BinaryIndex->Expression[arrowhead=vee,arrowtail=none,headlabel="lastBit[0-1]",group=Expression,minlen=2,constraint=false,]
+ BinaryIndex->IndexOperation[arrowhead=onormal,group=IndexOperation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IndeterminateRef[label="{IndeterminateRef| | }"]
+ IndeterminateRef->Indeterminate[arrowhead=vee,arrowtail=none,headlabel="refersTo",group=Indeterminate,minlen=2,constraint=false,]
+ IndeterminateRef->Primary[arrowhead=onormal,group=Primary,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SELFRef[label="{SELFRef| | }"]
+ SELFRef->Primary[arrowhead=onormal,group=Primary,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IndexOperation[label="{/IndexOperation/| | }"]
+ IndexOperation->Expression[arrowhead=vee,arrowtail=none,headlabel="baseValue",group=Expression,minlen=2,constraint=false,]
+ IndexOperation->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BinaryOperation[label="{BinaryOperation|operator : BinaryOperator| }"]
+ BinaryOperation->Expression[arrowhead=vee,arrowtail=none,headlabel="leftOperand",group=Expression,minlen=2,constraint=false,]
+ BinaryOperation->Expression[arrowhead=vee,arrowtail=none,headlabel="rightOperand",group=Expression,minlen=2,constraint=false,]
+ BinaryOperation->Operation[arrowhead=onormal,group=Operation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AggregateInitializer[label="{AggregateInitializer| | }"]
+ AggregateInitializer->GenericAggregate[arrowhead=vee,arrowtail=none,headlabel="resultValue[0-1]",group=GenericAggregate,minlen=2,constraint=false,]
+ AggregateInitializer->MemberBinding[arrowhead=vee,arrowtail=diamond,headlabel="bindings[*]",group=MemberBinding,minlen=2,constraint=true,]
+ AggregateInitializer->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StringIndex[label="{StringIndex| | }"]
+ StringIndex->Expression[arrowhead=vee,arrowtail=none,headlabel="firstCode",group=Expression,minlen=2,constraint=false,]
+ StringIndex->Expression[arrowhead=vee,arrowtail=none,headlabel="lastCode[0-1]",group=Expression,minlen=2,constraint=false,]
+ StringIndex->IndexOperation[arrowhead=onormal,group=IndexOperation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PartialEntityConstructor[label="{PartialEntityConstructor|id : Identifier| }"]
+ PartialEntityConstructor->PartialEntityValue[arrowhead=vee,arrowtail=none,headlabel="resultValue[0-1]",group=PartialEntityValue,minlen=2,constraint=false,]
+ PartialEntityConstructor->SingleEntityType[arrowhead=vee,arrowtail=none,headlabel="attributeGroup",group=SingleEntityType,minlen=2,constraint=false,]
+ PartialEntityConstructor->AttributeBinding[arrowhead=vee,arrowtail=diamond,headlabel="bindings[*]",group=AttributeBinding,minlen=2,constraint=true,]
+ PartialEntityConstructor->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Coercion[label="{Coercion| | }"]
+ Coercion->Expression[arrowhead=vee,arrowtail=none,headlabel="operand",group=Expression,minlen=2,constraint=false,]
+ Coercion->VariableType[arrowhead=vee,arrowtail=none,headlabel="targetType",group=VariableType,minlen=2,constraint=false,]
+ Coercion->Operation[arrowhead=onormal,group=Operation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Primary[label="{/Primary/| | }"]
+ Primary->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActualParameter[label="{ActualParameter|position : Integer| }"]
+ ActualParameter->ProcedureCall[arrowhead=diamond,arrowtail=none,headlabel="inProcedureCall[0-1]",taillabel="actualParameters",group=ProcedureCall,minlen=2,constraint=true,]
+ ActualParameter->FunctionCall[arrowhead=diamond,arrowtail=none,headlabel="inFunctionCall[0-1]",taillabel="actualParameters",group=FunctionCall,minlen=2,constraint=true,]
+ ActualParameter->Parameter[arrowhead=vee,arrowtail=none,headlabel="formalParameter",group=Parameter,minlen=2,constraint=false,]
+ ActualParameter->VARExpression[arrowhead=vee,arrowtail=none,headlabel="actualReferent[0-1]",group=VARExpression,minlen=2,constraint=false,]
+ ActualParameter->Expression[arrowhead=vee,arrowtail=none,headlabel="actualValue[0-1]",group=Expression,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ParameterRef[label="{ParameterRef|id : Identifier| }"]
+ ParameterRef->Parameter[arrowhead=vee,arrowtail=none,headlabel="refersTo",group=Parameter,minlen=2,constraint=false,]
+ ParameterRef->Primary[arrowhead=onormal,group=Primary,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AttributeRef[label="{AttributeRef|id : Identifier| }"]
+ AttributeRef->Attribute[arrowhead=vee,arrowtail=none,headlabel="refersTo",group=Attribute,minlen=2,constraint=false,]
+ AttributeRef->Selector[arrowhead=onormal,group=Selector,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AggregateIndex[label="{AggregateIndex| | }"]
+ AggregateIndex->Expression[arrowhead=vee,arrowtail=diamond,headlabel="indexValue",group=Expression,minlen=2,constraint=true,]
+ AggregateIndex->IndexOperation[arrowhead=onormal,group=IndexOperation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GroupRef[label="{GroupRef|id : Identifier| }"]
+ GroupRef->SingleEntityType[arrowhead=vee,arrowtail=none,headlabel="refersTo",group=SingleEntityType,minlen=2,constraint=false,]
+ GroupRef->Selector[arrowhead=onormal,group=Selector,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UnaryOperation[label="{UnaryOperation|operator : UnaryOperator| }"]
+ UnaryOperation->Expression[arrowhead=vee,arrowtail=none,headlabel="unaryOperand",group=Expression,minlen=2,constraint=false,]
+ UnaryOperation->Operation[arrowhead=onormal,group=Operation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UsedInRef[label="{UsedInRef| | }"]
+ UsedInRef->Attribute[arrowhead=vee,arrowtail=none,headlabel="inverseOf",group=Attribute,minlen=2,constraint=false,]
+ UsedInRef->Selector[arrowhead=onormal,group=Selector,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConstantRef[label="{ConstantRef|id : Identifier| }"]
+ ConstantRef->Constant[arrowhead=vee,arrowtail=none,headlabel="refersTo",group=Constant,minlen=2,constraint=false,]
+ ConstantRef->Primary[arrowhead=onormal,group=Primary,minlen=2,constraint=true,]
+;
+ node[shape=record];
+QueryExpression[label="{QueryExpression| | }"]
+ QueryExpression->Expression[arrowhead=vee,arrowtail=diamond,headlabel="selectCondition",group=Expression,minlen=2,constraint=true,]
+ QueryExpression->QueryVariable[arrowhead=vee,arrowtail=none,headlabel="queryVariable",group=QueryVariable,minlen=2,constraint=false,]
+ QueryExpression->Expression[arrowhead=vee,arrowtail=none,headlabel="aggregateOperand",group=Expression,minlen=2,constraint=false,]
+ QueryExpression->LocalScope[arrowhead=onormal,group=LocalScope,minlen=2,constraint=true,]
+ QueryExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+QueryVariable[label="{QueryVariable| | }"]
+ QueryVariable->NamedVariable[arrowhead=onormal,group=NamedVariable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Operation[label="{/Operation/| | }"]
+ Operation->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AttributeBinding[label="{AttributeBinding|position : Integer| }"]
+ AttributeBinding->Expression[arrowhead=vee,arrowtail=none,headlabel="attributeValue",group=Expression,minlen=2,constraint=false,]
+ AttributeBinding->AttributeValue[arrowhead=vee,arrowtail=none,headlabel="toValue[0-1]",group=AttributeValue,minlen=2,constraint=false,]
+ AttributeBinding->ExplicitAttribute[arrowhead=vee,arrowtail=none,headlabel="attribute",group=ExplicitAttribute,minlen=2,constraint=false,]
+;
+ node[shape=record];
+FunctionCall[label="{FunctionCall| | }"]
+ FunctionCall->Function[arrowhead=vee,arrowtail=none,headlabel="invokesFunction",group=Function,minlen=2,constraint=false,]
+ FunctionCall->FunctionResult[arrowhead=vee,arrowtail=none,headlabel="returnsResult",group=FunctionResult,minlen=2,constraint=false,]
+ FunctionCall->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MemberBinding[label="{MemberBinding|position : Integer| }"]
+ MemberBinding->RepeatCount[arrowhead=vee,arrowtail=diamond,headlabel="repetition[0-1]",group=RepeatCount,minlen=2,constraint=true,]
+ MemberBinding->ListMember[arrowhead=vee,arrowtail=none,headlabel="toSlot[*]",group=ListMember,minlen=2,constraint=false,]
+ MemberBinding->Expression[arrowhead=vee,arrowtail=none,headlabel="memberValue",group=Expression,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ExtentRef[label="{ExtentRef|id : Identifier| }"]
+ ExtentRef->NamedType[arrowhead=vee,arrowtail=none,headlabel="refersTo",group=NamedType,minlen=2,constraint=false,]
+ ExtentRef->Primary[arrowhead=onormal,group=Primary,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VariableRef[label="{VariableRef|id : Identifier| }"]
+ VariableRef->NamedVariable[arrowhead=vee,arrowtail=none,headlabel="refersTo",group=NamedVariable,minlen=2,constraint=false,]
+ VariableRef->Primary[arrowhead=onormal,group=Primary,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UnaryOperator[label="{&#171;DataType&#187;\nUnaryOperator|}"]
+;
+ node[shape=record];
+BinaryOperator[label="{&#171;DataType&#187;\nBinaryOperator|}"]
+;
+
+} subgraph "cluster_core"{
+labelloc=t
+color=black
+label=core
+ node[shape=record];
+TypeElement[label="{/TypeElement/| | }"]
+ TypeElement->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SingleEntityType[label="{SingleEntityType| | }"]
+ SingleEntityType->ExplicitAttribute[arrowhead=vee,arrowtail=none,headlabel="declaresExplicitAttribute[*]",group=ExplicitAttribute,minlen=2,constraint=false,]
+ SingleEntityType->PartialEntityType[arrowhead=vee,arrowtail=none,headlabel="equivalent",group=PartialEntityType,minlen=2,constraint=false,]
+ SingleEntityType->ScopedId[arrowhead=vee,arrowtail=diamond,headlabel="id",group=ScopedId,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AGGREGATEType[label="{AGGREGATEType| | }"]
+ AGGREGATEType->SizeConstraint[arrowhead=vee,arrowtail=diamond,headlabel="upperBound[0-1]",group=SizeConstraint,minlen=2,constraint=true,]
+ AGGREGATEType->ParameterType[arrowhead=vee,arrowtail=none,headlabel="memberType",group=ParameterType,minlen=2,constraint=false,]
+ AGGREGATEType->SizeConstraint[arrowhead=vee,arrowtail=diamond,headlabel="lowerBound[0-1]",group=SizeConstraint,minlen=2,constraint=true,]
+ AGGREGATEType->GeneralizedType[arrowhead=onormal,group=GeneralizedType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GeneralBAGType[label="{GeneralBAGType| | }"]
+ GeneralBAGType->GeneralAggregationType[arrowhead=onormal,group=GeneralAggregationType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DomainRule[label="{DomainRule|position : Integer| }"]
+ DomainRule->DomainConstraint[arrowhead=onormal,group=DomainConstraint,minlen=2,constraint=true,]
+ DomainRule->TypeElement[arrowhead=onormal,group=TypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GeneralAggregationType[label="{/GeneralAggregationType/| | }"]
+ GeneralAggregationType->GeneralizedType[arrowhead=vee,arrowtail=none,headlabel="memberType",group=GeneralizedType,minlen=2,constraint=false,]
+ GeneralAggregationType->GeneralizedType[arrowhead=onormal,group=GeneralizedType,minlen=2,constraint=true,]
+ GeneralAggregationType->AggregationType[arrowhead=onormal,group=AggregationType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConcreteType[label="{/ConcreteType/| | }"]
+ ConcreteType->InstantiableType[arrowhead=onormal,group=InstantiableType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Expression[label="{Expression|text[0-1] : ExpressText| }"]
+ Expression->Instance[arrowhead=vee,arrowtail=none,headlabel="evaluation[0-1]",group=Instance,minlen=2,constraint=false,]
+ Expression->Scope[arrowhead=vee,arrowtail=none,headlabel="interpretationContext[0-1]",group=Scope,minlen=2,constraint=false,]
+ Expression->DataType[arrowhead=vee,arrowtail=none,headlabel="dataType[0-1]",group=DataType,minlen=2,constraint=false,]
+;
+ node[shape=record];
+InverseAttribute[label="{InverseAttribute|isUnique : Boolean| }"]
+ InverseAttribute->Attribute[arrowhead=onormal,group=Attribute,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EnumerationType[label="{EnumerationType|isExtensible : Boolean| }"]
+ EnumerationType->EnumerationItem[arrowhead=vee,arrowtail=none,headlabel="values[*]",group=EnumerationItem,minlen=2,constraint=false,]
+ EnumerationType->EnumerationType[arrowhead=none,arrowtail=none,headlabel="base",taillabel="extension",group=EnumerationType,minlen=2,constraint=false,]
+ EnumerationType->DefinedType[arrowhead=onormal,group=DefinedType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VariableType[label="{/VariableType/| | }"]
+ VariableType->DataType[arrowhead=onormal,group=DataType,minlen=2,constraint=true,]
+ VariableType->AttributeType[arrowhead=onormal,group=AttributeType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ArrayBound[label="{ArrayBound|bound[0-1] : Integer| }"]
+ ArrayBound->Expression[arrowhead=vee,arrowtail=none,headlabel="boundExpression",group=Expression,minlen=2,constraint=false,]
+;
+ node[shape=record];
+GeneralSETType[label="{GeneralSETType| | }"]
+ GeneralSETType->GeneralAggregationType[arrowhead=onormal,group=GeneralAggregationType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LISTType[label="{LISTType| | }"]
+ LISTType->ConcreteAggregationType[arrowhead=onormal,group=ConcreteAggregationType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Redeclaration[label="{Redeclaration|position : Integer\nisMandatory[0-1] : Boolean| }"]
+ Redeclaration->Expression[arrowhead=vee,arrowtail=none,headlabel="derivation[0-1]",group=Expression,minlen=2,constraint=false,]
+ Redeclaration->AttributeType[arrowhead=vee,arrowtail=none,headlabel="restrictedType",group=AttributeType,minlen=2,constraint=false,]
+ Redeclaration->Redeclaration[arrowhead=vee,arrowtail=none,headlabel="refines[0-1]",group=Redeclaration,minlen=2,constraint=false,]
+ Redeclaration->SizeConstraint[arrowhead=vee,arrowtail=diamond,headlabel="upperBound[0-1]",group=SizeConstraint,minlen=2,constraint=true,]
+ Redeclaration->SizeConstraint[arrowhead=vee,arrowtail=diamond,headlabel="lowerBound[0-1]",group=SizeConstraint,minlen=2,constraint=true,]
+ Redeclaration->EntityType[arrowhead=diamond,arrowtail=none,headlabel="scope",taillabel="redeclarations",group=EntityType,minlen=2,constraint=true,]
+ Redeclaration->Attribute[arrowhead=vee,arrowtail=none,headlabel="originalAttribute",group=Attribute,minlen=2,constraint=false,]
+ Redeclaration->Role[arrowhead=vee,arrowtail=none,headlabel="refinedRole[0-1]",group=Role,minlen=2,constraint=false,]
+ Redeclaration->ScopedId[arrowhead=vee,arrowtail=diamond,headlabel="alias[0-1]",group=ScopedId,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EntityType[label="{EntityType|isAbstract : Boolean| }"]
+ EntityType->SingleEntityType[arrowhead=none,arrowtail=none,headlabel="declares",taillabel="declaredIn",group=SingleEntityType,minlen=2,constraint=false,]
+ EntityType->Extent[arrowhead=none,arrowtail=none,headlabel="extension[*]",taillabel="forType",group=Extent,minlen=2,constraint=false,]
+ EntityType->EntityType[arrowhead=vee,arrowtail=none,headlabel="subtypeOf[*]",group=EntityType,minlen=2,constraint=false,]
+ EntityType->NamedType[arrowhead=onormal,group=NamedType,minlen=2,constraint=true,]
+ EntityType->InstantiableType[arrowhead=onormal,group=InstantiableType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataType[label="{/DataType/| | }"]
+;
+ node[shape=record];
+PartialEntityType[label="{PartialEntityType| | }"]
+ PartialEntityType->SingleEntityType[arrowhead=vee,arrowtail=none,headlabel="components[1-*]",group=SingleEntityType,minlen=2,constraint=false,]
+ PartialEntityType->DataType[arrowhead=onormal,group=DataType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Schema[label="{Schema|name : Identifier\nversion[0-1] : Identifier| }"]
+ Schema->Scope[arrowhead=onormal,group=Scope,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InvertibleAttribute[label="{InvertibleAttribute| | }"]
+ InvertibleAttribute->InverseAttribute[arrowhead=none,arrowtail=none,headlabel="inverse[*]",taillabel="explicit",group=InverseAttribute,minlen=2,constraint=false,]
+ InvertibleAttribute->EntityType[arrowhead=none,arrowtail=none,headlabel="rangeType[1-*]",taillabel="usedIn",group=EntityType,minlen=2,constraint=false,]
+ InvertibleAttribute->EntityType[arrowhead=none,arrowtail=none,headlabel="referencingType[1-*]",taillabel="invertibleAttributes",group=EntityType,minlen=2,constraint=false,]
+ InvertibleAttribute->ExplicitAttribute[arrowhead=onormal,group=ExplicitAttribute,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GeneralizedType[label="{/GeneralizedType/| | }"]
+ GeneralizedType->ParameterType[arrowhead=onormal,group=ParameterType,minlen=2,constraint=true,]
+ GeneralizedType->AttributeType[arrowhead=onormal,group=AttributeType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InterfacedElement[label="{InterfacedElement|isUSE : Boolean| }"]
+ InterfacedElement->Schema[arrowhead=diamond,arrowtail=none,headlabel="interfacingSchema",taillabel="interfaces",group=Schema,minlen=2,constraint=true,]
+ InterfacedElement->ScopedId[arrowhead=vee,arrowtail=diamond,headlabel="interfacedId[0-1]",group=ScopedId,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NumericType[label="{NumericType| | }"]
+ NumericType->SimpleType[arrowhead=onormal,group=SimpleType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DefinedType[label="{/DefinedType/| | }"]
+ DefinedType->NamedType[arrowhead=onormal,group=NamedType,minlen=2,constraint=true,]
+ DefinedType->ConcreteType[arrowhead=onormal,group=ConcreteType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UniqueRule[label="{UniqueRule|position : Integer| }"]
+ UniqueRule->EntityType[arrowhead=none,arrowtail=none,headlabel="domain",taillabel="uniqueRules",group=EntityType,minlen=2,constraint=false,]
+ UniqueRule->Attribute[arrowhead=vee,arrowtail=none,headlabel="keyComponent[1-*]",group=Attribute,minlen=2,constraint=false,]
+ UniqueRule->TypeElement[arrowhead=onormal,group=TypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DomainRole[label="{DomainRole| | }"]
+ DomainRole->InverseAttribute[arrowhead=none,arrowtail=none,headlabel="rangeView[0-1]",taillabel="modelsRole",group=InverseAttribute,minlen=2,constraint=false,]
+ DomainRole->EntityType[arrowhead=none,arrowtail=none,headlabel="domain",taillabel="playsDomainRole",group=EntityType,minlen=2,constraint=false,]
+ DomainRole->ScopedId[arrowhead=vee,arrowtail=diamond,headlabel="id[0-1]",group=ScopedId,minlen=2,constraint=true,]
+ DomainRole->Role[arrowhead=onormal,group=Role,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DomainConstraint[label="{/DomainConstraint/| | }"]
+ DomainConstraint->Expression[arrowhead=vee,arrowtail=diamond,headlabel="asserts[0-1]",group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InstantiableType[label="{/InstantiableType/| | }"]
+ InstantiableType->InstantiableType[arrowhead=vee,arrowtail=none,headlabel="fundamentalType",group=InstantiableType,minlen=2,constraint=false,]
+ InstantiableType->ParameterType[arrowhead=onormal,group=ParameterType,minlen=2,constraint=true,]
+ InstantiableType->VariableType[arrowhead=onormal,group=VariableType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GeneralLISTType[label="{GeneralLISTType| | }"]
+ GeneralLISTType->GeneralAggregationType[arrowhead=onormal,group=GeneralAggregationType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NamedElement[label="{/NamedElement/| | }"]
+ NamedElement->Scope[arrowhead=diamond,arrowtail=none,headlabel="namespace",taillabel="namedElements",group=Scope,minlen=2,constraint=true,]
+ NamedElement->ScopedId[arrowhead=vee,arrowtail=diamond,headlabel="id[0-1]",group=ScopedId,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Attribute[label="{/Attribute/|isAbstract : Boolean\nposition : Integer| }"]
+ Attribute->SingleEntityType[arrowhead=diamond,arrowtail=none,headlabel="ofEntity",taillabel="declaresAttribute",group=SingleEntityType,minlen=2,constraint=true,]
+ Attribute->EntityType[arrowhead=diamond,arrowtail=none,headlabel="owningEntity",taillabel="attributes{ordered}",group=EntityType,minlen=2,constraint=true,]
+ Attribute->TypeElement[arrowhead=onormal,group=TypeElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BAGType[label="{BAGType| | }"]
+ BAGType->ConcreteAggregationType[arrowhead=onormal,group=ConcreteAggregationType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RealType[label="{RealType|precision[0-1] : Integer| }"]
+ RealType->NumericType[arrowhead=onormal,group=NumericType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LogicType[label="{LogicType| | }"]
+ LogicType->SimpleType[arrowhead=onormal,group=SimpleType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GenericType[label="{GenericType|isEntity : Boolean| }"]
+ GenericType->GeneralizedType[arrowhead=onormal,group=GeneralizedType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StringType[label="{StringType| | }"]
+ StringType->LengthConstraint[arrowhead=vee,arrowtail=diamond,headlabel="stringLengthConstraint[0-1]",group=LengthConstraint,minlen=2,constraint=true,]
+ StringType->SimpleType[arrowhead=onormal,group=SimpleType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnonymousType[label="{/AnonymousType/| | }"]
+ AnonymousType->AnonymousType[arrowhead=vee,arrowtail=none,headlabel="specializes[*]",group=AnonymousType,minlen=2,constraint=false,]
+ AnonymousType->ConcreteType[arrowhead=onormal,group=ConcreteType,minlen=2,constraint=true,]
+ AnonymousType->InstantiableType[arrowhead=onormal,group=InstantiableType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AlgorithmScope[label="{/AlgorithmScope/| | }"]
+ AlgorithmScope->Variable[arrowhead=vee,arrowtail=none,headlabel="variables[*]",group=Variable,minlen=2,constraint=false,]
+ AlgorithmScope->LocalScope[arrowhead=onormal,group=LocalScope,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Instance[label="{/Instance/| | }"]
+ Instance->DataType[arrowhead=none,arrowtail=none,headlabel="ofType[1-*]",taillabel="instances",group=DataType,minlen=2,constraint=false,]
+;
+ node[shape=record];
+AttributeType[label="{/AttributeType/| | }"]
+ AttributeType->Attribute[arrowhead=none,arrowtail=none,headlabel="role[*]",taillabel="attributeType",group=Attribute,minlen=2,constraint=false,]
+ AttributeType->DomainConstraint[arrowhead=none,arrowtail=none,headlabel="constraints[*]",taillabel="domain",group=DomainConstraint,minlen=2,constraint=false,]
+;
+ node[shape=record];
+DerivedAttribute[label="{DerivedAttribute| | }"]
+ DerivedAttribute->Expression[arrowhead=vee,arrowtail=none,headlabel="derivation",group=Expression,minlen=2,constraint=false,]
+ DerivedAttribute->Attribute[arrowhead=onormal,group=Attribute,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RangeRole[label="{RangeRole| | }"]
+ RangeRole->InvertibleAttribute[arrowhead=none,arrowtail=none,headlabel="domainView",taillabel="modelsRole",group=InvertibleAttribute,minlen=2,constraint=false,]
+ RangeRole->EntityType[arrowhead=none,arrowtail=none,headlabel="range",taillabel="playsRangeRole",group=EntityType,minlen=2,constraint=false,]
+ RangeRole->ScopedId[arrowhead=vee,arrowtail=diamond,headlabel="id",group=ScopedId,minlen=2,constraint=true,]
+ RangeRole->Role[arrowhead=onormal,group=Role,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LocalElement[label="{/LocalElement/| | }"]
+ LocalElement->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Remark[label="{Remark|isTagged : Boolean\nisTail : Boolean\ntext : ExpressText| }"]
+ Remark->Schema[arrowhead=none,arrowtail=none,headlabel="describesSchema[*]",taillabel="documentation",group=Schema,minlen=2,constraint=false,]
+ Remark->NamedElement[arrowhead=none,arrowtail=none,headlabel="describesElement[*]",taillabel="documentation",group=NamedElement,minlen=2,constraint=false,]
+;
+ node[shape=record];
+SizeConstraint[label="{SizeConstraint|bound[0-1] : Integer| }"]
+ SizeConstraint->DomainConstraint[arrowhead=onormal,group=DomainConstraint,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Role[label="{/Role/| | }"]
+ Role->EntityType[arrowhead=none,arrowtail=none,headlabel="ofEntity[1-*]",taillabel="playsRole",group=EntityType,minlen=2,constraint=false,]
+ Role->SizeConstraint[arrowhead=vee,arrowtail=none,headlabel="upperBound[0-1]",group=SizeConstraint,minlen=2,constraint=false,]
+ Role->SizeConstraint[arrowhead=vee,arrowtail=none,headlabel="lowerBound[0-1]",group=SizeConstraint,minlen=2,constraint=false,]
+;
+ node[shape=record];
+SETType[label="{SETType| | }"]
+ SETType->ConcreteAggregationType[arrowhead=onormal,group=ConcreteAggregationType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SpecializedType[label="{SpecializedType| | }"]
+ SpecializedType->ConcreteType[arrowhead=vee,arrowtail=none,headlabel="underlyingType",group=ConcreteType,minlen=2,constraint=false,]
+ SpecializedType->DefinedType[arrowhead=onormal,group=DefinedType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GeneralARRAYType[label="{GeneralARRAYType|isOptional : Boolean| }"]
+ GeneralARRAYType->ArrayBound[arrowhead=vee,arrowtail=diamond,headlabel="hiIndex[0-1]",group=ArrayBound,minlen=2,constraint=true,]
+ GeneralARRAYType->ArrayBound[arrowhead=vee,arrowtail=diamond,headlabel="loIndex[0-1]",group=ArrayBound,minlen=2,constraint=true,]
+ GeneralARRAYType->GeneralAggregationType[arrowhead=onormal,group=GeneralAggregationType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Relationship[label="{Relationship| | }"]
+ Relationship->DomainRole[arrowhead=vee,arrowtail=none,headlabel="domain",group=DomainRole,minlen=2,constraint=false,]
+ Relationship->Role[arrowhead=none,arrowtail=none,headlabel="roles[22]",taillabel="inRelationship",group=Role,minlen=2,constraint=false,]
+ Relationship->InvertibleAttribute[arrowhead=none,arrowtail=none,headlabel="basedOn",taillabel="createsRelationship",group=InvertibleAttribute,minlen=2,constraint=false,]
+ Relationship->RangeRole[arrowhead=vee,arrowtail=none,headlabel="range",group=RangeRole,minlen=2,constraint=false,]
+;
+ node[shape=record];
+LengthConstraint[label="{LengthConstraint|maxLength[0-1] : Integer\nisFixed : Boolean| }"]
+ LengthConstraint->DomainConstraint[arrowhead=onormal,group=DomainConstraint,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LocalScope[label="{/LocalScope/| | }"]
+ LocalScope->LocalElement[arrowhead=vee,arrowtail=none,headlabel="localElements[*]",group=LocalElement,minlen=2,constraint=false,]
+ LocalScope->Scope[arrowhead=onormal,group=Scope,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NamedType[label="{/NamedType/| | }"]
+ NamedType->DomainRule[arrowhead=vee,arrowtail=none,headlabel="domainRules[*]",group=DomainRule,minlen=2,constraint=false,]
+ NamedType->InstantiableType[arrowhead=onormal,group=InstantiableType,minlen=2,constraint=true,]
+ NamedType->Scope[arrowhead=onormal,group=Scope,minlen=2,constraint=true,]
+ NamedType->CommonElement[arrowhead=onormal,group=CommonElement,minlen=2,constraint=true,]
+ NamedType->AttributeType[arrowhead=onormal,group=AttributeType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BinaryType[label="{BinaryType| | }"]
+ BinaryType->LengthConstraint[arrowhead=vee,arrowtail=diamond,headlabel="binaryLengthConstraint[0-1]",group=LengthConstraint,minlen=2,constraint=true,]
+ BinaryType->SimpleType[arrowhead=onormal,group=SimpleType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ScopedId[label="{ScopedId|localName : Identifier| }"]
+ ScopedId->Scope[arrowhead=vee,arrowtail=none,headlabel="definingScope",group=Scope,minlen=2,constraint=false,]
+;
+ node[shape=record];
+AggregationType[label="{/AggregationType/|isUnique : Boolean\nordering : OrderingKind| }"]
+ AggregationType->SizeConstraint[arrowhead=vee,arrowtail=diamond,headlabel="lowerBound[0-1]",group=SizeConstraint,minlen=2,constraint=true,]
+ AggregationType->SizeConstraint[arrowhead=vee,arrowtail=diamond,headlabel="upperBound[0-1]",group=SizeConstraint,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Scope[label="{/Scope/| | }"]
+ Scope->Remark[arrowhead=none,arrowtail=none,headlabel="includesRemarks[*]",taillabel="appearsIn",group=Remark,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ParameterType[label="{/ParameterType/| | }"]
+ ParameterType->GeneralizedType[arrowhead=none,arrowtail=none,headlabel="contains[*]",taillabel="occursIn",group=GeneralizedType,minlen=2,constraint=false,]
+;
+ node[shape=record];
+SelectType[label="{SelectType|isExtensible : Boolean\nisEntity : Boolean| }"]
+ SelectType->NamedType[arrowhead=none,arrowtail=none,headlabel="allowedTypes[*]",taillabel="instantiates",group=NamedType,minlen=2,constraint=false,]
+ SelectType->SelectType[arrowhead=none,arrowtail=none,headlabel="base",taillabel="extension",group=SelectType,minlen=2,constraint=false,]
+ SelectType->NamedType[arrowhead=vee,arrowtail=none,headlabel="selectList[*]",group=NamedType,minlen=2,constraint=false,]
+ SelectType->DefinedType[arrowhead=onormal,group=DefinedType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActualType[label="{/ActualType/| | }"]
+ ActualType->Algorithm[arrowhead=vee,arrowtail=none,headlabel="scope",group=Algorithm,minlen=2,constraint=false,]
+ ActualType->VariableType[arrowhead=onormal,group=VariableType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExplicitAttribute[label="{ExplicitAttribute|isOptional : Boolean| }"]
+ ExplicitAttribute->Attribute[arrowhead=onormal,group=Attribute,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleType[label="{/SimpleType/|id : Keyword| }"]
+ SimpleType->AnonymousType[arrowhead=onormal,group=AnonymousType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CommonElement[label="{/CommonElement/| | }"]
+ CommonElement->AlgorithmScope[arrowhead=none,arrowtail=none,headlabel="localScope[0-1]",taillabel="commonElements",group=AlgorithmScope,minlen=2,constraint=false,]
+ CommonElement->SchemaElement[arrowhead=onormal,group=SchemaElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SchemaElement[label="{/SchemaElement/| | }"]
+ SchemaElement->InterfacedElement[arrowhead=none,arrowtail=none,headlabel="referencedAs[*]",taillabel="refersTo",group=InterfacedElement,minlen=2,constraint=false,]
+ SchemaElement->Schema[arrowhead=none,arrowtail=none,headlabel="referencedIn[*]",taillabel="interfacedElements",group=Schema,minlen=2,constraint=false,]
+ SchemaElement->Schema[arrowhead=diamond,arrowtail=none,headlabel="definedIn[0-1]",taillabel="schemaElements",group=Schema,minlen=2,constraint=true,]
+ SchemaElement->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConcreteAggregationType[label="{/ConcreteAggregationType/| | }"]
+ ConcreteAggregationType->InstantiableType[arrowhead=vee,arrowtail=none,headlabel="memberType",group=InstantiableType,minlen=2,constraint=false,]
+ ConcreteAggregationType->AnonymousType[arrowhead=onormal,group=AnonymousType,minlen=2,constraint=true,]
+ ConcreteAggregationType->AggregationType[arrowhead=onormal,group=AggregationType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ARRAYType[label="{ARRAYType|isOptional : Boolean| }"]
+ ARRAYType->ArrayBound[arrowhead=vee,arrowtail=diamond,headlabel="loIndex",group=ArrayBound,minlen=2,constraint=true,]
+ ARRAYType->ArrayBound[arrowhead=vee,arrowtail=diamond,headlabel="hiIndex",group=ArrayBound,minlen=2,constraint=true,]
+ ARRAYType->ConcreteAggregationType[arrowhead=onormal,group=ConcreteAggregationType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Keyword[label="{&#171;DataType&#187;\nKeyword|}"]
+;
+ node[shape=record];
+ExpressText[label="{&#171;DataType&#187;\nExpressText|}"]
+;
+ node[shape=record];
+Identifier[label="{&#171;DataType&#187;\nIdentifier|}"]
+;
+ node[shape=record];
+OrderingKind[label="{&#171;DataType&#187;\nOrderingKind|}"]
+;
+
+} subgraph "cluster_java"{
+labelloc=t
+color=black
+label=java
+ subgraph "cluster_lang"{
+labelloc=t
+color=black
+label=lang
+ node[shape=record];
+int[label="{&#171;DataType&#187;\nint|}"]
+;
+ node[shape=record];
+void[label="{&#171;DataType&#187;\nvoid|}"]
+;
+
+}
+} subgraph "cluster_algorithms"{
+labelloc=t
+color=black
+label=algorithms
+ node[shape=record];
+ActualTypeConstraint[label="{ActualTypeConstraint|label : Identifier| }"]
+ ActualTypeConstraint->GenericType[arrowhead=none,arrowtail=none,headlabel="matchingType",taillabel="constraint",group=GenericType,minlen=2,constraint=false,]
+ ActualTypeConstraint->ActualDataType[arrowhead=vee,arrowtail=none,headlabel="requiredType",group=ActualDataType,minlen=2,constraint=false,]
+;
+ node[shape=record];
+FunctionResult[label="{FunctionResult| | }"]
+ FunctionResult->Variable[arrowhead=onormal,group=Variable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Function[label="{Function| | }"]
+ Function->FunctionResult[arrowhead=vee,arrowtail=diamond,headlabel="result",group=FunctionResult,minlen=2,constraint=true,]
+ Function->Algorithm[arrowhead=onormal,group=Algorithm,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InParameter[label="{InParameter| | }"]
+ InParameter->Parameter[arrowhead=onormal,group=Parameter,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LocalVariable[label="{LocalVariable| | }"]
+ LocalVariable->Expression[arrowhead=vee,arrowtail=none,headlabel="initialValue[0-1]",group=Expression,minlen=2,constraint=false,]
+ LocalVariable->Variable[arrowhead=onormal,group=Variable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActualStructure[label="{ActualStructure| | }"]
+ ActualStructure->GenericElement[arrowhead=onormal,group=GenericElement,minlen=2,constraint=true,]
+ ActualStructure->AGGREGATEType[arrowhead=onormal,group=AGGREGATEType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActualGenericType[label="{ActualGenericType|isEntity : Boolean\nlabel : Identifier| }"]
+ ActualGenericType->ActualDataType[arrowhead=vee,arrowtail=none,headlabel="refersTo",group=ActualDataType,minlen=2,constraint=false,]
+ ActualGenericType->ActualType[arrowhead=onormal,group=ActualType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Statement[label="{Statement|text[0-1] : ExpressText| }"]
+ Statement->StatementBlock[arrowhead=diamond,arrowtail=none,headlabel="inBlock[0-1]",taillabel="bodyStatements_Statement",group=StatementBlock,minlen=2,constraint=true,]
+ Statement->SkipStatement[arrowhead=vee,arrowtail=diamond,headlabel="bodyStatementsSkipStatement[*]",group=SkipStatement,minlen=2,constraint=true,]
+ Statement->EscapeStatement[arrowhead=vee,arrowtail=diamond,headlabel="bodyStatementsEscapeStatement[*]",group=EscapeStatement,minlen=2,constraint=true,]
+ Statement->RepeatStatement[arrowhead=diamond,arrowtail=none,headlabel="controlledBy[0-1]",taillabel="body",group=RepeatStatement,minlen=2,constraint=true,]
+ Statement->Algorithm[arrowhead=diamond,arrowtail=none,headlabel="implements[0-1]",taillabel="body",group=Algorithm,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NamedVariable[label="{/NamedVariable/| | }"]
+ NamedVariable->VariableType[arrowhead=vee,arrowtail=none,headlabel="variableType",group=VariableType,minlen=2,constraint=false,]
+ NamedVariable->LocalElement[arrowhead=onormal,group=LocalElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InVariable[label="{InVariable| | }"]
+ InVariable->InParameter[arrowhead=none,arrowtail=none,headlabel="source",taillabel="variable",group=InParameter,minlen=2,constraint=false,]
+ InVariable->Variable[arrowhead=onormal,group=Variable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Procedure[label="{Procedure| | }"]
+ Procedure->Algorithm[arrowhead=onormal,group=Algorithm,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActualARRAYType[label="{ActualARRAYType|isOptional : Boolean| }"]
+ ActualARRAYType->ArrayBound[arrowhead=vee,arrowtail=diamond,headlabel="hiIndex",group=ArrayBound,minlen=2,constraint=true,]
+ ActualARRAYType->ArrayBound[arrowhead=vee,arrowtail=diamond,headlabel="loIndex",group=ArrayBound,minlen=2,constraint=true,]
+ ActualARRAYType->ActualAggregationType[arrowhead=onormal,group=ActualAggregationType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActualSETType[label="{ActualSETType| | }"]
+ ActualSETType->ActualAggregationType[arrowhead=onormal,group=ActualAggregationType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActualAGGREGATEType[label="{ActualAGGREGATEType|label : Identifier| }"]
+ ActualAGGREGATEType->SizeConstraint[arrowhead=vee,arrowtail=diamond,headlabel="upperBound[0-1]",group=SizeConstraint,minlen=2,constraint=true,]
+ ActualAGGREGATEType->ActualStructure[arrowhead=vee,arrowtail=none,headlabel="refersTo",group=ActualStructure,minlen=2,constraint=false,]
+ ActualAGGREGATEType->VariableType[arrowhead=vee,arrowtail=none,headlabel="memberType",group=VariableType,minlen=2,constraint=false,]
+ ActualAGGREGATEType->SizeConstraint[arrowhead=vee,arrowtail=diamond,headlabel="lowerBound[0-1]",group=SizeConstraint,minlen=2,constraint=true,]
+ ActualAGGREGATEType->ActualType[arrowhead=onormal,group=ActualType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parameter[label="{/Parameter/|inout : Boolean\nposition : Integer| }"]
+ Parameter->ActualStructureConstraint[arrowhead=vee,arrowtail=diamond,headlabel="structureConstraints[*]",group=ActualStructureConstraint,minlen=2,constraint=true,]
+ Parameter->ActualTypeConstraint[arrowhead=vee,arrowtail=diamond,headlabel="typeConstraints[*]",group=ActualTypeConstraint,minlen=2,constraint=true,]
+ Parameter->ParameterType[arrowhead=vee,arrowtail=none,headlabel="formalParameterType",group=ParameterType,minlen=2,constraint=false,]
+ Parameter->LocalElement[arrowhead=onormal,group=LocalElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActualStructureConstraint[label="{ActualStructureConstraint|label : Identifier| }"]
+ ActualStructureConstraint->AGGREGATEType[arrowhead=none,arrowtail=none,headlabel="matchingStructure",taillabel="constraint",group=AGGREGATEType,minlen=2,constraint=false,]
+ ActualStructureConstraint->ActualStructure[arrowhead=vee,arrowtail=none,headlabel="requiredStructure",group=ActualStructure,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Algorithm[label="{/Algorithm/| | }"]
+ Algorithm->Parameter[arrowhead=vee,arrowtail=none,headlabel="formalParameters[*]",group=Parameter,minlen=2,constraint=false,]
+ Algorithm->AlgorithmScope[arrowhead=onormal,group=AlgorithmScope,minlen=2,constraint=true,]
+ Algorithm->CommonElement[arrowhead=onormal,group=CommonElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActualAggregationType[label="{/ActualAggregationType/| | }"]
+ ActualAggregationType->ActualType[arrowhead=vee,arrowtail=none,headlabel="memberType",group=ActualType,minlen=2,constraint=false,]
+ ActualAggregationType->ActualType[arrowhead=onormal,group=ActualType,minlen=2,constraint=true,]
+ ActualAggregationType->AggregationType[arrowhead=onormal,group=AggregationType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VARVariable[label="{/VARVariable/| | }"]
+;
+ node[shape=record];
+ActualLISTType[label="{ActualLISTType| | }"]
+ ActualLISTType->ActualAggregationType[arrowhead=onormal,group=ActualAggregationType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Variable[label="{/Variable/| | }"]
+ Variable->NamedVariable[arrowhead=onormal,group=NamedVariable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GenericElement[label="{/GenericElement/| | }"]
+ GenericElement->Parameter[arrowhead=vee,arrowtail=none,headlabel="source",group=Parameter,minlen=2,constraint=false,]
+ GenericElement->ScopedId[arrowhead=vee,arrowtail=diamond,headlabel="label",group=ScopedId,minlen=2,constraint=true,]
+ GenericElement->LocalElement[arrowhead=onormal,group=LocalElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VARParameter[label="{VARParameter| | }"]
+ VARParameter->Parameter[arrowhead=onormal,group=Parameter,minlen=2,constraint=true,]
+ VARParameter->VARVariable[arrowhead=onormal,group=VARVariable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActualDataType[label="{ActualDataType| | }"]
+ ActualDataType->GenericType[arrowhead=onormal,group=GenericType,minlen=2,constraint=true,]
+ ActualDataType->GenericElement[arrowhead=onormal,group=GenericElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActualBAGType[label="{ActualBAGType| | }"]
+ ActualBAGType->ActualAggregationType[arrowhead=onormal,group=ActualAggregationType,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_instances"{
+labelloc=t
+color=black
+label=instances
+ node[shape=record];
+AttributeValue[label="{AttributeValue| | }"]
+ AttributeValue->Instance[arrowhead=vee,arrowtail=none,headlabel="actualValue[0-1]",group=Instance,minlen=2,constraint=false,]
+ AttributeValue->ExplicitAttribute[arrowhead=vee,arrowtail=none,headlabel="attribute",group=ExplicitAttribute,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ARRAYValue[label="{ARRAYValue| | }"]
+ ARRAYValue->ArrayMember[arrowhead=vee,arrowtail=diamond,headlabel="memberSlot[1-*]",group=ArrayMember,minlen=2,constraint=true,]
+ ARRAYValue->AggregateValue[arrowhead=onormal,group=AggregateValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RoleName[label="{RoleName| | }"]
+ RoleName->Attribute[arrowhead=vee,arrowtail=none,headlabel="refersTo",group=Attribute,minlen=2,constraint=false,]
+ RoleName->ScopedId[arrowhead=vee,arrowtail=diamond,headlabel="represents",group=ScopedId,minlen=2,constraint=true,]
+ RoleName->StringValue[arrowhead=onormal,group=StringValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EntityInstance[label="{EntityInstance|id : EntityName| }"]
+ EntityInstance->EntityType[arrowhead=vee,arrowtail=none,headlabel="instanceOf[1-*]",group=EntityType,minlen=2,constraint=false,]
+ EntityInstance->TypedInstance[arrowhead=onormal,group=TypedInstance,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IntegerValue[label="{IntegerValue| | }"]
+ IntegerValue->RealValue[arrowhead=onormal,group=RealValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AggregateValue[label="{/AggregateValue/| | }"]
+ AggregateValue->ConcreteValue[arrowhead=onormal,group=ConcreteValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Constant[label="{Constant| | }"]
+ Constant->Expression[arrowhead=vee,arrowtail=none,headlabel="valueExpression",group=Expression,minlen=2,constraint=false,]
+ Constant->Instance[arrowhead=vee,arrowtail=none,headlabel="actualValue[0-1]",group=Instance,minlen=2,constraint=false,]
+ Constant->InstantiableType[arrowhead=vee,arrowtail=none,headlabel="dataType",group=InstantiableType,minlen=2,constraint=false,]
+ Constant->CommonElement[arrowhead=onormal,group=CommonElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LogicalValue[label="{LogicalValue| | }"]
+ LogicalValue->SimpleValue[arrowhead=onormal,group=SimpleValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TypedInstance[label="{/TypedInstance/| | }"]
+ TypedInstance->SelectType[arrowhead=vee,arrowtail=none,headlabel="satisfiesType[*]",group=SelectType,minlen=2,constraint=false,]
+ TypedInstance->Instance[arrowhead=onormal,group=Instance,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ListMember[label="{ListMember|position : Integer| }"]
+ ListMember->Instance[arrowhead=vee,arrowtail=none,headlabel="memberValue",group=Instance,minlen=2,constraint=false,]
+;
+ node[shape=record];
+BagMember[label="{BagMember|count : Integer| }"]
+ BagMember->Instance[arrowhead=vee,arrowtail=none,headlabel="memberValue",group=Instance,minlen=2,constraint=false,]
+;
+ node[shape=record];
+SingleEntityValue[label="{SingleEntityValue| | }"]
+ SingleEntityValue->PartialEntityValue[arrowhead=vee,arrowtail=none,headlabel="equivalent",group=PartialEntityValue,minlen=2,constraint=false,]
+ SingleEntityValue->SingleEntityType[arrowhead=vee,arrowtail=none,headlabel="ofType",group=SingleEntityType,minlen=2,constraint=false,]
+ SingleEntityValue->AttributeValue[arrowhead=vee,arrowtail=diamond,headlabel="properties[*]",group=AttributeValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Indeterminate[label="{Indeterminate| | }"]
+ Indeterminate->Instance[arrowhead=onormal,group=Instance,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SingleLeafInstance[label="{SingleLeafInstance| | }"]
+ SingleLeafInstance->EntityType[arrowhead=vee,arrowtail=none,headlabel="characterizingType",group=EntityType,minlen=2,constraint=false,]
+ SingleLeafInstance->EntityInstance[arrowhead=onormal,group=EntityInstance,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GenericAggregate[label="{GenericAggregate| | }"]
+ GenericAggregate->LISTValue[arrowhead=onormal,group=LISTValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BinaryValue[label="{BinaryValue| | }"]
+ BinaryValue->SimpleValue[arrowhead=onormal,group=SimpleValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SpecializedValue[label="{SpecializedValue| | }"]
+ SpecializedValue->ConcreteValue[arrowhead=vee,arrowtail=none,headlabel="fundamentalValue",group=ConcreteValue,minlen=2,constraint=false,]
+ SpecializedValue->TypedInstance[arrowhead=onormal,group=TypedInstance,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BAGValue[label="{BAGValue| | }"]
+ BAGValue->BagMember[arrowhead=vee,arrowtail=diamond,headlabel="memberSlot[*]",group=BagMember,minlen=2,constraint=true,]
+ BAGValue->AggregateValue[arrowhead=onormal,group=AggregateValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EnumerationItem[label="{EnumerationItem|position : Integer| }"]
+ EnumerationItem->EnumerationType[arrowhead=diamond,arrowtail=none,headlabel="declaredIn",taillabel="declaredItems",group=EnumerationType,minlen=2,constraint=true,]
+ EnumerationItem->TypeElement[arrowhead=onormal,group=TypeElement,minlen=2,constraint=true,]
+ EnumerationItem->TypedInstance[arrowhead=onormal,group=TypedInstance,minlen=2,constraint=true,]
+ EnumerationItem->ConcreteValue[arrowhead=onormal,group=ConcreteValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EntityValue[label="{EntityValue| | }"]
+ EntityValue->EntityType[arrowhead=vee,arrowtail=none,headlabel="correspondsTo[1-*]",group=EntityType,minlen=2,constraint=false,]
+ EntityValue->EntityInstance[arrowhead=none,arrowtail=none,headlabel="describes[*]",taillabel="state",group=EntityInstance,minlen=2,constraint=false,]
+ EntityValue->PartialEntityValue[arrowhead=onormal,group=PartialEntityValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SETValue[label="{SETValue| | }"]
+ SETValue->Instance[arrowhead=vee,arrowtail=none,headlabel="memberValue[*]",group=Instance,minlen=2,constraint=false,]
+ SETValue->AggregateValue[arrowhead=onormal,group=AggregateValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ArrayMember[label="{ArrayMember|index : Integer| }"]
+ ArrayMember->Instance[arrowhead=vee,arrowtail=none,headlabel="memberValue[0-1]",group=Instance,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Population[label="{Population| | }"]
+ Population->EntityInstance[arrowhead=vee,arrowtail=none,headlabel="compositionEntityInstance[*]",group=EntityInstance,minlen=2,constraint=false,]
+ Population->Instance[arrowhead=none,arrowtail=none,headlabel="compositionInstance[*]",taillabel="appearsInPopulation",group=Instance,minlen=2,constraint=false,]
+ Population->Schema[arrowhead=vee,arrowtail=none,headlabel="governingSchema[*]",group=Schema,minlen=2,constraint=false,]
+;
+ node[shape=record];
+RealValue[label="{RealValue| | }"]
+ RealValue->NumberValue[arrowhead=onormal,group=NumberValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BooleanValue[label="{BooleanValue| | }"]
+ BooleanValue->LogicalValue[arrowhead=onormal,group=LogicalValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LISTValue[label="{LISTValue| | }"]
+ LISTValue->ListMember[arrowhead=vee,arrowtail=diamond,headlabel="memberSlot[*]",group=ListMember,minlen=2,constraint=true,]
+ LISTValue->Instance[arrowhead=onormal,group=Instance,minlen=2,constraint=true,]
+ LISTValue->AggregateValue[arrowhead=onormal,group=AggregateValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StringValue[label="{StringValue| | }"]
+ StringValue->SimpleValue[arrowhead=onormal,group=SimpleValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TypeName[label="{TypeName| | }"]
+ TypeName->NamedType[arrowhead=vee,arrowtail=none,headlabel="refersTo",group=NamedType,minlen=2,constraint=false,]
+ TypeName->ScopedId[arrowhead=vee,arrowtail=diamond,headlabel="represents",group=ScopedId,minlen=2,constraint=true,]
+ TypeName->StringValue[arrowhead=onormal,group=StringValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PartialEntityValue[label="{PartialEntityValue| | }"]
+ PartialEntityValue->SingleEntityValue[arrowhead=vee,arrowtail=diamond,headlabel="components[1-*]",group=SingleEntityValue,minlen=2,constraint=true,]
+ PartialEntityValue->Instance[arrowhead=onormal,group=Instance,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NumberValue[label="{NumberValue| | }"]
+ NumberValue->SimpleValue[arrowhead=onormal,group=SimpleValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MultiLeafInstance[label="{MultiLeafInstance| | }"]
+ MultiLeafInstance->EntityInstance[arrowhead=onormal,group=EntityInstance,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleValue[label="{/SimpleValue/|name : String| }"]
+ SimpleValue->ConcreteValue[arrowhead=onormal,group=ConcreteValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConcreteValue[label="{/ConcreteValue/| | }"]
+ ConcreteValue->Instance[arrowhead=onormal,group=Instance,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EntityName[label="{&#171;DataType&#187;\nEntityName|}"]
+;
+
+}
+}
+}

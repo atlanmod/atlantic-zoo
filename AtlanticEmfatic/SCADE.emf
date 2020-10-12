@@ -1,0 +1,672 @@
+package Metamodel;
+
+package SCADE {
+  class ListString {
+    !unique !ordered attr String[1] value;
+  }
+
+  class ListInteger {
+    !unique !ordered attr Integer[1] value;
+  }
+
+  class Model extends Object, MtcEntity {
+    !unique !ordered attr Boolean[1] library;
+    !unique !ordered attr String[1] pathname;
+    !ordered ref Descriptor#modelD descriptor;
+    !ordered ref Project project;
+    !ordered ref FileRef fileRef;
+    !ordered val StorageUnit[*]#modelS storageUnitM;
+    !ordered val ConstBlock[1]#modelC enumsBlock;
+    !ordered ref Operator[*]#modelO importedOperator;
+    !ordered ref Model[*]#libraries client;
+    !ordered ref Model[*]#client libraries;
+    !ordered ref Model[*] allLibry;
+    !ordered val Type[*]#model typeM;
+    !ordered ref Model[1] model;
+    !ordered ref CoverageFile[1]#modelCov coverageFileM;
+    !ordered ref CriterionFile[1]#modelCri criterionFileM;
+    !ordered val Instance[1]#modelI root;
+    !ordered val Operator[*]#modelOp all;
+    !ordered ref MtcApplication[1]#modelM application;
+    !ordered val Reference[*] reference;
+    !ordered val Node[*]#modelN tmpNode;
+    !ordered val ConstBlock#keyC constBlockK;
+    !ordered val Node#key node;
+    !ordered val VarBlock#keyVB varBlockK;
+    !ordered val TypeBlock#key typeBlock;
+    !ordered val NamedType#keyM refinement;
+    !ordered val Implementation#key implementation;
+    !ordered ref Constant constant;
+    !ordered ref Constant allConstant;
+    !ordered ref GlobalVariable allvariable;
+    !ordered ref GlobalVariable variable;
+    !ordered ref ConstVar allConstVar;
+    !ordered ref ConstVar constVar;
+    !ordered val ConstBlock#key constBlock;
+    !ordered val VarBlock#key varBlock;
+    !ordered val NamedType allNamedType;
+    !ordered val NamedType namedType;
+  }
+
+  class Implementation extends Object {
+    !ordered ref Model[1]#implementation key;
+    !ordered ref NamedType[+]#implementation namedTypeI;
+  }
+
+  class ConstBlock extends ModelBlock {
+    !ordered ref Model[1]#enumsBlock modelC;
+    !ordered ref Model[1]#constBlockK keyC;
+    !ordered ref Model[1]#constBlock key;
+    !ordered val Constant#key constant;
+  }
+
+  class VarBlock extends ModelBlock {
+    !ordered val GlobalVariable#key variable;
+    !ordered ref Model[1]#varBlockK keyVB;
+    !ordered ref Model[1]#varBlock key;
+  }
+
+  class GlobalVariable extends Variable {
+    !ordered ref VarBlock#variable key;
+  }
+
+  class TypeBlock extends ModelBlock {
+    !ordered val NamedType#key type;
+    !ordered ref Model[1]#typeBlock key;
+  }
+
+  class Session {
+    !ordered ref Descriptor[1] descriptor;
+    !ordered ref Model model;
+    !ordered ref Model[*] loadsModel;
+    !unique !ordered attr String[1] DefinedIn;
+    !ordered val Loader[1]#session loader;
+  }
+
+  class Descriptor extends Object {
+    !unique !ordered attr String[1] modelFileName;
+    !unique !ordered attr String[1] sernFileName;
+    !unique !ordered attr String[1] sernPersistAs;
+    !unique !ordered attr String[1] rnetFileName;
+    !unique !ordered attr String[1] rnetPersistAs;
+    !unique !ordered attr Integer[1] occBase;
+    !unique !ordered attr Integer[1] size;
+    !unique !ordered attr Boolean[1] nameVerify;
+    !unique !ordered attr Boolean[1] checked;
+    !ordered ref ListString[*] libraryModels;
+    !ordered ref ListString[*] annTypeFiles;
+    !ordered ref Model[1]#descriptor modelD;
+  }
+
+  class StorageUnit extends Object {
+    !unique !ordered attr String[1] saoFileName;
+    !unique !ordered attr String[1] annFileName;
+    !unique !ordered attr String[1] persistAs;
+    !unique !ordered attr Boolean[1] loaded;
+    !unique !ordered attr Boolean[1] saoModified;
+    !unique !ordered attr Boolean[1] annModified;
+    !ordered ref FileRef[1] fileRef;
+    !ordered ref Model[1]#storageUnitM modelS;
+    !ordered ref StorageElement[*]#storageUnitE element;
+  }
+
+  abstract class StorageElement extends Annotable {
+    !ordered ref StorageUnit[1]#element storageUnitE;
+  }
+
+  abstract class Object {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr Integer[1] runLine;
+  }
+
+  abstract class Block extends StorageElement {
+    !unique !ordered attr Integer[1] zoomCoeff;
+    !unique !ordered attr String[1] fromat;
+    !unique !ordered attr Boolean[1] lanscape;
+    !unique !ordered attr Boolean[1] defaultPageFormat;
+  }
+
+  class NodeBlock extends Block {
+    !ordered ref Node[1] node;
+  }
+
+  abstract class ModelBlock extends Block {
+    val ListInteger[*] columnsSize;
+    !ordered ref Model[1] model;
+  }
+
+  abstract class Expression extends Object {
+    !ordered val Label#expression label;
+    !ordered ref ExprContact[1]#initValue exprContactE;
+    !ordered ref ExprCall#parameter exprCallE;
+    !ordered ref ConstVar dependance;
+    !ordered ref ExprId[*] subExprId;
+    !ordered ref ParamArray#value paramArray;
+    !ordered ref Constant#value constant;
+    !ordered ref Equation#right equationE;
+    !ordered ref Assertion#expression assertionE;
+  }
+
+  class Label extends Object {
+    !ordered ref Expression[1]#label expression;
+  }
+
+  class ExprNull extends Expression {
+  }
+
+  class ConstValue extends Expression {
+    !unique !ordered attr String[1] value;
+    !ordered ref Object[1] kind;
+  }
+
+  class ExprContact extends Expression {
+    !ordered val ExprId[1]#exprContactEI boolAct;
+    val Expression[*]#exprContactE initValue;
+    !ordered val ExprCall[1]#exprContactEC calledOpr;
+  }
+
+  class ExprCall extends Expression {
+    !unique !ordered attr Integer[1] numOcc;
+    !unique !ordered attr Integer[1] predefOpr;
+    val Expression[*]#exprCallE parameter;
+    !ordered ref ExprContact[1]#calledOpr exprContactEC;
+    !ordered ref Operator operator;
+  }
+
+  class Operator extends StorageElement, MtcEntity {
+    !unique !ordered attr String[1] category;
+    !unique !ordered attr Boolean[1] conversion;
+    !unique !ordered attr Boolean[1] state;
+    !unique !ordered attr Integer[1] index;
+    !ordered ref LocalVariable variable;
+    val LocalVariable[*]#operatorI input;
+    val LocalVariable[*]#operatorO output;
+    val LocalVariable[*]#operatorH hidden;
+    !ordered ref EqBlock[*]#calledOperator client;
+    !ordered ref Model[1]#importedOperator modelO;
+    !ordered ref Model[1]#all modelOp;
+    !ordered ref Criterion#operatorC criterionO;
+    !ordered ref Instance[*]#operatorI intanceO;
+    !ordered ref Operator[1] operator;
+  }
+
+  class ExprId extends Expression {
+    !ordered ref ExprContact[1]#boolAct exprContactEI;
+    !ordered ref ConstVar[1] reference;
+  }
+
+  class LocalVariable extends Variable {
+    !unique !ordered attr Boolean[1] optional;
+    !unique !ordered attr Boolean[1] const;
+    !unique !ordered attr Boolean[1] probe;
+    !unique !ordered attr Boolean[1] pure;
+    !unique !ordered attr String[1] initValue;
+    !ordered ref Operator#input operatorI;
+    !ordered ref Operator#output operatorO;
+    !ordered ref Operator#hidden operatorH;
+    !ordered ref Node#local nodeL;
+    !ordered ref Node#internal nodeI;
+  }
+
+  class Node extends Operator {
+    !ordered ref Object[1] nodeKind;
+    !ordered val EqBlock#key eqBlock;
+    !ordered val ParamBlock#key paramBlock;
+    !ordered val LocalVariable[*]#nodeL local;
+    !ordered val LocalVariable[*]#nodeI internal;
+    !ordered ref Model[1]#node key;
+    !ordered ref StateMachine stateMachine;
+    !ordered ref Model[1]#tmpNode modelN;
+  }
+
+  class ParamBlock extends NodeBlock {
+    !ordered ref Node[1]#paramBlock key;
+    val ListInteger[*] columnsSize;
+    val ParamArray[+]#paramBlock array;
+  }
+
+  class ParamArray extends Annotable {
+    val ListString[*] notes;
+    !ordered ref ParamBlock[1]#array paramBlock;
+    !ordered ref Operator[1] operator;
+    val Expression[*]#paramArray value;
+  }
+
+  class ConstVar extends Annotable {
+    !ordered ref Object[1] kind;
+    !ordered ref Type[1]#constVar type;
+    !ordered ref EqBlock[*]#referencedId client;
+  }
+
+  class Constant extends ConstVar {
+    !unique !ordered attr Boolean[1] imported;
+    !ordered val Expression#constant value;
+    !ordered ref Enumeration#value enumeration;
+    !ordered ref ConstBlock#constant key;
+  }
+
+  class Variable extends ConstVar {
+    !ordered ref Variable clock;
+    !ordered ref Equation[*]#left definition;
+  }
+
+  abstract class Type extends Annotable {
+    !ordered ref Type[*] usedType;
+    !ordered ref Model[1]#typeM model;
+    !ordered ref NamedType[*]#definition namedTypeT;
+    !ordered ref Table[*]#typeT tableT;
+    !ordered ref CompositeElement[*]#typeC compositeElementT;
+    !ordered ref ConstVar[*]#type constVar;
+  }
+
+  class Table extends Type {
+    !unique !ordered attr Integer[1] size;
+    !ordered ref Type#tableT typeT;
+  }
+
+  class NamedType extends Type {
+    !ordered ref Object[1] kind;
+    !ordered ref NamedType[*]#refined refinement;
+    !ordered ref NamedType[*]#refinement refined;
+    !ordered ref Operator to;
+    !ordered ref Operator from;
+    !ordered ref Implementation#namedTypeI implementation;
+    !ordered ref Type#namedTypeT definition;
+    !ordered ref Model[1]#refinement keyM;
+    !ordered ref TypeBlock[1]#type key;
+  }
+
+  class Enumeration extends Type {
+    val Constant[+]#enumeration value;
+  }
+
+  abstract class Composite extends Type {
+    !ordered val CompositeElement#key element;
+  }
+
+  class CompositeElement extends Object {
+    !ordered ref Type#compositeElementT typeC;
+    !ordered ref Composite[1]#element key;
+  }
+
+  class Structure extends Composite {
+  }
+
+  class Tuple extends Composite {
+  }
+
+  class EqBlock extends NodeBlock {
+    !ordered val Equation[+]#eqBlock equation;
+    !ordered val Assertion#key assertion;
+    !ordered ref Node[1]#eqBlock key;
+    !ordered ref Operator[*]#client calledOperator;
+    !ordered ref ConstVar[*]#client referencedId;
+  }
+
+  class Equation extends Annotable {
+    !unique !ordered attr Integer[1] rotation;
+    !unique !ordered attr Boolean[1] symetrical;
+    !unique !ordered attr Boolean[1] terminator;
+    !ordered ref EqBlock[1]#equation eqBlock;
+    ref Variable[*]#definition left;
+    !ordered val Expression#equationE right;
+    !ordered val Edge[*]#dstEquation outEdge;
+    !ordered val RPoint position;
+    !ordered val RSize size;
+  }
+
+  class Assertion extends Annotable {
+    !ordered ref EqBlock#assertion key;
+    !ordered val Expression[1]#assertionE expression;
+    !ordered ref Edge#assertion edge;
+    !ordered val RPoint position;
+  }
+
+  abstract class Annotable extends Object {
+    val Prop[*]#entity propA;
+    !unique !ordered attr String[1] DefinedIn;
+  }
+
+  class Prop {
+    !unique !ordered attr String[1] name;
+    val ListString[*] values;
+    !ordered ref Annotable[1]#propA entity;
+    !ordered ref Configuration#propC configurationP;
+  }
+
+  class Configuration {
+    !unique !ordered attr String[1] name;
+    val Prop[*]#configurationP propC;
+    !ordered val Project[1]#configuration projectC;
+  }
+
+  class Project extends Annotable {
+    !unique !ordered attr String[1] pathname;
+    val Configuration[*]#projectC configuration;
+    !ordered ref FileRef[*] fileRef;
+    val Element[*]#root owner;
+  }
+
+  abstract class Element extends MtcEntity {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr Boolean[1] ~derived;
+    !unique !ordered attr String[1] ident;
+    !unique !ordered attr String[1] description;
+    !ordered ref Project#owner root;
+    !ordered ref Folder#element folder;
+    !ordered ref Criterion[1]#element criterionE;
+  }
+
+  class FileRef extends Element {
+    !unique !ordered attr String[1] pathname;
+    !unique !ordered attr String[1] persistAs;
+    !unique !ordered attr String[1] DefinedIn;
+  }
+
+  class Folder extends Element {
+    !unique !ordered attr String[1] extensions;
+    val Element[*]#folder element;
+  }
+
+  abstract class Reference {
+  }
+
+  class TypeReference extends Reference {
+  }
+
+  class OperatorReference extends Reference {
+  }
+
+  class VariableReference extends Reference {
+  }
+
+  class Error {
+  }
+
+  class Edge extends Object {
+    !unique !ordered attr Integer[1] leftVarIndex;
+    !unique !ordered attr Integer[1] labelOrientation;
+    !ordered ref Variable[1] leftVar;
+    !ordered ref ExprId[1] rightExpression;
+    !ordered ref Equation[1] srcEquation;
+    !ordered val Assertion#edge assertion;
+    !ordered val RPoint[*] position;
+    !ordered ref Equation[1]#outEdge dstEquation;
+  }
+
+  class RPoint {
+  }
+
+  class RSize {
+  }
+
+  abstract class Entity {
+    !unique !ordered attr String[1] DefinedIn;
+  }
+
+  abstract class StateObj extends Entity {
+  }
+
+  abstract class GraphicalObject extends StateObj {
+  }
+
+  abstract class StInputOutput extends GraphicalObject {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr Boolean[1] clock;
+    !unique !ordered attr Boolean[1] const;
+    !unique !ordered attr Boolean[1] optional;
+  }
+
+  class StInitInput extends StInputOutput {
+  }
+
+  class StInput extends StInputOutput {
+  }
+
+  class StOutput extends StInputOutput {
+  }
+
+  class Transition extends GraphicalObject {
+    !unique !ordered attr String[1] conditions;
+    !unique !ordered attr Integer[1] transKind;
+    !ordered ref State[1]#transition1 state1;
+    !ordered ref State[1]#transition2 state2;
+  }
+
+  class State extends GraphicalObject {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr PrimitiveTypes.Double[1] cx;
+    !unique !ordered attr PrimitiveTypes.Double[1] cy;
+    ref Transition[*]#state1 transition1;
+    !ordered ref Transition[*]#state2 transition2;
+    !ordered ref StOutput[1] stOutput;
+  }
+
+  class InitialStPtr extends GraphicalObject {
+    !unique !ordered attr PrimitiveTypes.Double[1] cx;
+    !unique !ordered attr PrimitiveTypes.Double[1] cy;
+    !ordered ref State[1] state;
+  }
+
+  class StateMachine extends Object {
+    !ordered ref InitialStPtr[1] initialStPtr;
+    !ordered ref State[*] state;
+    !ordered ref Transition[*] transition;
+  }
+
+  abstract class Base {
+    !unique !ordered attr String[1] DefineIn;
+  }
+
+  class StateBase extends Base {
+  }
+
+  class AnnNote {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr Boolean[1] modified;
+    !ordered ref AnnNoteType[1] annNoteType;
+    !ordered ref Annotable[1] annotable;
+    val AnnAttValue[+]#annNote annAttValue;
+  }
+
+  abstract class AnnAttValue {
+    !ordered ref AnnNote[1]#annAttValue annNote;
+    !ordered ref AnnAttDefinition[1] annAttDefinition;
+  }
+
+  class AnnNoteType {
+    !unique !ordered attr String[1] name;
+    !ordered val AnnAttDefinition#key annAttDefinition;
+    !ordered val AnnAttGroup#key annAttGroup;
+    !ordered ref AnnotSchema[1]#annNoteType key;
+  }
+
+  class AnnAttDefinition {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr Integer[1] type;
+    !ordered ref AnnAttGroup[1] annAttGroup;
+    !ordered ref AnnNoteType[1]#annAttDefinition key;
+    !ordered val AnnProperty#key annProperty;
+  }
+
+  class AnnAttIntValue extends AnnAttValue {
+    !unique !ordered attr Integer[1] value;
+  }
+
+  class AnnAttBoolValue extends AnnAttValue {
+    !unique !ordered attr Boolean[1] value;
+  }
+
+  class AnnAttCharValue extends AnnAttValue {
+    !unique !ordered attr PrimitiveTypes.Char[1] value;
+  }
+
+  class AnnAttRealValue extends AnnAttValue {
+    !unique !ordered attr PrimitiveTypes.Double[1] value;
+  }
+
+  class AnnAttStringValue extends AnnAttValue {
+    !unique !ordered attr String[1] value;
+  }
+
+  class AnnAttFileValue extends AnnAttStringValue {
+  }
+
+  class AnnAttDateValue extends AnnAttStringValue {
+  }
+
+  class AnnAttOidValue extends AnnAttStringValue {
+  }
+
+  class AnnAttEnumValue extends AnnAttStringValue {
+  }
+
+  class AnnProperty {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr Integer[1] type;
+    !ordered ref AnnAttDefinition[1]#annProperty key;
+  }
+
+  class AnnPropertyInt extends AnnProperty {
+    !unique !ordered attr Integer[1] value;
+  }
+
+  class AnnPropertyBool extends AnnProperty {
+    !unique !ordered attr Boolean[1] value;
+  }
+
+  class AnnPropertyChar extends AnnProperty {
+    !unique !ordered attr PrimitiveTypes.Char[1] value;
+  }
+
+  class AnnPropertyReal extends AnnProperty {
+    !unique !ordered attr PrimitiveTypes.Double[1] value;
+  }
+
+  class AnnPropertyString extends AnnProperty {
+    !unique !ordered attr String[1] value;
+  }
+
+  class AnnPropertyEnum extends AnnProperty {
+    !ordered ref Object[1] value;
+  }
+
+  class AnnotSchema {
+    !unique !ordered attr String[1] pathname;
+    !ordered val AnnNoteType[1]#key annNoteType;
+    !ordered val AnnCategory[1]#key annCategory;
+  }
+
+  class AnnCategory {
+    !unique !ordered attr String[1] name;
+    !ordered ref AnnotSchema[1]#annCategory key;
+    !ordered val Annotability[*] anootability;
+  }
+
+  class Annotability {
+    !unique !ordered attr Integer[1] minCardinality;
+    !unique !ordered attr Integer[1] maxCardinality;
+    !unique !ordered attr Boolean[1] defaultNote;
+    !ordered ref AnnNoteType[1] annNoteType;
+  }
+
+  class AnnAttGroup {
+    !unique !ordered attr String[1] name;
+    !ordered ref AnnNoteType[1]#annAttGroup key;
+  }
+
+  abstract class File extends MtcEntity {
+  }
+
+  class MtcApplication {
+    !ordered val CoverageFile[*]#application coverageFileCov;
+    !ordered val CriterionFile[*]#application criterionFileCri;
+    !ordered val Model[1]#application modelM;
+  }
+
+  class CoverageFile extends File {
+    !ordered val Record#key record;
+    !ordered val Model[1]#coverageFileM modelCov;
+    !ordered ref MtcApplication[1]#coverageFileCov application;
+    !ordered val Record#coverageFileR recordCov;
+  }
+
+  class CriterionFile extends File {
+    !ordered ref MtcApplication[1]#criterionFileCri application;
+    !ordered val Model[1]#criterionFileM modelCri;
+    !ordered val Criterion[*]#criterionFileC criterionC;
+  }
+
+  abstract class MtcEntity {
+    !ordered ref File file;
+  }
+
+  class HistoryEntry extends MtcEntity {
+  }
+
+  class Criterion extends MtcEntity {
+    !unique !ordered attr String[1] ident;
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] description;
+    !ordered ref CriterionFile[1]#criterionC criterionFileC;
+    !ordered ref Operator[1]#criterionO operatorC;
+    val Element[*]#criterionE element;
+  }
+
+  class Instance extends MtcEntity {
+    !unique !ordered attr Integer[1] index;
+    !unique !ordered attr String[1] occ;
+    !ordered ref Model[1]#root modelI;
+    !ordered ref Operator[1]#intanceO operatorI;
+    !ordered ref AssociationClass[1]#instanceA associationClassI;
+    !ordered ref Instance[1]#called caller;
+    !ordered val Instance[*]#caller called;
+    !ordered ref Instance#related origin;
+    !ordered ref Instance[*]#origin related;
+  }
+
+  class AssociationClass {
+    !ordered ref Result[1]#associationClassRs resultA;
+    !ordered ref Record[*]#associationClassRc recordA;
+    !ordered ref Instance[*]#associationClassI instanceA;
+  }
+
+  class Result extends MtcEntity {
+    !unique !ordered attr Integer[1] elementCount;
+    !ordered ref AssociationClass[1]#resultA associationClassRs;
+    !ordered ref Record[1]#result record;
+  }
+
+  class Record extends MtcEntity {
+    !unique !ordered attr String[1] creator;
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] date;
+    !unique !ordered attr String[1] author;
+    !unique !ordered attr String[1] description;
+    !ordered ref CoverageFile[1]#record key;
+    !ordered ref AssociationClass[1]#recordA associationClassRc;
+    !ordered ref CoverageFile[1]#recordCov coverageFileR;
+    !ordered val Result[*]#record result;
+  }
+
+  class Loader {
+    !ordered val Descriptor descriptor;
+    !ordered ref Session[1]#loader session;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+  datatype Boolean : "";
+
+  datatype Char : "";
+
+  datatype Double : "";
+
+}
+

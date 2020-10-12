@@ -1,0 +1,213 @@
+package Metamodel;
+
+package Core {
+  abstract class Element {
+  }
+
+  abstract class ModelElement extends Element {
+    !ordered ref Namespace#ownedElement namespace;
+    !unique !ordered attr String name;
+    !unique !ordered attr Data_Types.VisibilityKind visibility;
+    !unique !ordered attr Boolean[1] isSpecification;
+  }
+
+  abstract class GeneralizableElement extends ModelElement {
+    !ordered ref Generalization[*]#child generalization;
+    !unique !ordered attr Boolean[1] isRoot;
+    !unique !ordered attr Boolean[1] isLeaf;
+    !unique !ordered attr Boolean[1] isAbstract;
+  }
+
+  abstract class Namespace extends ModelElement {
+    !ordered val ModelElement[*]#namespace ownedElement;
+  }
+
+  abstract class Classifier extends GeneralizableElement, Namespace {
+    !ordered ref Generalization[*]#powertype powertypeRange;
+    val Feature[*]#owner feature;
+  }
+
+  abstract class Feature extends ModelElement {
+    !ordered ref Classifier#feature owner;
+    !unique !ordered attr Data_Types.ScopeKind[1] ownerScope;
+  }
+
+  abstract class StructuralFeature extends Feature {
+    !ordered ref Classifier[1] type;
+    !unique !ordered attr Data_Types.Multiplicity multiplicity;
+    !unique !ordered attr Data_Types.ChangeableKind changeability;
+    !unique !ordered attr Data_Types.ScopeKind targetScope;
+    !unique !ordered attr Data_Types.OrderingKind ordering;
+  }
+
+  class AssociationEnd extends ModelElement {
+    !ordered ref Association[1]#connection association;
+    !ordered ref Classifier[*] specification;
+    !ordered ref Classifier[1] participant;
+    val Attribute[*]#associationEnd qualifier;
+    !unique !ordered attr Boolean[1] isNavigable;
+    !unique !ordered attr Data_Types.OrderingKind ordering;
+    !unique !ordered attr Data_Types.AggregationKind aggregation;
+    !unique !ordered attr Data_Types.ScopeKind targetScope;
+    !unique !ordered attr Data_Types.Multiplicity multiplicity;
+    !unique !ordered attr Data_Types.ChangeableKind changeability;
+  }
+
+  abstract class Relationship extends ModelElement {
+  }
+
+  class Association extends GeneralizableElement, Relationship {
+    val AssociationEnd[2..*]#association connection;
+  }
+
+  class Attribute extends StructuralFeature {
+    !ordered ref AssociationEnd#qualifier associationEnd;
+    !unique !ordered attr Data_Types.Expression initialValue;
+  }
+
+  class Generalization extends Relationship {
+    !ordered ref GeneralizableElement[1] parent;
+    !ordered ref Classifier#powertypeRange powertype;
+    !ordered ref GeneralizableElement[1]#generalization child;
+    !unique !ordered attr String discriminator;
+  }
+
+}
+
+package Common_Behavior {
+  abstract class Instance extends Core.ModelElement {
+    !ordered val Instance[*] ownedInstance;
+    !ordered ref LinkEnd[*]#instance linkEnd;
+    !ordered ref Core.Classifier[+] classifier;
+    !ordered ref ComponentInstance#resident componentInstance;
+    !ordered val AttributeLink[*]#instance slot;
+    !ordered val Link[*] ownedLink;
+  }
+
+  class AttributeLink extends Core.ModelElement {
+    !ordered ref Instance#slot instance;
+    !ordered ref Instance[1] value;
+    !ordered ref LinkEnd#qualifiedValue linkEnd;
+    !ordered ref Core.Attribute[1] attribute;
+  }
+
+  class Link extends Core.ModelElement {
+    !ordered ref Core.Association[1] association;
+    !ordered val LinkEnd[2..*]#link connection;
+  }
+
+  class LinkEnd extends Core.ModelElement {
+    !ordered ref Link[1]#connection link;
+    val AttributeLink[*]#linkEnd qualifiedValue;
+    !ordered ref Instance[1]#linkEnd instance;
+    !ordered ref Core.AssociationEnd[1] associationEnd;
+  }
+
+  class ComponentInstance extends Instance {
+    !ordered ref Instance[*]#componentInstance resident;
+    !ordered ref NodeInstance#resident nodeInstance;
+  }
+
+  class NodeInstance extends Instance {
+    !ordered ref ComponentInstance[*]#nodeInstance resident;
+  }
+
+}
+
+package Use_Cases {
+  class UseCase extends Core.Classifier {
+    !ordered ref Include[*]#base include;
+    !ordered ref Extend[*]#extension extend;
+    !ordered val ExtensionPoint[*]#useCase extensionPoint;
+  }
+
+  class Actor extends Core.Classifier {
+  }
+
+  class UseCaseInstance extends Common_Behavior.Instance {
+  }
+
+  class Extend extends Core.Relationship {
+    ref ExtensionPoint[+] extensionPoint;
+    !ordered ref UseCase[1]#extend extension;
+    !ordered ref UseCase[1] base;
+    !unique !ordered attr Data_Types.BooleanExpression[1] condition;
+  }
+
+  class Include extends Core.Relationship {
+    !ordered ref UseCase[1] addition;
+    !ordered ref UseCase[1]#include base;
+  }
+
+  class ExtensionPoint extends Core.ModelElement {
+    !ordered ref UseCase[1]#extensionPoint useCase;
+    !unique !ordered attr String[1] location;
+  }
+
+}
+
+package Data_Types {
+  enum AggregationKind {
+    ak_none = 0;
+    ak_aggregate = 0;
+    ak_composite = 0;
+  }
+
+  enum ChangeableKind {
+    ck_changeable = 0;
+    ck_frozen = 0;
+    ck_addOnly = 0;
+  }
+
+  enum OrderingKind {
+    ok_unordered = 0;
+    ok_ordered = 0;
+  }
+
+  enum ScopeKind {
+    sk_instance = 0;
+    sk_classifier = 0;
+  }
+
+  enum VisibilityKind {
+    vk_public = 0;
+    vk_protected = 0;
+    vk_private = 0;
+    vk_package = 0;
+  }
+
+  class Multiplicity {
+    !ordered val MultiplicityRange[+]#multiplicity range;
+  }
+
+  class MultiplicityRange {
+    !ordered ref Multiplicity[1]#range multiplicity;
+    !unique !ordered attr Integer[1] lower;
+    !unique !ordered attr Integer[1] upper;
+  }
+
+  class Expression {
+    !unique !ordered attr String language;
+    !unique !ordered attr String[1] body;
+  }
+
+  class BooleanExpression extends Expression {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Float : "";
+
+  datatype Integer : "";
+
+  datatype Long : "";
+
+  datatype String : "";
+
+  datatype Double : "";
+
+}
+

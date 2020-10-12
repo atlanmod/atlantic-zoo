@@ -1,0 +1,50 @@
+-- @name 		Multiple Metalevels
+-- @domains 	Metamodelization
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/07/20
+-- @description This metamodel fragment describes preliminary version of the multiple metalevels
+-- @see 		This metamodel has been extracted from information available in the following article:
+-- @see 		Article "The Essence of Multilevel Metamodeling"
+-- @see 		by Colin Atkinson, Thomas Kühne
+-- @see 		Page 32, Section 4.4, Fig. 10. the MoMM
+-- @see 		Lecture Notes in Computer Science 2185
+-- @see 		Martin Gogolla, Cris Kobryn
+-- @see 		UML 2001 - The Unified Modeling Language
+
+package MoMM {
+	class ModelElement {
+		attribute level : Integer;
+		attribute name : String;
+		attribute potency : String;
+		reference hasClass : ModelElement oppositeOf classElement;
+		reference classElement [*] : ModelElement oppositeOf hasClass;
+		reference elementTarget : Relationship oppositeOf target;
+		reference elementSource : Relationship oppositeOf source;
+		reference attributes [*] : Attribute;
+		reference attType : Attribute oppositeOf type;
+	}
+	
+	class Attribute extends ModelElement {
+		reference type : ModelElement oppositeOf attType;
+	}
+	
+	abstract class Relationship extends ModelElement {
+		reference target : ModelElement oppositeOf elementTarget;
+		reference source : ModelElement oppositeOf elementSource;
+	}
+	
+	class Generalization extends Relationship {}
+	
+	class Association extends Relationship {
+	 	attribute maxSource : String;
+	 	attribute maxTarget : String;
+	 	attribute minSource : String;
+	 	attribute minTarget : String;
+	}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

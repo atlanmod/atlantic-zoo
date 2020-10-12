@@ -1,0 +1,92 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_PtolemyII"{
+labelloc=t
+color=black
+label=PtolemyII
+ node[shape=record];
+EDataType[label="{EDataType|value : String| }"]
+;
+ node[shape=record];
+NamedObject[label="{NamedObject|name : String| }"]
+;
+ node[shape=record];
+Attribute[label="{Attribute|value : String| }"]
+ Attribute->Entity[arrowhead=diamond,arrowtail=none,headlabel="att_container",taillabel="attributes[*]{ordered}",group=Entity,minlen=2,constraint=true,]
+ Attribute->NamedObject[arrowhead=onormal,group=NamedObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Entity[label="{Entity| | }"]
+ Entity->NamedObject[arrowhead=onormal,group=NamedObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Port[label="{Port| | }"]
+ Port->Entity[arrowhead=diamond,arrowtail=none,headlabel="po_container",taillabel="ports[*]{ordered}",group=Entity,minlen=2,constraint=true,]
+ Port->Relation[arrowhead=none,arrowtail=none,headlabel="links[*]",taillabel="ports[*]",group=Relation,minlen=2,constraint=false,]
+ Port->NamedObject[arrowhead=onormal,group=NamedObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Relation[label="{Relation| | }"]
+ Relation->NamedObject[arrowhead=onormal,group=NamedObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Director[label="{Director| | }"]
+ Director->NamedObject[arrowhead=onormal,group=NamedObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parameter[label="{Parameter| | }"]
+ Parameter->Entity[arrowhead=diamond,arrowtail=none,headlabel="pa_container",taillabel="parameters[*]{ordered}",group=Entity,minlen=2,constraint=true,]
+ Parameter->EDataType[arrowhead=vee,arrowtail=none,headlabel="dataType",group=EDataType,minlen=2,constraint=false,]
+ Parameter->Attribute[arrowhead=onormal,group=Attribute,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ComponentPort[label="{ComponentPort| | }"]
+ ComponentPort->Port[arrowhead=onormal,group=Port,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ComponentRelation[label="{ComponentRelation| | }"]
+ ComponentRelation->CompositeEntity[arrowhead=diamond,arrowtail=none,headlabel="re_container",taillabel="relations[*]{ordered}",group=CompositeEntity,minlen=2,constraint=true,]
+ ComponentRelation->Relation[arrowhead=onormal,group=Relation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ComponentEntity[label="{ComponentEntity| | }"]
+ ComponentEntity->CompositeEntity[arrowhead=diamond,arrowtail=none,headlabel="ce_container",taillabel="containees[*]{ordered}",group=CompositeEntity,minlen=2,constraint=true,]
+ ComponentEntity->Attribute[arrowhead=onormal,group=Attribute,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AtomicActor[label="{AtomicActor| | }"]
+ AtomicActor->ComponentEntity[arrowhead=onormal,group=ComponentEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompositeEntity[label="{CompositeEntity| | }"]
+ CompositeEntity->ComponentEntity[arrowhead=onormal,group=ComponentEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+WorkSpace[label="{WorkSpace| | }"]
+ WorkSpace->CompositeEntity[arrowhead=onormal,group=CompositeEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompositeActor[label="{CompositeActor| | }"]
+ CompositeActor->Director[arrowhead=none,arrowtail=none,headlabel="directors[0-2]",taillabel="ca_container",group=Director,minlen=2,constraint=false,]
+ CompositeActor->CompositeEntity[arrowhead=onormal,group=CompositeEntity,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

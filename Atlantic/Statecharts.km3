@@ -1,0 +1,76 @@
+-- @name		Statecharts 
+-- @version		1.0
+-- @domains		UML
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/03
+-- @description	This metamodel describes Statecharts which consist of three primary items: States: distinguishable conditions of existence that persist for a significant period of time, Transitions: means by which objects change states in respond to events and Actions: atomic behaviors, simple statements such as "a++" or invocation of operations defined within the context object or other objects (they are executed behaviors at various points in a state machine, such as when an event triggers a transition, when a state is entered, or when a state is exited).
+-- @see			OMG UML official site, http://www.uml.org/	
+
+package Statecharts {
+
+	-- @begin Special types 
+
+	class BooleanExpression {
+		-- @comment The string value corresponding to the expression. 
+		attribute value : String;
+	}
+
+	-- @end Special types
+	
+	
+	-- @begin Global structure 
+
+	class StateMachine {
+		reference transitions[*] container : Transition oppositeOf transSM_container;
+		reference top[*] container : State oppositeOf state_container;
+	}
+	
+	class State extends StateVertex {
+		reference state_container : StateMachine oppositeOf top;
+		reference internalTransitions[*] container : Transition oppositeOf transS_container;
+		reference deferrableEvents[*] : Event oppositeOf targets;
+	}
+	
+	class CompositeState extends State {
+		reference subVertexes[*] container : StateVertex oppositeOf sv_container;
+		attribute isConcurrent : Boolean;
+	}
+	
+	class Transition {
+		reference transSM_container[0-1] : StateMachine oppositeOf transitions;
+		reference transS_container[0-1] : State oppositeOf internalTransitions;
+		reference trigger[0-1] container : Event oppositeOf evt_container;
+		reference guard[0-1] container : Guard oppositeOf gua_container;
+		reference source : StateVertex oppositeOf outgoing;
+		reference target : StateVertex oppositeOf incoming;
+	}
+	
+	class StateVertex {
+		reference sv_container[0-1] : CompositeState oppositeOf subVertexes;
+		reference outgoing[*] : Transition oppositeOf source;
+		reference incoming[*] : Transition oppositeOf target;
+	}
+	
+	class Guard {
+		reference gua_container : Transition oppositeOf guard;
+		reference expression : BooleanExpression;
+	}
+	
+	class Event {
+		reference evt_container[*] : Transition oppositeOf trigger;
+		reference targets[*] : State oppositeOf deferrableEvents;
+	}
+	
+	-- @end Global structure
+
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

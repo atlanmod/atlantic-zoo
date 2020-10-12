@@ -1,0 +1,95 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_KDMSimplified"{
+labelloc=t
+color=black
+label=KDMSimplified
+ node[shape=record];
+Element[label="{/Element/| | }"]
+ Element->Annotation[arrowhead=vee,arrowtail=diamond,headlabel="annotation[*]",group=Annotation,minlen=2,constraint=true,]
+ Element->Attribute[arrowhead=vee,arrowtail=diamond,headlabel="attribute[*]",group=Attribute,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ModelElement[label="{/ModelElement/| | }"]
+ ModelElement->TaggedValue[arrowhead=vee,arrowtail=diamond,headlabel="taggedValue[*]",group=TaggedValue,minlen=2,constraint=true,]
+ ModelElement->Stereotype[arrowhead=none,arrowtail=none,headlabel="stereotype[0-1]",taillabel="extendedElement",group=Stereotype,minlen=2,constraint=false,]
+ ModelElement->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+KDMEntity[label="{/KDMEntity/|name : String| }"]
+ KDMEntity->KDMContainer[arrowhead=diamond,arrowtail=none,headlabel="owner[0-1]",taillabel="ownedElement[*]",group=KDMContainer,minlen=2,constraint=true,]
+ KDMEntity->KDMGroup[arrowhead=none,arrowtail=none,headlabel="group[*]",taillabel="groupedElement[*]",group=KDMGroup,minlen=2,constraint=false,]
+ KDMEntity->KDMModel[arrowhead=diamond,arrowtail=none,headlabel="model",taillabel="ownedElement[*]",group=KDMModel,minlen=2,constraint=true,]
+ KDMEntity->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+KDMContainer[label="{/KDMContainer/| | }"]
+ KDMContainer->KDMEntity[arrowhead=onormal,group=KDMEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+KDMGroup[label="{/KDMGroup/| | }"]
+ KDMGroup->KDMEntity[arrowhead=onormal,group=KDMEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+KDMRelationship[label="{/KDMRelationship/| | }"]
+ KDMRelationship->KDMEntity[arrowhead=none,arrowtail=none,headlabel="to",taillabel="inbound[*]",group=KDMEntity,minlen=2,constraint=false,]
+ KDMRelationship->KDMEntity[arrowhead=none,arrowtail=none,headlabel="from",taillabel="outbound[*]",group=KDMEntity,minlen=2,constraint=false,]
+ KDMRelationship->KDMModel[arrowhead=diamond,arrowtail=none,headlabel="model",taillabel="ownedRelation[*]",group=KDMModel,minlen=2,constraint=true,]
+ KDMRelationship->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Annotation[label="{Annotation|note : String| }"]
+ Annotation->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Attribute[label="{Attribute|tag : String\nvalue : String| }"]
+ Attribute->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+KDMExtensionFamily[label="{KDMExtensionFamily|name : String| }"]
+ KDMExtensionFamily->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Stereotype[label="{Stereotype|baseClass : String\nname : String| }"]
+ Stereotype->KDMExtensionFamily[arrowhead=diamond,arrowtail=none,headlabel="family",taillabel="stereotype[*]",group=KDMExtensionFamily,minlen=2,constraint=true,]
+ Stereotype->TagDefinition[arrowhead=vee,arrowtail=diamond,headlabel="tag[*]",group=TagDefinition,minlen=2,constraint=true,]
+ Stereotype->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TagDefinition[label="{TagDefinition|tag : String\ntype : String| }"]
+ TagDefinition->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TaggedValue[label="{TaggedValue|value : String| }"]
+ TaggedValue->TagDefinition[arrowhead=vee,arrowtail=none,headlabel="tag",group=TagDefinition,minlen=2,constraint=false,]
+ TaggedValue->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+KDMFramework[label="{/KDMFramework/|name : String| }"]
+ KDMFramework->KDMExtensionFamily[arrowhead=vee,arrowtail=diamond,headlabel="extension[*]",group=KDMExtensionFamily,minlen=2,constraint=true,]
+ KDMFramework->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+KDMModel[label="{/KDMModel/| | }"]
+ KDMModel->KDMFramework[arrowhead=onormal,group=KDMFramework,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

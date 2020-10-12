@@ -1,0 +1,105 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'ODPNV'>
+    <Class name = 'Node' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'location' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'datatypes::String'/>
+      <Reference name = 'manager' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ODPNV::Nucleus' opposite = ''/>
+      <Reference name = 'capsules' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ODPNV::Capsule' opposite = ''/>
+    </Class>
+    <Class name = 'Nucleus' isAbstract = 'false' supertypes = 'ODPNV::EngineeringObject'>
+      <Reference name = 'otherEngObjects' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::EngineeringObject' opposite = 'ODPNV::EngineeringObject::nodeManager'/>
+      <Reference name = 'beos' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::BEO' opposite = 'ODPNV::BEO::beoNodeManager'/>
+    </Class>
+    <Class name = 'Capsule' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'otherEngObjects' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ODPNV::EngineeringObject' opposite = ''/>
+      <Reference name = 'capsuleManager' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ODPNV::CapsuleManager' opposite = ''/>
+      <Reference name = 'clusterManagers' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ODPNV::ClusterManager' opposite = ''/>
+      <Reference name = 'clusters' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ODPNV::Cluster' opposite = ''/>
+    </Class>
+    <Class name = 'EngineeringObject' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'nodeManager' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::Nucleus' opposite = 'ODPNV::Nucleus::otherEngObjects'/>
+    </Class>
+    <Class name = 'CapsuleManager' isAbstract = 'false' supertypes = 'ODPNV::EngineeringObject'>
+      <Reference name = 'cmClusterManagers' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::ClusterManager' opposite = 'ODPNV::ClusterManager::capsuleManager'/>
+    </Class>
+    <Class name = 'Cluster' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'clusterManager' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::ClusterManager' opposite = 'ODPNV::ClusterManager::clusters'/>
+      <Reference name = 'clusterBeos' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ODPNV::BEO' opposite = ''/>
+    </Class>
+    <Class name = 'ClusterManager' isAbstract = 'false' supertypes = 'ODPNV::EngineeringObject'>
+      <Reference name = 'clusters' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::Cluster' opposite = 'ODPNV::Cluster::clusterManager'/>
+      <Reference name = 'clustermanagerBeos' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::BEO' opposite = 'ODPNV::BEO::beoManager'/>
+      <Reference name = 'capsuleManager' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::CapsuleManager' opposite = 'ODPNV::CapsuleManager::cmClusterManagers'/>
+    </Class>
+    <Class name = 'BEO' isAbstract = 'false' supertypes = 'ODPNV::EngineeringObject'>
+      <Reference name = 'beoNodeManager' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::Nucleus' opposite = 'ODPNV::Nucleus::beos'/>
+      <Reference name = 'locallyBoundObjects' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::BEO' opposite = 'ODPNV::BEO::localbinds'/>
+      <Reference name = 'localbinds' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::BEO' opposite = 'ODPNV::BEO::locallyBoundObjects'/>
+      <Reference name = 'beoManager' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::ClusterManager' opposite = 'ODPNV::ClusterManager::clustermanagerBeos'/>
+      <Reference name = 'beoChannel' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::Channel' opposite = 'ODPNV::Channel::chEndPoint'/>
+      <Reference name = 'beoStub' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::Stub' opposite = 'ODPNV::Stub::stBeo'/>
+    </Class>
+    <Class name = 'Stub' isAbstract = 'false' supertypes = 'ODPNV::EngineeringObject'>
+      <Reference name = 'stChannel' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::Channel' opposite = 'ODPNV::Channel::chStub'/>
+      <Reference name = 'stBinder' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::Binder' opposite = 'ODPNV::Binder::chBinder'/>
+      <Reference name = 'stBeo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::BEO' opposite = 'ODPNV::BEO::beoStub'/>
+    </Class>
+    <Class name = 'Binder' isAbstract = 'false' supertypes = 'ODPNV::EngineeringObject'>
+      <Reference name = 'bdChannel' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::Channel' opposite = 'ODPNV::Channel::chBinder'/>
+      <Reference name = 'chBinder' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::Stub' opposite = 'ODPNV::Stub::stBinder'/>
+      <Reference name = 'bdProtocolObject' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::ProtocolObject' opposite = 'ODPNV::ProtocolObject::poBinder'/>
+    </Class>
+    <Class name = 'ProtocolObject' isAbstract = 'false' supertypes = 'ODPNV::EngineeringObject'>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'datatypes::String'/>
+      <Reference name = 'poChannel' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::Channel' opposite = 'ODPNV::Channel::chPObject'/>
+      <Reference name = 'poBinder' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::Binder' opposite = 'ODPNV::Binder::bdProtocolObject'/>
+      <Reference name = 'poInterceptor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::Interceptor' opposite = 'ODPNV::Interceptor::intProtocolObject'/>
+      <Reference name = 'poBoundProtocolObject' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::ProtocolObject' opposite = ''/>
+    </Class>
+    <Class name = 'Interceptor' isAbstract = 'false' supertypes = 'ODPNV::EngineeringObject'>
+      <Reference name = 'intChannel' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::Channel' opposite = 'ODPNV::Channel::chInterceptor'/>
+      <Reference name = 'intProtocolObject' lower = '2' upper = '2' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::ProtocolObject' opposite = 'ODPNV::ProtocolObject::poInterceptor'/>
+    </Class>
+    <Class name = 'Channel' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'chStub' lower = '2' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ODPNV::Stub' opposite = 'ODPNV::Stub::stChannel'/>
+      <Reference name = 'chBinder' lower = '2' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ODPNV::Binder' opposite = 'ODPNV::Binder::bdChannel'/>
+      <Reference name = 'chPObject' lower = '2' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ODPNV::ProtocolObject' opposite = 'ODPNV::ProtocolObject::poChannel'/>
+      <Reference name = 'chInterceptor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ODPNV::Interceptor' opposite = 'ODPNV::Interceptor::intChannel'/>
+      <Reference name = 'chEndPoint' lower = '2' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::BEO' opposite = 'ODPNV::BEO::beoChannel'/>
+    </Class>
+    <Class name = 'ClientServerChannel' isAbstract = 'false' supertypes = 'ODPNV::Channel'/>
+    <Class name = 'ControllingObject' isAbstract = 'false' supertypes = 'ODPNV::EngineeringObject'>
+      <Reference name = 'coDomain' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::Domain' opposite = 'ODPNV::Domain::domControllingObject'/>
+    </Class>
+    <Class name = 'SecurityAuthority' isAbstract = 'false' supertypes = 'ODPNV::ControllingObject'/>
+    <Class name = 'ManagementAuthority' isAbstract = 'false' supertypes = 'ODPNV::ControllingObject'/>
+    <Class name = 'AddressingAuthority' isAbstract = 'false' supertypes = 'ODPNV::ControllingObject'/>
+    <Class name = 'NamingAuthority' isAbstract = 'false' supertypes = 'ODPNV::ControllingObject'/>
+    <Class name = 'ControlledObject' isAbstract = 'false' supertypes = 'ODPNV::EngineeringObject'>
+      <Reference name = 'cdoDomain' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::Domain' opposite = 'ODPNV::Domain::domMember'/>
+    </Class>
+    <Class name = 'Domain' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'parentDomain' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::Domain' opposite = 'ODPNV::Domain::subDomain'/>
+      <Reference name = 'subDomain' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::Domain' opposite = 'ODPNV::Domain::parentDomain'/>
+      <Reference name = 'domControllingObject' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::ControllingObject' opposite = 'ODPNV::ControllingObject::coDomain'/>
+      <Reference name = 'domMember' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::ControlledObject' opposite = 'ODPNV::ControlledObject::cdoDomain'/>
+    </Class>
+    <Class name = 'SecurityDomain' isAbstract = 'false' supertypes = 'ODPNV::Domain'/>
+    <Class name = 'ManagementDomain' isAbstract = 'false' supertypes = 'ODPNV::Domain'/>
+    <Class name = 'AddressingDomain' isAbstract = 'false' supertypes = 'ODPNV::Domain'/>
+    <Class name = 'NamingDomain' isAbstract = 'false' supertypes = 'ODPNV::Domain'/>
+    <Class name = 'EngineeringInterfaceReferenceManagementDomain' isAbstract = 'false' supertypes = 'ODPNV::NamingDomain'>
+      <Reference name = 'eirmdReference' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::EngineeringInterfaceReference' opposite = 'ODPNV::EngineeringInterfaceReference::eirManagementDomain'/>
+      <Reference name = 'eirmdManagementPolicy' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::EngineeringInterfaceReferenceManagementPolicy' opposite = 'ODPNV::EngineeringInterfaceReferenceManagementPolicy::eirmpManagementDomain'/>
+    </Class>
+    <Class name = 'EngineeringInterfaceReferenceManagementPolicy' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'eirmpManagementDomain' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::EngineeringInterfaceReferenceManagementDomain' opposite = 'ODPNV::EngineeringInterfaceReferenceManagementDomain::eirmdManagementPolicy'/>
+    </Class>
+    <Class name = 'EngineeringInterfaceReference' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'eirManagementDomain' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPNV::EngineeringInterfaceReferenceManagementDomain' opposite = 'ODPNV::EngineeringInterfaceReferenceManagementDomain::eirmdReference'/>
+    </Class>
+  </Package>
+  <Package name = 'datatypes'>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

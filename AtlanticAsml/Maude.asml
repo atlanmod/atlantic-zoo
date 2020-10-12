@@ -1,0 +1,275 @@
+class MaudeSpec
+  // els IsContainer
+  var els as Set of MaudeTopEl
+  var printableEls as Set of MaudeTopEl
+
+abstract class MaudeTopEl
+  var name as Set of String
+
+abstract class ModExpression
+
+class InstModExp extends ModExpression
+  // modExp IsContainer
+  var modExp as Set of ModExpression
+  var views as Set of View
+
+class RenModExp extends ModExpression
+  // modExp IsContainer
+  var modExp as Set of ModExpression
+  // renamings IsContainer
+  var renamings as Set of RenMapping
+
+class CompModExp extends ModExpression
+  // modExps IsContainer
+  var modExps as Set of ModExpression
+
+class ModuleIdModExp extends ModExpression
+  var module as Set of Module
+
+class TheoryIdModExp extends ModExpression
+  var theory as Set of Theory
+
+class Parameter extends ModExpression
+  var label as Set of String
+  // modExp IsContainer
+  var modExp as Set of ModExpression
+
+abstract class Theory extends MaudeTopEl
+  // els IsContainer
+  var els as Set of ModElement
+
+class FTheory extends Theory
+
+class STheory extends Theory
+
+abstract class Module extends MaudeTopEl
+  // els IsContainer
+  var els as Set of ModElement
+  // params IsContainer
+  var params as Set of Parameter
+
+class FModule extends Module
+
+class SModule extends Module
+
+abstract class ModElement
+  var module as Set of Module
+  var theory as Set of Theory
+
+class ModImportation extends ModElement
+  var mode as Set of ImportationMode
+  // imports IsContainer
+  var imports as Set of ModExpression
+
+abstract class _Type
+  var name as Set of String
+
+class Sort extends _Type
+  var subsortRels as Set of SubsortRel
+  var supersortRels as Set of SubsortRel
+  var kind as Set of Kind
+
+class Kind extends _Type
+  var sorts as Set of Sort
+
+class SubsortRel extends ModElement
+  var subsorts as Set of Sort
+  var supersorts as Set of Sort
+
+class Operation extends ModElement
+  var name as Set of String
+  var atts as Set of String
+  var coarity as Set of _Type
+  var arity as Set of _Type
+
+abstract class Statement extends ModElement
+  var label as Set of String
+  var atts as Set of String
+  // conds IsContainer
+  var conds as Set of Condition
+
+class Membership extends Statement
+  // term IsContainer
+  var term as Set of Term
+  var sort as Set of Sort
+
+class Equation extends Statement
+  // lhs IsContainer
+  var lhs as Set of Term
+  // rhs IsContainer
+  var rhs as Set of Term
+
+class Rule extends Statement
+  // lhs IsContainer
+  var lhs as Set of Term
+  // rhs IsContainer
+  var rhs as Set of Term
+
+abstract class Condition
+  // lhs IsContainer
+  var lhs as Set of Term
+
+abstract class EquationalCond extends Condition
+
+class RewriteCond extends Condition
+  // rhs IsContainer
+  var rhs as Set of Term
+
+class MembershipCond extends EquationalCond
+  var rhs as Set of Sort
+
+class BooleanCond extends EquationalCond
+
+class MatchingCond extends EquationalCond
+  // rhs IsContainer
+  var rhs as Set of Term
+
+class EqualCond extends EquationalCond
+  // rhs IsContainer
+  var rhs as Set of Term
+
+abstract class Term
+  var _type as Set of _Type
+
+class Constant extends Term
+  var op as Set of String
+
+class RecTerm extends Term
+  var op as Set of String
+  // args IsContainer
+  var args as Set of Term
+
+class Variable extends Term
+  var name as Set of String
+
+class View extends MaudeTopEl
+  // _from IsContainer
+  var _from as Set of ModExpression
+  // _to IsContainer
+  var _to as Set of ModExpression
+  // els IsContainer
+  var els as Set of ViewMapping
+
+abstract class ViewMapping
+
+abstract class RenMapping extends ViewMapping
+
+class TermMapping extends ViewMapping
+  // _from IsContainer
+  var _from as Set of Term
+  // _to IsContainer
+  var _to as Set of Term
+
+class SortMapping extends RenMapping
+  var _to as Set of String
+  var _from as Set of Sort
+
+class OpTypedMapping extends RenMapping
+  var _to as Set of String
+  var atts as Set of String
+  var _from as Set of Operation
+
+class OpMapping extends RenMapping
+  var _to as Set of String
+  var _from as Set of Operation
+
+class LabelMapping extends RenMapping
+  var _from as Set of String
+  var _to as Set of String
+
+enum ImportationMode
+  protecting
+  including
+  extending
+
+var MaudeSpec_Universe as Set of MaudeSpec
+
+var MaudeTopEl_Universe as Set of MaudeTopEl
+
+var ModExpression_Universe as Set of ModExpression
+
+var InstModExp_Universe as Set of InstModExp
+
+var RenModExp_Universe as Set of RenModExp
+
+var CompModExp_Universe as Set of CompModExp
+
+var ModuleIdModExp_Universe as Set of ModuleIdModExp
+
+var TheoryIdModExp_Universe as Set of TheoryIdModExp
+
+var Parameter_Universe as Set of Parameter
+
+var Theory_Universe as Set of Theory
+
+var FTheory_Universe as Set of FTheory
+
+var STheory_Universe as Set of STheory
+
+var Module_Universe as Set of Module
+
+var FModule_Universe as Set of FModule
+
+var SModule_Universe as Set of SModule
+
+var ModElement_Universe as Set of ModElement
+
+var ModImportation_Universe as Set of ModImportation
+
+var _Type_Universe as Set of _Type
+
+var Sort_Universe as Set of Sort
+
+var Kind_Universe as Set of Kind
+
+var SubsortRel_Universe as Set of SubsortRel
+
+var Operation_Universe as Set of Operation
+
+var Statement_Universe as Set of Statement
+
+var Membership_Universe as Set of Membership
+
+var Equation_Universe as Set of Equation
+
+var Rule_Universe as Set of Rule
+
+var Condition_Universe as Set of Condition
+
+var EquationalCond_Universe as Set of EquationalCond
+
+var RewriteCond_Universe as Set of RewriteCond
+
+var MembershipCond_Universe as Set of MembershipCond
+
+var BooleanCond_Universe as Set of BooleanCond
+
+var MatchingCond_Universe as Set of MatchingCond
+
+var EqualCond_Universe as Set of EqualCond
+
+var Term_Universe as Set of Term
+
+var Constant_Universe as Set of Constant
+
+var RecTerm_Universe as Set of RecTerm
+
+var Variable_Universe as Set of Variable
+
+var View_Universe as Set of View
+
+var ViewMapping_Universe as Set of ViewMapping
+
+var RenMapping_Universe as Set of RenMapping
+
+var TermMapping_Universe as Set of TermMapping
+
+var SortMapping_Universe as Set of SortMapping
+
+var OpTypedMapping_Universe as Set of OpTypedMapping
+
+var OpMapping_Universe as Set of OpMapping
+
+var LabelMapping_Universe as Set of LabelMapping
+
+Main()

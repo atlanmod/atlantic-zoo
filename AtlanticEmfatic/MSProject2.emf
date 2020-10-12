@@ -1,0 +1,61 @@
+package Metamodel;
+
+package MSProject {
+  class MSPProject {
+    !ordered val MSPResource[*]#project resource;
+    !ordered val MSPLink[*]#project link;
+    !ordered val MSPTask[*]#project task;
+  }
+
+  class MSPTask {
+    !unique !ordered attr Date[1] finishDate;
+    !unique !ordered attr Date[1] startDate;
+    !ordered ref MSPProject[1]#task project;
+    !ordered ref MSPTask#subTask superTask;
+    !ordered ref MSPTask[*]#superTask subTask;
+    !ordered ref MSPAssignment[*]#task assignment;
+    !ordered ref MSPLink[*]#succ inLink;
+    !ordered ref MSPLink[*]#pred outLink;
+  }
+
+  class MSPLink {
+    !ordered ref MSPProject[1]#link project;
+    !ordered ref MSPTask[1]#inLink succ;
+    !ordered ref MSPTask[1]#outLink pred;
+  }
+
+  class MSPAssignment {
+    !ordered ref MSPTask[1]#assignment task;
+    !ordered ref MSPResource[1]#assignment resource;
+  }
+
+  class MSPResource {
+    !unique !ordered attr PrimitiveTypes.Double[1] cost;
+    !ordered ref MSPProject[1]#resource project;
+    !ordered ref MSPAssignment[*]#resource assignment;
+  }
+
+  class MSPHumanResource extends MSPResource {
+    !unique !ordered attr String[1] email;
+  }
+
+  class MSPMachine extends MSPResource {
+  }
+
+  class Date {
+    !unique !ordered attr Integer[1] day;
+    !unique !ordered attr Integer[1] month;
+    !unique !ordered attr Integer[1] year;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype Double : "";
+
+  datatype String : "";
+
+}
+

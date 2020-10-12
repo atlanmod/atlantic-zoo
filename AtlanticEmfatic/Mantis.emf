@@ -1,0 +1,94 @@
+package Metamodel;
+
+package Mantis {
+  enum RelationshipType {
+    rt_related to = 0;
+    rt_parent of = 0;
+    rt_child of = 0;
+    rt_duplicate of = 0;
+    rt_has duplicate = 0;
+  }
+
+  class MantisRoot {
+    val Issue[*]#i_mantisRoot issues;
+  }
+
+  abstract class IdentifiedElt {
+    !unique !ordered attr Integer[1] ~id;
+  }
+
+  abstract class PrivateElt {
+    !unique !ordered attr Boolean private;
+  }
+
+  class Issue extends IdentifiedElt, PrivateElt {
+    !ordered ref MantisRoot[1]#issues i_mantisRoot;
+    !ordered val ValueWithId[1] project;
+    !unique !ordered attr String[1] category;
+    !ordered val ValueWithId[1] priority;
+    !ordered val ValueWithId[1] severity;
+    !ordered val ValueWithId[1] status;
+    !ordered val Person[1] reporter;
+    !unique !ordered attr String[1] summary;
+    !unique !ordered attr String[1] description;
+    !unique !ordered attr String version;
+    !unique !ordered attr String build;
+    !unique !ordered attr String platform;
+    !unique !ordered attr String os;
+    !unique !ordered attr String osVersion;
+    !ordered val ValueWithId[1] reproducibility;
+    !unique !ordered attr String stepsToReproduce;
+    !unique !ordered attr String additionalInfo;
+    !unique !ordered attr Integer[1] dateSubmitted;
+    !ordered val Person assignedTo;
+    !ordered val ValueWithId projection;
+    !ordered val ValueWithId eta;
+    !ordered val ValueWithId resolution;
+    !unique !ordered attr String fixedInVersion;
+    val Attachment[*] attachments;
+    val Relationship[*] relationships;
+    val Note[*] notes;
+    !unique !ordered attr Integer[1] lastUpdate;
+  }
+
+  class ValueWithId extends IdentifiedElt {
+    !unique !ordered attr String[1] value;
+  }
+
+  class Person extends ValueWithId {
+    !unique !ordered attr String[1] login;
+  }
+
+  class Relationship extends IdentifiedElt {
+    !unique !ordered attr RelationshipType[1] type;
+  }
+
+  abstract class TimeStampedElt {
+    !unique !ordered attr Integer[1] timestamp;
+  }
+
+  class Note extends TimeStampedElt, PrivateElt {
+    !ordered val Person[1] author;
+    !unique !ordered attr String[1] text;
+  }
+
+  class Attachment extends TimeStampedElt {
+    !unique !ordered attr String[1] filename;
+    !unique !ordered attr Integer[1] size;
+    !unique !ordered attr String[1] contentType;
+    !unique !ordered attr String[1] downloadUrl;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

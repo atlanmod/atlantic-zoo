@@ -1,0 +1,88 @@
+-- @name		OpenQVT
+-- @version		0.1
+-- @domains		QVT
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/09
+-- @description	This metamodel describes the structure of OpenQVT. The QVT Structure layer introduces common OO structuring concepts that can be easily shared by existing or new QVT languages and QVT frameworks. Such a common foundation is important to model explicitly the inter-operability between distinct tools possibly implementing a variety of formalisms and paradigms. This layer only exposes structuring concepts any excludes any behavioral concern. Note that this level does not need to be standardized since the common Core of the infrastructure library shared by MOF and UML 2.0 already represents it. The next upper level is the "QVT Languages and Frameworks". Any language or any framework, which is compliant with the structuring concepts defined in the previous layer, is positioned here. The TRL language (a renaming of MTRANS), proposed for specifying precise mappings in the OMG specifications, is an example. However, other approaches may be used. A transformation program may be written using a programming language such as Java or Python and use various structural patterns packaged in a transformation framework. The highest abstract layer is "QVT interoperability", which introduces a component view of transformations, allowing them to be integrated or combined within transformation assembly lines.
+
+package OpenQVT {
+
+	class Variable {
+		attribute name : String;
+		attribute type : String;
+		attribute value : String;
+		attribute visibility : String;
+		reference context : Context oppositeOf variables;
+	}
+
+	class Context {
+		reference variables[*] container : Variable oppositeOf context;
+		reference rule : Rule oppositeOf context;
+	}	
+
+	class Rule {
+		reference context container : Context oppositeOf rule;
+		reference subRule container : Rule oppositeOf superRule;
+		reference superRule : Rule oppositeOf subRule;
+		reference services[*] container : Service oppositeOf rule;
+	}
+
+	class RootRule extends Rule {
+		reference ruleSet : RuleSet oppositeOf rootRule;
+	}
+
+	class RuleSetCall extends Rule {
+		reference ruleSet : RuleSet;
+	}
+
+	class QARule extends Rule {
+		reference query container : Query oppositeOf qARule;
+		reference action container : Action oppositeOf qARule;
+	}
+
+	class RuleSet {
+		reference rootRule container : RootRule oppositeOf ruleSet;
+	}
+
+	class Service {
+		attribute visibility : String;
+		attribute signature : String;
+		reference rule : Rule oppositeOf services;
+	}
+
+	class OCLService extends Service {}
+
+	class RTransService extends Service {}
+
+	class JavaService extends Service {}
+
+	abstract class RulePart {
+		reference service : Service;
+	}
+	
+	class Action extends RulePart {
+		reference qARule : QARule oppositeOf action;
+	}
+
+	class RTransAction extends Action {}
+
+	class JavaAction extends Action {}
+
+	class Query extends RulePart {
+		reference qARule : QARule oppositeOf query;
+	}
+	
+	class OCLFilter extends Query {}
+	
+	class RTransQuery extends Query {}
+	
+	class JavaQuery extends Query {}
+	
+	class JavaFilter extends Query {}
+
+	
+}
+
+package PrimitiveTypes {	
+	datatype String;
+}

@@ -1,0 +1,5 @@
+( defstruct TextualPathExp :path )
+( defstruct Path :transitions )
+( defstruct Transition :isMultiple )
+( defstruct AlternativeTrans :altPaths :isMultiple )
+( defstruct PrimitiveTrans :name :isMultiple )

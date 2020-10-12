@@ -1,0 +1,71 @@
+-- @name		Generic editor
+-- @version		0.2
+-- @domains		IDE
+-- @authors		Julien Bernier, Manuel Boillod, Joanny Christ and Sylvain Leduby
+-- @date		2005/02/01
+-- @description	This metamodel describes the notion editor. A generic editor is composed of blocks (e.g. CommentsLine or String) and GroupElement (e.g. Keyword, Constant or Symbol).
+-- @see			
+
+package Editor {
+
+	abstract class LocatedElement {
+		attribute location : String;
+	}
+
+	class Editor extends LocatedElement {
+		attribute extension : String;
+		reference abstractElements[*] container : AbstractElement;
+	}
+
+	abstract class AbstractElement extends LocatedElement {
+		attribute type : String;
+		reference format[0-1] container : Format;
+	}
+
+-- @begin Block
+	class Block extends AbstractElement {
+		attribute blockbegin : String;
+		attribute blockend : String;
+	}
+-- @end Block
+
+-- @begin GroupElement
+	class GroupElement extends AbstractElement {
+		reference indent[0-1] container : Indent;
+		reference element[*] container : Element;
+	}
+-- @end GroupElement
+
+	class Element extends LocatedElement {
+		attribute element : String;
+		reference groupElement : GroupElement;
+	}
+
+	class Format extends LocatedElement {
+		reference color[0-1] container : Color;
+		reference font[0-1] container : Font;
+	}
+
+	class Color extends LocatedElement {
+		attribute red : Integer;
+		attribute green : Integer;
+		attribute blue : Integer;
+	}
+
+	class Font extends LocatedElement {
+		attribute font : String;
+		attribute bold : Boolean;
+		attribute italic : Boolean;
+	}
+
+	class Indent extends LocatedElement {
+		attribute retrait : String;
+		reference groupElementIndent : GroupElement;
+	}
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+	datatype Boolean;
+}

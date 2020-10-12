@@ -1,0 +1,133 @@
+package Metamodel;
+
+package SQLDML {
+  abstract class LocatedElement {
+    !unique !ordered attr String[1] location;
+    !unique !ordered attr String[*] commentsBefore;
+    !unique !ordered attr String[*] commentsAfter;
+  }
+
+  class SQLRoot extends LocatedElement {
+    !ordered val Statement[*] statements;
+  }
+
+  abstract class Statement extends LocatedElement {
+  }
+
+  class ViewStatement extends Statement {
+    !unique !ordered attr String[1] name;
+    !ordered val ColumnExp[+] columns;
+    !ordered val QueryStmt[1] query;
+  }
+
+  class InsertStmt extends Statement {
+    !unique !ordered attr String[1] tableName;
+    !ordered val Expression[*] values;
+  }
+
+  abstract class QueryStmt extends Statement {
+    !ordered val Table[+] tables;
+    !ordered val WhereClause condition;
+  }
+
+  class QueryStmtCol extends QueryStmt {
+    !ordered val Expression[+] columns;
+  }
+
+  class QueryStmtAllCol extends QueryStmt {
+  }
+
+  abstract class NamedElement extends LocatedElement {
+    !unique !ordered attr String[1] name;
+  }
+
+  class Table extends NamedElement {
+    !unique !ordered attr String[1] alias;
+  }
+
+  class WhereClause extends LocatedElement {
+    !ordered val Expression[1] expression;
+  }
+
+  abstract class Expression extends LocatedElement {
+  }
+
+  abstract class BinaryExp extends Expression {
+    !unique !ordered attr String[1] opName;
+    !ordered val Expression[1] leftExp;
+    !ordered val Expression[1] rightExp;
+  }
+
+  class OrExp extends BinaryExp {
+  }
+
+  class AndExp extends BinaryExp {
+  }
+
+  class NotExp extends Expression {
+    !unique !ordered attr String[1] opName;
+    !ordered val Expression[1] valueExp;
+    !ordered val Expression unused;
+  }
+
+  class LikeExp extends Expression {
+    !unique !ordered attr String[1] columnName;
+    !ordered val StringValueExp[1] expression;
+  }
+
+  class InExp extends Expression {
+    !unique !ordered attr String[1] columnName;
+    !ordered val Predicate[+] elements;
+  }
+
+  class OperationExp extends BinaryExp {
+    !unique !ordered attr String[1] optName;
+  }
+
+  abstract class Predicate extends Expression {
+  }
+
+  class QueryPredicate extends Expression {
+    !ordered val QueryStmt[1] query;
+  }
+
+  class ColumnExp extends Predicate, NamedElement {
+    !unique !ordered attr String[1] alias;
+    !ordered val DataType[1] type;
+  }
+
+  abstract class ValueExp extends Predicate {
+    !ordered val DataType type;
+  }
+
+  class StringValueExp extends ValueExp {
+    !unique !ordered attr String[1] aValue;
+  }
+
+  class IntegerValueExp extends ValueExp {
+    !unique !ordered attr Integer[1] aValue;
+  }
+
+  class ListExp extends Predicate {
+    !ordered val Expression[*] elements;
+  }
+
+  class FunctionExp extends Predicate {
+    !ordered val Expression[*] arguments;
+    !unique !ordered attr String[1] name;
+  }
+
+  class DataType extends NamedElement {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

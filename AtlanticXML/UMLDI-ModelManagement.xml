@@ -1,0 +1,72 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'Model_Management'>
+    <Class name = 'Package' isAbstract = 'false' supertypes = 'Core::GeneralizableElement, Core::Namespace'>
+      <Reference name = 'elementImport' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Model_Management::ElementImport' opposite = 'Model_Management::ElementImport::package'/>
+    </Class>
+    <Class name = 'Model' isAbstract = 'false' supertypes = 'Model_Management::Package'/>
+    <Class name = 'Subsystem' isAbstract = 'false' supertypes = 'Model_Management::Package, Core::Classifier'>
+      <Attribute name = 'isInstantiable' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'ElementImport' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'package' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Model_Management::Package' opposite = 'Model_Management::Package::elementImport'/>
+      <Reference name = 'importedElement' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::ModelElement' opposite = ''/>
+      <Attribute name = 'visibility' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Data_Types::VisibilityKind'/>
+      <Attribute name = 'alias' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'isSpecification' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+  </Package>
+  <Package name = 'Core'>
+    <Class name = 'Element' isAbstract = 'true' supertypes = ''/>
+    <Class name = 'ModelElement' isAbstract = 'true' supertypes = 'Core::Element'>
+      <Reference name = 'namespace' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::Namespace' opposite = 'Core::Namespace::ownedElement'/>
+      <Attribute name = 'name' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'visibility' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Data_Types::VisibilityKind'/>
+      <Attribute name = 'isSpecification' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'GeneralizableElement' isAbstract = 'true' supertypes = 'Core::ModelElement'>
+      <Reference name = 'generalization' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Core::Generalization' opposite = 'Core::Generalization::child'/>
+      <Attribute name = 'isRoot' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isLeaf' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isAbstract' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'Namespace' isAbstract = 'true' supertypes = 'Core::ModelElement'>
+      <Reference name = 'ownedElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Core::ModelElement' opposite = 'Core::ModelElement::namespace'/>
+    </Class>
+    <Class name = 'Classifier' isAbstract = 'true' supertypes = 'Core::GeneralizableElement, Core::Namespace'>
+      <Reference name = 'powertypeRange' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Core::Generalization' opposite = 'Core::Generalization::powertype'/>
+      <Reference name = 'feature' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Core::Feature' opposite = 'Core::Feature::owner'/>
+    </Class>
+    <Class name = 'Feature' isAbstract = 'true' supertypes = 'Core::ModelElement'>
+      <Reference name = 'owner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::Classifier' opposite = 'Core::Classifier::feature'/>
+      <Attribute name = 'ownerScope' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Data_Types::ScopeKind'/>
+    </Class>
+    <Class name = 'Relationship' isAbstract = 'true' supertypes = 'Core::ModelElement'/>
+    <Class name = 'Generalization' isAbstract = 'false' supertypes = 'Core::Relationship'>
+      <Reference name = 'parent' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::GeneralizableElement' opposite = ''/>
+      <Reference name = 'powertype' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::Classifier' opposite = 'Core::Classifier::powertypeRange'/>
+      <Reference name = 'child' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::GeneralizableElement' opposite = 'Core::GeneralizableElement::generalization'/>
+      <Attribute name = 'discriminator' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+  </Package>
+  <Package name = 'Data_Types'>
+    <Enumeration name = 'ScopeKind'>
+      <EnumLiteral name = 'sk_instance'/>
+      <EnumLiteral name = 'sk_classifier'/>
+    </Enumeration>
+    <Enumeration name = 'VisibilityKind'>
+      <EnumLiteral name = 'vk_public'/>
+      <EnumLiteral name = 'vk_protected'/>
+      <EnumLiteral name = 'vk_private'/>
+      <EnumLiteral name = 'vk_package'/>
+    </Enumeration>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Float'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'Long'/>
+    <DataType name = 'String'/>
+    <DataType name = 'Double'/>
+  </Package>
+</Metamodel>

@@ -1,0 +1,50 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'PNML'>
+    <Class name = 'LocatedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'location' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'IdedElement' isAbstract = 'true' supertypes = 'PNML::LocatedElement'>
+      <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'URI' isAbstract = 'false' supertypes = 'PNML::LocatedElement'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'PNMLDocument' isAbstract = 'false' supertypes = 'PNML::LocatedElement'>
+      <Reference name = 'xmlns' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::URI' opposite = ''/>
+      <Reference name = 'nets' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PNML::NetElement' opposite = 'PNML::NetElement::document'/>
+    </Class>
+    <Class name = 'NetElement' isAbstract = 'false' supertypes = 'PNML::IdedElement'>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::URI' opposite = ''/>
+      <Reference name = 'document' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::PNMLDocument' opposite = 'PNML::PNMLDocument::nets'/>
+      <Reference name = 'contents' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PNML::NetContent' opposite = 'PNML::NetContent::net'/>
+      <Reference name = 'name' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Name' opposite = 'PNML::Name::net'/>
+    </Class>
+    <Class name = 'NetContent' isAbstract = 'true' supertypes = 'PNML::LocatedElement'>
+      <Reference name = 'net' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::NetElement' opposite = 'PNML::NetElement::contents'/>
+      <Reference name = 'name' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Name' opposite = 'PNML::Name::netContent'/>
+    </Class>
+    <Class name = 'LabeledElement' isAbstract = 'true' supertypes = 'PNML::LocatedElement'>
+      <Reference name = 'labels' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PNML::Label' opposite = 'PNML::Label::labeledElement'/>
+    </Class>
+    <Class name = 'Label' isAbstract = 'false' supertypes = 'PNML::LocatedElement'>
+      <Attribute name = 'text' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'labeledElement' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::LabeledElement' opposite = 'PNML::LabeledElement::labels'/>
+    </Class>
+    <Class name = 'Name' isAbstract = 'false' supertypes = 'PNML::LabeledElement'>
+      <Reference name = 'net' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::NetElement' opposite = 'PNML::NetElement::name'/>
+      <Reference name = 'netContent' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::NetContent' opposite = 'PNML::NetContent::name'/>
+    </Class>
+    <Class name = 'NetContentElement' isAbstract = 'true' supertypes = 'PNML::NetContent, PNML::IdedElement'/>
+    <Class name = 'Arc' isAbstract = 'false' supertypes = 'PNML::NetContent, PNML::IdedElement'>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::NetContentElement' opposite = ''/>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PNML::NetContentElement' opposite = ''/>
+    </Class>
+    <Class name = 'Place' isAbstract = 'false' supertypes = 'PNML::NetContentElement'/>
+    <Class name = 'Transition' isAbstract = 'false' supertypes = 'PNML::NetContentElement'/>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

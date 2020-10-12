@@ -1,0 +1,65 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_JavaProject"{
+labelloc=t
+color=black
+label=JavaProject
+ node[shape=record];
+JavaProject[label="{JavaProject| | }"]
+ JavaProject->PackageFragment[arrowhead=vee,arrowtail=diamond,headlabel="ownedPackageFragment[*]{ordered}",group=PackageFragment,minlen=2,constraint=true,]
+ JavaProject->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PackageFragment[label="{PackageFragment| | }"]
+ PackageFragment->CompilationUnit[arrowhead=vee,arrowtail=diamond,headlabel="ownedCompilationUnit[*]{ordered}",group=CompilationUnit,minlen=2,constraint=true,]
+ PackageFragment->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompilationUnit[label="{CompilationUnit| | }"]
+ CompilationUnit->ImportDeclaration[arrowhead=vee,arrowtail=diamond,headlabel="importDeclaration[*]{ordered}",group=ImportDeclaration,minlen=2,constraint=true,]
+ CompilationUnit->Type[arrowhead=vee,arrowtail=diamond,headlabel="ownedType[*]{ordered}",group=Type,minlen=2,constraint=true,]
+ CompilationUnit->PackageDeclaration[arrowhead=vee,arrowtail=diamond,headlabel="declaration[0-1]",group=PackageDeclaration,minlen=2,constraint=true,]
+ CompilationUnit->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ImportDeclaration[label="{ImportDeclaration| | }"]
+ ImportDeclaration->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Type[label="{Type|elementName[0-1] : String\nmember_kind[0-1] : MEMBER_KIND| }"]
+ Type->Type[arrowhead=vee,arrowtail=diamond,headlabel="nestedType[*]{ordered}",group=Type,minlen=2,constraint=true,]
+ Type->Type[arrowhead=vee,arrowtail=none,headlabel="ownedSuperType[*]{ordered}",group=Type,minlen=2,constraint=false,]
+ Type->Method[arrowhead=vee,arrowtail=diamond,headlabel="methods[*]{ordered}",group=Method,minlen=2,constraint=true,]
+ Type->Field[arrowhead=vee,arrowtail=diamond,headlabel="fields[*]{ordered}",group=Field,minlen=2,constraint=true,]
+ Type->JavaElement[arrowhead=onormal,group=JavaElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Field[label="{Field| | }"]
+ Field->JavaElement[arrowhead=onormal,group=JavaElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Method[label="{Method|returnType[0-1] : String\nparametersName[*] : String\nparametersType[*] : String| }"]
+ Method->JavaElement[arrowhead=onormal,group=JavaElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+JavaElement[label="{/JavaElement/| | }"]
+ JavaElement->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NamedElement[label="{/NamedElement/|name[0-1] : String| }"]
+;
+ node[shape=record];
+PackageDeclaration[label="{PackageDeclaration| | }"]
+ PackageDeclaration->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

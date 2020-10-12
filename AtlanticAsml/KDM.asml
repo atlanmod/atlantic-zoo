@@ -1,0 +1,1021 @@
+class ActionElement extends AbstractCodeElement
+  var kind as Set of String
+  // codeElement IsContainer
+  var codeElement as Set of AbstractCodeElement
+  // actionRelation IsContainer
+  var actionRelation as Set of AbstractActionRelationship
+
+abstract class AbstractActionRelationship extends KDMRelationship
+
+class ControlFlow extends AbstractActionRelationship
+  var _to as Set of ActionElement
+  var _from as Set of ActionElement
+
+class Calls extends AbstractActionRelationship
+  var _to as Set of ControlElement
+  var _from as Set of ActionElement
+
+class Creates extends AbstractActionRelationship
+  var _to as Set of Datatype
+  var _from as Set of ActionElement
+
+class Reads extends AbstractActionRelationship
+  var _to as Set of DataElement
+  var _from as Set of ActionElement
+
+class Writes extends AbstractActionRelationship
+  var _to as Set of DataElement
+  var _from as Set of ActionElement
+
+class CompliesTo extends AbstractActionRelationship
+  var _to as Set of CodeItem
+  var _from as Set of ActionElement
+
+class Flow extends ControlFlow
+
+class TrueFlow extends ControlFlow
+
+class FalseFlow extends ControlFlow
+
+class GuardedFlow extends ControlFlow
+
+class UsesType extends AbstractActionRelationship
+  var _to as Set of Datatype
+  var _from as Set of ActionElement
+
+class Addresses extends AbstractActionRelationship
+  var _to as Set of ComputationalObject
+  var _from as Set of ActionElement
+
+class ActionRelationship extends AbstractActionRelationship
+  var _to as Set of KDMEntity
+  var _from as Set of ActionElement
+
+class _Throws extends AbstractActionRelationship
+  var _to as Set of DataElement
+  var _from as Set of ActionElement
+
+class Dispatches extends AbstractActionRelationship
+  var _to as Set of DataElement
+  var _from as Set of ActionElement
+
+class EntryFlow extends AbstractActionRelationship
+  var _to as Set of ActionElement
+  var _from as Set of ControlElement
+
+class BlockUnit extends ActionElement
+
+class ExceptionUnit extends BlockUnit
+
+class TryUnit extends ExceptionUnit
+
+class FinallyUnit extends ExceptionUnit
+
+class CatchUnit extends ExceptionUnit
+
+class ExitFlow extends AbstractActionRelationship
+  var _to as Set of ActionElement
+  var _from as Set of ActionElement
+
+class ExceptionFlow extends AbstractActionRelationship
+  var _to as Set of ActionElement
+  var _from as Set of ActionElement
+
+abstract class AbstractBuildElement extends KDMEntity
+  // buildRelation IsContainer
+  var buildRelation as Set of AbstractBuildRelationship
+
+class BuildResource extends AbstractBuildElement
+  var implementation as Set of KDMEntity
+  var groupedBuild as Set of AbstractBuildElement
+  // buildElement IsContainer
+  var buildElement as Set of AbstractBuildElement
+
+class BuildDescription extends BuildResource
+  var text as Set of String
+  // source IsContainer
+  var source as Set of SourceRef
+
+class SymbolicLink extends AbstractBuildElement
+
+abstract class AbstractBuildRelationship extends KDMRelationship
+
+class LinksTo extends AbstractBuildRelationship
+  var _to as Set of AbstractBuildElement
+  var _from as Set of SymbolicLink
+
+class Consumes extends AbstractBuildRelationship
+  var _to as Set of AbstractBuildElement
+  var _from as Set of BuildStep
+
+class BuildModel extends KDMModel
+  // buildElement IsContainer
+  var buildElement as Set of AbstractBuildElement
+
+class BuildComponent extends BuildResource
+
+class Supplier extends AbstractBuildElement
+
+class Tool extends AbstractBuildElement
+
+class BuildElement extends AbstractBuildElement
+
+class BuildRelationship extends AbstractBuildRelationship
+  var _to as Set of KDMEntity
+  var _from as Set of AbstractBuildElement
+
+class SuppliedBy extends AbstractBuildRelationship
+  var _to as Set of Supplier
+  var _from as Set of AbstractBuildElement
+
+class Library extends BuildResource
+
+class BuildStep extends BuildResource
+
+class Produces extends AbstractBuildRelationship
+  var _to as Set of AbstractBuildElement
+  var _from as Set of BuildStep
+
+class SupportedBy extends AbstractBuildRelationship
+  var _to as Set of Tool
+  var _from as Set of BuildStep
+
+class BuildProduct extends BuildResource
+
+class DescribedBy extends AbstractBuildRelationship
+  var _to as Set of BuildDescription
+  var _from as Set of BuildStep
+
+abstract class AbstractCodeElement extends KDMEntity
+  // source IsContainer
+  var source as Set of SourceRef
+  // comment IsContainer
+  var comment as Set of CommentUnit
+  // codeRelation IsContainer
+  var codeRelation as Set of AbstractCodeRelationship
+
+abstract class CodeItem extends AbstractCodeElement
+
+abstract class ComputationalObject extends CodeItem
+
+class ControlElement extends ComputationalObject
+  var _type as Set of Datatype
+  // entryFlow IsContainer
+  var entryFlow as Set of EntryFlow
+  // codeElement IsContainer
+  var codeElement as Set of AbstractCodeElement
+
+class MethodUnit extends ControlElement
+  var kind as Set of MethodKind
+  var export as Set of ExportKind
+
+class Module extends CodeItem
+  // codeElement IsContainer
+  var codeElement as Set of AbstractCodeElement
+
+class CodeAssembly extends Module
+
+class CallableUnit extends ControlElement
+  var kind as Set of CallableKind
+
+abstract class Datatype extends CodeItem
+
+class TemplateUnit extends Datatype
+  // codeElement IsContainer
+  var codeElement as Set of CodeItem
+
+class TemplateParameter extends Datatype
+
+abstract class AbstractCodeRelationship extends KDMRelationship
+
+class InstanceOf extends AbstractCodeRelationship
+  var _to as Set of TemplateUnit
+  var _from as Set of AbstractCodeElement
+
+class CompilationUnit extends Module
+
+class CodeModel extends KDMModel
+  // codeElement IsContainer
+  var codeElement as Set of AbstractCodeElement
+
+class DerivedType extends Datatype
+  // itemUnit IsContainer
+  var itemUnit as Set of ItemUnit
+
+class ArrayType extends DerivedType
+  var size as Set of Integer
+  // indexUnit IsContainer
+  var indexUnit as Set of IndexUnit
+
+class PrimitiveType extends Datatype
+
+class BooleanType extends PrimitiveType
+
+class CharType extends PrimitiveType
+
+class ClassUnit extends Datatype
+  var isAbstract as Set of Boolean
+  // codeElement IsContainer
+  var codeElement as Set of CodeItem
+
+class CompositeType extends Datatype
+  // itemUnit IsContainer
+  var itemUnit as Set of ItemUnit
+
+class RecordType extends CompositeType
+
+class EnumeratedType extends Datatype
+  // value IsContainer
+  var value as Set of Value
+
+class _Extends extends AbstractCodeRelationship
+  var _to as Set of Datatype
+  var _from as Set of Datatype
+
+class ScaledType extends PrimitiveType
+
+class FloatType extends PrimitiveType
+
+class HasType extends AbstractCodeRelationship
+  var _to as Set of Datatype
+  var _from as Set of CodeItem
+
+class ImplementationOf extends AbstractCodeRelationship
+  var _to as Set of CodeItem
+  var _from as Set of CodeItem
+
+class _Implements extends AbstractCodeRelationship
+  var _to as Set of CodeItem
+  var _from as Set of CodeItem
+
+class IntegerType extends PrimitiveType
+
+class InterfaceUnit extends Datatype
+  // codeElement IsContainer
+  var codeElement as Set of CodeItem
+
+class PointerType extends DerivedType
+
+abstract class DefinedType extends Datatype
+  var _type as Set of Datatype
+  // codeElement IsContainer
+  var codeElement as Set of Datatype
+
+class TypeUnit extends DefinedType
+
+class RangeType extends DerivedType
+  var lower as Set of Integer
+  var upper as Set of Integer
+
+class Signature extends Datatype
+  // parameterUnit IsContainer
+  var parameterUnit as Set of ParameterUnit
+
+class DataElement extends ComputationalObject
+  var ext as Set of String
+  var size as Set of Integer
+  var _type as Set of Datatype
+  // codeElement IsContainer
+  var codeElement as Set of Datatype
+
+class StringType extends PrimitiveType
+
+class ChoiceType extends CompositeType
+
+class NamespaceUnit extends CodeItem
+  var groupedCode as Set of CodeItem
+
+class VisibleIn extends AbstractCodeRelationship
+  var _to as Set of CodeItem
+  var _from as Set of CodeItem
+
+class CommentUnit extends ModelElement
+  var text as Set of String
+
+class SharedUnit extends CompilationUnit
+
+class DecimalType extends PrimitiveType
+
+class DateType extends PrimitiveType
+
+class TimeType extends PrimitiveType
+
+class VoidType extends PrimitiveType
+
+abstract class ValueElement extends DataElement
+
+class Value extends ValueElement
+
+class ValueList extends ValueElement
+  // valueElement IsContainer
+  var valueElement as Set of ValueElement
+
+class StorableUnit extends DataElement
+  var kind as Set of StorableKind
+
+class MemberUnit extends DataElement
+  var export as Set of ExportKind
+
+class ParameterUnit extends DataElement
+  var kind as Set of ParameterKind
+  var pos as Set of Integer
+
+class ItemUnit extends DataElement
+
+class IndexUnit extends DataElement
+
+class SynonymType extends DefinedType
+
+class SequenceType extends DerivedType
+  var size as Set of Integer
+
+class BagType extends DerivedType
+  var size as Set of Integer
+
+class SetType extends DerivedType
+  var size as Set of Integer
+
+class CodeElement extends CodeItem
+
+class CodeRelationship extends AbstractCodeRelationship
+  var _to as Set of KDMEntity
+  var _from as Set of CodeItem
+
+class LanguageUnit extends Module
+
+class OrdinalType extends PrimitiveType
+
+class BitstringType extends PrimitiveType
+
+class OctetType extends PrimitiveType
+
+class OctetstringType extends PrimitiveType
+
+class BitType extends PrimitiveType
+
+class Imports extends AbstractCodeRelationship
+  var _to as Set of CodeItem
+  var _from as Set of CodeItem
+
+class Package extends Module
+
+class ParameterTo extends AbstractCodeRelationship
+  var _to as Set of CodeItem
+  var _from as Set of AbstractCodeElement
+
+class TemplateType extends Datatype
+
+class PreprocessorDirective extends AbstractCodeElement
+  // codeElement IsContainer
+  var codeElement as Set of AbstractCodeElement
+
+class MacroDirective extends PreprocessorDirective
+
+class MacroUnit extends PreprocessorDirective
+  var kind as Set of MacroKind
+
+class ConditionalDirective extends PreprocessorDirective
+
+class IncludeDirective extends PreprocessorDirective
+
+class VariantTo extends AbstractCodeRelationship
+  var _to as Set of PreprocessorDirective
+  var _from as Set of PreprocessorDirective
+
+class Expands extends AbstractCodeRelationship
+  var _to as Set of PreprocessorDirective
+  var _from as Set of PreprocessorDirective
+
+class Redefines extends AbstractCodeRelationship
+  var _to as Set of PreprocessorDirective
+  var _from as Set of PreprocessorDirective
+
+class GeneratedFrom extends AbstractCodeRelationship
+  var _to as Set of PreprocessorDirective
+  var _from as Set of AbstractCodeElement
+
+class Includes extends AbstractCodeRelationship
+  var _to as Set of AbstractCodeElement
+  var _from as Set of PreprocessorDirective
+
+class HasValue extends AbstractCodeRelationship
+  var _to as Set of CodeItem
+  var _from as Set of CodeItem
+
+class ConceptualModel extends KDMModel
+  // conceptualElement IsContainer
+  var conceptualElement as Set of AbstractConceptualElement
+
+abstract class AbstractConceptualElement extends KDMEntity
+  // source IsContainer
+  var source as Set of SourceRef
+  var implementation as Set of KDMEntity
+  // conceptualRelation IsContainer
+  var conceptualRelation as Set of AbstractConceptualRelationship
+  // abstraction IsContainer
+  var abstraction as Set of ActionElement
+
+class TermUnit extends AbstractConceptualElement
+
+class ConceptualContainer extends AbstractConceptualElement
+  // conceptualElement IsContainer
+  var conceptualElement as Set of AbstractConceptualElement
+
+class FactUnit extends ConceptualContainer
+
+abstract class AbstractConceptualRelationship extends KDMRelationship
+
+class ConceptualRelationship extends AbstractConceptualRelationship
+  var _to as Set of KDMEntity
+  var _from as Set of AbstractConceptualElement
+
+class BehaviorUnit extends ConceptualContainer
+
+class RuleUnit extends ConceptualContainer
+
+class ScenarioUnit extends ConceptualContainer
+
+class ConceptualFlow extends AbstractConceptualRelationship
+  var _to as Set of ConceptualContainer
+  var _from as Set of ConceptualContainer
+
+class ConceptualElement extends AbstractConceptualElement
+
+class ConceptualRole extends AbstractConceptualElement
+  var conceptualElement as Set of AbstractConceptualElement
+
+abstract class Element
+  // _attribute IsContainer
+  var _attribute as Set of _Attribute
+  // annotation IsContainer
+  var annotation as Set of Annotation
+
+abstract class ModelElement extends Element
+  var stereotype as Set of Stereotype
+  // taggedValue IsContainer
+  var taggedValue as Set of ExtendedValue
+
+abstract class KDMEntity extends ModelElement
+  var name as Set of String
+  createAggregation(otherEntity as)
+  deleteAggregation(as)
+  getInbound()
+  getOutbound()
+  getOwnedRelation()
+  getInAggregated()
+  getOutAggregated()
+  getOwner()
+  getOwnedElement()
+  getGroup()
+  getGroupedElement()
+  getModel()
+
+abstract class KDMRelationship extends ModelElement
+  getTo()
+  getFrom()
+
+class AggregatedRelationship extends ModelElement
+  var density as Set of Integer
+  var _from as Set of KDMEntity
+  var _to as Set of KDMEntity
+  var relation as Set of KDMRelationship
+
+class DataModel extends KDMModel
+  // dataElement IsContainer
+  var dataElement as Set of AbstractDataElement
+
+abstract class AbstractDataElement extends KDMEntity
+  // source IsContainer
+  var source as Set of SourceRef
+  // dataRelation IsContainer
+  var dataRelation as Set of AbstractDataRelationship
+  // abstraction IsContainer
+  var abstraction as Set of ActionElement
+
+class DataResource extends AbstractDataElement
+
+class IndexElement extends DataResource
+  var implementation as Set of ItemUnit
+
+class UniqueKey extends IndexElement
+
+class Index extends IndexElement
+
+abstract class AbstractDataRelationship extends KDMRelationship
+
+class KeyRelation extends AbstractDataRelationship
+  var _to as Set of UniqueKey
+  var _from as Set of ReferenceKey
+
+class ReferenceKey extends IndexElement
+
+class DataContainer extends DataResource
+  // dataElement IsContainer
+  var dataElement as Set of DataResource
+
+class Catalog extends DataContainer
+
+class RelationalSchema extends DataContainer
+  // codeElement IsContainer
+  var codeElement as Set of CodeItem
+
+class ColumnSet extends DataContainer
+  // itemUnit IsContainer
+  var itemUnit as Set of ItemUnit
+
+class RelationalTable extends ColumnSet
+
+class RelationalView extends ColumnSet
+
+class RecordFile extends ColumnSet
+
+class DataEvent extends DataResource
+  var kind as Set of String
+
+class XMLSchema extends AbstractDataElement
+  // contentElement IsContainer
+  var contentElement as Set of AbstractContentElement
+
+abstract class AbstractContentElement extends AbstractDataElement
+
+class ComplexContentType extends AbstractContentElement
+  // contentElement IsContainer
+  var contentElement as Set of AbstractContentElement
+
+class AllContent extends ComplexContentType
+
+class SeqContent extends ComplexContentType
+
+class ChoiceContent extends ComplexContentType
+
+class ContentItem extends AbstractContentElement
+  var _type as Set of ComplexContentType
+  // contentElement IsContainer
+  var contentElement as Set of AbstractContentElement
+
+class GroupContent extends ContentItem
+
+class ContentRestriction extends AbstractContentElement
+  var kind as Set of String
+  var value as Set of String
+
+class SimpleContentType extends ComplexContentType
+  var kind as Set of String
+  var _type as Set of ComplexContentType
+
+class ExtendedDataElement extends AbstractDataElement
+
+class DataRelationship extends AbstractDataRelationship
+  var _to as Set of KDMEntity
+  var _from as Set of AbstractDataElement
+
+class MixedContent extends ComplexContentType
+
+class ContentReference extends ContentItem
+
+class DataAction extends AbstractDataElement
+  var kind as Set of String
+  var implementation as Set of ActionElement
+  // dataElement IsContainer
+  var dataElement as Set of DataEvent
+
+class ReadsColumnSet extends AbstractActionRelationship
+  var _to as Set of ColumnSet
+  var _from as Set of ActionElement
+
+class ContentAttribute extends ContentItem
+
+class TypedBy extends AbstractDataRelationship
+  var _to as Set of ComplexContentType
+  var _from as Set of ContentItem
+
+class ReferenceTo extends AbstractDataRelationship
+  var _to as Set of ContentItem
+  var _from as Set of ContentItem
+
+class RestrictionOf extends AbstractDataRelationship
+  var _to as Set of ComplexContentType
+  var _from as Set of ComplexContentType
+
+class ExtensionTo extends AbstractDataRelationship
+  var _to as Set of ComplexContentType
+  var _from as Set of ComplexContentType
+
+class DatatypeOf extends AbstractDataRelationship
+  var _to as Set of Datatype
+  var _from as Set of ComplexContentType
+
+class HasContent extends AbstractActionRelationship
+  var _to as Set of AbstractDataElement
+  var _from as Set of ActionElement
+
+class WritesColumnSet extends AbstractActionRelationship
+  var _to as Set of ColumnSet
+  var _from as Set of ActionElement
+
+class ProducesDataEvent extends AbstractActionRelationship
+  var _to as Set of DataEvent
+  var _from as Set of ActionElement
+
+class DataSegment extends ColumnSet
+
+class ContentElement extends ContentItem
+
+class ManagesData extends AbstractActionRelationship
+  var _to as Set of AbstractDataElement
+  var _from as Set of ActionElement
+
+class EventModel extends KDMModel
+  // eventElement IsContainer
+  var eventElement as Set of AbstractEventElement
+
+abstract class AbstractEventElement extends KDMEntity
+  // source IsContainer
+  var source as Set of SourceRef
+  // eventRelation IsContainer
+  var eventRelation as Set of AbstractEventRelationship
+  // abstraction IsContainer
+  var abstraction as Set of ActionElement
+  var implementation as Set of AbstractCodeElement
+
+class _Event extends AbstractEventElement
+  var kind as Set of String
+
+abstract class AbstractEventRelationship extends KDMRelationship
+
+class EventRelationship extends AbstractEventRelationship
+  var _to as Set of KDMEntity
+  var _from as Set of AbstractEventElement
+
+class EventResource extends AbstractEventElement
+  // eventElement IsContainer
+  var eventElement as Set of AbstractEventElement
+
+class State extends EventResource
+
+class Transition extends EventResource
+
+class OnEntry extends Transition
+
+class OnExit extends Transition
+
+class EventAction extends AbstractEventElement
+  var kind as Set of String
+  // eventElement IsContainer
+  var eventElement as Set of _Event
+
+class ReadsState extends AbstractActionRelationship
+  var _to as Set of State
+  var _from as Set of ActionElement
+
+class ProducesEvent extends AbstractActionRelationship
+  var _to as Set of _Event
+  var _from as Set of ActionElement
+
+class ConsumesEvent extends AbstractEventRelationship
+  var _to as Set of _Event
+  var _from as Set of Transition
+
+class NextState extends AbstractEventRelationship
+  var _to as Set of State
+  var _from as Set of Transition
+
+class InitialState extends State
+
+class EventElement extends AbstractEventElement
+
+class HasState extends AbstractActionRelationship
+  var _to as Set of AbstractEventElement
+  var _from as Set of ActionElement
+
+class SourceRef extends Element
+  var language as Set of String
+  var snippet as Set of String
+  // region IsContainer
+  var region as Set of SourceRegion
+
+class SourceRegion extends Element
+  var startLine as Set of Integer
+  var startPosition as Set of Integer
+  var endLine as Set of Integer
+  var endPosition as Set of Integer
+  var language as Set of String
+  var path as Set of String
+  var file as Set of SourceFile
+
+class InventoryModel extends KDMModel
+  // inventoryElement IsContainer
+  var inventoryElement as Set of AbstractInventoryElement
+
+abstract class AbstractInventoryElement extends KDMEntity
+  // inventoryRelation IsContainer
+  var inventoryRelation as Set of AbstractInventoryRelationship
+
+class InventoryItem extends AbstractInventoryElement
+  var version as Set of String
+  var path as Set of String
+
+class SourceFile extends InventoryItem
+  var language as Set of String
+  var encoding as Set of String
+
+class Image extends InventoryItem
+
+class ResourceDescription extends InventoryItem
+
+class Configuration extends InventoryItem
+
+class InventoryContainer extends AbstractInventoryElement
+  // inventoryElement IsContainer
+  var inventoryElement as Set of AbstractInventoryElement
+
+class Directory extends InventoryContainer
+  var path as Set of String
+
+class Project extends InventoryContainer
+
+abstract class AbstractInventoryRelationship extends KDMRelationship
+
+class BinaryFile extends InventoryItem
+
+class ExecutableFile extends InventoryItem
+
+class DependsOn extends AbstractInventoryRelationship
+  var _to as Set of AbstractInventoryElement
+  var _from as Set of AbstractInventoryElement
+
+class InventoryElement extends AbstractInventoryElement
+
+class InventoryRelationship extends AbstractInventoryRelationship
+  var _to as Set of KDMEntity
+  var _from as Set of AbstractInventoryElement
+
+abstract class AbstractPlatformElement extends KDMEntity
+  // source IsContainer
+  var source as Set of SourceRef
+  // relation IsContainer
+  var relation as Set of AbstractPlatformRelationship
+  // abstraction IsContainer
+  var abstraction as Set of ActionElement
+  var implementation as Set of AbstractCodeElement
+
+class PlatformModel extends KDMModel
+  // platformElement IsContainer
+  var platformElement as Set of AbstractPlatformElement
+
+abstract class AbstractPlatformRelationship extends KDMRelationship
+
+class Requires extends AbstractPlatformRelationship
+  var _to as Set of AbstractPlatformElement
+  var _from as Set of DeployedComponent
+
+class ResourceType extends AbstractPlatformElement
+  // platformElement IsContainer
+  var platformElement as Set of AbstractPlatformElement
+
+class NamingResource extends ResourceType
+
+class MarshalledResource extends ResourceType
+
+class MessagingResource extends ResourceType
+
+class FileResource extends ResourceType
+
+class ExecutionResource extends ResourceType
+
+class PlatformAction extends AbstractPlatformElement
+  var kind as Set of String
+  // platformElement IsContainer
+  var platformElement as Set of PlatformEvent
+
+class ExternalActor extends PlatformAction
+
+class DataManager extends ResourceType
+
+class BindsTo extends AbstractPlatformRelationship
+  var _to as Set of ResourceType
+  var _from as Set of ResourceType
+
+class PlatformElement extends AbstractPlatformElement
+
+class PlatformRelationship extends AbstractPlatformRelationship
+  var _to as Set of KDMEntity
+  var _from as Set of AbstractPlatformElement
+
+class PlatformEvent extends AbstractPlatformElement
+  var kind as Set of String
+
+class LockResource extends ResourceType
+
+class DeployedSoftwareSystem extends AbstractPlatformElement
+  var groupedComponent as Set of DeployedComponent
+
+class Machine extends AbstractPlatformElement
+  // deployedComponent IsContainer
+  var deployedComponent as Set of DeployedComponent
+  // deployedResource IsContainer
+  var deployedResource as Set of DeployedResource
+
+class DeployedComponent extends AbstractPlatformElement
+  var groupedCode as Set of Module
+
+class DeployedResource extends AbstractPlatformElement
+  // platformElement IsContainer
+  var platformElement as Set of ResourceType
+
+class Loads extends AbstractPlatformRelationship
+  var _to as Set of DeployedComponent
+  var _from as Set of ActionElement
+
+class Spawns extends AbstractPlatformRelationship
+  var _to as Set of RuntimeResource
+  var _from as Set of ActionElement
+
+class RuntimeResource extends ResourceType
+
+class Thread extends RuntimeResource
+
+class _Process extends RuntimeResource
+
+class ReadsResource extends AbstractActionRelationship
+  var _to as Set of ResourceType
+  var _from as Set of ActionElement
+
+class WritesResource extends AbstractActionRelationship
+  var _to as Set of ResourceType
+  var _from as Set of ActionElement
+
+class ManagesResource extends AbstractActionRelationship
+  var _to as Set of ResourceType
+  var _from as Set of ActionElement
+
+class DefinedBy extends AbstractActionRelationship
+  var _to as Set of CodeItem
+  var _from as Set of ActionElement
+
+class StreamResource extends ResourceType
+
+abstract class AbstractStructureElement extends KDMEntity
+  // aggregated IsContainer
+  var aggregated as Set of AggregatedRelationship
+  var implementation as Set of KDMEntity
+  // structureElement IsContainer
+  var structureElement as Set of AbstractStructureElement
+  // structureRelationship IsContainer
+  var structureRelationship as Set of AbstractStructureRelationship
+
+class Subsystem extends AbstractStructureElement
+
+class Layer extends AbstractStructureElement
+
+class StructureModel extends KDMModel
+  // structureElement IsContainer
+  var structureElement as Set of AbstractStructureElement
+
+class Component extends AbstractStructureElement
+
+class SoftwareSystem extends AbstractStructureElement
+
+abstract class AbstractStructureRelationship extends KDMRelationship
+
+class StructureRelationship extends AbstractStructureRelationship
+  var _to as Set of KDMEntity
+  var _from as Set of AbstractStructureElement
+
+class ArchitectureView extends AbstractStructureElement
+
+class StructureElement extends AbstractStructureElement
+
+abstract class KDMFramework extends ModelElement
+  var name as Set of String
+  // audit IsContainer
+  var audit as Set of Audit
+  // extensionFamily IsContainer
+  var extensionFamily as Set of ExtensionFamily
+
+abstract class KDMModel extends KDMFramework
+
+class Audit extends Element
+  var description as Set of String
+  var author as Set of String
+  var date as Set of String
+
+class Segment extends KDMFramework
+  // segment IsContainer
+  var segment as Set of Segment
+  // model IsContainer
+  var model as Set of KDMModel
+
+class _Attribute extends Element
+  var tag as Set of String
+  var value as Set of String
+
+class Annotation extends Element
+  var text as Set of String
+
+class TagDefinition extends Element
+  var tag as Set of String
+  var _type as Set of String
+
+abstract class ExtendedValue extends Element
+  var tag as Set of TagDefinition
+
+class Stereotype extends Element
+  var name as Set of String
+  var _type as Set of String
+  // tag IsContainer
+  var tag as Set of TagDefinition
+
+class ExtensionFamily extends Element
+  var name as Set of String
+  // stereotype IsContainer
+  var stereotype as Set of Stereotype
+
+class TaggedRef extends ExtendedValue
+  var reference as Set of ModelElement
+
+class TaggedValue extends ExtendedValue
+  var value as Set of String
+
+abstract class AbstractUIElement extends KDMEntity
+  // source IsContainer
+  var source as Set of SourceRef
+  // UIRelation IsContainer
+  var UIRelation as Set of AbstractUIRelationship
+  var implementation as Set of AbstractCodeElement
+  // abstraction IsContainer
+  var abstraction as Set of ActionElement
+
+class UIResource extends AbstractUIElement
+  // UIElement IsContainer
+  var UIElement as Set of AbstractUIElement
+
+class UIDisplay extends UIResource
+
+class Screen extends UIDisplay
+
+class Report extends UIDisplay
+
+class UIModel extends KDMModel
+  // UIElement IsContainer
+  var UIElement as Set of AbstractUIElement
+
+abstract class AbstractUIRelationship extends KDMRelationship
+
+class UILayout extends AbstractUIRelationship
+  var _to as Set of UIResource
+  var _from as Set of UIResource
+
+class UIField extends UIResource
+
+class DisplaysImage extends AbstractUIRelationship
+  var _to as Set of Image
+  var _from as Set of ActionElement
+
+class Displays extends AbstractUIRelationship
+  var _to as Set of UIResource
+  var _from as Set of ActionElement
+
+class UIFlow extends AbstractUIRelationship
+  var _to as Set of AbstractUIElement
+  var _from as Set of AbstractUIElement
+
+class UIElement extends AbstractUIElement
+
+class UIRelationship extends AbstractUIRelationship
+  var _to as Set of KDMEntity
+  var _from as Set of AbstractUIElement
+
+class UIAction extends AbstractUIElement
+  var kind as Set of String
+  // UIElement IsContainer
+  var UIElement as Set of UIEvent
+
+class UIEvent extends AbstractUIElement
+  var kind as Set of String
+
+class ReadsUI extends AbstractActionRelationship
+  var _to as Set of UIResource
+  var _from as Set of ActionElement
+
+class WritesUI extends AbstractActionRelationship
+  var _to as Set of UIResource
+  var _from as Set of ActionElement
+
+class ManagesUI extends AbstractActionRelationship
+  var _to as Set of UIResource
+  var _from as Set of ActionElement
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+enum
+
+Main()

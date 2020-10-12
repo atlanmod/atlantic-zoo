@@ -1,0 +1,86 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'Program'>
+    <Class name = 'LocatedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'location' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'NamedElement' isAbstract = 'true' supertypes = 'Program::LocatedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Structure' isAbstract = 'true' supertypes = 'Program::NamedElement'>
+      <Reference name = 'variables' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Program::VariableDeclaration' opposite = 'Program::VariableDeclaration::structure'/>
+    </Class>
+    <Class name = 'ProcContainerElement' isAbstract = 'true' supertypes = 'Program::Structure'>
+      <Reference name = 'procedures' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Program::Procedure' opposite = 'Program::Procedure::container'/>
+    </Class>
+    <Class name = 'Program' isAbstract = 'false' supertypes = 'Program::ProcContainerElement'>
+      <Reference name = 'monitors' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Program::Monitor' opposite = 'Program::Monitor::program'/>
+    </Class>
+    <Class name = 'Monitor' isAbstract = 'false' supertypes = 'Program::ProcContainerElement'>
+      <Reference name = 'program' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Program::Program' opposite = 'Program::Program::monitors'/>
+    </Class>
+    <Class name = 'Procedure' isAbstract = 'false' supertypes = 'Program::Structure'>
+      <Reference name = 'container' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Program::ProcContainerElement' opposite = 'Program::ProcContainerElement::procedures'/>
+      <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Program::Parameter' opposite = 'Program::Parameter::procedure'/>
+      <Reference name = 'statements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Program::Statement' opposite = ''/>
+    </Class>
+    <Class name = 'VariableDeclaration' isAbstract = 'false' supertypes = 'Program::NamedElement'>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Program::Type' opposite = ''/>
+      <Reference name = 'initialValue' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Program::Expression' opposite = ''/>
+      <Reference name = 'structure' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Program::Structure' opposite = 'Program::Structure::variables'/>
+    </Class>
+    <Class name = 'Parameter' isAbstract = 'false' supertypes = 'Program::VariableDeclaration'>
+      <Attribute name = 'direction' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Program::Direction'/>
+      <Reference name = 'procedure' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Program::Procedure' opposite = 'Program::Procedure::parameters'/>
+    </Class>
+    <Enumeration name = 'Direction'>
+      <EnumLiteral name = 'in'/>
+      <EnumLiteral name = 'out'/>
+    </Enumeration>
+    <Class name = 'Type' isAbstract = 'false' supertypes = 'Program::NamedElement'/>
+    <Class name = 'Expression' isAbstract = 'true' supertypes = 'Program::LocatedElement'/>
+    <Class name = 'VariableExp' isAbstract = 'false' supertypes = 'Program::Expression'>
+      <Reference name = 'declaration' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Program::VariableDeclaration' opposite = ''/>
+    </Class>
+    <Class name = 'PropertyCallExp' isAbstract = 'true' supertypes = 'Program::Expression'>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Program::Expression' opposite = ''/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'OperatorCallExp' isAbstract = 'false' supertypes = 'Program::PropertyCallExp'>
+      <Reference name = 'right' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Program::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'AttributeCallExp' isAbstract = 'false' supertypes = 'Program::PropertyCallExp'/>
+    <Class name = 'ProcedureCallExp' isAbstract = 'false' supertypes = 'Program::PropertyCallExp'>
+      <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Program::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'LiteralExp' isAbstract = 'true' supertypes = 'Program::Expression'/>
+    <Class name = 'BooleanExp' isAbstract = 'false' supertypes = 'Program::LiteralExp'>
+      <Attribute name = 'symbol' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'IntegerExp' isAbstract = 'false' supertypes = 'Program::LiteralExp'>
+      <Attribute name = 'symbol' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'Statement' isAbstract = 'true' supertypes = 'Program::LocatedElement'/>
+    <Class name = 'AssignmentStat' isAbstract = 'false' supertypes = 'Program::Statement'>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Program::VariableExp' opposite = ''/>
+      <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Program::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'ConditionalStat' isAbstract = 'false' supertypes = 'Program::Statement'>
+      <Reference name = 'condition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Program::Expression' opposite = ''/>
+      <Reference name = 'thenStats' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Program::Statement' opposite = ''/>
+      <Reference name = 'elseStats' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Program::Statement' opposite = ''/>
+    </Class>
+    <Class name = 'WhileStat' isAbstract = 'false' supertypes = 'Program::Statement'>
+      <Reference name = 'condition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Program::Expression' opposite = ''/>
+      <Reference name = 'doStats' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Program::Statement' opposite = ''/>
+    </Class>
+    <Class name = 'ExpressionStat' isAbstract = 'false' supertypes = 'Program::Statement'>
+      <Reference name = 'expression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Program::Expression' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

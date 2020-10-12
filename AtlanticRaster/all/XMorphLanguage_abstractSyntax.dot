@@ -1,0 +1,196 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_ViewAbstractSyntaxOfXMorphLanguage"{
+labelloc=t
+color=black
+label=ViewAbstractSyntaxOfXMorphLanguage
+ node[shape=record];
+VarScope[label="{/VarScope/| | }"]
+;
+ node[shape=record];
+AbstractVar[label="{/AbstractVar/| | }"]
+ AbstractVar->VarScope[arrowhead=diamond,arrowtail=none,headlabel="scope",taillabel="var[*]",group=VarScope,minlen=2,constraint=true,]
+ AbstractVar->VarUse[arrowhead=none,arrowtail=none,headlabel="varUse",taillabel="var",group=VarUse,minlen=2,constraint=false,]
+;
+ node[shape=record];
+VarUse[label="{VarUse| | }"]
+ VarUse->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MOF::Property[label="{MOF::Property| | }"]
+;
+ node[shape=record];
+Key[label="{Key| | }"]
+ Key->MOF::Property[arrowhead=none,arrowtail=none,headlabel="property[*]",taillabel="part",group=MOF::Property,minlen=2,constraint=false,]
+ Key->Transformation[arrowhead=diamond,arrowtail=none,headlabel="transformation",taillabel="keys[*]",group=Transformation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PatternScope[label="{/PatternScope/| | }"]
+ PatternScope->VarScope[arrowhead=onormal,group=VarScope,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PatternDefn[label="{PatternDefn| | }"]
+ PatternDefn->PatternScope[arrowhead=diamond,arrowtail=none,headlabel="scope",taillabel="patternDefn[*]",group=PatternScope,minlen=2,constraint=true,]
+ PatternDefn->PatternVar[arrowhead=none,arrowtail=none,headlabel="parameter[*]",taillabel="patternDefn",group=PatternVar,minlen=2,constraint=false,]
+ PatternDefn->VarScope[arrowhead=onormal,group=VarScope,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TRule[label="{TRule| | }"]
+ TRule->TRule[arrowhead=none,arrowtail=none,headlabel="superseder[*]",taillabel="superseded[*]",group=TRule,minlen=2,constraint=false,]
+ TRule->Transformation[arrowhead=diamond,arrowtail=none,headlabel="transformation",taillabel="tRule[*]",group=Transformation,minlen=2,constraint=true,]
+ TRule->TRule[arrowhead=none,arrowtail=none,headlabel="extender[*]",taillabel="extended[*]",group=TRule,minlen=2,constraint=false,]
+ TRule->VarScope[arrowhead=onormal,group=VarScope,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Transformation[label="{Transformation| | }"]
+ Transformation->PatternScope[arrowhead=onormal,group=PatternScope,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Query[label="{Query| | }"]
+ Query->PatternScope[arrowhead=onormal,group=PatternScope,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Term[label="{/Term/| | }"]
+ Term->PatternDefn[arrowhead=diamond,arrowtail=none,headlabel="patternDefn[0-1]",taillabel="body",group=PatternDefn,minlen=2,constraint=true,]
+ Term->Query[arrowhead=diamond,arrowtail=none,headlabel="query[0-1]",taillabel="term",group=Query,minlen=2,constraint=true,]
+ Term->TRule[arrowhead=diamond,arrowtail=none,headlabel="tRule[0-1]",taillabel="term[0-1]",group=TRule,minlen=2,constraint=true,]
+ Term->ExtentVar[arrowhead=none,arrowtail=none,headlabel="context[0-1]",taillabel="src",group=ExtentVar,minlen=2,constraint=false,]
+ Term->CompoundTerm[arrowhead=diamond,arrowtail=none,headlabel="compoundTerm[0-1]",taillabel="term[1-*]",group=CompoundTerm,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TRuleVar[label="{TRuleVar| | }"]
+ TRuleVar->TRuleVar[arrowhead=none,arrowtail=none,headlabel="superseded[*]",taillabel="superseder[*]",group=TRuleVar,minlen=2,constraint=false,]
+ TRuleVar->TRuleVar[arrowhead=none,arrowtail=none,headlabel="extender[*]",taillabel="extended[*]",group=TRuleVar,minlen=2,constraint=false,]
+ TRuleVar->AbstractVar[arrowhead=onormal,group=AbstractVar,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PatternVar[label="{PatternVar| | }"]
+ PatternVar->Query[arrowhead=none,arrowtail=none,headlabel="query",taillabel="parameter[*]",group=Query,minlen=2,constraint=false,]
+ PatternVar->AbstractVar[arrowhead=onormal,group=AbstractVar,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExtentVar[label="{ExtentVar| | }"]
+ ExtentVar->AbstractVar[arrowhead=onormal,group=AbstractVar,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompoundTerm[label="{/CompoundTerm/| | }"]
+ CompoundTerm->Term[arrowhead=onormal,group=Term,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AndTerm[label="{AndTerm| | }"]
+ AndTerm->CompoundTerm[arrowhead=onormal,group=CompoundTerm,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OrTerm[label="{OrTerm| | }"]
+ OrTerm->CompoundTerm[arrowhead=onormal,group=CompoundTerm,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NotTerm[label="{NotTerm| | }"]
+ NotTerm->CompoundTerm[arrowhead=onormal,group=CompoundTerm,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IfTerm[label="{IfTerm| | }"]
+ IfTerm->CompoundTerm[arrowhead=onormal,group=CompoundTerm,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleTerm[label="{/SimpleTerm/| | }"]
+ SimpleTerm->TRule[arrowhead=diamond,arrowtail=none,headlabel="tRuleST[0-1]",taillabel="tgt[*]",group=TRule,minlen=2,constraint=true,]
+ SimpleTerm->Term[arrowhead=onormal,group=Term,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TrackingUse[label="{TrackingUse|featureNames : String| }"]
+ TrackingUse->SimpleTerm[arrowhead=onormal,group=SimpleTerm,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MOF::Class[label="{MOF::Class| | }"]
+ MOF::Class->TrackingUse[arrowhead=none,arrowtail=none,headlabel="tracking[*]",taillabel="tracking",group=TrackingUse,minlen=2,constraint=false,]
+;
+ node[shape=record];
+PatternUse[label="{PatternUse| | }"]
+ PatternUse->SimpleTerm[arrowhead=onormal,group=SimpleTerm,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MofTerm[label="{/MofTerm/| | }"]
+ MofTerm->SimpleTerm[arrowhead=onormal,group=SimpleTerm,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Condition[label="{Condition|reason : String| }"]
+ Condition->SimpleTerm[arrowhead=onormal,group=SimpleTerm,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MofInstance[label="{MofInstance|isExactly : Boolean| }"]
+ MofInstance->Expression[arrowhead=vee,arrowtail=none,headlabel="typeName",group=Expression,minlen=2,constraint=false,]
+ MofInstance->Expression[arrowhead=vee,arrowtail=none,headlabel="instance",group=Expression,minlen=2,constraint=false,]
+ MofInstance->MofTerm[arrowhead=onormal,group=MofTerm,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MofOrder[label="{MofOrder| | }"]
+ MofOrder->Expression[arrowhead=none,arrowtail=none,headlabel="lesser",taillabel="lesser",group=Expression,minlen=2,constraint=false,]
+ MofOrder->Expression[arrowhead=none,arrowtail=none,headlabel="instance",taillabel="instance",group=Expression,minlen=2,constraint=false,]
+ MofOrder->MofTerm[arrowhead=onormal,group=MofTerm,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Expression[label="{/Expression/| | }"]
+ Expression->MofOrder[arrowhead=none,arrowtail=none,headlabel="greater",taillabel="greater",group=MofOrder,minlen=2,constraint=false,]
+ Expression->SimpleTerm[arrowhead=diamond,arrowtail=none,headlabel="term",taillabel="arg[*]",group=SimpleTerm,minlen=2,constraint=true,]
+ Expression->CoumpoundExpr[arrowhead=diamond,arrowtail=none,headlabel="expr[0-1]",taillabel="arg[*]",group=CoumpoundExpr,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CoumpoundExpr[label="{/CoumpoundExpr/| | }"]
+ CoumpoundExpr->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CollectionExpr[label="{CollectionExpr|unique : Boolean\nordered : Boolean| }"]
+ CollectionExpr->CoumpoundExpr[arrowhead=onormal,group=CoumpoundExpr,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FunctionExpr[label="{FunctionExpr|function : String| }"]
+ FunctionExpr->CoumpoundExpr[arrowhead=onormal,group=CoumpoundExpr,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FeatureExpr[label="{FeatureExpr|collect : String\nfeatureName : String| }"]
+ FeatureExpr->CoumpoundExpr[arrowhead=onormal,group=CoumpoundExpr,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InstanceRef[label="{InstanceRef| | }"]
+ InstanceRef->MOF::Object[arrowhead=none,arrowtail=none,headlabel="obj",taillabel="obj",group=MOF::Object,minlen=2,constraint=false,]
+ InstanceRef->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MOF::Object[label="{MOF::Object| | }"]
+ MOF::Object->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleExpr[label="{/SimpleExpr/|representation : String| }"]
+ SimpleExpr->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StringConstant[label="{StringConstant| | }"]
+ StringConstant->SimpleExpr[arrowhead=onormal,group=SimpleExpr,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IntConstant[label="{IntConstant| | }"]
+ IntConstant->SimpleExpr[arrowhead=onormal,group=SimpleExpr,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BooleanConstant[label="{BooleanConstant| | }"]
+ BooleanConstant->SimpleExpr[arrowhead=onormal,group=SimpleExpr,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EnumConstant[label="{EnumConstant| | }"]
+ EnumConstant->SimpleExpr[arrowhead=onormal,group=SimpleExpr,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+
+}
+}

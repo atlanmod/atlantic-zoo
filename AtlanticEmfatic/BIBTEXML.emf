@@ -1,0 +1,153 @@
+package Metamodel;
+
+package BIBTEXML {
+  class BibtexFile {
+    !ordered val Entry[*] entries;
+  }
+
+  class Author {
+    !unique !ordered attr String[1] name;
+  }
+
+  abstract class Entry {
+    !unique !ordered attr String[1] ~id;
+    !unique !ordered attr String ~abstract;
+  }
+
+  abstract class AuthoredEntry extends Entry {
+    !ordered val Author[+] authors;
+  }
+
+  abstract class BookTitledEntry extends Entry {
+    !unique !ordered attr String[1] booktitle;
+  }
+
+  abstract class InstitutionEntry extends Entry {
+    !unique !ordered attr String[1] institution;
+  }
+
+  abstract class EditoredEntry extends Entry {
+    !unique !ordered attr String[1] editor;
+  }
+
+  abstract class DatedEntry extends Entry {
+    !unique !ordered attr String[1] year;
+    !unique !ordered attr String month;
+  }
+
+  abstract class JournalEntry extends Entry {
+    !unique !ordered attr String[1] journal;
+  }
+
+  abstract class TitledEntry extends Entry {
+    !unique !ordered attr String[1] title;
+  }
+
+  abstract class NotedEntry extends Entry {
+    !unique !ordered attr String[1] note;
+  }
+
+  abstract class PublisheredEntry extends Entry {
+    !unique !ordered attr String[1] publisher;
+  }
+
+  abstract class SchoolEntry extends Entry {
+    !unique !ordered attr String[1] school;
+  }
+
+  class Article extends AuthoredEntry, DatedEntry, TitledEntry, JournalEntry {
+    !unique !ordered attr String volume;
+    !unique !ordered attr String number;
+    !unique !ordered attr String pages;
+    !unique !ordered attr String note;
+  }
+
+  class Book extends AuthoredEntry, EditoredEntry, PublisheredEntry, DatedEntry, TitledEntry {
+    !unique !ordered attr String volume;
+    !unique !ordered attr String number;
+    !unique !ordered attr String series;
+    !unique !ordered attr String address;
+    !unique !ordered attr String edition;
+    !unique !ordered attr String note;
+  }
+
+  class Booklet extends DatedEntry, TitledEntry {
+    !ordered ref Author[*] authors;
+    !unique !ordered attr String[1] howpublished;
+    !unique !ordered attr String address;
+    !unique !ordered attr String note;
+  }
+
+  class InBook extends Book {
+    !unique !ordered attr String[1] chapter;
+    !unique !ordered attr String[1] type;
+  }
+
+  class InCollection extends Book, BookTitledEntry {
+    !unique !ordered attr String chapter;
+    !unique !ordered attr String type;
+  }
+
+  class Manual extends TitledEntry, AuthoredEntry, DatedEntry {
+    !unique !ordered attr String organization;
+    !unique !ordered attr String address;
+    !unique !ordered attr String edition;
+    !unique !ordered attr String note;
+  }
+
+  class TechReport extends AuthoredEntry, InstitutionEntry, DatedEntry, TitledEntry {
+    !unique !ordered attr String type;
+    !unique !ordered attr String number;
+    !unique !ordered attr String address;
+    !unique !ordered attr String note;
+  }
+
+  abstract class ThesisEntry extends AuthoredEntry, DatedEntry, TitledEntry, SchoolEntry {
+    !unique !ordered attr String type;
+    !unique !ordered attr String address;
+    !unique !ordered attr String note;
+  }
+
+  class PhdThesis extends ThesisEntry {
+  }
+
+  class MastersThesis extends ThesisEntry {
+  }
+
+  class Proceedings extends DatedEntry, TitledEntry {
+    !unique !ordered attr String editor;
+    !unique !ordered attr String volume;
+    !unique !ordered attr String number;
+    !unique !ordered attr String series;
+    !unique !ordered attr String address;
+    !unique !ordered attr String organization;
+    !unique !ordered attr String publisher;
+    !unique !ordered attr String note;
+  }
+
+  class InProceedings extends AuthoredEntry, BookTitledEntry, Proceedings {
+    !unique !ordered attr String pages;
+  }
+
+  class Conference extends InProceedings {
+  }
+
+  class Unpublished extends AuthoredEntry, TitledEntry, NotedEntry, DatedEntry {
+  }
+
+  class Misc extends Entry {
+    !ordered ref Author[*] authors;
+    !unique !ordered attr String title;
+    !unique !ordered attr String howpublished;
+    !unique !ordered attr String month;
+    !unique !ordered attr String year;
+    !unique !ordered attr String note;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+}
+

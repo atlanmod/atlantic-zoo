@@ -1,0 +1,61 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'Promenade'>
+    <Class name = 'Strong' isAbstract = 'false' supertypes = 'Promenade::DynPrecedence, Promenade::BasPrecedence'/>
+    <Class name = 'Start' isAbstract = 'false' supertypes = 'Promenade::DynPrecedence, Promenade::BasPrecedence'/>
+    <Class name = 'End' isAbstract = 'false' supertypes = 'Promenade::DynPrecedence, Promenade::BasPrecedence'/>
+    <Class name = 'FeedBack' isAbstract = 'false' supertypes = 'Promenade::DynPrecedence, Promenade::BasPrecedence'/>
+    <Class name = 'Weak' isAbstract = 'false' supertypes = 'Promenade::DynPrecedence, Promenade::DerPrecedence'/>
+    <Class name = 'Grouping' isAbstract = 'false' supertypes = 'Promenade::DynPrecedence, Promenade::DerPrecedence'/>
+    <Class name = 'Precedence' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'deprecs' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::DerPrecedence' opposite = 'Promenade::DerPrecedence::precs'/>
+      <Reference name = 'parbind' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::ParBinding' opposite = 'Promenade::ParBinding::precs'/>
+    </Class>
+    <Class name = 'DynPrecedence' isAbstract = 'false' supertypes = 'Promenade::Precedence'/>
+    <Class name = 'DerPrecedence' isAbstract = 'false' supertypes = 'Promenade::Precedence'>
+      <Reference name = 'precs' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::Precedence' opposite = 'Promenade::Precedence::deprecs'/>
+      <Reference name = 'auxTasks' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::MetaTaskOccurence' opposite = 'Promenade::MetaTaskOccurence::dprecs'/>
+    </Class>
+    <Class name = 'BasPrecedence' isAbstract = 'false' supertypes = 'Promenade::Precedence'/>
+    <Class name = 'MetaTaskOccurence' isAbstract = 'false' supertypes = 'Promenade::ModelElement'>
+      <Reference name = 'dprecs' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::DerPrecedence' opposite = 'Promenade::DerPrecedence::auxTasks'/>
+      <Reference name = 'taskCl' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::MetaTask' opposite = 'Promenade::MetaTask::occurs'/>
+    </Class>
+    <Class name = 'ParBinding' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'inclusion' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'precs' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::Precedence' opposite = 'Promenade::Precedence::parbind'/>
+      <Reference name = 'targetPar' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::ParameterPrec' opposite = 'Promenade::ParameterPrec::parbindsTar'/>
+      <Reference name = 'sourcePar' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::ParameterPrec' opposite = 'Promenade::ParameterPrec::parbindsSour'/>
+    </Class>
+    <Class name = 'ParameterPrec' isAbstract = 'false' supertypes = 'Promenade::ParameterUML'>
+      <Reference name = 'parbindsTar' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::ParBinding' opposite = 'Promenade::ParBinding::targetPar'/>
+      <Reference name = 'parbindsSour' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::ParBinding' opposite = 'Promenade::ParBinding::sourcePar'/>
+      <Reference name = 'dstParams' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::ParameterPrec' opposite = 'Promenade::ParameterPrec::orParams'/>
+      <Reference name = 'orParams' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::ParameterPrec' opposite = 'Promenade::ParameterPrec::dstParams'/>
+    </Class>
+    <Class name = 'ModelElement' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'dependencyUMLsupp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::DependancyUML' opposite = 'Promenade::DependancyUML::suppier'/>
+      <Reference name = 'dependencyUMLcli' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::DependancyUML' opposite = 'Promenade::DependancyUML::client'/>
+    </Class>
+    <Class name = 'DependancyUML' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'suppier' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::ModelElement' opposite = 'Promenade::ModelElement::dependencyUMLsupp'/>
+      <Reference name = 'client' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::ModelElement' opposite = 'Promenade::ModelElement::dependencyUMLcli'/>
+    </Class>
+    <Class name = 'MetaTask' isAbstract = 'false' supertypes = 'Promenade::ModelElement'>
+      <Reference name = 'params' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::ParameterUML' opposite = 'Promenade::ParameterUML::task'/>
+      <Reference name = 'occurs' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::MetaTaskOccurence' opposite = 'Promenade::MetaTaskOccurence::taskCl'/>
+    </Class>
+    <Class name = 'ParameterUML' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'task' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::MetaTask' opposite = 'Promenade::MetaTask::params'/>
+      <Reference name = 'doc' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::MetaDocument' opposite = 'Promenade::MetaDocument::params'/>
+    </Class>
+    <Class name = 'MetaDocument' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'params' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Promenade::ParameterUML' opposite = 'Promenade::ParameterUML::doc'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+  </Package>
+</Metamodel>

@@ -1,0 +1,156 @@
+-- @name		ebXML
+-- @version		0.1
+-- @domains		XML
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/03
+-- @description	ebXML (Electronic Business using eXtensible Markup Language), is a modular suite of specifications that enables enterprises of any size and in any geographical location to conduct business over the Internet. Using ebXML, companies now have a standard method to exchange business messages, conduct trading relationships, communicate data in common terms and define and register business processes. ebXML was started in 1999 as an initiative of OASIS and the United Nations/ECE agency CEFACT. The original project envisioned and delivered five layers of substantive data specification, including XML standards for: Business processes , Core data components, Collaboration protocol agreements, Messaging, Registries and repositories.
+-- @see			http://www.ebxml.org/
+
+package ebXML {
+
+	class MultyPartyCollaboration {
+		reference partners[*] container : BusinessPartnerRole oppositeOf collaboration;
+	}
+
+	class BusinessPartnerRole {
+		reference collaboration : MultyPartyCollaboration oppositeOf partners;
+		reference transition[0-1] container : Transaction;
+		reference performers[*] container : Performs oppositeOf performedBy;
+	}
+
+
+	class Performs {
+		reference performedBy : BusinessPartnerRole oppositeOf performers;
+		reference collaboration : BinaryCollaboration oppositeOf roles;
+		reference role : AuthorizedRole oppositeOf performers;
+	}
+
+	class AuthorizedRole {
+		attribute isInitiator : Boolean;
+		reference performers[*] : Performs oppositeOf role;
+	}
+
+	class Transaction {
+		attribute onInitiation : String;
+		attribute conditionGuard : String;
+		attribute conditionExpression : String;
+		reference from : BusinessState;
+		reference to : BusinessState;
+	}
+
+	class BinaryCollaboration {
+		attribute pattern : String;
+		attribute timeToPerform : String;
+		attribute preCondition : String;
+		attribute postCondition : String;
+		attribute beginsWhen : String;
+		attribute endsWhen : String;
+		reference roles[*] container : Performs oppositeOf collaboration;
+		reference transitions[*] container : Transaction;
+		reference states[*] container : BusinessState oppositeOf collaboration;
+	}
+
+	abstract class BusinessState {
+		reference collaboration : BinaryCollaboration oppositeOf states;
+		reference from : AuthorizedRole;
+		reference to : AuthorizedRole;
+
+	}
+
+	class Start extends BusinessState {}
+
+	class Fork extends BusinessState {
+		attribute waitForAll : String;
+	}
+
+	class Join extends BusinessState {}
+
+	class CompletionState extends BusinessState {
+		attribute guardCondition : String;
+	}
+
+	class Failure extends CompletionState {}
+
+	class Success extends CompletionState {}
+
+
+	abstract class BusinessActivity extends BusinessState {}
+
+	class BusinessTransactionActivity extends BusinessActivity {
+		attribute timeToPerform : String;
+		attribute isConcurrent : Boolean;
+		attribute isLegallyBinding : Boolean;
+		reference use : BusinessTransaction;
+	}
+
+	class CollaborationActivity extends BusinessActivity {
+		reference use : BinaryCollaboration;
+	}
+
+	class BusinessTransaction {
+		attribute pattern : String;
+		attribute isGuaranteedDeliveryRequired : Boolean;
+		attribute preCondition : String;
+		attribute postCondition : String;
+		attribute beginsWhen : String;
+		attribute endsWhen : String;
+		reference requester container : RequestingBusinessActivity oppositeOf transaction;
+		reference responder container : RespondingBusinessActivity oppositeOf transaction;
+	}
+
+
+	abstract class BusinessAction {
+		attribute isIntelligiblecheckRequired : Boolean;
+		attribute isAuthorizationRequired : Boolean;
+		attribute timeToAcknowledgeReceipt : String;
+		attribute isNonRepudiationRequired : Boolean;
+		attribute isNonRepudiationOfRecipientRequired : Boolean;	
+	}
+
+	class RequestingBusinessActivity extends BusinessAction {
+		attribute timeToAcknowledgeAcceptance : String;
+		reference transaction container : BusinessTransaction oppositeOf requester;
+		reference documentEnvelope : DocumentEnvelope oppositeOf requesting;
+	}
+
+	class RespondingBusinessActivity extends BusinessAction {
+		reference transaction container : BusinessTransaction oppositeOf responder;
+		reference documentEnvelope : DocumentEnvelope oppositeOf responding;
+	}
+
+	abstract class DocumentSecurity {
+		attribute isConfidential : Boolean;
+		attribute isTamperProof : Boolean;
+		attribute isAuthenticated : Boolean;	
+	}	
+
+	class DocumentEnvelope extends DocumentSecurity {
+		attribute isPositiveResponse : Boolean;
+		reference requesting[0-1] : RequestingBusinessActivity oppositeOf documentEnvelope;
+		reference responding[0-1] : RespondingBusinessActivity oppositeOf documentEnvelope;
+		reference attachements[*] container : Attachment oppositeOf envelope;
+		reference document : BusinessDocument oppositeOf envelopes;
+	}
+
+	class Attachment extends DocumentSecurity {
+		attribute mimeType : String;
+		attribute specification : String;
+		attribute version : String;
+		reference envelope : DocumentEnvelope oppositeOf attachements;
+		reference document : BusinessDocument oppositeOf attachments;
+	}
+
+	class BusinessDocument {
+		attribute specificationLocation : String;
+		attribute specificationElement : String;
+		attribute conditionExpression : String;
+		reference envelopes[*] : DocumentEnvelope oppositeOf document;
+		reference attachments[*] : Attachment oppositeOf document;
+	}
+	
+}
+
+package PrimitiveTypes {
+    datatype Boolean;
+    datatype String;
+}

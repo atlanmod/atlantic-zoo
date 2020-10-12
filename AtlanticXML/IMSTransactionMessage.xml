@@ -1,0 +1,47 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'IMSTransactionMessage'>
+    <Enumeration name = 'OIMAPrefixFormats'>
+      <EnumLiteral name = 'opp_one'/>
+      <EnumLiteral name = 'opp_two'/>
+    </Enumeration>
+    <Class name = 'TwoByteField' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'VariableLengthField' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'IMSTransactionMessage' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'OIMAPrefixFormat' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'IMSTransactionMessage::OIMAPrefixFormats'/>
+      <Attribute name = 'standardFieldsFlag' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'OIMAPrefixComponent' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IMSTransactionMessage::OIMAPrefix' opposite = ''/>
+      <Reference name = 'standardFieldComponent' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IMSTransactionMessage::StandardFields' opposite = ''/>
+      <Reference name = 'messageComponent' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IMSTransactionMessage::ApplicationData' opposite = ''/>
+    </Class>
+    <Class name = 'OIMAPrefix' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'controlDataComponent' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IMSTransactionMessage::ControlData' opposite = ''/>
+      <Reference name = 'stateDataComponent' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IMSTransactionMessage::StateData' opposite = ''/>
+      <Reference name = 'securityDataComponent' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IMSTransactionMessage::SecurityData' opposite = ''/>
+      <Reference name = 'userDataComponent' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IMSTransactionMessage::UserData' opposite = ''/>
+    </Class>
+    <Class name = 'ControlData' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'StateData' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'SecurityData' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'UserData' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'StandardFields' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'length' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IMSTransactionMessage::TwoByteField' opposite = ''/>
+      <Reference name = 'reservedField' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IMSTransactionMessage::TwoByteField' opposite = ''/>
+      <Reference name = 'transactionCode' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IMSTransactionMessage::VariableLengthField' opposite = ''/>
+    </Class>
+    <Class name = 'ApplicationData' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'languageElements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'IMSTransactionMessage::TDLangElement' opposite = ''/>
+      <Reference name = 'fieldComponents' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'IMSTransactionMessage::Field' opposite = 'IMSTransactionMessage::Field::fieldContainer'/>
+    </Class>
+    <Class name = 'Field' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'fieldContainer' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IMSTransactionMessage::ApplicationData' opposite = 'IMSTransactionMessage::ApplicationData::fieldComponents'/>
+    </Class>
+    <Class name = 'TDLangElement' isAbstract = 'false' supertypes = ''/>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Double'/>
+  </Package>
+</Metamodel>

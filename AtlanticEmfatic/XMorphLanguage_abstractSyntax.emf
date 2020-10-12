@@ -1,0 +1,190 @@
+package Metamodel;
+
+package ViewAbstractSyntaxOfXMorphLanguage {
+  abstract class VarScope {
+    !ordered val AbstractVar[*]#scope var;
+  }
+
+  abstract class AbstractVar {
+    !ordered ref VarScope[1]#var scope;
+    !ordered ref VarUse[1]#var varUse;
+  }
+
+  class VarUse extends Expression {
+    !ordered ref AbstractVar[1]#varUse var;
+  }
+
+  class MOF::Property {
+    !ordered ref Key[1]#property part;
+  }
+
+  class Key {
+    !ordered ref MOF::Property[*]#part property;
+    !ordered ref Transformation[1]#keys transformation;
+  }
+
+  abstract class PatternScope extends VarScope {
+    !ordered val PatternDefn[*]#scope patternDefn;
+  }
+
+  class PatternDefn extends VarScope {
+    !ordered ref PatternScope[1]#patternDefn scope;
+    !ordered ref PatternVar[*]#patternDefn parameter;
+    !ordered val Term[1]#patternDefn body;
+  }
+
+  class TRule extends VarScope {
+    !ordered ref TRule[*]#superseder superseded;
+    !ordered ref TRule[*]#superseded superseder;
+    !ordered ref Transformation[1]#tRule transformation;
+    !ordered ref TRule[*]#extender extended;
+    !ordered ref TRule[*]#extended extender;
+    !ordered val Term#tRule term;
+    !ordered val SimpleTerm[*]#tRuleST tgt;
+  }
+
+  class Transformation extends PatternScope {
+    !ordered val Key[*]#transformation keys;
+    !ordered val TRule[*]#transformation tRule;
+  }
+
+  class Query extends PatternScope {
+    !ordered val Term[1]#query term;
+    !ordered ref PatternVar[*]#query parameter;
+  }
+
+  abstract class Term {
+    !ordered ref PatternDefn#body patternDefn;
+    !ordered ref Query#term query;
+    !ordered ref TRule#term tRule;
+    !ordered ref ExtentVar#src context;
+    !ordered ref CompoundTerm#term compoundTerm;
+  }
+
+  class TRuleVar extends AbstractVar {
+    !ordered ref TRuleVar[*]#superseded superseder;
+    !ordered ref TRuleVar[*]#superseder superseded;
+    !ordered ref TRuleVar[*]#extender extended;
+    !ordered ref TRuleVar[*]#extended extender;
+  }
+
+  class PatternVar extends AbstractVar {
+    !ordered ref Query[1]#parameter query;
+    !ordered ref PatternDefn[1]#parameter patternDefn;
+  }
+
+  class ExtentVar extends AbstractVar {
+    !ordered ref Term[1]#context src;
+  }
+
+  abstract class CompoundTerm extends Term {
+    !ordered val Term[+]#compoundTerm term;
+  }
+
+  class AndTerm extends CompoundTerm {
+  }
+
+  class OrTerm extends CompoundTerm {
+  }
+
+  class NotTerm extends CompoundTerm {
+  }
+
+  class IfTerm extends CompoundTerm {
+  }
+
+  abstract class SimpleTerm extends Term {
+    !ordered ref TRule#tgt tRuleST;
+    !ordered val Expression[*]#term arg;
+  }
+
+  class TrackingUse extends SimpleTerm {
+    !unique !ordered attr String[1] featureNames;
+    !ordered ref MOF::Class[1]#tracking tracking;
+  }
+
+  class MOF::Class {
+    !ordered ref TrackingUse[*]#tracking tracking;
+  }
+
+  class PatternUse extends SimpleTerm {
+  }
+
+  abstract class MofTerm extends SimpleTerm {
+  }
+
+  class Condition extends SimpleTerm {
+    !unique !ordered attr String[1] reason;
+  }
+
+  class MofInstance extends MofTerm {
+    !unique !ordered attr Boolean[1] isExactly;
+    !ordered ref Expression[1] typeName;
+    !ordered ref Expression[1] instance;
+  }
+
+  class MofOrder extends MofTerm {
+    !ordered ref Expression[1]#lesser lesser;
+    !ordered ref Expression[1]#instance instance;
+    !ordered ref Expression[1]#greater greater;
+  }
+
+  abstract class Expression {
+    !ordered ref MofOrder[1]#lesser lesser;
+    !ordered ref MofOrder[1]#instance instance;
+    !ordered ref MofOrder[1]#greater greater;
+    !ordered ref SimpleTerm[1]#arg term;
+    !ordered ref CoumpoundExpr#arg expr;
+  }
+
+  abstract class CoumpoundExpr extends Expression {
+    !ordered val Expression[*]#expr arg;
+  }
+
+  class CollectionExpr extends CoumpoundExpr {
+    !unique !ordered attr Boolean[1] ~unique;
+    !unique !ordered attr Boolean[1] ~ordered;
+  }
+
+  class FunctionExpr extends CoumpoundExpr {
+    !unique !ordered attr String[1] function;
+  }
+
+  class FeatureExpr extends CoumpoundExpr {
+    !unique !ordered attr String[1] collect;
+    !unique !ordered attr String[1] featureName;
+  }
+
+  class InstanceRef extends Expression {
+    !ordered ref MOF::Object[1]#obj obj;
+  }
+
+  class MOF::Object extends Expression {
+    !ordered ref InstanceRef[1]#obj obj;
+  }
+
+  abstract class SimpleExpr extends Expression {
+    !unique !ordered attr String[1] representation;
+  }
+
+  class StringConstant extends SimpleExpr {
+  }
+
+  class IntConstant extends SimpleExpr {
+  }
+
+  class BooleanConstant extends SimpleExpr {
+  }
+
+  class EnumConstant extends SimpleExpr {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+}
+

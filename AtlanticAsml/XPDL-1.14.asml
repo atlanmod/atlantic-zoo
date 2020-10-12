@@ -1,0 +1,430 @@
+class Group extends Artifact
+
+class Package extends Element
+  // typeDeclarations IsContainer
+  var typeDeclarations as Set of TypeDeclaration
+  // externalPackages IsContainer
+  var externalPackages as Set of ExternalPackage
+  // applications IsContainer
+  var applications as Set of _Application
+  // pools IsContainer
+  var pools as Set of Pool
+  // artifacts IsContainer
+  var artifacts as Set of Artifact
+  // participants IsContainer
+  var participants as Set of Participant
+  // messageFlows IsContainer
+  var messageFlows as Set of MessageFlow
+  // dataFields IsContainer
+  var dataFields as Set of DataField
+  // script IsContainer
+  var script as Set of Script
+  // associations IsContainer
+  var associations as Set of Association
+  // workflowProcesses IsContainer
+  var workflowProcesses as Set of _Process
+
+class Transition extends Element
+  var quantity as Set of Integer
+  var _to as Set of Activity
+  // _object IsContainer
+  var _object as Set of _Object
+  var _from as Set of Activity
+
+class TriggerMultiple extends Trigger
+
+class Participant extends Element
+
+class Route extends Activity
+  var gatewayType as Set of GatewayTypeKind
+  var instantiate as Set of Boolean
+  var markerVisiable as Set of Boolean
+
+class TaskManual extends Task
+
+class TaskUser extends Task
+  var implementation as Set of ImplementationKind
+
+class TriggerIntermediateMultiple extends Trigger
+
+class Activity extends Element
+  var isStartActivity as Set of Boolean
+  var status as Set of StatusKind
+  var startMode as Set of ModeKind
+  var finishMode as Set of ModeKind
+  var startQuantity as Set of Integer
+  var isATransaction as Set of Boolean
+  // dataFields IsContainer
+  var dataFields as Set of DataField
+  // _object IsContainer
+  var _object as Set of _Object
+
+class Script
+  var _type as Set of String
+  var version as Set of String
+  var grammar as Set of String
+
+class SubFlow extends Activity
+  var execution as Set of ExecutionKind
+  var instanceDataField as Set of String
+  var packageRef as Set of Package
+  var startActivity as Set of Activity
+  var startActivitySet as Set of ActivitySet
+
+class ParametrizedApplication extends _Application
+
+class ResultCompensation extends Trigger
+  var activity as Set of Activity
+
+abstract class Element
+  var id as Set of String
+  var name as Set of String
+
+class ExternalPackage extends Element
+  var href as Set of String
+
+class Lane extends Element
+  var parentPool as Set of Pool
+  var parentLane as Set of Lane
+  // _object IsContainer
+  var _object as Set of _Object
+
+class DataObject extends Artifact
+  var state as Set of String
+  var requiredForStart as Set of Boolean
+  var producedAtCompletion as Set of Boolean
+  // dataFields IsContainer
+  var dataFields as Set of DataField
+
+class Gateway extends Route
+
+class _Process extends Element
+  var accessLevel as Set of AccessLevelKind
+  var processType as Set of ProcessTypeKind
+  var status as Set of StatusKind
+  var suppressJoinFailure as Set of Boolean
+  var enableInstanceCompensation as Set of Boolean
+  var adHoc as Set of Boolean
+  var adHocOrdering as Set of AdHocOrderingKind
+  var adHocCompletionCondition as Set of String
+  // activitySets IsContainer
+  var activitySets as Set of ActivitySet
+  var defaultStartActivitySet as Set of ActivitySet
+  // activities IsContainer
+  var activities as Set of Activity
+  var defaultStartActivity as Set of Activity
+  // _object IsContainer
+  var _object as Set of _Object
+  // transitions IsContainer
+  var transitions as Set of Transition
+  // dataField IsContainer
+  var dataField as Set of DataField
+  // applications IsContainer
+  var applications as Set of _Application
+  // participant IsContainer
+  var participant as Set of Participant
+
+class IntermediateEvent extends _Event
+  var target as Set of Activity
+
+class StartEvent extends _Event
+
+class TaskScript extends Task
+  // script IsContainer
+  var script as Set of Script
+
+class TriggerResultLink extends Trigger
+  var processRef as Set of _Process
+
+class TriggerRule extends Trigger
+  var ruleName as Set of String
+
+abstract class _Event extends Activity
+  var triggerKind as Set of TriggerKind
+  var implementation as Set of ImplementationKind
+  // trigger IsContainer
+  var trigger as Set of Trigger
+
+class MessageFlow extends Element
+  var targetActivity as Set of Activity
+  var sourcePool as Set of Pool
+  var targetPool as Set of Pool
+  var sourceActivity as Set of Activity
+  // _object IsContainer
+  var _object as Set of _Object
+
+class Annotation extends Artifact
+
+class TaskReference extends Task
+  var taskRef as Set of Task
+
+class _Application extends Element
+
+class Pool extends Element
+  var orientation as Set of OrientationKind
+  var boundaryVisible as Set of Boolean
+  // lanes IsContainer
+  var lanes as Set of Lane
+  var _process as Set of _Process
+  // _object IsContainer
+  var _object as Set of _Object
+  var participant as Set of Participant
+
+abstract class Trigger
+
+class ReferencedApplication extends _Application
+  // externalReference IsContainer
+  var externalReference as Set of ExternalReference
+
+class TriggerTimer extends Trigger
+  var timeDate as Set of String
+  var timeCycle as Set of String
+
+class BlockActivity extends Activity
+  var activitySet as Set of ActivitySet
+  var startActivity as Set of Activity
+
+abstract class Task extends Activity
+
+class Association extends Element
+  var associationDirection as Set of AssociationDirectionKind
+  var targetActivity as Set of Activity
+  var sourceActivity as Set of Activity
+  var sourceArtifact as Set of Artifact
+  // _object IsContainer
+  var _object as Set of _Object
+  var sourcePool as Set of Pool
+  var targetArtifact as Set of Artifact
+  var targetPool as Set of Pool
+
+class TaskService extends Task
+  var implementation as Set of ImplementationKind
+
+class DataField extends Element
+  var isArray as Set of Boolean
+  var correlation as Set of Boolean
+  // dataType IsContainer
+  var dataType as Set of TypeDeclaration
+
+class ResultMultiple extends Trigger
+
+class Category extends Element
+
+class _Object extends Element
+  // categories IsContainer
+  var categories as Set of Category
+
+class TaskSend extends Task
+  var implementation as Set of ImplementationKind
+
+class ExternalReference
+  var xref as Set of String
+  var location as Set of String
+  var _namespace as Set of String
+
+class Artifact extends Element
+  var textAnnotation as Set of String
+  var group as Set of String
+  // _object IsContainer
+  var _object as Set of _Object
+  // dataObject IsContainer
+  var dataObject as Set of DataObject
+
+class ResultError extends Trigger
+  var errorCode as Set of String
+
+class TaskApplication extends Task
+  var packageRef as Set of Package
+
+class EndEvent extends _Event
+
+class TaskReceive extends Task
+  var instantiate as Set of Boolean
+  var implementation as Set of ImplementationKind
+
+class TriggerResultMessage extends Trigger
+
+class TypeDeclaration extends Element
+
+class ActivitySet extends Element
+  var adHoc as Set of Boolean
+  var adHocOrdering as Set of AdHocOrderingKind
+  var adHocCompletionCondition as Set of String
+  var defaultStartActivity as Set of Activity
+  // activities IsContainer
+  var activities as Set of Activity
+  // _object IsContainer
+  var _object as Set of _Object
+  // transitions IsContainer
+  var transitions as Set of Transition
+
+enum AdHocOrderingKind
+  Sequential
+  Parallel
+
+enum TriggerKind
+  None
+  Message
+  Timer
+  Rule
+  Link
+  Error
+  Cancel
+  Compensation
+  Terminate
+  Multiple
+
+enum GatewayTypeKind
+  Xor
+  _Or
+  Complex
+  _And
+
+enum AssociationDirectionKind
+  None
+  _To
+  _From
+  Both
+
+enum AccessLevelKind
+  _Public
+  _Private
+
+enum ImplementationKind
+  WebService
+  Other
+  Unspecified
+
+enum ExecutionKind
+  Asynchr
+  Synchr
+
+enum OrientationKind
+  Horizontal
+  Vertical
+
+enum StatusKind
+  None
+  Ready
+  Active
+  Cancelled
+  Aborting
+  Aborted
+  Completing
+  Completed
+
+enum ProcessTypeKind
+  None
+  _Private
+  _Abstract
+  Collaboration
+
+enum ModeKind
+  Automatic
+  Manual
+
+var Group_Universe as Set of Group
+
+var Package_Universe as Set of Package
+
+var Transition_Universe as Set of Transition
+
+var TriggerMultiple_Universe as Set of TriggerMultiple
+
+var Participant_Universe as Set of Participant
+
+var Route_Universe as Set of Route
+
+var TaskManual_Universe as Set of TaskManual
+
+var TaskUser_Universe as Set of TaskUser
+
+var TriggerIntermediateMultiple_Universe as Set of TriggerIntermediateMultiple
+
+var Activity_Universe as Set of Activity
+
+var Script_Universe as Set of Script
+
+var SubFlow_Universe as Set of SubFlow
+
+var ParametrizedApplication_Universe as Set of ParametrizedApplication
+
+var ResultCompensation_Universe as Set of ResultCompensation
+
+var Element_Universe as Set of Element
+
+var ExternalPackage_Universe as Set of ExternalPackage
+
+var Lane_Universe as Set of Lane
+
+var DataObject_Universe as Set of DataObject
+
+var Gateway_Universe as Set of Gateway
+
+var _Process_Universe as Set of _Process
+
+var IntermediateEvent_Universe as Set of IntermediateEvent
+
+var StartEvent_Universe as Set of StartEvent
+
+var TaskScript_Universe as Set of TaskScript
+
+var TriggerResultLink_Universe as Set of TriggerResultLink
+
+var TriggerRule_Universe as Set of TriggerRule
+
+var _Event_Universe as Set of _Event
+
+var MessageFlow_Universe as Set of MessageFlow
+
+var Annotation_Universe as Set of Annotation
+
+var TaskReference_Universe as Set of TaskReference
+
+var _Application_Universe as Set of _Application
+
+var Pool_Universe as Set of Pool
+
+var Trigger_Universe as Set of Trigger
+
+var ReferencedApplication_Universe as Set of ReferencedApplication
+
+var TriggerTimer_Universe as Set of TriggerTimer
+
+var BlockActivity_Universe as Set of BlockActivity
+
+var Task_Universe as Set of Task
+
+var Association_Universe as Set of Association
+
+var TaskService_Universe as Set of TaskService
+
+var DataField_Universe as Set of DataField
+
+var ResultMultiple_Universe as Set of ResultMultiple
+
+var Category_Universe as Set of Category
+
+var _Object_Universe as Set of _Object
+
+var TaskSend_Universe as Set of TaskSend
+
+var ExternalReference_Universe as Set of ExternalReference
+
+var Artifact_Universe as Set of Artifact
+
+var ResultError_Universe as Set of ResultError
+
+var TaskApplication_Universe as Set of TaskApplication
+
+var EndEvent_Universe as Set of EndEvent
+
+var TaskReceive_Universe as Set of TaskReceive
+
+var TriggerResultMessage_Universe as Set of TriggerResultMessage
+
+var TypeDeclaration_Universe as Set of TypeDeclaration
+
+var ActivitySet_Universe as Set of ActivitySet
+
+Main()

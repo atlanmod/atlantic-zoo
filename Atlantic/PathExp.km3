@@ -1,0 +1,32 @@
+-- @name		PathExp
+-- @version		1.0
+-- @domains		Path Expression
+-- @authors		David Touzet (david.touzet@univ-nantes.fr)
+-- @date		2005/07/18	
+-- @description	The PathExp metamodel describes the structure of the graphical representation of the path expression. The PathExp metamodel describes the different model elements that compose the graphical representation associated with path expressions, as well as the way they can be linked to each other. A PathExp is composed of States and Transitions. Each Transition has a State as source and a State as target. Each State can have several incoming and outgoing Transitions. Both Transition and PathExp inherits from the abstract Element entity, for which a "name" attribute is defined.
+
+package PathExp {
+
+	abstract class Element {
+		attribute name : String;
+	}
+
+	class PathExp extends Element {
+		reference states [1-*] container : State;
+		reference transitions [*] container : Transition;
+	}
+
+	class State {
+		reference incoming [*] : Transition oppositeOf target;
+		reference outgoing [*] : Transition oppositeOf source;
+	}
+
+	class Transition extends Element {
+		reference source : State oppositeOf outgoing;
+		reference target : State oppositeOf incoming;
+	}
+}
+
+package PrimitiveTypes {
+	datatype String;
+}

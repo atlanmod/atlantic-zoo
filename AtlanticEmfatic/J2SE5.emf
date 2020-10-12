@@ -1,0 +1,415 @@
+package Metamodel;
+
+package J2SE5 {
+  abstract class AbstractTypeDeclaration extends NamedElement, BodyDeclaration {
+    !ordered attr String[1] originalFileContent;
+    !ordered ref PackageDeclaration[1]#ownedElements ~package;
+    !ordered val BodyDeclaration[*] bodyDeclarations;
+    !ordered val NamedElementRef[*] superInterfaces;
+    !ordered val Comment[*] commentsAfterBody;
+    !ordered val ImportDeclaration[*] imports;
+    !ordered val Comment[*] commentsBeforeBody;
+  }
+
+  class Annotation extends Expression {
+    !ordered val NamedElementRef[1] type;
+    !ordered val AnnotationMemberValuePair[*] values;
+  }
+
+  class AnnotationMemberValuePair extends ASTNode {
+    !ordered val NamedElementRef[1] member;
+    !ordered val Expression[1] value;
+  }
+
+  class AnnotationTypeDeclaration extends AbstractTypeDeclaration {
+  }
+
+  class AnnotationTypeMemberDeclaration extends NamedElement, BodyDeclaration {
+    !ordered val NamedElementRef[1] type;
+    !ordered val Expression default;
+  }
+
+  class AnonymousClassDeclaration extends ASTNode {
+    !ordered val BodyDeclaration[*] bodyDeclarations;
+  }
+
+  class ArrayAccess extends Expression {
+    !ordered val Expression[1] index;
+    !ordered val Expression[1] array;
+  }
+
+  class ArrayCreation extends Expression {
+    !ordered val Expression[*] dimensions;
+    !ordered val ArrayInitializer initializer;
+    !ordered val NamedElementRef[1] type;
+  }
+
+  class ArrayInitializer extends Expression {
+    !ordered val Expression[*] expressions;
+  }
+
+  class ArrayLengthAccess extends Expression {
+    !ordered val Expression[1] array;
+  }
+
+  class AssertStatement extends Statement {
+    !ordered val Expression message;
+    !ordered val Expression[1] expression;
+  }
+
+  class Assignment extends Expression {
+    !ordered attr String[1] operator;
+    !ordered val Expression[1] rightHandSide;
+    !ordered val Expression[1] leftHandSide;
+  }
+
+  abstract class ASTNode {
+    !ordered val Comment[*] comments;
+  }
+
+  abstract class BodyDeclaration extends ASTNode {
+    !ordered attr String[1] modifiers;
+    !ordered val Annotation[*] annotations;
+  }
+
+  class Block extends Statement {
+    !ordered val Statement[*] statements;
+  }
+
+  class BlockComment extends Comment {
+  }
+
+  class BreakStatement extends Statement {
+    !ordered val NamedElementRef label;
+  }
+
+  class CastExpression extends Expression {
+    !ordered val NamedElementRef[1] type;
+    !ordered val Expression[1] expression;
+  }
+
+  class CatchClause extends ASTNode {
+    !ordered val SingleVariableDeclaration[1] exception;
+    !ordered val Block[1] body;
+  }
+
+  class ClassInstanceCreation extends Expression {
+    !ordered val Expression[*] arguments;
+    !ordered val NamedElementRef[1] type;
+    !ordered val Expression expression;
+    !ordered val AnonymousClassDeclaration anonymousClassDeclaration;
+  }
+
+  abstract class Comment extends ASTNode {
+    !ordered attr String[1] content;
+    !ordered attr Boolean[1] isEnclosedByParent;
+    !ordered attr Boolean[1] isPrefixOfParent;
+  }
+
+  class ConditionalExpression extends Expression {
+    !ordered val Expression[1] elseExpression;
+    !ordered val Expression[1] thenExpression;
+    !ordered val Expression[1] expression;
+  }
+
+  class ContinueStatement extends Statement {
+    !ordered val NamedElementRef label;
+  }
+
+  class ConstructorInvocation extends Statement {
+    !ordered val Expression[*] arguments;
+  }
+
+  class DoStatement extends Statement {
+    !ordered val Expression[1] expression;
+    !ordered val Statement[1] body;
+  }
+
+  class EmptyStatement extends Statement {
+  }
+
+  class EnhancedForStatement extends Statement {
+    !ordered val SingleVariableDeclaration[1] parameter;
+    !ordered val Expression[1] expression;
+    !ordered val Statement[1] body;
+  }
+
+  class EnumConstantDeclaration extends BodyDeclaration, NamedElement {
+    !ordered val Expression[*] arguments;
+    !ordered val AnonymousClassDeclaration anonymousClassDeclaration;
+  }
+
+  class EnumDeclaration extends AbstractTypeDeclaration {
+    !ordered val EnumConstantDeclaration[*] enumConstants;
+  }
+
+  abstract class Expression extends ASTNode {
+  }
+
+  class ExpressionStatement extends Statement {
+    !ordered val Expression[1] expression;
+  }
+
+  class FieldAccess extends Expression {
+    !ordered val NamedElementRef[1] field;
+    !ordered val Expression[1] expression;
+  }
+
+  class FieldDeclaration extends BodyDeclaration, MultipleValuedNamedElement {
+    !ordered val NamedElementRef[1] type;
+  }
+
+  class ForStatement extends Statement {
+    !ordered val Statement[1] body;
+    !ordered val Expression expression;
+    !ordered val Expression[*] initializers;
+    !ordered val Expression[*] updaters;
+  }
+
+  class InfixExpression extends Expression {
+    !ordered attr String[1] operator;
+    !ordered val Expression[*] extendedOperands;
+    !ordered val Expression[1] rightOperand;
+    !ordered val Expression[1] leftOperand;
+  }
+
+  class IfStatement extends Statement {
+    !ordered val Expression[1] expression;
+    !ordered val Statement elseStatement;
+    !ordered val Statement[1] thenStatement;
+  }
+
+  class ImportDeclaration extends ASTNode {
+    !ordered attr Boolean[1] static;
+    !ordered val NamedElementRef[1] importedElement;
+  }
+
+  class Initializer extends BodyDeclaration {
+    !ordered val Block[1] body;
+  }
+
+  class InstanceofExpression extends Expression {
+    !ordered val Expression[1] leftOperand;
+    !ordered val NamedElementRef[1] rightOperand;
+  }
+
+  class Javadoc extends Comment {
+    !ordered val TagElement[*] tags;
+  }
+
+  class LabeledStatement extends Statement, NamedElement {
+    !ordered val Statement[1] body;
+  }
+
+  class LineComment extends Comment {
+  }
+
+  class MemberRef extends ASTNode {
+    !ordered val NamedElementRef qualifier;
+    !ordered val NamedElementRef[1] member;
+  }
+
+  class MethodDeclaration extends NamedElement, BodyDeclaration {
+    !ordered attr Integer[1] extraArrayDimensions;
+    !ordered attr Boolean[1] constructor;
+    !ordered attr Boolean[1] varargs;
+    !ordered val Block body;
+    !ordered val SingleVariableDeclaration[*] parameters;
+    !ordered val TypeParameter[*] typeParameters;
+    !ordered val NamedElementRef[*] thrownExceptions;
+    !ordered val NamedElementRef[1] returnType;
+  }
+
+  class MethodInvocation extends Expression {
+    !ordered val NamedElementRef[1] method;
+    !ordered val Expression[*] arguments;
+    !ordered val Expression expression;
+  }
+
+  class MethodRef extends ASTNode {
+    !ordered val NamedElementRef qualifier;
+    !ordered val MethodRefParameter[*] parameters;
+    !ordered val NamedElementRef[1] method;
+  }
+
+  class MethodRefParameter extends ASTNode {
+    !ordered attr String[1] name;
+    !ordered attr Boolean[1] isVarargs;
+    !ordered val NamedElementRef type;
+  }
+
+  class Model {
+    !ordered attr String[1] name;
+    !ordered val PackageDeclaration[*]#model ownedElements;
+    !ordered val OrphanType[*] orphanTypes;
+  }
+
+  abstract class MultipleValuedNamedElement extends ValuedNamedElement {
+    !ordered val SingleVariableDeclaration[*] fragments;
+  }
+
+  abstract class NamedElement {
+    !ordered attr String[1] name;
+    !ordered attr Boolean[1] proxy;
+  }
+
+  class NamedElementRef extends Expression {
+    !ordered attr Integer[1] extraArrayDimensions;
+    !ordered ref NamedElement element;
+    !ordered val NamedElementRef qualifier;
+  }
+
+  class OrphanType extends NamedElement {
+  }
+
+  class PackageDeclaration extends ASTNode, NamedElement {
+    !ordered ref Model[1]#ownedElements model;
+    !ordered val AbstractTypeDeclaration[*]#~package ownedElements;
+  }
+
+  class ParameterizedType extends ASTNode, OrphanType {
+    !ordered val NamedElementRef[*] typeArguments;
+    !ordered val NamedElementRef[1] type;
+  }
+
+  class ParenthesizedExpression extends Expression {
+    !ordered val Expression[1] expression;
+  }
+
+  class PostfixExpression extends Expression {
+    !ordered attr String[1] operator;
+    !ordered val Expression[1] operand;
+  }
+
+  class PrefixExpression extends Expression {
+    !ordered attr String[1] operator;
+    !ordered val Expression[1] operand;
+  }
+
+  class PrimitiveType extends ASTNode, OrphanType {
+  }
+
+  class ReturnStatement extends Statement {
+    !ordered val Expression expression;
+  }
+
+  class ThrowStatement extends Statement {
+    !ordered val Expression[1] expression;
+  }
+
+  class SingleVariableDeclaration extends ASTNode, ValuedNamedElement {
+    !ordered attr String[1] modifiers;
+    !ordered attr Boolean[1] isVarargs;
+    !ordered val NamedElementRef[1] type;
+  }
+
+  abstract class Statement extends ASTNode {
+  }
+
+  class SuperConstructorInvocation extends Statement {
+    !ordered val Expression[*] arguments;
+    !ordered val Expression expression;
+  }
+
+  class SuperFieldAccess extends Expression {
+    !ordered val NamedElementRef qualifier;
+    !ordered val NamedElementRef[1] field;
+  }
+
+  class SuperMethodInvocation extends Expression {
+    !ordered val Expression[*] arguments;
+    !ordered val NamedElementRef qualifier;
+    !ordered val NamedElementRef[1] method;
+  }
+
+  class SwitchCase extends Statement {
+    !ordered attr Boolean[1] expressionInitialized;
+    !ordered val Expression expression;
+  }
+
+  class SwitchStatement extends Statement {
+    !ordered val Statement[*] statements;
+    !ordered val Expression[1] expression;
+  }
+
+  class SynchronizedStatement extends Statement {
+    !ordered val Block[1] body;
+    !ordered val Expression[1] expression;
+  }
+
+  class TagElement extends ASTNode {
+    !ordered attr String[1] tagName;
+    !ordered val ASTNode[*] fragments;
+  }
+
+  class TextElement extends ASTNode {
+    !ordered attr String[1] text;
+  }
+
+  class ThisExpression extends Expression {
+    !ordered val NamedElementRef qualifier;
+  }
+
+  class TryStatement extends Statement {
+    !ordered val Block finally;
+    !ordered val Block[1] body;
+    !ordered val CatchClause[*] catchClauses;
+  }
+
+  class TypeDeclaration extends AbstractTypeDeclaration {
+    !ordered attr Boolean[1] isInterface;
+    !ordered val TypeParameter[*] typeParameters;
+    !ordered val NamedElementRef superclass;
+  }
+
+  class TypeDeclarationStatement extends Statement {
+    !ordered val AbstractTypeDeclaration[1] declaration;
+  }
+
+  class TypeLiteral extends Expression {
+    !ordered val NamedElementRef[1] type;
+  }
+
+  class TypeParameter extends ASTNode, NamedElement {
+    !ordered val NamedElementRef[*] bounds;
+  }
+
+  class UnresolvedItem extends NamedElement, ASTNode {
+  }
+
+  abstract class ValuedNamedElement extends NamedElement {
+    !ordered attr Integer[1] extraArrayDimensions;
+    !ordered val Expression initializer;
+  }
+
+  class VariableDeclarationExpression extends Expression, MultipleValuedNamedElement, ValuedNamedElement {
+    !ordered attr String[1] modifiers;
+    !ordered val NamedElementRef[1] type;
+  }
+
+  class VariableDeclarationStatement extends Statement, MultipleValuedNamedElement, ValuedNamedElement {
+    !ordered attr String[1] modifiers;
+    !ordered val NamedElementRef[1] type;
+  }
+
+  class WildCardType extends OrphanType, ASTNode {
+    !ordered attr Boolean[1] isUpperBound;
+    !ordered val NamedElementRef bound;
+  }
+
+  class WhileStatement extends Statement {
+    !ordered val Expression[1] expression;
+    !ordered val Statement[1] body;
+  }
+
+}
+
+package PrimitiveType {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+}
+

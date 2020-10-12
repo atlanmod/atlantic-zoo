@@ -1,0 +1,478 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'R2ML'>
+    <Enumeration name = 'CollectionTypes'>
+      <EnumLiteral name = 'individual'/>
+      <EnumLiteral name = 'set'/>
+      <EnumLiteral name = 'orderedSet'/>
+      <EnumLiteral name = 'bag'/>
+      <EnumLiteral name = 'sequence'/>
+    </Enumeration>
+    <Enumeration name = 'PredicateCategory'>
+      <EnumLiteral name = 'closed'/>
+      <EnumLiteral name = 'open'/>
+      <EnumLiteral name = 'partial'/>
+    </Enumeration>
+    <Enumeration name = 'ExternalVocabularyLanguage'>
+      <EnumLiteral name = 'RDFS'/>
+      <EnumLiteral name = 'UML'/>
+      <EnumLiteral name = 'OWL'/>
+    </Enumeration>
+    <Enumeration name = 'PredicateType'>
+      <EnumLiteral name = 'ObjectClassificationPredicate'/>
+      <EnumLiteral name = 'AttributionPredicate'/>
+      <EnumLiteral name = 'AssociationPredicate'/>
+      <EnumLiteral name = 'ReferencePropertyPredicate'/>
+      <EnumLiteral name = 'EqualityPredicate'/>
+      <EnumLiteral name = 'InequalityPredicate'/>
+      <EnumLiteral name = 'DatatypePredicate'/>
+      <EnumLiteral name = 'DataClassificationPredicate'/>
+    </Enumeration>
+    <Package name = 'Abstract'>
+      <Class name = 'AbstractTransformationRule' isAbstract = 'true' supertypes = 'Abstract::Rule'/>
+      <Class name = 'AbstractProductionRule' isAbstract = 'false' supertypes = 'Abstract::Rule'/>
+      <Class name = 'AbstractReactionRule' isAbstract = 'false' supertypes = 'Abstract::Rule'/>
+      <Class name = 'AbstractDerivationRule' isAbstract = 'false' supertypes = 'Abstract::Rule'/>
+      <Class name = 'AbstractIntegrityRule' isAbstract = 'true' supertypes = 'Abstract::Rule'/>
+      <Class name = 'Rule' isAbstract = 'true' supertypes = ''>
+        <Attribute name = 'ruleID' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+    </Package>
+    <Package name = 'Rules'>
+      <Class name = 'DerivationRule' isAbstract = 'false' supertypes = 'Abstract::AbstractDerivationRule'>
+        <Reference name = 'conditions' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'qf::AndOrNafNegFormula' opposite = ''/>
+        <Reference name = 'conclusions' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'qf::LiteralConjunction' opposite = ''/>
+      </Class>
+      <Class name = 'ReactionRule' isAbstract = 'false' supertypes = 'Abstract::AbstractReactionRule'>
+        <Reference name = 'conditions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'qf::AndOrNafNegFormula' opposite = ''/>
+        <Reference name = 'producedAction' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Actions::ActionExpression' opposite = ''/>
+        <Reference name = 'postconditon' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'qf::AndOrNafNegFormula' opposite = ''/>
+        <Reference name = 'triggeringEvent' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Events::EventExpression' opposite = ''/>
+      </Class>
+      <Class name = 'ProductionRule' isAbstract = 'false' supertypes = 'Abstract::AbstractProductionRule'>
+        <Reference name = 'conditions' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'qf::AndOrNafNegFormula' opposite = ''/>
+        <Reference name = 'postcondition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qf::AndOrNafNegFormula' opposite = ''/>
+        <Reference name = 'producedAction' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Actions::ActionExpression' opposite = ''/>
+      </Class>
+      <Class name = 'DeonticIntegrityRule' isAbstract = 'false' supertypes = 'Rules::IntegrityRule'/>
+      <Class name = 'AlethicIntegrityRule' isAbstract = 'false' supertypes = 'Rules::IntegrityRule'/>
+      <Class name = 'IntegrityRule' isAbstract = 'true' supertypes = 'Abstract::AbstractIntegrityRule'>
+        <Reference name = 'constraint' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Formulas::QuantifiedFormula' opposite = ''/>
+      </Class>
+    </Package>
+    <Package name = 'Atoms'>
+      <Package name = 'AtBasic'>
+        <Class name = 'DataClassificationAtom' isAbstract = 'false' supertypes = 'Atoms::DataAtom'>
+          <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Datatype' opposite = ''/>
+          <Reference name = 'term' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Terms::DataTerm' opposite = ''/>
+        </Class>
+        <Class name = 'DatatypePredicateAtom' isAbstract = 'false' supertypes = 'Atoms::DataAtom'>
+          <Reference name = 'predicate' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::DatatypePredicate' opposite = ''/>
+          <Reference name = 'dataArguments' lower = '2' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'Terms::DataTerm' opposite = ''/>
+        </Class>
+        <Class name = 'InequalityAtom' isAbstract = 'false' supertypes = 'Atoms::ObjectAtom'>
+          <Reference name = 'terms' lower = '2' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Terms::ObjectTerm' opposite = ''/>
+        </Class>
+        <Class name = 'EqualityAtom' isAbstract = 'false' supertypes = 'Atoms::ObjectAtom'>
+          <Reference name = 'terms' lower = '2' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Terms::ObjectTerm' opposite = ''/>
+        </Class>
+        <Class name = 'ObjectClassificationAtom' isAbstract = 'false' supertypes = 'Atoms::ObjectAtom'>
+          <Reference name = 'term' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Terms::ObjectTerm' opposite = ''/>
+          <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Class' opposite = ''/>
+        </Class>
+        <Class name = 'GenericAtom' isAbstract = 'false' supertypes = 'Atoms::Atom'>
+          <Reference name = 'predicate' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocRelational::GenericPredicate' opposite = ''/>
+          <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'Terms::Term' opposite = ''/>
+        </Class>
+      </Package>
+      <Class name = 'DataAtom' isAbstract = 'true' supertypes = 'Atoms::Atom'/>
+      <Class name = 'ObjectAtom' isAbstract = 'true' supertypes = 'Atoms::Atom'/>
+      <Package name = 'AtRelational'>
+        <Class name = 'Slot' isAbstract = 'true' supertypes = ''/>
+        <Class name = 'PropertyAtom' isAbstract = 'false' supertypes = 'Atoms::ObjectAtom'>
+          <Reference name = 'property' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Property' opposite = ''/>
+          <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Terms::Term' opposite = ''/>
+          <Reference name = 'subject' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Terms::ObjectTerm' opposite = ''/>
+        </Class>
+        <Class name = 'DataSlot' isAbstract = 'false' supertypes = 'AtRelational::Slot'>
+          <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Terms::DataTerm' opposite = ''/>
+          <Reference name = 'attribute' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Attribute' opposite = ''/>
+        </Class>
+        <Class name = 'ObjectSlot' isAbstract = 'false' supertypes = 'AtRelational::Slot'>
+          <Reference name = 'object' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Terms::ObjectTerm' opposite = ''/>
+          <Reference name = 'referenceProperty' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::ReferenceProperty' opposite = ''/>
+        </Class>
+        <Class name = 'ReferencePropertyAtom' isAbstract = 'false' supertypes = 'Atoms::ObjectAtom'>
+          <Reference name = 'object' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Terms::ObjectTerm' opposite = ''/>
+          <Reference name = 'referenceProperty' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::ReferenceProperty' opposite = ''/>
+          <Reference name = 'subject' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Terms::ObjectTerm' opposite = ''/>
+        </Class>
+        <Class name = 'AttributionAtom' isAbstract = 'false' supertypes = 'Atoms::ObjectAtom'>
+          <Reference name = 'attribute' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Attribute' opposite = ''/>
+          <Reference name = 'subject' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Terms::ObjectTerm' opposite = ''/>
+          <Reference name = 'dataValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Terms::DataTerm' opposite = ''/>
+        </Class>
+        <Class name = 'ObjectDescriptionAtom' isAbstract = 'false' supertypes = 'Atoms::ObjectAtom'>
+          <Reference name = 'type' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Class' opposite = ''/>
+          <Reference name = 'objects' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'AtRelational::ObjectSlot' opposite = ''/>
+          <Reference name = 'subject' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Terms::ObjectTerm' opposite = ''/>
+          <Reference name = 'slots' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'AtRelational::Slot' opposite = ''/>
+          <Reference name = 'baseType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Class' opposite = ''/>
+        </Class>
+        <Class name = 'AssociationAtom' isAbstract = 'false' supertypes = 'Atoms::ObjectAtom'>
+          <Reference name = 'associationPredicate' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocRelational::AssociationPredicate' opposite = ''/>
+          <Reference name = 'dataArguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'Terms::DataTerm' opposite = ''/>
+          <Reference name = 'objectArguments' lower = '2' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'Terms::ObjectTerm' opposite = ''/>
+        </Class>
+      </Package>
+      <Class name = 'Atom' isAbstract = 'true' supertypes = 'Formulas::LogicalFormula, qf::AndOrNafNegFormula'>
+        <Attribute name = 'isNegated' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      </Class>
+    </Package>
+    <Package name = 'Vocabulary'>
+      <Package name = 'VocExternal'/>
+      <Package name = 'VocFunctional'>
+        <Class name = 'DatatypeFunction' isAbstract = 'false' supertypes = 'VocFunctional::Function'>
+          <Attribute name = 'ap' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        </Class>
+        <Class name = 'GenericFunction' isAbstract = 'false' supertypes = 'VocFunctional::Function'/>
+        <Class name = 'Function' isAbstract = 'true' supertypes = 'VocBasic::VocabularyEntry'>
+          <Attribute name = 'arity' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+        </Class>
+        <Class name = 'DataOperation' isAbstract = 'false' supertypes = 'VocFunctional::Operation'>
+          <Reference name = 'returnType' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Datatype' opposite = ''/>
+        </Class>
+        <Class name = 'ObjectOperation' isAbstract = 'false' supertypes = 'VocFunctional::Operation'>
+          <Reference name = 'returnType' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Class' opposite = ''/>
+        </Class>
+        <Class name = 'Operation' isAbstract = 'true' supertypes = 'VocFunctional::Function'>
+          <Reference name = 'contextType' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Class' opposite = ''/>
+          <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'VocBasic::Type' opposite = ''/>
+        </Class>
+        <Class name = 'EnumerationDatatype' isAbstract = 'false' supertypes = 'VocBasic::Datatype'>
+          <Reference name = 'literals' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'VocBasic::DataLiteral' opposite = ''/>
+        </Class>
+      </Package>
+      <Package name = 'VocBuiltin'>
+        <Class name = 'ExternalVocabulary' isAbstract = 'false' supertypes = ''>
+          <Attribute name = 'externalVocabularyID' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+          <Attribute name = 'externalVocabularyLanguage' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'R2ML::ExternalVocabularyLanguage'/>
+        </Class>
+      </Package>
+      <Package name = 'VocBasic'>
+        <Class name = 'GenericEntityName' isAbstract = 'false' supertypes = 'Terms::GenericTerm'>
+          <Reference name = 'classRef' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Class' opposite = ''/>
+        </Class>
+        <Class name = 'VocabularyEntry' isAbstract = 'true' supertypes = ''>
+          <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        </Class>
+        <Class name = 'Vocabulary' isAbstract = 'false' supertypes = ''>
+          <Reference name = 'entries' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'VocBasic::VocabularyEntry' opposite = ''/>
+        </Class>
+        <Class name = 'Property' isAbstract = 'true' supertypes = 'VocBasic::Predicate'>
+          <Reference name = 'range' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Type' opposite = ''/>
+          <Reference name = 'domain' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Class' opposite = ''/>
+        </Class>
+        <Class name = 'DatatypePredicate' isAbstract = 'false' supertypes = 'VocBasic::Predicate'>
+          <Attribute name = 'vp' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+          <Attribute name = 'arity' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+        </Class>
+        <Class name = 'Predicate' isAbstract = 'true' supertypes = 'VocBasic::VocabularyEntry'>
+          <Attribute name = 'predicateCategory' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'R2ML::PredicateCategory'/>
+        </Class>
+        <Class name = 'Attribute' isAbstract = 'false' supertypes = 'VocBasic::Property'>
+          <Reference name = 'type' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Class' opposite = ''/>
+          <Attribute name = 'np' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        </Class>
+        <Class name = 'TypedLiteral' isAbstract = 'false' supertypes = 'VocBasic::DataLiteral'>
+          <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Datatype' opposite = ''/>
+        </Class>
+        <Class name = 'PlainLiteral' isAbstract = 'false' supertypes = 'VocBasic::DataLiteral'>
+          <Attribute name = 'languageTag' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        </Class>
+        <Class name = 'DataLiteral' isAbstract = 'true' supertypes = 'Terms::DataTerm'>
+          <Attribute name = 'lexicalValue' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        </Class>
+        <Class name = 'ReferenceProperty' isAbstract = 'false' supertypes = 'VocBasic::Property'>
+          <Attribute name = 'vp' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+          <Attribute name = 'domrm' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+          <Attribute name = 'rgrn' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        </Class>
+        <Class name = 'ObjectName' isAbstract = 'false' supertypes = 'VocBasic::VocabularyEntry, Terms::ObjectTerm'>
+          <Reference name = 'classRef' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Class' opposite = ''/>
+        </Class>
+        <Class name = 'Datatype' isAbstract = 'false' supertypes = 'VocBasic::Type'/>
+        <Class name = 'Class' isAbstract = 'false' supertypes = 'VocBasic::Type'>
+          <Attribute name = 'np' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        </Class>
+        <Class name = 'Type' isAbstract = 'false' supertypes = 'VocBasic::Predicate'/>
+      </Package>
+      <Package name = 'VocRelational'>
+        <Class name = 'AssociationPredicate' isAbstract = 'false' supertypes = 'VocBasic::Predicate'>
+          <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'VocBasic::Type' opposite = ''/>
+          <Attribute name = 'vp' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        </Class>
+        <Class name = 'GenericPredicate' isAbstract = 'false' supertypes = 'VocBasic::Predicate'>
+          <Attribute name = 'vp' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        </Class>
+      </Package>
+    </Package>
+    <Class name = 'ReactionRuleSet' isAbstract = 'false' supertypes = 'R2ML::RuleSet'>
+      <Reference name = 'rules' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Rules::ReactionRule' opposite = ''/>
+    </Class>
+    <Class name = 'ProductionRuleSet' isAbstract = 'false' supertypes = 'R2ML::RuleSet'>
+      <Reference name = 'rules' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Rules::ProductionRule' opposite = ''/>
+    </Class>
+    <Class name = 'EventType' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'eventTypeID' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Package name = 'Events'>
+      <Class name = 'SOAPMessageBody' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'children' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Events::SOAPMessageBodyChild' opposite = ''/>
+      </Class>
+      <Class name = 'SOAPConversationalMsgEvtExpression' isAbstract = 'false' supertypes = 'Events::SOAPMessageEventExpression'/>
+      <Class name = 'SOAPRPCResponseMsgEvtExpression' isAbstract = 'false' supertypes = 'Events::SOAPMessageEventExpression'/>
+      <Class name = 'SOAPRPCRequestMsgEvtExpression' isAbstract = 'false' supertypes = 'Events::SOAPMessageEventExpression'/>
+      <Class name = 'SOAPMessageHeaderBlock' isAbstract = 'false' supertypes = ''>
+        <Attribute name = 'nameSpaceName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        <Attribute name = 'localName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        <Attribute name = 'encodingStyle' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        <Attribute name = 'mustUnderstand' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+        <Attribute name = 'role' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        <Attribute name = 'relay' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      </Class>
+      <Class name = 'SOAPMessageHeader' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'headerBlocks' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Events::SOAPMessageHeaderBlock' opposite = ''/>
+      </Class>
+      <Class name = 'SOAPMessageBodyChild' isAbstract = 'false' supertypes = ''>
+        <Attribute name = 'localName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        <Attribute name = 'nameSpaceName' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        <Attribute name = 'encodingStyle' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+      <Class name = 'EveryYearTimeEventExpression' isAbstract = 'false' supertypes = 'Events::PeriodicTimeEventExpression'>
+        <Attribute name = 'dayOfYear' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+        <Attribute name = 'time' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+      <Class name = 'EveryMonthTimeEventExpression' isAbstract = 'false' supertypes = 'Events::PeriodicTimeEventExpression'>
+        <Attribute name = 'dayOfMonth' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+        <Attribute name = 'time' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+      <Class name = 'EveryWeekTimeEventExpression' isAbstract = 'false' supertypes = 'Events::PeriodicTimeEventExpression'>
+        <Attribute name = 'dayOfWeek' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+        <Attribute name = 'time' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+      <Class name = 'EveryDayTimeEventExpression' isAbstract = 'false' supertypes = 'Events::PeriodicTimeEventExpression'>
+        <Attribute name = 'time' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+      <Class name = 'EveryHourTimeEventExpression' isAbstract = 'false' supertypes = 'Events::PeriodicTimeEventExpression'>
+        <Attribute name = 'minute' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+        <Attribute name = 'second' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      </Class>
+      <Class name = 'EveryMinuteTimeEventExpression' isAbstract = 'false' supertypes = 'Events::PeriodicTimeEventExpression'>
+        <Attribute name = 'second' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      </Class>
+      <Class name = 'MessageEventExpression' isAbstract = 'false' supertypes = 'Events::ActionEventExpression'>
+        <Attribute name = 'sender' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        <Attribute name = 'receiver' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+      <Class name = 'SOAPMessageEventExpression' isAbstract = 'false' supertypes = 'Events::MessageEventExpression'>
+        <Reference name = 'body' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Events::SOAPMessageBody' opposite = ''/>
+        <Reference name = 'header' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Events::SOAPMessageHeader' opposite = ''/>
+      </Class>
+      <Class name = 'PeriodicTimeEventExpression' isAbstract = 'false' supertypes = 'Events::TimeEventExpression'/>
+      <Class name = 'SingularTimeEventExpression' isAbstract = 'false' supertypes = 'Events::TimeEventExpression'>
+        <Attribute name = 'dateTime' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      </Class>
+      <Class name = 'ActionEventExpression' isAbstract = 'false' supertypes = 'Events::AtomicEventExpression'>
+        <Attribute name = 'actor' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+      <Class name = 'TimeEventExpression' isAbstract = 'true' supertypes = 'Events::AtomicEventExpression'/>
+      <Class name = 'ParallelEventExpression' isAbstract = 'false' supertypes = 'Events::EventExpression'>
+        <Reference name = 'expressions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Events::EventExpression' opposite = ''/>
+        <Attribute name = 'timeWindow' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+      <Class name = 'SequenceEventExpression' isAbstract = 'false' supertypes = 'Events::EventExpression'>
+        <Reference name = 'expressions' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Events::EventExpression' opposite = ''/>
+        <Attribute name = 'timeWindow' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      </Class>
+      <Class name = 'ChoiceEventExpression' isAbstract = 'false' supertypes = 'Events::EventExpression'>
+        <Reference name = 'expressions' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Events::EventExpression' opposite = ''/>
+        <Attribute name = 'minOccurs' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+        <Attribute name = 'maxOccurs' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+        <Attribute name = 'timeWindow' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+      <Class name = 'AtomicEventExpression' isAbstract = 'false' supertypes = 'Events::EventExpression'>
+        <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Terms::Term' opposite = ''/>
+        <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'R2ML::EventType' opposite = ''/>
+      </Class>
+      <Class name = 'AndNotEventExpression' isAbstract = 'false' supertypes = 'Events::EventExpression'>
+        <Reference name = 'expressions' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Events::EventExpression' opposite = ''/>
+        <Attribute name = 'timeWndow' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+      <Class name = 'EventExpression' isAbstract = 'true' supertypes = ''>
+        <Attribute name = 'startDateTime' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        <Attribute name = 'duration' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        <Attribute name = 'occurDateTime' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+    </Package>
+    <Package name = 'Actions'>
+      <Class name = 'InvokeActionExpression' isAbstract = 'false' supertypes = 'Actions::ActionExpression'>
+        <Reference name = 'operation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocFunctional::Operation' opposite = ''/>
+        <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'Terms::Term' opposite = ''/>
+        <Reference name = 'contextArgument' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Terms::ObjectTerm' opposite = ''/>
+      </Class>
+      <Class name = 'SOAPRPCAction' isAbstract = 'false' supertypes = 'Actions::SOAPAction'>
+        <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'Terms::Term' opposite = ''/>
+      </Class>
+      <Class name = 'SOAPAction' isAbstract = 'false' supertypes = 'Actions::MessageAction'>
+        <Reference name = 'operation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocFunctional::Operation' opposite = ''/>
+      </Class>
+      <Class name = 'DeleteActionExpression' isAbstract = 'false' supertypes = 'Actions::ActionExpression'>
+        <Reference name = 'contextArgument' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Terms::ObjectTerm' opposite = ''/>
+        <Reference name = 'context' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Class' opposite = ''/>
+      </Class>
+      <Class name = 'CreateActionExpression' isAbstract = 'false' supertypes = 'Actions::ActionExpression'>
+        <Reference name = 'slots' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'AtRelational::Slot' opposite = ''/>
+        <Reference name = 'context' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Class' opposite = ''/>
+      </Class>
+      <Class name = 'AssignActionExpression' isAbstract = 'false' supertypes = 'Actions::ActionExpression'>
+        <Reference name = 'contextArgument' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Terms::ObjectTerm' opposite = ''/>
+        <Reference name = 'property' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Property' opposite = ''/>
+      </Class>
+      <Class name = 'MessageAction' isAbstract = 'false' supertypes = 'Actions::ActionExpression'/>
+      <Class name = 'ActionExpression' isAbstract = 'true' supertypes = ''/>
+    </Package>
+    <Package name = 'Formulas'>
+      <Class name = 'AtLeastAndAtMostQuantifiedFormula' isAbstract = 'false' supertypes = 'Formulas::QuantifiedFormula'>
+        <Attribute name = 'maxCardinality' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+        <Attribute name = 'minCardinality' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      </Class>
+      <Class name = 'AtMostQuantifiedFormula' isAbstract = 'false' supertypes = 'Formulas::QuantifiedFormula'>
+        <Attribute name = 'maxCardinality' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      </Class>
+      <Class name = 'AtLeastQuantifiedFormula' isAbstract = 'false' supertypes = 'Formulas::QuantifiedFormula'>
+        <Attribute name = 'minCardinality' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      </Class>
+      <Package name = 'qf'>
+        <Class name = 'QFStrongNegation' isAbstract = 'false' supertypes = 'qf::QFNegation'/>
+        <Class name = 'QFNegationAsFailure' isAbstract = 'false' supertypes = 'qf::QFNegation'/>
+        <Class name = 'QFNegation' isAbstract = 'false' supertypes = 'qf::AndOrNafNegFormula'>
+          <Reference name = 'formula' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'qf::AndOrNafNegFormula' opposite = ''/>
+        </Class>
+        <Class name = 'LiteralConjunction' isAbstract = 'false' supertypes = ''>
+          <Reference name = 'atoms' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Atoms::Atom' opposite = ''/>
+        </Class>
+        <Class name = 'QFDisjunction' isAbstract = 'false' supertypes = 'qf::AndOrNafNegFormula'>
+          <Reference name = 'formulas' lower = '2' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'qf::AndOrNafNegFormula' opposite = ''/>
+        </Class>
+        <Class name = 'QFConjunction' isAbstract = 'false' supertypes = 'qf::AndOrNafNegFormula'>
+          <Reference name = 'formulas' lower = '2' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'qf::AndOrNafNegFormula' opposite = ''/>
+        </Class>
+        <Class name = 'AndOrNafNegFormula' isAbstract = 'true' supertypes = ''/>
+      </Package>
+      <Class name = 'Conjuction' isAbstract = 'false' supertypes = 'Formulas::LogicalFormula'>
+        <Reference name = 'formulas' lower = '2' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Formulas::LogicalFormula' opposite = ''/>
+      </Class>
+      <Class name = 'UniversallyQuantifiedFormula' isAbstract = 'false' supertypes = 'Formulas::QuantifiedFormula'/>
+      <Class name = 'StrongNegation' isAbstract = 'false' supertypes = 'Formulas::Negation, Formulas::LogicalFormula'>
+        <Reference name = 'formula' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Formulas::LogicalFormula' opposite = ''/>
+      </Class>
+      <Class name = 'QuantifiedFormula' isAbstract = 'true' supertypes = 'Formulas::LogicalFormula'>
+        <Reference name = 'formula' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Formulas::LogicalFormula' opposite = ''/>
+        <Reference name = 'variables' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Variables::Variable' opposite = ''/>
+      </Class>
+      <Class name = 'NegationAsFailure' isAbstract = 'false' supertypes = 'Formulas::Negation, Formulas::LogicalFormula'>
+        <Reference name = 'formula' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Formulas::LogicalFormula' opposite = ''/>
+      </Class>
+      <Class name = 'Negation' isAbstract = 'false' supertypes = ''/>
+      <Class name = 'LogicalFormula' isAbstract = 'true' supertypes = ''/>
+      <Class name = 'Implication' isAbstract = 'false' supertypes = 'Formulas::LogicalFormula'>
+        <Reference name = 'consequent' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Formulas::LogicalFormula' opposite = ''/>
+        <Reference name = 'antecedent' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Formulas::LogicalFormula' opposite = ''/>
+      </Class>
+      <Class name = 'ExistentiallyQuantifiedFormula' isAbstract = 'false' supertypes = 'Formulas::QuantifiedFormula'/>
+      <Class name = 'Disjunction' isAbstract = 'false' supertypes = 'Formulas::LogicalFormula'>
+        <Reference name = 'formulas' lower = '2' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Formulas::LogicalFormula' opposite = ''/>
+      </Class>
+    </Package>
+    <Package name = 'Terms'>
+      <Package name = 'TerBasic'>
+        <Package name = 'Variables'>
+          <Class name = 'Variable' isAbstract = 'true' supertypes = ''>
+            <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+          </Class>
+          <Class name = 'ObjectVariable' isAbstract = 'false' supertypes = 'Variables::Variable, Terms::ObjectTerm'>
+            <Reference name = 'classRef' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Class' opposite = ''/>
+          </Class>
+          <Class name = 'DataVariable' isAbstract = 'false' supertypes = 'Variables::Variable, Terms::DataTerm'>
+            <Reference name = 'datatypeRef' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Datatype' opposite = ''/>
+          </Class>
+          <Class name = 'GenericVariable' isAbstract = 'false' supertypes = 'Terms::GenericTerm, Variables::Variable'>
+            <Reference name = 'typeRef' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Type' opposite = ''/>
+          </Class>
+        </Package>
+      </Package>
+      <Package name = 'TerFunctional'>
+        <Class name = 'DatatypeFunctionTerm' isAbstract = 'false' supertypes = 'TerFunctional::DataFunctionTerm'>
+          <Reference name = 'function' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocFunctional::DatatypeFunction' opposite = ''/>
+          <Reference name = 'dataArguments' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'Terms::DataTerm' opposite = ''/>
+        </Class>
+        <Class name = 'DataFunctionTerm' isAbstract = 'true' supertypes = 'Terms::DataTerm'/>
+        <Class name = 'AttributeFunctionTerm' isAbstract = 'false' supertypes = 'TerFunctional::DataFunctionTerm'>
+          <Reference name = 'contextArgument' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Terms::ObjectTerm' opposite = ''/>
+          <Reference name = 'attribute' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::Attribute' opposite = ''/>
+        </Class>
+        <Class name = 'DataOperationTerm' isAbstract = 'false' supertypes = 'TerFunctional::DataFunctionTerm'>
+          <Reference name = 'dataOperationRef' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocFunctional::DataOperation' opposite = ''/>
+          <Reference name = 'contextArgument' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Terms::ObjectTerm' opposite = ''/>
+          <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'Terms::Term' opposite = ''/>
+        </Class>
+        <Class name = 'ReferencePropertyFunctionTerm' isAbstract = 'false' supertypes = 'Terms::ObjectTerm'>
+          <Reference name = 'contextArgument' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Terms::ObjectTerm' opposite = ''/>
+          <Reference name = 'referencePropertyRef' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBasic::ReferenceProperty' opposite = ''/>
+        </Class>
+        <Class name = 'ObjectOperationTerm' isAbstract = 'false' supertypes = 'Terms::ObjectTerm'>
+          <Reference name = 'operation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocFunctional::ObjectOperation' opposite = ''/>
+          <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Terms::Term' opposite = ''/>
+          <Reference name = 'contextArgument' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Terms::ObjectTerm' opposite = ''/>
+        </Class>
+        <Class name = 'GenericFunctionTerm' isAbstract = 'false' supertypes = 'Terms::GenericTerm'>
+          <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'Terms::GenericTerm' opposite = ''/>
+          <Reference name = 'functor' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocFunctional::GenericFunction' opposite = ''/>
+        </Class>
+      </Package>
+      <Class name = 'GenericTerm' isAbstract = 'true' supertypes = 'Terms::Term'/>
+      <Class name = 'Term' isAbstract = 'true' supertypes = ''>
+        <Attribute name = 'typeCategory' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'R2ML::CollectionTypes'/>
+      </Class>
+      <Class name = 'ObjectTerm' isAbstract = 'true' supertypes = 'Terms::Term'/>
+      <Class name = 'DataTerm' isAbstract = 'true' supertypes = 'Terms::Term'/>
+    </Package>
+    <Class name = 'RuleSet' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'variables' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Variables::Variable' opposite = ''/>
+      <Reference name = 'externalVocabulary' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'VocBuiltin::ExternalVocabulary' opposite = ''/>
+      <Reference name = 'vocabularies' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'VocBasic::Vocabulary' opposite = ''/>
+      <Attribute name = 'ruleSetID' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'RuleBase' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'vocabularies' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'VocBasic::Vocabulary' opposite = ''/>
+      <Reference name = 'externalVocabulaires' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'VocBuiltin::ExternalVocabulary' opposite = ''/>
+      <Reference name = 'rules' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'R2ML::RuleSet' opposite = ''/>
+      <Attribute name = 'ruleBaseID' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'IntegrityRuleSet' isAbstract = 'false' supertypes = 'R2ML::RuleSet'>
+      <Reference name = 'rules' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Rules::IntegrityRule' opposite = ''/>
+    </Class>
+    <Class name = 'DerivationRuleSet' isAbstract = 'false' supertypes = 'R2ML::RuleSet'>
+      <Reference name = 'rules' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Rules::DerivationRule' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Integer'/>
+    <DataType name = 'Long'/>
+    <DataType name = 'Float'/>
+    <DataType name = 'Double'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

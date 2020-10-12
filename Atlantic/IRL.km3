@@ -1,0 +1,344 @@
+-- @name		IRL
+-- @version		0.1
+-- @domain		Business Rules
+-- @authors		Anas Abouzahra
+-- @date		2006/06/22
+-- @description	IRL is a formal rule language designed by ILOG with several implementations build on the top of very powerful and effective resolution engines.
+-- @see		 	
+
+package PrimitiveTypes {
+	datatype Double;
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+}
+
+package IRL {
+
+	class Element {
+		attribute location : String;
+		attribute commentsBefore[*] ordered : String;
+		attribute commentsAfter[*] ordered : String;
+	}
+	
+	abstract class NamedElement extends Element {
+		attribute name : String;		
+	}
+	
+	class ExtendedIdentifier extends NamedElement {
+		reference parentIdentifier [0-1] : ExtendedIdentifier;
+		reference extendedIdentifierOwner : Extended oppositeOf extendedIdentifier;
+	}
+	
+	abstract class Extended extends Element{
+		reference extendedIdentifier container: ExtendedIdentifier oppositeOf extendedIdentifierOwner;
+	}
+	
+	abstract class Definition extends Extended{
+	}
+	
+	class RuleSet extends NamedElement {
+		reference importDefinitions [*] ordered container: ImportDefinition oppositeOf importDefinitionOwners;
+		reference propertyDefinitions [0-1] container : PropertyDefinition oppositeOf propertyDefinitionOwner;
+		--reference setupDefinitions [0-1] container : SetupDefinition oppositeOf setupOwner;
+		reference rulesetElementDefinitions [*] container :RulesetElementDefinition oppositeOf rulesetElementDefinitionOwner;
+	}
+	
+	class ImportDefinition extends Definition {
+		reference importDefinitionOwners  : RuleSet oppositeOf importDefinitions;
+		attribute dotStar : Boolean;
+	}
+-- @begin Expressions
+
+package IRLExpressions {
+	
+	abstract class Expression extends Typed {
+		reference appliedProperty[0-1] : PropertyCallExpression oppositeOf source;
+		reference expressionOwner : RuleSetDeclaration oppositeOf expression;
+		--reference objectFealdExpressionOwner : ObjectField oppositeOf objectFealdExpression;
+		--reference arrayElementExpressionOwner : ArrayElement oppositeOf expressions; 
+		reference loopExpression[0-1] : LoopExpression oppositeOf body;
+		reference parentOperation[0-1] : OperationCallExpression oppositeOf arguments;
+		reference ruleConditionExpression : RuleCondition oppositeOf conditionExpression;
+		reference parentInsert [0-1] : CreateAction oppositeOf insertArguments;
+		reference parentModifying [0-1] : ModifyAction oppositeOf modifiedArguments;
+	}
+	
+	abstract class PropertyCallExpression extends Expression {
+		reference source [0-1] container : Expression oppositeOf appliedProperty;	
+	}
+	
+	--class Literal extends Expression{
+	--}
+	
+	--class Location extends Expression{
+	--}
+	
+	--class FunctionCall extends Expression{
+	--}
+	
+	--class IncDecExpression extends Expression{
+	--}
+	
+	--class AllocationExpression extends Expression{
+	--}
+	
+	--class ClassExpression extends Expression{
+	--}
+	
+	class IteratorExp extends LoopExpression {
+		attribute name: String;
+		
+	}
+	
+	class LoopExpression extends PropertyCallExpression {
+		reference body container : Expression oppositeOf loopExpression;
+		reference iterators[1-*] container : Iterator oppositeOf loopExpression;
+		
+	}
+	
+	class OperatorCallExpression extends OperationCallExpression {
+		
+	}
+	
+	class OperationCallExpression extends PropertyCallExpression {
+		reference arguments[*] ordered container : Expression oppositeOf parentOperation;
+		attribute operationName : String;
+		attribute signature[0-1] : String;
+		
+	}
+	
+	abstract class PrimitiveExpression extends Expression {
+		
+	}
+	
+	class Iterator extends VariableDeclaration {
+		reference loopExpression[0-1] : LoopExpression oppositeOf iterators;
+		
+	}
+	
+	abstract class NumericExpression extends PrimitiveExpression {
+	}
+	
+	class IntegerExpression extends NumericExpression {
+		attribute integerSymbol : Integer;
+		
+	}
+	
+	class RealExpression extends NumericExpression {
+		attribute realSymbol : Double;
+		
+	}
+	
+	class BooleanExpression extends PrimitiveExpression {
+		attribute booleanSymbol : Boolean;
+		
+	}
+	
+	class NavigationOrAttributeCallExpression extends PropertyCallExpression {
+		attribute name : String;
+		
+	}
+	
+	class VariableExpression extends Expression {
+		reference referredVariable : VariableDeclaration oppositeOf variableExp;
+		attribute name : String;
+		
+	}
+	
+	class StringExpression extends PrimitiveExpression {
+		attribute stringSymbol : String;
+		
+	}
+	
+	
+	
+	--abstract class HasVariable {
+		--reference variable container: VariableExpression oppositeOf variableOwner;
+	--}
+	
+	--class VariableLocation extends VariableExpression, Location{
+	--}
+	
+	--class ObjectField extends Location, HasVariable{
+		--reference objectFealdExpression : Expression oppositeOf objectFealdExpressionOwner;
+	--}
+	
+	--class ArrayElement extends Location{
+		--reference expressions [2-2] : Expression oppositeOf arrayElementExpressionOwner ; 
+	--}
+	
+}
+-- @end Expressions	
+
+-- @begin Types
+package IRLTypes {
+	
+	abstract class Type extends NamedElement {
+		reference typeOwner : Typed oppositeOf type;
+	}
+	
+	abstract class Typed extends Element {
+		reference type container: Type oppositeOf typeOwner;
+	}
+	
+	--class TypedVariable extends HasVariable, Typed{
+		--reference variableSpecificationTypedVariableOwner : VariableSpecification oppositeOf variableSpecificationTypedVariable;
+	--}
+	
+	--class TypedObjectVariable extends Extended, VariableExpression {
+		--reference hasherOwner [0-1] : HasherDeclaration oppositeOf typedObjectVariable; 
+	--}
+	
+	abstract class Primitive extends Type {
+		
+	}
+	
+	class StringType extends Primitive {
+		
+	}
+	
+	abstract class NumericType extends Primitive {
+		
+	}
+
+	class IntegerType extends NumericType {
+		
+	}
+	class RealType extends NumericType {
+	
+	}
+	
+	class BooleanType extends Primitive {
+	
+	}
+	
+	class ClassType extends Type {
+	}
+
+-- @end Types
+}	
+
+
+-- @begin RuleSetDeclaration
+package IRLDeclarations {
+	
+	class PropertyDefinition extends Definition {
+		reference propertyDefinitionOwner : RuleSet oppositeOf propertyDefinitions;
+		reference ruleSetDeclarations [*] ordered container: RuleSetDeclaration oppositeOf ruleSetDeclarationOwner;
+		attribute semicoloneOpt : Boolean;
+	}
+	
+	abstract class RuleSetDeclaration extends Element{
+		reference ruleSetDeclarationOwner : PropertyDefinition oppositeOf ruleSetDeclarations;
+		reference expression [0-1] container: Expression oppositeOf expressionOwner;	
+	}
+	
+	--class HasherDeclaration extends RuleSetDeclaration {
+	--	reference typedObjectVariable container : TypedObjectVariable oppositeOf hasherOwner; 
+	--	}
+	
+	class ClassInstancesDeclaration extends RuleSetDeclaration, Extended {
+		--reference instancesSpecification
+	}
+	
+	class PropertyDeclaration extends RuleSetDeclaration {
+	
+	}
+	
+	--class VariableSpecification extends RuleSetDeclaration {
+		--reference variableSpecificationTypedVariable container: TypedVariable oppositeOf variableSpecificationTypedVariableOwner;		 
+		--attribute inOut : Boolean;
+		--reference initialisation [*]
+	--}
+	
+	class VariableDeclaration extends Typed {
+		attribute varName : String;
+		reference variableExp[*] : VariableExpression oppositeOf referredVariable;
+		
+	}
+	
+}
+-- @end RuleSetDeclaration	
+		
+--@begin Rules 
+package IRLRules {	
+	
+	abstract class RulesetElementDefinition extends NamedElement {
+		reference rulesetElementDefinitionOwner : RuleSet oppositeOf rulesetElementDefinitions ;
+	}
+	
+	class RuleDefinition extends RulesetElementDefinition {
+		reference binding [0-1] container : Binding oppositeOf bindingOwner;
+		reference condition [0-1] container: RuleCondition oppositeOf ruleDefinitionCondition;
+		reference actions [*] ordered container: RuleAction oppositeOf actionOwner;
+		
+		
+	}
+	
+	class Binding extends Element {
+		reference bindingOwner : RuleDefinition oppositeOf binding; 
+		reference ruleVariable [*] container : RuleVariable oppositeOf ruleVariableOwner; 
+	}
+	
+	abstract class RuleVariable extends VariableDeclaration { 
+		reference ruleVariableOwner : Binding oppositeOf ruleVariable;
+		reference filter[*]ordered container : Expression;
+		reference collectIn [0-1] container : Expression;
+	}
+	
+	class CollectionOperationRuleVariable extends RuleVariable {
+		attribute operationName : String;
+		reference collectWhere [0-1] container : Expression;
+	
+	}
+	
+	class SimpleRuleVariable extends RuleVariable {
+		
+		
+	}
+	
+	class RuleCondition extends Element{
+		reference conditionExpression [0-1] container: Expression oppositeOf ruleConditionExpression;
+		reference ruleDefinitionCondition : RuleDefinition oppositeOf condition; 
+		
+	}
+	
+	class RuleAction extends Element {
+		reference actionOwner [0-1] : RuleDefinition oppositeOf actions;
+	}
+	
+	package PRRActions	{
+
+	class DeleteAction extends RuleAction {
+		reference objValue container : Expression; 
+	}
+	
+	class CreateAction extends RuleAction, VariableDeclaration {
+		reference insertArguments [*] ordered container : Expression oppositeOf parentInsert;
+	}
+	
+	class ModifyAction extends RuleAction {
+		reference objValue container: Expression; 
+		reference modifiedArguments [*] ordered container : Expression oppositeOf parentModifying;
+	
+	}
+	
+	class UpdateAction extends RuleAction {
+		reference objValue container : Expression;
+	}
+	
+	--class AssignAction extends RuleAction {
+		--reference objValue container : Expression; 
+		--reference aValue container : Expression;
+	--}
+	
+	class InvokeAction extends RuleAction {
+		reference invocation container : Expression; 
+	}
+	
+}
+}	
+-- @end Rules
+
+}

@@ -1,0 +1,135 @@
+-- @name			Klaper
+-- @version			1.0
+-- @authors			Youssef Srour (Srour.youssef@gmail.com)
+-- @date			2006/07/19
+-- @description		This metamodel describes KLAPER ((Kernel LAnguage for PErformance and Reliability analysis). It is a kernel language whose aim is to capture the relevant information for the analysis of non-functional attributes of component-based systems, with a focus on performance and reliability attributes, abstracting away unnecessary details.
+-- @see 			http://delivery.acm.org/10.1145/1080000/1071024/p25-grassi.pdf?key1=1071024&key2=0400095511&coll=GUIDE&dl=&CFID=15151515&CFTOKEN=6184618
+
+package Klaper {
+
+-- Begin class Resource
+	class Resource {
+		attribute name : String;
+		attribute type : String;
+		attribute capacity : Integer;
+		attribute schedulingPolicy : String;
+		attribute description : String;
+		reference acquire : Acquire oppositeOf resource;
+		reference release : Release oppositeOf resource;
+	}-- End class Resource
+	
+-- Begin class Service
+	class Service {
+		attribute name : String;
+		attribute formalParams : String;
+		attribute speedAttr : String;
+		attribute failAttr : String;
+		attribute description : String;
+		reference behavior [1-*] : Behavior oppositeOf service;
+		reference behaviorUsed [*] : Behavior oppositeOf usedService;
+		reference serviceCall [*] : ServiceCall oppositeOf calledService;
+	}-- End class Service
+
+-- Begin class Behavior
+	class Behavior {
+		reference stepn : Step oppositeOf nestedBehavior;
+		reference  stepb [1-*] container : Step oppositeOf behavior;
+		reference service : Service oppositeOf behavior;
+		reference  usedService[*] : Service oppositeOf behaviorUsed;
+		reference  workLoad[0-1] : WorkLoad oppositeOf behavior;
+	}-- End class Behavior
+
+-- Begin class WorkLoad
+	class WorkLoad {
+		attribute workLoadType : String;
+		attribute arrivalProcess : String;
+		attribute population : String;
+		attribute initialResource : String;
+		reference  behavior : Behavior oppositeOf workLoad;
+	}-- End class WorkLoad
+
+-- Begin class Step
+	class Step extends Behavior {
+		attribute name : String;
+		attribute repetition : String;
+		attribute internalExecTime : String;
+		attribute internalFailProb : String;
+		attribute completionModel : String;
+	 	reference serviceCall [*] container : ServiceCall oppositeOf step;
+	 	reference predecessor [*] : Step oppositeOf successor;
+	 	reference successor [*] : Step oppositeOf predecessor;
+	 	reference behavior : Behavior oppositeOf stepb;
+	 	reference nestedBehavior [0-1] : Behavior oppositeOf stepn;
+	}-- End class Step
+
+-- Begin class Start
+	class Start extends Step {
+	
+	}-- End class Start
+
+-- Begin class End
+	class End extends Step {
+	
+	}-- End class End
+
+-- Begin class Control
+	class Control extends Step {
+	
+	}-- End class Control
+
+-- Begin class InternalActivity
+	class InternalActivity extends Step {
+	
+	}-- End class InternalActivity
+
+-- Begin class ServiceCall
+	class ServiceCall extends Step {
+		attribute resourceType : String;
+		attribute serviceName : String;
+		attribute isSynch : Boolean;
+		reference actualParam[*] ordered : ActualParam oppositeOf serviceCall; 
+		reference  step : Step oppositeOf serviceCall;
+		reference calledService [0-1] : Service oppositeOf serviceCall;
+	}-- End class ServiceCall
+
+-- Begin class ActualParam
+	class ActualParam {
+		attribute value : String;
+		reference serviceCall : ServiceCall oppositeOf actualParam;
+	}-- End class ActualParam
+
+-- Begin class Branch
+	class Branch extends Control {
+		attribute branchProbs : String;	
+	}-- End class Branch
+
+-- Begin class Fork
+	class Fork extends Control {
+	
+	}-- End class Fork
+
+-- Begin class Join
+	class Join extends Control {
+	
+	}-- End class Join
+
+-- Begin class Acquire
+	class Acquire extends Control {
+		attribute resourceUnits : String;
+		reference resource : Resource oppositeOf acquire;		
+	}-- End class Acquire
+
+-- Begin class Release
+	class Release extends Control {
+		attribute resourceUnits : String;
+		reference resource : Resource oppositeOf release;
+	}-- End class Release
+
+
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+	datatype Integer;
+} 

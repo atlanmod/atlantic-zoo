@@ -1,0 +1,1031 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+    <DataType name = 'UnlimitedNatural'/>
+    <DataType name = 'Sequence'/>
+    <DataType name = 'Set'/>
+  </Package>
+  <Package name = 'uml2'>
+    <Class name = 'Element' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'ownedElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Element' opposite = 'uml2::Element::owner'/>
+      <Reference name = 'owner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Element' opposite = 'uml2::Element::ownedElement'/>
+      <Reference name = 'ownedComment' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Comment' opposite = ''/>
+    </Class>
+    <Class name = 'MultiplicityElement' isAbstract = 'true' supertypes = 'uml2::Element'>
+      <Attribute name = 'isOrdered' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isUnique' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'lower' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'upper' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::UnlimitedNatural'/>
+      <Reference name = 'upperValue' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ValueSpecification' opposite = ''/>
+      <Reference name = 'lowerValue' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ValueSpecification' opposite = ''/>
+    </Class>
+    <Class name = 'NamedElement' isAbstract = 'true' supertypes = 'uml2::TemplateableElement'>
+      <Attribute name = 'name' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'qualifiedName' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'visibility' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'uml2::VisibilityKind'/>
+      <Reference name = 'clientDependency' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Dependency' opposite = 'uml2::Dependency::client'/>
+      <Reference name = 'nameExpression' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::StringExpression' opposite = ''/>
+    </Class>
+    <Class name = 'Namespace' isAbstract = 'true' supertypes = 'uml2::NamedElement'>
+      <Reference name = 'member' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::NamedElement' opposite = ''/>
+      <Reference name = 'ownedRule' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Constraint' opposite = 'uml2::Constraint::namespace'/>
+      <Reference name = 'importedMember' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::PackageableElement' opposite = ''/>
+      <Reference name = 'elementImport' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ElementImport' opposite = 'uml2::ElementImport::importingNamespace'/>
+      <Reference name = 'packageImport' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::PackageImport' opposite = 'uml2::PackageImport::importingNamespace'/>
+    </Class>
+    <Class name = 'OpaqueExpression' isAbstract = 'false' supertypes = 'uml2::ValueSpecification'>
+      <Attribute name = 'body' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'language' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'result' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Parameter' opposite = ''/>
+      <Reference name = 'behavior' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Behavior' opposite = ''/>
+    </Class>
+    <Class name = 'ValueSpecification' isAbstract = 'true' supertypes = 'uml2::TypedElement, uml2::ParameterableElement'/>
+    <Class name = 'Expression' isAbstract = 'false' supertypes = 'uml2::OpaqueExpression'>
+      <Attribute name = 'symbol' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'operand' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::ValueSpecification' opposite = ''/>
+    </Class>
+    <Class name = 'Comment' isAbstract = 'false' supertypes = 'uml2::TemplateableElement'>
+      <Attribute name = 'body' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'annotatedElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Element' opposite = ''/>
+      <Reference name = 'bodyExpression' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::StringExpression' opposite = ''/>
+    </Class>
+    <Class name = 'DirectedRelationship' isAbstract = 'true' supertypes = 'uml2::Relationship'>
+      <Reference name = 'source' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Element' opposite = ''/>
+      <Reference name = 'target' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Element' opposite = ''/>
+    </Class>
+    <Class name = 'Relationship' isAbstract = 'true' supertypes = 'uml2::Element'>
+      <Reference name = 'relatedElement' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Element' opposite = ''/>
+    </Class>
+    <Class name = 'Class' isAbstract = 'false' supertypes = 'uml2::BehavioredClassifier, uml2::EncapsulatedClassifier'>
+      <Reference name = 'ownedOperation' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::Operation' opposite = 'uml2::Operation::class_'/>
+      <Reference name = 'superClass' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Class' opposite = ''/>
+      <Reference name = 'extension' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Extension' opposite = 'uml2::Extension::metaclass'/>
+      <Reference name = 'nestedClassifier' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::Classifier' opposite = ''/>
+      <Attribute name = 'isActive' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'ownedReception' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Reception' opposite = ''/>
+    </Class>
+    <Class name = 'Type' isAbstract = 'true' supertypes = 'uml2::PackageableElement'>
+      <Reference name = 'package' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Package' opposite = 'uml2::Package::ownedType'/>
+    </Class>
+    <Class name = 'Property' isAbstract = 'false' supertypes = 'uml2::StructuralFeature, uml2::ConnectableElement, uml2::DeploymentTarget'>
+      <Attribute name = 'default' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'isComposite' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isDerived' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'class_' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Class' opposite = ''/>
+      <Reference name = 'opposite' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Property' opposite = ''/>
+      <Attribute name = 'isDerivedUnion' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'owningAssociation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Association' opposite = 'uml2::Association::ownedEnd'/>
+      <Reference name = 'redefinedProperty' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Property' opposite = ''/>
+      <Reference name = 'subsettedProperty' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Property' opposite = ''/>
+      <Reference name = 'datatype' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::DataType' opposite = 'uml2::DataType::ownedAttribute'/>
+      <Reference name = 'association' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Association' opposite = 'uml2::Association::memberEnd'/>
+      <Attribute name = 'aggregation' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'uml2::AggregationKind'/>
+      <Reference name = 'defaultValue' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ValueSpecification' opposite = ''/>
+      <Reference name = 'qualifier' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::Property' opposite = 'uml2::Property::associationEnd'/>
+      <Reference name = 'associationEnd' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Property' opposite = 'uml2::Property::qualifier'/>
+    </Class>
+    <Class name = 'Operation' isAbstract = 'false' supertypes = 'uml2::BehavioralFeature, uml2::TypedElement, uml2::MultiplicityElement, uml2::ParameterableElement'>
+      <Reference name = 'ownedParameter' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::Parameter' opposite = 'uml2::Parameter::operation'/>
+      <Reference name = 'class_' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Class' opposite = 'uml2::Class::ownedOperation'/>
+      <Attribute name = 'isQuery' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'datatype' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::DataType' opposite = 'uml2::DataType::ownedOperation'/>
+      <Reference name = 'precondition' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Constraint' opposite = ''/>
+      <Reference name = 'postcondition' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Constraint' opposite = ''/>
+      <Reference name = 'redefinedOperation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Operation' opposite = ''/>
+      <Reference name = 'bodyCondition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Constraint' opposite = ''/>
+    </Class>
+    <Class name = 'TypedElement' isAbstract = 'true' supertypes = 'uml2::NamedElement'>
+      <Reference name = 'type' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Type' opposite = ''/>
+    </Class>
+    <Class name = 'Parameter' isAbstract = 'false' supertypes = 'uml2::ConnectableElement, uml2::TypedElement, uml2::MultiplicityElement'>
+      <Reference name = 'operation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Operation' opposite = 'uml2::Operation::ownedParameter'/>
+      <Attribute name = 'default' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'direction' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'uml2::ParameterDirectionKind'/>
+      <Reference name = 'defaultValue' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ValueSpecification' opposite = ''/>
+      <Attribute name = 'isException' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isStream' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'effect' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'uml2::ParameterEffectKind'/>
+      <Reference name = 'parameterSet' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ParameterSet' opposite = 'uml2::ParameterSet::parameter'/>
+    </Class>
+    <Class name = 'Package' isAbstract = 'false' supertypes = 'uml2::Namespace, uml2::PackageableElement'>
+      <Reference name = 'nestedPackage' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Package' opposite = 'uml2::Package::nestingPackage'/>
+      <Reference name = 'nestingPackage' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Package' opposite = 'uml2::Package::nestedPackage'/>
+      <Reference name = 'ownedType' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Type' opposite = 'uml2::Type::package'/>
+      <Reference name = 'ownedMember' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::PackageableElement' opposite = ''/>
+      <Reference name = 'packageMerge' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::PackageMerge' opposite = 'uml2::PackageMerge::mergingPackage'/>
+      <Reference name = 'appliedProfile' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ProfileApplication' opposite = ''/>
+      <Reference name = 'packageExtension' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::PackageMerge' opposite = ''/>
+    </Class>
+    <Class name = 'Enumeration' isAbstract = 'false' supertypes = 'uml2::DataType'>
+      <Reference name = 'ownedLiteral' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::EnumerationLiteral' opposite = 'uml2::EnumerationLiteral::enumeration'/>
+    </Class>
+    <Class name = 'DataType' isAbstract = 'false' supertypes = 'uml2::Classifier'>
+      <Reference name = 'ownedAttribute' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::Property' opposite = 'uml2::Property::datatype'/>
+      <Reference name = 'ownedOperation' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::Operation' opposite = 'uml2::Operation::datatype'/>
+    </Class>
+    <Class name = 'EnumerationLiteral' isAbstract = 'false' supertypes = 'uml2::InstanceSpecification'>
+      <Reference name = 'enumeration' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Enumeration' opposite = 'uml2::Enumeration::ownedLiteral'/>
+    </Class>
+    <Class name = 'PrimitiveType' isAbstract = 'false' supertypes = 'uml2::DataType'/>
+    <Class name = 'Classifier' isAbstract = 'true' supertypes = 'uml2::Namespace, uml2::Type, uml2::RedefinableElement'>
+      <Reference name = 'feature' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Feature' opposite = 'uml2::Feature::featuringClassifier'/>
+      <Attribute name = 'isAbstract' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'inheritedMember' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::NamedElement' opposite = ''/>
+      <Reference name = 'general' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Classifier' opposite = ''/>
+      <Reference name = 'generalization' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Generalization' opposite = 'uml2::Generalization::specific'/>
+      <Reference name = 'attribute' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Property' opposite = ''/>
+      <Reference name = 'redefinedClassifier' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Classifier' opposite = ''/>
+      <Reference name = 'substitution' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Substitution' opposite = 'uml2::Substitution::substitutingClassifier'/>
+      <Reference name = 'powertypeExtent' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::GeneralizationSet' opposite = 'uml2::GeneralizationSet::powertype'/>
+      <Reference name = 'ownedUseCase' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::UseCase' opposite = ''/>
+      <Reference name = 'useCase' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::UseCase' opposite = 'uml2::UseCase::subject'/>
+      <Reference name = 'representation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::CollaborationOccurrence' opposite = ''/>
+      <Reference name = 'occurrence' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::CollaborationOccurrence' opposite = ''/>
+    </Class>
+    <Class name = 'Feature' isAbstract = 'true' supertypes = 'uml2::RedefinableElement'>
+      <Reference name = 'featuringClassifier' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Classifier' opposite = 'uml2::Classifier::feature'/>
+      <Attribute name = 'isStatic' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'Constraint' isAbstract = 'false' supertypes = 'uml2::PackageableElement'>
+      <Reference name = 'context' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Namespace' opposite = ''/>
+      <Reference name = 'namespace' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Namespace' opposite = 'uml2::Namespace::ownedRule'/>
+      <Reference name = 'specification' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ValueSpecification' opposite = ''/>
+      <Reference name = 'constrainedElement' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'uml2::Element' opposite = ''/>
+    </Class>
+    <Enumeration name = 'VisibilityKind'>
+      <EnumLiteral name = 'package'/>
+      <EnumLiteral name = 'private'/>
+      <EnumLiteral name = 'protected'/>
+      <EnumLiteral name = 'public'/>
+    </Enumeration>
+    <Class name = 'LiteralBoolean' isAbstract = 'false' supertypes = 'uml2::LiteralSpecification'>
+      <Attribute name = 'value' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'LiteralSpecification' isAbstract = 'true' supertypes = 'uml2::ValueSpecification'/>
+    <Class name = 'LiteralString' isAbstract = 'false' supertypes = 'uml2::LiteralSpecification'>
+      <Attribute name = 'value' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'LiteralNull' isAbstract = 'false' supertypes = 'uml2::LiteralSpecification'/>
+    <Class name = 'LiteralInteger' isAbstract = 'false' supertypes = 'uml2::LiteralSpecification'>
+      <Attribute name = 'value' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'LiteralUnlimitedNatural' isAbstract = 'false' supertypes = 'uml2::LiteralSpecification'>
+      <Attribute name = 'value' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::UnlimitedNatural'/>
+    </Class>
+    <Class name = 'BehavioralFeature' isAbstract = 'true' supertypes = 'uml2::Namespace, uml2::Feature'>
+      <Reference name = 'parameter' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'uml2::Parameter' opposite = ''/>
+      <Reference name = 'formalParameter' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Parameter' opposite = ''/>
+      <Reference name = 'returnResult' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::Parameter' opposite = ''/>
+      <Reference name = 'raisedException' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Type' opposite = ''/>
+      <Attribute name = 'isAbstract' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'method' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Behavior' opposite = 'uml2::Behavior::specification'/>
+      <Attribute name = 'concurrency' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'uml2::CallConcurrencyKind'/>
+    </Class>
+    <Class name = 'StructuralFeature' isAbstract = 'true' supertypes = 'uml2::Feature, uml2::TypedElement, uml2::MultiplicityElement'>
+      <Attribute name = 'isReadOnly' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'InstanceSpecification' isAbstract = 'false' supertypes = 'uml2::PackageableElement, uml2::DeploymentTarget, uml2::DeployedArtifact'>
+      <Reference name = 'slot' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Slot' opposite = 'uml2::Slot::owningInstance'/>
+      <Reference name = 'classifier' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Classifier' opposite = ''/>
+      <Reference name = 'specification' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ValueSpecification' opposite = ''/>
+    </Class>
+    <Class name = 'Slot' isAbstract = 'false' supertypes = 'uml2::Element'>
+      <Reference name = 'owningInstance' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::InstanceSpecification' opposite = 'uml2::InstanceSpecification::slot'/>
+      <Reference name = 'value' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::ValueSpecification' opposite = ''/>
+      <Reference name = 'definingFeature' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::StructuralFeature' opposite = ''/>
+    </Class>
+    <Class name = 'InstanceValue' isAbstract = 'false' supertypes = 'uml2::ValueSpecification'>
+      <Reference name = 'instance' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::InstanceSpecification' opposite = ''/>
+    </Class>
+    <Class name = 'RedefinableElement' isAbstract = 'true' supertypes = 'uml2::NamedElement'>
+      <Reference name = 'redefinitionContext' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'uml2::Classifier' opposite = ''/>
+      <Attribute name = 'isLeaf' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'Generalization' isAbstract = 'false' supertypes = 'uml2::DirectedRelationship'>
+      <Reference name = 'specific' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Classifier' opposite = 'uml2::Classifier::generalization'/>
+      <Reference name = 'general' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Classifier' opposite = ''/>
+      <Attribute name = 'isSubstitutable' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'generalizationSet' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::GeneralizationSet' opposite = 'uml2::GeneralizationSet::generalization'/>
+    </Class>
+    <Class name = 'PackageableElement' isAbstract = 'true' supertypes = 'uml2::NamedElement, uml2::ParameterableElement'>
+      <Attribute name = 'packageableElement_visibility' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'uml2::VisibilityKind'/>
+    </Class>
+    <Class name = 'ElementImport' isAbstract = 'false' supertypes = 'uml2::DirectedRelationship'>
+      <Attribute name = 'visibility' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'uml2::VisibilityKind'/>
+      <Attribute name = 'alias' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'importedElement' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::PackageableElement' opposite = ''/>
+      <Reference name = 'importingNamespace' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Namespace' opposite = 'uml2::Namespace::elementImport'/>
+    </Class>
+    <Class name = 'PackageImport' isAbstract = 'false' supertypes = 'uml2::DirectedRelationship'>
+      <Attribute name = 'visibility' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'uml2::VisibilityKind'/>
+      <Reference name = 'importedPackage' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Package' opposite = ''/>
+      <Reference name = 'importingNamespace' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Namespace' opposite = 'uml2::Namespace::packageImport'/>
+    </Class>
+    <Class name = 'Association' isAbstract = 'false' supertypes = 'uml2::Classifier, uml2::Relationship'>
+      <Attribute name = 'isDerived' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'ownedEnd' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::Property' opposite = 'uml2::Property::owningAssociation'/>
+      <Reference name = 'endType' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Type' opposite = ''/>
+      <Reference name = 'memberEnd' lower = '2' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'uml2::Property' opposite = 'uml2::Property::association'/>
+    </Class>
+    <Class name = 'PackageMerge' isAbstract = 'false' supertypes = 'uml2::DirectedRelationship'>
+      <Reference name = 'mergingPackage' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Package' opposite = 'uml2::Package::packageMerge'/>
+      <Reference name = 'mergedPackage' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Package' opposite = ''/>
+    </Class>
+    <Class name = 'Stereotype' isAbstract = 'false' supertypes = 'uml2::Class'/>
+    <Class name = 'Profile' isAbstract = 'false' supertypes = 'uml2::Package'>
+      <Reference name = 'ownedStereotype' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Stereotype' opposite = ''/>
+      <Reference name = 'metaclassReference' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ElementImport' opposite = ''/>
+      <Reference name = 'metamodelReference' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::PackageImport' opposite = ''/>
+    </Class>
+    <Class name = 'ProfileApplication' isAbstract = 'false' supertypes = 'uml2::PackageImport'>
+      <Reference name = 'importedProfile' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Profile' opposite = ''/>
+    </Class>
+    <Class name = 'Extension' isAbstract = 'false' supertypes = 'uml2::Association'>
+      <Attribute name = 'isRequired' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'metaclass' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Class' opposite = 'uml2::Class::extension'/>
+    </Class>
+    <Class name = 'ExtensionEnd' isAbstract = 'false' supertypes = 'uml2::Property'/>
+    <Enumeration name = 'ParameterDirectionKind'>
+      <EnumLiteral name = 'in'/>
+      <EnumLiteral name = 'inout'/>
+      <EnumLiteral name = 'out'/>
+      <EnumLiteral name = 'return'/>
+    </Enumeration>
+    <Enumeration name = 'AggregationKind'>
+      <EnumLiteral name = 'composite'/>
+      <EnumLiteral name = 'none'/>
+      <EnumLiteral name = 'shared'/>
+    </Enumeration>
+    <Class name = 'Behavior' isAbstract = 'true' supertypes = 'uml2::Class'>
+      <Attribute name = 'isReentrant' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'context' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::BehavioredClassifier' opposite = 'uml2::BehavioredClassifier::ownedBehavior'/>
+      <Reference name = 'redefinedBehavior' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Behavior' opposite = ''/>
+      <Reference name = 'specification' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::BehavioralFeature' opposite = 'uml2::BehavioralFeature::method'/>
+      <Reference name = 'parameter' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::Parameter' opposite = ''/>
+      <Reference name = 'formalParameter' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'uml2::Parameter' opposite = ''/>
+      <Reference name = 'returnResult' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'uml2::Parameter' opposite = ''/>
+      <Reference name = 'precondition' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Constraint' opposite = ''/>
+      <Reference name = 'postcondition' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Constraint' opposite = ''/>
+      <Reference name = 'ownedParameterSet' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ParameterSet' opposite = ''/>
+    </Class>
+    <Class name = 'BehavioredClassifier' isAbstract = 'true' supertypes = 'uml2::Classifier'>
+      <Reference name = 'ownedBehavior' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Behavior' opposite = 'uml2::Behavior::context'/>
+      <Reference name = 'classifierBehavior' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Behavior' opposite = ''/>
+      <Reference name = 'implementation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Implementation' opposite = 'uml2::Implementation::implementingClassifier'/>
+      <Reference name = 'ownedTrigger' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Trigger' opposite = ''/>
+      <Reference name = 'ownedStateMachine' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::StateMachine' opposite = 'uml2::StateMachine::stateMachine_redefinitionContext'/>
+    </Class>
+    <Class name = 'Activity' isAbstract = 'false' supertypes = 'uml2::Behavior'>
+      <Attribute name = 'body' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'language' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'edge' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ActivityEdge' opposite = 'uml2::ActivityEdge::activity'/>
+      <Reference name = 'group' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ActivityGroup' opposite = 'uml2::ActivityGroup::activityGroup_activity'/>
+      <Reference name = 'node' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ActivityNode' opposite = 'uml2::ActivityNode::activity'/>
+      <Reference name = 'action' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'uml2::Action' opposite = ''/>
+      <Reference name = 'structuredNode' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::StructuredActivityNode' opposite = ''/>
+      <Attribute name = 'isSingleExecution' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isReadOnly' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'Permission' isAbstract = 'false' supertypes = 'uml2::Dependency'/>
+    <Class name = 'Dependency' isAbstract = 'false' supertypes = 'uml2::PackageableElement, uml2::DirectedRelationship'>
+      <Reference name = 'client' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::NamedElement' opposite = 'uml2::NamedElement::clientDependency'/>
+      <Reference name = 'supplier' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::NamedElement' opposite = ''/>
+    </Class>
+    <Class name = 'Usage' isAbstract = 'false' supertypes = 'uml2::Dependency'/>
+    <Class name = 'Abstraction' isAbstract = 'false' supertypes = 'uml2::Dependency'>
+      <Reference name = 'mapping' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::OpaqueExpression' opposite = ''/>
+    </Class>
+    <Class name = 'Realization' isAbstract = 'false' supertypes = 'uml2::Abstraction'>
+      <Reference name = 'abstraction' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Component' opposite = 'uml2::Component::realization'/>
+      <Reference name = 'realizingClassifier' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Classifier' opposite = ''/>
+    </Class>
+    <Class name = 'Substitution' isAbstract = 'false' supertypes = 'uml2::Realization'>
+      <Reference name = 'contract' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Classifier' opposite = ''/>
+      <Reference name = 'substitutingClassifier' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Classifier' opposite = 'uml2::Classifier::substitution'/>
+    </Class>
+    <Class name = 'GeneralizationSet' isAbstract = 'false' supertypes = 'uml2::PackageableElement'>
+      <Attribute name = 'isCovering' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isDisjoint' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'powertype' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Classifier' opposite = 'uml2::Classifier::powertypeExtent'/>
+      <Reference name = 'generalization' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Generalization' opposite = 'uml2::Generalization::generalizationSet'/>
+    </Class>
+    <Class name = 'AssociationClass' isAbstract = 'false' supertypes = 'uml2::Class, uml2::Association'/>
+    <Class name = 'InformationItem' isAbstract = 'false' supertypes = 'uml2::Classifier'>
+      <Reference name = 'represented' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Classifier' opposite = ''/>
+    </Class>
+    <Class name = 'InformationFlow' isAbstract = 'false' supertypes = 'uml2::PackageableElement, uml2::DirectedRelationship'>
+      <Reference name = 'realization' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Relationship' opposite = ''/>
+      <Reference name = 'conveyed' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Classifier' opposite = ''/>
+    </Class>
+    <Class name = 'Model' isAbstract = 'false' supertypes = 'uml2::Package'>
+      <Attribute name = 'viewpoint' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ConnectorEnd' isAbstract = 'false' supertypes = 'uml2::MultiplicityElement'>
+      <Reference name = 'definingEnd' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Property' opposite = ''/>
+      <Reference name = 'role' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ConnectableElement' opposite = 'uml2::ConnectableElement::end'/>
+      <Reference name = 'partWithPort' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Property' opposite = ''/>
+    </Class>
+    <Class name = 'ConnectableElement' isAbstract = 'true' supertypes = 'uml2::NamedElement, uml2::ParameterableElement'>
+      <Reference name = 'end' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ConnectorEnd' opposite = 'uml2::ConnectorEnd::role'/>
+    </Class>
+    <Class name = 'Connector' isAbstract = 'false' supertypes = 'uml2::Feature'>
+      <Reference name = 'type' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Association' opposite = ''/>
+      <Reference name = 'redefinedConnector' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Connector' opposite = ''/>
+      <Reference name = 'end' lower = '2' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::ConnectorEnd' opposite = ''/>
+      <Attribute name = 'kind' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'uml2::ConnectorKind'/>
+      <Reference name = 'contract' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Behavior' opposite = ''/>
+    </Class>
+    <Class name = 'StructuredClassifier' isAbstract = 'true' supertypes = 'uml2::Classifier'>
+      <Reference name = 'ownedAttribute' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::Property' opposite = ''/>
+      <Reference name = 'part' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Property' opposite = ''/>
+      <Reference name = 'role' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ConnectableElement' opposite = ''/>
+      <Reference name = 'ownedConnector' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Connector' opposite = ''/>
+    </Class>
+    <Class name = 'ActivityEdge' isAbstract = 'true' supertypes = 'uml2::RedefinableElement'>
+      <Reference name = 'activity' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Activity' opposite = 'uml2::Activity::edge'/>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ActivityNode' opposite = 'uml2::ActivityNode::outgoing'/>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ActivityNode' opposite = 'uml2::ActivityNode::incoming'/>
+      <Reference name = 'inGroup' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ActivityGroup' opposite = ''/>
+      <Reference name = 'guard' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ValueSpecification' opposite = ''/>
+      <Reference name = 'redefinedElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ActivityEdge' opposite = ''/>
+      <Reference name = 'inStructuredNode' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::StructuredActivityNode' opposite = 'uml2::StructuredActivityNode::containedEdge'/>
+      <Reference name = 'inPartition' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ActivityPartition' opposite = 'uml2::ActivityPartition::containedEdge'/>
+      <Reference name = 'weight' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ValueSpecification' opposite = ''/>
+      <Reference name = 'interrupts' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::InterruptibleActivityRegion' opposite = 'uml2::InterruptibleActivityRegion::interruptingEdge'/>
+    </Class>
+    <Class name = 'ActivityGroup' isAbstract = 'true' supertypes = 'uml2::Element'>
+      <Reference name = 'superGroup' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ActivityGroup' opposite = ''/>
+      <Reference name = 'activityGroup_activity' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Activity' opposite = 'uml2::Activity::group'/>
+    </Class>
+    <Class name = 'ActivityNode' isAbstract = 'true' supertypes = 'uml2::RedefinableElement'>
+      <Reference name = 'outgoing' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ActivityEdge' opposite = 'uml2::ActivityEdge::source'/>
+      <Reference name = 'incoming' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ActivityEdge' opposite = 'uml2::ActivityEdge::target'/>
+      <Reference name = 'inGroup' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ActivityGroup' opposite = ''/>
+      <Reference name = 'activity' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Activity' opposite = 'uml2::Activity::node'/>
+      <Reference name = 'redefinedElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ActivityNode' opposite = ''/>
+      <Reference name = 'inStructuredNode' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::StructuredActivityNode' opposite = 'uml2::StructuredActivityNode::containedNode'/>
+      <Reference name = 'inPartition' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ActivityPartition' opposite = 'uml2::ActivityPartition::containedNode'/>
+      <Reference name = 'inInterruptibleRegion' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::InterruptibleActivityRegion' opposite = 'uml2::InterruptibleActivityRegion::containedNode'/>
+    </Class>
+    <Class name = 'Action' isAbstract = 'false' supertypes = 'uml2::ExecutableNode'>
+      <Attribute name = 'effect' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'output' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'uml2::OutputPin' opposite = ''/>
+      <Reference name = 'input' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'uml2::InputPin' opposite = ''/>
+      <Reference name = 'context' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Classifier' opposite = ''/>
+      <Reference name = 'localPrecondition' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Constraint' opposite = ''/>
+      <Reference name = 'localPostcondition' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Constraint' opposite = ''/>
+    </Class>
+    <Class name = 'ObjectNode' isAbstract = 'true' supertypes = 'uml2::ActivityNode, uml2::TypedElement'>
+      <Attribute name = 'ordering' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'uml2::ObjectNodeOrderingKind'/>
+      <Reference name = 'upperBound' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ValueSpecification' opposite = ''/>
+      <Reference name = 'inState' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::State' opposite = ''/>
+      <Reference name = 'selection' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Behavior' opposite = ''/>
+    </Class>
+    <Class name = 'ControlNode' isAbstract = 'true' supertypes = 'uml2::ActivityNode'/>
+    <Class name = 'ControlFlow' isAbstract = 'false' supertypes = 'uml2::ActivityEdge'/>
+    <Class name = 'ObjectFlow' isAbstract = 'false' supertypes = 'uml2::ActivityEdge'>
+      <Attribute name = 'isMulticast' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isMultireceive' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'transformation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Behavior' opposite = ''/>
+      <Reference name = 'selection' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Behavior' opposite = ''/>
+    </Class>
+    <Class name = 'InitialNode' isAbstract = 'false' supertypes = 'uml2::ControlNode'/>
+    <Class name = 'FinalNode' isAbstract = 'true' supertypes = 'uml2::ControlNode'/>
+    <Class name = 'ActivityFinalNode' isAbstract = 'false' supertypes = 'uml2::FinalNode'/>
+    <Class name = 'DecisionNode' isAbstract = 'false' supertypes = 'uml2::ControlNode'>
+      <Reference name = 'decisionInput' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Behavior' opposite = ''/>
+    </Class>
+    <Class name = 'MergeNode' isAbstract = 'false' supertypes = 'uml2::ControlNode'/>
+    <Class name = 'ExecutableNode' isAbstract = 'true' supertypes = 'uml2::ActivityNode'>
+      <Reference name = 'handler' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ExceptionHandler' opposite = 'uml2::ExceptionHandler::protectedNode'/>
+    </Class>
+    <Class name = 'OutputPin' isAbstract = 'false' supertypes = 'uml2::Pin'/>
+    <Class name = 'InputPin' isAbstract = 'false' supertypes = 'uml2::Pin'/>
+    <Class name = 'Pin' isAbstract = 'true' supertypes = 'uml2::ObjectNode, uml2::MultiplicityElement'/>
+    <Class name = 'ActivityParameterNode' isAbstract = 'false' supertypes = 'uml2::ObjectNode'>
+      <Reference name = 'parameter' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Parameter' opposite = ''/>
+    </Class>
+    <Class name = 'ValuePin' isAbstract = 'false' supertypes = 'uml2::InputPin'>
+      <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ValueSpecification' opposite = ''/>
+    </Class>
+    <Class name = 'Interface' isAbstract = 'false' supertypes = 'uml2::Classifier'>
+      <Reference name = 'ownedAttribute' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::Property' opposite = ''/>
+      <Reference name = 'ownedOperation' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::Operation' opposite = ''/>
+      <Reference name = 'redefinedInterface' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Interface' opposite = ''/>
+      <Reference name = 'nestedClassifier' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::Classifier' opposite = ''/>
+      <Reference name = 'ownedReception' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Reception' opposite = ''/>
+      <Reference name = 'protocol' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ProtocolStateMachine' opposite = ''/>
+    </Class>
+    <Class name = 'Implementation' isAbstract = 'false' supertypes = 'uml2::Realization'>
+      <Reference name = 'contract' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Interface' opposite = ''/>
+      <Reference name = 'implementingClassifier' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::BehavioredClassifier' opposite = 'uml2::BehavioredClassifier::implementation'/>
+    </Class>
+    <Class name = 'Artifact' isAbstract = 'false' supertypes = 'uml2::Classifier, uml2::DeployedArtifact'>
+      <Attribute name = 'fileName' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'nestedArtifact' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Artifact' opposite = ''/>
+      <Reference name = 'manifestation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Manifestation' opposite = ''/>
+      <Reference name = 'ownedOperation' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::Operation' opposite = ''/>
+      <Reference name = 'ownedAttribute' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::Property' opposite = ''/>
+    </Class>
+    <Class name = 'Manifestation' isAbstract = 'false' supertypes = 'uml2::Abstraction'>
+      <Reference name = 'utilizedElement' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::PackageableElement' opposite = ''/>
+    </Class>
+    <Class name = 'Actor' isAbstract = 'false' supertypes = 'uml2::Classifier'/>
+    <Class name = 'Extend' isAbstract = 'false' supertypes = 'uml2::NamedElement, uml2::DirectedRelationship'>
+      <Reference name = 'extendedCase' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::UseCase' opposite = ''/>
+      <Reference name = 'extension' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::UseCase' opposite = 'uml2::UseCase::extend'/>
+      <Reference name = 'condition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Constraint' opposite = ''/>
+      <Reference name = 'extensionLocation' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'uml2::ExtensionPoint' opposite = ''/>
+    </Class>
+    <Class name = 'UseCase' isAbstract = 'false' supertypes = 'uml2::BehavioredClassifier'>
+      <Reference name = 'include' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Include' opposite = 'uml2::Include::includingCase'/>
+      <Reference name = 'extend' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Extend' opposite = 'uml2::Extend::extension'/>
+      <Reference name = 'extensionPoint' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ExtensionPoint' opposite = 'uml2::ExtensionPoint::useCase'/>
+      <Reference name = 'subject' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Classifier' opposite = 'uml2::Classifier::useCase'/>
+    </Class>
+    <Class name = 'ExtensionPoint' isAbstract = 'false' supertypes = 'uml2::RedefinableElement'>
+      <Reference name = 'useCase' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::UseCase' opposite = 'uml2::UseCase::extensionPoint'/>
+    </Class>
+    <Class name = 'Include' isAbstract = 'false' supertypes = 'uml2::NamedElement, uml2::DirectedRelationship'>
+      <Reference name = 'includingCase' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::UseCase' opposite = 'uml2::UseCase::include'/>
+      <Reference name = 'addition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::UseCase' opposite = ''/>
+    </Class>
+    <Class name = 'CollaborationOccurrence' isAbstract = 'false' supertypes = 'uml2::NamedElement'>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Collaboration' opposite = ''/>
+      <Reference name = 'roleBinding' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Dependency' opposite = ''/>
+    </Class>
+    <Class name = 'Collaboration' isAbstract = 'false' supertypes = 'uml2::BehavioredClassifier, uml2::StructuredClassifier'>
+      <Reference name = 'collaborationRole' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ConnectableElement' opposite = ''/>
+    </Class>
+    <Class name = 'Port' isAbstract = 'false' supertypes = 'uml2::Property'>
+      <Attribute name = 'isBehavior' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isService' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'required' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Interface' opposite = ''/>
+      <Reference name = 'redefinedPort' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Port' opposite = ''/>
+      <Reference name = 'provided' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Interface' opposite = ''/>
+      <Reference name = 'protocol' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ProtocolStateMachine' opposite = ''/>
+    </Class>
+    <Class name = 'EncapsulatedClassifier' isAbstract = 'true' supertypes = 'uml2::StructuredClassifier'>
+      <Reference name = 'ownedPort' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Port' opposite = ''/>
+    </Class>
+    <Enumeration name = 'CallConcurrencyKind'>
+      <EnumLiteral name = 'guarded'/>
+      <EnumLiteral name = 'concurrent'/>
+      <EnumLiteral name = 'sequential'/>
+    </Enumeration>
+    <Class name = 'CallTrigger' isAbstract = 'false' supertypes = 'uml2::MessageTrigger'>
+      <Reference name = 'operation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Operation' opposite = ''/>
+    </Class>
+    <Class name = 'MessageTrigger' isAbstract = 'true' supertypes = 'uml2::Trigger'/>
+    <Class name = 'ChangeTrigger' isAbstract = 'false' supertypes = 'uml2::Trigger'>
+      <Reference name = 'changeExpression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ValueSpecification' opposite = ''/>
+    </Class>
+    <Class name = 'Trigger' isAbstract = 'true' supertypes = 'uml2::NamedElement'>
+      <Reference name = 'port' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Port' opposite = ''/>
+    </Class>
+    <Class name = 'Reception' isAbstract = 'false' supertypes = 'uml2::BehavioralFeature'>
+      <Reference name = 'signal' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Signal' opposite = ''/>
+    </Class>
+    <Class name = 'Signal' isAbstract = 'false' supertypes = 'uml2::Classifier'>
+      <Reference name = 'ownedAttribute' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::Property' opposite = ''/>
+    </Class>
+    <Class name = 'SignalTrigger' isAbstract = 'false' supertypes = 'uml2::MessageTrigger'>
+      <Reference name = 'signal' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'uml2::Signal' opposite = ''/>
+    </Class>
+    <Class name = 'TimeTrigger' isAbstract = 'false' supertypes = 'uml2::Trigger'>
+      <Attribute name = 'isRelative' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'when' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ValueSpecification' opposite = ''/>
+    </Class>
+    <Class name = 'AnyTrigger' isAbstract = 'false' supertypes = 'uml2::MessageTrigger'/>
+    <Class name = 'Variable' isAbstract = 'false' supertypes = 'uml2::ConnectableElement, uml2::TypedElement, uml2::MultiplicityElement'>
+      <Reference name = 'scope' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::StructuredActivityNode' opposite = 'uml2::StructuredActivityNode::variable'/>
+    </Class>
+    <Class name = 'StructuredActivityNode' isAbstract = 'false' supertypes = 'uml2::Action, uml2::Namespace, uml2::ActivityGroup'>
+      <Reference name = 'variable' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Variable' opposite = 'uml2::Variable::scope'/>
+      <Reference name = 'containedNode' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::ActivityNode' opposite = 'uml2::ActivityNode::inStructuredNode'/>
+      <Reference name = 'containedEdge' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::ActivityEdge' opposite = 'uml2::ActivityEdge::inStructuredNode'/>
+      <Attribute name = 'mustIsolate' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'ConditionalNode' isAbstract = 'false' supertypes = 'uml2::StructuredActivityNode'>
+      <Attribute name = 'isDeterminate' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isAssured' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'clause' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Clause' opposite = ''/>
+      <Reference name = 'result' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::OutputPin' opposite = ''/>
+    </Class>
+    <Class name = 'Clause' isAbstract = 'false' supertypes = 'uml2::Element'>
+      <Reference name = 'test' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ActivityNode' opposite = ''/>
+      <Reference name = 'body' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ActivityNode' opposite = ''/>
+      <Reference name = 'predecessorClause' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Clause' opposite = 'uml2::Clause::successorClause'/>
+      <Reference name = 'successorClause' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Clause' opposite = 'uml2::Clause::predecessorClause'/>
+      <Reference name = 'decider' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::OutputPin' opposite = ''/>
+      <Reference name = 'bodyOutput' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::OutputPin' opposite = ''/>
+    </Class>
+    <Class name = 'LoopNode' isAbstract = 'false' supertypes = 'uml2::StructuredActivityNode'>
+      <Attribute name = 'isTestedFirst' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'bodyPart' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ActivityNode' opposite = ''/>
+      <Reference name = 'setupPart' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ActivityNode' opposite = ''/>
+      <Reference name = 'decider' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::OutputPin' opposite = ''/>
+      <Reference name = 'test' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ActivityNode' opposite = ''/>
+      <Reference name = 'result' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::OutputPin' opposite = ''/>
+      <Reference name = 'loopVariable' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::OutputPin' opposite = ''/>
+      <Reference name = 'bodyOutput' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::OutputPin' opposite = ''/>
+      <Reference name = 'loopVariableInput' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+    </Class>
+    <Class name = 'Interaction' isAbstract = 'false' supertypes = 'uml2::Behavior, uml2::InteractionFragment'>
+      <Reference name = 'lifeline' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Lifeline' opposite = 'uml2::Lifeline::interaction'/>
+      <Reference name = 'message' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Message' opposite = 'uml2::Message::interaction'/>
+      <Reference name = 'fragment' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::InteractionFragment' opposite = 'uml2::InteractionFragment::enclosingInteraction'/>
+      <Reference name = 'formalGate' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Gate' opposite = ''/>
+    </Class>
+    <Class name = 'InteractionFragment' isAbstract = 'true' supertypes = 'uml2::NamedElement'>
+      <Reference name = 'covered' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'uml2::Lifeline' opposite = 'uml2::Lifeline::coveredBy'/>
+      <Reference name = 'generalOrdering' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::GeneralOrdering' opposite = ''/>
+      <Reference name = 'enclosingInteraction' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Interaction' opposite = 'uml2::Interaction::fragment'/>
+      <Reference name = 'enclosingOperand' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::InteractionOperand' opposite = 'uml2::InteractionOperand::fragment'/>
+    </Class>
+    <Class name = 'Lifeline' isAbstract = 'false' supertypes = 'uml2::NamedElement'>
+      <Reference name = 'coveredBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::InteractionFragment' opposite = 'uml2::InteractionFragment::covered'/>
+      <Reference name = 'represents' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ConnectableElement' opposite = ''/>
+      <Reference name = 'interaction' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Interaction' opposite = 'uml2::Interaction::lifeline'/>
+      <Reference name = 'selector' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::OpaqueExpression' opposite = ''/>
+      <Reference name = 'decomposedAs' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::PartDecomposition' opposite = ''/>
+    </Class>
+    <Class name = 'Message' isAbstract = 'false' supertypes = 'uml2::NamedElement'>
+      <Attribute name = 'messageKind' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'uml2::MessageKind'/>
+      <Attribute name = 'messageSort' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'uml2::MessageSort'/>
+      <Reference name = 'receiveEvent' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::MessageEnd' opposite = 'uml2::MessageEnd::receiveMessage'/>
+      <Reference name = 'sendEvent' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::MessageEnd' opposite = 'uml2::MessageEnd::sendMessage'/>
+      <Reference name = 'connector' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Connector' opposite = ''/>
+      <Reference name = 'interaction' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Interaction' opposite = 'uml2::Interaction::message'/>
+      <Reference name = 'signature' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::NamedElement' opposite = ''/>
+      <Reference name = 'argument' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ValueSpecification' opposite = ''/>
+    </Class>
+    <Class name = 'GeneralOrdering' isAbstract = 'false' supertypes = 'uml2::NamedElement'>
+      <Reference name = 'before' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::EventOccurrence' opposite = 'uml2::EventOccurrence::toAfter'/>
+      <Reference name = 'after' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::EventOccurrence' opposite = 'uml2::EventOccurrence::toBefore'/>
+    </Class>
+    <Enumeration name = 'MessageKind'>
+      <EnumLiteral name = 'found'/>
+      <EnumLiteral name = 'lost'/>
+      <EnumLiteral name = 'unknown'/>
+      <EnumLiteral name = 'complete'/>
+    </Enumeration>
+    <Enumeration name = 'MessageSort'>
+      <EnumLiteral name = 'synchSignal'/>
+      <EnumLiteral name = 'synchCall'/>
+      <EnumLiteral name = 'asynchCall'/>
+      <EnumLiteral name = 'asynchSignal'/>
+    </Enumeration>
+    <Class name = 'MessageEnd' isAbstract = 'true' supertypes = 'uml2::NamedElement'>
+      <Reference name = 'receiveMessage' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Message' opposite = 'uml2::Message::receiveEvent'/>
+      <Reference name = 'sendMessage' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Message' opposite = 'uml2::Message::sendEvent'/>
+    </Class>
+    <Class name = 'EventOccurrence' isAbstract = 'false' supertypes = 'uml2::InteractionFragment, uml2::MessageEnd'>
+      <Reference name = 'startExec' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ExecutionOccurrence' opposite = 'uml2::ExecutionOccurrence::start'/>
+      <Reference name = 'finishExec' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ExecutionOccurrence' opposite = 'uml2::ExecutionOccurrence::finish'/>
+      <Reference name = 'toAfter' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::GeneralOrdering' opposite = 'uml2::GeneralOrdering::before'/>
+      <Reference name = 'toBefore' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::GeneralOrdering' opposite = 'uml2::GeneralOrdering::after'/>
+    </Class>
+    <Class name = 'ExecutionOccurrence' isAbstract = 'false' supertypes = 'uml2::InteractionFragment'>
+      <Reference name = 'start' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::EventOccurrence' opposite = 'uml2::EventOccurrence::startExec'/>
+      <Reference name = 'finish' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::EventOccurrence' opposite = 'uml2::EventOccurrence::finishExec'/>
+      <Reference name = 'behavior' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'uml2::Behavior' opposite = ''/>
+    </Class>
+    <Class name = 'StateInvariant' isAbstract = 'false' supertypes = 'uml2::InteractionFragment'>
+      <Reference name = 'invariant' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Constraint' opposite = ''/>
+    </Class>
+    <Class name = 'Stop' isAbstract = 'false' supertypes = 'uml2::EventOccurrence'/>
+    <Class name = 'TemplateSignature' isAbstract = 'false' supertypes = 'uml2::Element'>
+      <Reference name = 'parameter' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::TemplateParameter' opposite = ''/>
+      <Reference name = 'ownedParameter' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::TemplateParameter' opposite = 'uml2::TemplateParameter::signature'/>
+      <Reference name = 'nestedSignature' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::TemplateSignature' opposite = 'uml2::TemplateSignature::nestingSignature'/>
+      <Reference name = 'nestingSignature' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::TemplateSignature' opposite = 'uml2::TemplateSignature::nestedSignature'/>
+      <Reference name = 'template' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::TemplateableElement' opposite = 'uml2::TemplateableElement::ownedTemplateSignature'/>
+    </Class>
+    <Class name = 'TemplateParameter' isAbstract = 'false' supertypes = 'uml2::Element'>
+      <Reference name = 'signature' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::TemplateSignature' opposite = 'uml2::TemplateSignature::ownedParameter'/>
+      <Reference name = 'parameteredElement' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ParameterableElement' opposite = 'uml2::ParameterableElement::templateParameter'/>
+      <Reference name = 'ownedParameteredElement' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ParameterableElement' opposite = 'uml2::ParameterableElement::owningParameter'/>
+      <Reference name = 'default' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ParameterableElement' opposite = ''/>
+      <Reference name = 'ownedDefault' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ParameterableElement' opposite = ''/>
+    </Class>
+    <Class name = 'TemplateableElement' isAbstract = 'true' supertypes = 'uml2::Element'>
+      <Reference name = 'templateBinding' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::TemplateBinding' opposite = 'uml2::TemplateBinding::boundElement'/>
+      <Reference name = 'ownedTemplateSignature' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::TemplateSignature' opposite = 'uml2::TemplateSignature::template'/>
+    </Class>
+    <Class name = 'StringExpression' isAbstract = 'false' supertypes = 'uml2::TemplateableElement'>
+      <Reference name = 'subExpression' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::StringExpression' opposite = 'uml2::StringExpression::owningExpression'/>
+      <Reference name = 'owningExpression' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::StringExpression' opposite = 'uml2::StringExpression::subExpression'/>
+    </Class>
+    <Class name = 'ParameterableElement' isAbstract = 'true' supertypes = 'uml2::Element'>
+      <Reference name = 'templateParameter' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::TemplateParameter' opposite = 'uml2::TemplateParameter::parameteredElement'/>
+      <Reference name = 'owningParameter' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::TemplateParameter' opposite = 'uml2::TemplateParameter::ownedParameteredElement'/>
+    </Class>
+    <Class name = 'TemplateBinding' isAbstract = 'false' supertypes = 'uml2::DirectedRelationship'>
+      <Reference name = 'boundElement' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::TemplateableElement' opposite = 'uml2::TemplateableElement::templateBinding'/>
+      <Reference name = 'signature' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::TemplateSignature' opposite = ''/>
+      <Reference name = 'parameterSubstitution' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::TemplateParameterSubstitution' opposite = 'uml2::TemplateParameterSubstitution::templateBinding'/>
+    </Class>
+    <Class name = 'TemplateParameterSubstitution' isAbstract = 'false' supertypes = 'uml2::Element'>
+      <Reference name = 'formal' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::TemplateParameter' opposite = ''/>
+      <Reference name = 'templateBinding' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::TemplateBinding' opposite = 'uml2::TemplateBinding::parameterSubstitution'/>
+      <Reference name = 'actual' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ParameterableElement' opposite = ''/>
+      <Reference name = 'ownedActual' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ParameterableElement' opposite = ''/>
+    </Class>
+    <Class name = 'OperationTemplateParameter' isAbstract = 'false' supertypes = 'uml2::TemplateParameter'/>
+    <Class name = 'ClassifierTemplateParameter' isAbstract = 'false' supertypes = 'uml2::TemplateParameter'>
+      <Attribute name = 'allowSubstitutable' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'ParameterableClassifier' isAbstract = 'true' supertypes = 'uml2::Classifier'/>
+    <Class name = 'RedefinableTemplateSignature' isAbstract = 'false' supertypes = 'uml2::RedefinableElement, uml2::TemplateSignature'/>
+    <Class name = 'TemplateableClassifier' isAbstract = 'true' supertypes = 'uml2::Classifier'/>
+    <Class name = 'ConnectableElementTemplateParameter' isAbstract = 'false' supertypes = 'uml2::TemplateParameter'/>
+    <Class name = 'ForkNode' isAbstract = 'false' supertypes = 'uml2::ControlNode'/>
+    <Class name = 'JoinNode' isAbstract = 'false' supertypes = 'uml2::ControlNode'>
+      <Attribute name = 'isCombineDuplicate' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'joinSpec' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ValueSpecification' opposite = ''/>
+    </Class>
+    <Class name = 'FlowFinalNode' isAbstract = 'false' supertypes = 'uml2::FinalNode'/>
+    <Class name = 'CentralBufferNode' isAbstract = 'false' supertypes = 'uml2::ObjectNode'/>
+    <Class name = 'ActivityPartition' isAbstract = 'false' supertypes = 'uml2::NamedElement, uml2::ActivityGroup'>
+      <Attribute name = 'isDimension' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isExternal' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'containedEdge' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'uml2::ActivityEdge' opposite = 'uml2::ActivityEdge::inPartition'/>
+      <Reference name = 'containedNode' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'uml2::ActivityNode' opposite = 'uml2::ActivityNode::inPartition'/>
+      <Reference name = 'subgroup' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ActivityPartition' opposite = 'uml2::ActivityPartition::superPartition'/>
+      <Reference name = 'superPartition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ActivityPartition' opposite = 'uml2::ActivityPartition::subgroup'/>
+      <Reference name = 'represents' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Element' opposite = ''/>
+    </Class>
+    <Class name = 'ExpansionNode' isAbstract = 'false' supertypes = 'uml2::ObjectNode'>
+      <Reference name = 'regionAsOutput' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ExpansionRegion' opposite = 'uml2::ExpansionRegion::outputElement'/>
+      <Reference name = 'regionAsInput' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ExpansionRegion' opposite = 'uml2::ExpansionRegion::inputElement'/>
+    </Class>
+    <Class name = 'ExpansionRegion' isAbstract = 'false' supertypes = 'uml2::StructuredActivityNode'>
+      <Attribute name = 'mode' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'uml2::ExpansionKind'/>
+      <Reference name = 'outputElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ExpansionNode' opposite = 'uml2::ExpansionNode::regionAsOutput'/>
+      <Reference name = 'inputElement' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ExpansionNode' opposite = 'uml2::ExpansionNode::regionAsInput'/>
+    </Class>
+    <Enumeration name = 'ExpansionKind'>
+      <EnumLiteral name = 'parallel'/>
+      <EnumLiteral name = 'iterative'/>
+      <EnumLiteral name = 'stream'/>
+    </Enumeration>
+    <Class name = 'ExceptionHandler' isAbstract = 'false' supertypes = 'uml2::Element'>
+      <Reference name = 'protectedNode' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ExecutableNode' opposite = 'uml2::ExecutableNode::handler'/>
+      <Reference name = 'handlerBody' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ExecutableNode' opposite = ''/>
+      <Reference name = 'exceptionInput' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ObjectNode' opposite = ''/>
+      <Reference name = 'exceptionType' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Classifier' opposite = ''/>
+    </Class>
+    <Class name = 'InteractionOccurrence' isAbstract = 'false' supertypes = 'uml2::InteractionFragment'>
+      <Reference name = 'refersTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Interaction' opposite = ''/>
+      <Reference name = 'actualGate' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Gate' opposite = ''/>
+      <Reference name = 'argument' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+    </Class>
+    <Class name = 'Gate' isAbstract = 'false' supertypes = 'uml2::MessageEnd'/>
+    <Class name = 'PartDecomposition' isAbstract = 'false' supertypes = 'uml2::InteractionOccurrence'/>
+    <Class name = 'InteractionOperand' isAbstract = 'false' supertypes = 'uml2::Namespace, uml2::InteractionFragment'>
+      <Reference name = 'guard' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InteractionConstraint' opposite = ''/>
+      <Reference name = 'fragment' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InteractionFragment' opposite = 'uml2::InteractionFragment::enclosingOperand'/>
+    </Class>
+    <Class name = 'InteractionConstraint' isAbstract = 'false' supertypes = 'uml2::Constraint'>
+      <Reference name = 'minint' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ValueSpecification' opposite = ''/>
+      <Reference name = 'maxint' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ValueSpecification' opposite = ''/>
+    </Class>
+    <Enumeration name = 'InteractionOperator'>
+      <EnumLiteral name = 'consider'/>
+      <EnumLiteral name = 'par'/>
+      <EnumLiteral name = 'opt'/>
+      <EnumLiteral name = 'loop'/>
+      <EnumLiteral name = 'alt'/>
+      <EnumLiteral name = 'break'/>
+      <EnumLiteral name = 'assert'/>
+      <EnumLiteral name = 'strict'/>
+      <EnumLiteral name = 'seq'/>
+      <EnumLiteral name = 'ignore'/>
+      <EnumLiteral name = 'neg'/>
+      <EnumLiteral name = 'critical'/>
+    </Enumeration>
+    <Class name = 'CombinedFragment' isAbstract = 'false' supertypes = 'uml2::InteractionFragment'>
+      <Attribute name = 'interactionOperator' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'uml2::InteractionOperator'/>
+      <Reference name = 'operand' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InteractionOperand' opposite = ''/>
+      <Reference name = 'cfragmentGate' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Gate' opposite = ''/>
+    </Class>
+    <Class name = 'Continuation' isAbstract = 'false' supertypes = 'uml2::InteractionFragment'>
+      <Attribute name = 'setting' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'StateMachine' isAbstract = 'false' supertypes = 'uml2::Behavior'>
+      <Reference name = 'region' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Region' opposite = 'uml2::Region::stateMachine'/>
+      <Reference name = 'connectionPoint' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Pseudostate' opposite = ''/>
+      <Reference name = 'extendedStateMachine' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::StateMachine' opposite = ''/>
+      <Reference name = 'stateMachine_redefinitionContext' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::BehavioredClassifier' opposite = 'uml2::BehavioredClassifier::ownedStateMachine'/>
+    </Class>
+    <Class name = 'Region' isAbstract = 'false' supertypes = 'uml2::Namespace, uml2::RedefinableElement'>
+      <Reference name = 'subvertex' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Vertex' opposite = 'uml2::Vertex::container'/>
+      <Reference name = 'transition' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Transition' opposite = 'uml2::Transition::container'/>
+      <Reference name = 'stateMachine' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::StateMachine' opposite = 'uml2::StateMachine::region'/>
+      <Reference name = 'state' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::State' opposite = 'uml2::State::region'/>
+      <Reference name = 'extendedRegion' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Region' opposite = ''/>
+    </Class>
+    <Class name = 'Pseudostate' isAbstract = 'false' supertypes = 'uml2::Vertex'>
+      <Attribute name = 'kind' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'uml2::PseudostateKind'/>
+    </Class>
+    <Class name = 'State' isAbstract = 'false' supertypes = 'uml2::Namespace, uml2::RedefinableElement, uml2::Vertex'>
+      <Attribute name = 'isComposite' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isOrthogonal' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isSimple' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isSubmachineState' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'submachine' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::StateMachine' opposite = ''/>
+      <Reference name = 'connection' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ConnectionPointReference' opposite = ''/>
+      <Reference name = 'redefinedState' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::State' opposite = ''/>
+      <Reference name = 'deferrableTrigger' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Trigger' opposite = ''/>
+      <Reference name = 'region' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Region' opposite = 'uml2::Region::state'/>
+      <Reference name = 'entry' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Activity' opposite = ''/>
+      <Reference name = 'exit' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Activity' opposite = ''/>
+      <Reference name = 'doActivity' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Activity' opposite = ''/>
+      <Reference name = 'stateInvariant' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Constraint' opposite = ''/>
+    </Class>
+    <Class name = 'Vertex' isAbstract = 'true' supertypes = 'uml2::NamedElement'>
+      <Reference name = 'container' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Region' opposite = 'uml2::Region::subvertex'/>
+      <Reference name = 'outgoing' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Transition' opposite = 'uml2::Transition::source'/>
+      <Reference name = 'incoming' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Transition' opposite = 'uml2::Transition::target'/>
+    </Class>
+    <Class name = 'ConnectionPointReference' isAbstract = 'false' supertypes = 'uml2::Vertex'>
+      <Reference name = 'entry' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Pseudostate' opposite = ''/>
+      <Reference name = 'exit' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Pseudostate' opposite = ''/>
+    </Class>
+    <Class name = 'Transition' isAbstract = 'false' supertypes = 'uml2::RedefinableElement'>
+      <Attribute name = 'kind' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'uml2::TransitionKind'/>
+      <Reference name = 'container' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Region' opposite = 'uml2::Region::transition'/>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Vertex' opposite = 'uml2::Vertex::outgoing'/>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Vertex' opposite = 'uml2::Vertex::incoming'/>
+      <Reference name = 'redefinedTransition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Transition' opposite = ''/>
+      <Reference name = 'trigger' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Trigger' opposite = ''/>
+      <Reference name = 'guard' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Constraint' opposite = ''/>
+      <Reference name = 'effect' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Activity' opposite = ''/>
+    </Class>
+    <Enumeration name = 'TransitionKind'>
+      <EnumLiteral name = 'internal'/>
+      <EnumLiteral name = 'local'/>
+      <EnumLiteral name = 'external'/>
+    </Enumeration>
+    <Enumeration name = 'PseudostateKind'>
+      <EnumLiteral name = 'deepHistory'/>
+      <EnumLiteral name = 'shallowHistory'/>
+      <EnumLiteral name = 'choice'/>
+      <EnumLiteral name = 'join'/>
+      <EnumLiteral name = 'exitPoint'/>
+      <EnumLiteral name = 'terminate'/>
+      <EnumLiteral name = 'fork'/>
+      <EnumLiteral name = 'junction'/>
+      <EnumLiteral name = 'initial'/>
+      <EnumLiteral name = 'entryPoint'/>
+    </Enumeration>
+    <Class name = 'FinalState' isAbstract = 'false' supertypes = 'uml2::State'/>
+    <Class name = 'CreateObjectAction' isAbstract = 'false' supertypes = 'uml2::Action'>
+      <Reference name = 'classifier' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Classifier' opposite = ''/>
+      <Reference name = 'result' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::OutputPin' opposite = ''/>
+    </Class>
+    <Class name = 'DestroyObjectAction' isAbstract = 'false' supertypes = 'uml2::Action'>
+      <Attribute name = 'isDestroyLinks' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isDestroyOwnedObjects' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+    </Class>
+    <Class name = 'TestIdentityAction' isAbstract = 'false' supertypes = 'uml2::Action'>
+      <Reference name = 'first' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+      <Reference name = 'second' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+      <Reference name = 'result' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::OutputPin' opposite = ''/>
+    </Class>
+    <Class name = 'ReadSelfAction' isAbstract = 'false' supertypes = 'uml2::Action'>
+      <Reference name = 'result' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::OutputPin' opposite = ''/>
+    </Class>
+    <Class name = 'StructuralFeatureAction' isAbstract = 'true' supertypes = 'uml2::Action'>
+      <Reference name = 'structuralFeature' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::StructuralFeature' opposite = ''/>
+      <Reference name = 'object' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+    </Class>
+    <Class name = 'ReadStructuralFeatureAction' isAbstract = 'false' supertypes = 'uml2::StructuralFeatureAction'>
+      <Reference name = 'result' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::OutputPin' opposite = ''/>
+    </Class>
+    <Class name = 'WriteStructuralFeatureAction' isAbstract = 'true' supertypes = 'uml2::StructuralFeatureAction'>
+      <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+    </Class>
+    <Class name = 'ClearStructuralFeatureAction' isAbstract = 'false' supertypes = 'uml2::StructuralFeatureAction'/>
+    <Class name = 'RemoveStructuralFeatureValueAction' isAbstract = 'false' supertypes = 'uml2::WriteStructuralFeatureAction'/>
+    <Class name = 'AddStructuralFeatureValueAction' isAbstract = 'false' supertypes = 'uml2::WriteStructuralFeatureAction'>
+      <Attribute name = 'isReplaceAll' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'insertAt' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+    </Class>
+    <Class name = 'LinkAction' isAbstract = 'true' supertypes = 'uml2::Action'>
+      <Reference name = 'endData' lower = '2' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::LinkEndData' opposite = ''/>
+    </Class>
+    <Class name = 'LinkEndData' isAbstract = 'false' supertypes = 'uml2::Element'>
+      <Reference name = 'value' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::InputPin' opposite = ''/>
+      <Reference name = 'end' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Property' opposite = ''/>
+      <Reference name = 'qualifier' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::QualifierValue' opposite = ''/>
+    </Class>
+    <Class name = 'ReadLinkAction' isAbstract = 'false' supertypes = 'uml2::LinkAction'>
+      <Reference name = 'result' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::OutputPin' opposite = ''/>
+    </Class>
+    <Class name = 'LinkEndCreationData' isAbstract = 'false' supertypes = 'uml2::LinkEndData'>
+      <Attribute name = 'isReplaceAll' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'insertAt' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::InputPin' opposite = ''/>
+    </Class>
+    <Class name = 'CreateLinkAction' isAbstract = 'false' supertypes = 'uml2::WriteLinkAction'/>
+    <Class name = 'WriteLinkAction' isAbstract = 'true' supertypes = 'uml2::LinkAction'/>
+    <Class name = 'DestroyLinkAction' isAbstract = 'false' supertypes = 'uml2::WriteLinkAction'/>
+    <Class name = 'ClearAssociationAction' isAbstract = 'false' supertypes = 'uml2::Action'>
+      <Reference name = 'object' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+      <Reference name = 'association' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Association' opposite = ''/>
+    </Class>
+    <Class name = 'VariableAction' isAbstract = 'true' supertypes = 'uml2::Action'>
+      <Reference name = 'variable' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Variable' opposite = ''/>
+    </Class>
+    <Class name = 'ReadVariableAction' isAbstract = 'false' supertypes = 'uml2::VariableAction'>
+      <Reference name = 'result' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::OutputPin' opposite = ''/>
+    </Class>
+    <Class name = 'WriteVariableAction' isAbstract = 'true' supertypes = 'uml2::VariableAction'>
+      <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+    </Class>
+    <Class name = 'ClearVariableAction' isAbstract = 'false' supertypes = 'uml2::VariableAction'/>
+    <Class name = 'AddVariableValueAction' isAbstract = 'false' supertypes = 'uml2::WriteVariableAction'>
+      <Attribute name = 'isReplaceAll' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'insertAt' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+    </Class>
+    <Class name = 'RemoveVariableValueAction' isAbstract = 'false' supertypes = 'uml2::WriteVariableAction'/>
+    <Class name = 'ApplyFunctionAction' isAbstract = 'false' supertypes = 'uml2::Action'>
+      <Reference name = 'function' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::PrimitiveFunction' opposite = ''/>
+      <Reference name = 'argument' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+      <Reference name = 'result' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::OutputPin' opposite = ''/>
+    </Class>
+    <Class name = 'PrimitiveFunction' isAbstract = 'false' supertypes = 'uml2::PackageableElement'>
+      <Attribute name = 'body' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'language' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'CallAction' isAbstract = 'true' supertypes = 'uml2::InvocationAction'>
+      <Attribute name = 'isSynchronous' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'result' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::OutputPin' opposite = ''/>
+    </Class>
+    <Class name = 'InvocationAction' isAbstract = 'true' supertypes = 'uml2::Action'>
+      <Reference name = 'argument' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+      <Reference name = 'onPort' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Port' opposite = ''/>
+    </Class>
+    <Class name = 'SendSignalAction' isAbstract = 'false' supertypes = 'uml2::InvocationAction'>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+      <Reference name = 'signal' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Signal' opposite = ''/>
+    </Class>
+    <Class name = 'BroadcastSignalAction' isAbstract = 'false' supertypes = 'uml2::InvocationAction'>
+      <Reference name = 'signal' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Signal' opposite = ''/>
+    </Class>
+    <Class name = 'SendObjectAction' isAbstract = 'false' supertypes = 'uml2::InvocationAction'>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+      <Reference name = 'request' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+    </Class>
+    <Class name = 'CallOperationAction' isAbstract = 'false' supertypes = 'uml2::CallAction'>
+      <Reference name = 'operation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Operation' opposite = ''/>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+    </Class>
+    <Class name = 'CallBehaviorAction' isAbstract = 'false' supertypes = 'uml2::CallAction'>
+      <Reference name = 'behavior' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Behavior' opposite = ''/>
+    </Class>
+    <Class name = 'TimeExpression' isAbstract = 'false' supertypes = 'uml2::ValueSpecification'>
+      <Attribute name = 'firstTime' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'event' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::NamedElement' opposite = ''/>
+    </Class>
+    <Class name = 'Duration' isAbstract = 'false' supertypes = 'uml2::ValueSpecification'>
+      <Attribute name = 'firstTime' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'event' lower = '0' upper = '2' isOrdered = 'false' isContainer = 'false' type = 'uml2::NamedElement' opposite = ''/>
+    </Class>
+    <Class name = 'TimeObservationAction' isAbstract = 'false' supertypes = 'uml2::WriteStructuralFeatureAction'>
+      <Reference name = 'now' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::TimeExpression' opposite = ''/>
+    </Class>
+    <Class name = 'DurationInterval' isAbstract = 'false' supertypes = 'uml2::Interval'/>
+    <Class name = 'Interval' isAbstract = 'false' supertypes = 'uml2::ValueSpecification'>
+      <Reference name = 'min' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'uml2::ValueSpecification' opposite = ''/>
+      <Reference name = 'max' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'uml2::ValueSpecification' opposite = ''/>
+    </Class>
+    <Class name = 'TimeConstraint' isAbstract = 'false' supertypes = 'uml2::IntervalConstraint'/>
+    <Class name = 'IntervalConstraint' isAbstract = 'false' supertypes = 'uml2::Constraint'/>
+    <Class name = 'TimeInterval' isAbstract = 'false' supertypes = 'uml2::Interval'/>
+    <Class name = 'DurationObservationAction' isAbstract = 'false' supertypes = 'uml2::WriteStructuralFeatureAction'>
+      <Reference name = 'duration' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'uml2::Duration' opposite = ''/>
+    </Class>
+    <Class name = 'DurationConstraint' isAbstract = 'false' supertypes = 'uml2::IntervalConstraint'/>
+    <Class name = 'DataStoreNode' isAbstract = 'false' supertypes = 'uml2::CentralBufferNode'/>
+    <Enumeration name = 'ParameterEffectKind'>
+      <EnumLiteral name = 'update'/>
+      <EnumLiteral name = 'read'/>
+      <EnumLiteral name = 'delete'/>
+      <EnumLiteral name = 'create'/>
+    </Enumeration>
+    <Class name = 'InterruptibleActivityRegion' isAbstract = 'false' supertypes = 'uml2::ActivityGroup'>
+      <Reference name = 'interruptingEdge' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ActivityEdge' opposite = 'uml2::ActivityEdge::interrupts'/>
+      <Reference name = 'containedNode' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'uml2::ActivityNode' opposite = 'uml2::ActivityNode::inInterruptibleRegion'/>
+    </Class>
+    <Enumeration name = 'ObjectNodeOrderingKind'>
+      <EnumLiteral name = 'FIFO'/>
+      <EnumLiteral name = 'unordered'/>
+      <EnumLiteral name = 'ordered'/>
+      <EnumLiteral name = 'LIFO'/>
+    </Enumeration>
+    <Class name = 'ParameterSet' isAbstract = 'false' supertypes = 'uml2::NamedElement'>
+      <Reference name = 'parameter' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Parameter' opposite = 'uml2::Parameter::parameterSet'/>
+      <Reference name = 'condition' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Constraint' opposite = ''/>
+    </Class>
+    <Class name = 'Component' isAbstract = 'false' supertypes = 'uml2::Class'>
+      <Attribute name = 'isIndirectlyInstantiated' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'required' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Interface' opposite = ''/>
+      <Reference name = 'provided' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Interface' opposite = ''/>
+      <Reference name = 'realization' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Realization' opposite = 'uml2::Realization::abstraction'/>
+      <Reference name = 'ownedMember' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::PackageableElement' opposite = ''/>
+    </Class>
+    <Enumeration name = 'ConnectorKind'>
+      <EnumLiteral name = 'delegation'/>
+      <EnumLiteral name = 'assembly'/>
+    </Enumeration>
+    <Class name = 'Deployment' isAbstract = 'false' supertypes = 'uml2::Dependency'>
+      <Reference name = 'deployedArtifact' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::DeployedArtifact' opposite = ''/>
+      <Reference name = 'location' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::DeploymentTarget' opposite = 'uml2::DeploymentTarget::deployment'/>
+      <Reference name = 'configuration' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::DeploymentSpecification' opposite = ''/>
+    </Class>
+    <Class name = 'DeployedArtifact' isAbstract = 'true' supertypes = 'uml2::NamedElement'/>
+    <Class name = 'DeploymentTarget' isAbstract = 'true' supertypes = 'uml2::NamedElement'>
+      <Reference name = 'deployment' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Deployment' opposite = 'uml2::Deployment::location'/>
+      <Reference name = 'deployedElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::PackageableElement' opposite = ''/>
+    </Class>
+    <Class name = 'Node' isAbstract = 'false' supertypes = 'uml2::Class, uml2::DeploymentTarget'>
+      <Reference name = 'nestedNode' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Node' opposite = ''/>
+    </Class>
+    <Class name = 'Device' isAbstract = 'false' supertypes = 'uml2::Node'/>
+    <Class name = 'ExecutionEnvironment' isAbstract = 'false' supertypes = 'uml2::Node'/>
+    <Class name = 'CommunicationPath' isAbstract = 'false' supertypes = 'uml2::Association'/>
+    <Class name = 'ProtocolConformance' isAbstract = 'false' supertypes = 'uml2::DirectedRelationship'>
+      <Reference name = 'specificMachine' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ProtocolStateMachine' opposite = 'uml2::ProtocolStateMachine::conformance'/>
+      <Reference name = 'generalMachine' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::ProtocolStateMachine' opposite = ''/>
+    </Class>
+    <Class name = 'ProtocolStateMachine' isAbstract = 'false' supertypes = 'uml2::StateMachine'>
+      <Reference name = 'conformance' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'uml2::ProtocolConformance' opposite = 'uml2::ProtocolConformance::specificMachine'/>
+    </Class>
+    <Class name = 'ProtocolTransition' isAbstract = 'false' supertypes = 'uml2::Transition'>
+      <Reference name = 'postCondition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::Constraint' opposite = ''/>
+      <Reference name = 'referred' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Operation' opposite = ''/>
+      <Reference name = 'preCondition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Constraint' opposite = ''/>
+    </Class>
+    <Class name = 'ReadExtentAction' isAbstract = 'false' supertypes = 'uml2::Action'>
+      <Reference name = 'result' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::OutputPin' opposite = ''/>
+      <Reference name = 'classifier' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Classifier' opposite = ''/>
+    </Class>
+    <Class name = 'ReclassifyObjectAction' isAbstract = 'false' supertypes = 'uml2::Action'>
+      <Attribute name = 'isReplaceAll' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'oldClassifier' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Classifier' opposite = ''/>
+      <Reference name = 'newClassifier' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Classifier' opposite = ''/>
+      <Reference name = 'object' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+    </Class>
+    <Class name = 'ReadIsClassifiedObjectAction' isAbstract = 'false' supertypes = 'uml2::Action'>
+      <Attribute name = 'isDirect' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'classifier' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Classifier' opposite = ''/>
+      <Reference name = 'result' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::OutputPin' opposite = ''/>
+      <Reference name = 'object' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+    </Class>
+    <Class name = 'StartOwnedBehaviorAction' isAbstract = 'false' supertypes = 'uml2::Action'>
+      <Reference name = 'object' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+    </Class>
+    <Class name = 'QualifierValue' isAbstract = 'false' supertypes = 'uml2::Element'>
+      <Reference name = 'qualifier' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Property' opposite = ''/>
+      <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::InputPin' opposite = ''/>
+    </Class>
+    <Class name = 'ReadLinkObjectEndAction' isAbstract = 'false' supertypes = 'uml2::Action'>
+      <Reference name = 'object' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+      <Reference name = 'end' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Property' opposite = ''/>
+      <Reference name = 'result' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::OutputPin' opposite = ''/>
+    </Class>
+    <Class name = 'ReadLinkObjectEndQualifierAction' isAbstract = 'false' supertypes = 'uml2::Action'>
+      <Reference name = 'object' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::InputPin' opposite = ''/>
+      <Reference name = 'result' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::OutputPin' opposite = ''/>
+      <Reference name = 'qualifier' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::Property' opposite = ''/>
+    </Class>
+    <Class name = 'CreateLinkObjectAction' isAbstract = 'false' supertypes = 'uml2::CreateLinkAction'>
+      <Reference name = 'result' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'uml2::OutputPin' opposite = ''/>
+    </Class>
+    <Class name = 'AcceptEventAction' isAbstract = 'false' supertypes = 'uml2::Action'>
+      <Reference name = 'trigger' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'uml2::Trigger' opposite = ''/>
+      <Reference name = 'result' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::OutputPin' opposite = ''/>
+    </Class>
+    <Class name = 'AcceptCallAction' isAbstract = 'false' supertypes = 'uml2::AcceptEventAction'>
+      <Reference name = 'returnInformation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::OutputPin' opposite = ''/>
+    </Class>
+    <Class name = 'ReplyAction' isAbstract = 'false' supertypes = 'uml2::Action'>
+      <Reference name = 'replyToCall' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::CallTrigger' opposite = ''/>
+      <Reference name = 'replyValue' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'uml2::InputPin' opposite = ''/>
+      <Reference name = 'returnInformation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::InputPin' opposite = ''/>
+    </Class>
+    <Class name = 'RaiseExceptionAction' isAbstract = 'false' supertypes = 'uml2::Action'>
+      <Reference name = 'exception' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'uml2::InputPin' opposite = ''/>
+    </Class>
+    <Class name = 'DeploymentSpecification' isAbstract = 'false' supertypes = 'uml2::Artifact'>
+      <Attribute name = 'deploymentLocation' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'executionLocation' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+  </Package>
+</Metamodel>

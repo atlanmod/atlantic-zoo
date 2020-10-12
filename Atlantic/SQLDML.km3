@@ -1,0 +1,134 @@
+-- @name		SQLDML
+-- @version		1.0
+-- @domains		Databases
+-- @authors		Marcos Didonet Del Fabro (marcos.didonet-del-fabro@univ-nantes.fr)
+-- @date		2006/08/28
+-- @description	This metamodel is a subset of SQL Data Manipulation Language. It contains SELECT, CREATE VIEW, INSERT statements
+
+package SQLDML {
+
+	abstract class LocatedElement {
+		attribute location : String;
+		attribute commentsBefore[*] : String;
+		attribute commentsAfter[*] : String;		
+	}
+
+
+	class SQLRoot extends LocatedElement {
+		reference statements [*] container : Statement;
+	}
+	abstract class Statement extends LocatedElement {
+	}
+	
+	class ViewStatement extends Statement {
+		attribute name : String;
+		reference columns [1-*] container : ColumnExp;
+		reference query container : QueryStmt;
+	}
+	
+	class InsertStmt extends Statement {
+		attribute tableName : String;
+		reference values[*] container : Expression;
+	
+	}
+	
+	abstract class QueryStmt extends Statement {
+		reference tables [1-*] container : Table; 
+		reference condition [0-1] container : WhereClause;
+	}
+	class QueryStmtCol extends QueryStmt {
+		reference columns [1-*] container : Expression;
+	}
+	
+	class QueryStmtAllCol extends QueryStmt {
+	}
+	
+	abstract class NamedElement extends LocatedElement {
+		attribute name : String;
+	}
+	
+	class Table extends NamedElement {
+		attribute alias : String;
+	}
+
+	class WhereClause extends LocatedElement {
+		reference expression container : Expression;
+	}
+	
+	abstract class Expression extends LocatedElement {	
+	}
+	
+	abstract class BinaryExp extends Expression {
+		attribute opName : String;	-- necessary for TCS
+		reference leftExp container : Expression;
+		reference rightExp container : Expression;
+	}
+		
+	class OrExp extends BinaryExp {
+	}
+
+	class AndExp extends BinaryExp {
+	}
+	
+	class NotExp extends Expression {
+		attribute opName : String;	-- necessary for TCS
+		reference valueExp container : Expression;
+		reference unused[0-1] container : Expression;	-- necassary for TCS
+	}
+	
+	class LikeExp extends Expression {
+		attribute columnName : String;
+		reference expression container : StringValueExp;
+	}
+
+	
+	class InExp extends Expression {
+		attribute columnName : String;
+		reference elements [1-*] container : Predicate;
+	}
+	class OperationExp extends BinaryExp {
+		attribute optName : String;
+	}
+	
+	abstract class Predicate extends Expression {
+	}
+	
+	class QueryPredicate extends Expression {
+		reference query container : QueryStmt;
+	}
+	
+	class ColumnExp extends Predicate, NamedElement {
+		attribute alias : String;
+		reference type container : DataType;
+	}
+	
+	abstract class ValueExp extends Predicate {
+		reference type [0-1] container : DataType;
+	}
+	
+	class StringValueExp extends ValueExp {
+		attribute aValue : String;
+	}
+	
+	class IntegerValueExp extends ValueExp {
+		attribute aValue : Integer;
+	}
+
+	class ListExp extends Predicate {
+		reference elements [*] container : Expression;
+	}
+	class FunctionExp extends Predicate {
+		reference arguments [0-*] container : Expression;
+		attribute name : String;
+	}
+
+    class DataType extends NamedElement {
+    }    
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}
+

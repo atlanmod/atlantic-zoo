@@ -1,0 +1,116 @@
+-- @name		ODP Information Viewpoint
+-- @version		0.1
+-- @domains		
+-- @authors		José Raúl Romero Salguero (jrromero@uco.es)
+-- @date		2005/12/01
+-- @description	The Reference Model of Open Distributed Processing (RM-ODP) provides a general framework for the standardization of open distributed processing. RM-ODP defines five generic and complementary viewpoints on the system and its environment: enterprise, information, computational, engineering and technology. They divide the system design according to several areas of concerns, each one focusing on a specific aspect of the system, and allow different stakeholders to observe the system from different perspectives. In particular, the ODP information viewpoint allows the description of the information required and handled by an ODP system. The Information Viewpoint Metamodel defines the ODP Information Language, and conforms to ITU-T Rec. X.906 | ISO/IEC Committee Draft 19793 ("Use of UML for ODP systems specifications") a standard that defines how to use UML to represent the ODP viewpoint languages and concepts.
+-- @see			http://www.rm-odp.net/resources/UML4ODP_CD_v2.0/BAR-022_UML4ODP_CD_v2.0.pdf
+
+package ODPIV {
+	class InvariantSchema {
+		--- IS references to ActionTemplates
+		reference constrainer_AT[*] : ActionTemplate oppositeOf AT_constrainer;
+		--- IS references to ActionTypes
+		reference constrainer_ATy[*] : ActionType oppositeOf ATy_constrainer;
+		--- IS references to StateChanges
+		reference constrainer_SC[*] : StateChange oppositeOf SC_constrainer;
+		--- IS references to States
+		reference constrainer_S[*] : State oppositeOf S_constrainer;
+		--- IS references to InformationObjectTemplates
+		reference constrainer_IOT[*] : InformationObjectTemplate oppositeOf IOT_constrainer;
+		--- IS references to InformationObjectTypes
+		reference constrainer_IOTy[*] : InformationObjectType oppositeOf IOTy_constrainer;
+	}
+	
+	class InformationObjectTemplate {
+		--- IOT references to InformationObjects
+		reference IOT_IO[*] : InformationObject oppositeOf IO_IOT;
+		--- IOT references to InvariantSchemas
+		reference IOT_constrainer[*] : InvariantSchema oppositeOf constrainer_IOT;
+	}
+	
+	class InformationObjectType {
+		--- IOTy references to InformationObjects
+		reference IOTy_IO[*] : InformationObject oppositeOf IO_IOTy;
+		--- IOTy references to InvariantSchemas
+		reference IOTy_constrainer[*] : InvariantSchema oppositeOf constrainer_IOTy;
+	}
+	
+	class InformationObject {
+		--- IO references to StaticSchemas
+		reference describer [*] : StaticSchema oppositeOf SS_IO;
+		--- IO references to InformationObjectTemplates
+		reference IO_IOT[*] : InformationObjectTemplate oppositeOf IOT_IO;
+		--- IO references to InformationObjectTypes
+		reference IO_IOTy[*] : InformationObjectType oppositeOf IOTy_IO;
+		--- IO references to Actions
+		reference IO_A[*] : Action oppositeOf participant;
+		--- IO references to one State
+		reference IO_S : State oppositeOf S_IO;
+	}
+	
+	class State {
+		--- S references to one StateChange
+		reference change : StateChange oppositeOf startState;
+		--- S references to one StateChange
+		reference causeSC : StateChange oppositeOf endState;
+		--- S aggregates one InformationObject
+		reference S_IO container : InformationObject oppositeOf IO_S;
+		--- S references to InvariantSchemas
+		reference S_constrainer[*] : InvariantSchema oppositeOf constrainer_S;
+	}
+	
+	class StateChange {
+		--- SC references to one State
+		reference startState : State oppositeOf change;
+		--- SC references to one State
+		reference endState : State oppositeOf causeSC;
+		--- SC references to DynamicSchemas
+		reference specifier[1-*] : DynamicSchema oppositeOf dsStateChange;
+		--- SC references to Actios
+		reference cause[*] : Action oppositeOf effect;
+		--- SC references to InvariantSchemas
+		reference SC_constrainer[*] : InvariantSchema oppositeOf constrainer_SC;
+	}
+	
+	class DynamicSchema {
+		--- DS references to StateChanges
+		reference dsStateChange[*] : StateChange oppositeOf specifier;
+	}
+	
+	class StaticSchema {
+		attribute locationTime : Double;
+
+		--- SS references to InformationObjects
+		reference SS_IO [1-*] : InformationObject oppositeOf describer;
+	}
+	
+	class Action {
+		--- A references to StateChanges
+		reference effect[*] : StateChange oppositeOf cause;
+		--- A references to ActionTemplates
+		reference A_AT[*] : ActionTemplate oppositeOf AT_A;
+		--- A references to InformationObjects
+		reference participant[*] : InformationObject oppositeOf IO_A;
+		--- A references to ActionTypes
+		reference A_ATy[*] : ActionType oppositeOf ATy_A;
+	}
+	
+	class ActionType {
+		--- ATy references to Actions
+		reference ATy_A[*] : Action oppositeOf A_ATy;
+		--- ATy references to InvariantSchemas
+		reference ATy_constrainer[*] : InvariantSchema oppositeOf constrainer_ATy;
+	}
+	
+	class ActionTemplate {
+		--- AT references to Actions
+		reference AT_A[*] : Action oppositeOf A_AT;
+		--- AT references to InvariantSchemas
+		reference AT_constrainer[*] : InvariantSchema oppositeOf constrainer_AT;
+	}
+}
+
+package PrimitiveTypes {
+	datatype Double;
+}

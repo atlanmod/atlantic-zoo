@@ -1,0 +1,265 @@
+package Metamodel;
+
+package SysML {
+  abstract class Entity {
+  }
+
+  abstract class NamedElement extends Entity {
+    !unique !ordered attr String[1] name;
+  }
+
+  class Dependency extends NamedElement {
+  }
+
+  class Conform extends Dependency {
+    !ordered ref Viewpoint[1] target;
+    !ordered ref View[1] source;
+  }
+
+  class Package extends NamedElement {
+  }
+
+  class View extends Package {
+    !ordered ref Viewpoint[1] conformsTo;
+  }
+
+  class Class extends Classifier {
+    !unique !ordered attr String[1] name;
+  }
+
+  class Viewpoint extends Class {
+    !unique !ordered attr String[*] stakeholders;
+    !unique !ordered attr String[1] purpose;
+    !unique !ordered attr String[*] concerns;
+    !unique !ordered attr String[*] languages;
+    !unique !ordered attr String[*] methods;
+  }
+
+  class Comment extends Entity {
+    !unique !ordered attr String[1] content;
+  }
+
+  class Rationale extends Comment {
+  }
+
+  class Problem extends Comment {
+  }
+
+  class Block extends Class {
+    !unique !ordered attr Boolean[1] isEncapsulated;
+  }
+
+  class ConstraintBlock extends Block {
+  }
+
+  class Property extends Entity {
+  }
+
+  class BlockProperty extends Property {
+  }
+
+  class ConstraintProperty extends BlockProperty {
+  }
+
+  class DistributedProperty extends BlockProperty {
+  }
+
+  class DataType extends Entity {
+  }
+
+  class ValueType extends DataType {
+    !ordered ref Unit unit;
+    !ordered ref Dimension dimension;
+  }
+
+  class Unit extends ValueType {
+  }
+
+  class Dimension extends ValueType {
+  }
+
+  class ConnectorEnd extends Entity {
+  }
+
+  class NestedConnectorEnd extends ConnectorEnd {
+    val Property[2..*] propertyPath;
+  }
+
+  class Port extends Property {
+    !unique !ordered attr Boolean[1] isBehavior;
+  }
+
+  class FlowPort extends Port {
+    !unique !ordered attr Boolean[1] isAtomic;
+    !unique !ordered attr FlowDirection direction;
+    !unique !ordered attr Boolean isConjugated;
+  }
+
+  class FlowProperty extends Property {
+    !unique !ordered attr FlowDirection direction;
+  }
+
+  class Interface extends Entity {
+  }
+
+  class FlowSpecification extends Interface {
+    !ordered val FlowProperty[*] ownedFlowProperty;
+  }
+
+  enum FlowDirection {
+    in = 0;
+    out = 0;
+    inout = 0;
+  }
+
+  class Classifier extends Entity {
+  }
+
+  class InformationItem extends Classifier {
+    !ordered ref Classifier[*] represented;
+  }
+
+  class InformationFlow extends Entity {
+    !ordered ref Classifier[+] conveyed;
+    !ordered ref NamedElement[+] source;
+    !ordered ref NamedElement[+] target;
+  }
+
+  class ItemFlow extends InformationFlow {
+    !ordered ref BlockProperty itemProperty;
+  }
+
+  class Parameter extends Entity {
+  }
+
+  class ActivityEdge extends Entity {
+  }
+
+  class ParameterSet extends Entity {
+  }
+
+  class Optional extends Parameter {
+  }
+
+  class Rate extends Parameter, ActivityEdge {
+    !ordered ref InstanceSpecification[1] instance;
+  }
+
+  class InstanceSpecification extends Entity {
+  }
+
+  class Continous extends Rate {
+  }
+
+  class Discrete extends Rate {
+  }
+
+  class Probability extends ActivityEdge, ParameterSet {
+    !ordered ref ValueSpecification[1] probability;
+  }
+
+  class ValueSpecification extends Entity {
+  }
+
+  class Behavior extends Entity {
+  }
+
+  class Operation extends Entity {
+  }
+
+  class ControlOperation extends Behavior, Operation {
+  }
+
+  class ObjectNode extends Entity {
+  }
+
+  class NoBuffer extends ObjectNode {
+  }
+
+  class Overwrite extends ObjectNode {
+  }
+
+  class Abstraction extends Entity {
+  }
+
+  class Allocate extends Abstraction {
+  }
+
+  class Allocated extends NamedElement {
+    !ordered ref NamedElement[*] allocatedFrom;
+    !ordered ref NamedElement[*] allocatedTo;
+  }
+
+  class ActivityPartition extends Entity {
+  }
+
+  class AllocateActivityPartition extends ActivityPartition {
+  }
+
+  class Trace extends Entity {
+  }
+
+  class DeriveReqt extends Trace {
+  }
+
+  class Verify extends Trace {
+  }
+
+  class Copy extends Trace {
+  }
+
+  class Realization extends Entity {
+  }
+
+  class Satisfy extends Realization {
+  }
+
+  class Requirement extends Class {
+    !unique !ordered attr String[1] text;
+    !unique !ordered attr String[1] ~id;
+    !ordered ref Requirement[*] ~derived;
+    !ordered ref Requirement[*] derivedFrom;
+    !ordered ref NamedElement[*] satisfiedBy;
+    !ordered ref NamedElement[*] refinedBy;
+    !ordered ref NamedElement[*] tracedTo;
+    !ordered ref TestCase[*] verifiedBy;
+    !ordered ref Requirement[1] master;
+  }
+
+  class TestCase extends Behavior, Operation {
+  }
+
+  class RequirementRelated extends NamedElement {
+    !ordered ref Requirement[*] verifies;
+    !ordered ref Requirement[*] tracedFrom;
+    !ordered ref Requirement[*] satisfies;
+    !ordered ref Requirement[*] refines;
+  }
+
+  class BasicInterval extends DistributedProperty {
+    !unique !ordered attr Integer[1] min;
+    !unique !ordered attr Integer[1] max;
+  }
+
+  class Interval extends BasicInterval {
+  }
+
+  class Uniform extends BasicInterval {
+  }
+
+  class Normal extends DistributedProperty {
+    !unique !ordered attr Integer[1] mean;
+    !unique !ordered attr Integer[1] standardDeviation;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+  datatype Boolean : "";
+
+}
+

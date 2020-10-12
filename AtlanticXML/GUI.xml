@@ -1,0 +1,68 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'GUI'>
+    <Class name = 'LocatedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'location' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Named' isAbstract = 'true' supertypes = 'GUI::LocatedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'GUI' isAbstract = 'false' supertypes = 'GUI::Named'>
+      <Reference name = 'guiTabs' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'GUI::Tab' opposite = 'GUI::Tab::gui'/>
+    </Class>
+    <Class name = 'Tab' isAbstract = 'false' supertypes = 'GUI::Named'>
+      <Attribute name = 'title' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'gui' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'GUI::GUI' opposite = 'GUI::GUI::guiTabs'/>
+      <Reference name = 'group' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'GUI::Group' opposite = 'GUI::Group::tabGroup'/>
+    </Class>
+    <Class name = 'Composant' isAbstract = 'true' supertypes = 'GUI::Named'>
+      <Reference name = 'composantGroup' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'GUI::Group' opposite = 'GUI::Group::composants'/>
+    </Class>
+    <Enumeration name = 'Layout'>
+      <EnumLiteral name = 'default'/>
+      <EnumLiteral name = 'horizontal'/>
+      <EnumLiteral name = 'vertical'/>
+    </Enumeration>
+    <Class name = 'Group' isAbstract = 'false' supertypes = 'GUI::Composant'>
+      <Attribute name = 'title' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'layout' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'GUI::Layout'/>
+      <Attribute name = 'description' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'tabGroup' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'GUI::Tab' opposite = 'GUI::Tab::group'/>
+      <Reference name = 'composants' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'GUI::Composant' opposite = 'GUI::Composant::composantGroup'/>
+    </Class>
+    <Class name = 'Label' isAbstract = 'false' supertypes = 'GUI::Composant'>
+      <Attribute name = 'text' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'TextArea' isAbstract = 'false' supertypes = 'GUI::Composant'>
+      <Attribute name = 'text' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'nbRows' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'Table' isAbstract = 'false' supertypes = 'GUI::Composant'>
+      <Reference name = 'tabColumns' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'GUI::Column' opposite = 'GUI::Column::columnTab'/>
+    </Class>
+    <Class name = 'Column' isAbstract = 'false' supertypes = 'GUI::LocatedElement'>
+      <Attribute name = 'title' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'columnTab' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'GUI::Table' opposite = 'GUI::Table::tabColumns'/>
+    </Class>
+    <Class name = 'ComboBox' isAbstract = 'false' supertypes = 'GUI::Composant'>
+      <Reference name = 'listRows' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'GUI::Row' opposite = 'GUI::Row::rowList'/>
+    </Class>
+    <Class name = 'Row' isAbstract = 'false' supertypes = 'GUI::Composant'>
+      <Reference name = 'rowList' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'GUI::ComboBox' opposite = 'GUI::ComboBox::listRows'/>
+      <Attribute name = 'text' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'listItems' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'GUI::Item' opposite = 'GUI::Item::itemList'/>
+    </Class>
+    <Class name = 'Item' isAbstract = 'false' supertypes = 'GUI::Composant'>
+      <Reference name = 'itemList' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'GUI::Row' opposite = 'GUI::Row::listItems'/>
+      <Attribute name = 'text' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Button' isAbstract = 'false' supertypes = 'GUI::Composant'>
+      <Attribute name = 'title' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

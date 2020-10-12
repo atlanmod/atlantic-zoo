@@ -1,0 +1,84 @@
+package Metamodel;
+
+package OCLValues {
+  abstract class Value {
+    !ordered val Type[1]#value type;
+    !ordered ref BagValue[*]#elements bagValue;
+    !ordered ref SequenceValue[*]#elements sequenceValue;
+    !ordered ref SetValue[*]#elements setValue;
+  }
+
+  abstract class Type {
+    !ordered ref Value[*]#type value;
+  }
+
+  abstract class BasicValue extends Value {
+  }
+
+  class IntegerValue extends BasicValue {
+    !unique !ordered attr Integer[1] ~val;
+  }
+
+  class RealValue extends BasicValue {
+    !unique !ordered attr PrimitiveTypes.Double[1] ~val;
+  }
+
+  class StringValue extends BasicValue {
+    !unique !ordered attr String[1] ~val;
+  }
+
+  class BooleanValue extends BasicValue {
+    !unique !ordered attr Boolean[1] ~val;
+  }
+
+  class ObjectValue extends Value {
+    !ordered val Object[1]#objectValue object;
+  }
+
+  class Object {
+    !ordered ref ObjectValue#object objectValue;
+  }
+
+  class EnumValue extends Value {
+    !ordered val EnumLiteral[1]#enumValue enumLiteral;
+  }
+
+  class EnumLiteral {
+    !ordered ref EnumValue#enumLiteral enumValue;
+  }
+
+  class UndefinedValue extends Value {
+  }
+
+  abstract class CollectionValue extends Value {
+  }
+
+  class BagValue {
+    !ordered val Value[*]#bagValue elements;
+  }
+
+  class SequenceValue {
+    val Value[*]#sequenceValue elements;
+  }
+
+  class SetValue {
+    !ordered val Value[*]#setValue elements;
+  }
+
+  class Count {
+    !unique !ordered attr Integer[1] num;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Double : "";
+
+}
+

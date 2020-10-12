@@ -1,0 +1,60 @@
+-- ******************************************************************************
+-- Copyright (c) 2010 INRIA. 
+-- All rights reserved. This program and the accompanying materials 
+-- are made available under the terms of the Eclipse Public License v1.0 
+-- which accompanies this distribution, and is available at
+-- http://www.eclipse.org/legal/epl-v10.html
+-- 
+-- Contributors: 
+-- 	INRIA - Initial implementation
+--  
+-- ******************************************************************************
+-- @name		WikiTable
+-- @version		1.0
+-- @authors		Jean-Sébastien Sottet (jean-sebastiebn.sottet <at> inria.fr)
+-- @date		2010/01/19
+-- @description	Metamodel for building tabular presentation in wiki 
+
+package WikiTable {
+
+	-- Every class should extend LocatedElement, directly or indirectly.
+	-- This is a technical constraint to support text-to-model traceability.
+	abstract class LocatedElement {
+		attribute location[0-1] : String;
+		attribute commentsBefore[*] ordered : String;
+		attribute commentsAfter[*] ordered : String;
+	}
+
+-- BEGIN Language-specific classes (replace sample contents)
+	class Table extends LocatedElement  {
+		attribute border : Integer;
+		attribute style : String;
+		attribute "class" : String;
+		reference caption[0-1] container : Caption;
+		reference rows[*] ordered container : Row;
+		
+	}
+	
+	class Caption extends LocatedElement {
+		attribute content : String;
+	}
+
+	class Row extends LocatedElement {
+		reference cells[*] ordered container : Cell;
+	}
+	
+	class Cell extends LocatedElement {
+		attribute isHeading : Boolean;
+		attribute align : String;
+		attribute style : String;
+		attribute content : String;
+	}
+-- END Language-specific classes
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Double;
+	datatype Integer;
+	datatype String;
+}

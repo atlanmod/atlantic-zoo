@@ -1,0 +1,8 @@
+( defstruct RootMeasureSet :modelType :categories )
+( defstruct Category :name :desc :metrics :root )
+( defstruct Metric :name :desc :preferredValue :category )
+( defstruct MeasureSet :elementName :elementType )
+( defstruct Measure :metric :owner )
+( defstruct IntegerMeasure :value :metric :owner )
+( defstruct DoubleMeasure :value :metric :owner )
+( defstruct PercentageMeasure :value :metric :owner )

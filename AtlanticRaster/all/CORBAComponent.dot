@@ -1,0 +1,89 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_CORBAComponent"{
+labelloc=t
+color=black
+label=CORBAComponent
+ node[shape=record];
+InterfaceDef[label="{InterfaceDef| | }"]
+;
+ node[shape=record];
+OperationDef[label="{OperationDef| | }"]
+;
+ node[shape=record];
+ValueDef[label="{ValueDef| | }"]
+;
+ node[shape=record];
+ComponentDef[label="{ComponentDef|isBasic : Boolean| }"]
+ ComponentDef->InterfaceDef[arrowhead=vee,arrowtail=none,headlabel="supports[*]",group=InterfaceDef,minlen=2,constraint=false,]
+ ComponentDef->InterfaceDef[arrowhead=onormal,group=InterfaceDef,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ProvidesDef[label="{ProvidesDef| | }"]
+ ProvidesDef->InterfaceDef[arrowhead=vee,arrowtail=none,headlabel="provides",group=InterfaceDef,minlen=2,constraint=false,]
+ ProvidesDef->ComponentDef[arrowhead=diamond,arrowtail=none,headlabel="prd_home",taillabel="facets[*]",group=ComponentDef,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UsesDef[label="{UsesDef|multiple : Boolean| }"]
+ UsesDef->InterfaceDef[arrowhead=vee,arrowtail=none,headlabel="uses",group=InterfaceDef,minlen=2,constraint=false,]
+ UsesDef->ComponentDef[arrowhead=diamond,arrowtail=none,headlabel="ud_home",taillabel="receptacles[*]",group=ComponentDef,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EventDef[label="{EventDef| | }"]
+ EventDef->ValueDef[arrowhead=vee,arrowtail=none,headlabel="type",group=ValueDef,minlen=2,constraint=false,]
+;
+ node[shape=record];
+EmitsDef[label="{EmitsDef| | }"]
+ EmitsDef->ComponentDef[arrowhead=diamond,arrowtail=none,headlabel="ed_home",taillabel="emits[*]",group=ComponentDef,minlen=2,constraint=true,]
+ EmitsDef->EventDef[arrowhead=onormal,group=EventDef,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PublishesDef[label="{PublishesDef| | }"]
+ PublishesDef->ComponentDef[arrowhead=diamond,arrowtail=none,headlabel="pud_home",taillabel="publishes[*]",group=ComponentDef,minlen=2,constraint=true,]
+ PublishesDef->EventDef[arrowhead=onormal,group=EventDef,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConsumesDef[label="{ConsumesDef| | }"]
+ ConsumesDef->ComponentDef[arrowhead=diamond,arrowtail=none,headlabel="cd_home",taillabel="consumes[*]",group=ComponentDef,minlen=2,constraint=true,]
+ ConsumesDef->EventDef[arrowhead=onormal,group=EventDef,minlen=2,constraint=true,]
+;
+ node[shape=record];
+HomeDef[label="{HomeDef| | }"]
+ HomeDef->ComponentDef[arrowhead=vee,arrowtail=none,headlabel="manages",group=ComponentDef,minlen=2,constraint=false,]
+ HomeDef->InterfaceDef[arrowhead=onormal,group=InterfaceDef,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FactoryDef[label="{FactoryDef| | }"]
+ FactoryDef->HomeDef[arrowhead=diamond,arrowtail=none,headlabel="fa_home",taillabel="factories[*]",group=HomeDef,minlen=2,constraint=true,]
+ FactoryDef->OperationDef[arrowhead=onormal,group=OperationDef,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FinderDef[label="{FinderDef| | }"]
+ FinderDef->HomeDef[arrowhead=diamond,arrowtail=none,headlabel="fi_home",taillabel="finders[*]",group=HomeDef,minlen=2,constraint=true,]
+ FinderDef->OperationDef[arrowhead=onormal,group=OperationDef,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PrimaryKeyDef[label="{PrimaryKeyDef| | }"]
+ PrimaryKeyDef->HomeDef[arrowhead=diamond,arrowtail=none,headlabel="pkd_home",taillabel="key[0-1]",group=HomeDef,minlen=2,constraint=true,]
+ PrimaryKeyDef->ValueDef[arrowhead=vee,arrowtail=none,headlabel="type",group=ValueDef,minlen=2,constraint=false,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

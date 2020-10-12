@@ -1,0 +1,91 @@
+-- @name		GUI
+-- @version		0.1
+-- @domains		IDE
+-- @authors		Anas Abouzahra, Pierre-Yves Baudouin, Thomas Broussaud, Grégory Pouliquen
+-- @date		2006/04/11
+-- @description	This metamodel describes the notion of Graphical User Interface (GUI).
+-- @see			
+
+package GUI {
+
+	abstract class LocatedElement {
+		attribute location : String ;
+	}
+ 
+	abstract class Named extends LocatedElement {
+		attribute name : String ;
+	}
+
+	class GUI extends Named {
+		reference guiTabs[*] ordered container : Tab oppositeOf gui;
+	}
+
+	class Tab extends Named {
+		attribute title : String ;
+		reference gui : GUI oppositeOf guiTabs;
+		reference group : Group oppositeOf tabGroup;
+	}
+		
+	abstract class Composant extends Named {
+		reference composantGroup : Group oppositeOf composants;
+	}
+		
+	enumeration Layout {
+        literal default;
+		literal horizontal;
+        literal vertical;
+       }
+
+	class Group extends Composant {
+		attribute title : String;
+		attribute layout : Layout; 
+		attribute description : String;
+		reference tabGroup[0-1] : Tab oppositeOf group;
+		reference composants[*] ordered container : Composant oppositeOf composantGroup;
+	}
+
+	class Label extends Composant {
+		attribute text : String;
+	}
+
+	class TextArea extends Composant {
+		attribute text : String;
+		attribute nbRows : Integer;
+	}
+
+	class Table extends Composant {
+		reference tabColumns[*] ordered container : Column oppositeOf columnTab;
+	}	
+
+	class Column extends LocatedElement {
+		attribute title : String;
+		reference columnTab : Table oppositeOf tabColumns;
+	}
+		
+	class ComboBox extends Composant {
+		reference listRows[*] ordered container : Row oppositeOf rowList;
+	}
+	
+	class Row extends Composant {
+		reference rowList : ComboBox oppositeOf listRows;
+		attribute text : String;
+		reference listItems[*] ordered container : Item oppositeOf itemList;
+	}
+
+	class Item extends Composant {
+		reference itemList : Row oppositeOf listItems;
+		attribute text : String;
+	}
+		
+	class Button extends Composant {
+		attribute title : String;
+	}
+	
+}
+
+		
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}	

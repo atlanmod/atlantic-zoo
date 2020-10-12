@@ -1,0 +1,191 @@
+package Metamodel;
+
+package PrimitiveTypes {
+  datatype Double : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+}
+
+package PRR {
+  class Element {
+    !unique !ordered attr String[1] location;
+    !unique attr String[*] commentsBefore;
+    !unique attr String[*] commentsAfter;
+  }
+
+  abstract class NamedElement extends Element {
+    !unique !ordered attr String[1] name;
+  }
+
+  class RuleSet extends Element {
+    val Rule[*]#ruleOwner rules;
+  }
+
+  class Rule extends NamedElement {
+    !ordered val Binding#bindingOwner binding;
+    !ordered val RuleCondition#ruleConditionOwner condition;
+    val RuleAction[*]#actionOwner actions;
+    !ordered ref RuleSet#rules ruleOwner;
+  }
+
+  class RuleAction extends Element {
+    !ordered ref Rule#actions actionOwner;
+  }
+
+  class RuleCondition extends Element {
+    !ordered ref Rule#condition ruleConditionOwner;
+    !ordered val PRRExpressions.OclExpression#conditionOwner conditionExp;
+  }
+
+  class Binding extends Element {
+    !ordered ref Rule[1]#binding bindingOwner;
+    !ordered val RuleVariable[*]#ruleVariableOwner ruleVariable;
+  }
+
+  class RuleVariable extends PRRExpressions.VariableDeclaration {
+    !ordered ref Binding[1]#ruleVariable ruleVariableOwner;
+    !ordered val PRRExpressions.OclExpression#filterRuleVariableOwner filter;
+  }
+
+  package PRRActions {
+    class DeleteAction extends RuleAction {
+      !ordered val PRRExpressions.OclExpression[1] objValue;
+    }
+
+    class CreateAction extends RuleAction, PRRExpressions.VariableDeclaration {
+      val PRRExpressions.OclExpression[*]#parentInsert insertArguments;
+    }
+
+    class AssignAction extends RuleAction {
+      !ordered val PRRExpressions.OclExpression[1]#assignedObj objValue;
+      !ordered val PRRExpressions.OclExpression[1] aValue;
+    }
+
+    class InvokeAction extends RuleAction {
+      !ordered val PRRExpressions.OclExpression[1] invocation;
+    }
+
+  }
+
+  package PRRExpressions {
+    abstract class PropertyCallExp extends OclExpression {
+      !ordered val OclExpression#appliedProperty source;
+    }
+
+    abstract class OclExpression extends Element {
+      !ordered ref LoopExp#body loopExp;
+      !ordered ref PropertyCallExp#source appliedProperty;
+      !ordered ref OperationCallExp#arguments parentOperation;
+      !ordered ref PRRActions.CreateAction#insertArguments parentInsert;
+      !ordered val PRRTypes.OclType[1]#oclExpression type;
+      !ordered ref RuleVariable#filter filterRuleVariableOwner;
+      !ordered ref RuleCondition#conditionExp conditionOwner;
+      !ordered ref PRRActions.AssignAction#objValue assignedObj;
+    }
+
+    class IteratorExp extends LoopExp {
+      !unique !ordered attr String[1] name;
+    }
+
+    class LoopExp extends PropertyCallExp {
+      !ordered val OclExpression[1]#loopExp body;
+      !ordered val Iterator[+]#loopExpr iterators;
+    }
+
+    class OperatorCallExp extends OperationCallExp {
+    }
+
+    class OperationCallExp extends PropertyCallExp {
+      val OclExpression[*]#parentOperation arguments;
+      !unique !ordered attr String[1] operationName;
+      !unique !ordered attr String signature;
+    }
+
+    class CollectionOperationCallExp extends OperationCallExp {
+    }
+
+    class StringExp extends PrimitiveExp {
+      !unique !ordered attr String[1] stringSymbol;
+    }
+
+    class BooleanExp extends PrimitiveExp {
+      !unique !ordered attr Boolean[1] booleanSymbol;
+    }
+
+    abstract class NumericExp extends PrimitiveExp {
+    }
+
+    class IntegerExp extends NumericExp {
+      !unique !ordered attr Integer[1] integerSymbol;
+    }
+
+    class RealExp extends NumericExp {
+      !unique !ordered attr PrimitiveTypes.Double[1] realSymbol;
+    }
+
+    abstract class PrimitiveExp extends OclExpression {
+    }
+
+    class NavigationOrAttributeCallExp extends PropertyCallExp {
+      !unique !ordered attr String[1] name;
+    }
+
+    class Iterator extends VariableDeclaration {
+      !ordered ref LoopExp#iterators loopExpr;
+    }
+
+    class VariableDeclaration extends Element {
+      !ordered val PRRTypes.OclType[1]#variableDeclaration type;
+      !unique !ordered attr String[1] varName;
+      !ordered ref VariableExp[*]#referredVariable variableExp;
+    }
+
+    class VariableExp extends OclExpression {
+      !ordered ref VariableDeclaration[1]#variableExp referredVariable;
+    }
+
+    class TypeExp extends OclExpression {
+      !ordered val PRRTypes.OclType#typeExp referredType;
+    }
+
+    class AllInstanceExp extends OclExpression {
+      !ordered val PRRTypes.OclType[1]#appliedAllInstance sourceType;
+    }
+
+  }
+
+  package PRRTypes {
+    class OclType extends NamedElement {
+      !ordered ref PRRExpressions.VariableDeclaration[*]#type variableDeclaration;
+      !ordered ref PRRExpressions.OclExpression[*]#type oclExpression;
+      !ordered ref PRRExpressions.AllInstanceExp#sourceType appliedAllInstance;
+      !ordered ref PRRExpressions.TypeExp[*]#referredType typeExp;
+    }
+
+    class StringType extends Primitive {
+    }
+
+    abstract class Primitive extends OclType {
+    }
+
+    class RealType extends NumericType {
+    }
+
+    class BooleanType extends Primitive {
+    }
+
+    abstract class NumericType extends Primitive {
+    }
+
+    class IntegerType extends NumericType {
+    }
+
+  }
+
+}
+

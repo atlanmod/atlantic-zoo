@@ -1,0 +1,177 @@
+package Metamodel;
+
+package DoDAF {
+  abstract class Element {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] description;
+    !unique !ordered attr String[1] view;
+  }
+
+  class DoDAFModel extends Element {
+    !ordered val Document[*] document;
+    !ordered val SystemFunctionTraceabilityMatrix[*] sftm;
+    !ordered val SystemDocument[*] sd;
+    !ordered val AM[*] am;
+    !ordered val System[*] system;
+    !ordered val Task[*] task;
+    !ordered val Capability[*] capability;
+    !ordered val CapabilityDocument[*] capabilityDocument;
+    !ordered val SystemCapability[*] systemCapability;
+  }
+
+  class Document extends Element {
+    !unique !ordered attr String[1] type;
+    !ordered ref CapabilityDocument[*] cites;
+    !ordered ref SystemDocument[*] describes;
+    !ordered val ArchitectureDocument[*] records;
+    !ordered val PA[*] isThePrimaryReferenceFor;
+  }
+
+  class SystemFunctionTraceabilityMatrix extends Document {
+    !ordered val SystemFunctionTraceabilityElement[*] isDefinedBy;
+  }
+
+  class SystemFunctionTraceabilityElement extends Element {
+    !ordered ref SystemFunction#isCitedFor systemFunction;
+    !ordered ref Task#isCitedFor operationalActivity;
+    !ordered ref SystemPA#mayBeCitedFor systemProcessActivity;
+    !ordered ref System system;
+    !ordered ref Capability capability;
+    !unique !ordered attr SupportStatusCode[1] supportStatusCode;
+  }
+
+  class SystemDocument extends Element {
+  }
+
+  class ArchitectureDocument extends Element {
+  }
+
+  class PA extends Element {
+    !ordered ref PA[*]#isChildFor isParentFor;
+    !ordered ref PA[*]#isParentFor isChildFor;
+    !ordered ref PATask[*] correspondsTo;
+    !ordered ref AMPA[*] isIncludedIn;
+    !ordered ref SystemPA[*] isAssignedTo;
+    !ordered val SoftwareApplicationProcedurePA[*] isSupportedBy;
+    !ordered val PAExchangeRequirement[*] isTheConsumerFor;
+    !ordered val PAExchangeRequirement[*] isTheProducerFor;
+  }
+
+  class SystemFunction extends PA {
+    !ordered ref SystemFunctionTraceabilityElement[*]#systemFunction isCitedFor;
+  }
+
+  class SystemPA extends Element {
+    !ordered ref SystemFunctionTraceabilityElement[*]#systemProcessActivity mayBeCitedFor;
+    !ordered val SystemCapability[*] provides;
+    !ordered val SystemOperationalCapabilityTask[*] enables;
+  }
+
+  class SoftwareApplicationProcedurePA extends Element {
+  }
+
+  class AM extends InformationAsset {
+    !unique !ordered attr String[1] type;
+    !ordered val PATask[*] isCitedBy;
+    !ordered val AMPA[*] includes;
+  }
+
+  abstract class InformationAsset extends Element {
+  }
+
+  class AMPA extends Element {
+    !ordered ref AMPA[*]#isSubordinateOf isOrdinateOf;
+    !ordered ref AMPA[*]#isOrdinateOf isSubordinateOf;
+  }
+
+  class System extends Element {
+    !ordered val SystemPA[*] isDesignedToProvide;
+    !ordered ref SystemDocument[*] isDescribedBy;
+    !ordered ref SystemCapability[*] performs;
+    !ordered ref SystemOperationalCapabilityTask[*] isUsedToAccomplish;
+  }
+
+  class Task extends Element {
+    !unique !ordered attr String[1] levelIdentifier;
+    !unique !ordered attr String[1] references;
+    !unique !ordered attr String[1] cost;
+    !ordered ref PATask[*] correspondsTo;
+    !ordered ref ArchitectureTask[*] isSupportedBy;
+    !ordered val InformationExchangeRequirement[*] isTheSourceOfNeedFor;
+    !ordered val InformationExchangeRequirement[*] isTheDestinationOfNeedFor;
+    !ordered ref SystemFunctionTraceabilityElement[*]#operationalActivity isCitedFor;
+  }
+
+  class ArchitectureTask extends Element {
+  }
+
+  class OperationalCapabilityTask extends Task {
+    !ordered ref SystemOperationalCapabilityTask[1] isAccomplishedA;
+  }
+
+  class SystemOperationalCapabilityTask extends Task {
+  }
+
+  class PATask extends Task {
+  }
+
+  class Capability extends Element {
+    !ordered ref SystemCapability[*] isPerformedBy;
+    !ordered ref Capability[*] isOrdinateFor;
+    !ordered ref Capability[*] isSubordinateOf;
+    !ordered ref NetworkCapability[*] isPerformedByNC;
+    !ordered ref NodeLinkCapability[*] isPerformedByNLC;
+    !ordered ref SystemCapability[*] isPerformedBySC;
+    !ordered ref CapabilityDocument[*] isCitedInCD;
+    !ordered ref MaterielItemCapabilityNorm[*] isUsedInMICN;
+    !ordered ref OrganizationTypeCapabilityNorm[*] isUsedInOTCN;
+    !ordered ref RequiredInformationTechnologyCapability[*] isAttainedFor;
+  }
+
+  class CapabilityDocument extends Element {
+    !ordered ref Capability[*] isCitedIn;
+  }
+
+  class SystemCapability extends Element {
+    !ordered ref Capability[*] isCitedIn;
+  }
+
+  class NetworkCapability extends Capability {
+  }
+
+  class NodeLinkCapability extends Capability {
+  }
+
+  class MaterielItemCapabilityNorm extends Capability {
+  }
+
+  class OrganizationTypeCapabilityNorm extends Capability {
+  }
+
+  class RequiredInformationTechnologyCapability extends Capability {
+  }
+
+  class InformationTechnologyRequirement extends Element {
+    !ordered ref RequiredInformationTechnologyCapability[*] specifies;
+  }
+
+  class InformationExchangeRequirement extends InformationTechnologyRequirement {
+  }
+
+  class PAExchangeRequirement extends InformationTechnologyRequirement {
+    !ordered val InformationExchangeRequirement[*] isCitedIn;
+  }
+
+  enum SupportStatusCode {
+    red = 0;
+    yellow = 0;
+    green = 0;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+}
+

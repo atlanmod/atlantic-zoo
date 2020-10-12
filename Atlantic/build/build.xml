@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<project name="project" default="default">
+
+	<target name="default" depends="metadataExtraction">
+		<eclipse.refreshLocal resource="/org.eclipse.am3.zoos.atlantic/build/megamodelAtlantic.mgm" depth="infinite"/>
+		
+		<am3.loadModel modelHandler="EMF" name="AM3" metamodel="MOF" path="/AMMACore/AM3/Metamodel/AM3.ecore" />
+		
+		<am3.loadModel name="mgm-Atlantic" metamodel="AM3" path="/org.eclipse.am3.zoos.atlantic/build/megamodelAtlantic.mgm">
+			<injector name="ebnf">
+				<param name="name" value="AM3"/>
+				<classpath>
+					<pathelement location="../../AMMACore/AM3/Syntax/AM3-parser.jar" />
+				</classpath>
+			</injector>
+		</am3.loadModel>
+
+		<am3.saveModel model="mgm-Atlantic" path="megamodelAtlantic-AM3.ecore" />
+	</target>
+
+	<target	name="metadataExtraction">
+		<java classname="metadataExtractor.MetadataExtractor">
+			<arg value="${basedir}"/>
+			<classpath>
+				<pathelement location="metadataExtractor.jar"/>
+			</classpath>
+		</java>
+		
+		<eclipse.refreshLocal resource="."/>
+	</target>
+
+</project>

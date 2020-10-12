@@ -1,0 +1,742 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'Structure'>
+    <Class name = 'Subsystem' isAbstract = 'false' supertypes = 'Structure::StructureGroup'/>
+    <Class name = 'Layer' isAbstract = 'false' supertypes = 'Structure::StructureGroup'/>
+    <Class name = 'StructureModel' isAbstract = 'false' supertypes = 'kdm::KDMModel'>
+      <Reference name = 'structureElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Structure::StructureElement' opposite = ''/>
+    </Class>
+    <Class name = 'StructureGroup' isAbstract = 'false' supertypes = 'Structure::StructureElement, Core::KDMGroup'>
+      <Reference name = 'codeElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::CodeResource' opposite = ''/>
+      <Reference name = 'structureElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Structure::StructureElement' opposite = 'Structure::StructureElement::structureGroup'/>
+    </Class>
+    <Class name = 'StructureElement' isAbstract = 'true' supertypes = 'Core::KDMEntity'>
+      <Reference name = 'structureGroup' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Structure::StructureGroup' opposite = 'Structure::StructureGroup::structureElement'/>
+    </Class>
+    <Class name = 'Component' isAbstract = 'false' supertypes = 'Structure::StructureGroup'/>
+    <Class name = 'SoftwareSystem' isAbstract = 'false' supertypes = 'Structure::StructureGroup'/>
+    <Class name = 'StructureContainer' isAbstract = 'false' supertypes = 'Structure::StructureElement, Core::KDMContainer'>
+      <Reference name = 'structureElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Structure::StructureElement' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'Platform'>
+    <Class name = 'PlatformElement' isAbstract = 'true' supertypes = 'Core::KDMEntity'>
+      <Reference name = 'inProvides' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Platform::Provides' opposite = 'Platform::Provides::to'/>
+    </Class>
+    <Class name = 'PlatformGroup' isAbstract = 'false' supertypes = 'Platform::PlatformElement, Core::KDMGroup'/>
+    <Class name = 'PlatformModel' isAbstract = 'false' supertypes = 'kdm::KDMModel'>
+      <Reference name = 'relation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Platform::PlatformRelationship' opposite = ''/>
+    </Class>
+    <Class name = 'Requires' isAbstract = 'false' supertypes = 'Platform::TechnologyRelationship'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Runtime::DeployedComponent' opposite = ''/>
+    </Class>
+    <Class name = 'ResourceProvider' isAbstract = 'false' supertypes = 'Platform::PlatformElement'>
+      <Reference name = 'outProvides' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Platform::Provides' opposite = 'Platform::Provides::from'/>
+    </Class>
+    <Class name = 'TechnologyRelationship' isAbstract = 'true' supertypes = 'Platform::PlatformRelationship'/>
+    <Class name = 'CompliesTo' isAbstract = 'false' supertypes = 'Code::InterfaceRelationship'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Platform::ResourceInstance' opposite = 'Platform::ResourceInstance::outComplies'/>
+    </Class>
+    <Class name = 'PlatformPart' isAbstract = 'false' supertypes = 'Platform::PlatformContainer'>
+      <Reference name = 'resourceType' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Platform::ResourceType' opposite = ''/>
+    </Class>
+    <Class name = 'ResourceElement' isAbstract = 'false' supertypes = 'Platform::PlatformContainer'>
+      <Reference name = 'instance' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Platform::ResourceInstance' opposite = ''/>
+    </Class>
+    <Class name = 'ResourceType' isAbstract = 'false' supertypes = 'Platform::PlatformContainer'>
+      <Reference name = 'binding' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Platform::ResourceElement' opposite = ''/>
+      <Reference name = 'instance' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Platform::ResourceInstance' opposite = ''/>
+      <Reference name = 'definition' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Platform::ResourceDefinition' opposite = ''/>
+    </Class>
+    <Class name = 'ResourceInstance' isAbstract = 'false' supertypes = 'Platform::PlatformElement'>
+      <Reference name = 'outBinds' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Platform::BindsTo' opposite = 'Platform::BindsTo::from'/>
+      <Reference name = 'inResource' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Platform::BindsResource' opposite = 'Platform::BindsResource::to'/>
+      <Reference name = 'outResource' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Platform::BindsResource' opposite = 'Platform::BindsResource::from'/>
+      <Reference name = 'inUses' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Platform::Uses' opposite = 'Platform::Uses::to'/>
+      <Reference name = 'outComplies' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Platform::CompliesTo' opposite = 'Platform::CompliesTo::from'/>
+    </Class>
+    <Class name = 'BindsTo' isAbstract = 'false' supertypes = 'Platform::ResourceRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::CodeResource' opposite = ''/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Platform::ResourceInstance' opposite = 'Platform::ResourceInstance::outBinds'/>
+    </Class>
+    <Class name = 'PlatformContainer' isAbstract = 'true' supertypes = 'Platform::PlatformElement, Core::KDMContainer'/>
+    <Class name = 'Provides' isAbstract = 'false' supertypes = 'Platform::TechnologyRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Platform::PlatformElement' opposite = 'Platform::PlatformElement::inProvides'/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Platform::ResourceProvider' opposite = 'Platform::ResourceProvider::outProvides'/>
+    </Class>
+    <Class name = 'NamingResource' isAbstract = 'false' supertypes = 'Platform::ResourceType'/>
+    <Class name = 'MarshalledResource' isAbstract = 'false' supertypes = 'Platform::ResourceType'/>
+    <Class name = 'MessagingResource' isAbstract = 'false' supertypes = 'Platform::ResourceType'/>
+    <Class name = 'DataResource' isAbstract = 'false' supertypes = 'Platform::ResourceType, Code::StorableElement'/>
+    <Class name = 'ExecutionResource' isAbstract = 'false' supertypes = 'Platform::ResourceType'/>
+    <Class name = 'ExternalActor' isAbstract = 'false' supertypes = 'Platform::PlatformElement'>
+      <Reference name = 'outUses' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Platform::Uses' opposite = 'Platform::Uses::from'/>
+    </Class>
+    <Class name = 'ExternalRelations' isAbstract = 'true' supertypes = 'Platform::PlatformRelationship'/>
+    <Class name = 'Uses' isAbstract = 'false' supertypes = 'Platform::ExternalRelations'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Platform::ResourceInstance' opposite = 'Platform::ResourceInstance::inUses'/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Platform::ExternalActor' opposite = 'Platform::ExternalActor::outUses'/>
+    </Class>
+    <Class name = 'DataPortResource' isAbstract = 'false' supertypes = 'Platform::ResourceType, Code::StorableElement'/>
+    <Class name = 'DynamicData' isAbstract = 'false' supertypes = 'Platform::ResourceType, Code::StorableElement'/>
+    <Class name = 'DataManager' isAbstract = 'false' supertypes = 'Platform::ResourceType, Code::StorableElement'/>
+    <Class name = 'PlatformRelationship' isAbstract = 'true' supertypes = 'Core::KDMRelationship'/>
+    <Class name = 'PlatformService' isAbstract = 'false' supertypes = 'Action::ActionElement'/>
+    <Class name = 'MarshalledCall' isAbstract = 'false' supertypes = 'Platform::PlatformService'/>
+    <Class name = 'Registration' isAbstract = 'false' supertypes = 'Platform::PlatformService'/>
+    <Class name = 'Activation' isAbstract = 'false' supertypes = 'Platform::PlatformService'/>
+    <Class name = 'AsynchCall' isAbstract = 'false' supertypes = 'Platform::PlatformService'/>
+    <Class name = 'UsesResource' isAbstract = 'false' supertypes = 'Platform::ResourceRelationship'/>
+    <Class name = 'ResourceRelationship' isAbstract = 'true' supertypes = 'Platform::PlatformRelationship'/>
+    <Class name = 'BindsResource' isAbstract = 'false' supertypes = 'Platform::ResourceRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Platform::ResourceInstance' opposite = 'Platform::ResourceInstance::inResource'/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Platform::ResourceInstance' opposite = 'Platform::ResourceInstance::outResource'/>
+    </Class>
+    <Class name = 'ResourceDefinition' isAbstract = 'false' supertypes = 'Core::KDMGroup'>
+      <Reference name = 'element' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::CodeResource' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'Build'>
+    <Class name = 'Image' isAbstract = 'false' supertypes = 'Build::BuildResource'/>
+    <Class name = 'BuildDescription' isAbstract = 'false' supertypes = 'Build::BuildResource'/>
+    <Class name = 'DependsOn' isAbstract = 'false' supertypes = 'Build::BuildRelationship'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Build::BuildElement' opposite = 'Build::BuildElement::outDependsOn'/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Build::BuildElement' opposite = 'Build::BuildElement::inDependsOn'/>
+    </Class>
+    <Class name = 'SymbolicLink' isAbstract = 'false' supertypes = 'Build::BuildResource'>
+      <Reference name = 'outLinksTo' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Build::LinksTo' opposite = 'Build::LinksTo::from'/>
+    </Class>
+    <Class name = 'LinksTo' isAbstract = 'false' supertypes = 'Build::BuildRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Build::BuildElement' opposite = 'Build::BuildElement::inLinksTo'/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Build::SymbolicLink' opposite = 'Build::SymbolicLink::outLinksTo'/>
+    </Class>
+    <Class name = 'BuildGroup' isAbstract = 'false' supertypes = 'Build::BuildElement, Core::KDMGroup'>
+      <Reference name = 'buildElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Build::BuildElement' opposite = 'Build::BuildElement::buildGroup'/>
+    </Class>
+    <Class name = 'BuildElement' isAbstract = 'true' supertypes = 'Core::KDMEntity'>
+      <Reference name = 'outTransformsInto' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Build::TransformsInto' opposite = 'Build::TransformsInto::from'/>
+      <Reference name = 'buildGroup' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Build::BuildGroup' opposite = 'Build::BuildGroup::buildElement'/>
+      <Reference name = 'inTransformsInto' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Build::TransformsInto' opposite = 'Build::TransformsInto::to'/>
+      <Reference name = 'inDependsOn' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Build::DependsOn' opposite = 'Build::DependsOn::to'/>
+      <Reference name = 'inLinksTo' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Build::LinksTo' opposite = 'Build::LinksTo::to'/>
+      <Reference name = 'outDependsOn' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Build::DependsOn' opposite = 'Build::DependsOn::from'/>
+    </Class>
+    <Class name = 'TransformsInto' isAbstract = 'false' supertypes = 'Build::BuildRelationship'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Build::BuildElement' opposite = 'Build::BuildElement::outTransformsInto'/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Build::BuildElement' opposite = 'Build::BuildElement::inTransformsInto'/>
+    </Class>
+    <Class name = 'SourceFile' isAbstract = 'false' supertypes = 'Build::BuildResource'>
+      <Attribute name = 'language' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'BuildResource' isAbstract = 'false' supertypes = 'Build::BuildElement, Core::KDMGroup'>
+      <Reference name = 'codeElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::Module' opposite = ''/>
+      <Attribute name = 'version' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'path' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'BuildRelationship' isAbstract = 'true' supertypes = 'Core::KDMRelationship'/>
+    <Class name = 'BuildContainer' isAbstract = 'false' supertypes = 'Build::BuildElement, Core::KDMContainer'>
+      <Reference name = 'buildElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Build::BuildElement' opposite = ''/>
+    </Class>
+    <Class name = 'BuildModel' isAbstract = 'false' supertypes = 'kdm::KDMModel'>
+      <Reference name = 'buildElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Build::BuildElement' opposite = ''/>
+      <Reference name = 'relation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Build::BuildRelationship' opposite = ''/>
+    </Class>
+    <Class name = 'Directory' isAbstract = 'false' supertypes = 'Build::BuildContainer'>
+      <Attribute name = 'path' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'BuildComponent' isAbstract = 'false' supertypes = 'Build::BuildResource'/>
+    <Class name = 'IntermediateFile' isAbstract = 'false' supertypes = 'Build::BuildResource'/>
+    <Class name = 'Origin' isAbstract = 'false' supertypes = 'Build::BuildElement'/>
+    <Class name = 'Tool' isAbstract = 'false' supertypes = 'Build::BuildElement'/>
+  </Package>
+  <Package name = 'Core'>
+    <Class name = 'KDMEntity' isAbstract = 'true' supertypes = 'Core::ModelElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'KDMContainer' isAbstract = 'true' supertypes = 'Core::KDMEntity'/>
+    <Class name = 'Element' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'attribute' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Core::Attribute' opposite = ''/>
+      <Reference name = 'annotation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Core::Annotation' opposite = ''/>
+    </Class>
+    <Class name = 'ModelElement' isAbstract = 'true' supertypes = 'Core::Element'>
+      <Reference name = 'stereotype' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::Stereotype' opposite = 'Core::Stereotype::extendedElement'/>
+      <Reference name = 'taggedValue' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Core::TaggedValue' opposite = ''/>
+    </Class>
+    <Class name = 'KDMRelationship' isAbstract = 'true' supertypes = 'Core::ModelElement'/>
+    <Enumeration name = 'InstanceKind'>
+      <EnumLiteral name = 'global'/>
+      <EnumLiteral name = 'local'/>
+      <EnumLiteral name = 'field'/>
+      <EnumLiteral name = 'formal'/>
+      <EnumLiteral name = 'type'/>
+      <EnumLiteral name = 'constant'/>
+      <EnumLiteral name = 'object'/>
+      <EnumLiteral name = 'dynamic'/>
+    </Enumeration>
+    <Class name = 'KDMAggregatedRelationship' isAbstract = 'false' supertypes = 'Core::Element'>
+      <Reference name = 'relation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Core::KDMRelationship' opposite = ''/>
+      <Attribute name = 'density' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Attribute' isAbstract = 'false' supertypes = 'Core::Element'>
+      <Attribute name = 'tag' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Annotation' isAbstract = 'false' supertypes = 'Core::Element'>
+      <Attribute name = 'note' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'KDMGroup' isAbstract = 'true' supertypes = 'Core::KDMEntity'/>
+    <Class name = 'KDMExtensionFamily' isAbstract = 'false' supertypes = 'Core::Element'>
+      <Reference name = 'stereotype' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Core::Stereotype' opposite = 'Core::Stereotype::family'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'TagDefinition' isAbstract = 'false' supertypes = 'Core::Element'>
+      <Attribute name = 'tag' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'TaggedValue' isAbstract = 'false' supertypes = 'Core::Element'>
+      <Reference name = 'tag' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::TagDefinition' opposite = ''/>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Stereotype' isAbstract = 'false' supertypes = 'Core::Element'>
+      <Reference name = 'family' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Core::KDMExtensionFamily' opposite = 'Core::KDMExtensionFamily::stereotype'/>
+      <Reference name = 'extendedElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Core::ModelElement' opposite = 'Core::ModelElement::stereotype'/>
+      <Reference name = 'tag' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Core::TagDefinition' opposite = ''/>
+      <Attribute name = 'baseClass' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+  </Package>
+  <Package name = 'UI'>
+    <Class name = 'Screen' isAbstract = 'false' supertypes = 'UI::Display'/>
+    <Class name = 'Report' isAbstract = 'false' supertypes = 'UI::Display'/>
+    <Class name = 'UIModel' isAbstract = 'false' supertypes = 'kdm::KDMModel'>
+      <Reference name = 'relation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'UI::UIRelationship' opposite = ''/>
+      <Reference name = 'uiElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'UI::UIElement' opposite = ''/>
+    </Class>
+    <Class name = 'UIElement' isAbstract = 'false' supertypes = 'Core::KDMEntity'>
+      <Reference name = 'uiGroup' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UI::UIGroup' opposite = 'UI::UIGroup::uiElement'/>
+      <Reference name = 'inDisplays' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UI::Displays' opposite = 'UI::Displays::to'/>
+    </Class>
+    <Class name = 'UIContainer' isAbstract = 'false' supertypes = 'UI::UIElement, Core::KDMContainer'>
+      <Reference name = 'inUsesLayout' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UI::UsesLayout' opposite = 'UI::UsesLayout::to'/>
+      <Reference name = 'event' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Event::UIEvent' opposite = ''/>
+      <Reference name = 'uiElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'UI::UIElement' opposite = ''/>
+    </Class>
+    <Class name = 'UsesLayout' isAbstract = 'false' supertypes = 'UI::UIRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UI::UIContainer' opposite = 'UI::UIContainer::inUsesLayout'/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UI::Display' opposite = 'UI::Display::outUsesLayout'/>
+    </Class>
+    <Class name = 'DisplayUnit' isAbstract = 'false' supertypes = 'UI::UIElement'>
+      <Reference name = 'outImage' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UI::UsesImage' opposite = 'UI::UsesImage::from'/>
+    </Class>
+    <Class name = 'VariableDisplayUnit' isAbstract = 'false' supertypes = 'UI::DisplayUnit'>
+      <Reference name = 'outDisplay' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UI::DisplaysData' opposite = 'UI::DisplaysData::from'/>
+    </Class>
+    <Class name = 'FixedDisplayUnit' isAbstract = 'false' supertypes = 'UI::DisplayUnit'/>
+    <Class name = 'UsesImage' isAbstract = 'false' supertypes = 'UI::UIRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Build::Image' opposite = ''/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UI::DisplayUnit' opposite = 'UI::DisplayUnit::outImage'/>
+    </Class>
+    <Class name = 'DisplaysData' isAbstract = 'false' supertypes = 'UI::UIRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::StorableElement' opposite = ''/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UI::VariableDisplayUnit' opposite = 'UI::VariableDisplayUnit::outDisplay'/>
+    </Class>
+    <Class name = 'Displays' isAbstract = 'false' supertypes = 'UI::UIRelationship'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::CallableElement' opposite = ''/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UI::UIElement' opposite = 'UI::UIElement::inDisplays'/>
+    </Class>
+    <Class name = 'Display' isAbstract = 'false' supertypes = 'UI::UIContainer'>
+      <Reference name = 'outUIFlow' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UI::UIFlow' opposite = 'UI::UIFlow::from'/>
+      <Reference name = 'inUIFlow' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UI::UIFlow' opposite = 'UI::UIFlow::to'/>
+      <Reference name = 'outUsesLayout' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UI::UsesLayout' opposite = 'UI::UsesLayout::from'/>
+      <Reference name = 'inRenders' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UI::Renders' opposite = 'UI::Renders::to'/>
+    </Class>
+    <Class name = 'UIFlow' isAbstract = 'false' supertypes = 'UI::UIRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UI::Display' opposite = 'UI::Display::inUIFlow'/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UI::Display' opposite = 'UI::Display::outUIFlow'/>
+    </Class>
+    <Class name = 'Renders' isAbstract = 'false' supertypes = 'UI::UIRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'UI::Display' opposite = 'UI::Display::inRenders'/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Event::Trigger' opposite = ''/>
+    </Class>
+    <Class name = 'UIRelationship' isAbstract = 'true' supertypes = 'Core::KDMRelationship'/>
+    <Class name = 'UIGroup' isAbstract = 'false' supertypes = 'UI::UIElement, Core::KDMGroup'>
+      <Reference name = 'uiElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'UI::UIElement' opposite = 'UI::UIElement::uiGroup'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Double'/>
+    <DataType name = 'Float'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'Long'/>
+    <DataType name = 'String'/>
+  </Package>
+  <Package name = 'Action'>
+    <Class name = 'ActionElement' isAbstract = 'false' supertypes = 'Code::CodeElement'>
+      <Reference name = 'outCalls' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Action::Calls' opposite = 'Action::Calls::from'/>
+      <Reference name = 'outUsesType' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Action::UsesType' opposite = 'Action::UsesType::from'/>
+      <Reference name = 'outUsesPrototype' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Action::UsesPrototype' opposite = 'Action::UsesPrototype::from'/>
+      <Reference name = 'outWrites' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Action::Writes' opposite = 'Action::Writes::from'/>
+      <Reference name = 'outUsesCallable' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Action::UsesCallable' opposite = 'Action::UsesCallable::from'/>
+      <Reference name = 'outDestroys' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Action::Destroys' opposite = 'Action::Destroys::from'/>
+      <Reference name = 'outInitializes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Action::Initializes' opposite = 'Action::Initializes::from'/>
+      <Reference name = 'outExpands' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Action::Expands' opposite = 'Action::Expands::from'/>
+      <Reference name = 'inEntry' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Action::EntryFlow' opposite = 'Action::EntryFlow::to'/>
+      <Reference name = 'outFlow' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Action::ControlFlow' opposite = 'Action::ControlFlow::from'/>
+      <Reference name = 'outReads' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Action::Reads' opposite = 'Action::Reads::from'/>
+      <Reference name = 'outCreates' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Action::Creates' opposite = 'Action::Creates::from'/>
+      <Reference name = 'inFlow' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Action::ControlFlow' opposite = 'Action::ControlFlow::to'/>
+      <Reference name = 'outInvokes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Action::Invokes' opposite = 'Action::Invokes::from'/>
+      <Reference name = 'outUsesData' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Action::UsesData' opposite = 'Action::UsesData::from'/>
+      <Reference name = 'actionGroup' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Action::ActionGroup' opposite = 'Action::ActionGroup::actionElement'/>
+    </Class>
+    <Class name = 'ControlFlow' isAbstract = 'false' supertypes = 'Action::FlowRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Action::ActionElement' opposite = 'Action::ActionElement::inFlow'/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Action::ActionElement' opposite = 'Action::ActionElement::outFlow'/>
+    </Class>
+    <Class name = 'UsesCallable' isAbstract = 'false' supertypes = 'Action::CallableRelationship'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Action::ActionElement' opposite = 'Action::ActionElement::outUsesCallable'/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::CallableElement' opposite = ''/>
+    </Class>
+    <Class name = 'Calls' isAbstract = 'false' supertypes = 'Action::CallableRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::CallableElement' opposite = ''/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Action::ActionElement' opposite = 'Action::ActionElement::outCalls'/>
+    </Class>
+    <Class name = 'Creates' isAbstract = 'false' supertypes = 'Action::DataRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::StorableElement' opposite = ''/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Action::ActionElement' opposite = 'Action::ActionElement::outCreates'/>
+    </Class>
+    <Class name = 'Reads' isAbstract = 'false' supertypes = 'Action::DataRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::StorableElement' opposite = ''/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Action::ActionElement' opposite = 'Action::ActionElement::outReads'/>
+    </Class>
+    <Class name = 'UsesData' isAbstract = 'false' supertypes = 'Action::DataRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::StorableElement' opposite = ''/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Action::ActionElement' opposite = 'Action::ActionElement::outUsesData'/>
+    </Class>
+    <Class name = 'Writes' isAbstract = 'false' supertypes = 'Action::DataRelationship'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Action::ActionElement' opposite = 'Action::ActionElement::outWrites'/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::StorableElement' opposite = ''/>
+    </Class>
+    <Class name = 'Destroys' isAbstract = 'false' supertypes = 'Action::DataRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::StorableElement' opposite = ''/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Action::ActionElement' opposite = 'Action::ActionElement::outDestroys'/>
+    </Class>
+    <Class name = 'DataRelationship' isAbstract = 'true' supertypes = 'Action::ActionRelationship'/>
+    <Class name = 'CallableRelationship' isAbstract = 'true' supertypes = 'Action::ActionRelationship'/>
+    <Class name = 'UsesPrototype' isAbstract = 'false' supertypes = 'Code::PrototypeRelationship'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Action::ActionElement' opposite = 'Action::ActionElement::outUsesPrototype'/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::PrototypeUnit' opposite = ''/>
+    </Class>
+    <Class name = 'ImportDirective' isAbstract = 'false' supertypes = 'Action::ActionElement'>
+      <Reference name = 'outImports' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Action::Imports' opposite = 'Action::Imports::from'/>
+    </Class>
+    <Class name = 'Imports' isAbstract = 'false' supertypes = 'Action::ImportRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::CodeResource' opposite = ''/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Action::ImportDirective' opposite = 'Action::ImportDirective::outImports'/>
+    </Class>
+    <Class name = 'UsesType' isAbstract = 'false' supertypes = 'Code::TypeRelationship'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Action::ActionElement' opposite = 'Action::ActionElement::outUsesType'/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::TypeElement' opposite = ''/>
+    </Class>
+    <Class name = 'Expands' isAbstract = 'false' supertypes = 'Action::MacroRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::MacroUnit' opposite = ''/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Action::ActionElement' opposite = 'Action::ActionElement::outExpands'/>
+    </Class>
+    <Class name = 'ImportRelationship' isAbstract = 'true' supertypes = 'Action::ActionRelationship'/>
+    <Class name = 'MacroRelationship' isAbstract = 'true' supertypes = 'Action::ActionRelationship'/>
+    <Class name = 'FlowRelationship' isAbstract = 'true' supertypes = 'Action::ActionRelationship'/>
+    <Class name = 'ActionRelationship' isAbstract = 'true' supertypes = 'Core::KDMRelationship'/>
+    <Class name = 'EntryFlow' isAbstract = 'false' supertypes = 'Action::FlowRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Action::ActionElement' opposite = 'Action::ActionElement::inEntry'/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::CallableElement' opposite = ''/>
+    </Class>
+    <Class name = 'Flow' isAbstract = 'false' supertypes = 'Action::ControlFlow'/>
+    <Class name = 'TrueFlow' isAbstract = 'false' supertypes = 'Action::ControlFlow'/>
+    <Class name = 'FalseFlow' isAbstract = 'false' supertypes = 'Action::ControlFlow'/>
+    <Class name = 'GuardedFlow' isAbstract = 'false' supertypes = 'Action::ControlFlow'/>
+    <Class name = 'Initializes' isAbstract = 'false' supertypes = 'Action::DataRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::StorableElement' opposite = ''/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Action::ActionElement' opposite = 'Action::ActionElement::outInitializes'/>
+    </Class>
+    <Class name = 'Invokes' isAbstract = 'false' supertypes = 'Action::CallableRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::NamedTypeUnit' opposite = ''/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Action::ActionElement' opposite = 'Action::ActionElement::outInvokes'/>
+    </Class>
+    <Class name = 'ActionGroup' isAbstract = 'false' supertypes = 'Action::ActionElement, Core::KDMGroup'>
+      <Reference name = 'actionElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Action::ActionElement' opposite = 'Action::ActionElement::actionGroup'/>
+    </Class>
+  </Package>
+  <Package name = 'kdm'>
+    <Class name = 'KDMModelRoot' isAbstract = 'true' supertypes = 'kdm::KDMFramework'>
+      <Reference name = 'runtimeModel' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Runtime::RuntimeModel' opposite = ''/>
+      <Reference name = 'uiModel' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'UI::UIModel' opposite = ''/>
+      <Reference name = 'eventModel' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Event::EventModel' opposite = ''/>
+      <Reference name = 'buildModel' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Build::BuildModel' opposite = ''/>
+      <Reference name = 'dataModel' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Data::DataModel' opposite = ''/>
+      <Reference name = 'structureModel' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Structure::StructureModel' opposite = ''/>
+      <Reference name = 'behaviorModel' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Behavior::BehaviorModel' opposite = ''/>
+      <Reference name = 'conceptualModel' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Conceptual::ConceptualModel' opposite = ''/>
+      <Reference name = 'codeModel' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Code::CodeModel' opposite = ''/>
+      <Reference name = 'platformModel' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Platform::PlatformModel' opposite = ''/>
+    </Class>
+    <Class name = 'KDMRoot' isAbstract = 'false' supertypes = 'kdm::KDMModelRoot'>
+      <Reference name = 'segment' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'kdm::KDMSegment' opposite = ''/>
+    </Class>
+    <Class name = 'KDMFramework' isAbstract = 'true' supertypes = 'Core::Element'>
+      <Reference name = 'audit' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'kdm::Audit' opposite = ''/>
+      <Reference name = 'extension' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Core::KDMExtensionFamily' opposite = ''/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'KDMModel' isAbstract = 'true' supertypes = 'kdm::KDMFramework'/>
+    <Class name = 'Audit' isAbstract = 'false' supertypes = 'Core::Element'>
+      <Attribute name = 'description' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'duthor' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'date' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'KDMSegment' isAbstract = 'false' supertypes = 'kdm::KDMModelRoot'/>
+  </Package>
+  <Package name = 'Runtime'>
+    <Class name = 'RuntimeElement' isAbstract = 'true' supertypes = 'Core::KDMEntity'>
+      <Reference name = 'runtimeGroup' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Runtime::RuntimeGroup' opposite = 'Runtime::RuntimeGroup::runtimeElement'/>
+    </Class>
+    <Class name = 'RuntimeModel' isAbstract = 'false' supertypes = 'kdm::KDMModel'>
+      <Reference name = 'relation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Runtime::RuntimeRelation' opposite = ''/>
+      <Reference name = 'runtimeElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Runtime::RuntimeElement' opposite = ''/>
+    </Class>
+    <Class name = 'RuntimeContainer' isAbstract = 'true' supertypes = 'Runtime::RuntimeElement, Core::KDMContainer'/>
+    <Class name = 'Process' isAbstract = 'false' supertypes = 'Runtime::RunnableElement'>
+      <Reference name = 'thread' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Runtime::Thread' opposite = ''/>
+      <Reference name = 'component' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Runtime::DeployedComponent' opposite = ''/>
+    </Class>
+    <Class name = 'Thread' isAbstract = 'false' supertypes = 'Runtime::RunnableElement'/>
+    <Class name = 'RuntimeRelation' isAbstract = 'true' supertypes = 'Core::KDMRelationship'/>
+    <Class name = 'Machine' isAbstract = 'false' supertypes = 'Runtime::RuntimeContainer'>
+      <Reference name = 'component' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Runtime::DeployedComponent' opposite = ''/>
+      <Reference name = 'resource' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Runtime::DeployedResource' opposite = ''/>
+    </Class>
+    <Class name = 'DeployedSoftwareSystem' isAbstract = 'false' supertypes = 'Runtime::RuntimeGroup'>
+      <Reference name = 'component' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Runtime::DeployedComponent' opposite = 'Runtime::DeployedComponent::deployment'/>
+      <Reference name = 'system' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Structure::SoftwareSystem' opposite = ''/>
+    </Class>
+    <Class name = 'DeployedComponent' isAbstract = 'false' supertypes = 'Runtime::RuntimeGroup'>
+      <Reference name = 'deployment' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Runtime::DeployedSoftwareSystem' opposite = 'Runtime::DeployedSoftwareSystem::component'/>
+      <Reference name = 'component' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::CodeAssembly' opposite = ''/>
+      <Reference name = 'inLoads' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Runtime::Loads' opposite = 'Runtime::Loads::to'/>
+    </Class>
+    <Class name = 'LoadingService' isAbstract = 'false' supertypes = 'Runtime::RuntimeService'>
+      <Reference name = 'outLoads' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Runtime::Loads' opposite = 'Runtime::Loads::from'/>
+    </Class>
+    <Class name = 'SpawningService' isAbstract = 'false' supertypes = 'Runtime::RuntimeService'>
+      <Reference name = 'outSpawns' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Runtime::Spawns' opposite = 'Runtime::Spawns::from'/>
+    </Class>
+    <Class name = 'Loads' isAbstract = 'false' supertypes = 'Runtime::RuntimeRelation'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Runtime::DeployedComponent' opposite = 'Runtime::DeployedComponent::inLoads'/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Runtime::LoadingService' opposite = 'Runtime::LoadingService::outLoads'/>
+    </Class>
+    <Class name = 'RuntimeGroup' isAbstract = 'false' supertypes = 'Runtime::RuntimeElement, Core::KDMGroup'>
+      <Reference name = 'runtimeElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Runtime::RuntimeElement' opposite = 'Runtime::RuntimeElement::runtimeGroup'/>
+    </Class>
+    <Class name = 'RuntimeService' isAbstract = 'false' supertypes = 'Action::ActionElement'/>
+    <Class name = 'Spawns' isAbstract = 'false' supertypes = 'Runtime::RuntimeRelation'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Runtime::SpawningService' opposite = 'Runtime::SpawningService::outSpawns'/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Runtime::RunnableElement' opposite = 'Runtime::RunnableElement::inSpawns'/>
+    </Class>
+    <Class name = 'RunnableElement' isAbstract = 'true' supertypes = 'Runtime::RuntimeContainer'>
+      <Reference name = 'inSpawns' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Runtime::Spawns' opposite = 'Runtime::Spawns::to'/>
+    </Class>
+    <Class name = 'DeployedResource' isAbstract = 'false' supertypes = 'Runtime::RuntimeGroup'>
+      <Reference name = 'instance' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Platform::ResourceInstance' opposite = ''/>
+      <Reference name = 'provider' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Platform::ResourceProvider' opposite = ''/>
+      <Reference name = 'element' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Platform::ResourceElement' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'Source'>
+    <Class name = 'SourceRef' isAbstract = 'false' supertypes = 'Core::Element'>
+      <Reference name = 'region' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Source::SourceRegion' opposite = ''/>
+      <Attribute name = 'language' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'snippet' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'SourceRegion' isAbstract = 'false' supertypes = 'Core::Element'>
+      <Reference name = 'file' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Build::SourceFile' opposite = ''/>
+      <Attribute name = 'startLine' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'startPosition' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'endLine' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'endPosition' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'language' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'path' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+  </Package>
+  <Package name = 'Code'>
+    <Class name = 'CodeElement' isAbstract = 'true' supertypes = 'Core::KDMEntity'/>
+    <Class name = 'PrototypeRelationship' isAbstract = 'true' supertypes = 'Code::CodeRelationship'/>
+    <Class name = 'CallableElement' isAbstract = 'false' supertypes = 'Code::CodeContainer'>
+      <Reference name = 'codeElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Code::CodeElement' opposite = ''/>
+      <Attribute name = 'isExternal' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'PrototypeUnit' isAbstract = 'false' supertypes = 'Code::CodeResource'>
+      <Reference name = 'inPrototypedBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::PrototypedBy' opposite = 'Code::PrototypedBy::to'/>
+    </Class>
+    <Class name = 'PrototypedBy' isAbstract = 'false' supertypes = 'Code::PrototypeRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::PrototypeUnit' opposite = 'Code::PrototypeUnit::inPrototypedBy'/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::CodeResource' opposite = 'Code::CodeResource::outPrototypedBy'/>
+    </Class>
+    <Class name = 'MethodUnit' isAbstract = 'false' supertypes = 'Code::CallableElement'/>
+    <Class name = 'CodeAssembly' isAbstract = 'false' supertypes = 'Code::Module'/>
+    <Class name = 'MacroUnit' isAbstract = 'false' supertypes = 'Code::CodeContainer'>
+      <Reference name = 'codeElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Code::CodeElement' opposite = ''/>
+    </Class>
+    <Class name = 'CodeGroup' isAbstract = 'false' supertypes = 'Code::CodeResource, Core::KDMGroup'>
+      <Reference name = 'codeElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::CodeResource' opposite = 'Code::CodeResource::codeGroup'/>
+    </Class>
+    <Class name = 'CallableUnit' isAbstract = 'false' supertypes = 'Code::CallableElement'/>
+    <Class name = 'TemplateUnit' isAbstract = 'false' supertypes = 'Code::CodeContainer'>
+      <Reference name = 'parameter' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Code::TemplateParameter' opposite = ''/>
+      <Reference name = 'templateElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Code::CodeResource' opposite = ''/>
+      <Reference name = 'inInstantiates' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::Instantiates' opposite = 'Code::Instantiates::to'/>
+    </Class>
+    <Class name = 'TemplateParameter' isAbstract = 'false' supertypes = 'Code::CodeResource'/>
+    <Class name = 'TemplateInstance' isAbstract = 'false' supertypes = 'Code::CodeContainer'>
+      <Reference name = 'outInstantiates' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::Instantiates' opposite = 'Code::Instantiates::from'/>
+      <Reference name = 'instance' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Code::CodeResource' opposite = ''/>
+    </Class>
+    <Class name = 'Instantiates' isAbstract = 'false' supertypes = 'Code::TemplateRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::TemplateUnit' opposite = 'Code::TemplateUnit::inInstantiates'/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::TemplateInstance' opposite = 'Code::TemplateInstance::outInstantiates'/>
+    </Class>
+    <Class name = 'BlockUnit' isAbstract = 'false' supertypes = 'Code::CallableElement'/>
+    <Class name = 'ConstructorUnit' isAbstract = 'false' supertypes = 'Code::CallableElement'/>
+    <Class name = 'InstanceOf' isAbstract = 'false' supertypes = 'Code::TemplateRelationship'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::CodeResource' opposite = 'Code::CodeResource::outInstanceOf'/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::CodeResource' opposite = 'Code::CodeResource::inInstanceOf'/>
+    </Class>
+    <Class name = 'CodeContainer' isAbstract = 'true' supertypes = 'Code::CodeResource, Core::KDMContainer'/>
+    <Class name = 'CompilationUnit' isAbstract = 'false' supertypes = 'Code::Module'/>
+    <Class name = 'CodeModel' isAbstract = 'false' supertypes = 'kdm::KDMModel'>
+      <Reference name = 'codeElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Code::CodeElement' opposite = ''/>
+      <Reference name = 'actionRelation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Action::ActionRelationship' opposite = ''/>
+      <Reference name = 'codeRelation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Code::CodeRelationship' opposite = ''/>
+    </Class>
+    <Class name = 'OperatorUnit' isAbstract = 'false' supertypes = 'Code::CallableElement'/>
+    <Class name = 'TemplateRelationship' isAbstract = 'true' supertypes = 'Code::CodeRelationship'/>
+    <Class name = 'ArrayUnit' isAbstract = 'false' supertypes = 'Code::DerivedTypeElement'/>
+    <Class name = 'BooleanUnit' isAbstract = 'false' supertypes = 'Code::PredefinedTypeElement'/>
+    <Class name = 'CharUnit' isAbstract = 'false' supertypes = 'Code::PredefinedTypeElement'/>
+    <Class name = 'ClassUnit' isAbstract = 'false' supertypes = 'Code::TypeContainer'>
+      <Reference name = 'member' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Code::TypeElement' opposite = ''/>
+      <Reference name = 'constructor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Code::ConstructorUnit' opposite = ''/>
+      <Reference name = 'method' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Code::MethodUnit' opposite = ''/>
+      <Reference name = 'operator' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Code::OperatorUnit' opposite = ''/>
+      <Attribute name = 'isAbstract' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isInterface' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'CompositeUnit' isAbstract = 'false' supertypes = 'Code::CompositeTypeElement'/>
+    <Class name = 'EnumeratedLiteral' isAbstract = 'false' supertypes = 'Code::TypeElement'/>
+    <Class name = 'EnumeratedUnit' isAbstract = 'false' supertypes = 'Code::TypeContainer'/>
+    <Class name = 'Extends' isAbstract = 'false' supertypes = 'Code::TypeRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::TypeElement' opposite = 'Code::TypeElement::inExtends'/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::TypeElement' opposite = 'Code::TypeElement::outExtends'/>
+    </Class>
+    <Class name = 'FixedPointUnit' isAbstract = 'false' supertypes = 'Code::PredefinedTypeElement'/>
+    <Class name = 'FloatUnit' isAbstract = 'false' supertypes = 'Code::PredefinedTypeElement'/>
+    <Class name = 'HasType' isAbstract = 'false' supertypes = 'Code::TypeRelationship'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::TypeElement' opposite = 'Code::TypeElement::inHasType'/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::CodeResource' opposite = 'Code::CodeResource::outHasType'/>
+    </Class>
+    <Class name = 'ImplementationOf' isAbstract = 'false' supertypes = 'Code::InterfaceRelationship'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::CodeResource' opposite = 'Code::CodeResource::outImplementation'/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::Signature' opposite = 'Code::Signature::inImplementation'/>
+    </Class>
+    <Class name = 'Implements' isAbstract = 'false' supertypes = 'Code::InterfaceRelationship'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::CodeResource' opposite = 'Code::CodeResource::outInterface'/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::Interface' opposite = 'Code::Interface::inImplements'/>
+    </Class>
+    <Class name = 'IntegerUnit' isAbstract = 'false' supertypes = 'Code::PredefinedTypeElement'/>
+    <Class name = 'Interface' isAbstract = 'false' supertypes = 'Core::KDMGroup, Code::TypeContainer'>
+      <Reference name = 'signature' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Code::TypeElement' opposite = ''/>
+      <Reference name = 'inImplements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::Implements' opposite = 'Code::Implements::to'/>
+      <Reference name = 'inComplies' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Platform::CompliesTo' opposite = ''/>
+      <Reference name = 'type' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Code::TypeElement' opposite = ''/>
+    </Class>
+    <Class name = 'InterfaceRelationship' isAbstract = 'true' supertypes = 'Code::CodeRelationship'/>
+    <Class name = 'PointerUnit' isAbstract = 'false' supertypes = 'Code::DerivedTypeElement'/>
+    <Class name = 'PredefinedTypeElement' isAbstract = 'false' supertypes = 'Code::SimpleTypeElement'/>
+    <Class name = 'NamedTypeUnit' isAbstract = 'false' supertypes = 'Code::SimpleTypeElement'/>
+    <Class name = 'RefinementUnit' isAbstract = 'false' supertypes = 'Code::DerivedTypeElement'/>
+    <Class name = 'Signature' isAbstract = 'false' supertypes = 'Code::TypeContainer'>
+      <Reference name = 'inImplementation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::ImplementationOf' opposite = 'Code::ImplementationOf::to'/>
+      <Reference name = 'return' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Code::TypeElement' opposite = ''/>
+      <Reference name = 'parameter' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Code::TypeElement' opposite = ''/>
+    </Class>
+    <Class name = 'StorableElement' isAbstract = 'true' supertypes = 'Core::KDMEntity'/>
+    <Class name = 'StringUnit' isAbstract = 'false' supertypes = 'Code::PredefinedTypeElement'/>
+    <Class name = 'TypeElement' isAbstract = 'true' supertypes = 'Code::CodeResource, Code::StorableElement'>
+      <Reference name = 'inExtends' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::Extends' opposite = 'Code::Extends::to'/>
+      <Reference name = 'inHasType' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::HasType' opposite = 'Code::HasType::to'/>
+      <Reference name = 'outExtends' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::Extends' opposite = 'Code::Extends::from'/>
+      <Attribute name = 'kind' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Core::InstanceKind'/>
+    </Class>
+    <Class name = 'TypeRelationship' isAbstract = 'true' supertypes = 'Code::CodeRelationship'/>
+    <Class name = 'UnionUnit' isAbstract = 'false' supertypes = 'Code::CompositeTypeElement'/>
+    <Class name = 'CodeRelationship' isAbstract = 'true' supertypes = 'Core::KDMRelationship'/>
+    <Class name = 'TypeContainer' isAbstract = 'true' supertypes = 'Code::TypeElement, Code::CodeContainer'/>
+    <Class name = 'CompositeTypeElement' isAbstract = 'false' supertypes = 'Code::TypeContainer'>
+      <Reference name = 'field' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Code::TypeElement' opposite = ''/>
+    </Class>
+    <Class name = 'DerivedTypeElement' isAbstract = 'false' supertypes = 'Code::TypeContainer'>
+      <Reference name = 'baseType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Code::TypeElement' opposite = ''/>
+    </Class>
+    <Class name = 'NamespaceUnit' isAbstract = 'false' supertypes = 'Code::CodeResource'/>
+    <Class name = 'VisibleIn' isAbstract = 'false' supertypes = 'Code::PrototypeRelationship'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::CodeResource' opposite = 'Code::CodeResource::outVisible'/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::CodeResource' opposite = 'Code::CodeResource::inVisible'/>
+    </Class>
+    <Class name = 'CommentUnit' isAbstract = 'false' supertypes = 'Code::TypeElement'/>
+    <Class name = 'SharedUnit' isAbstract = 'false' supertypes = 'Code::CompilationUnit'/>
+    <Class name = 'DecimalUnit' isAbstract = 'false' supertypes = 'Code::PredefinedTypeElement'/>
+    <Class name = 'DateUnit' isAbstract = 'false' supertypes = 'Code::PredefinedTypeElement'/>
+    <Class name = 'TimeUnit' isAbstract = 'false' supertypes = 'Code::PredefinedTypeElement'/>
+    <Class name = 'SimpleTypeElement' isAbstract = 'false' supertypes = 'Code::TypeElement'/>
+    <Class name = 'CodeResource' isAbstract = 'true' supertypes = 'Code::CodeElement, Data::ProgramElement'>
+      <Reference name = 'outHasType' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::HasType' opposite = 'Code::HasType::from'/>
+      <Reference name = 'outVisible' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::VisibleIn' opposite = 'Code::VisibleIn::from'/>
+      <Reference name = 'outPrototypedBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::PrototypedBy' opposite = 'Code::PrototypedBy::from'/>
+      <Reference name = 'outImplementation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::ImplementationOf' opposite = 'Code::ImplementationOf::from'/>
+      <Reference name = 'outInstanceOf' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::InstanceOf' opposite = 'Code::InstanceOf::from'/>
+      <Reference name = 'codeGroup' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::CodeGroup' opposite = 'Code::CodeGroup::codeElement'/>
+      <Reference name = 'outInterface' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::Implements' opposite = 'Code::Implements::from'/>
+      <Reference name = 'inVisible' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::VisibleIn' opposite = 'Code::VisibleIn::to'/>
+      <Reference name = 'inInstanceOf' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Code::InstanceOf' opposite = 'Code::InstanceOf::to'/>
+    </Class>
+    <Class name = 'Module' isAbstract = 'true' supertypes = 'Code::CodeContainer'>
+      <Reference name = 'codeElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Code::CodeElement' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'Conceptual'>
+    <Class name = 'ConceptualModel' isAbstract = 'false' supertypes = 'kdm::KDMModel'>
+      <Reference name = 'conceptualElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Conceptual::ConceptualElement' opposite = ''/>
+    </Class>
+    <Class name = 'ConceptualElement' isAbstract = 'true' supertypes = 'Core::KDMGroup'>
+      <Reference name = 'conceptualGroup' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Conceptual::ConceptualGroup' opposite = 'Conceptual::ConceptualGroup::conceptualElement'/>
+    </Class>
+    <Class name = 'TermUnit' isAbstract = 'false' supertypes = 'Conceptual::ConceptualGroup'/>
+    <Class name = 'FactUnit' isAbstract = 'false' supertypes = 'Conceptual::ConceptualGroup'/>
+    <Class name = 'ConceptualContainer' isAbstract = 'false' supertypes = 'Conceptual::ConceptualElement, Core::KDMContainer'>
+      <Reference name = 'conceptualElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Conceptual::ConceptualElement' opposite = ''/>
+    </Class>
+    <Class name = 'ConceptualGroup' isAbstract = 'false' supertypes = 'Conceptual::ConceptualElement'>
+      <Reference name = 'definition' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Data::ProgramElement' opposite = ''/>
+      <Reference name = 'conceptualElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Conceptual::ConceptualElement' opposite = 'Conceptual::ConceptualElement::conceptualGroup'/>
+    </Class>
+  </Package>
+  <Package name = 'Behavior'>
+    <Class name = 'BehaviorGroup' isAbstract = 'false' supertypes = 'Core::KDMGroup, Behavior::BehaviorElement'>
+      <Reference name = 'behaviorElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Behavior::BehaviorElement' opposite = 'Behavior::BehaviorElement::behaviorGroup'/>
+      <Reference name = 'actionElement' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'Action::ActionElement' opposite = ''/>
+    </Class>
+    <Class name = 'BehaviorUnit' isAbstract = 'false' supertypes = 'Behavior::BehaviorGroup'/>
+    <Class name = 'ScenarioUnit' isAbstract = 'false' supertypes = 'Behavior::BehaviorGroup'/>
+    <Class name = 'RuleUnit' isAbstract = 'false' supertypes = 'Behavior::BehaviorGroup'/>
+    <Class name = 'BehaviorModel' isAbstract = 'false' supertypes = 'kdm::KDMModel'>
+      <Reference name = 'behaviorElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Behavior::BehaviorElement' opposite = ''/>
+    </Class>
+    <Class name = 'BehaviorElement' isAbstract = 'true' supertypes = 'Core::KDMEntity'>
+      <Reference name = 'behaviorGroup' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Behavior::BehaviorGroup' opposite = 'Behavior::BehaviorGroup::behaviorElement'/>
+    </Class>
+    <Class name = 'BehaviorContainer' isAbstract = 'false' supertypes = 'Behavior::BehaviorElement, Core::KDMContainer'>
+      <Reference name = 'behaviorElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Behavior::BehaviorElement' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'Data'>
+    <Class name = 'DataModel' isAbstract = 'false' supertypes = 'kdm::KDMModel'>
+      <Reference name = 'relation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Data::DataRelation' opposite = ''/>
+      <Reference name = 'dataElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Data::DataElement' opposite = ''/>
+    </Class>
+    <Class name = 'DataContainer' isAbstract = 'true' supertypes = 'Core::KDMContainer, Data::DataElement'/>
+    <Class name = 'DataElement' isAbstract = 'true' supertypes = 'Code::StorableElement, Data::ProgramElement'>
+      <Reference name = 'dataGroup' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Data::DataGroup' opposite = 'Data::DataGroup::dataElement'/>
+    </Class>
+    <Class name = 'DataGroup' isAbstract = 'false' supertypes = 'Data::DataElement, Core::KDMGroup'>
+      <Reference name = 'dataElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Data::DataElement' opposite = 'Data::DataElement::dataGroup'/>
+    </Class>
+    <Class name = 'UniqueKey' isAbstract = 'false' supertypes = 'Data::DataGroup'>
+      <Reference name = 'inKey' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Data::KeyRelation' opposite = 'Data::KeyRelation::to'/>
+    </Class>
+    <Class name = 'Index' isAbstract = 'false' supertypes = 'Data::DataGroup'/>
+    <Class name = 'KeyRelation' isAbstract = 'false' supertypes = 'Data::DataRelation'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Data::ReferenceKey' opposite = 'Data::ReferenceKey::outKey'/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Data::UniqueKey' opposite = 'Data::UniqueKey::inKey'/>
+    </Class>
+    <Class name = 'ReferenceKey' isAbstract = 'false' supertypes = 'Data::DataGroup'>
+      <Reference name = 'outKey' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Data::KeyRelation' opposite = 'Data::KeyRelation::from'/>
+    </Class>
+    <Class name = 'DataRelation' isAbstract = 'true' supertypes = 'Core::KDMRelationship'/>
+    <Class name = 'Catalog' isAbstract = 'false' supertypes = 'Data::DataContainer'>
+      <Reference name = 'schema' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Data::DBSchema' opposite = ''/>
+    </Class>
+    <Class name = 'DBSchema' isAbstract = 'false' supertypes = 'Data::DataContainer'>
+      <Reference name = 'trigger' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Data::DBTrigger' opposite = ''/>
+      <Reference name = 'index' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Data::Index' opposite = ''/>
+      <Reference name = 'procedure' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Data::StoredProcedure' opposite = ''/>
+      <Reference name = 'columnSet' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Data::ColumnSet' opposite = ''/>
+    </Class>
+    <Class name = 'Table' isAbstract = 'false' supertypes = 'Data::ColumnSet'/>
+    <Class name = 'View' isAbstract = 'false' supertypes = 'Data::ColumnSet'/>
+    <Class name = 'Query' isAbstract = 'false' supertypes = 'Action::ActionElement'/>
+    <Class name = 'RecordFile' isAbstract = 'false' supertypes = 'Data::DataContainer'>
+      <Reference name = 'record' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Code::CompositeTypeElement' opposite = ''/>
+      <Reference name = 'index' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Data::Index' opposite = ''/>
+    </Class>
+    <Class name = 'ColumnSet' isAbstract = 'false' supertypes = 'Data::DataContainer'>
+      <Reference name = 'column' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Code::PredefinedTypeElement' opposite = ''/>
+    </Class>
+    <Class name = 'DBTrigger' isAbstract = 'false' supertypes = 'Event::EventElement'/>
+    <Class name = 'ProgramElement' isAbstract = 'true' supertypes = 'Core::KDMEntity'/>
+    <Class name = 'StoredProcedure' isAbstract = 'false' supertypes = 'Code::CallableElement'/>
+    <Class name = 'XMLSchema' isAbstract = 'false' supertypes = 'Data::DataContainer'>
+      <Reference name = 'xmlElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Data::XMLElement' opposite = ''/>
+    </Class>
+    <Class name = 'XMLElement' isAbstract = 'true' supertypes = 'Data::DataContainer'/>
+    <Class name = 'XMLComplexType' isAbstract = 'true' supertypes = 'Data::XMLElement'>
+      <Reference name = 'attributes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Code::SimpleTypeElement' opposite = ''/>
+      <Reference name = 'element' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Data::XMLElement' opposite = ''/>
+    </Class>
+    <Class name = 'XMLAll' isAbstract = 'false' supertypes = 'Data::XMLComplexType'/>
+    <Class name = 'XMLSeq' isAbstract = 'false' supertypes = 'Data::XMLComplexType'/>
+    <Class name = 'XMLChoice' isAbstract = 'false' supertypes = 'Data::XMLComplexType'/>
+    <Class name = 'XMLOccurs' isAbstract = 'false' supertypes = 'Data::XMLComplexType'/>
+    <Class name = 'XMLGroup' isAbstract = 'false' supertypes = 'Data::XMLComplexType'/>
+    <Class name = 'XMLAny' isAbstract = 'false' supertypes = 'Data::XMLElement'/>
+    <Class name = 'XMLRestriction' isAbstract = 'false' supertypes = 'Data::XMLElement'>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Code::SimpleTypeElement' opposite = ''/>
+    </Class>
+    <Class name = 'XMLSimpleType' isAbstract = 'false' supertypes = 'Data::XMLElement'>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Code::SimpleTypeElement' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'Event'>
+    <Class name = 'EventModel' isAbstract = 'false' supertypes = 'kdm::KDMModel'>
+      <Reference name = 'relation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Event::EventRelationship' opposite = ''/>
+      <Reference name = 'eventElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Event::EventElement' opposite = ''/>
+    </Class>
+    <Class name = 'EventElement' isAbstract = 'true' supertypes = 'Core::KDMEntity'>
+      <Reference name = 'eventGroup' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Event::EventGroup' opposite = 'Event::EventGroup::eventElement'/>
+      <Reference name = 'outHasSignature' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Event::HasSignature' opposite = 'Event::HasSignature::from'/>
+    </Class>
+    <Class name = 'Trigger' isAbstract = 'false' supertypes = 'Event::EventElement'/>
+    <Class name = 'Triggers' isAbstract = 'false' supertypes = 'Event::EventRelationship'/>
+    <Class name = 'EventRelationship' isAbstract = 'true' supertypes = 'Core::KDMRelationship'/>
+    <Class name = 'Message' isAbstract = 'false' supertypes = 'Event::EventElement'/>
+    <Class name = 'EventGroup' isAbstract = 'false' supertypes = 'Event::EventElement, Core::KDMGroup'>
+      <Reference name = 'eventElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Event::EventElement' opposite = 'Event::EventElement::eventGroup'/>
+    </Class>
+    <Class name = 'EventContainer' isAbstract = 'false' supertypes = 'Event::EventElement, Core::KDMContainer'>
+      <Reference name = 'eventElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Event::EventElement' opposite = ''/>
+    </Class>
+    <Class name = 'HasSignature' isAbstract = 'false' supertypes = 'Code::TypeRelationship'>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Event::EventElement' opposite = 'Event::EventElement::outHasSignature'/>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Code::Signature' opposite = ''/>
+    </Class>
+    <Class name = 'UIEvent' isAbstract = 'false' supertypes = 'Event::EventElement'/>
+  </Package>
+</Metamodel>

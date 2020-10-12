@@ -1,0 +1,77 @@
+-- @name		AWKPrograms
+-- @version		1.0
+-- @domains		programming language
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/09
+-- @description	This metamodel describes programs in AWK which is a Unix utility designed for processing text based data, either in files or data streams. The name AWK is derived from the surnames of its authors - Alfred V. Aho, Peter J. Weinberger, and Brian W. Kernighan.
+-- @see			The GNU Awk Webpage, http://www.gnu.org/software/gawk/gawk.html
+
+package AWKPrograms {
+
+	-- @begin AWK Program Structure
+
+	class AWKProgram {
+		attribute name : String;
+		reference input : File;
+		reference output : File;
+		reference script : Script;
+	}
+	
+	class File {
+		attribute name : String;
+		reference records[*] ordered container : Record oppositeOf r_file;
+	}
+	
+	class Record {
+		reference r_file : File oppositeOf records;
+		reference fields[*] ordered container : Field oppositeOf f_record;
+	}
+	
+	class Field {
+		attribute value : String;
+		reference f_record : Record oppositeOf fields;
+	}
+	
+	class Script {
+		attribute name : String;
+		reference rules[*] ordered container : Rule oppositeOf r_script;	
+	}
+	
+	class Rule {
+		reference r_script : Script oppositeOf rules;
+		reference pattern : Pattern;
+		reference action : Action;
+	}
+	
+	class Pattern {
+		attribute regularExpression : String;
+	}
+	
+	class Action {
+		reference instructions[*] ordered container : Instruction oppositeOf i_action;
+	} 
+	
+	class Instruction {
+		attribute value : String;
+		reference i_action : Action oppositeOf instructions;
+	}
+	
+	-- @comment "BEGIN" special pattern
+	class InitialRule extends Rule {}
+	
+	-- @comment "END" special pattern
+	class FinalRule extends Rule {}
+	
+	-- @end AWK Program Structure
+
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

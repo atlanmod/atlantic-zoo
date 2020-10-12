@@ -1,0 +1,369 @@
+-- @name		DatadiagramMLSimplified
+-- @version		1.2
+-- @domains		Microsoft Visio, XML
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com)
+-- @date		2005/07/01
+-- @description	This metamodel describes a simplified subset of DatadiagramML, an XML dialect developed by Microsoft to represent Visio documents data elements and attributes and their containment relationships. A DatadiagramML file, like a Visio drawing (VSD) file, contains document-level containers and hierarchical containers of other containers. Most elements that define the data in the DatadiagramML file are named with the same or similar names to the cells in the Shape or the properties exposed in the Visio object model. This metamodel only manages geometrical forms and raw textual data (without text formatting). 
+-- @see			visio.xsd; Microsoft Office 2003 XML Reference Schemas; http://www.microsoft.com/downloads/details.aspx?familyid=FE118952-3547-420A-A412-00A2662442D9&displaylang=en
+
+package DatadiagramMLSimplified {
+	
+	-- @begin MS Visio - Special types
+	
+	-- @comment Defines a special type of data for some Geom's elements or other types of element... 
+	class CellType {
+		-- @comment Represents a unit of measure. The default is BOOL.
+		attribute unit[0-1] : String;
+		-- @comment Represents the element's formula. This attribute can contain one of the following strings: "someFormula" if the formula exists locally, "No Formula" if the formula is locally deleted or blocked, or "Inh" if the formula is inherited. If the attribute is not present, the element's formula is a simple constant, for example, <element>5</element>. 	
+		attribute formula[0-1] : String;
+		-- @comment Indicates that the formula evaluates to an error. The value of Err is the current value (an error message string); the value of the element is the last valid value.
+		attribute err[0-1] : String;
+		-- @comment Indicates the value of the element.
+		attribute value[0-1] : String;
+	}
+	
+	-- @end MS Visio - Special types
+	
+	
+	-- @begin MS Visio - Basic Document Definition
+	
+	-- @comment This is the root element of a Microsoft Office Visio document.
+	class VisioDocument {
+		-- @comment Represents the masters of this Visio document.
+		reference docMasters[0-1] container : MastersCollection oppositeOf ms_visioDocument;
+		-- @comment Represents the pages of this Visio document.
+		reference docPages[0-1] container : PagesCollection oppositeOf ps_visioDocument;
+	}
+	
+	-- @comment Defines the page sheet for a Page or Master element.
+	class PageSheet extends Shape, UniqueIdElt, MasterElt, PageElt {}
+	
+	-- @comment Defines the abstract concept of an element with a name and an universal name.
+	abstract class NamedElt {
+		-- @comment The name of the element.
+		attribute name[0-1] : String;
+		-- @comment The universal name of the element.
+		attribute nameU[0-1] : String; 
+	}
+	
+	-- @comment Defines the abstract concept of an element with an unique identifier.
+	abstract class IdentifiedElt {
+		-- @comment The unique ID of the element within its parent element.
+		attribute ID : Integer;
+	}
+	
+	-- @comment Defines the abstract concept of an element with a GUID identifier.
+	abstract class UniqueIdElt {
+		-- @comment A GUID (globally unique identifier) identifying the sheet.
+		attribute UniqueID[0-1] : String;
+	}
+	
+	
+	-- @begin Detail of "Shape" element
+	
+	-- @comment Defines a shape in a Master, Page, or group shape element.
+	class Shape {
+		reference ss_shapes : ShapesCollection oppositeOf shapes;
+	
+		-- @comment The ID of the StyleSheet element from which this style inherits line formatting.
+		attribute lineStyle[0-1] : Integer;
+		-- @comment The ID of the StyleSheet element from which this style inherits fill formatting.
+		attribute fillStyle[0-1] : Integer;
+		-- @comment The ID of the StyleSheet element from which this style inherits text formatting.
+		attribute textStyle[0-1] : Integer;
+
+		-- @comment Represents the elements that can be contained in a shape sheet.
+		reference shapeElts[*] ordered container : ShapeElt oppositeOf sse_shapeSheet;
+	}
+	
+	-- @comment Defines the abstract concept of shape's element
+	abstract class ShapeElt {
+		reference sse_shapeSheet : Shape oppositeOf shapeElts;
+	}
+	
+	-- @comment Defines the abstract concept of indexed element.
+	abstract class IXElt {
+		-- @comment The zero-based index of the element within its parent element.
+		attribute iX[0-1] : Integer;
+	}
+	
+	-- @comment Defines the abstract concept of locally-deletable element.
+	abstract class DelElt {
+		-- @comment A flag indicating whether the element has been deleted locally. A value of 1 indicates that the element was deleted locally.
+		attribute del[0-1] : Boolean;
+	}
+	
+	
+		-- @begin geometrical elements
+	
+	-- @comment Defines the coordinates of the vertices for the lines and arcs that make up the shape. If the shape has more than one path, there is a "Geom" element for each path. Each shape can have up to 230 paths (and therefore, 230 Geom elements). Any paths over 230 are ignored. The Geom element is relevant only when contained in a Shape element. It is ignored when contained in a DocumentSheet, PageSheet, or StyleSheet element.
+	class Geom extends ShapeElt, IXElt, DelElt {
+		-- @comment Specifies whether a path can be filled. The value 0 means that the shape's fill applies to the path, even if it isn't closed. The value 1 means that the path is not filled, even if other paths in the shape are filled.
+		reference noFill[0-1] container : CellType;
+		-- @comment Specifies whether a line is drawn around the boundary of the path. The value 0 means that a line is drawn around the boundary of a path. The value 1 means that a line is not drawn around the boundary of the path.
+		reference noLine[0-1] container : CellType;
+		-- @comment Specifies whether a path is displayed on the drawing page. The value 0 means that the stroke and fill of the path are shown. The value 1 means that the stroke and fill of the path represented by this section are hidden.
+		reference noShow[0-1] container : CellType;
+		-- @comment Specifies whether other shapes snap to a path. The value 0 means that other shapes are allowed to snap to this path. The value 1 means that other shapes are not allowed to snap to this path.
+		reference noSnap[0-1] container : CellType;
+		--@comment Represents the lines, arcs, ellipses... that make up the shape.
+		reference linesTo[*] ordered container : LineTo oppositeOf lt_geom;
+		reference movesTo[*] ordered container : MoveTo oppositeOf mt_geom;
+		reference arcsTo[*] ordered container : ArcTo oppositeOf ac_geom;
+		reference splineKnots[*] ordered container : SplineKnot oppositeOf sk_geom;
+		reference polylinesTo[*] ordered container : PolylineTo oppositeOf pt_geom;
+		reference infiniteLines[*] ordered container : InfiniteLine oppositeOf il_geom;
+		reference ellipses[*] ordered container : Ellipse oppositeOf e_geom;
+		reference ellipticalArcsTo[*] ordered container : EllipticalArcTo oppositeOf eat_geom;
+		reference splineStarts[*] ordered container : SplineStart oppositeOf ss_geom;
+		reference nurbsTo[*] ordered container : NURBSTo oppositeOf nt_geom;			
+	}
+	
+	-- @comment Defines the abstract concept of element with x- and y-coordinates.
+	abstract class XYElt extends IXElt, DelElt {
+		reference x[0-1] container : CellType;
+		reference y[0-1] container : CellType;
+	}
+	
+	-- @comment Contains x- and y-coordinates of the ending vertex of a straight line segment.
+	class LineTo extends XYElt {
+		reference lt_geom : Geom oppositeOf linesTo;
+	}
+	
+	-- @comment Contains the x- and y-coordinates of the first vertex of a shape, or contains the x- and y-coordinates of the first vertex after a break in a path.
+	class MoveTo extends XYElt {
+		reference mt_geom : Geom oppositeOf movesTo;
+	}
+	
+	-- @comment Defines the abstract concept of element with x- and y-coordinates and a supplemental information in "a".
+	abstract class XYAElt extends XYElt {
+		reference a[0-1] container : CellType;
+	}
+	
+	-- @comment Contains the x- and y-coordinates and bow of a circular arc represented respectively by the X, Y, and A elements.
+	class ArcTo extends XYAElt {
+		reference ac_geom : Geom oppositeOf arcsTo;
+	}
+	
+	-- @comment Contains x- and y-coordinates for a spline's control point and a spline's knot, represented by the X, Y, and A elements, respectively.
+	class SplineKnot extends XYAElt {
+		reference sk_geom : Geom oppositeOf splineKnots;
+	}
+	
+	-- @comment Contains x- and y-coordinates of the last point of a polyline and a polyline formula. The coordinates are specified in the X and Y elements, and the formula is specified in the A element.
+	class PolylineTo extends XYAElt {
+		reference pt_geom : Geom oppositeOf polylinesTo;
+	}
+	
+	-- @comment Defines the abstract concept of element with x- and y-coordinates and supplemental information in "a" and "b".
+	abstract class XYABElt extends XYAElt {
+		reference b[0-1] container : CellType;
+	}
+	
+	-- @comment Contains elements specifying the x- and y-coordinates of two points on an infinite line. The X and Y elements specify the x- and y-coordinates of the first point, and the A and B elements specify the x- and y-coordinates of the second point.
+	class InfiniteLine extends XYABElt {
+		reference il_geom : Geom oppositeOf infiniteLines;
+	}
+	
+	-- @comment Defines the abstract concept of element with x- and y-coordinates and supplemental information in "a", "b", "c" and "d".
+	abstract class XYABCDElt extends XYABElt {
+		reference c[0-1] container : CellType;
+		reference d[0-1] container : CellType;
+	}
+	
+	-- @comment Contains elements specifying the x- and y-coordinates of the ellipse's center point and two points on the ellipse. The X and Y elements specify the x- and y-coordinates of the center point. The A and B elements specify the x- and y-coordinates of one point on the ellipse; the C and D elements specify the x- and y-coordinates of the other point.
+	class Ellipse extends XYABCDElt {
+		reference e_geom : Geom oppositeOf ellipses;
+	}
+	
+	-- @comment Contains elements that specify information about an elliptical arc. The X and Y elements specify the x- and y-coordinates of the ending vertex on the arc. The A and B elements specify the x- and y-coordinates of the arc's control point. The C element specifies the angle of the arc's major axis relative to the x-axis of its parent. The D element specifies the ratio of an arc's major axis to its minor axis.
+	class EllipticalArcTo extends XYABCDElt {
+		reference eat_geom : Geom oppositeOf ellipticalArcsTo;
+	}
+	
+	-- @comment Contains x- and y-coordinates for a spline's second control point, its second knot, its first knot, the last knot, and the degree of the spline. This information is contained in the X, Y, A, B, C, and D elements, respectively.
+	class SplineStart extends XYABCDElt {
+		reference ss_geom : Geom oppositeOf splineStarts;
+	}
+	
+	-- @comment Defines the abstract concept of element with x- and y-coordinates and supplemental information in "a", "b", "c", "d" and "e".
+	abstract class XYABCDEElt extends XYABCDElt {
+		reference e[0-1] container : CellType;
+	}
+	
+	-- @comment Contains the x- and y-coordinates, position of the second to last knot, position of the last weight, position of the first knot, position of the first weight, and the formula for a nonuniform rational B-spline (NURBS). This information is specified in the X, Y, A, B, C, D, and E elements, respectively.
+	class NURBSTo extends XYABCDEElt {
+		reference nt_geom : Geom oppositeOf nurbsTo;	
+	}
+	
+		-- @end geometrical elements
+	
+	
+		-- @begin textual elements
+		
+	-- @comment Defines the text of a shape. The Text element is relevant only when contained in a Shape element. It is ignored when contained in a DocumentSheet, PageSheet, or StyleSheet element.
+	class Text extends ShapeElt {
+		reference textElts[*] ordered container : TextElt oppositeOf te_text; 
+	}
+	
+	-- @comment Defines the abstract concept of text's element.
+	abstract class TextElt {
+		reference te_text : Text oppositeOf textElts;
+	}
+		
+	-- @comment Defines the content of the "Text" element.
+	class StringElt extends TextElt {
+		attribute value : String;
+	}
+		
+	-- @end Detail of "Shape" element
+	
+		
+	-- @comment Defines the masters' container for a Visio document. 
+	class MastersCollection {
+		reference ms_visioDocument : VisioDocument oppositeOf docMasters;
+		
+		-- @comment Represents the "master" containers in this "masters" container.
+		reference masters[*] ordered container : Master oppositeOf m_masters;
+		-- @comment Represents the "master" short cuts used in this "masters" container.
+		reference masterShortCuts[*] ordered container : MasterShortCut oppositeOf m_masterShortCuts;
+	}
+	
+	-- @comment Defines a master shortcut for a Visio document. 
+	class MasterShortCut extends IdentifiedElt, NamedElt {
+		reference m_masterShortCuts : MastersCollection oppositeOf masterShortCuts;
+		
+		-- @comment The size of the element's icon.
+		attribute iconSize[0-1] : Integer; 
+		-- @comment Determines whether a master behaves as a custom pattern.
+		attribute patternFlags [0-1] : Integer;
+		-- @comment The status bar and tool tip prompt for the element.
+		attribute prompt[0-1] : String;
+		-- @comment A URL to a MasterShortcut element. If this attribute is present, this MasterShortcut element is a shortcut.
+		attribute shortcutURL[0-1] : String; 
+		-- @comment A help string for the element.
+		attribute shortcutHelp [0-1] : String;
+		-- @comment  Specifies whether the element's text in the stencil window is aligned left, right, or center.
+		attribute alignName[0-1] : Integer;
+
+		-- @comment Represents the shortcut's icons 
+		reference icons[*] ordered container : Icon oppositeOf i_masterShortCut;
+	}
+	
+	-- @comment Defines an icon for a master or a master's shortcut.
+	class Icon extends MasterElt {
+		reference i_masterShortCut : MasterShortCut oppositeOf icons;
+		
+		-- @comment Specifies a MIME (Multipurpose Internet Mail Extensions) encoded binary icon (in .ico format) for a Master or MasterShortcut element in the document.
+		attribute value : String;
+	}
+	
+	-- @comment Defines a "master" container for a Visio document.  
+	class Master extends IdentifiedElt, UniqueIdElt, NamedElt {
+		reference m_masters : MastersCollection oppositeOf masters;
+		
+		-- @comment A GUID (globally unique identifier) that identifies the master across documents.
+		attribute baseID[0-1] : String; 
+		-- @comment The MatchByName attribute determines how Microsoft Office Visio decides if a document master is already present when an instance of a master is dropped on the drawing page.
+		attribute matchByName[0-1] : Boolean;
+		-- @comment The size of the element's icon.
+		attribute iconSize[0-1] : Integer; 
+		-- @comment Determines whether a master behaves as a custom pattern.
+		attribute patternFlags [0-1] : Integer;
+		-- @comment The status bar and tool tip prompt for the element.
+		attribute prompt[0-1] : String;
+		-- @comment Specifies whether the master is hidden in the user interface.
+		attribute hidden[0-1] : Boolean; 
+		-- @comment Specifies whether the icon is automatically generated from the master itself.
+		attribute iconUpdate [0-1] : Boolean; 
+		-- @comment  Specifies whether the element's text in the stencil window is aligned left, right, or center.
+		attribute alignName[0-1] : Integer;
+		
+		-- @comment Represents the elements contained in this "master" container.
+		reference masterElts[*] ordered container : MasterElt oppositeOf me_master;
+	}
+	
+	-- @comment Defines a collection of shapes in a Visio document.
+	class ShapesCollection extends MasterElt, PageElt {
+		-- @comment Represents the shapes of this "shapes" container.
+		reference shapes[*] ordered container : Shape oppositeOf ss_shapes;
+	}
+	
+	-- @comment Defines the connections in a Visio document.
+	class ConnectsCollection extends MasterElt, PageElt {
+		-- @comment Represents the connections of this "connects" container.
+		reference connections[*] ordered container : Connect oppositeOf c_connects;
+	}
+	
+	-- @comment Defines a connection between two shapes in a drawing.
+	class Connect {
+		reference c_connects : ConnectsCollection oppositeOf connections;
+		
+		-- @comment The ID of the shape from which a connection or connections originate.
+		attribute fromSheet : Integer;
+		-- @comment The ID of the shape to which one or more connections are made.
+		attribute toSheet : Integer;
+		-- @comment The cell from which a connection originates.
+		attribute fromCell [0-1] : String;
+		-- @comment  The cell to which a connection is made. 
+		attribute toCell[0-1] : String;
+		-- @comment The part of a shape from which a connection originates. 
+		attribute fromPart[0-1] : Integer;
+		-- @comment The part of a shape to which a connection is made.
+		attribute toPart[0-1] : Integer;
+	}
+	
+	-- @comment Defines the abstract concept of master's element.
+	abstract class MasterElt {
+		reference me_master : Master oppositeOf masterElts;
+	}
+	
+	-- @comment Defines the pages' container for a Visio document.
+	class PagesCollection {
+		reference ps_visioDocument : VisioDocument oppositeOf docPages;
+		
+		-- @comment Represents the pages contained in this "pages" container.
+		reference pages[*] ordered container : Page oppositeOf p_pages; 
+	}
+	
+	-- @comment Defines a "page" container for a Visio document.  
+	class Page extends IdentifiedElt, NamedElt {
+		reference p_pages : PagesCollection oppositeOf pages; 
+		
+		-- @comment A flag indicating if the page is a background page.
+		attribute background [0-1] : Boolean;
+		-- @comment The ID of this page's background page.
+		attribute backPage [0-1] : Integer;
+		-- @comment The default magnification factor to use when a new view (window) of the page is opened. For example, 1 = 100%; 1.5 = 150%, and so on.
+		attribute viewScale [0-1] : Double;
+		-- @comment ViewCenterX and ViewCenterY specify a center point on a page that a new view (window) assumes when it is opened initially.
+		attribute viewCenterX[0-1] : Double;
+		-- @comment ViewCenterX and ViewCenterY specify a center point on a page that a new view (window) assumes when it is opened initially.
+		attribute ViewCenterY [0-1] : Double;
+		-- @comment The ID of the reviewer associated with the markup overlay.
+		attribute reviewerID[0-1] : Integer;
+		-- @comment The ID of the original drawing page that was marked up on separate markup overlays by reviewers of the drawing.
+		attribute associatedPage[0-1] : Integer;
+	
+		-- @comment Represents the elements contained in this "page" container.
+		reference pageElts[*] ordered container : PageElt oppositeOf pe_page;
+	}
+	
+	-- @comment Defines the abstract concept of page's element.
+	abstract class PageElt {
+		reference pe_page : Page oppositeOf pageElts;
+	} 
+	
+	-- @end MS Visio - Basic Document Definition
+
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

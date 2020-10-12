@@ -1,0 +1,92 @@
+-- @name		CWMCore 
+-- @version		1.0
+-- @domains		Data Warehousing, MOF
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/10
+-- @description	This metamodel describes a subset of the core of the Common WareHouse Metamodel (CWM) which is a specification that describes metadata interchange among data warehousing, business intelligence, knowledge management and portal technologies.
+-- @see			The Data Warehousing, CWM and MOF Resource Page, http://www.omg.org/technology/cwm/
+	
+
+package CWMCore {
+
+	-- @begin Special types
+
+	enumeration VisibilityKind {
+		literal vk_public_vis;
+		literal vk_private_vis;
+		literal vk_protected_vis;
+	}
+	
+	class BooleanExpression {
+		attribute expresssion : String;
+	}
+	
+	-- @end CWM Special types
+	
+	
+	-- @begin CWM Core structure
+
+	class ModelElement {
+		attribute name : String;
+		attribute visibility : VisibilityKind;
+		reference contraints[*] : Constraint oppositeOf constrainedElements;
+		reference clientDependencies[*] : Dependency oppositeOf clients;
+		reference supplierDependencies[*] : Dependency oppositeOf suppliers;
+		reference namespace[0-1] : NameSpace oppositeOf ownedElements;
+		reference importers[*] : Package oppositeOf importedElements;
+	}
+	
+	class Dependency extends ModelElement {
+		attribute kind : String;
+		reference clients[1-*] : ModelElement oppositeOf clientDependencies;
+		reference suppliers[1-*] : ModelElement oppositeOf supplierDependencies;
+	}
+	
+	class Constraint extends ModelElement {
+		reference body container : BooleanExpression;
+		reference constrainedElements[*] : ModelElement oppositeOf contraints;
+	}
+	
+	class Feature extends ModelElement {
+		reference owner[0-1] : Classifier oppositeOf features;
+	}
+	
+	class StructuralFeature extends Feature {
+		reference type : Classifier;
+	}
+	
+	class Attribute extends StructuralFeature {}
+	
+	class NameSpace extends ModelElement {
+		reference ownedElements[*] container : ModelElement oppositeOf namespace;
+	}
+	
+	class Classifier extends NameSpace {
+		reference features[*] ordered container : Feature oppositeOf owner;
+	}
+	
+	class Package extends NameSpace {
+		reference importedElements[*] : ModelElement oppositeOf importers;
+	}
+	
+	class Class extends Classifier {}
+	
+	class Datatype extends Classifier {}
+	 
+	class Subsystem extends Classifier, Package {}
+	
+	class Model extends Package {}
+	 
+	-- @end CWM Core structure
+
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

@@ -1,0 +1,89 @@
+-- ******************************************************************************
+-- Copyright (c) 2008 INRIA
+-- All rights reserved. This program and the accompanying materials 
+-- are made available under the terms of the Eclipse Public License v1.0 
+-- which accompanies this distribution, and is available at
+-- http://www.eclipse.org/legal/epl-v10.html
+-- 
+-- Contributors: 
+-- 	INRIA - Initial implementation
+--  @author Jean-Sébastien Sottet(INRIA)
+--  
+-- ******************************************************************************	
+-- @name	Task Metamodel of UsiXML
+-- @version	1.0
+-- @date 2008/11/15
+-- @domains	User Interfaces Description
+-- @authors	Jean-Sébastien Sottet (jean-Sebastien.sottet <at> inria.fr)
+-- @description	This metamodel describes the Usixml task organisation for describing User Interface at an high abstraction level. 
+--				A task organization, describes an interactive application in term of user goals and actions.
+--				Its structure is a hierarchichal decomposition of user interactions. 
+-- @see		http://www.usixml.org/index.php?mod=pages&id=47
+
+package TaskUsiXML {
+
+   class Task {
+  
+  	attribute id : String;
+    attribute name : String;
+    attribute category : String;
+    attribute frequency : Integer;
+    attribute importance : Integer;
+    attribute structurationLevel : Integer;
+    attribute complexityLevel : Integer;
+    attribute criticity : Integer;
+    attribute centrality : Integer;
+    attribute terminationValue : String;
+    attribute taskType : String;
+    attribute taskItem : String;
+    
+    reference decompositionTasks[*] ordered container : Task oppositeOf decomposedTask;
+    reference decomposedTask[0-1] : Task oppositeOf decompositionTasks;
+    reference leftOperator[0-1] : BinaryOperator oppositeOf rightTask;
+    reference rightOperator[0-1] : BinaryOperator oppositeOf leftTask;
+    reference decoration[0-1] : UnaryOperator oppositeOf decoratedTask;
+  }
+  
+  abstract class Operator {
+  attribute id : String;
+  attribute name : String;
+  }
+  
+  class BinaryOperator extends Operator {
+    attribute type : BinaryType; 
+  	reference leftTask : Task oppositeOf rightOperator;
+	reference rightTask : Task oppositeOf leftOperator;
+	}
+
+ class UnaryOperator extends Operator {
+  	  attribute UnaryType : UnaryType;
+	  reference decoratedTask : Task oppositeOf decoration;
+	}
+	
+ class FiniteInteration extends UnaryOperator {
+  	attribute interation : Integer;
+  }
+  
+   enumeration BinaryType {
+  	literal Enabling;
+  	literal Disabling;
+  	literal SuspendResume;
+  	literal OrderIndependence;
+  	literal IndependentConcurrency;
+  	literal ConcurencyWithInformationPassing;
+  	literal UnderterministicChoice;
+  	literal EnablingWithInformationPassing; 
+  }
+  
+   enumeration UnaryType {
+  	literal Optional;
+  	literal Iteration;
+  	literal finitIteration;
+  }
+  
+}
+package PrimitiveTypes {
+datatype Boolean;
+datatype Integer;
+datatype String;
+}

@@ -1,0 +1,59 @@
+-- @name			Hierarchical State Machine
+-- @version			1.0
+-- @authors			Youssef Srour (Srour.youssef@gmail.com)
+-- @date			2006/07/14
+-- @description		This metamodel describes hierarchical signal flow concepts.
+-- @see 			http://www.isis.vanderbilt.edu/publications/archive/Sprinkle_JM_11_4_2002_Domain_Evo.doc
+
+package HierarchicalSignalFlow{
+	
+	class Port {
+		reference asso_Port_Signalsrc : Asso_Port_Signal oppositeOf  src;
+		reference asso_Port_Signaldst : Asso_Port_Signal oppositeOf  dst;
+	}
+	
+	class Signal {
+		reference base : Base oppositeOf signal;
+		reference asso_Port_Signal : Asso_Port_Signal oppositeOf  signal;
+	}
+	
+	class Base {
+		reference compound : Compound oppositeOf base;
+		reference inputPort[*] container : InputPort oppositeOf base;
+		reference outputPort[*] container : OutputPort oppositeOf base;
+		reference signal[*] container : Signal oppositeOf base;
+	}
+	
+	class Compound extends Base {
+		reference localPort [*] container : LocalPort oppositeOf compound;
+		reference base [*] container : Base oppositeOf compound;
+	}
+	
+	class InputPort extends Port{
+		reference base : Base oppositeOf inputPort;
+	}
+	
+	class OutputPort extends Port {
+		reference base : Base oppositeOf outputPort;
+		
+		
+	}
+	
+	class LocalPort extends Port {
+		reference compound : Compound oppositeOf localPort;
+	}
+	
+	class Primitive extends Base{
+	}
+	
+	class Asso_Port_Signal{
+		reference src[1-*] : Port oppositeOf  asso_Port_Signalsrc;
+		reference dst[1-*] : Port oppositeOf  asso_Port_Signaldst;
+		reference signal : Signal oppositeOf  asso_Port_Signal;
+	} 
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+}

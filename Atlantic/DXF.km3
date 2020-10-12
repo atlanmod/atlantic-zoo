@@ -1,0 +1,33 @@
+-- @name		DXF 
+-- @version		1.1
+-- @domains		DataBase
+-- @authors		Peter Rosenthal
+-- @date		2005/02/01
+-- @description	This metamodel describes geometrical data in DXF (Drawing eXchange Format) which is the native vector file format of Autodesk s AutoCAD CAD application. This simplified DXF metamodel has an aggregation hierarchy. It consists of one DXF element that contains a number of Meshes (a 3D object based on a set of contiguous lines) which in turn consist of a number of Points (two consecutive points represent a line). Meshes and Points have names. Points have three coordinates, namely x, y and z.
+-- @see			DXF - Autodesk Drawing eXchange Format, http://www.faqs.org/faqs/graphics/fileformats-faq/part3/section-45.html
+
+package DXF {
+	class DXF {
+		reference meshes[*] ordered container : Mesh;	
+	}
+
+	class Mesh {
+		attribute name : String;
+		reference points[*] ordered container : Point oppositeOf mesh;	
+	}
+
+	class Point {
+		attribute name : String;
+		reference mesh : Mesh oppositeOf points;
+		attribute x : Double;
+		attribute y : Double;
+		attribute z : Double;	
+	}
+
+}
+
+package PrimitiveTypes {
+	datatype Double;
+	datatype Integer;
+	datatype String;
+}

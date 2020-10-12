@@ -1,0 +1,73 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'WSDL'>
+    <Class name = 'Port' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'service' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WSDL::Service' opposite = 'WSDL::Service::ports'/>
+      <Reference name = 'binding' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WSDL::Binding' opposite = 'WSDL::Binding::ports'/>
+    </Class>
+    <Class name = 'Service' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'ports' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'WSDL::Port' opposite = 'WSDL::Port::service'/>
+    </Class>
+    <Class name = 'Param' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'message' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WSDL::Message' opposite = 'WSDL::Message::params'/>
+    </Class>
+    <Class name = 'Input' isAbstract = 'false' supertypes = 'WSDL::Param'>
+      <Reference name = 'operation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WSDL::Operation' opposite = 'WSDL::Operation::input'/>
+    </Class>
+    <Class name = 'Output' isAbstract = 'false' supertypes = 'WSDL::Param'>
+      <Reference name = 'operation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WSDL::Operation' opposite = 'WSDL::Operation::output'/>
+    </Class>
+    <Class name = 'PortType' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'operations' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'WSDL::Operation' opposite = 'WSDL::Operation::type'/>
+      <Reference name = 'bindings' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'WSDL::Binding' opposite = 'WSDL::Binding::type'/>
+    </Class>
+    <Class name = 'Operation' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'input' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'WSDL::Input' opposite = 'WSDL::Input::operation'/>
+      <Reference name = 'output' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'WSDL::Output' opposite = 'WSDL::Output::operation'/>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WSDL::PortType' opposite = 'WSDL::PortType::operations'/>
+      <Reference name = 'faults' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'WSDL::Fault' opposite = 'WSDL::Fault::operation'/>
+    </Class>
+    <Class name = 'StartWithExtensions' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Binding' isAbstract = 'false' supertypes = 'WSDL::StartWithExtensions'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'ports' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'WSDL::Port' opposite = 'WSDL::Port::binding'/>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WSDL::PortType' opposite = 'WSDL::PortType::bindings'/>
+      <Reference name = 'operations' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'WSDL::BindingOperation' opposite = 'WSDL::BindingOperation::bind'/>
+    </Class>
+    <Class name = 'BindingFault' isAbstract = 'false' supertypes = 'WSDL::StartWithExtensions'>
+      <Reference name = 'operation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'WSDL::BindingOperation' opposite = 'WSDL::BindingOperation::faults'/>
+      <Reference name = 'binding' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WSDL::Fault' opposite = ''/>
+    </Class>
+    <Class name = 'BindingOperation' isAbstract = 'false' supertypes = 'WSDL::StartWithExtensions'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'bind' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WSDL::Binding' opposite = 'WSDL::Binding::operations'/>
+      <Reference name = 'binding' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WSDL::Operation' opposite = ''/>
+      <Reference name = 'input' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WSDL::StartWithExtensions' opposite = ''/>
+      <Reference name = 'output' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WSDL::StartWithExtensions' opposite = ''/>
+      <Reference name = 'faults' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'WSDL::BindingFault' opposite = 'WSDL::BindingFault::operation'/>
+    </Class>
+    <Class name = 'Fault' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'operation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WSDL::Operation' opposite = 'WSDL::Operation::faults'/>
+      <Reference name = 'message' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WSDL::Message' opposite = 'WSDL::Message::faults'/>
+    </Class>
+    <Class name = 'Message' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'params' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'WSDL::Param' opposite = 'WSDL::Param::message'/>
+      <Reference name = 'faults' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'WSDL::Fault' opposite = 'WSDL::Fault::message'/>
+      <Reference name = 'parts' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'WSDL::Part' opposite = 'WSDL::Part::message'/>
+    </Class>
+    <Class name = 'Part' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'message' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WSDL::Message' opposite = 'WSDL::Message::parts'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

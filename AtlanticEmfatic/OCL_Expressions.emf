@@ -1,0 +1,79 @@
+package Metamodel;
+
+package OCLExpressions {
+  abstract class OclExpression {
+    !ordered ref QueryExp[*]#argument queryArg;
+    !ordered ref QueryExp[*]#source querySrc;
+    !ordered val Type[1]#oclExpression resultType;
+    !ordered ref VariableDeclaration[+]#oclExpression varDec;
+    !ordered ref VariableInitialisation[*]#initExpression varInit;
+  }
+
+  class SelfExp extends OclExpression {
+  }
+
+  class ResultExp extends OclExpression {
+  }
+
+  class VariableExp extends OclExpression {
+    !unique !ordered attr String[1] var;
+  }
+
+  abstract class OperationExp extends OclExpression {
+  }
+
+  abstract class QueryExp extends OclExpression {
+    !ordered val OclExpression[1]#queryArg argument;
+    !ordered val OclExpression[1]#querySrc source;
+    !ordered val VariableDeclaration#queryExp varDeclaration;
+  }
+
+  abstract class Type {
+    !ordered ref OclExpression[*]#resultType oclExpression;
+    !ordered val VariableDeclaration[*]#varType varDec;
+  }
+
+  class VariableDeclaration {
+    !unique !ordered attr String[1] var;
+    !ordered ref Type[1]#varDec varType;
+    !ordered ref OclExpression[*]#varDec oclExpression;
+    !ordered ref QueryExp[*]#varDeclaration queryExp;
+    !ordered ref VariableInitialisation[*]#varDec varInit;
+  }
+
+  class VariableInitialisation {
+    !ordered val OclExpression[1]#varInit initExpression;
+    !ordered val VariableDeclaration[1]#varInit varDec;
+    !ordered val IterateExp[1]#varInit iterateExp;
+  }
+
+  class ForAllExp {
+  }
+
+  class ExistsExp {
+  }
+
+  class SelectExp {
+  }
+
+  class RejectExp {
+  }
+
+  class CollectExp {
+  }
+
+  class IterateExp {
+    !ordered val VariableInitialisation[1]#iterateExp varInit;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

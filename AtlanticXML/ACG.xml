@@ -1,0 +1,177 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'ACG'>
+    <Class name = 'LocatedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'location' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsBefore' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsAfter' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ACG' isAbstract = 'false' supertypes = 'ACG::LocatedElement'>
+      <Attribute name = 'metamodel' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'startsWith' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ACG::ACGElement' opposite = 'ACG::ACGElement::acg'/>
+    </Class>
+    <Class name = 'ACGElement' isAbstract = 'true' supertypes = 'ACG::LocatedElement'>
+      <Reference name = 'acg' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ACG::ACG' opposite = 'ACG::ACG::elements'/>
+    </Class>
+    <Class name = 'Function' isAbstract = 'false' supertypes = 'ACG::ACGElement'>
+      <Attribute name = 'context' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ACG::Parameter' opposite = ''/>
+      <Reference name = 'body' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'Attribute' isAbstract = 'false' supertypes = 'ACG::ACGElement'>
+      <Attribute name = 'context' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'body' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'Parameter' isAbstract = 'false' supertypes = 'ACG::VariableDecl'/>
+    <Class name = 'Node' isAbstract = 'true' supertypes = 'ACG::ACGElement, ACG::StatementBlock'>
+      <Attribute name = 'element' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'mode' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'guard' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'ASMNode' isAbstract = 'false' supertypes = 'ACG::Node'>
+      <Reference name = 'name' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'CodeNode' isAbstract = 'false' supertypes = 'ACG::Node'/>
+    <Class name = 'SimpleNode' isAbstract = 'false' supertypes = 'ACG::Node'/>
+    <Class name = 'StatementBlock' isAbstract = 'true' supertypes = 'ACG::LocatedElement'>
+      <Reference name = 'statements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ACG::Statement' opposite = ''/>
+    </Class>
+    <Class name = 'Statement' isAbstract = 'true' supertypes = 'ACG::LocatedElement'/>
+    <Class name = 'CompoundStat' isAbstract = 'true' supertypes = 'ACG::Statement, ACG::StatementBlock'/>
+    <Class name = 'ForEachStat' isAbstract = 'false' supertypes = 'ACG::CompoundStat'>
+      <Reference name = 'iterator' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::VariableDecl' opposite = ''/>
+      <Reference name = 'collection' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'OnceStat' isAbstract = 'false' supertypes = 'ACG::CompoundStat'/>
+    <Class name = 'VariableStat' isAbstract = 'false' supertypes = 'ACG::CompoundStat'>
+      <Reference name = 'definition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+      <Reference name = 'name' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'OperationStat' isAbstract = 'false' supertypes = 'ACG::CompoundStat'>
+      <Reference name = 'context' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+      <Reference name = 'name' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'ConditionalStat' isAbstract = 'false' supertypes = 'ACG::CompoundStat'>
+      <Reference name = 'condition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+      <Reference name = 'elseStatements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ACG::Statement' opposite = ''/>
+    </Class>
+    <Class name = 'LetStat' isAbstract = 'false' supertypes = 'ACG::CompoundStat'>
+      <Reference name = 'variable' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::VariableDecl' opposite = ''/>
+      <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'AnalyzeStat' isAbstract = 'false' supertypes = 'ACG::CompoundStat'>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+      <Attribute name = 'mode' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ReportStat' isAbstract = 'false' supertypes = 'ACG::Statement'>
+      <Attribute name = 'severity' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'ACG::Severity'/>
+      <Reference name = 'message' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+    </Class>
+    <Enumeration name = 'Severity'>
+      <EnumLiteral name = 'critic'/>
+      <EnumLiteral name = 'error'/>
+      <EnumLiteral name = 'warning'/>
+    </Enumeration>
+    <Class name = 'FieldStat' isAbstract = 'false' supertypes = 'ACG::Statement'>
+      <Reference name = 'name' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'ParamStat' isAbstract = 'false' supertypes = 'ACG::Statement'>
+      <Reference name = 'name' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'EmitStat' isAbstract = 'true' supertypes = 'ACG::Statement'/>
+    <Class name = 'LabelStat' isAbstract = 'false' supertypes = 'ACG::EmitStat'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'id' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'NewStat' isAbstract = 'false' supertypes = 'ACG::EmitStat'/>
+    <Class name = 'DupStat' isAbstract = 'false' supertypes = 'ACG::EmitStat'/>
+    <Class name = 'DupX1Stat' isAbstract = 'false' supertypes = 'ACG::EmitStat'/>
+    <Class name = 'PopStat' isAbstract = 'false' supertypes = 'ACG::EmitStat'/>
+    <Class name = 'SwapStat' isAbstract = 'false' supertypes = 'ACG::EmitStat'/>
+    <Class name = 'IterateStat' isAbstract = 'false' supertypes = 'ACG::EmitStat'/>
+    <Class name = 'EndIterateStat' isAbstract = 'false' supertypes = 'ACG::EmitStat'/>
+    <Class name = 'GetAsmStat' isAbstract = 'false' supertypes = 'ACG::EmitStat'/>
+    <Class name = 'FindMEStat' isAbstract = 'false' supertypes = 'ACG::EmitStat'/>
+    <Class name = 'PushTStat' isAbstract = 'false' supertypes = 'ACG::EmitStat'/>
+    <Class name = 'PushFStat' isAbstract = 'false' supertypes = 'ACG::EmitStat'/>
+    <Class name = 'EmitWithOperandStat' isAbstract = 'true' supertypes = 'ACG::EmitStat'>
+      <Reference name = 'operand' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'PushStat' isAbstract = 'false' supertypes = 'ACG::EmitWithOperandStat'/>
+    <Class name = 'PushIStat' isAbstract = 'false' supertypes = 'ACG::EmitWithOperandStat'/>
+    <Class name = 'PushDStat' isAbstract = 'false' supertypes = 'ACG::EmitWithOperandStat'/>
+    <Class name = 'LoadStat' isAbstract = 'false' supertypes = 'ACG::EmitWithOperandStat'/>
+    <Class name = 'StoreStat' isAbstract = 'false' supertypes = 'ACG::EmitWithOperandStat'/>
+    <Class name = 'CallStat' isAbstract = 'false' supertypes = 'ACG::EmitWithOperandStat'/>
+    <Class name = 'PCallStat' isAbstract = 'false' supertypes = 'ACG::EmitWithOperandStat'/>
+    <Class name = 'SuperCallStat' isAbstract = 'false' supertypes = 'ACG::EmitWithOperandStat'/>
+    <Class name = 'GetStat' isAbstract = 'false' supertypes = 'ACG::EmitWithOperandStat'/>
+    <Class name = 'SetStat' isAbstract = 'false' supertypes = 'ACG::EmitWithOperandStat'/>
+    <Class name = 'EmitWithLabelRefStat' isAbstract = 'true' supertypes = 'ACG::EmitStat'>
+      <Reference name = 'label' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ACG::LabelStat' opposite = ''/>
+    </Class>
+    <Class name = 'IfStat' isAbstract = 'false' supertypes = 'ACG::EmitWithLabelRefStat'/>
+    <Class name = 'GotoStat' isAbstract = 'false' supertypes = 'ACG::EmitWithLabelRefStat'/>
+    <Class name = 'VariableDecl' isAbstract = 'false' supertypes = 'ACG::LocatedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Expression' isAbstract = 'true' supertypes = 'ACG::LocatedElement'/>
+    <Class name = 'VariableExp' isAbstract = 'false' supertypes = 'ACG::Expression'>
+      <Reference name = 'variable' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ACG::VariableDecl' opposite = ''/>
+    </Class>
+    <Class name = 'SelfExp' isAbstract = 'false' supertypes = 'ACG::Expression'/>
+    <Class name = 'LastExp' isAbstract = 'false' supertypes = 'ACG::Expression'/>
+    <Class name = 'IfExp' isAbstract = 'false' supertypes = 'ACG::Expression'>
+      <Reference name = 'condition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+      <Reference name = 'thenExp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+      <Reference name = 'elseExp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'IsAExp' isAbstract = 'false' supertypes = 'ACG::Expression'>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'LetExp' isAbstract = 'false' supertypes = 'ACG::Expression'>
+      <Reference name = 'variable' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::VariableDecl' opposite = ''/>
+      <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+      <Reference name = 'in' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'PropertyCallExp' isAbstract = 'true' supertypes = 'ACG::Expression'>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'NavigationExp' isAbstract = 'false' supertypes = 'ACG::PropertyCallExp'/>
+    <Class name = 'IteratorExp' isAbstract = 'false' supertypes = 'ACG::PropertyCallExp'>
+      <Reference name = 'iterator' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::VariableDecl' opposite = ''/>
+      <Reference name = 'body' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'OperationCallExp' isAbstract = 'false' supertypes = 'ACG::PropertyCallExp'>
+      <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'OperatorCallExp' isAbstract = 'false' supertypes = 'ACG::OperationCallExp'/>
+    <Class name = 'LiteralExp' isAbstract = 'true' supertypes = 'ACG::Expression'/>
+    <Class name = 'OclUndefinedExp' isAbstract = 'false' supertypes = 'ACG::LiteralExp'/>
+    <Class name = 'CollectionExp' isAbstract = 'true' supertypes = 'ACG::LiteralExp'>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ACG::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'SequenceExp' isAbstract = 'false' supertypes = 'ACG::CollectionExp'/>
+    <Class name = 'BooleanExp' isAbstract = 'false' supertypes = 'ACG::LiteralExp'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'IntegerExp' isAbstract = 'false' supertypes = 'ACG::LiteralExp'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'StringExp' isAbstract = 'false' supertypes = 'ACG::LiteralExp'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

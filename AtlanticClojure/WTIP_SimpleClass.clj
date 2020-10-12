@@ -1,0 +1,5 @@
+( defstruct Classifier :name )
+( defstruct Class :is_persistent :name )
+( defstruct PrimitiveDataType :name )
+( defstruct Association :name :src :dest )
+( defstruct Attribute :name :is_primary :type )

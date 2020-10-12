@@ -1,0 +1,256 @@
+-- @name		PNML_basic
+-- @version		1.0
+-- @domains		Petri net, XML
+-- @authors		Pierrick Guyard (pierrick.guyard@gmail.com)
+-- @date		2005/06/15
+-- @description	This metamodel describes basic PNML (Petri Net Markup Language). PNML is a concept for defining the overall structure of a Petri net file. There are many different types of Petri nets. Thus, there is a generic concept for adjusting net type specific features via a specific Petri Net Type Definition (PNTD). For implementing a specific PNTD, PNML is enlarged by type specific labels at certain net objects. A label assigns further meaning (besides the Petri net semantics) to a net or its objects. Typically, a label represents a name of a node, the initial marking of a place, the guard of a transition, or the inscription of an arc. The legal labels and the legal combination of labels are defined within a PNTD. This meta-model is based on ptNetb.pntd defined by Michael Weber on June 2003. It is implements the Petri net type for Place/Transition nets and it is based on the definition for basic PNML.
+-- @see			http://www.informatik.hu-berlin.de/top/pnml/pnml.html
+
+package PNML {
+
+	
+	abstract class IdedElement {
+		attribute id : String;
+	}
+
+-- @begin declaration of types
+	
+	-- @comment URI (URL)
+	class URI {
+		attribute value : String;
+	}
+	
+	class Color {
+	}	
+	
+	-- @comment anything for tool specific
+	class AnyElement {	
+		attribute name : String;
+		attribute text : String;
+	}
+	
+	-- @comment type of rotation
+	enumeration RotationType {
+		literal rtvertical;
+		literal rthorizontal;
+		literal rtdiagonal;
+	}
+
+	-- @comment type of shape	
+	enumeration ShapeType {
+		literal shtline;
+		literal shtcurve;
+	}
+	
+	-- @comment type of style
+	enumeration StyleType {
+		literal sttsolid;
+		literal sttdash;
+		literal sttdot;
+	}
+	
+	-- @comment type of decoration
+	enumeration DecorationType {
+		literal dtunderligne;
+		literal dtoverligne;
+		literal dtlinethrough;
+	}
+	
+	-- @comment type of alignment
+	enumeration AlignType {
+		literal atleft;
+		literal atcenter;
+		literal atright;
+	}
+	
+-- @end declaration of types
+
+	-- @comment single top element (like in XML document)
+	class PNMLDocument {
+		reference xmlns container : URI;
+		reference nets[1-*] container : NetElement oppositeOf document;
+	}
+
+	-- @comment a petri net element
+	class NetElement extends IdedElement {
+		-- @comment typer reference the PNTD associed with the net
+		reference type container : URI;
+		reference document : PNMLDocument oppositeOf nets;
+		reference contents[*] container : NetContent oppositeOf net;
+		reference tools[*] container : ToolSpecific oppositeOf net;
+		reference netgraphics[0-1] container : NetGraphics oppositeOf net;
+		reference name[0-1] container : Name oppositeOf net;
+	}
+	
+	-- @commet content of a petri net element
+	abstract class NetContent {
+		reference net : NetElement oppositeOf contents;
+		reference name[0-1] container : Name oppositeOf netcontent;
+	}
+	
+	-- @comment tool information
+	class ToolSpecific {
+		attribute tool : String;
+		attribute version : String;
+		reference anyelement[*] container : AnyElement;	
+		reference net[0-1] : NetElement oppositeOf tools;
+		reference arc[0-1] : Arc oppositeOf tools;
+		reference node[0-1] : Node oppositeOf tools;
+	}
+	
+	-- @comment element used for abstraction (Name, Inscription and InitialMarking)
+	abstract class LabeledElement {
+		reference labels[*] container : Label oppositeOf namedelement;
+		reference annotationgraphics[0-1] container : AnnotationGraphics oppositeOf namedelement;
+	}
+	
+	-- @comment a label
+	class Label {
+		attribute text : String;
+		reference namedelement : LabeledElement oppositeOf labels;		
+	}
+	
+	class Name extends LabeledElement{
+		reference net[0-1] : NetElement oppositeOf name;
+		reference netcontent[0-1] : NetContent oppositeOf name;
+	}
+	
+	class Inscription extends LabeledElement {
+		reference arc : Arc oppositeOf inscription;
+	}
+	
+	class InitialMarking extends LabeledElement {
+		reference place : Place oppositeOf initialmarking;
+	}
+
+	-- @comment element used for abstraction (Place and Transition)	
+	abstract class NetContentElement extends NetContent {
+		reference node container : Node oppositeOf netcontentelement;
+	}
+	
+	
+	-- @comment a arc element
+	class Arc extends NetContent,IdedElement {
+		reference source : NetContentElement;
+		reference target : NetContentElement;
+		reference tools[*] container : ToolSpecific oppositeOf arc;
+		reference edgegraphics[0-1] container : EdgeGraphics oppositeOf arc;
+		reference inscription[0-1] container : Inscription oppositeOf arc;
+	}
+	
+	-- @comment node is used for the extention of this meta-model (modular and structured version)
+	class Node extends IdedElement  {
+		reference netcontentelement container : NetContentElement oppositeOf node;
+		reference tools[*] container : ToolSpecific oppositeOf node;
+		reference nodegraphics[0-1] container : NodeGraphics oppositeOf node;
+	}
+	
+	-- @comment a place element
+	class Place extends NetContentElement {
+		reference initialmarking[0-1] container : InitialMarking oppositeOf place;
+	}
+	
+	-- @comment a transition element
+	class Transition extends NetContentElement {
+	}
+
+
+-- @end begin representation
+
+	-- @comment just for generalised all graphical representations
+	abstract class Graphics {	
+	}
+	
+	-- @comment graphical representation for a petri net
+	class NetGraphics extends Graphics  {
+		reference net : NetElement oppositeOf netgraphics;
+	}
+
+	-- @comment graphical representation for a node	
+	class NodeGraphics extends Graphics  {
+		reference node : Node oppositeOf nodegraphics;
+		reference position container : Position oppositeOf nodegraphics;
+		reference dimension[0-1] container : Dimension oppositeOf nodegraphics;
+		reference fill[0-1] container : Fill oppositeOf nodegraphics;
+		reference line[0-1] container : Line oppositeOf nodegraphics;
+	}
+	
+	-- @comment graphical representation for a arc
+	class EdgeGraphics extends Graphics  {
+		reference arc : Arc oppositeOf edgegraphics;
+		reference position[*] container : Position oppositeOf edgegraphics;
+		reference fill[0-1] container : Fill oppositeOf edgegraphics;
+		reference line[0-1] container : Line oppositeOf edgegraphics;
+		
+	}	
+
+	-- @comment graphical representation for annotation
+	class AnnotationGraphics extends Graphics  {
+		reference namedelement : LabeledElement oppositeOf annotationgraphics;
+		reference offset container : Offset oppositeOf annotationgraphics;
+		reference font[0-1] container : Font oppositeOf annotationgraphics;
+		reference fill[0-1] container : Fill oppositeOf annotationgraphics;
+		reference line[0-1] container : Line oppositeOf annotationgraphics;
+	}
+	
+	
+	abstract class Coordinate {
+		attribute x : Integer;
+		attribute y : Integer;
+	}
+	
+	class Position extends Coordinate {
+		reference nodegraphics[0-1] : NodeGraphics oppositeOf position;
+		reference edgegraphics[0-1] : EdgeGraphics oppositeOf position;
+	}
+	
+	class Offset extends Coordinate {
+		reference annotationgraphics : AnnotationGraphics oppositeOf offset;
+	}
+	
+	class Dimension {
+		attribute width : Integer;
+		attribute height : Integer;
+		reference nodegraphics : NodeGraphics oppositeOf dimension;
+	}
+	
+	class Fill {
+		attribute gradientrotation[0-1] : RotationType;
+		reference interiorcolor[0-1] container : Color;
+		reference gradientcolor[0-1] container : Color;
+		reference image[0-1] container : URI;
+		reference nodegraphics[0-1] : NodeGraphics oppositeOf fill;
+		reference edgegraphics[0-1] : EdgeGraphics oppositeOf fill;
+		reference annotationgraphics[0-1] : AnnotationGraphics oppositeOf fill;
+	}
+	
+	class Line {
+		reference color[0-1] container : Color;
+		attribute width[0-1] : Integer;
+		attribute shape[0-1] : ShapeType;
+		attribute style[0-1] : StyleType;
+		reference nodegraphics[0-1] : NodeGraphics oppositeOf line;
+		reference edgegraphics[0-1] : EdgeGraphics oppositeOf line;
+		reference annotationgraphics[0-1] : AnnotationGraphics oppositeOf line;
+	}
+	
+	-- @comment attributes (family, style, weight and size) should be conform to CSS2 data type system
+	class Font {
+		attribute family[0-1] : String;
+		attribute style[0-1] : String;
+		attribute weight[0-1] : String;
+		attribute size[0-1] : String;
+		attribute decoration[0-1] : DecorationType;
+		attribute align[0-1] : AlignType;
+		attribute rotation[0-1] : Integer;		
+		reference annotationgraphics : AnnotationGraphics oppositeOf font;
+	}
+	
+-- @end graphical representation
+	
+}
+
+package PrimitiveTypes {
+	datatype Integer;
+	datatype String;
+}

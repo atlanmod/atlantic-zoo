@@ -1,0 +1,531 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'qvttemplate'>
+    <Class name = 'TemplateExp' isAbstract = 'true' supertypes = 'essentialocl::LiteralExp'>
+      <Reference name = 'bindsTo' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::Variable' opposite = ''/>
+      <Reference name = 'where' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'ObjectTemplateExp' isAbstract = 'false' supertypes = 'qvttemplate::TemplateExp'>
+      <Reference name = 'part' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'qvttemplate::PropertyTemplateItem' opposite = 'qvttemplate::PropertyTemplateItem::objContainer'/>
+      <Reference name = 'referredClass' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Class' opposite = ''/>
+    </Class>
+    <Class name = 'CollectionTemplateExp' isAbstract = 'false' supertypes = 'qvttemplate::TemplateExp'>
+      <Reference name = 'part' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Attribute name = 'kind' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'essentialocl::CollectionKind'/>
+      <Reference name = 'referredCollectionType' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'essentialocl::CollectionType' opposite = ''/>
+      <Reference name = 'match' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'PropertyTemplateItem' isAbstract = 'false' supertypes = 'emof::Element'>
+      <Reference name = 'objContainer' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvttemplate::ObjectTemplateExp' opposite = 'qvttemplate::ObjectTemplateExp::part'/>
+      <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Reference name = 'referredProperty' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Property' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'imperativeocl'>
+    <Class name = 'ImperativeIterateExp' isAbstract = 'false' supertypes = 'imperativeocl::ImperativeLoopExp'>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::Variable' opposite = ''/>
+    </Class>
+    <Class name = 'AssignExp' isAbstract = 'false' supertypes = 'imperativeocl::ImperativeExpression'>
+      <Reference name = 'value' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Reference name = 'left' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Reference name = 'defaultValue' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Attribute name = 'isReset' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+    </Class>
+    <Class name = 'BlockExp' isAbstract = 'false' supertypes = 'imperativeocl::ImperativeExpression'>
+      <Reference name = 'body' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'SwitchExp' isAbstract = 'false' supertypes = 'essentialocl::CallExp, imperativeocl::ImperativeExpression'>
+      <Reference name = 'alternativePart' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'imperativeocl::AltExp' opposite = ''/>
+      <Reference name = 'elsePart' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'VariableInitExp' isAbstract = 'false' supertypes = 'imperativeocl::ImperativeExpression'>
+      <Reference name = 'referredVariable' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::Variable' opposite = ''/>
+      <Attribute name = 'withResult' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+    </Class>
+    <Class name = 'WhileExp' isAbstract = 'false' supertypes = 'imperativeocl::ImperativeExpression'>
+      <Reference name = 'condition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Reference name = 'body' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'ComputeExp' isAbstract = 'false' supertypes = 'imperativeocl::ImperativeExpression'>
+      <Reference name = 'returnedElement' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::Variable' opposite = 'essentialocl::Variable::computeOwner'/>
+      <Reference name = 'body' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'AltExp' isAbstract = 'false' supertypes = 'imperativeocl::ImperativeExpression'>
+      <Reference name = 'condition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Reference name = 'body' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'UnlinkExp' isAbstract = 'false' supertypes = 'imperativeocl::ImperativeExpression'>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Reference name = 'item' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'ReturnExp' isAbstract = 'false' supertypes = 'imperativeocl::ImperativeExpression'>
+      <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'BreakExp' isAbstract = 'false' supertypes = 'imperativeocl::ImperativeExpression'/>
+    <Class name = 'TryExp' isAbstract = 'false' supertypes = 'imperativeocl::ImperativeExpression'>
+      <Reference name = 'tryBody' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = 'essentialocl::OclExpression::tryBodyOwner'/>
+      <Reference name = 'exception' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'emof::Type' opposite = ''/>
+      <Reference name = 'exceptBody' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'RaiseExp' isAbstract = 'false' supertypes = 'imperativeocl::ImperativeExpression'>
+      <Reference name = 'exception' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Type' opposite = ''/>
+    </Class>
+    <Class name = 'ContinueExp' isAbstract = 'false' supertypes = 'imperativeocl::ImperativeExpression'/>
+    <Class name = 'ForExp' isAbstract = 'false' supertypes = 'imperativeocl::ImperativeLoopExp'/>
+    <Class name = 'TupleExp' isAbstract = 'false' supertypes = 'imperativeocl::ImperativeExpression'>
+      <Reference name = 'element' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'Typedef' isAbstract = 'false' supertypes = 'emof::Class'>
+      <Reference name = 'base' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Type' opposite = ''/>
+      <Reference name = 'condition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'InstantiationExp' isAbstract = 'false' supertypes = 'imperativeocl::ImperativeExpression'>
+      <Reference name = 'instantiatedClass' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Class' opposite = ''/>
+      <Reference name = 'extent' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'essentialocl::Variable' opposite = ''/>
+      <Reference name = 'argument' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'DictionaryType' isAbstract = 'false' supertypes = 'essentialocl::CollectionType'>
+      <Reference name = 'keyType' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Type' opposite = ''/>
+    </Class>
+    <Class name = 'DictLiteralExp' isAbstract = 'false' supertypes = 'essentialocl::LiteralExp'>
+      <Reference name = 'part' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'imperativeocl::DictLiteralPart' opposite = ''/>
+    </Class>
+    <Class name = 'DictLiteralPart' isAbstract = 'false' supertypes = 'emof::Element'>
+      <Reference name = 'key' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'TemplateParameterType' isAbstract = 'false' supertypes = 'emof::Type'>
+      <Attribute name = 'specification' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::String'/>
+    </Class>
+    <Class name = 'LogExp' isAbstract = 'false' supertypes = 'imperativeocl::ImperativeExpression'>
+      <Attribute name = 'text' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::String'/>
+      <Attribute name = 'level' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Integer'/>
+      <Reference name = 'condition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Reference name = 'element' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Element' opposite = ''/>
+    </Class>
+    <Class name = 'AssertExp' isAbstract = 'false' supertypes = 'imperativeocl::ImperativeExpression'>
+      <Attribute name = 'severity' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'imperativeocl::SeverityKind'/>
+      <Reference name = 'log' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'imperativeocl::LogExp' opposite = ''/>
+      <Reference name = 'assertion' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Enumeration name = 'SeverityKind'>
+      <EnumLiteral name = 'error'/>
+      <EnumLiteral name = 'fatal'/>
+      <EnumLiteral name = 'warning'/>
+    </Enumeration>
+    <Class name = 'ImperativeLoopExp' isAbstract = 'true' supertypes = 'essentialocl::LoopExp, imperativeocl::ImperativeExpression'>
+      <Reference name = 'condition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'CollectorExp' isAbstract = 'false' supertypes = 'imperativeocl::ImperativeLoopExp'>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::Variable' opposite = ''/>
+    </Class>
+    <Class name = 'ImperativeExpression' isAbstract = 'true' supertypes = 'essentialocl::OclExpression'/>
+    <Class name = 'UnpackExp' isAbstract = 'false' supertypes = 'imperativeocl::ImperativeExpression'>
+      <Reference name = 'variable' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'essentialocl::Variable' opposite = ''/>
+    </Class>
+    <Class name = 'AnonymousTupleType' isAbstract = 'false' supertypes = 'emof::Class'>
+      <Reference name = 'elementType' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'emof::Type' opposite = ''/>
+    </Class>
+    <Class name = 'AnonymousTupleLiteralExp' isAbstract = 'false' supertypes = 'essentialocl::LiteralExp'>
+      <Reference name = 'part' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'imperativeocl::AnonymousTupleLiteralPart' opposite = ''/>
+    </Class>
+    <Class name = 'AnonymousTupleLiteralPart' isAbstract = 'false' supertypes = 'emof::Element'>
+      <Reference name = 'value' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'ListType' isAbstract = 'false' supertypes = 'essentialocl::CollectionType'/>
+  </Package>
+  <Package name = 'emof'>
+    <Class name = 'Class' isAbstract = 'false' supertypes = 'emof::Type'>
+      <Reference name = 'ownedAttribute' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'emof::Property' opposite = 'emof::Property::Class'/>
+      <Reference name = 'ownedOperation' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'emof::Operation' opposite = 'emof::Operation::class'/>
+      <Reference name = 'superClass' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'emof::Class' opposite = ''/>
+      <Attribute name = 'isAbstract' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+    </Class>
+    <Class name = 'DataType' isAbstract = 'true' supertypes = 'emof::Type'/>
+    <Class name = 'Element' isAbstract = 'true' supertypes = 'emof::Object'>
+      <Reference name = 'tag' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'emof::Tag' opposite = 'emof::Tag::element'/>
+      <Reference name = 'ownedComment' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'emof::Comment' opposite = ''/>
+    </Class>
+    <Class name = 'Tag' isAbstract = 'false' supertypes = 'emof::Element'>
+      <Reference name = 'element' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'emof::Element' opposite = 'emof::Element::tag'/>
+      <Reference name = 'transformation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtbase::Transformation' opposite = 'qvtbase::Transformation::ownedTag'/>
+      <Reference name = 'owner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtoperational::Module' opposite = 'qvtoperational::Module::ownedTag'/>
+      <Attribute name = 'value' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::String'/>
+      <Attribute name = 'name' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::String'/>
+    </Class>
+    <Class name = 'Enumeration' isAbstract = 'false' supertypes = 'emof::DataType'>
+      <Reference name = 'ownedLiteral' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'emof::EnumerationLiteral' opposite = 'emof::EnumerationLiteral::enumeration'/>
+    </Class>
+    <Class name = 'NamedElement' isAbstract = 'true' supertypes = 'emof::Element'>
+      <Attribute name = 'name' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::String'/>
+    </Class>
+    <Class name = 'Extent' isAbstract = 'false' supertypes = 'emof::Object'/>
+    <Class name = 'Object' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Operation' isAbstract = 'false' supertypes = 'emof::MultiplicityElement, emof::TypedElement'>
+      <Reference name = 'class' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Class' opposite = 'emof::Class::ownedOperation'/>
+      <Reference name = 'ownedParameter' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'emof::Parameter' opposite = 'emof::Parameter::operation'/>
+      <Reference name = 'raisedException' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'emof::Type' opposite = ''/>
+    </Class>
+    <Class name = 'MultiplicityElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'isOrdered' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+      <Attribute name = 'isUnique' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+      <Attribute name = 'lower' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Integer'/>
+      <Attribute name = 'upper' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::UnlimitedNatural'/>
+    </Class>
+    <Class name = 'Package' isAbstract = 'false' supertypes = 'emof::NamedElement'>
+      <Reference name = 'ownedType' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'emof::Type' opposite = 'emof::Type::package'/>
+      <Reference name = 'nestedPackage' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'emof::Package' opposite = ''/>
+      <Attribute name = 'uri' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::String'/>
+    </Class>
+    <Class name = 'Type' isAbstract = 'true' supertypes = 'emof::NamedElement'>
+      <Reference name = 'package' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Package' opposite = 'emof::Package::ownedType'/>
+    </Class>
+    <Class name = 'Parameter' isAbstract = 'false' supertypes = 'emof::MultiplicityElement, emof::TypedElement'>
+      <Reference name = 'operation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Operation' opposite = 'emof::Operation::ownedParameter'/>
+    </Class>
+    <Class name = 'EnumerationLiteral' isAbstract = 'false' supertypes = 'emof::NamedElement'>
+      <Reference name = 'enumeration' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Enumeration' opposite = 'emof::Enumeration::ownedLiteral'/>
+    </Class>
+    <Class name = 'Property' isAbstract = 'false' supertypes = 'emof::MultiplicityElement, emof::TypedElement'>
+      <Reference name = 'Class' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Class' opposite = 'emof::Class::ownedAttribute'/>
+      <Reference name = 'opposite' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Property' opposite = ''/>
+      <Reference name = 'module' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtoperational::Module' opposite = 'qvtoperational::Module::configProperty'/>
+      <Attribute name = 'isReadOnly' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+      <Attribute name = 'isDerived' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+      <Attribute name = 'isComposite' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+      <Attribute name = 'isId' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+      <Attribute name = 'default' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::String'/>
+    </Class>
+    <Class name = 'TypedElement' isAbstract = 'true' supertypes = 'emof::NamedElement'>
+      <Reference name = 'type' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Type' opposite = ''/>
+    </Class>
+    <Class name = 'PrimitiveType' isAbstract = 'false' supertypes = 'emof::DataType'/>
+    <Class name = 'URIExtent' isAbstract = 'false' supertypes = 'emof::Extent'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'String'/>
+    <DataType name = 'UnlimitedNatural'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'Real'/>
+    <Class name = 'Comment' isAbstract = 'false' supertypes = 'emof::Element'>
+      <Reference name = 'annotatedElement' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'emof::NamedElement' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'qvtoperational'>
+    <Class name = 'MappingBody' isAbstract = 'false' supertypes = 'qvtoperational::OperationBody'>
+      <Reference name = 'initSection' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Reference name = 'endSection' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'Helper' isAbstract = 'false' supertypes = 'qvtoperational::ImperativeOperation'>
+      <Attribute name = 'isQuery' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+    </Class>
+    <Class name = 'ResolveExp' isAbstract = 'false' supertypes = 'essentialocl::CallExp'>
+      <Reference name = 'condition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Attribute name = 'one' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+      <Attribute name = 'isInverse' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+      <Attribute name = 'isDeferred' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+    </Class>
+    <Class name = 'ResolveInExp' isAbstract = 'false' supertypes = 'qvtoperational::ResolveExp'>
+      <Reference name = 'inMapping' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtoperational::MappingOperation' opposite = ''/>
+    </Class>
+    <Class name = 'OperationalTransformation' isAbstract = 'false' supertypes = 'qvtoperational::Module'>
+      <Reference name = 'intermediateClass' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'emof::Class' opposite = ''/>
+      <Reference name = 'refined' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtbase::Transformation' opposite = ''/>
+      <Reference name = 'intermediateProperty' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'emof::Property' opposite = ''/>
+      <Reference name = 'modelParameter' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'qvtoperational::ModelParameter' opposite = ''/>
+      <Reference name = 'entry' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtoperational::EntryOperation' opposite = ''/>
+      <Reference name = 'relation' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'qvtrelation::Relation' opposite = ''/>
+    </Class>
+    <Class name = 'MappingParameter' isAbstract = 'false' supertypes = 'qvtoperational::VarParameter'>
+      <Reference name = 'refinedDomain' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtrelation::RelationDomain' opposite = ''/>
+      <Reference name = 'extent' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtoperational::ModelParameter' opposite = ''/>
+    </Class>
+    <Class name = 'MappingOperation' isAbstract = 'false' supertypes = 'qvtoperational::ImperativeOperation, emof::Operation, emof::NamedElement'>
+      <Reference name = 'disjunct' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'qvtoperational::MappingOperation' opposite = ''/>
+      <Reference name = 'refinedRelation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtrelation::Relation' opposite = ''/>
+      <Reference name = 'merged' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'qvtoperational::MappingOperation' opposite = ''/>
+      <Reference name = 'inherited' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'qvtoperational::MappingOperation' opposite = ''/>
+      <Reference name = 'when' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'MappingCallExp' isAbstract = 'false' supertypes = 'qvtoperational::ImperativeCallExp'>
+      <Attribute name = 'isStrict' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+    </Class>
+    <Class name = 'Constructor' isAbstract = 'false' supertypes = 'qvtoperational::ImperativeOperation'/>
+    <Class name = 'ContextualProperty' isAbstract = 'false' supertypes = 'emof::Property'>
+      <Reference name = 'context' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Class' opposite = ''/>
+      <Reference name = 'overridden' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Property' opposite = ''/>
+    </Class>
+    <Class name = 'EntryOperation' isAbstract = 'false' supertypes = 'qvtoperational::ImperativeOperation'/>
+    <Class name = 'ImperativeCallExp' isAbstract = 'false' supertypes = 'essentialocl::OperationCallExp'>
+      <Attribute name = 'isVirtual' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+    </Class>
+    <Class name = 'ImperativeOperation' isAbstract = 'false' supertypes = 'emof::Operation'>
+      <Reference name = 'context' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'qvtoperational::VarParameter' opposite = 'qvtoperational::VarParameter::ctxOwner'/>
+      <Reference name = 'result' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'qvtoperational::VarParameter' opposite = 'qvtoperational::VarParameter::resOwner'/>
+      <Reference name = 'overridden' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtoperational::ImperativeOperation' opposite = ''/>
+      <Reference name = 'body' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'qvtoperational::OperationBody' opposite = 'qvtoperational::OperationBody::operation'/>
+      <Attribute name = 'isBlackbox' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+    </Class>
+    <Enumeration name = 'DirectionKind'>
+      <EnumLiteral name = 'in'/>
+      <EnumLiteral name = 'inout'/>
+      <EnumLiteral name = 'out'/>
+    </Enumeration>
+    <Class name = 'Library' isAbstract = 'false' supertypes = 'qvtoperational::Module'/>
+    <Class name = 'ModelParameter' isAbstract = 'false' supertypes = 'qvtoperational::VarParameter'/>
+    <Class name = 'ModelType' isAbstract = 'false' supertypes = 'emof::Class, emof::URIExtent'>
+      <Reference name = 'metamodel' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'emof::Package' opposite = ''/>
+      <Reference name = 'additionalCondition' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Attribute name = 'conformanceKind' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::String'/>
+    </Class>
+    <Class name = 'Module' isAbstract = 'false' supertypes = 'emof::Class, emof::Package'>
+      <Reference name = 'ownedTag' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'emof::Tag' opposite = 'emof::Tag::owner'/>
+      <Reference name = 'configProperty' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'emof::Property' opposite = 'emof::Property::module'/>
+      <Reference name = 'moduleImport' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'qvtoperational::ModuleImport' opposite = 'qvtoperational::ModuleImport::module'/>
+      <Reference name = 'usedModelType' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'qvtoperational::ModelType' opposite = ''/>
+      <Attribute name = 'isBlackbox' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+    </Class>
+    <Class name = 'ModuleImport' isAbstract = 'false' supertypes = 'emof::Element'>
+      <Reference name = 'binding' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'qvtoperational::ModelType' opposite = ''/>
+      <Reference name = 'module' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtoperational::Module' opposite = 'qvtoperational::Module::moduleImport'/>
+      <Reference name = 'importedModule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtoperational::Module' opposite = ''/>
+      <Attribute name = 'kind' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'qvtoperational::ImportKind'/>
+    </Class>
+    <Enumeration name = 'ImportKind'>
+      <EnumLiteral name = 'extension'/>
+      <EnumLiteral name = 'access'/>
+    </Enumeration>
+    <Class name = 'VarParameter' isAbstract = 'false' supertypes = 'emof::Parameter, essentialocl::Variable'>
+      <Reference name = 'ctxOwner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtoperational::ImperativeOperation' opposite = 'qvtoperational::ImperativeOperation::context'/>
+      <Reference name = 'resOwner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtoperational::ImperativeOperation' opposite = 'qvtoperational::ImperativeOperation::result'/>
+      <Attribute name = 'kind' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'qvtoperational::DirectionKind'/>
+    </Class>
+    <Class name = 'OperationBody' isAbstract = 'false' supertypes = 'emof::Element'>
+      <Reference name = 'operation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtoperational::ImperativeOperation' opposite = 'qvtoperational::ImperativeOperation::body'/>
+      <Reference name = 'content' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'ConstructorBody' isAbstract = 'false' supertypes = 'qvtoperational::OperationBody'/>
+    <Class name = 'ObjectExp' isAbstract = 'false' supertypes = 'imperativeocl::InstantiationExp'>
+      <Reference name = 'referredObject' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'essentialocl::Variable' opposite = ''/>
+      <Reference name = 'body' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'qvtoperational::ConstructorBody' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'qvtcore'>
+    <Class name = 'Area' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'guardPattern' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'qvtcore::GuardPattern' opposite = 'qvtcore::GuardPattern::area'/>
+      <Reference name = 'bottomPattern' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'qvtcore::BottomPattern' opposite = 'qvtcore::BottomPattern::area'/>
+    </Class>
+    <Class name = 'Assignment' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'bottomPattern' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtcore::BottomPattern' opposite = 'qvtcore::BottomPattern::assignment'/>
+      <Reference name = 'slotExpression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Reference name = 'targetProperty' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Property' opposite = ''/>
+      <Attribute name = 'isDefault' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+    </Class>
+    <Class name = 'BottomPattern' isAbstract = 'false' supertypes = 'qvtcore::CorePattern'>
+      <Reference name = 'area' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtcore::Area' opposite = 'qvtcore::Area::bottomPattern'/>
+      <Reference name = 'assignment' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'qvtcore::Assignment' opposite = 'qvtcore::Assignment::bottomPattern'/>
+      <Reference name = 'realizedVariable' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'qvtcore::RealizedVariable' opposite = ''/>
+      <Reference name = 'enforcementOperation' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'qvtcore::EnforcementOperation' opposite = 'qvtcore::EnforcementOperation::bottomPattern'/>
+    </Class>
+    <Class name = 'GuardPattern' isAbstract = 'false' supertypes = 'qvtcore::CorePattern'>
+      <Reference name = 'area' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtcore::Area' opposite = 'qvtcore::Area::guardPattern'/>
+    </Class>
+    <Class name = 'Mapping' isAbstract = 'false' supertypes = 'qvtbase::Rule, qvtcore::Area'>
+      <Reference name = 'specification' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'qvtcore::Mapping' opposite = ''/>
+      <Reference name = 'local' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'qvtcore::Mapping' opposite = 'qvtcore::Mapping::context'/>
+      <Reference name = 'context' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtcore::Mapping' opposite = 'qvtcore::Mapping::local'/>
+    </Class>
+    <Class name = 'RealizedVariable' isAbstract = 'false' supertypes = 'essentialocl::Variable'/>
+    <Class name = 'CoreDomain' isAbstract = 'false' supertypes = 'qvtbase::Domain, qvtcore::Area'/>
+    <Class name = 'CorePattern' isAbstract = 'false' supertypes = 'qvtbase::Pattern'/>
+    <Class name = 'EnforcementOperation' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'enforcementMode' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'qvtcore::EnforcementMode'/>
+      <Reference name = 'bottomPattern' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtcore::BottomPattern' opposite = 'qvtcore::BottomPattern::enforcementOperation'/>
+      <Reference name = 'operationCallExp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'essentialocl::OperationCallExp' opposite = ''/>
+    </Class>
+    <Enumeration name = 'EnforcementMode'>
+      <EnumLiteral name = 'Deletion'/>
+      <EnumLiteral name = 'Creation'/>
+    </Enumeration>
+  </Package>
+  <Package name = 'qvtbase'>
+    <Class name = 'Domain' isAbstract = 'false' supertypes = 'emof::NamedElement'>
+      <Attribute name = 'isCheckable' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+      <Attribute name = 'isEnforceable' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+      <Reference name = 'rule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtbase::Rule' opposite = 'qvtbase::Rule::domain'/>
+      <Reference name = 'typedModel' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtbase::TypedModel' opposite = ''/>
+    </Class>
+    <Class name = 'Transformation' isAbstract = 'false' supertypes = 'emof::Class, emof::Package'>
+      <Reference name = 'ownedTag' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'emof::Tag' opposite = 'emof::Tag::transformation'/>
+      <Reference name = 'modelParameter' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'qvtbase::TypedModel' opposite = 'qvtbase::TypedModel::transformation'/>
+      <Reference name = 'rule' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'qvtbase::Rule' opposite = 'qvtbase::Rule::transformation'/>
+      <Reference name = 'extends' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtbase::Transformation' opposite = ''/>
+    </Class>
+    <Class name = 'TypedModel' isAbstract = 'false' supertypes = 'emof::NamedElement'>
+      <Reference name = 'transformation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtbase::Transformation' opposite = 'qvtbase::Transformation::modelParameter'/>
+      <Reference name = 'usedPackage' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'emof::Package' opposite = ''/>
+      <Reference name = 'dependsOn' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'qvtbase::TypedModel' opposite = ''/>
+    </Class>
+    <Class name = 'Rule' isAbstract = 'false' supertypes = 'emof::NamedElement'>
+      <Reference name = 'domain' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'qvtbase::Domain' opposite = 'qvtbase::Domain::rule'/>
+      <Reference name = 'transformation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtbase::Transformation' opposite = 'qvtbase::Transformation::rule'/>
+      <Reference name = 'overrides' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtbase::Rule' opposite = ''/>
+    </Class>
+    <Class name = 'Pattern' isAbstract = 'false' supertypes = 'emof::Element'>
+      <Reference name = 'predicate' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'qvtbase::Predicate' opposite = 'qvtbase::Predicate::pattern'/>
+      <Reference name = 'bindsTo' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'essentialocl::Variable' opposite = ''/>
+      <Reference name = 'whenOwner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtrelation::Relation' opposite = 'qvtrelation::Relation::where'/>
+      <Reference name = 'whereOwner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtrelation::Relation' opposite = 'qvtrelation::Relation::when'/>
+    </Class>
+    <Class name = 'Predicate' isAbstract = 'false' supertypes = 'emof::Element'>
+      <Reference name = 'conditionExpression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Reference name = 'pattern' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtbase::Pattern' opposite = 'qvtbase::Pattern::predicate'/>
+    </Class>
+    <Class name = 'Function' isAbstract = 'false' supertypes = 'emof::Operation'>
+      <Reference name = 'queryExpression' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'FunctionParameter' isAbstract = 'false' supertypes = 'emof::Parameter, essentialocl::Variable'/>
+  </Package>
+  <Package name = 'qvtrelation'>
+    <Class name = 'RelationalTransformation' isAbstract = 'false' supertypes = 'qvtbase::Transformation'>
+      <Reference name = 'ownedKey' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'qvtrelation::Key' opposite = 'qvtrelation::Key::transformation'/>
+    </Class>
+    <Class name = 'Relation' isAbstract = 'false' supertypes = 'qvtbase::Rule'>
+      <Attribute name = 'isTopLevel' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+      <Reference name = 'variable' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'essentialocl::Variable' opposite = ''/>
+      <Reference name = 'operationalImpl' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'qvtrelation::RelationImplementation' opposite = 'qvtrelation::RelationImplementation::relation'/>
+      <Reference name = 'where' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'qvtbase::Pattern' opposite = 'qvtbase::Pattern::whenOwner'/>
+      <Reference name = 'when' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'qvtbase::Pattern' opposite = 'qvtbase::Pattern::whereOwner'/>
+    </Class>
+    <Class name = 'RelationDomain' isAbstract = 'false' supertypes = 'qvtbase::Domain'>
+      <Reference name = 'pattern' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'qvtrelation::DomainPattern' opposite = ''/>
+      <Reference name = 'rootVariable' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'essentialocl::Variable' opposite = ''/>
+    </Class>
+    <Class name = 'DomainPattern' isAbstract = 'false' supertypes = 'qvtbase::Pattern'>
+      <Reference name = 'templateExpression' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'qvttemplate::TemplateExp' opposite = ''/>
+    </Class>
+    <Class name = 'RelationImplementation' isAbstract = 'false' supertypes = 'emof::Element'>
+      <Reference name = 'relation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtrelation::Relation' opposite = 'qvtrelation::Relation::operationalImpl'/>
+      <Reference name = 'impl' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Operation' opposite = ''/>
+      <Reference name = 'inDirectionOf' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtbase::TypedModel' opposite = ''/>
+    </Class>
+    <Class name = 'Key' isAbstract = 'false' supertypes = 'emof::Element'>
+      <Reference name = 'identifies' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Class' opposite = ''/>
+      <Reference name = 'part' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'emof::Property' opposite = ''/>
+      <Reference name = 'transformation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'qvtrelation::RelationalTransformation' opposite = 'qvtrelation::RelationalTransformation::ownedKey'/>
+    </Class>
+  </Package>
+  <Package name = 'essentialocl'>
+    <Class name = 'BooleanLiteralExp' isAbstract = 'false' supertypes = 'essentialocl::PrimitiveLiteralExp'>
+      <Attribute name = 'booleanSymbol' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Boolean'/>
+    </Class>
+    <Class name = 'CallExp' isAbstract = 'true' supertypes = 'essentialocl::OclExpression'>
+      <Reference name = 'source' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Enumeration name = 'CollectionKind'>
+      <EnumLiteral name = 'OrderedSet'/>
+      <EnumLiteral name = 'Set'/>
+      <EnumLiteral name = 'Bag'/>
+      <EnumLiteral name = 'Sequence'/>
+    </Enumeration>
+    <Class name = 'OclExpression' isAbstract = 'true' supertypes = 'emof::TypedElement'>
+      <Reference name = 'tryBodyOwner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'imperativeocl::TryExp' opposite = 'imperativeocl::TryExp::tryBody'/>
+    </Class>
+    <Class name = 'UnlimitedNaturalExp' isAbstract = 'false' supertypes = 'essentialocl::NumericLiteralExp'>
+      <Attribute name = 'symbol' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::UnlimitedNatural'/>
+    </Class>
+    <Class name = 'IfExp' isAbstract = 'false' supertypes = 'essentialocl::OclExpression'>
+      <Reference name = 'condition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Reference name = 'thenExpression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Reference name = 'elseExpression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'LetExp' isAbstract = 'false' supertypes = 'essentialocl::OclExpression'>
+      <Reference name = 'in' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Reference name = 'variable' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::Variable' opposite = 'essentialocl::Variable::LetExp'/>
+    </Class>
+    <Class name = 'Variable' isAbstract = 'false' supertypes = 'emof::TypedElement'>
+      <Reference name = 'initExpression' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Reference name = 'LetExp' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'essentialocl::LetExp' opposite = 'essentialocl::LetExp::variable'/>
+      <Reference name = 'computeOwner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'imperativeocl::ComputeExp' opposite = 'imperativeocl::ComputeExp::returnedElement'/>
+      <Reference name = 'bindParameter' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Parameter' opposite = ''/>
+    </Class>
+    <Class name = 'PropertyCallExp' isAbstract = 'false' supertypes = 'essentialocl::FeaturePropertyCall'>
+      <Reference name = 'referredProperty' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Property' opposite = ''/>
+    </Class>
+    <Class name = 'VariableExp' isAbstract = 'false' supertypes = 'essentialocl::OclExpression'>
+      <Reference name = 'referredVariable' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'essentialocl::Variable' opposite = ''/>
+    </Class>
+    <Class name = 'TypeExp' isAbstract = 'false' supertypes = 'essentialocl::OclExpression'>
+      <Reference name = 'referredType' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Type' opposite = ''/>
+    </Class>
+    <Class name = 'LoopExp' isAbstract = 'true' supertypes = 'essentialocl::CallExp, essentialocl::OclExpression'>
+      <Reference name = 'body' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Reference name = 'iterator' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'essentialocl::Variable' opposite = ''/>
+    </Class>
+    <Class name = 'IteratorExp' isAbstract = 'false' supertypes = 'essentialocl::LoopExp'/>
+    <Class name = 'StringLiteralExp' isAbstract = 'false' supertypes = 'essentialocl::PrimitiveLiteralExp'>
+      <Attribute name = 'stringSymbol' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::String'/>
+    </Class>
+    <Class name = 'IntegerLiteralExp' isAbstract = 'false' supertypes = 'essentialocl::NumericLiteralExp'>
+      <Attribute name = 'integerSymbol' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Integer'/>
+    </Class>
+    <Class name = 'OperationCallExp' isAbstract = 'false' supertypes = 'essentialocl::FeaturePropertyCall'>
+      <Reference name = 'argument' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Reference name = 'referredOperation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Operation' opposite = ''/>
+    </Class>
+    <Class name = 'RealLiteralExp' isAbstract = 'false' supertypes = 'essentialocl::NumericLiteralExp'>
+      <Attribute name = 'realSymbol' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'emof::Real'/>
+    </Class>
+    <Class name = 'LiteralExp' isAbstract = 'true' supertypes = 'essentialocl::OclExpression'/>
+    <Class name = 'IterateExp' isAbstract = 'false' supertypes = 'essentialocl::LoopExp'>
+      <Reference name = 'result' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::Variable' opposite = ''/>
+    </Class>
+    <Class name = 'PrimitiveLiteralExp' isAbstract = 'true' supertypes = 'essentialocl::LiteralExp'/>
+    <Class name = 'NumericLiteralExp' isAbstract = 'true' supertypes = 'essentialocl::PrimitiveLiteralExp'/>
+    <Class name = 'CollectionLiteralExp' isAbstract = 'false' supertypes = 'essentialocl::LiteralExp'>
+      <Attribute name = 'kind' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'essentialocl::CollectionKind'/>
+      <Reference name = 'part' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'essentialocl::CollectionLiteralPart' opposite = 'essentialocl::CollectionLiteralPart::CollectionLiteralExp'/>
+    </Class>
+    <Class name = 'CollectionLiteralPart' isAbstract = 'true' supertypes = 'emof::TypedElement'>
+      <Reference name = 'CollectionLiteralExp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'essentialocl::CollectionLiteralExp' opposite = 'essentialocl::CollectionLiteralExp::part'/>
+    </Class>
+    <Class name = 'CollectionItem' isAbstract = 'false' supertypes = 'essentialocl::CollectionLiteralPart'>
+      <Reference name = 'item' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'CollectionRange' isAbstract = 'false' supertypes = 'essentialocl::CollectionLiteralPart'>
+      <Reference name = 'first' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Reference name = 'last' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+    </Class>
+    <Class name = 'TupleLiteralExp' isAbstract = 'false' supertypes = 'essentialocl::LiteralExp'>
+      <Reference name = 'part' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'essentialocl::TupleLiteralPart' opposite = 'essentialocl::TupleLiteralPart::TupleLiteralExp'/>
+    </Class>
+    <Class name = 'NullLiteralExp' isAbstract = 'false' supertypes = 'essentialocl::LiteralExp'/>
+    <Class name = 'ExpressionInOcl' isAbstract = 'false' supertypes = 'essentialocl::OpaqueExpression'>
+      <Reference name = 'bodyExpression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::OclExpression' opposite = ''/>
+      <Reference name = 'context' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::Variable' opposite = ''/>
+      <Reference name = 'resultVariable' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::Variable' opposite = ''/>
+      <Reference name = 'parameterVariable' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'essentialocl::Variable' opposite = ''/>
+    </Class>
+    <Class name = 'OpaqueExpression' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'InvalidLiteralExp' isAbstract = 'false' supertypes = 'essentialocl::LiteralExp'/>
+    <Class name = 'FeaturePropertyCall' isAbstract = 'true' supertypes = 'essentialocl::CallExp'/>
+    <Class name = 'TupleLiteralPart' isAbstract = 'false' supertypes = 'emof::TypedElement'>
+      <Reference name = 'TupleLiteralExp' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'essentialocl::TupleLiteralExp' opposite = 'essentialocl::TupleLiteralExp::part'/>
+      <Reference name = 'attribute' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'emof::Property' opposite = ''/>
+    </Class>
+    <Class name = 'BagType' isAbstract = 'false' supertypes = 'essentialocl::CollectionType'/>
+    <Class name = 'CollectionType' isAbstract = 'true' supertypes = 'emof::DataType'>
+      <Reference name = 'elementType' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::Type' opposite = ''/>
+    </Class>
+    <Class name = 'EnumLiteralExp' isAbstract = 'false' supertypes = 'essentialocl::LiteralExp'>
+      <Reference name = 'referredEnumLiteral' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'emof::EnumerationLiteral' opposite = ''/>
+    </Class>
+    <Class name = 'InvalidType' isAbstract = 'false' supertypes = 'emof::Type'/>
+    <Class name = 'OrderedSetType' isAbstract = 'false' supertypes = 'essentialocl::CollectionType'/>
+    <Class name = 'SequenceType' isAbstract = 'false' supertypes = 'essentialocl::CollectionType'/>
+    <Class name = 'SetType' isAbstract = 'false' supertypes = 'essentialocl::CollectionType'/>
+    <Class name = 'TupleType' isAbstract = 'false' supertypes = 'emof::Class, emof::DataType'/>
+    <Class name = 'VoidType' isAbstract = 'false' supertypes = 'emof::Type'/>
+    <Class name = 'AnyType' isAbstract = 'false' supertypes = 'emof::Class, emof::Type'/>
+  </Package>
+</Metamodel>

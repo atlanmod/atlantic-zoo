@@ -1,0 +1,44 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_ActorConcept"{
+labelloc=t
+color=black
+label=ActorConcept
+ node[shape=record];
+Actor[label="{Actor| | }"]
+ Actor->Goal[arrowhead=none,arrowtail=none,headlabel="goal[*]",taillabel="wanter",group=Goal,minlen=2,constraint=false,]
+ Actor->Resource[arrowhead=none,arrowtail=none,headlabel="resource[*]",taillabel="use",group=Resource,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Goal[label="{Goal| | }"]
+ Goal->Plan[arrowhead=none,arrowtail=none,headlabel="plan[1-*]",taillabel="isFulfilled",group=Plan,minlen=2,constraint=false,]
+ Goal->Dependency[arrowhead=none,arrowtail=none,headlabel="dependencyG[*]",taillabel="goal[0-1]",group=Dependency,minlen=2,constraint=false,]
+;
+ node[shape=record];
+SoftGoal[label="{SoftGoal| | }"]
+ SoftGoal->Goal[arrowhead=onormal,group=Goal,minlen=2,constraint=true,]
+;
+ node[shape=record];
+HardGoal[label="{HardGoal| | }"]
+ HardGoal->Goal[arrowhead=onormal,group=Goal,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Dependency[label="{Dependency| | }"]
+ Dependency->Actor[arrowhead=none,arrowtail=none,headlabel="dependee",taillabel="dependencyE[*]",group=Actor,minlen=2,constraint=false,]
+ Dependency->Actor[arrowhead=none,arrowtail=none,headlabel="depender",taillabel="dependencyR[*]",group=Actor,minlen=2,constraint=false,]
+ Dependency->Goal[arrowhead=none,arrowtail=none,headlabel="WhyG[0-1]",taillabel="dependencyWG[*]",group=Goal,minlen=2,constraint=false,]
+ Dependency->Resource[arrowhead=none,arrowtail=none,headlabel="resourceD[0-1]",taillabel="dependencyR",group=Resource,minlen=2,constraint=false,]
+ Dependency->Plan[arrowhead=none,arrowtail=none,headlabel="WhyP[0-1]",taillabel="dependencyWP[*]",group=Plan,minlen=2,constraint=false,]
+ Dependency->Plan[arrowhead=none,arrowtail=none,headlabel="plan[0-1]",taillabel="dependencyP[*]",group=Plan,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Plan[label="{Plan| | }"]
+ Plan->Actor[arrowhead=none,arrowtail=none,headlabel="capableOf",taillabel="plan[*]",group=Actor,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Resource[label="{Resource| | }"]
+ Resource->Dependency[arrowhead=none,arrowtail=none,headlabel="dependencyWR",taillabel="WhyR[0-1]",group=Dependency,minlen=2,constraint=false,]
+;
+
+}
+}

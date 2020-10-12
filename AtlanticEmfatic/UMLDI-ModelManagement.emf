@@ -1,0 +1,98 @@
+package Metamodel;
+
+package Model_Management {
+  class Package extends Core.GeneralizableElement, Core.Namespace {
+    !ordered val ElementImport[*]#~package elementImport;
+  }
+
+  class Model extends Package {
+  }
+
+  class Subsystem extends Package, Core.Classifier {
+    !unique !ordered attr Boolean[1] isInstantiable;
+  }
+
+  class ElementImport {
+    !ordered ref Package[1]#elementImport ~package;
+    !ordered ref Core.ModelElement[1] importedElement;
+    !unique !ordered attr Data_Types.VisibilityKind visibility;
+    !unique !ordered attr String alias;
+    !unique !ordered attr Boolean[1] isSpecification;
+  }
+
+}
+
+package Core {
+  abstract class Element {
+  }
+
+  abstract class ModelElement extends Element {
+    !ordered ref Namespace#ownedElement namespace;
+    !unique !ordered attr String name;
+    !unique !ordered attr Data_Types.VisibilityKind visibility;
+    !unique !ordered attr Boolean[1] isSpecification;
+  }
+
+  abstract class GeneralizableElement extends ModelElement {
+    !ordered ref Generalization[*]#child generalization;
+    !unique !ordered attr Boolean[1] isRoot;
+    !unique !ordered attr Boolean[1] isLeaf;
+    !unique !ordered attr Boolean[1] isAbstract;
+  }
+
+  abstract class Namespace extends ModelElement {
+    !ordered val ModelElement[*]#namespace ownedElement;
+  }
+
+  abstract class Classifier extends GeneralizableElement, Namespace {
+    !ordered ref Generalization[*]#powertype powertypeRange;
+    val Feature[*]#owner feature;
+  }
+
+  abstract class Feature extends ModelElement {
+    !ordered ref Classifier#feature owner;
+    !unique !ordered attr Data_Types.ScopeKind[1] ownerScope;
+  }
+
+  abstract class Relationship extends ModelElement {
+  }
+
+  class Generalization extends Relationship {
+    !ordered ref GeneralizableElement[1] parent;
+    !ordered ref Classifier#powertypeRange powertype;
+    !ordered ref GeneralizableElement[1]#generalization child;
+    !unique !ordered attr String discriminator;
+  }
+
+}
+
+package Data_Types {
+  enum ScopeKind {
+    sk_instance = 0;
+    sk_classifier = 0;
+  }
+
+  enum VisibilityKind {
+    vk_public = 0;
+    vk_protected = 0;
+    vk_private = 0;
+    vk_package = 0;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Float : "";
+
+  datatype Integer : "";
+
+  datatype Long : "";
+
+  datatype String : "";
+
+  datatype Double : "";
+
+}
+

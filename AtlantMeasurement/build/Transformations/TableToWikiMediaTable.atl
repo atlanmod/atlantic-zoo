@@ -1,0 +1,64 @@
+module TableToWikiMediaTable; -- Module Template
+create OUT : WMTable from IN : Table;
+
+rule Table2Table {
+	
+	from 
+		s: Table!Table
+	
+	to 
+		o : WMTable!Table(
+		border<-1,
+		class<-'sortable hovertable',
+		rows<-Sequence{first}->union(s.rows)
+		),
+		
+		first : WMTable!Row(
+			cells<-s.rows->first().cells->collect(e | thisModule.createHeadingLineCell(e))
+		)
+		
+	--Add a specific treatement for the first line
+}
+
+-- Manage all rows, except for the first one
+rule RowToRow {
+	
+	from
+		s : Table!Row(not (s.refImmediateComposite().rows->first()=s))
+	to
+		o : WMTable!Row(cells<-Sequence{thisModule.createHeadingCell(s.cells->first())}->union(s.cells))
+	
+}
+
+-- Manage all cells except one present in the first row and except the first row
+rule CellToCell {
+	
+	from
+		s : Table!Cell(not (s.refImmediateComposite().refImmediateComposite().rows->first()=
+						s.refImmediateComposite()) 
+						and not (s.refImmediateComposite().cells->first()=s))
+		
+	to
+		o : WMTable!Cell(content<-s.content)
+		
+}
+
+lazy rule createHeadingLineCell {
+	
+	from
+		s : Table!Cell
+	to
+		o : WMTable!Cell(style<-'background:#f0f0f0;',
+			isHeading<-true,
+					 	content<-s.content)
+	
+}
+
+lazy rule createHeadingCell {
+from
+		s : Table!Cell
+	to
+		o : WMTable!Cell(isHeading<-true,
+						content<-s.content)
+
+}

@@ -1,0 +1,223 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'DNSR'>
+    <Class name = 'NamedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Assembly' isAbstract = 'false' supertypes = 'DNSR::NamedElement'>
+      <Attribute name = 'location' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'imageRuntimeVersion' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'evidence' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'codeBase' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'entryPoint' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DNSR::MethodInfo' opposite = ''/>
+      <Reference name = 'modules' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DNSR::Module' opposite = 'DNSR::Module::assembly'/>
+      <Reference name = 'manifestModule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DNSR::Module' opposite = ''/>
+      <Reference name = 'referencedAssembly' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DNSR::Assembly' opposite = ''/>
+      <Reference name = 'manifest' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'DNSR::ManifestResource' opposite = 'DNSR::ManifestResource::assembly'/>
+    </Class>
+    <Class name = 'ManifestResource' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'content' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'assembly' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DNSR::Assembly' opposite = 'DNSR::Assembly::manifest'/>
+    </Class>
+    <Class name = 'Module' isAbstract = 'false' supertypes = 'DNSR::NamedElement'>
+      <Attribute name = 'qualifiedName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'scopeName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'assembly' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DNSR::Assembly' opposite = 'DNSR::Assembly::modules'/>
+      <Reference name = 'types' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DNSR::Type' opposite = 'DNSR::Type::module'/>
+    </Class>
+    <Class name = 'MemberInfo' isAbstract = 'true' supertypes = 'DNSR::NamedElement'>
+      <Attribute name = 'memberType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'DNSR::MemberTypes'/>
+      <Reference name = 'declaringType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DNSR::Type' opposite = 'DNSR::Type::members'/>
+    </Class>
+    <Class name = 'PropertyInfo' isAbstract = 'false' supertypes = 'DNSR::MemberInfo'>
+      <Reference name = 'propertyType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DNSR::Type' opposite = ''/>
+      <Attribute name = 'attributes' lower = '0' upper = '-1' isOrdered = 'false' isUnique = 'false' type = 'DNSR::PropertyAttributes'/>
+    </Class>
+    <Class name = 'FieldInfo' isAbstract = 'false' supertypes = 'DNSR::MemberInfo'>
+      <Reference name = 'fieldType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DNSR::Type' opposite = ''/>
+      <Attribute name = 'attributes' lower = '0' upper = '-1' isOrdered = 'false' isUnique = 'false' type = 'DNSR::FieldAttributes'/>
+    </Class>
+    <Class name = 'EventInfo' isAbstract = 'false' supertypes = 'DNSR::MemberInfo'>
+      <Attribute name = 'isMulticast' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'attributes' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'DNSR::EventAttributes'/>
+      <Reference name = 'eventHandlerType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DNSR::Type' opposite = ''/>
+    </Class>
+    <Class name = 'ParameterInfo' isAbstract = 'false' supertypes = 'DNSR::NamedElement'>
+      <Attribute name = 'defaultValue' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'position' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'attributes' lower = '0' upper = '-1' isOrdered = 'false' isUnique = 'false' type = 'DNSR::ParameterAttributes'/>
+      <Reference name = 'parameterType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DNSR::Type' opposite = ''/>
+      <Reference name = 'member' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DNSR::MethodBase' opposite = 'DNSR::MethodBase::parameters'/>
+    </Class>
+    <Class name = 'MethodBase' isAbstract = 'true' supertypes = 'DNSR::MemberInfo'>
+      <Attribute name = 'attributes' lower = '0' upper = '-1' isOrdered = 'false' isUnique = 'false' type = 'DNSR::MethodAttributes'/>
+      <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DNSR::ParameterInfo' opposite = 'DNSR::ParameterInfo::member'/>
+    </Class>
+    <Class name = 'MethodInfo' isAbstract = 'false' supertypes = 'DNSR::MethodBase'>
+      <Reference name = 'returnType' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DNSR::Type' opposite = ''/>
+    </Class>
+    <Class name = 'ConstructorInfo' isAbstract = 'false' supertypes = 'DNSR::MethodBase'/>
+    <Class name = 'Type' isAbstract = 'false' supertypes = 'DNSR::MemberInfo'>
+      <Attribute name = 'namespace' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'genericParameterAttributes' lower = '0' upper = '-1' isOrdered = 'false' isUnique = 'false' type = 'DNSR::GenericParameterAttributes'/>
+      <Attribute name = 'typeAttributes' lower = '0' upper = '-1' isOrdered = 'false' isUnique = 'false' type = 'DNSR::TypeAttributes'/>
+      <Reference name = 'baseType' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DNSR::Type' opposite = ''/>
+      <Reference name = 'module' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DNSR::Module' opposite = 'DNSR::Module::types'/>
+      <Reference name = 'interfaces' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DNSR::Type' opposite = ''/>
+      <Reference name = 'members' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DNSR::MemberInfo' opposite = 'DNSR::MemberInfo::declaringType'/>
+    </Class>
+    <Enumeration name = 'EventAttributes'>
+      <EnumLiteral name = 'None'/>
+      <EnumLiteral name = 'ReservedMask'/>
+      <EnumLiteral name = 'RTSpecialName'/>
+      <EnumLiteral name = 'SpecialName'/>
+    </Enumeration>
+    <Enumeration name = 'FieldAttributes'>
+      <EnumLiteral name = 'FieldAccessMask'/>
+      <EnumLiteral name = 'PrivateScope'/>
+      <EnumLiteral name = 'Private'/>
+      <EnumLiteral name = 'Assembly'/>
+      <EnumLiteral name = 'Family'/>
+      <EnumLiteral name = 'FamANDAssem'/>
+      <EnumLiteral name = 'FamORAssem'/>
+      <EnumLiteral name = 'Public'/>
+      <EnumLiteral name = 'Shared'/>
+      <EnumLiteral name = 'InitOnly'/>
+      <EnumLiteral name = 'Literal'/>
+      <EnumLiteral name = 'NotSerialized'/>
+      <EnumLiteral name = 'SpecialName'/>
+      <EnumLiteral name = 'PinvokeImpl'/>
+      <EnumLiteral name = 'ReservedMask'/>
+      <EnumLiteral name = 'RTSpecialName'/>
+      <EnumLiteral name = 'HasFieldMarshal'/>
+      <EnumLiteral name = 'HasDefault'/>
+      <EnumLiteral name = 'HasFieldRVA'/>
+      <EnumLiteral name = 'Static'/>
+    </Enumeration>
+    <Enumeration name = 'GenericParameterAttributes'>
+      <EnumLiteral name = 'HasElementType'/>
+      <EnumLiteral name = 'Abstract'/>
+      <EnumLiteral name = 'AnsiClass'/>
+      <EnumLiteral name = 'AutoClass'/>
+      <EnumLiteral name = 'AutoLayout'/>
+      <EnumLiteral name = 'ByRef'/>
+      <EnumLiteral name = 'Class'/>
+      <EnumLiteral name = 'COMObject'/>
+      <EnumLiteral name = 'Contextful'/>
+      <EnumLiteral name = 'Enum'/>
+      <EnumLiteral name = 'ExplicitLayout'/>
+      <EnumLiteral name = 'Import'/>
+      <EnumLiteral name = 'Interface'/>
+      <EnumLiteral name = 'LayoutSequential'/>
+      <EnumLiteral name = 'MarshalByRef'/>
+      <EnumLiteral name = 'NestedAssembly'/>
+      <EnumLiteral name = 'NestedFamADNAssem'/>
+      <EnumLiteral name = 'NestedFamily'/>
+      <EnumLiteral name = 'NestedFamORAssem'/>
+      <EnumLiteral name = 'NestedPrivate'/>
+      <EnumLiteral name = 'NestedPublic'/>
+      <EnumLiteral name = 'NotPublic'/>
+      <EnumLiteral name = 'Pointer'/>
+      <EnumLiteral name = 'Primitive'/>
+      <EnumLiteral name = 'Public'/>
+      <EnumLiteral name = 'Sealed'/>
+      <EnumLiteral name = 'Serializable'/>
+      <EnumLiteral name = 'SpecialName'/>
+      <EnumLiteral name = 'UnicodeClass'/>
+      <EnumLiteral name = 'ValueType'/>
+    </Enumeration>
+    <Enumeration name = 'MemberTypes'>
+      <EnumLiteral name = 'Constructor'/>
+      <EnumLiteral name = 'Event'/>
+      <EnumLiteral name = 'Field'/>
+      <EnumLiteral name = 'Method'/>
+      <EnumLiteral name = 'Property'/>
+      <EnumLiteral name = 'TypeInfo'/>
+      <EnumLiteral name = 'Custom'/>
+      <EnumLiteral name = 'NestedType'/>
+      <EnumLiteral name = 'All'/>
+    </Enumeration>
+    <Enumeration name = 'MethodAttributes'>
+      <EnumLiteral name = 'Abstract'/>
+      <EnumLiteral name = 'Assembly'/>
+      <EnumLiteral name = 'ChekedAccessOnOverride'/>
+      <EnumLiteral name = 'FamADNAssem'/>
+      <EnumLiteral name = 'Family'/>
+      <EnumLiteral name = 'FamORAssem'/>
+      <EnumLiteral name = 'Final'/>
+      <EnumLiteral name = 'HasSecurity'/>
+      <EnumLiteral name = 'HideBySig'/>
+      <EnumLiteral name = 'MemberAccessMask'/>
+      <EnumLiteral name = 'NewSlot'/>
+      <EnumLiteral name = 'PInvokeImpl'/>
+      <EnumLiteral name = 'Private'/>
+      <EnumLiteral name = 'PrivateScope'/>
+      <EnumLiteral name = 'Public'/>
+      <EnumLiteral name = 'RequiredSecObject'/>
+      <EnumLiteral name = 'ReservedMask'/>
+      <EnumLiteral name = 'ReuseSlot'/>
+      <EnumLiteral name = 'RTSpecialName'/>
+      <EnumLiteral name = 'SpecialName'/>
+      <EnumLiteral name = 'Static'/>
+      <EnumLiteral name = 'UnmanagedExport'/>
+      <EnumLiteral name = 'Virtual'/>
+      <EnumLiteral name = 'VtableLayoutMask'/>
+    </Enumeration>
+    <Enumeration name = 'ParameterAttributes'>
+      <EnumLiteral name = 'HasDefault'/>
+      <EnumLiteral name = 'HasDefaultMArshal'/>
+      <EnumLiteral name = 'In'/>
+      <EnumLiteral name = 'Lcid'/>
+      <EnumLiteral name = 'None'/>
+      <EnumLiteral name = 'Optional'/>
+      <EnumLiteral name = 'Out'/>
+      <EnumLiteral name = 'Reserved3'/>
+      <EnumLiteral name = 'Reserved4'/>
+      <EnumLiteral name = 'ReservedMask'/>
+      <EnumLiteral name = 'RetVal'/>
+    </Enumeration>
+    <Enumeration name = 'PropertyAttributes'>
+      <EnumLiteral name = 'NotSupported'/>
+      <EnumLiteral name = 'Optional'/>
+      <EnumLiteral name = 'Read'/>
+      <EnumLiteral name = 'Required'/>
+      <EnumLiteral name = 'Write'/>
+    </Enumeration>
+    <Enumeration name = 'TypeAttributes'>
+      <EnumLiteral name = 'Abstract'/>
+      <EnumLiteral name = 'AnsiClass'/>
+      <EnumLiteral name = 'AutoClass'/>
+      <EnumLiteral name = 'AutoLayout'/>
+      <EnumLiteral name = 'BeforFieldInit'/>
+      <EnumLiteral name = 'Class'/>
+      <EnumLiteral name = 'ClassSemanticsMask'/>
+      <EnumLiteral name = 'ExplicitLayout'/>
+      <EnumLiteral name = 'HasSecutity'/>
+      <EnumLiteral name = 'Import'/>
+      <EnumLiteral name = 'Interface'/>
+      <EnumLiteral name = 'LayoutMask'/>
+      <EnumLiteral name = 'NestedAssembly'/>
+      <EnumLiteral name = 'NestedFamADNAssem'/>
+      <EnumLiteral name = 'NestedFamily'/>
+      <EnumLiteral name = 'NestedFamORAssem'/>
+      <EnumLiteral name = 'NestedPrivate'/>
+      <EnumLiteral name = 'NestedPublic'/>
+      <EnumLiteral name = 'NotPublic'/>
+      <EnumLiteral name = 'Public'/>
+      <EnumLiteral name = 'ReservedMask'/>
+      <EnumLiteral name = 'RTSpecialName'/>
+      <EnumLiteral name = 'Sealed'/>
+      <EnumLiteral name = 'SequentialLayout'/>
+      <EnumLiteral name = 'Serializable'/>
+      <EnumLiteral name = 'SpecialName'/>
+      <EnumLiteral name = 'StringFormatMask'/>
+      <EnumLiteral name = 'UnicodeClass'/>
+      <EnumLiteral name = 'VisibilityMask'/>
+    </Enumeration>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+  </Package>
+</Metamodel>

@@ -1,0 +1,94 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'SQLDML'>
+    <Class name = 'LocatedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'location' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsBefore' lower = '0' upper = '-1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsAfter' lower = '0' upper = '-1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'SQLRoot' isAbstract = 'false' supertypes = 'SQLDML::LocatedElement'>
+      <Reference name = 'statements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SQLDML::Statement' opposite = ''/>
+    </Class>
+    <Class name = 'Statement' isAbstract = 'true' supertypes = 'SQLDML::LocatedElement'/>
+    <Class name = 'ViewStatement' isAbstract = 'false' supertypes = 'SQLDML::Statement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'columns' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SQLDML::ColumnExp' opposite = ''/>
+      <Reference name = 'query' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SQLDML::QueryStmt' opposite = ''/>
+    </Class>
+    <Class name = 'InsertStmt' isAbstract = 'false' supertypes = 'SQLDML::Statement'>
+      <Attribute name = 'tableName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'values' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SQLDML::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'QueryStmt' isAbstract = 'true' supertypes = 'SQLDML::Statement'>
+      <Reference name = 'tables' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SQLDML::Table' opposite = ''/>
+      <Reference name = 'condition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SQLDML::WhereClause' opposite = ''/>
+    </Class>
+    <Class name = 'QueryStmtCol' isAbstract = 'false' supertypes = 'SQLDML::QueryStmt'>
+      <Reference name = 'columns' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SQLDML::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'QueryStmtAllCol' isAbstract = 'false' supertypes = 'SQLDML::QueryStmt'/>
+    <Class name = 'NamedElement' isAbstract = 'true' supertypes = 'SQLDML::LocatedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Table' isAbstract = 'false' supertypes = 'SQLDML::NamedElement'>
+      <Attribute name = 'alias' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'WhereClause' isAbstract = 'false' supertypes = 'SQLDML::LocatedElement'>
+      <Reference name = 'expression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SQLDML::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'Expression' isAbstract = 'true' supertypes = 'SQLDML::LocatedElement'/>
+    <Class name = 'BinaryExp' isAbstract = 'true' supertypes = 'SQLDML::Expression'>
+      <Attribute name = 'opName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'leftExp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SQLDML::Expression' opposite = ''/>
+      <Reference name = 'rightExp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SQLDML::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'OrExp' isAbstract = 'false' supertypes = 'SQLDML::BinaryExp'/>
+    <Class name = 'AndExp' isAbstract = 'false' supertypes = 'SQLDML::BinaryExp'/>
+    <Class name = 'NotExp' isAbstract = 'false' supertypes = 'SQLDML::Expression'>
+      <Attribute name = 'opName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'valueExp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SQLDML::Expression' opposite = ''/>
+      <Reference name = 'unused' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SQLDML::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'LikeExp' isAbstract = 'false' supertypes = 'SQLDML::Expression'>
+      <Attribute name = 'columnName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'expression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SQLDML::StringValueExp' opposite = ''/>
+    </Class>
+    <Class name = 'InExp' isAbstract = 'false' supertypes = 'SQLDML::Expression'>
+      <Attribute name = 'columnName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'elements' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SQLDML::Predicate' opposite = ''/>
+    </Class>
+    <Class name = 'OperationExp' isAbstract = 'false' supertypes = 'SQLDML::BinaryExp'>
+      <Attribute name = 'optName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Predicate' isAbstract = 'true' supertypes = 'SQLDML::Expression'/>
+    <Class name = 'QueryPredicate' isAbstract = 'false' supertypes = 'SQLDML::Expression'>
+      <Reference name = 'query' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SQLDML::QueryStmt' opposite = ''/>
+    </Class>
+    <Class name = 'ColumnExp' isAbstract = 'false' supertypes = 'SQLDML::Predicate, SQLDML::NamedElement'>
+      <Attribute name = 'alias' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SQLDML::DataType' opposite = ''/>
+    </Class>
+    <Class name = 'ValueExp' isAbstract = 'true' supertypes = 'SQLDML::Predicate'>
+      <Reference name = 'type' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SQLDML::DataType' opposite = ''/>
+    </Class>
+    <Class name = 'StringValueExp' isAbstract = 'false' supertypes = 'SQLDML::ValueExp'>
+      <Attribute name = 'aValue' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'IntegerValueExp' isAbstract = 'false' supertypes = 'SQLDML::ValueExp'>
+      <Attribute name = 'aValue' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'ListExp' isAbstract = 'false' supertypes = 'SQLDML::Predicate'>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SQLDML::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'FunctionExp' isAbstract = 'false' supertypes = 'SQLDML::Predicate'>
+      <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SQLDML::Expression' opposite = ''/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'DataType' isAbstract = 'false' supertypes = 'SQLDML::NamedElement'/>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

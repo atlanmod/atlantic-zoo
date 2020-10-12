@@ -1,0 +1,72 @@
+-- @name			SecureUML
+-- @version			1.0
+-- @authors			Youssef Srour (Srour.youssef@gmail.com)
+-- @date			2006/07/19
+-- @description		This metamodel describes SecureUML.
+-- @see        	 	http://delivery.acm.org/10.1145/1130000/1125810/p39-basin.pdf?key1=1125810&key2=6220095511&coll=GUIDE&dl=&CFID=15151515&CFTOKEN=6184618
+
+package SecureUML{
+
+--Begin class Role
+	class Group extends Subject{
+		reference subjectGroup[*] container: Subject oppositeOf group;
+	}-- End class Role
+	
+--Begin class User
+	class User extends Subject{
+		
+	}-- End class User
+	
+--Begin class Subject
+	class Subject{
+		reference group : Group oppositeOf subjectGroup;
+		reference role[*] : Role oppositeOf subjectAssignment;
+	}-- End class Subject
+	
+--Begin class Role
+	class Role{
+		reference roleHierarchy[*] container: Role;
+		reference subjectAssignment[*] : Subject oppositeOf role;
+		reference permissionAssignment[*] : Permission oppositeOf role;
+	}-- End class Role
+	
+--Begin class Permission
+	class Permission{
+		reference role[*] : Role oppositeOf permissionAssignment;
+		reference constraintAssignment[0-1] : AuthorizationConstraint oppositeOf permission;
+		reference actionAssignment[1-*] : Action oppositeOf permission;
+	}-- End class Permission
+	
+--Begin class AuthorizationConstraint
+	class AuthorizationConstraint{
+		reference permission[0-*] : Permission oppositeOf constraintAssignment;
+	}-- End class AuthorizationConstraint
+--Begin class AtomicAction
+	class AtomicAction extends Action{
+		
+	}-- End class AtomicAction
+	
+--Begin class CompositeAction
+	class CompositeAction  extends Action{
+		reference subordinatedAction[0-*] container: Action oppositeOf actionHyerarchy;
+	}-- End class CompositeAction
+	
+--Begin class Action
+
+	class Action{
+		reference permission[0-*] : Permission oppositeOf actionAssignment;
+		reference resource : Resource oppositeOf resourceAction;
+		reference actionHyerarchy[0-*] : CompositeAction oppositeOf subordinatedAction;
+	}-- End class Action
+	
+--Begin class Resource
+	class Resource{
+		reference resourceAction[0-*] container: Action oppositeOf resource;
+	}-- End class Resource
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+	datatype Integer;
+}

@@ -1,0 +1,261 @@
+-- @name		fm3
+-- @version		1.0
+-- @authors		Guillaume Doux
+-- @date		2010/05/11
+-- @description	the mse language
+
+-- The different sections of a TCS model have been enclosed between BEGIN and END
+-- comments below. Additional information is provided below each BEGIN comment.
+-- The main sections of interest are "Class templates", and
+-- "Operator table" (the latter only for DSLs using operators).
+syntax fm3 {
+
+-- BEGIN Primitive templates
+-- Specifies representation of primitive types.
+-- Only needs modification when default lexer is not satisfactory.
+-- Generally modified along with the lexer.
+	primitiveTemplate identifier for String default using NAME:
+		value = "%token%";
+
+	primitiveTemplate stringSymbol for String using STRING:
+		value = "ei.unescapeString(%token%, 1)",
+		serializer="'\'' + %value%.toCString() + '\''";
+
+	primitiveTemplate integerSymbol for Integer default using INT:
+		value = "Integer.valueOf(%token%)";
+
+	primitiveTemplate floatSymbol for Double default using FLOAT:
+		value = "Double.valueOf(%token%)";
+-- END Primitive templates
+
+-- BEGIN Class templates
+-- Specifies representation of classes.
+-- This is the main section to work on.
+	template Root main
+		:	"(" [ elements ] ")"
+		;
+
+	template Element abstract
+		;
+		
+	template Class context addToContext
+		:	"(" "FM3.Class"
+				(isDefined(ID) ? "(" "id:" ID ")" )
+				"(" "name" name{as=stringSymbol} ")"
+				(abstract ? "(" "abstract" "true" ")")
+				(primitive ? "(" "primitive" "true" ")")
+				(root ? "(" "root" "true" ")")
+				(isDefined(superclass) ? "(" "superclass" superclass ")")--{refersTo=name} ")")
+				(isDefined(attributes) ? "(" "attributes" [ attributes ]")")
+			")"
+		;
+	
+	template Package addToContext
+		:	"(" "FM3.Package" 
+				(isDefined(ID) ? "(" "id:" ID ")" )
+				"(" "name" name{as=stringSymbol} ")"
+				(isDefined(classes) ? "(" "classes" [ classes ] ")")
+				(isDefined(extensions) ? "(" "extensions" [ extensions{refersTo=name} ] ")")
+			")"
+		;
+		
+	template Property addToContext
+		:	"(" "FM3.Property"
+				(isDefined(ID) ? "(" "id:" ID ")" )
+				"(" "name" name{as=stringSymbol} ")"		
+				(container ? "(" "container" "true" ")")
+				(derived ? "(" "derived" "true" ")")
+				(multivaluated ? "(" "multivalued" "true" ")")
+				"(" "type " type ")"
+				(isDefined(opposite) ? "(" "opposite" opposite ")" )--{refersTo=name, lookIn = type.class} ")")
+				
+			")"
+		;
+		
+	template ClassRef abstract
+		;
+		
+	template FullClassRef
+		:	"(" "ref:" class{refersTo=ID} ")"
+		;
+		
+	template PTClassRef
+		:	"(" "ref:" name ")"
+		;
+		
+--	enumerationTemplate ReservedType
+--		:	#String = "String",
+--			#Number = "Number",
+--			#Boolean = "Boolean",
+--			#Oblect = "Object"
+--		;
+	
+-- END Class templates
+
+-- BEGIN Special symbols
+-- Possible modifications:
+--	- Addition of new symbols.
+--	- Modification of spaces information.
+--	- Removal of unused symbols so that using these symbols results in lexical
+--	error rather than parsing error.
+	symbols {
+		lsquare		= "[";
+		rsquare		= "]"	: rightSpace;
+		excl		= "!";
+		coma		= ","	: leftNone, rightSpace;
+		lparen		= "(";
+		rparen		= ")"	: leftNone, rightSpace;
+		lcurly		= "{"	: leftSpace;
+		rcurly		= "}"	: leftNone, rightSpace;
+		semi		= ";"	: leftNone, rightSpace;
+		colon		= ":"	: leftSpace, rightSpace;
+		pipe		= "|"	: leftSpace, rightSpace;
+		sharp		= "#"	: leftSpace;
+		qmark		= "?";
+		coloncolon	= "::"	: leftNone, rightNone;
+
+		-- operator symbols
+		point		= "."	: leftNone;
+		rarrow		= "->"	: leftNone;
+		minus		= "-"	: leftSpace, rightSpace;
+		star		= "*"	: leftSpace, rightSpace;
+		slash		= "/"	: leftSpace, rightSpace;
+		plus		= "+"	: leftSpace, rightSpace;
+		eq			= "="	: leftSpace, rightSpace;
+		gt			= ">"	: leftSpace, rightSpace;
+		lt			= "<"	: leftSpace, rightSpace;
+		ge			= ">="	: leftSpace, rightSpace;
+		le			= "<="	: leftSpace, rightSpace;
+		ne			= "<>"	: leftSpace, rightSpace;
+		larrow		= "<-"	: leftSpace, rightSpace;
+	}
+-- END Special symbols
+
+-- BEGIN Operator table
+-- Defines all operators with their priority, arity, and associativity.
+-- All defined operators must be used in operator templates.
+
+-- Specify operator table(s) here if necessary.
+
+-- END Operator table
+
+
+-- BEGIN Lexer
+-- Specifies the lexical entities.
+-- Only needs modification when default lexer is not satisfactory.
+-- Generally modified along with Primitive templates.
+	token COMMENT	: multiLine(start = "\"", end = "\"", esc = "\\");
+	token STRING	: multiLine(start = "\'", end = "\'", esc = "\\");
+
+	lexer = "
+%options testLiterals = false;
+
+NL
+	:	(	'\\r' '\\n'
+		|	'\\n' '\\r'	//Improbable
+		|	'\\r'
+		|	'\\n'
+		)
+	{newline();}
+	;
+
+WS
+	:	(	' '
+		|	'\\t'
+		)
+	;
+
+%protected
+DIGIT
+	:	'0'..'9'
+	;
+
+%protected
+ALPHA
+	:	'a'..'z'
+	|	'A'..'Z'
+	|	'_'
+	//For Unicode compatibility (from 0000 to 00ff)
+	|	'\\u00C0' .. '\\u00D6'
+	|	'\\u00D8' .. '\\u00F6'
+	|	'\\u00F8' .. '\\u00FF'
+	;
+
+%protected
+SNAME
+%v2	options {
+%v2		testLiterals = true;
+%v2	}
+	:	(ALPHA) (ALPHA | DIGIT)*
+;
+
+NAME
+	:	(
+%v3			SNAME
+%v2			s:SNAME {if(s.getType() != SNAME) $setType(s.getType());}
+		|	'\"'!
+			(	ESC
+			|	'\\n' {newline();}
+			|	~('\\\\'|'\\\"'|'\\n')
+			)*
+			'\"'!
+%v3			{setText(ei.unescapeString(getText(), 1));}
+		)
+	;
+
+INT
+	:	(DIGIT)+
+%v2		(('.' DIGIT)=> '.' (DIGIT)+ {$setType(FLOAT);})?
+	;
+
+%v3	FLOAT	:	DIGIT+ '.' DIGIT*	;
+
+%protected
+ESC
+	:	'\\\\'!
+		(	'n' %v2{%setText(\"\\n\");}
+		|	'r' %v2{%setText(\"\\r\");}
+		|	't' %v2{%setText(\"\\t\");}
+		|	'b' %v2{%setText(\"\\b\");}
+		|	'f' %v2{%setText(\"\\f\");}
+		|	'\"' %v2{%setText(\"\\\"\");}
+		|	'\\'' %v2{%setText(\"\\'\");}
+		|	'\\\\' %v2{%setText(\"\\\\\");}
+		|	(
+				('0'..'3')
+				(
+%v2					options {
+%v2						warnWhenFollowAmbig = false;
+%v2					}
+				:	('0'..'7')
+					(
+%v2						options {
+%v2							warnWhenFollowAmbig = false;
+%v2						}
+					:	'0'..'7'
+					)?
+				)?
+			|	('4'..'7')
+				(
+%v2					options {
+%v2						warnWhenFollowAmbig = false;
+%v2					}
+				:	('0'..'7')
+				)?
+			)
+				{
+%v2					String s = %getText;
+%v2					int i;
+%v2					int ret = 0;
+%v2					String ans;
+%v2					for (i=0; i<s.length(); ++i)
+%v2						ret = ret*8 + s.charAt(i) - '0';
+%v2					ans = String.valueOf((char) ret);
+%v2					%setText(ans);
+				}
+		)
+	;
+	";
+-- END Lexer
+
+}

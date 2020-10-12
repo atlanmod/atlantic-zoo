@@ -1,0 +1,83 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'PluginEclipse'>
+    <Class name = 'LocatedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'location' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsBefore' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsAfter' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Enumeration name = 'Resolution'>
+      <EnumLiteral name = 'Mandatory'/>
+      <EnumLiteral name = 'Optional'/>
+    </Enumeration>
+    <Enumeration name = 'Visibility'>
+      <EnumLiteral name = 'Private'/>
+      <EnumLiteral name = 'Reexport'/>
+    </Enumeration>
+    <Class name = 'Eclipse' isAbstract = 'false' supertypes = 'PluginEclipse::LocatedElement'>
+      <Reference name = 'bundles' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PluginEclipse::Bundle' opposite = ''/>
+      <Reference name = 'packages' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PluginEclipse::Package' opposite = ''/>
+    </Class>
+    <Class name = 'Bundle' isAbstract = 'false' supertypes = 'PluginEclipse::LocatedElement'>
+      <Attribute name = 'symbolicName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'singleton' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'manifestVersion' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'require' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PluginEclipse::RequiredBundle' opposite = ''/>
+      <Reference name = 'version' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PluginEclipse::Version' opposite = ''/>
+      <Reference name = 'export' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PluginEclipse::ExportedPackage' opposite = ''/>
+      <Reference name = 'import' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PluginEclipse::ImportedPackage' opposite = ''/>
+      <Reference name = 'packages' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PluginEclipse::Package' opposite = ''/>
+    </Class>
+    <Class name = 'RequireBundleAttribute' isAbstract = 'true' supertypes = 'PluginEclipse::LocatedElement'/>
+    <Class name = 'AttResolution' isAbstract = 'false' supertypes = 'PluginEclipse::RequireBundleAttribute'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PluginEclipse::Resolution'/>
+    </Class>
+    <Class name = 'AttVisibility' isAbstract = 'false' supertypes = 'PluginEclipse::RequireBundleAttribute'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PluginEclipse::Visibility'/>
+    </Class>
+    <Class name = 'Range' isAbstract = 'false' supertypes = 'PluginEclipse::RequireBundleAttribute'>
+      <Attribute name = 'isLeftInclusive' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isRightInclusive' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'lowerBound' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PluginEclipse::Version' opposite = ''/>
+      <Reference name = 'upperBound' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PluginEclipse::Version' opposite = ''/>
+    </Class>
+    <Class name = 'Version' isAbstract = 'false' supertypes = 'PluginEclipse::LocatedElement'>
+      <Attribute name = 'major' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'minor' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'micro' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'qualification' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'RequiredBundle' isAbstract = 'false' supertypes = 'PluginEclipse::LocatedElement'>
+      <Reference name = 'requireBundleAttribute' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'PluginEclipse::RequireBundleAttribute' opposite = ''/>
+      <Reference name = 'bundle' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PluginEclipse::Bundle' opposite = ''/>
+    </Class>
+    <Class name = 'ImportedPackage' isAbstract = 'false' supertypes = 'PluginEclipse::LocatedElement'>
+      <Attribute name = 'resolution' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PluginEclipse::Resolution'/>
+      <Reference name = 'package' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PluginEclipse::Package' opposite = 'PluginEclipse::Package::importedBy'/>
+      <Reference name = 'range' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PluginEclipse::Range' opposite = ''/>
+    </Class>
+    <Class name = 'ExportedPackage' isAbstract = 'false' supertypes = 'PluginEclipse::LocatedElement'>
+      <Reference name = 'package' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PluginEclipse::Package' opposite = 'PluginEclipse::Package::exportedBy'/>
+      <Reference name = 'version' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PluginEclipse::Version' opposite = ''/>
+      <Reference name = 'xFriends' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'PluginsEclipse::Xfriends' opposite = ''/>
+    </Class>
+    <Class name = 'Package' isAbstract = 'false' supertypes = 'PluginEclipse::LocatedElement'>
+      <Attribute name = 'fqn' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'importedBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PluginEclipse::ImportedPackage' opposite = 'PluginEclipse::ImportedPackage::package'/>
+      <Reference name = 'exportedBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PluginEclipse::ExportedPackage' opposite = 'PluginEclipse::ExportedPackage::package'/>
+    </Class>
+  </Package>
+  <Package name = 'PluginsEclipse'>
+    <Class name = 'Xfriends' isAbstract = 'false' supertypes = 'PluginEclipse::LocatedElement'>
+      <Reference name = 'bundles' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'PluginEclipse::Bundle' opposite = ''/>
+    </Class>
+    <Class name = 'Xinternal' isAbstract = 'false' supertypes = 'PluginEclipse::ExportedPackage'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

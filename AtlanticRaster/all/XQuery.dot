@@ -1,0 +1,101 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_XQuery"{
+labelloc=t
+color=black
+label=XQuery
+ node[shape=record];
+XQueryProgram[label="{XQueryProgram| | }"]
+;
+ node[shape=record];
+Expression[label="{Expression| | }"]
+ Expression->ElementNode[arrowhead=diamond,arrowtail=none,headlabel="parentNode[0-1]",taillabel="nodes[*]",group=ElementNode,minlen=2,constraint=true,]
+ Expression->Return[arrowhead=diamond,arrowtail=none,headlabel="returnEx",taillabel="expressions[*]",group=Return,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExecutableExpression[label="{ExecutableExpression| | }"]
+ ExecutableExpression->XQueryProgram[arrowhead=diamond,arrowtail=none,headlabel="xQueryProgram",taillabel="expressions[*]{ordered}",group=XQueryProgram,minlen=2,constraint=true,]
+ ExecutableExpression->FunctionDeclaration[arrowhead=diamond,arrowtail=none,headlabel="functionDeclaration",taillabel="expression[1-*]",group=FunctionDeclaration,minlen=2,constraint=true,]
+ ExecutableExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Node[label="{Node|name : String| }"]
+ Node->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FLWOR[label="{FLWOR| | }"]
+ FLWOR->ExecutableExpression[arrowhead=onormal,group=ExecutableExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FunctionCall[label="{FunctionCall|name : String| }"]
+ FunctionCall->ExecutableExpression[arrowhead=onormal,group=ExecutableExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FunctionDeclaration[label="{FunctionDeclaration|name : String| }"]
+ FunctionDeclaration->ExecutableExpression[arrowhead=onormal,group=ExecutableExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ElementNode[label="{ElementNode| | }"]
+ ElementNode->Node[arrowhead=onormal,group=Node,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AttributeNode[label="{AttributeNode|value : String| }"]
+ AttributeNode->Node[arrowhead=onormal,group=Node,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TextNode[label="{TextNode| | }"]
+ TextNode->ElementNode[arrowhead=onormal,group=ElementNode,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReturnXPath[label="{ReturnXPath|value : String| }"]
+ ReturnXPath->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XPath[label="{XPath| | }"]
+ XPath->FunctionCall[arrowhead=diamond,arrowtail=none,headlabel="functionCall",taillabel="parameters[*]",group=FunctionCall,minlen=2,constraint=true,]
+ XPath->For[arrowhead=diamond,arrowtail=none,headlabel="for",taillabel="expression",group=For,minlen=2,constraint=true,]
+ XPath->Let[arrowhead=diamond,arrowtail=none,headlabel="let",taillabel="expression",group=Let,minlen=2,constraint=true,]
+ XPath->ReturnXPath[arrowhead=onormal,group=ReturnXPath,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BooleanExp[label="{BooleanExp| | }"]
+ BooleanExp->Where[arrowhead=diamond,arrowtail=none,headlabel="where",taillabel="expression",group=Where,minlen=2,constraint=true,]
+ BooleanExp->XPath[arrowhead=onormal,group=XPath,minlen=2,constraint=true,]
+;
+ node[shape=record];
+For[label="{For|var : String| }"]
+ For->FLWOR[arrowhead=diamond,arrowtail=none,headlabel="flwor",taillabel="for",group=FLWOR,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Let[label="{Let|var : String| }"]
+ Let->FLWOR[arrowhead=diamond,arrowtail=none,headlabel="flwor",taillabel="let",group=FLWOR,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Where[label="{Where| | }"]
+ Where->FLWOR[arrowhead=diamond,arrowtail=none,headlabel="flwor",taillabel="where",group=FLWOR,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OrderBy[label="{OrderBy| | }"]
+ OrderBy->FLWOR[arrowhead=diamond,arrowtail=diamond,headlabel="flwor",taillabel="orderBy",group=FLWOR,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Return[label="{Return| | }"]
+ Return->FLWOR[arrowhead=diamond,arrowtail=none,headlabel="flwor",taillabel="return",group=FLWOR,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

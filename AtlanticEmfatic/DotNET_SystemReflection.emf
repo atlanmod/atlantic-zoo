@@ -1,0 +1,249 @@
+package Metamodel;
+
+package DNSR {
+  abstract class NamedElement {
+    !unique !ordered attr String[1] name;
+  }
+
+  class Assembly extends NamedElement {
+    !unique !ordered attr String[1] location;
+    !unique !ordered attr String[1] imageRuntimeVersion;
+    !unique !ordered attr String[1] evidence;
+    !unique !ordered attr String[1] codeBase;
+    !ordered ref MethodInfo[1] entryPoint;
+    !ordered val Module[*]#assembly modules;
+    !ordered ref Module[1] manifestModule;
+    !ordered ref Assembly[*] referencedAssembly;
+    !ordered val ManifestResource[1]#assembly manifest;
+  }
+
+  class ManifestResource {
+    !unique !ordered attr String[1] content;
+    !ordered ref Assembly[1]#manifest assembly;
+  }
+
+  class Module extends NamedElement {
+    !unique !ordered attr String[1] qualifiedName;
+    !unique !ordered attr String[1] scopeName;
+    !ordered ref Assembly[1]#modules assembly;
+    !ordered val Type[*]#module types;
+  }
+
+  abstract class MemberInfo extends NamedElement {
+    !unique !ordered attr MemberTypes[1] memberType;
+    !ordered ref Type[1]#members declaringType;
+  }
+
+  class PropertyInfo extends MemberInfo {
+    !ordered ref Type[1] propertyType;
+    !unique !ordered attr PropertyAttributes[*] attributes;
+  }
+
+  class FieldInfo extends MemberInfo {
+    !ordered ref Type[1] fieldType;
+    !unique !ordered attr FieldAttributes[*] attributes;
+  }
+
+  class EventInfo extends MemberInfo {
+    !unique !ordered attr Boolean isMulticast;
+    !unique !ordered attr EventAttributes attributes;
+    !ordered ref Type[1] eventHandlerType;
+  }
+
+  class ParameterInfo extends NamedElement {
+    !unique !ordered attr String defaultValue;
+    !unique !ordered attr Integer[1] position;
+    !unique !ordered attr ParameterAttributes[*] attributes;
+    !ordered ref Type[1] parameterType;
+    !ordered ref MethodBase[1]#parameters member;
+  }
+
+  abstract class MethodBase extends MemberInfo {
+    !unique !ordered attr MethodAttributes[*] attributes;
+    !ordered val ParameterInfo[*]#member parameters;
+  }
+
+  class MethodInfo extends MethodBase {
+    !ordered ref Type returnType;
+  }
+
+  class ConstructorInfo extends MethodBase {
+  }
+
+  class Type extends MemberInfo {
+    !unique !ordered attr String[1] namespace;
+    !unique !ordered attr GenericParameterAttributes[*] genericParameterAttributes;
+    !unique !ordered attr TypeAttributes[*] typeAttributes;
+    !ordered ref Type baseType;
+    !ordered ref Module[1]#types module;
+    !ordered ref Type[*] interfaces;
+    !ordered val MemberInfo[*]#declaringType members;
+  }
+
+  enum EventAttributes {
+    None = 0;
+    ReservedMask = 0;
+    RTSpecialName = 0;
+    SpecialName = 0;
+  }
+
+  enum FieldAttributes {
+    FieldAccessMask = 0;
+    PrivateScope = 0;
+    Private = 0;
+    Assembly = 0;
+    Family = 0;
+    FamANDAssem = 0;
+    FamORAssem = 0;
+    Public = 0;
+    Shared = 0;
+    InitOnly = 0;
+    Literal = 0;
+    NotSerialized = 0;
+    SpecialName = 0;
+    PinvokeImpl = 0;
+    ReservedMask = 0;
+    RTSpecialName = 0;
+    HasFieldMarshal = 0;
+    HasDefault = 0;
+    HasFieldRVA = 0;
+    Static = 0;
+  }
+
+  enum GenericParameterAttributes {
+    HasElementType = 0;
+    Abstract = 0;
+    AnsiClass = 0;
+    AutoClass = 0;
+    AutoLayout = 0;
+    ByRef = 0;
+    Class = 0;
+    COMObject = 0;
+    Contextful = 0;
+    Enum = 0;
+    ExplicitLayout = 0;
+    Import = 0;
+    Interface = 0;
+    LayoutSequential = 0;
+    MarshalByRef = 0;
+    NestedAssembly = 0;
+    NestedFamADNAssem = 0;
+    NestedFamily = 0;
+    NestedFamORAssem = 0;
+    NestedPrivate = 0;
+    NestedPublic = 0;
+    NotPublic = 0;
+    Pointer = 0;
+    Primitive = 0;
+    Public = 0;
+    Sealed = 0;
+    Serializable = 0;
+    SpecialName = 0;
+    UnicodeClass = 0;
+    ValueType = 0;
+  }
+
+  enum MemberTypes {
+    Constructor = 0;
+    Event = 0;
+    Field = 0;
+    Method = 0;
+    Property = 0;
+    TypeInfo = 0;
+    Custom = 0;
+    NestedType = 0;
+    All = 0;
+  }
+
+  enum MethodAttributes {
+    Abstract = 0;
+    Assembly = 0;
+    ChekedAccessOnOverride = 0;
+    FamADNAssem = 0;
+    Family = 0;
+    FamORAssem = 0;
+    Final = 0;
+    HasSecurity = 0;
+    HideBySig = 0;
+    MemberAccessMask = 0;
+    NewSlot = 0;
+    PInvokeImpl = 0;
+    Private = 0;
+    PrivateScope = 0;
+    Public = 0;
+    RequiredSecObject = 0;
+    ReservedMask = 0;
+    ReuseSlot = 0;
+    RTSpecialName = 0;
+    SpecialName = 0;
+    Static = 0;
+    UnmanagedExport = 0;
+    Virtual = 0;
+    VtableLayoutMask = 0;
+  }
+
+  enum ParameterAttributes {
+    HasDefault = 0;
+    HasDefaultMArshal = 0;
+    In = 0;
+    Lcid = 0;
+    None = 0;
+    Optional = 0;
+    Out = 0;
+    Reserved3 = 0;
+    Reserved4 = 0;
+    ReservedMask = 0;
+    RetVal = 0;
+  }
+
+  enum PropertyAttributes {
+    NotSupported = 0;
+    Optional = 0;
+    Read = 0;
+    Required = 0;
+    Write = 0;
+  }
+
+  enum TypeAttributes {
+    Abstract = 0;
+    AnsiClass = 0;
+    AutoClass = 0;
+    AutoLayout = 0;
+    BeforFieldInit = 0;
+    Class = 0;
+    ClassSemanticsMask = 0;
+    ExplicitLayout = 0;
+    HasSecutity = 0;
+    Import = 0;
+    Interface = 0;
+    LayoutMask = 0;
+    NestedAssembly = 0;
+    NestedFamADNAssem = 0;
+    NestedFamily = 0;
+    NestedFamORAssem = 0;
+    NestedPrivate = 0;
+    NestedPublic = 0;
+    NotPublic = 0;
+    Public = 0;
+    ReservedMask = 0;
+    RTSpecialName = 0;
+    Sealed = 0;
+    SequentialLayout = 0;
+    Serializable = 0;
+    SpecialName = 0;
+    StringFormatMask = 0;
+    UnicodeClass = 0;
+    VisibilityMask = 0;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+}
+

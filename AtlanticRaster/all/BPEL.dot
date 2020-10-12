@@ -1,0 +1,1106 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_BPEL"{
+labelloc=t
+color=black
+label=BPEL
+ node[shape=record];
+Process[label="{Process|name[0-1] : EString\ntargetNamespace[0-1] : EString\nqueryLanguage[0-1] : EString\nexpressionLanguage[0-1] : EString\nsuppressJoinFailure[0-1] : EBooleanObject\nvariableAccessSerializable[0-1] : EBooleanObject\nexitOnStandardFault[0-1] : EBooleanObject| }"]
+ Process->PartnerLinks[arrowhead=vee,arrowtail=diamond,headlabel="partnerLinks[0-1]",group=PartnerLinks,minlen=2,constraint=true,]
+ Process->Variables[arrowhead=vee,arrowtail=diamond,headlabel="variables[0-1]",group=Variables,minlen=2,constraint=true,]
+ Process->Activity[arrowhead=vee,arrowtail=diamond,headlabel="activity",group=Activity,minlen=2,constraint=true,]
+ Process->FaultHandler[arrowhead=vee,arrowtail=diamond,headlabel="faultHandlers[0-1]",group=FaultHandler,minlen=2,constraint=true,]
+ Process->EventHandler[arrowhead=vee,arrowtail=diamond,headlabel="eventHandlers[0-1]",group=EventHandler,minlen=2,constraint=true,]
+ Process->CorrelationSets[arrowhead=vee,arrowtail=diamond,headlabel="correlationSets[0-1]",group=CorrelationSets,minlen=2,constraint=true,]
+ Process->BPELImport[arrowhead=vee,arrowtail=diamond,headlabel="imports[*]{ordered}",group=BPELImport,minlen=2,constraint=true,]
+ Process->Extensions[arrowhead=vee,arrowtail=diamond,headlabel="extensions[0-1]",group=Extensions,minlen=2,constraint=true,]
+ Process->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PartnerLink[label="{PartnerLink|name[0-1] : EString\ninitializePartnerRole[0-1] : EBooleanObject| }"]
+ PartnerLink->Role[arrowhead=vee,arrowtail=none,headlabel="myRole[0-1]",group=Role,minlen=2,constraint=false,]
+ PartnerLink->Role[arrowhead=vee,arrowtail=none,headlabel="partnerRole[0-1]",group=Role,minlen=2,constraint=false,]
+ PartnerLink->PartnerLinkType[arrowhead=vee,arrowtail=none,headlabel="PartnerLinkType[0-1]",group=PartnerLinkType,minlen=2,constraint=false,]
+ PartnerLink->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FaultHandler[label="{FaultHandler| | }"]
+ FaultHandler->Catch[arrowhead=vee,arrowtail=diamond,headlabel="catch[*]{ordered}",group=Catch,minlen=2,constraint=true,]
+ FaultHandler->CatchAll[arrowhead=vee,arrowtail=diamond,headlabel="catchAll[0-1]",group=CatchAll,minlen=2,constraint=true,]
+ FaultHandler->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Activity[label="{Activity|name[0-1] : EString\nsuppressJoinFailure[0-1] : EBooleanObject| }"]
+ Activity->Targets[arrowhead=vee,arrowtail=diamond,headlabel="targets[0-1]",group=Targets,minlen=2,constraint=true,]
+ Activity->Sources[arrowhead=vee,arrowtail=diamond,headlabel="sources[0-1]",group=Sources,minlen=2,constraint=true,]
+ Activity->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CorrelationSet[label="{CorrelationSet|name[0-1] : EString| }"]
+ CorrelationSet->Property[arrowhead=vee,arrowtail=none,headlabel="properties[*]{ordered}",group=Property,minlen=2,constraint=false,]
+ CorrelationSet->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Invoke[label="{Invoke| | }"]
+ Invoke->Variable[arrowhead=vee,arrowtail=none,headlabel="outputVariable[0-1]",group=Variable,minlen=2,constraint=false,]
+ Invoke->Variable[arrowhead=vee,arrowtail=none,headlabel="inputVariable[0-1]",group=Variable,minlen=2,constraint=false,]
+ Invoke->CompensationHandler[arrowhead=vee,arrowtail=diamond,headlabel="compensationHandler[0-1]",group=CompensationHandler,minlen=2,constraint=true,]
+ Invoke->FaultHandler[arrowhead=vee,arrowtail=diamond,headlabel="faultHandler[0-1]",group=FaultHandler,minlen=2,constraint=true,]
+ Invoke->ToPart[arrowhead=vee,arrowtail=none,headlabel="toPart[*]{ordered}",group=ToPart,minlen=2,constraint=false,]
+ Invoke->FromPart[arrowhead=vee,arrowtail=none,headlabel="fromPart[*]{ordered}",group=FromPart,minlen=2,constraint=false,]
+ Invoke->PartnerActivity[arrowhead=onormal,group=PartnerActivity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Link[label="{Link|name[0-1] : EString| }"]
+ Link->Target[arrowhead=none,arrowtail=none,headlabel="targets[*]{ordered}",taillabel="Link",group=Target,minlen=2,constraint=false,]
+ Link->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Catch[label="{Catch|faultName[0-1] : QName| }"]
+ Catch->Variable[arrowhead=vee,arrowtail=diamond,headlabel="faultVariable[0-1]",group=Variable,minlen=2,constraint=true,]
+ Catch->Activity[arrowhead=vee,arrowtail=diamond,headlabel="activity",group=Activity,minlen=2,constraint=true,]
+ Catch->Message[arrowhead=vee,arrowtail=none,headlabel="faultMessageType[0-1]",group=Message,minlen=2,constraint=false,]
+ Catch->XSDElementDeclaration[arrowhead=vee,arrowtail=none,headlabel="faultElement[0-1]",group=XSDElementDeclaration,minlen=2,constraint=false,]
+ Catch->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Reply[label="{Reply|faultName[0-1] : QName| }"]
+ Reply->Variable[arrowhead=vee,arrowtail=none,headlabel="variable[0-1]",group=Variable,minlen=2,constraint=false,]
+ Reply->ToPart[arrowhead=vee,arrowtail=none,headlabel="toPart[*]{ordered}",group=ToPart,minlen=2,constraint=false,]
+ Reply->PartnerActivity[arrowhead=onormal,group=PartnerActivity,minlen=2,constraint=true,]
+ Reply->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PartnerActivity[label="{PartnerActivity| | }"]
+ PartnerActivity->PartnerLink[arrowhead=vee,arrowtail=none,headlabel="partnerLink",group=PartnerLink,minlen=2,constraint=false,]
+ PartnerActivity->Correlations[arrowhead=vee,arrowtail=diamond,headlabel="correlations[0-1]",group=Correlations,minlen=2,constraint=true,]
+ PartnerActivity->PortType[arrowhead=vee,arrowtail=none,headlabel="portType",group=PortType,minlen=2,constraint=false,]
+ PartnerActivity->Operation[arrowhead=vee,arrowtail=none,headlabel="operation",group=Operation,minlen=2,constraint=false,]
+ PartnerActivity->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Receive[label="{Receive|createInstance[0-1] : EBooleanObject| }"]
+ Receive->Variable[arrowhead=vee,arrowtail=none,headlabel="variable",group=Variable,minlen=2,constraint=false,]
+ Receive->FromPart[arrowhead=vee,arrowtail=none,headlabel="fromPart[*]{ordered}",group=FromPart,minlen=2,constraint=false,]
+ Receive->PartnerActivity[arrowhead=onormal,group=PartnerActivity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Exit[label="{Exit| | }"]
+ Exit->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Throw[label="{Throw|faultName[0-1] : QName| }"]
+ Throw->Variable[arrowhead=vee,arrowtail=none,headlabel="faultVariable[0-1]",group=Variable,minlen=2,constraint=false,]
+ Throw->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Wait[label="{Wait| | }"]
+ Wait->Expression[arrowhead=vee,arrowtail=diamond,headlabel="for[0-1]",group=Expression,minlen=2,constraint=true,]
+ Wait->Expression[arrowhead=vee,arrowtail=diamond,headlabel="until[0-1]",group=Expression,minlen=2,constraint=true,]
+ Wait->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Empty[label="{Empty| | }"]
+ Empty->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Sequence[label="{Sequence| | }"]
+ Sequence->Activity[arrowhead=vee,arrowtail=diamond,headlabel="activities[1-*]{ordered}",group=Activity,minlen=2,constraint=true,]
+ Sequence->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Switch[label="{Switch| | }"]
+ Switch->Case[arrowhead=vee,arrowtail=diamond,headlabel="cases[1-*]{ordered}",group=Case,minlen=2,constraint=true,]
+ Switch->Otherwise[arrowhead=vee,arrowtail=diamond,headlabel="otherwise[0-1]",group=Otherwise,minlen=2,constraint=true,]
+ Switch->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Case[label="{Case| | }"]
+ Case->Activity[arrowhead=vee,arrowtail=diamond,headlabel="activity",group=Activity,minlen=2,constraint=true,]
+ Case->Condition[arrowhead=vee,arrowtail=diamond,headlabel="condition",group=Condition,minlen=2,constraint=true,]
+ Case->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+While[label="{While| | }"]
+ While->Activity[arrowhead=vee,arrowtail=diamond,headlabel="activity",group=Activity,minlen=2,constraint=true,]
+ While->Condition[arrowhead=vee,arrowtail=diamond,headlabel="condition",group=Condition,minlen=2,constraint=true,]
+ While->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Pick[label="{Pick|createInstance[0-1] : EBooleanObject| }"]
+ Pick->OnMessage[arrowhead=vee,arrowtail=diamond,headlabel="messages[1-*]{ordered}",group=OnMessage,minlen=2,constraint=true,]
+ Pick->OnAlarm[arrowhead=vee,arrowtail=diamond,headlabel="alarm[*]{ordered}",group=OnAlarm,minlen=2,constraint=true,]
+ Pick->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Flow[label="{Flow| | }"]
+ Flow->Activity[arrowhead=vee,arrowtail=diamond,headlabel="activities[1-*]{ordered}",group=Activity,minlen=2,constraint=true,]
+ Flow->Links[arrowhead=vee,arrowtail=diamond,headlabel="links[0-1]",group=Links,minlen=2,constraint=true,]
+ Flow->CompletionCondition[arrowhead=vee,arrowtail=diamond,headlabel="completionCondition[0-1]",group=CompletionCondition,minlen=2,constraint=true,]
+ Flow->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OnAlarm[label="{OnAlarm| | }"]
+ OnAlarm->Activity[arrowhead=vee,arrowtail=diamond,headlabel="activity",group=Activity,minlen=2,constraint=true,]
+ OnAlarm->Expression[arrowhead=vee,arrowtail=diamond,headlabel="for[0-1]",group=Expression,minlen=2,constraint=true,]
+ OnAlarm->Expression[arrowhead=vee,arrowtail=diamond,headlabel="until[0-1]",group=Expression,minlen=2,constraint=true,]
+ OnAlarm->Expression[arrowhead=vee,arrowtail=diamond,headlabel="repeatEvery[0-1]",group=Expression,minlen=2,constraint=true,]
+ OnAlarm->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Assign[label="{Assign|validate[0-1] : EBooleanObject| }"]
+ Assign->Copy[arrowhead=vee,arrowtail=diamond,headlabel="copy[1-*]{ordered}",group=Copy,minlen=2,constraint=true,]
+ Assign->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Copy[label="{Copy|keepSrcElementName[0-1] : EBooleanObject| }"]
+ Copy->To[arrowhead=vee,arrowtail=diamond,headlabel="to",group=To,minlen=2,constraint=true,]
+ Copy->From[arrowhead=vee,arrowtail=diamond,headlabel="from",group=From,minlen=2,constraint=true,]
+ Copy->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Extension[label="{Extension|namespace[0-1] : EString\nmustUnderstand[0-1] : EBooleanObject| }"]
+ Extension->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Scope[label="{Scope|isolated[0-1] : EBooleanObject| }"]
+ Scope->FaultHandler[arrowhead=vee,arrowtail=diamond,headlabel="faultHandlers[0-1]",group=FaultHandler,minlen=2,constraint=true,]
+ Scope->CompensationHandler[arrowhead=vee,arrowtail=diamond,headlabel="compensationHandler[0-1]",group=CompensationHandler,minlen=2,constraint=true,]
+ Scope->Activity[arrowhead=vee,arrowtail=diamond,headlabel="activity",group=Activity,minlen=2,constraint=true,]
+ Scope->Variables[arrowhead=vee,arrowtail=diamond,headlabel="variables[0-1]",group=Variables,minlen=2,constraint=true,]
+ Scope->CorrelationSets[arrowhead=vee,arrowtail=diamond,headlabel="correlationSets[0-1]",group=CorrelationSets,minlen=2,constraint=true,]
+ Scope->EventHandler[arrowhead=vee,arrowtail=diamond,headlabel="eventHandlers[0-1]",group=EventHandler,minlen=2,constraint=true,]
+ Scope->PartnerLinks[arrowhead=vee,arrowtail=diamond,headlabel="partnerLinks[0-1]",group=PartnerLinks,minlen=2,constraint=true,]
+ Scope->TerminationHandler[arrowhead=vee,arrowtail=diamond,headlabel="terminationHandler[0-1]",group=TerminationHandler,minlen=2,constraint=true,]
+ Scope->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Compensate[label="{Compensate| | }"]
+ Compensate->EObject[arrowhead=vee,arrowtail=none,headlabel="scope[0-1]",group=EObject,minlen=2,constraint=false,]
+ Compensate->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompensationHandler[label="{CompensationHandler| | }"]
+ CompensationHandler->Activity[arrowhead=vee,arrowtail=diamond,headlabel="activity",group=Activity,minlen=2,constraint=true,]
+ CompensationHandler->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+To[label="{To| | }"]
+ To->Variable[arrowhead=vee,arrowtail=none,headlabel="variable[0-1]",group=Variable,minlen=2,constraint=false,]
+ To->Part[arrowhead=vee,arrowtail=none,headlabel="part[0-1]",group=Part,minlen=2,constraint=false,]
+ To->PartnerLink[arrowhead=vee,arrowtail=none,headlabel="partnerLink[0-1]",group=PartnerLink,minlen=2,constraint=false,]
+ To->Property[arrowhead=vee,arrowtail=none,headlabel="property[0-1]",group=Property,minlen=2,constraint=false,]
+ To->BPELQuery[arrowhead=vee,arrowtail=diamond,headlabel="query[0-1]",group=BPELQuery,minlen=2,constraint=true,]
+ To->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+From[label="{From|opaque[0-1] : EBooleanObject\nendpointReference[0-1] : EndpointReferenceRole\nliteral[0-1] : EString\nunsafeLiteral[0-1] : EBooleanObject| }"]
+ From->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expression[0-1]",group=Expression,minlen=2,constraint=true,]
+ From->ServiceRef[arrowhead=vee,arrowtail=diamond,headlabel="serviceRef[0-1]",group=ServiceRef,minlen=2,constraint=true,]
+ From->XSDTypeDefinition[arrowhead=vee,arrowtail=none,headlabel="type[0-1]",group=XSDTypeDefinition,minlen=2,constraint=false,]
+ From->To[arrowhead=onormal,group=To,minlen=2,constraint=true,]
+ From->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OnMessage[label="{OnMessage| | }"]
+ OnMessage->Variable[arrowhead=vee,arrowtail=none,headlabel="variable[0-1]",group=Variable,minlen=2,constraint=false,]
+ OnMessage->Activity[arrowhead=vee,arrowtail=diamond,headlabel="activity[0-1]",group=Activity,minlen=2,constraint=true,]
+ OnMessage->PortType[arrowhead=vee,arrowtail=none,headlabel="portType",group=PortType,minlen=2,constraint=false,]
+ OnMessage->PartnerLink[arrowhead=vee,arrowtail=none,headlabel="partnerLink",group=PartnerLink,minlen=2,constraint=false,]
+ OnMessage->Correlations[arrowhead=vee,arrowtail=diamond,headlabel="correlations[0-1]",group=Correlations,minlen=2,constraint=true,]
+ OnMessage->Operation[arrowhead=vee,arrowtail=none,headlabel="operation",group=Operation,minlen=2,constraint=false,]
+ OnMessage->FromPart[arrowhead=vee,arrowtail=none,headlabel="fromPart[*]{ordered}",group=FromPart,minlen=2,constraint=false,]
+ OnMessage->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Expression[label="{Expression|body[0-1] : EJavaObject\nexpressionLanguage[0-1] : EString\nopaque[0-1] : EBooleanObject| }"]
+ Expression->ExtensibilityElement[arrowhead=onormal,group=ExtensibilityElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BooleanExpression[label="{BooleanExpression| | }"]
+ BooleanExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Correlation[label="{Correlation|initiate[0-1] : EString\npattern[0-1] : CorrelationPattern| }"]
+ Correlation->CorrelationSet[arrowhead=vee,arrowtail=none,headlabel="set",group=CorrelationSet,minlen=2,constraint=false,]
+ Correlation->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EventHandler[label="{EventHandler| | }"]
+ EventHandler->OnAlarm[arrowhead=vee,arrowtail=diamond,headlabel="alarm[*]{ordered}",group=OnAlarm,minlen=2,constraint=true,]
+ EventHandler->OnEvent[arrowhead=vee,arrowtail=diamond,headlabel="events[*]{ordered}",group=OnEvent,minlen=2,constraint=true,]
+ EventHandler->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Source[label="{Source| | }"]
+ Source->Link[arrowhead=none,arrowtail=none,headlabel="Link",taillabel="sources[*]{ordered}",group=Link,minlen=2,constraint=false,]
+ Source->Activity[arrowhead=vee,arrowtail=none,headlabel="activity",group=Activity,minlen=2,constraint=false,]
+ Source->Condition[arrowhead=vee,arrowtail=diamond,headlabel="transitionCondition[0-1]",group=Condition,minlen=2,constraint=true,]
+ Source->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Target[label="{Target| | }"]
+ Target->Activity[arrowhead=vee,arrowtail=none,headlabel="activity",group=Activity,minlen=2,constraint=false,]
+ Target->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PartnerLinks[label="{PartnerLinks| | }"]
+ PartnerLinks->PartnerLink[arrowhead=vee,arrowtail=diamond,headlabel="children[*]{ordered}",group=PartnerLink,minlen=2,constraint=true,]
+ PartnerLinks->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Variables[label="{Variables| | }"]
+ Variables->Variable[arrowhead=vee,arrowtail=diamond,headlabel="children[*]{ordered}",group=Variable,minlen=2,constraint=true,]
+ Variables->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CorrelationSets[label="{CorrelationSets| | }"]
+ CorrelationSets->CorrelationSet[arrowhead=vee,arrowtail=diamond,headlabel="children[*]{ordered}",group=CorrelationSet,minlen=2,constraint=true,]
+ CorrelationSets->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Links[label="{Links| | }"]
+ Links->Link[arrowhead=vee,arrowtail=diamond,headlabel="children[*]{ordered}",group=Link,minlen=2,constraint=true,]
+ Links->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CatchAll[label="{CatchAll| | }"]
+ CatchAll->Activity[arrowhead=vee,arrowtail=diamond,headlabel="activity",group=Activity,minlen=2,constraint=true,]
+ CatchAll->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Correlations[label="{Correlations| | }"]
+ Correlations->Correlation[arrowhead=vee,arrowtail=diamond,headlabel="children[*]{ordered}",group=Correlation,minlen=2,constraint=true,]
+ Correlations->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Variable[label="{Variable|name[0-1] : EString| }"]
+ Variable->Message[arrowhead=vee,arrowtail=none,headlabel="messageType[0-1]",group=Message,minlen=2,constraint=false,]
+ Variable->XSDElementDeclaration[arrowhead=vee,arrowtail=none,headlabel="XSDElement[0-1]",group=XSDElementDeclaration,minlen=2,constraint=false,]
+ Variable->XSDTypeDefinition[arrowhead=vee,arrowtail=none,headlabel="type[0-1]",group=XSDTypeDefinition,minlen=2,constraint=false,]
+ Variable->From[arrowhead=vee,arrowtail=none,headlabel="from[0-1]",group=From,minlen=2,constraint=false,]
+ Variable->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Otherwise[label="{Otherwise| | }"]
+ Otherwise->Activity[arrowhead=vee,arrowtail=diamond,headlabel="activity",group=Activity,minlen=2,constraint=true,]
+ Otherwise->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UnknownExtensibilityAttribute[label="{UnknownExtensibilityAttribute| | }"]
+ UnknownExtensibilityAttribute->UnknownExtensibilityElement[arrowhead=onormal,group=UnknownExtensibilityElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OnEvent[label="{OnEvent| | }"]
+ OnEvent->Activity[arrowhead=vee,arrowtail=diamond,headlabel="activity[0-1]",group=Activity,minlen=2,constraint=true,]
+ OnEvent->Variable[arrowhead=vee,arrowtail=diamond,headlabel="variable[0-1]",group=Variable,minlen=2,constraint=true,]
+ OnEvent->PartnerLink[arrowhead=vee,arrowtail=none,headlabel="partnerLink",group=PartnerLink,minlen=2,constraint=false,]
+ OnEvent->Correlations[arrowhead=vee,arrowtail=diamond,headlabel="correlations[0-1]",group=Correlations,minlen=2,constraint=true,]
+ OnEvent->Operation[arrowhead=vee,arrowtail=none,headlabel="operation",group=Operation,minlen=2,constraint=false,]
+ OnEvent->PortType[arrowhead=vee,arrowtail=none,headlabel="portType",group=PortType,minlen=2,constraint=false,]
+ OnEvent->Message[arrowhead=vee,arrowtail=none,headlabel="messageType",group=Message,minlen=2,constraint=false,]
+ OnEvent->FromPart[arrowhead=vee,arrowtail=none,headlabel="fromPart[*]{ordered}",group=FromPart,minlen=2,constraint=false,]
+ OnEvent->CorrelationSets[arrowhead=vee,arrowtail=diamond,headlabel="correlationSets[0-1]",group=CorrelationSets,minlen=2,constraint=true,]
+ OnEvent->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BPELImport[label="{BPELImport|namespace[0-1] : EString\nlocation[0-1] : EString\nimportType[0-1] : EString| }"]
+;
+ node[shape=record];
+Rethrow[label="{Rethrow| | }"]
+ Rethrow->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Condition[label="{Condition| | }"]
+ Condition->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Targets[label="{Targets| | }"]
+ Targets->Target[arrowhead=vee,arrowtail=diamond,headlabel="children[*]{ordered}",group=Target,minlen=2,constraint=true,]
+ Targets->Condition[arrowhead=vee,arrowtail=diamond,headlabel="joinCondition[0-1]",group=Condition,minlen=2,constraint=true,]
+ Targets->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Sources[label="{Sources| | }"]
+ Sources->Source[arrowhead=vee,arrowtail=diamond,headlabel="children[*]{ordered}",group=Source,minlen=2,constraint=true,]
+ Sources->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BPELQuery[label="{BPELQuery|value[0-1] : EString\nqueryLanguage[0-1] : EString| }"]
+;
+ node[shape=record];
+ServiceRef[label="{ServiceRef|referenceScheme[0-1] : EString\nvalue[0-1] : EJavaObject| }"]
+;
+ node[shape=record];
+Extensions[label="{Extensions| | }"]
+ Extensions->Extension[arrowhead=vee,arrowtail=diamond,headlabel="children[*]{ordered}",group=Extension,minlen=2,constraint=true,]
+ Extensions->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExtensionActivity[label="{ExtensionActivity| | }"]
+ ExtensionActivity->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FromPart[label="{FromPart|part[0-1] : EString| }"]
+ FromPart->To[arrowhead=vee,arrowtail=none,headlabel="to[0-1]",group=To,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ToPart[label="{ToPart|part[0-1] : EString| }"]
+ ToPart->From[arrowhead=vee,arrowtail=none,headlabel="from[0-1]",group=From,minlen=2,constraint=false,]
+;
+ node[shape=record];
+OpaqueActivity[label="{OpaqueActivity| | }"]
+ OpaqueActivity->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ForEach[label="{ForEach|parallel[0-1] : EBooleanObject| }"]
+ ForEach->Variable[arrowhead=vee,arrowtail=diamond,headlabel="counterName",group=Variable,minlen=2,constraint=true,]
+ ForEach->CompletionCondition[arrowhead=vee,arrowtail=diamond,headlabel="completionCondition[0-1]",group=CompletionCondition,minlen=2,constraint=true,]
+ ForEach->Iterator[arrowhead=vee,arrowtail=diamond,headlabel="iterator",group=Iterator,minlen=2,constraint=true,]
+ ForEach->Activity[arrowhead=vee,arrowtail=diamond,headlabel="activity",group=Activity,minlen=2,constraint=true,]
+ ForEach->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RepeatUntil[label="{RepeatUntil| | }"]
+ RepeatUntil->Activity[arrowhead=vee,arrowtail=diamond,headlabel="activity",group=Activity,minlen=2,constraint=true,]
+ RepeatUntil->Condition[arrowhead=vee,arrowtail=diamond,headlabel="condition",group=Condition,minlen=2,constraint=true,]
+ RepeatUntil->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TerminationHandler[label="{TerminationHandler| | }"]
+ TerminationHandler->Activity[arrowhead=vee,arrowtail=diamond,headlabel="activity[0-1]",group=Activity,minlen=2,constraint=true,]
+ TerminationHandler->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Validate[label="{Validate| | }"]
+ Validate->Variable[arrowhead=vee,arrowtail=none,headlabel="variables[*]{ordered}",group=Variable,minlen=2,constraint=false,]
+ Validate->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+If[label="{If| | }"]
+ If->Condition[arrowhead=vee,arrowtail=diamond,headlabel="condition[0-1]",group=Condition,minlen=2,constraint=true,]
+ If->Then[arrowhead=vee,arrowtail=diamond,headlabel="then[0-1]",group=Then,minlen=2,constraint=true,]
+ If->ElseIf[arrowhead=vee,arrowtail=diamond,headlabel="elseIf[*]{ordered}",group=ElseIf,minlen=2,constraint=true,]
+ If->Else[arrowhead=vee,arrowtail=diamond,headlabel="else[0-1]",group=Else,minlen=2,constraint=true,]
+ If->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Then[label="{Then| | }"]
+ Then->Activity[arrowhead=vee,arrowtail=diamond,headlabel="activity",group=Activity,minlen=2,constraint=true,]
+ Then->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ElseIf[label="{ElseIf| | }"]
+ ElseIf->Condition[arrowhead=vee,arrowtail=diamond,headlabel="condition[0-1]",group=Condition,minlen=2,constraint=true,]
+ ElseIf->Activity[arrowhead=vee,arrowtail=diamond,headlabel="activity",group=Activity,minlen=2,constraint=true,]
+ ElseIf->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Else[label="{Else| | }"]
+ Else->Activity[arrowhead=vee,arrowtail=diamond,headlabel="activity",group=Activity,minlen=2,constraint=true,]
+ Else->BPELExtensibleElement[arrowhead=onormal,group=BPELExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompletionCondition[label="{CompletionCondition| | }"]
+ CompletionCondition->Branches[arrowhead=vee,arrowtail=diamond,headlabel="branches[0-1]",group=Branches,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Branches[label="{Branches|countCompletedBranchesOnly[0-1] : EBooleanObject| }"]
+ Branches->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BPELExtensibleElement[label="{BPELExtensibleElement| | }"]
+ BPELExtensibleElement->Documentation[arrowhead=vee,arrowtail=diamond,headlabel="documentation[0-1]",group=Documentation,minlen=2,constraint=true,]
+ BPELExtensibleElement->WSDLExtensibleElement[arrowhead=onormal,group=WSDLExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Documentation[label="{Documentation|lang[0-1] : EString\nsource[0-1] : EString\nvalue[0-1] : EString| }"]
+;
+ node[shape=record];
+Iterator[label="{Iterator| | }"]
+ Iterator->Expression[arrowhead=vee,arrowtail=diamond,headlabel="finalCounterValue[0-1]",group=Expression,minlen=2,constraint=true,]
+ Iterator->Expression[arrowhead=vee,arrowtail=diamond,headlabel="startCounterValue[0-1]",group=Expression,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_messageproperties"{
+labelloc=t
+color=black
+label=messageproperties
+ node[shape=record];
+Property[label="{Property|qName[0-1] : QName\nname[0-1] : EString\ntype[0-1] : EJavaObject\nID[0-1] : EString| }"]
+ Property->ExtensibilityElement[arrowhead=onormal,group=ExtensibilityElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PropertyAlias[label="{PropertyAlias|messageType[0-1] : EJavaObject\npart[0-1] : EString\npropertyName[0-1] : EJavaObject\nID[0-1] : EString\ntype[0-1] : EJavaObject\nXSDElement[0-1] : EJavaObject| }"]
+ PropertyAlias->Part[arrowhead=vee,arrowtail=none,headlabel="wsdlPart",group=Part,minlen=2,constraint=false,]
+ PropertyAlias->messagepropertiesQuery[arrowhead=vee,arrowtail=diamond,headlabel="query[0-1]",group=messagepropertiesQuery,minlen=2,constraint=true,]
+ PropertyAlias->ExtensibilityElement[arrowhead=onormal,group=ExtensibilityElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+messagepropertiesQuery[label="{messagepropertiesQuery|queryLanguage[0-1] : EString\nvalue[0-1] : EString| }"]
+ messagepropertiesQuery->ExtensibilityElement[arrowhead=onormal,group=ExtensibilityElement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_WSDL"{
+labelloc=t
+color=black
+label=WSDL
+ node[shape=record];
+WSDLElement[label="{/WSDLElement/|documentationElement[0-1] : WSDLDOMElement\nelement[0-1] : WSDLDOMElement| }"]
+;
+ node[shape=record];
+PortType[label="{PortType|qName[0-1] : QName\nundefined[0-1] : EBoolean\nproxy[0-1] : EBoolean\nresourceURI[0-1] : EString| }"]
+ PortType->Operation[arrowhead=vee,arrowtail=diamond,headlabel="eOperations[*]{ordered}",group=Operation,minlen=2,constraint=true,]
+ PortType->WSDLElement[arrowhead=onormal,group=WSDLElement,minlen=2,constraint=true,]
+ PortType->IPortType[arrowhead=onormal,group=IPortType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Operation[label="{Operation|style[0-1] : OperationType\nname[0-1] : EString\nundefined[0-1] : EBoolean\nproxy[0-1] : EBoolean\nresourceURI[0-1] : EString| }"]
+ Operation->Input[arrowhead=vee,arrowtail=diamond,headlabel="eInput[0-1]",group=Input,minlen=2,constraint=true,]
+ Operation->Output[arrowhead=vee,arrowtail=diamond,headlabel="eOutput[0-1]",group=Output,minlen=2,constraint=true,]
+ Operation->Fault[arrowhead=vee,arrowtail=diamond,headlabel="eFaults[*]{ordered}",group=Fault,minlen=2,constraint=true,]
+ Operation->Part[arrowhead=vee,arrowtail=none,headlabel="eParameterOrdering[*]{ordered}",group=Part,minlen=2,constraint=false,]
+ Operation->WSDLElement[arrowhead=onormal,group=WSDLElement,minlen=2,constraint=true,]
+ Operation->IOperation[arrowhead=onormal,group=IOperation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Message[label="{Message|qName[0-1] : QName\nundefined[0-1] : EBoolean\nproxy[0-1] : EBoolean\nresourceURI[0-1] : EString| }"]
+ Message->Part[arrowhead=vee,arrowtail=diamond,headlabel="eParts[*]{ordered}",group=Part,minlen=2,constraint=true,]
+ Message->WSDLElement[arrowhead=onormal,group=WSDLElement,minlen=2,constraint=true,]
+ Message->IMessage[arrowhead=onormal,group=IMessage,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Part[label="{Part|name[0-1] : EString\nelementName[0-1] : QName\ntypeName[0-1] : QName| }"]
+ Part->XSDTypeDefinition[arrowhead=vee,arrowtail=none,headlabel="typeDefinition[0-1]",group=XSDTypeDefinition,minlen=2,constraint=false,]
+ Part->XSDElementDeclaration[arrowhead=vee,arrowtail=none,headlabel="elementDeclaration[0-1]",group=XSDElementDeclaration,minlen=2,constraint=false,]
+ Part->Message[arrowhead=vee,arrowtail=none,headlabel="eMessage[0-1]",group=Message,minlen=2,constraint=false,]
+ Part->WSDLElement[arrowhead=onormal,group=WSDLElement,minlen=2,constraint=true,]
+ Part->IPart[arrowhead=onormal,group=IPart,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Binding[label="{Binding|qName[0-1] : QName\nundefined[0-1] : EBoolean\nproxy[0-1] : EBoolean\nresourceURI[0-1] : EString| }"]
+ Binding->PortType[arrowhead=vee,arrowtail=none,headlabel="ePortType",group=PortType,minlen=2,constraint=false,]
+ Binding->BindingOperation[arrowhead=vee,arrowtail=diamond,headlabel="eBindingOperations[*]{ordered}",group=BindingOperation,minlen=2,constraint=true,]
+ Binding->WSDLExtensibleElement[arrowhead=onormal,group=WSDLExtensibleElement,minlen=2,constraint=true,]
+ Binding->IBinding[arrowhead=onormal,group=IBinding,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BindingOperation[label="{BindingOperation|name[0-1] : EString| }"]
+ BindingOperation->Operation[arrowhead=vee,arrowtail=none,headlabel="eOperation",group=Operation,minlen=2,constraint=false,]
+ BindingOperation->BindingInput[arrowhead=vee,arrowtail=diamond,headlabel="eBindingInput[0-1]",group=BindingInput,minlen=2,constraint=true,]
+ BindingOperation->BindingOutput[arrowhead=vee,arrowtail=diamond,headlabel="eBindingOutput[0-1]",group=BindingOutput,minlen=2,constraint=true,]
+ BindingOperation->BindingFault[arrowhead=vee,arrowtail=diamond,headlabel="eBindingFaults[*]{ordered}",group=BindingFault,minlen=2,constraint=true,]
+ BindingOperation->WSDLExtensibleElement[arrowhead=onormal,group=WSDLExtensibleElement,minlen=2,constraint=true,]
+ BindingOperation->IBindingOperation[arrowhead=onormal,group=IBindingOperation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Service[label="{Service|qName[0-1] : QName\nundefined[0-1] : EBoolean\nproxy[0-1] : EBoolean\nresourceURI[0-1] : EString| }"]
+ Service->Port[arrowhead=vee,arrowtail=diamond,headlabel="ePorts[*]{ordered}",group=Port,minlen=2,constraint=true,]
+ Service->WSDLExtensibleElement[arrowhead=onormal,group=WSDLExtensibleElement,minlen=2,constraint=true,]
+ Service->IService[arrowhead=onormal,group=IService,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Port[label="{Port|name[0-1] : EString| }"]
+ Port->Binding[arrowhead=vee,arrowtail=none,headlabel="eBinding",group=Binding,minlen=2,constraint=false,]
+ Port->WSDLExtensibleElement[arrowhead=onormal,group=WSDLExtensibleElement,minlen=2,constraint=true,]
+ Port->IPort[arrowhead=onormal,group=IPort,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExtensibilityElement[label="{ExtensibilityElement|required[0-1] : EBoolean\nelementType[0-1] : QName| }"]
+ ExtensibilityElement->WSDLElement[arrowhead=onormal,group=WSDLElement,minlen=2,constraint=true,]
+ ExtensibilityElement->IExtensibilityElement[arrowhead=onormal,group=IExtensibilityElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Definition[label="{Definition|targetNamespace[0-1] : EString\nlocation[0-1] : EString\nqName[0-1] : QName\nencoding[0-1] : EString| }"]
+ Definition->WSDLImport[arrowhead=vee,arrowtail=diamond,headlabel="eImports[*]{ordered}",group=WSDLImport,minlen=2,constraint=true,]
+ Definition->Types[arrowhead=vee,arrowtail=diamond,headlabel="eTypes[0-1]",group=Types,minlen=2,constraint=true,]
+ Definition->Message[arrowhead=vee,arrowtail=diamond,headlabel="eMessages[*]{ordered}",group=Message,minlen=2,constraint=true,]
+ Definition->PortType[arrowhead=vee,arrowtail=diamond,headlabel="ePortTypes[*]{ordered}",group=PortType,minlen=2,constraint=true,]
+ Definition->Binding[arrowhead=vee,arrowtail=diamond,headlabel="eBindings[*]{ordered}",group=Binding,minlen=2,constraint=true,]
+ Definition->Service[arrowhead=vee,arrowtail=diamond,headlabel="eServices[*]{ordered}",group=Service,minlen=2,constraint=true,]
+ Definition->Namespace[arrowhead=vee,arrowtail=diamond,headlabel="eNamespaces[*]{ordered}",group=Namespace,minlen=2,constraint=true,]
+ Definition->WSDLExtensibleElement[arrowhead=onormal,group=WSDLExtensibleElement,minlen=2,constraint=true,]
+ Definition->IDefinition[arrowhead=onormal,group=IDefinition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+WSDLImport[label="{WSDLImport|namespaceURI[0-1] : EString\nlocationURI[0-1] : EString| }"]
+ WSDLImport->Definition[arrowhead=vee,arrowtail=none,headlabel="eDefinition[0-1]",group=Definition,minlen=2,constraint=false,]
+ WSDLImport->XSDSchema[arrowhead=vee,arrowtail=none,headlabel="eSchema[0-1]",group=XSDSchema,minlen=2,constraint=false,]
+ WSDLImport->WSDLElement[arrowhead=onormal,group=WSDLElement,minlen=2,constraint=true,]
+ WSDLImport->IImport[arrowhead=onormal,group=IImport,minlen=2,constraint=true,]
+;
+ node[shape=record];
+WSDLExtensibleElement[label="{/WSDLExtensibleElement/| | }"]
+ WSDLExtensibleElement->ExtensibilityElement[arrowhead=vee,arrowtail=diamond,headlabel="eExtensibilityElements[*]{ordered}",group=ExtensibilityElement,minlen=2,constraint=true,]
+ WSDLExtensibleElement->WSDLElement[arrowhead=onormal,group=WSDLElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Input[label="{Input| | }"]
+ Input->MessageReference[arrowhead=onormal,group=MessageReference,minlen=2,constraint=true,]
+ Input->WSDLElement[arrowhead=onormal,group=WSDLElement,minlen=2,constraint=true,]
+ Input->IInput[arrowhead=onormal,group=IInput,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Output[label="{Output| | }"]
+ Output->MessageReference[arrowhead=onormal,group=MessageReference,minlen=2,constraint=true,]
+ Output->WSDLElement[arrowhead=onormal,group=WSDLElement,minlen=2,constraint=true,]
+ Output->IOutput[arrowhead=onormal,group=IOutput,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Fault[label="{Fault| | }"]
+ Fault->MessageReference[arrowhead=onormal,group=MessageReference,minlen=2,constraint=true,]
+ Fault->WSDLElement[arrowhead=onormal,group=WSDLElement,minlen=2,constraint=true,]
+ Fault->IFault[arrowhead=onormal,group=IFault,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BindingInput[label="{BindingInput|name[0-1] : EString| }"]
+ BindingInput->Input[arrowhead=vee,arrowtail=none,headlabel="eInput",group=Input,minlen=2,constraint=false,]
+ BindingInput->WSDLExtensibleElement[arrowhead=onormal,group=WSDLExtensibleElement,minlen=2,constraint=true,]
+ BindingInput->IBindingInput[arrowhead=onormal,group=IBindingInput,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BindingOutput[label="{BindingOutput|name[0-1] : EString| }"]
+ BindingOutput->Output[arrowhead=vee,arrowtail=none,headlabel="eOutput",group=Output,minlen=2,constraint=false,]
+ BindingOutput->WSDLExtensibleElement[arrowhead=onormal,group=WSDLExtensibleElement,minlen=2,constraint=true,]
+ BindingOutput->IBindingOutput[arrowhead=onormal,group=IBindingOutput,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BindingFault[label="{BindingFault|name[0-1] : EString| }"]
+ BindingFault->Fault[arrowhead=vee,arrowtail=none,headlabel="eFault",group=Fault,minlen=2,constraint=false,]
+ BindingFault->WSDLExtensibleElement[arrowhead=onormal,group=WSDLExtensibleElement,minlen=2,constraint=true,]
+ BindingFault->IBindingFault[arrowhead=onormal,group=IBindingFault,minlen=2,constraint=true,]
+;
+ node[shape=record];
+QName[label="{&#171;DataType&#187;\nQName|}"]
+;
+ node[shape=record];
+Namespace[label="{Namespace|URI[0-1] : EString\nprefix[0-1] : EString| }"]
+;
+ node[shape=record];
+OperationType[label="{&#171;DataType&#187;\nOperationType|}"]
+;
+ node[shape=record];
+IPortType[label="{/IPortType/| | }"]
+;
+ node[shape=record];
+IOperation[label="{/IOperation/| | }"]
+;
+ node[shape=record];
+IInput[label="{/IInput/| | }"]
+;
+ node[shape=record];
+IOutput[label="{/IOutput/| | }"]
+;
+ node[shape=record];
+IFault[label="{/IFault/| | }"]
+;
+ node[shape=record];
+IMessage[label="{/IMessage/| | }"]
+;
+ node[shape=record];
+IPart[label="{/IPart/| | }"]
+;
+ node[shape=record];
+IService[label="{/IService/| | }"]
+;
+ node[shape=record];
+IPort[label="{/IPort/| | }"]
+;
+ node[shape=record];
+IBinding[label="{/IBinding/| | }"]
+;
+ node[shape=record];
+IBindingOperation[label="{/IBindingOperation/| | }"]
+;
+ node[shape=record];
+IBindingInput[label="{/IBindingInput/| | }"]
+;
+ node[shape=record];
+IBindingOutput[label="{/IBindingOutput/| | }"]
+;
+ node[shape=record];
+IBindingFault[label="{/IBindingFault/| | }"]
+;
+ node[shape=record];
+WSDLDOMElement[label="{&#171;DataType&#187;\nWSDLDOMElement|}"]
+;
+ node[shape=record];
+IExtensibilityElement[label="{/IExtensibilityElement/| | }"]
+;
+ node[shape=record];
+IDefinition[label="{/IDefinition/| | }"]
+;
+ node[shape=record];
+IImport[label="{/IImport/| | }"]
+;
+ node[shape=record];
+IList[label="{/IList/| | }"]
+;
+ node[shape=record];
+IMap[label="{/IMap/| | }"]
+;
+ node[shape=record];
+IURL[label="{/IURL/| | }"]
+;
+ node[shape=record];
+IExtensionRegistry[label="{/IExtensionRegistry/| | }"]
+;
+ node[shape=record];
+Types[label="{Types| | }"]
+ Types->WSDLExtensibleElement[arrowhead=onormal,group=WSDLExtensibleElement,minlen=2,constraint=true,]
+ Types->ITypes[arrowhead=onormal,group=ITypes,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IIterator[label="{/IIterator/| | }"]
+;
+ node[shape=record];
+WSDLException[label="{&#171;DataType&#187;\nWSDLException|}"]
+;
+ node[shape=record];
+ITypes[label="{/ITypes/| | }"]
+;
+ node[shape=record];
+UnknownExtensibilityElement[label="{UnknownExtensibilityElement| | }"]
+ UnknownExtensibilityElement->UnknownExtensibilityElement[arrowhead=vee,arrowtail=diamond,headlabel="children[*]{ordered}",group=UnknownExtensibilityElement,minlen=2,constraint=true,]
+ UnknownExtensibilityElement->ExtensibilityElement[arrowhead=onormal,group=ExtensibilityElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDSchemaExtensibilityElement[label="{XSDSchemaExtensibilityElement| | }"]
+ XSDSchemaExtensibilityElement->XSDSchema[arrowhead=vee,arrowtail=diamond,headlabel="schema[0-1]",group=XSDSchema,minlen=2,constraint=true,]
+ XSDSchemaExtensibilityElement->ExtensibilityElement[arrowhead=onormal,group=ExtensibilityElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+WSDLDOMDocument[label="{&#171;DataType&#187;\nWSDLDOMDocument|}"]
+;
+ node[shape=record];
+MessageReference[label="{/MessageReference/|name[0-1] : EString| }"]
+ MessageReference->Message[arrowhead=vee,arrowtail=none,headlabel="eMessage",group=Message,minlen=2,constraint=false,]
+ MessageReference->WSDLElement[arrowhead=onormal,group=WSDLElement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_partnerlinktype"{
+labelloc=t
+color=black
+label=partnerlinktype
+ node[shape=record];
+PartnerLinkType[label="{PartnerLinkType|name[0-1] : EString\nID[0-1] : EString| }"]
+ PartnerLinkType->Role[arrowhead=vee,arrowtail=diamond,headlabel="role[*]{ordered}",group=Role,minlen=2,constraint=true,]
+ PartnerLinkType->ExtensibilityElement[arrowhead=onormal,group=ExtensibilityElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Role[label="{Role|ID[0-1] : EString\nname[0-1] : EString\nportType[0-1] : EJavaObject| }"]
+ Role->ExtensibilityElement[arrowhead=onormal,group=ExtensibilityElement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_ecore"{
+labelloc=t
+color=black
+label=ecore
+ node[shape=record];
+EObject[label="{EObject| | }"]
+;
+ node[shape=record];
+EBoolean[label="{&#171;DataType&#187;\nEBoolean|}"]
+;
+ node[shape=record];
+EBooleanObject[label="{&#171;DataType&#187;\nEBooleanObject|}"]
+;
+ node[shape=record];
+EInt[label="{&#171;DataType&#187;\nEInt|}"]
+;
+ node[shape=record];
+EJavaObject[label="{&#171;DataType&#187;\nEJavaObject|}"]
+;
+ node[shape=record];
+EString[label="{&#171;DataType&#187;\nEString|}"]
+;
+
+} subgraph "cluster_XSD"{
+labelloc=t
+color=black
+label=XSD
+ node[shape=record];
+XSDAnnotation[label="{XSDAnnotation|applicationInformation[*] : XSDDOMElement\nuserInformation[*] : XSDDOMElement\nattributes[*] : DOMAttr| }"]
+ XSDAnnotation->XSDComponent[arrowhead=onormal,group=XSDComponent,minlen=2,constraint=true,]
+ XSDAnnotation->XSDRedefineContent[arrowhead=onormal,group=XSDRedefineContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDAttributeDeclaration[label="{XSDAttributeDeclaration|attributeDeclarationReference[0-1] : EBoolean| }"]
+ XSDAttributeDeclaration->XSDAnnotation[arrowhead=vee,arrowtail=diamond,headlabel="annotation[0-1]",group=XSDAnnotation,minlen=2,constraint=true,]
+ XSDAttributeDeclaration->XSDSimpleTypeDefinition[arrowhead=vee,arrowtail=diamond,headlabel="anonymousTypeDefinition[0-1]",group=XSDSimpleTypeDefinition,minlen=2,constraint=true,]
+ XSDAttributeDeclaration->XSDSimpleTypeDefinition[arrowhead=vee,arrowtail=none,headlabel="typeDefinition",group=XSDSimpleTypeDefinition,minlen=2,constraint=false,]
+ XSDAttributeDeclaration->XSDAttributeDeclaration[arrowhead=vee,arrowtail=none,headlabel="resolvedAttributeDeclaration",group=XSDAttributeDeclaration,minlen=2,constraint=false,]
+ XSDAttributeDeclaration->XSDFeature[arrowhead=onormal,group=XSDFeature,minlen=2,constraint=true,]
+ XSDAttributeDeclaration->XSDSchemaContent[arrowhead=onormal,group=XSDSchemaContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDAttributeGroupContent[label="{/XSDAttributeGroupContent/| | }"]
+ XSDAttributeGroupContent->XSDConcreteComponent[arrowhead=onormal,group=XSDConcreteComponent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDAttributeGroupDefinition[label="{XSDAttributeGroupDefinition|attributeGroupDefinitionReference[0-1] : EBoolean| }"]
+ XSDAttributeGroupDefinition->XSDAnnotation[arrowhead=vee,arrowtail=diamond,headlabel="annotation[0-1]",group=XSDAnnotation,minlen=2,constraint=true,]
+ XSDAttributeGroupDefinition->XSDAttributeGroupContent[arrowhead=vee,arrowtail=diamond,headlabel="contents[*]{ordered}",group=XSDAttributeGroupContent,minlen=2,constraint=true,]
+ XSDAttributeGroupDefinition->XSDAttributeUse[arrowhead=vee,arrowtail=none,headlabel="attributeUses[*]{ordered}",group=XSDAttributeUse,minlen=2,constraint=false,]
+ XSDAttributeGroupDefinition->XSDWildcard[arrowhead=vee,arrowtail=diamond,headlabel="attributeWildcardContent[0-1]",group=XSDWildcard,minlen=2,constraint=true,]
+ XSDAttributeGroupDefinition->XSDWildcard[arrowhead=vee,arrowtail=none,headlabel="attributeWildcard[0-1]",group=XSDWildcard,minlen=2,constraint=false,]
+ XSDAttributeGroupDefinition->XSDAttributeGroupDefinition[arrowhead=vee,arrowtail=none,headlabel="resolvedAttributeGroupDefinition",group=XSDAttributeGroupDefinition,minlen=2,constraint=false,]
+ XSDAttributeGroupDefinition->XSDWildcard[arrowhead=vee,arrowtail=diamond,headlabel="syntheticWildcard[0-1]",group=XSDWildcard,minlen=2,constraint=true,]
+ XSDAttributeGroupDefinition->XSDRedefinableComponent[arrowhead=onormal,group=XSDRedefinableComponent,minlen=2,constraint=true,]
+ XSDAttributeGroupDefinition->XSDAttributeGroupContent[arrowhead=onormal,group=XSDAttributeGroupContent,minlen=2,constraint=true,]
+ XSDAttributeGroupDefinition->XSDRedefineContent[arrowhead=onormal,group=XSDRedefineContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDAttributeUse[label="{XSDAttributeUse|required[0-1] : EBoolean\nvalue[0-1] : Value\nconstraint[0-1] : XSDConstraint\nuse[0-1] : XSDAttributeUseCategory\nlexicalValue[0-1] : EString| }"]
+ XSDAttributeUse->XSDAttributeDeclaration[arrowhead=vee,arrowtail=none,headlabel="attributeDeclaration",group=XSDAttributeDeclaration,minlen=2,constraint=false,]
+ XSDAttributeUse->XSDAttributeDeclaration[arrowhead=vee,arrowtail=diamond,headlabel="content",group=XSDAttributeDeclaration,minlen=2,constraint=true,]
+ XSDAttributeUse->XSDComponent[arrowhead=onormal,group=XSDComponent,minlen=2,constraint=true,]
+ XSDAttributeUse->XSDAttributeGroupContent[arrowhead=onormal,group=XSDAttributeGroupContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDBoundedFacet[label="{XSDBoundedFacet|value[0-1] : EBoolean| }"]
+ XSDBoundedFacet->XSDFundamentalFacet[arrowhead=onormal,group=XSDFundamentalFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDCardinalityFacet[label="{XSDCardinalityFacet|value[0-1] : XSDCardinality| }"]
+ XSDCardinalityFacet->XSDFundamentalFacet[arrowhead=onormal,group=XSDFundamentalFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDComplexTypeContent[label="{/XSDComplexTypeContent/| | }"]
+ XSDComplexTypeContent->XSDComponent[arrowhead=onormal,group=XSDComponent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDComplexTypeDefinition[label="{XSDComplexTypeDefinition|derivationMethod[0-1] : XSDDerivationMethod\nfinal[*] : XSDComplexFinal\nabstract[0-1] : EBoolean\ncontentTypeCategory[0-1] : XSDContentTypeCategory\nprohibitedSubstitutions[*] : XSDProhibitedSubstitutions\nlexicalFinal[*] : XSDComplexFinal\nblock[*] : XSDProhibitedSubstitutions\nmixed[0-1] : EBoolean| }"]
+ XSDComplexTypeDefinition->XSDAnnotation[arrowhead=vee,arrowtail=diamond,headlabel="contentAnnotation[0-1]",group=XSDAnnotation,minlen=2,constraint=true,]
+ XSDComplexTypeDefinition->XSDTypeDefinition[arrowhead=vee,arrowtail=none,headlabel="baseTypeDefinition",group=XSDTypeDefinition,minlen=2,constraint=false,]
+ XSDComplexTypeDefinition->XSDComplexTypeContent[arrowhead=vee,arrowtail=diamond,headlabel="content[0-1]",group=XSDComplexTypeContent,minlen=2,constraint=true,]
+ XSDComplexTypeDefinition->XSDComplexTypeContent[arrowhead=vee,arrowtail=none,headlabel="contentType[0-1]",group=XSDComplexTypeContent,minlen=2,constraint=false,]
+ XSDComplexTypeDefinition->XSDAttributeUse[arrowhead=vee,arrowtail=none,headlabel="attributeUses[*]{ordered}",group=XSDAttributeUse,minlen=2,constraint=false,]
+ XSDComplexTypeDefinition->XSDAttributeGroupContent[arrowhead=vee,arrowtail=diamond,headlabel="attributeContents[*]{ordered}",group=XSDAttributeGroupContent,minlen=2,constraint=true,]
+ XSDComplexTypeDefinition->XSDWildcard[arrowhead=vee,arrowtail=none,headlabel="attributeWildcard[0-1]",group=XSDWildcard,minlen=2,constraint=false,]
+ XSDComplexTypeDefinition->XSDWildcard[arrowhead=vee,arrowtail=diamond,headlabel="attributeWildcardContent[0-1]",group=XSDWildcard,minlen=2,constraint=true,]
+ XSDComplexTypeDefinition->XSDTypeDefinition[arrowhead=vee,arrowtail=none,headlabel="rootTypeDefinition",group=XSDTypeDefinition,minlen=2,constraint=false,]
+ XSDComplexTypeDefinition->XSDParticle[arrowhead=vee,arrowtail=diamond,headlabel="syntheticParticle[0-1]",group=XSDParticle,minlen=2,constraint=true,]
+ XSDComplexTypeDefinition->XSDWildcard[arrowhead=vee,arrowtail=diamond,headlabel="syntheticWildcard[0-1]",group=XSDWildcard,minlen=2,constraint=true,]
+ XSDComplexTypeDefinition->XSDTypeDefinition[arrowhead=onormal,group=XSDTypeDefinition,minlen=2,constraint=true,]
+ XSDComplexTypeDefinition->XSDScope[arrowhead=onormal,group=XSDScope,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDComponent[label="{/XSDComponent/| | }"]
+ XSDComponent->XSDConcreteComponent[arrowhead=onormal,group=XSDConcreteComponent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDConcreteComponent[label="{/XSDConcreteComponent/|element[0-1] : XSDDOMElement| }"]
+ XSDConcreteComponent->XSDConcreteComponent[arrowhead=vee,arrowtail=none,headlabel="container[0-1]",group=XSDConcreteComponent,minlen=2,constraint=false,]
+ XSDConcreteComponent->XSDConcreteComponent[arrowhead=vee,arrowtail=none,headlabel="rootContainer",group=XSDConcreteComponent,minlen=2,constraint=false,]
+ XSDConcreteComponent->XSDSchema[arrowhead=vee,arrowtail=none,headlabel="schema[0-1]",group=XSDSchema,minlen=2,constraint=false,]
+ XSDConcreteComponent->XSDDiagnostic[arrowhead=vee,arrowtail=diamond,headlabel="diagnostics[*]{ordered}",group=XSDDiagnostic,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDConstrainingFacet[label="{/XSDConstrainingFacet/| | }"]
+ XSDConstrainingFacet->XSDFacet[arrowhead=onormal,group=XSDFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDDiagnostic[label="{XSDDiagnostic|severity[0-1] : XSDDiagnosticSeverity\nmessage[0-1] : EString\nlocationURI[0-1] : EString\nline[0-1] : EInt\ncolumn[0-1] : EInt\nnode[0-1] : DOMNode\nannotationURI[0-1] : EString\nkey[0-1] : EString\nsubstitutions[*] : EString| }"]
+ XSDDiagnostic->XSDConcreteComponent[arrowhead=vee,arrowtail=none,headlabel="components[1-*]{ordered}",group=XSDConcreteComponent,minlen=2,constraint=false,]
+ XSDDiagnostic->XSDConcreteComponent[arrowhead=vee,arrowtail=none,headlabel="primaryComponent",group=XSDConcreteComponent,minlen=2,constraint=false,]
+ XSDDiagnostic->XSDConcreteComponent[arrowhead=onormal,group=XSDConcreteComponent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDElementDeclaration[label="{XSDElementDeclaration|nillable[0-1] : EBoolean\ndisallowedSubstitutions[*] : XSDDisallowedSubstitutions\nsubstitutionGroupExclusions[*] : XSDSubstitutionGroupExclusions\nabstract[0-1] : EBoolean\nlexicalFinal[*] : XSDProhibitedSubstitutions\nblock[*] : XSDDisallowedSubstitutions\nelementDeclarationReference[0-1] : EBoolean\ncircular[0-1] : EBoolean| }"]
+ XSDElementDeclaration->XSDAnnotation[arrowhead=vee,arrowtail=diamond,headlabel="annotation[0-1]",group=XSDAnnotation,minlen=2,constraint=true,]
+ XSDElementDeclaration->XSDTypeDefinition[arrowhead=vee,arrowtail=diamond,headlabel="anonymousTypeDefinition[0-1]",group=XSDTypeDefinition,minlen=2,constraint=true,]
+ XSDElementDeclaration->XSDTypeDefinition[arrowhead=vee,arrowtail=none,headlabel="typeDefinition",group=XSDTypeDefinition,minlen=2,constraint=false,]
+ XSDElementDeclaration->XSDIdentityConstraintDefinition[arrowhead=vee,arrowtail=diamond,headlabel="identityConstraintDefinitions[*]{ordered}",group=XSDIdentityConstraintDefinition,minlen=2,constraint=true,]
+ XSDElementDeclaration->XSDElementDeclaration[arrowhead=vee,arrowtail=none,headlabel="resolvedElementDeclaration",group=XSDElementDeclaration,minlen=2,constraint=false,]
+ XSDElementDeclaration->XSDElementDeclaration[arrowhead=vee,arrowtail=none,headlabel="substitutionGroupAffiliation[0-1]",group=XSDElementDeclaration,minlen=2,constraint=false,]
+ XSDElementDeclaration->XSDElementDeclaration[arrowhead=vee,arrowtail=none,headlabel="substitutionGroup[*]{ordered}",group=XSDElementDeclaration,minlen=2,constraint=false,]
+ XSDElementDeclaration->XSDFeature[arrowhead=onormal,group=XSDFeature,minlen=2,constraint=true,]
+ XSDElementDeclaration->XSDSchemaContent[arrowhead=onormal,group=XSDSchemaContent,minlen=2,constraint=true,]
+ XSDElementDeclaration->XSDTerm[arrowhead=onormal,group=XSDTerm,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDEnumerationFacet[label="{XSDEnumerationFacet|value[*] : Value| }"]
+ XSDEnumerationFacet->XSDRepeatableFacet[arrowhead=onormal,group=XSDRepeatableFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDFacet[label="{/XSDFacet/|lexicalValue[0-1] : EString\nfacetName[0-1] : EString\neffectiveValue[0-1] : Value| }"]
+ XSDFacet->XSDAnnotation[arrowhead=vee,arrowtail=diamond,headlabel="annotation[0-1]",group=XSDAnnotation,minlen=2,constraint=true,]
+ XSDFacet->XSDSimpleTypeDefinition[arrowhead=vee,arrowtail=none,headlabel="simpleTypeDefinition[0-1]",group=XSDSimpleTypeDefinition,minlen=2,constraint=false,]
+ XSDFacet->XSDComponent[arrowhead=onormal,group=XSDComponent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDFeature[label="{/XSDFeature/|value[0-1] : Value\nconstraint[0-1] : XSDConstraint\nform[0-1] : XSDForm\nlexicalValue[0-1] : EString\nglobal[0-1] : EBoolean\nfeatureReference[0-1] : EBoolean| }"]
+ XSDFeature->XSDScope[arrowhead=vee,arrowtail=none,headlabel="scope[0-1]",group=XSDScope,minlen=2,constraint=false,]
+ XSDFeature->XSDFeature[arrowhead=vee,arrowtail=none,headlabel="resolvedFeature",group=XSDFeature,minlen=2,constraint=false,]
+ XSDFeature->XSDTypeDefinition[arrowhead=vee,arrowtail=none,headlabel="type",group=XSDTypeDefinition,minlen=2,constraint=false,]
+ XSDFeature->XSDNamedComponent[arrowhead=onormal,group=XSDNamedComponent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDFixedFacet[label="{/XSDFixedFacet/|fixed[0-1] : EBoolean| }"]
+ XSDFixedFacet->XSDConstrainingFacet[arrowhead=onormal,group=XSDConstrainingFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDFractionDigitsFacet[label="{XSDFractionDigitsFacet|value[0-1] : EInt| }"]
+ XSDFractionDigitsFacet->XSDFixedFacet[arrowhead=onormal,group=XSDFixedFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDFundamentalFacet[label="{/XSDFundamentalFacet/| | }"]
+ XSDFundamentalFacet->XSDFacet[arrowhead=onormal,group=XSDFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDIdentityConstraintDefinition[label="{XSDIdentityConstraintDefinition|identityConstraintCategory[0-1] : XSDIdentityConstraintCategory| }"]
+ XSDIdentityConstraintDefinition->XSDAnnotation[arrowhead=vee,arrowtail=diamond,headlabel="annotation[0-1]",group=XSDAnnotation,minlen=2,constraint=true,]
+ XSDIdentityConstraintDefinition->XSDIdentityConstraintDefinition[arrowhead=vee,arrowtail=none,headlabel="referencedKey[0-1]",group=XSDIdentityConstraintDefinition,minlen=2,constraint=false,]
+ XSDIdentityConstraintDefinition->XSDXPathDefinition[arrowhead=vee,arrowtail=diamond,headlabel="selector",group=XSDXPathDefinition,minlen=2,constraint=true,]
+ XSDIdentityConstraintDefinition->XSDXPathDefinition[arrowhead=vee,arrowtail=diamond,headlabel="fields[1-*]{ordered}",group=XSDXPathDefinition,minlen=2,constraint=true,]
+ XSDIdentityConstraintDefinition->XSDNamedComponent[arrowhead=onormal,group=XSDNamedComponent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDImport[label="{XSDImport|namespace[0-1] : EString| }"]
+ XSDImport->XSDAnnotation[arrowhead=vee,arrowtail=diamond,headlabel="annotation[0-1]",group=XSDAnnotation,minlen=2,constraint=true,]
+ XSDImport->XSDSchemaDirective[arrowhead=onormal,group=XSDSchemaDirective,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDInclude[label="{XSDInclude| | }"]
+ XSDInclude->XSDAnnotation[arrowhead=vee,arrowtail=diamond,headlabel="annotation[0-1]",group=XSDAnnotation,minlen=2,constraint=true,]
+ XSDInclude->XSDSchemaCompositor[arrowhead=onormal,group=XSDSchemaCompositor,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDLengthFacet[label="{XSDLengthFacet|value[0-1] : EInt| }"]
+ XSDLengthFacet->XSDFixedFacet[arrowhead=onormal,group=XSDFixedFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDMaxExclusiveFacet[label="{XSDMaxExclusiveFacet| | }"]
+ XSDMaxExclusiveFacet->XSDMaxFacet[arrowhead=onormal,group=XSDMaxFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDMaxFacet[label="{/XSDMaxFacet/|value[0-1] : Value\ninclusive[0-1] : EBoolean\nexclusive[0-1] : EBoolean| }"]
+ XSDMaxFacet->XSDFixedFacet[arrowhead=onormal,group=XSDFixedFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDMaxInclusiveFacet[label="{XSDMaxInclusiveFacet| | }"]
+ XSDMaxInclusiveFacet->XSDMaxFacet[arrowhead=onormal,group=XSDMaxFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDMaxLengthFacet[label="{XSDMaxLengthFacet|value[0-1] : EInt| }"]
+ XSDMaxLengthFacet->XSDFixedFacet[arrowhead=onormal,group=XSDFixedFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDMinExclusiveFacet[label="{XSDMinExclusiveFacet| | }"]
+ XSDMinExclusiveFacet->XSDMinFacet[arrowhead=onormal,group=XSDMinFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDMinFacet[label="{/XSDMinFacet/|value[0-1] : Value\ninclusive[0-1] : EBoolean\nexclusive[0-1] : EBoolean| }"]
+ XSDMinFacet->XSDFixedFacet[arrowhead=onormal,group=XSDFixedFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDMinInclusiveFacet[label="{XSDMinInclusiveFacet| | }"]
+ XSDMinInclusiveFacet->XSDMinFacet[arrowhead=onormal,group=XSDMinFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDMinLengthFacet[label="{XSDMinLengthFacet|value[0-1] : EInt| }"]
+ XSDMinLengthFacet->XSDFixedFacet[arrowhead=onormal,group=XSDFixedFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDModelGroup[label="{XSDModelGroup|compositor[0-1] : XSDCompositor| }"]
+ XSDModelGroup->XSDAnnotation[arrowhead=vee,arrowtail=diamond,headlabel="annotation[0-1]",group=XSDAnnotation,minlen=2,constraint=true,]
+ XSDModelGroup->XSDParticle[arrowhead=vee,arrowtail=diamond,headlabel="contents[*]{ordered}",group=XSDParticle,minlen=2,constraint=true,]
+ XSDModelGroup->XSDParticle[arrowhead=vee,arrowtail=none,headlabel="particles[1-*]{ordered}",group=XSDParticle,minlen=2,constraint=false,]
+ XSDModelGroup->XSDTerm[arrowhead=onormal,group=XSDTerm,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDModelGroupDefinition[label="{XSDModelGroupDefinition|modelGroupDefinitionReference[0-1] : EBoolean| }"]
+ XSDModelGroupDefinition->XSDAnnotation[arrowhead=vee,arrowtail=diamond,headlabel="annotation[0-1]",group=XSDAnnotation,minlen=2,constraint=true,]
+ XSDModelGroupDefinition->XSDModelGroup[arrowhead=vee,arrowtail=diamond,headlabel="modelGroup",group=XSDModelGroup,minlen=2,constraint=true,]
+ XSDModelGroupDefinition->XSDModelGroupDefinition[arrowhead=vee,arrowtail=none,headlabel="resolvedModelGroupDefinition",group=XSDModelGroupDefinition,minlen=2,constraint=false,]
+ XSDModelGroupDefinition->XSDRedefinableComponent[arrowhead=onormal,group=XSDRedefinableComponent,minlen=2,constraint=true,]
+ XSDModelGroupDefinition->XSDParticleContent[arrowhead=onormal,group=XSDParticleContent,minlen=2,constraint=true,]
+ XSDModelGroupDefinition->XSDRedefineContent[arrowhead=onormal,group=XSDRedefineContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDNamedComponent[label="{/XSDNamedComponent/|name[0-1] : EString\ntargetNamespace[0-1] : EString\naliasName[0-1] : EString\nuRI[0-1] : EString\naliasURI[0-1] : EString\nqName[0-1] : EString| }"]
+ XSDNamedComponent->XSDComponent[arrowhead=onormal,group=XSDComponent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDNotationDeclaration[label="{XSDNotationDeclaration|systemIdentifier[0-1] : EString\npublicIdentifier[0-1] : EString| }"]
+ XSDNotationDeclaration->XSDAnnotation[arrowhead=vee,arrowtail=diamond,headlabel="annotation[0-1]",group=XSDAnnotation,minlen=2,constraint=true,]
+ XSDNotationDeclaration->XSDNamedComponent[arrowhead=onormal,group=XSDNamedComponent,minlen=2,constraint=true,]
+ XSDNotationDeclaration->XSDSchemaContent[arrowhead=onormal,group=XSDSchemaContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDNumericFacet[label="{XSDNumericFacet|value[0-1] : EBoolean| }"]
+ XSDNumericFacet->XSDFundamentalFacet[arrowhead=onormal,group=XSDFundamentalFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDOrderedFacet[label="{XSDOrderedFacet|value[0-1] : XSDOrdered| }"]
+ XSDOrderedFacet->XSDFundamentalFacet[arrowhead=onormal,group=XSDFundamentalFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDParticle[label="{XSDParticle|minOccurs[0-1] : EInt\nmaxOccurs[0-1] : EInt| }"]
+ XSDParticle->XSDParticleContent[arrowhead=vee,arrowtail=diamond,headlabel="content",group=XSDParticleContent,minlen=2,constraint=true,]
+ XSDParticle->XSDTerm[arrowhead=vee,arrowtail=none,headlabel="term",group=XSDTerm,minlen=2,constraint=false,]
+ XSDParticle->XSDComplexTypeContent[arrowhead=onormal,group=XSDComplexTypeContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDParticleContent[label="{/XSDParticleContent/| | }"]
+ XSDParticleContent->XSDConcreteComponent[arrowhead=onormal,group=XSDConcreteComponent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDPatternFacet[label="{XSDPatternFacet|value[*] : EString| }"]
+ XSDPatternFacet->XSDRepeatableFacet[arrowhead=onormal,group=XSDRepeatableFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDRedefinableComponent[label="{/XSDRedefinableComponent/|circular[0-1] : EBoolean| }"]
+ XSDRedefinableComponent->XSDNamedComponent[arrowhead=onormal,group=XSDNamedComponent,minlen=2,constraint=true,]
+ XSDRedefinableComponent->XSDRedefineContent[arrowhead=onormal,group=XSDRedefineContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDRedefineContent[label="{/XSDRedefineContent/| | }"]
+ XSDRedefineContent->XSDSchemaContent[arrowhead=onormal,group=XSDSchemaContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDRedefine[label="{XSDRedefine| | }"]
+ XSDRedefine->XSDAnnotation[arrowhead=vee,arrowtail=none,headlabel="annotations[*]{ordered}",group=XSDAnnotation,minlen=2,constraint=false,]
+ XSDRedefine->XSDRedefineContent[arrowhead=vee,arrowtail=diamond,headlabel="contents[*]{ordered}",group=XSDRedefineContent,minlen=2,constraint=true,]
+ XSDRedefine->XSDSchemaCompositor[arrowhead=onormal,group=XSDSchemaCompositor,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDRepeatableFacet[label="{/XSDRepeatableFacet/| | }"]
+ XSDRepeatableFacet->XSDAnnotation[arrowhead=vee,arrowtail=none,headlabel="annotations[*]{ordered}",group=XSDAnnotation,minlen=2,constraint=false,]
+ XSDRepeatableFacet->XSDConstrainingFacet[arrowhead=onormal,group=XSDConstrainingFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDSchema[label="{XSDSchema|document[0-1] : XSDDOMDocument\nschemaLocation[0-1] : EString\ntargetNamespace[0-1] : EString\nattributeFormDefault[0-1] : XSDForm\nelementFormDefault[0-1] : XSDForm\nfinalDefault[*] : XSDProhibitedSubstitutions\nblockDefault[*] : XSDDisallowedSubstitutions\nversion[0-1] : EString| }"]
+ XSDSchema->XSDSchemaContent[arrowhead=vee,arrowtail=diamond,headlabel="contents[*]{ordered}",group=XSDSchemaContent,minlen=2,constraint=true,]
+ XSDSchema->XSDElementDeclaration[arrowhead=vee,arrowtail=none,headlabel="elementDeclarations[*]{ordered}",group=XSDElementDeclaration,minlen=2,constraint=false,]
+ XSDSchema->XSDAttributeDeclaration[arrowhead=vee,arrowtail=none,headlabel="attributeDeclarations[*]{ordered}",group=XSDAttributeDeclaration,minlen=2,constraint=false,]
+ XSDSchema->XSDAttributeGroupDefinition[arrowhead=vee,arrowtail=none,headlabel="attributeGroupDefinitions[*]{ordered}",group=XSDAttributeGroupDefinition,minlen=2,constraint=false,]
+ XSDSchema->XSDTypeDefinition[arrowhead=vee,arrowtail=none,headlabel="typeDefinitions[*]{ordered}",group=XSDTypeDefinition,minlen=2,constraint=false,]
+ XSDSchema->XSDModelGroupDefinition[arrowhead=vee,arrowtail=none,headlabel="modelGroupDefinitions[*]{ordered}",group=XSDModelGroupDefinition,minlen=2,constraint=false,]
+ XSDSchema->XSDIdentityConstraintDefinition[arrowhead=vee,arrowtail=none,headlabel="identityConstraintDefinitions[*]{ordered}",group=XSDIdentityConstraintDefinition,minlen=2,constraint=false,]
+ XSDSchema->XSDNotationDeclaration[arrowhead=vee,arrowtail=none,headlabel="notationDeclarations[*]{ordered}",group=XSDNotationDeclaration,minlen=2,constraint=false,]
+ XSDSchema->XSDAnnotation[arrowhead=vee,arrowtail=none,headlabel="annotations[*]{ordered}",group=XSDAnnotation,minlen=2,constraint=false,]
+ XSDSchema->XSDDiagnostic[arrowhead=vee,arrowtail=none,headlabel="allDiagnostics[*]{ordered}",group=XSDDiagnostic,minlen=2,constraint=false,]
+ XSDSchema->XSDSchemaDirective[arrowhead=vee,arrowtail=none,headlabel="referencingDirectives[*]{ordered}",group=XSDSchemaDirective,minlen=2,constraint=false,]
+ XSDSchema->XSDSchema[arrowhead=vee,arrowtail=none,headlabel="rootVersion",group=XSDSchema,minlen=2,constraint=false,]
+ XSDSchema->XSDSchema[arrowhead=vee,arrowtail=none,headlabel="originalVersion[0-1]",group=XSDSchema,minlen=2,constraint=false,]
+ XSDSchema->XSDSchema[arrowhead=vee,arrowtail=diamond,headlabel="incorporatedVersions[*]{ordered}",group=XSDSchema,minlen=2,constraint=true,]
+ XSDSchema->XSDSchema[arrowhead=vee,arrowtail=none,headlabel="schemaForSchema",group=XSDSchema,minlen=2,constraint=false,]
+ XSDSchema->XSDScope[arrowhead=onormal,group=XSDScope,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDSchemaCompositor[label="{/XSDSchemaCompositor/| | }"]
+ XSDSchemaCompositor->XSDSchema[arrowhead=vee,arrowtail=none,headlabel="incorporatedSchema[0-1]",group=XSDSchema,minlen=2,constraint=false,]
+ XSDSchemaCompositor->XSDSchemaDirective[arrowhead=onormal,group=XSDSchemaDirective,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDSchemaContent[label="{/XSDSchemaContent/| | }"]
+ XSDSchemaContent->XSDConcreteComponent[arrowhead=onormal,group=XSDConcreteComponent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDSchemaDirective[label="{/XSDSchemaDirective/|schemaLocation[0-1] : EString| }"]
+ XSDSchemaDirective->XSDSchema[arrowhead=vee,arrowtail=none,headlabel="resolvedSchema[0-1]",group=XSDSchema,minlen=2,constraint=false,]
+ XSDSchemaDirective->XSDSchemaContent[arrowhead=onormal,group=XSDSchemaContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDScope[label="{/XSDScope/| | }"]
+ XSDScope->XSDComponent[arrowhead=onormal,group=XSDComponent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDSimpleTypeDefinition[label="{XSDSimpleTypeDefinition|variety[0-1] : XSDVariety\nfinal[*] : XSDSimpleFinal\nlexicalFinal[*] : XSDSimpleFinal\nvalidFacets[*] : EString| }"]
+ XSDSimpleTypeDefinition->XSDSimpleTypeDefinition[arrowhead=vee,arrowtail=diamond,headlabel="contents[*]{ordered}",group=XSDSimpleTypeDefinition,minlen=2,constraint=true,]
+ XSDSimpleTypeDefinition->XSDConstrainingFacet[arrowhead=vee,arrowtail=diamond,headlabel="facetContents[*]{ordered}",group=XSDConstrainingFacet,minlen=2,constraint=true,]
+ XSDSimpleTypeDefinition->XSDConstrainingFacet[arrowhead=vee,arrowtail=none,headlabel="facets[*]{ordered}",group=XSDConstrainingFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDSimpleTypeDefinition[arrowhead=vee,arrowtail=none,headlabel="memberTypeDefinitions[*]{ordered}",group=XSDSimpleTypeDefinition,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDFundamentalFacet[arrowhead=vee,arrowtail=diamond,headlabel="fundamentalFacets[1-*]{ordered}",group=XSDFundamentalFacet,minlen=2,constraint=true,]
+ XSDSimpleTypeDefinition->XSDSimpleTypeDefinition[arrowhead=vee,arrowtail=none,headlabel="baseTypeDefinition",group=XSDSimpleTypeDefinition,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDSimpleTypeDefinition[arrowhead=vee,arrowtail=none,headlabel="primitiveTypeDefinition[0-1]",group=XSDSimpleTypeDefinition,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDSimpleTypeDefinition[arrowhead=vee,arrowtail=none,headlabel="itemTypeDefinition[0-1]",group=XSDSimpleTypeDefinition,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDSimpleTypeDefinition[arrowhead=vee,arrowtail=none,headlabel="rootTypeDefinition",group=XSDSimpleTypeDefinition,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDMinFacet[arrowhead=vee,arrowtail=none,headlabel="minFacet[0-1]",group=XSDMinFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDMaxFacet[arrowhead=vee,arrowtail=none,headlabel="maxFacet[0-1]",group=XSDMaxFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDMaxInclusiveFacet[arrowhead=vee,arrowtail=none,headlabel="maxInclusiveFacet[0-1]",group=XSDMaxInclusiveFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDMinInclusiveFacet[arrowhead=vee,arrowtail=none,headlabel="minInclusiveFacet[0-1]",group=XSDMinInclusiveFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDMinExclusiveFacet[arrowhead=vee,arrowtail=none,headlabel="minExclusiveFacet[0-1]",group=XSDMinExclusiveFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDMaxExclusiveFacet[arrowhead=vee,arrowtail=none,headlabel="maxExclusiveFacet[0-1]",group=XSDMaxExclusiveFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDLengthFacet[arrowhead=vee,arrowtail=none,headlabel="lengthFacet[0-1]",group=XSDLengthFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDWhiteSpaceFacet[arrowhead=vee,arrowtail=none,headlabel="whiteSpaceFacet[0-1]",group=XSDWhiteSpaceFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDEnumerationFacet[arrowhead=vee,arrowtail=none,headlabel="enumerationFacets[*]{ordered}",group=XSDEnumerationFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDPatternFacet[arrowhead=vee,arrowtail=none,headlabel="patternFacets[*]{ordered}",group=XSDPatternFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDCardinalityFacet[arrowhead=vee,arrowtail=none,headlabel="cardinalityFacet",group=XSDCardinalityFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDNumericFacet[arrowhead=vee,arrowtail=none,headlabel="numericFacet",group=XSDNumericFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDMaxLengthFacet[arrowhead=vee,arrowtail=none,headlabel="maxLengthFacet[0-1]",group=XSDMaxLengthFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDMinLengthFacet[arrowhead=vee,arrowtail=none,headlabel="minLengthFacet[0-1]",group=XSDMinLengthFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDTotalDigitsFacet[arrowhead=vee,arrowtail=none,headlabel="totalDigitsFacet[0-1]",group=XSDTotalDigitsFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDFractionDigitsFacet[arrowhead=vee,arrowtail=none,headlabel="fractionDigitsFacet[0-1]",group=XSDFractionDigitsFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDOrderedFacet[arrowhead=vee,arrowtail=none,headlabel="orderedFacet",group=XSDOrderedFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDBoundedFacet[arrowhead=vee,arrowtail=none,headlabel="boundedFacet",group=XSDBoundedFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDMaxFacet[arrowhead=vee,arrowtail=none,headlabel="effectiveMaxFacet[0-1]",group=XSDMaxFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDWhiteSpaceFacet[arrowhead=vee,arrowtail=none,headlabel="effectiveWhiteSpaceFacet[0-1]",group=XSDWhiteSpaceFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDMaxLengthFacet[arrowhead=vee,arrowtail=none,headlabel="effectiveMaxLengthFacet[0-1]",group=XSDMaxLengthFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDFractionDigitsFacet[arrowhead=vee,arrowtail=none,headlabel="effectiveFractionDigitsFacet[0-1]",group=XSDFractionDigitsFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDPatternFacet[arrowhead=vee,arrowtail=none,headlabel="effectivePatternFacet[0-1]",group=XSDPatternFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDEnumerationFacet[arrowhead=vee,arrowtail=none,headlabel="effectiveEnumerationFacet[0-1]",group=XSDEnumerationFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDTotalDigitsFacet[arrowhead=vee,arrowtail=none,headlabel="effectiveTotalDigitsFacet[0-1]",group=XSDTotalDigitsFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDMinLengthFacet[arrowhead=vee,arrowtail=none,headlabel="effectiveMinLengthFacet[0-1]",group=XSDMinLengthFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDLengthFacet[arrowhead=vee,arrowtail=none,headlabel="effectiveLengthFacet[0-1]",group=XSDLengthFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDMinFacet[arrowhead=vee,arrowtail=none,headlabel="effectiveMinFacet[0-1]",group=XSDMinFacet,minlen=2,constraint=false,]
+ XSDSimpleTypeDefinition->XSDFacet[arrowhead=vee,arrowtail=diamond,headlabel="syntheticFacets[*]{ordered}",group=XSDFacet,minlen=2,constraint=true,]
+ XSDSimpleTypeDefinition->XSDTypeDefinition[arrowhead=onormal,group=XSDTypeDefinition,minlen=2,constraint=true,]
+ XSDSimpleTypeDefinition->XSDComplexTypeContent[arrowhead=onormal,group=XSDComplexTypeContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDTerm[label="{/XSDTerm/| | }"]
+ XSDTerm->XSDComponent[arrowhead=onormal,group=XSDComponent,minlen=2,constraint=true,]
+ XSDTerm->XSDParticleContent[arrowhead=onormal,group=XSDParticleContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDTotalDigitsFacet[label="{XSDTotalDigitsFacet|value[0-1] : EInt| }"]
+ XSDTotalDigitsFacet->XSDFixedFacet[arrowhead=onormal,group=XSDFixedFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDTypeDefinition[label="{/XSDTypeDefinition/| | }"]
+ XSDTypeDefinition->XSDAnnotation[arrowhead=vee,arrowtail=diamond,headlabel="annotation[0-1]",group=XSDAnnotation,minlen=2,constraint=true,]
+ XSDTypeDefinition->XSDAnnotation[arrowhead=vee,arrowtail=diamond,headlabel="derivationAnnotation[0-1]",group=XSDAnnotation,minlen=2,constraint=true,]
+ XSDTypeDefinition->XSDAnnotation[arrowhead=vee,arrowtail=none,headlabel="annotations[*]{ordered}",group=XSDAnnotation,minlen=2,constraint=false,]
+ XSDTypeDefinition->XSDTypeDefinition[arrowhead=vee,arrowtail=none,headlabel="rootType",group=XSDTypeDefinition,minlen=2,constraint=false,]
+ XSDTypeDefinition->XSDTypeDefinition[arrowhead=vee,arrowtail=none,headlabel="baseType",group=XSDTypeDefinition,minlen=2,constraint=false,]
+ XSDTypeDefinition->XSDSimpleTypeDefinition[arrowhead=vee,arrowtail=none,headlabel="simpleType[0-1]",group=XSDSimpleTypeDefinition,minlen=2,constraint=false,]
+ XSDTypeDefinition->XSDParticle[arrowhead=vee,arrowtail=none,headlabel="complexType[0-1]",group=XSDParticle,minlen=2,constraint=false,]
+ XSDTypeDefinition->XSDRedefinableComponent[arrowhead=onormal,group=XSDRedefinableComponent,minlen=2,constraint=true,]
+ XSDTypeDefinition->XSDRedefineContent[arrowhead=onormal,group=XSDRedefineContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDWhiteSpaceFacet[label="{XSDWhiteSpaceFacet|value[0-1] : XSDWhiteSpace| }"]
+ XSDWhiteSpaceFacet->XSDFixedFacet[arrowhead=onormal,group=XSDFixedFacet,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDWildcard[label="{XSDWildcard|namespaceConstraintCategory[0-1] : XSDNamespaceConstraintCategory\nnamespaceConstraint[*] : EString\nprocessContents[0-1] : XSDProcessContents\nlexicalNamespaceConstraint[*] : EString| }"]
+ XSDWildcard->XSDAnnotation[arrowhead=vee,arrowtail=diamond,headlabel="annotation[0-1]",group=XSDAnnotation,minlen=2,constraint=true,]
+ XSDWildcard->XSDAnnotation[arrowhead=vee,arrowtail=none,headlabel="annotations[*]{ordered}",group=XSDAnnotation,minlen=2,constraint=false,]
+ XSDWildcard->XSDTerm[arrowhead=onormal,group=XSDTerm,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSDXPathDefinition[label="{XSDXPathDefinition|variety[0-1] : XSDXPathVariety\nvalue[0-1] : EString| }"]
+ XSDXPathDefinition->XSDAnnotation[arrowhead=vee,arrowtail=diamond,headlabel="annotation[0-1]",group=XSDAnnotation,minlen=2,constraint=true,]
+ XSDXPathDefinition->XSDComponent[arrowhead=onormal,group=XSDComponent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DOMAttr[label="{&#171;DataType&#187;\nDOMAttr|}"]
+;
+ node[shape=record];
+XSDDOMDocument[label="{&#171;DataType&#187;\nXSDDOMDocument|}"]
+;
+ node[shape=record];
+XSDDOMElement[label="{&#171;DataType&#187;\nXSDDOMElement|}"]
+;
+ node[shape=record];
+DOMNode[label="{&#171;DataType&#187;\nDOMNode|}"]
+;
+ node[shape=record];
+Value[label="{&#171;DataType&#187;\nValue|}"]
+;
+
+}
+}

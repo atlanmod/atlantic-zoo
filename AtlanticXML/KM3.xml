@@ -1,0 +1,48 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'KM3'>
+    <Class name = 'LocatedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'location' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ModelElement' isAbstract = 'true' supertypes = 'KM3::LocatedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'package' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'KM3::Package' opposite = 'KM3::Package::contents'/>
+    </Class>
+    <Class name = 'Classifier' isAbstract = 'false' supertypes = 'KM3::ModelElement'/>
+    <Class name = 'DataType' isAbstract = 'false' supertypes = 'KM3::Classifier'/>
+    <Class name = 'Enumeration' isAbstract = 'false' supertypes = 'KM3::Classifier'>
+      <Reference name = 'literals' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'KM3::EnumLiteral' opposite = ''/>
+    </Class>
+    <Class name = 'EnumLiteral' isAbstract = 'false' supertypes = 'KM3::ModelElement'/>
+    <Class name = 'Class' isAbstract = 'false' supertypes = 'KM3::Classifier'>
+      <Attribute name = 'isAbstract' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'supertypes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'KM3::Class' opposite = ''/>
+      <Reference name = 'structuralFeatures' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'KM3::StructuralFeature' opposite = 'KM3::StructuralFeature::owner'/>
+    </Class>
+    <Class name = 'StructuralFeature' isAbstract = 'false' supertypes = 'KM3::ModelElement'>
+      <Attribute name = 'lower' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'upper' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'isOrdered' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isUnique' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'KM3::Class' opposite = 'KM3::Class::structuralFeatures'/>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'KM3::Classifier' opposite = ''/>
+    </Class>
+    <Class name = 'Attribute' isAbstract = 'false' supertypes = 'KM3::StructuralFeature'/>
+    <Class name = 'Reference' isAbstract = 'false' supertypes = 'KM3::StructuralFeature'>
+      <Attribute name = 'isContainer' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'opposite' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'KM3::Reference' opposite = ''/>
+    </Class>
+    <Class name = 'Package' isAbstract = 'false' supertypes = 'KM3::ModelElement'>
+      <Reference name = 'contents' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'KM3::ModelElement' opposite = 'KM3::ModelElement::package'/>
+      <Reference name = 'metamodel' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'KM3::Metamodel' opposite = 'KM3::Metamodel::contents'/>
+    </Class>
+    <Class name = 'Metamodel' isAbstract = 'false' supertypes = 'KM3::LocatedElement'>
+      <Reference name = 'contents' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'KM3::Package' opposite = 'KM3::Package::metamodel'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

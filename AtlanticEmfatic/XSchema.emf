@@ -1,0 +1,149 @@
+package Metamodel;
+
+package XSchema {
+  enum AttributeUseType {
+    null = 0;
+    optional = 0;
+    prohibited = 0;
+    required = 0;
+  }
+
+  abstract class AnnotedElement {
+    !ordered val Annotation[*]#annotedElement annotations;
+  }
+
+  class Annotation {
+    val Documentation[*] documentations;
+    val ApplicationInfo[*] applicationInfos;
+    !ordered ref AnnotedElement[1]#annotations annotedElement;
+  }
+
+  class Documentation {
+    !unique !ordered attr String[1] text;
+  }
+
+  class ApplicationInfo {
+    !unique !ordered attr String[1] text;
+  }
+
+  abstract class NamedElement extends AnnotedElement {
+    !unique !ordered attr String[1] name;
+  }
+
+  class XSchema extends AnnotedElement {
+    !unique !ordered attr String[1] namespace;
+    !ordered val XSchemaContentElement[*]#schema contents;
+  }
+
+  abstract class XSchemaContentElement extends NamedElement {
+    !ordered ref XSchema#contents schema;
+  }
+
+  abstract class Parameters extends XSchemaContentElement {
+    !ordered ref AbstractType typeRef;
+    !ordered val AbstractType#container typeContain;
+    !unique !ordered attr String fixed;
+    !unique !ordered attr String default;
+  }
+
+  class Element extends Parameters, AtomicContent {
+    !ordered ref ElementRef[*]#referencedElement references;
+  }
+
+  abstract class Occurable {
+    !unique !ordered attr String[1] minOccurs;
+    !unique !ordered attr String[1] maxOccurs;
+  }
+
+  abstract class AbstractContent extends Occurable {
+    !ordered ref Container[1]#contents container;
+    !ordered ref ComplexType[1]#content complexType;
+  }
+
+  abstract class Container extends AbstractContent {
+    val AbstractContent[*]#container contents;
+  }
+
+  abstract class AtomicContent extends AbstractContent {
+  }
+
+  class ElementRef extends AtomicContent {
+    !ordered ref Element[1]#references referencedElement;
+  }
+
+  class GroupRef extends AtomicContent {
+    !ordered ref Group[1]#references referencedGroup;
+  }
+
+  class All extends Container {
+  }
+
+  class Group extends XSchemaContentElement, Container {
+    !ordered ref GroupRef[*]#referencedGroup references;
+  }
+
+  class Choice extends Container {
+  }
+
+  class Sequence extends Container {
+  }
+
+  abstract class AbstractAttributeGroupContent extends Occurable {
+    !ordered ref AttributeGroup[1]#contents container;
+    !ordered ref ComplexType[1]#attributes complexType;
+  }
+
+  class AttributeGroup extends AbstractAttributeGroupContent, XSchemaContentElement {
+    val AbstractAttributeGroupContent[*]#container contents;
+    !ordered ref AttributeGroupRef[*]#referencedAttributeGroup references;
+  }
+
+  class AttributeGroupRef extends AtomicAttributeGroupContent {
+    !ordered ref AttributeGroup[1]#references referencedAttributeGroup;
+  }
+
+  abstract class AtomicAttributeGroupContent extends AbstractAttributeGroupContent {
+  }
+
+  class Attribute extends Parameters, AtomicAttributeGroupContent {
+    !unique !ordered attr AttributeUseType use;
+    !ordered ref AttributeRef[*]#referencedAttribute references;
+  }
+
+  class AttributeRef extends AtomicAttributeGroupContent {
+    !ordered ref Attribute[1]#references referencedAttribute;
+  }
+
+  abstract class AbstractType extends XSchemaContentElement {
+    !ordered ref Parameters[1]#typeContain container;
+  }
+
+  class SimpleType extends AbstractType {
+    !ordered ref ComplexTypeSimpleContent[*]#base extensions;
+  }
+
+  class ComplexType extends AbstractType {
+    !ordered ref ComplexTypeComplexContent[*]#base extensions;
+    !ordered val AbstractContent#complexType content;
+    !ordered val AbstractAttributeGroupContent[*]#complexType attributes;
+  }
+
+  class ComplexTypeSimpleContent extends ComplexType {
+    !ordered ref SimpleType[1]#extensions base;
+  }
+
+  class ComplexTypeComplexContent extends ComplexType {
+    !ordered ref ComplexType[1]#extensions base;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+  datatype Boolean : "";
+
+}
+

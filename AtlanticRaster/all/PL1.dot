@@ -1,0 +1,88 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_PL/I"{
+labelloc=t
+color=black
+label=PL/I
+ node[shape=record];
+PLIClassifier[label="{PLIClassifier|name : String| }"]
+ PLIClassifier->PLIElement[arrowhead=none,arrowtail=none,headlabel="typedElements[*]",taillabel="sharedType[0-1]",group=PLIElement,minlen=2,constraint=false,]
+;
+ node[shape=record];
+PLISimpleType[label="{PLISimpleType| | }"]
+ PLISimpleType->PLIAlias[arrowhead=diamond,arrowtail=none,headlabel="alias",taillabel="type",group=PLIAlias,minlen=2,constraint=true,]
+ PLISimpleType->PLIClassifier[arrowhead=onormal,group=PLIClassifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PLINamedType[label="{PLINamedType| | }"]
+ PLINamedType->PLIClassifier[arrowhead=onormal,group=PLIClassifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PLIComposedType[label="{PLIComposedType| | }"]
+ PLIComposedType->PLIClassifier[arrowhead=onormal,group=PLIClassifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PLIAlias[label="{PLIAlias| | }"]
+ PLIAlias->PLIAttribute[arrowhead=vee,arrowtail=diamond,headlabel="contains[1-*]",group=PLIAttribute,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PLIAttribute[label="{PLIAttribute| | }"]
+;
+ node[shape=record];
+PLIComputationalType[label="{PLIComputationalType| | }"]
+ PLIComputationalType->PLISimpleType[arrowhead=onormal,group=PLISimpleType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PLINonComputationalType[label="{PLINonComputationalType| | }"]
+ PLINonComputationalType->PLISimpleType[arrowhead=onormal,group=PLISimpleType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PLIElement[label="{PLIElement|level : String\nname : String| }"]
+ PLIElement->PLIComposedType[arrowhead=diamond,arrowtail=none,headlabel="group[0-1]",taillabel="elements[*]",group=PLIComposedType,minlen=2,constraint=true,]
+ PLIElement->PLIElementInitialValue[arrowhead=vee,arrowtail=none,headlabel="initial[0-1]",group=PLIElementInitialValue,minlen=2,constraint=false,]
+ PLIElement->PLISourceText[arrowhead=vee,arrowtail=none,headlabel="source",group=PLISourceText,minlen=2,constraint=false,]
+;
+ node[shape=record];
+PLIElementInitialValue[label="{PLIElementInitialValue|initialValue : String| }"]
+;
+ node[shape=record];
+PLISourceText[label="{PLISourceText|source : String\nfileName : String| }"]
+;
+ node[shape=record];
+PLIArray[label="{PLIArray| | }"]
+ PLIArray->PLIElement[arrowhead=diamond,arrowtail=none,headlabel="arrayOf[0-1]",taillabel="array[0-1]",group=PLIElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PLIFixedBoundArray[label="{PLIFixedBoundArray|IBound : Integer\nuBound : Integer| }"]
+ PLIFixedBoundArray->PLIElement[arrowhead=vee,arrowtail=none,headlabel="referredTo",group=PLIElement,minlen=2,constraint=false,]
+ PLIFixedBoundArray->PLIArray[arrowhead=onormal,group=PLIArray,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PLIFixedLboundArray[label="{PLIFixedLboundArray|IBound : Integer\nuBoundToAllocate : String| }"]
+ PLIFixedLboundArray->PLIElement[arrowhead=vee,arrowtail=none,headlabel="referredTo",group=PLIElement,minlen=2,constraint=false,]
+ PLIFixedLboundArray->PLIArray[arrowhead=onormal,group=PLIArray,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PLIHBoundArray[label="{PLIHBoundArray|uBound : Integer\nIBoundToAllocate : String| }"]
+ PLIHBoundArray->PLIElement[arrowhead=vee,arrowtail=none,headlabel="referredTo",group=PLIElement,minlen=2,constraint=false,]
+ PLIHBoundArray->PLIArray[arrowhead=onormal,group=PLIArray,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PLIVariableBoundArray[label="{PLIVariableBoundArray|IBoundToAllocate : String\nhBoundToAllocate : String| }"]
+ PLIVariableBoundArray->PLIElement[arrowhead=vee,arrowtail=none,headlabel="referredTo",group=PLIElement,minlen=2,constraint=false,]
+ PLIVariableBoundArray->PLIArray[arrowhead=onormal,group=PLIArray,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

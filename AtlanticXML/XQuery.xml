@@ -1,0 +1,78 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'XQuery'>
+    <Class name = 'XQueryProgram' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'expressions' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'XQuery::ExecutableExpression' opposite = 'XQuery::ExecutableExpression::xQueryProgram'/>
+    </Class>
+    <Class name = 'Expression' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'parentNode' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XQuery::ElementNode' opposite = 'XQuery::ElementNode::nodes'/>
+      <Reference name = 'returnEx' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XQuery::Return' opposite = 'XQuery::Return::expressions'/>
+    </Class>
+    <Class name = 'ExecutableExpression' isAbstract = 'false' supertypes = 'XQuery::Expression'>
+      <Reference name = 'xQueryProgram' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XQuery::XQueryProgram' opposite = 'XQuery::XQueryProgram::expressions'/>
+      <Reference name = 'functionDeclaration' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XQuery::FunctionDeclaration' opposite = 'XQuery::FunctionDeclaration::expression'/>
+    </Class>
+    <Class name = 'Node' isAbstract = 'false' supertypes = 'XQuery::Expression'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'FLWOR' isAbstract = 'false' supertypes = 'XQuery::ExecutableExpression'>
+      <Reference name = 'for' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'XQuery::For' opposite = 'XQuery::For::flwor'/>
+      <Reference name = 'let' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'XQuery::Let' opposite = 'XQuery::Let::flwor'/>
+      <Reference name = 'where' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'XQuery::Where' opposite = 'XQuery::Where::flwor'/>
+      <Reference name = 'orderBy' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'XQuery::OrderBy' opposite = 'XQuery::OrderBy::flwor'/>
+      <Reference name = 'return' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'XQuery::Return' opposite = 'XQuery::Return::flwor'/>
+    </Class>
+    <Class name = 'FunctionCall' isAbstract = 'false' supertypes = 'XQuery::ExecutableExpression'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'XQuery::XPath' opposite = 'XQuery::XPath::functionCall'/>
+    </Class>
+    <Class name = 'FunctionDeclaration' isAbstract = 'false' supertypes = 'XQuery::ExecutableExpression'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'expression' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'XQuery::ExecutableExpression' opposite = 'XQuery::ExecutableExpression::functionDeclaration'/>
+    </Class>
+    <Class name = 'ElementNode' isAbstract = 'false' supertypes = 'XQuery::Node'>
+      <Reference name = 'nodes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'XQuery::Expression' opposite = 'XQuery::Expression::parentNode'/>
+    </Class>
+    <Class name = 'AttributeNode' isAbstract = 'false' supertypes = 'XQuery::Node'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'TextNode' isAbstract = 'false' supertypes = 'XQuery::ElementNode'/>
+    <Class name = 'ReturnXPath' isAbstract = 'false' supertypes = 'XQuery::Expression'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'XPath' isAbstract = 'false' supertypes = 'XQuery::ReturnXPath'>
+      <Reference name = 'functionCall' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XQuery::FunctionCall' opposite = 'XQuery::FunctionCall::parameters'/>
+      <Reference name = 'for' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XQuery::For' opposite = 'XQuery::For::expression'/>
+      <Reference name = 'let' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XQuery::Let' opposite = 'XQuery::Let::expression'/>
+    </Class>
+    <Class name = 'BooleanExp' isAbstract = 'false' supertypes = 'XQuery::XPath'>
+      <Reference name = 'where' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XQuery::Where' opposite = 'XQuery::Where::expression'/>
+    </Class>
+    <Class name = 'For' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'var' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'flwor' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XQuery::FLWOR' opposite = 'XQuery::FLWOR::for'/>
+      <Reference name = 'expression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'XQuery::XPath' opposite = 'XQuery::XPath::for'/>
+    </Class>
+    <Class name = 'Let' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'var' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'flwor' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XQuery::FLWOR' opposite = 'XQuery::FLWOR::let'/>
+      <Reference name = 'expression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'XQuery::XPath' opposite = 'XQuery::XPath::let'/>
+    </Class>
+    <Class name = 'Where' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'flwor' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XQuery::FLWOR' opposite = 'XQuery::FLWOR::where'/>
+      <Reference name = 'expression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'XQuery::BooleanExp' opposite = 'XQuery::BooleanExp::where'/>
+    </Class>
+    <Class name = 'OrderBy' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'flwor' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'XQuery::FLWOR' opposite = 'XQuery::FLWOR::orderBy'/>
+    </Class>
+    <Class name = 'Return' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'flwor' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'XQuery::FLWOR' opposite = 'XQuery::FLWOR::return'/>
+      <Reference name = 'expressions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'XQuery::Expression' opposite = 'XQuery::Expression::returnEx'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

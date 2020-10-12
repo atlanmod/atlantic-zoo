@@ -1,0 +1,62 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'BusinessProcessModel'>
+    <Class name = 'Namespace' isAbstract = 'true' supertypes = ''/>
+    <Class name = 'Task' isAbstract = 'true' supertypes = 'BusinessProcessModel::Namespace'>
+      <Reference name = 'containsDataSet' lower = '3' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'BusinessProcessModel::DataSet' opposite = ''/>
+      <Reference name = 'containsControlPoint' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'BusinessProcessModel::ControlPoint' opposite = ''/>
+      <Reference name = 'invoker' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'BusinessProcessModel::InvokerTask' opposite = 'BusinessProcessModel::InvokerTask::invokes'/>
+      <Reference name = 'terminator' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'BusinessProcessModel::TerminatorTask' opposite = 'BusinessProcessModel::TerminatorTask::terminates'/>
+    </Class>
+    <Class name = 'DataSet' isAbstract = 'true' supertypes = 'BusinessProcessModel::Namespace'>
+      <Reference name = 'contains' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'BusinessProcessModel::DataElement' opposite = ''/>
+      <Reference name = 'source' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'BusinessProcessModel::ControlFlow' opposite = ''/>
+      <Reference name = 'triggers' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'BusinessProcessModel::ControlPoint' opposite = ''/>
+    </Class>
+    <Class name = 'Parameter' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'DataElement' isAbstract = 'true' supertypes = 'BusinessProcessModel::Parameter'>
+      <Reference name = 'sink' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'BusinessProcessModel::DataFlow' opposite = ''/>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'BusinessProcessModel::DataFlow' opposite = ''/>
+    </Class>
+    <Class name = 'ModelElement' isAbstract = 'true' supertypes = ''/>
+    <Class name = 'Flow' isAbstract = 'false' supertypes = 'BusinessProcessModel::ModelElement'/>
+    <Class name = 'DataFlow' isAbstract = 'false' supertypes = 'BusinessProcessModel::Flow'/>
+    <Class name = 'ControlFlow' isAbstract = 'false' supertypes = 'BusinessProcessModel::Flow'/>
+    <Class name = 'ControlPoint' isAbstract = 'false' supertypes = 'BusinessProcessModel::ModelElement'>
+      <Reference name = 'sink' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'BusinessProcessModel::ControlFlow' opposite = ''/>
+    </Class>
+    <Class name = 'Input' isAbstract = 'false' supertypes = 'BusinessProcessModel::DataElement'/>
+    <Class name = 'Output' isAbstract = 'false' supertypes = 'BusinessProcessModel::DataElement'/>
+    <Class name = 'OutputSet' isAbstract = 'false' supertypes = 'BusinessProcessModel::DataSet'>
+      <Reference name = 'containsOutput' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'BusinessProcessModel::Output' opposite = ''/>
+    </Class>
+    <Class name = 'InputSet' isAbstract = 'false' supertypes = 'BusinessProcessModel::DataSet'>
+      <Reference name = 'containsInput' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'BusinessProcessModel::Input' opposite = ''/>
+    </Class>
+    <Class name = 'Exception' isAbstract = 'false' supertypes = 'BusinessProcessModel::Output'/>
+    <Class name = 'SimpleTask' isAbstract = 'false' supertypes = 'BusinessProcessModel::Task'/>
+    <Class name = 'CoumpoundTask' isAbstract = 'false' supertypes = 'BusinessProcessModel::Task'>
+      <Reference name = 'containsTask' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'BusinessProcessModel::Task' opposite = ''/>
+      <Reference name = 'containsFlow' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'BusinessProcessModel::Flow' opposite = ''/>
+      <Reference name = 'realizes' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'BusinessProcessModel::BusinessProcess' opposite = ''/>
+    </Class>
+    <Class name = 'MutliTask' isAbstract = 'false' supertypes = 'BusinessProcessModel::CoumpoundTask'/>
+    <Class name = 'InvokerTask' isAbstract = 'false' supertypes = 'BusinessProcessModel::SimpleTask'>
+      <Reference name = 'invokes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'BusinessProcessModel::Task' opposite = 'BusinessProcessModel::Task::invoker'/>
+    </Class>
+    <Class name = 'TerminatorTask' isAbstract = 'false' supertypes = 'BusinessProcessModel::SimpleTask'>
+      <Reference name = 'terminates' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'BusinessProcessModel::Task' opposite = 'BusinessProcessModel::Task::terminator'/>
+    </Class>
+    <Class name = 'ApplicationTask' isAbstract = 'false' supertypes = 'BusinessProcessModel::SimpleTask'/>
+    <Class name = 'Decision' isAbstract = 'false' supertypes = 'BusinessProcessModel::ApplicationTask'/>
+    <Class name = 'Clock' isAbstract = 'false' supertypes = 'BusinessProcessModel::ApplicationTask'/>
+    <Class name = 'SendCommunication' isAbstract = 'false' supertypes = 'BusinessProcessModel::ApplicationTask'/>
+    <Class name = 'ReceiveCommunication' isAbstract = 'false' supertypes = 'BusinessProcessModel::ApplicationTask'/>
+    <Class name = 'BusinessProcess' isAbstract = 'false' supertypes = 'BusinessProcessModel::ApplicationTask'/>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

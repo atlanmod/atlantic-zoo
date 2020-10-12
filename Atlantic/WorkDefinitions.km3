@@ -1,0 +1,54 @@
+-- @name		WorkDefinitions 
+-- @version		0.1
+-- @domains		Software Process
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/10
+-- @description	This metamodel, inspired by the SPEM initiative, describes work definitions. A work definition is an abstract entity. It is a model element (stemming from the ModelElement package) that describes a work unity (that can be composed of other work definitions). It specifies the operations to apply on work products in a well-defined role context that will have to realize it.  A work definition always comes together with constraints: Goals and Preconditions. Those constraints are defined as Boolean expressions over Work Products states related with the Work Definition. They indicate beginning and ending conditions for the execution of the Work Definition.
+
+package WorkDefinitions {
+
+	class WorkDefinition {
+		reference parentWorks[*] : WorkDefinition oppositeOf subWorks;
+		reference subWorks[*] : WorkDefinition oppositeOf parentWorks;
+		reference owner : ProcessPerformer oppositeOf features;
+	}
+
+	class ProcessPerformer {
+		reference features[*] container : WorkDefinition oppositeOf owner;
+	}
+
+	class Role extends ProcessPerformer {
+		reference products[*] : WorkProduct oppositeOf responsible;
+	}
+
+	class WorkProduct {
+		reference responsible : Role oppositeOf products;
+	}
+	
+	class Lifecycle extends WorkDefinition {
+		reference phases[1-*] container : Phase oppositeOf lifeCycle;
+	}
+	
+	class Phase extends WorkDefinition {
+		reference lifeCycle : Lifecycle oppositeOf phases;
+		reference iterations[1-*] container : Iteration oppositeOf phase;
+	}
+	
+	class Iteration extends WorkDefinition {
+		reference phase : Phase oppositeOf iterations;
+		reference activities[1-*] container : Activity oppositeOf iteration;
+	}
+	
+	class Activity extends WorkDefinition {
+		reference iteration : Iteration oppositeOf activities;
+		reference steps[*] container : Step;
+	}
+	
+	class Step {}
+		
+}
+
+
+package PrimitiveTypes {
+	datatype Boolean;
+}

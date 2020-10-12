@@ -1,0 +1,392 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_SPL"{
+labelloc=t
+color=black
+label=SPL
+ node[shape=record];
+LocatedElement[label="{/LocatedElement/| | }"]
+;
+ node[shape=record];
+Program[label="{Program|name : String| }"]
+ Program->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Service[label="{Service| | }"]
+ Service->Declaration[arrowhead=vee,arrowtail=diamond,headlabel="declarations[*]{ordered}",group=Declaration,minlen=2,constraint=true,]
+ Service->Session[arrowhead=vee,arrowtail=diamond,headlabel="sessions[*]{ordered}",group=Session,minlen=2,constraint=true,]
+ Service->Program[arrowhead=diamond,arrowtail=none,headlabel="program",taillabel="service",group=Program,minlen=2,constraint=true,]
+ Service->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Session[label="{/Session/| | }"]
+ Session->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Registration[label="{Registration| | }"]
+ Registration->Declaration[arrowhead=vee,arrowtail=diamond,headlabel="declarations[*]{ordered}",group=Declaration,minlen=2,constraint=true,]
+ Registration->Session[arrowhead=vee,arrowtail=diamond,headlabel="sessions[*]{ordered}",group=Session,minlen=2,constraint=true,]
+ Registration->Session[arrowhead=onormal,group=Session,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Dialog[label="{Dialog| | }"]
+ Dialog->Declaration[arrowhead=vee,arrowtail=diamond,headlabel="declarations[*]{ordered}",group=Declaration,minlen=2,constraint=true,]
+ Dialog->Method[arrowhead=vee,arrowtail=diamond,headlabel="methods[1-*]{ordered}",group=Method,minlen=2,constraint=true,]
+ Dialog->Session[arrowhead=onormal,group=Session,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Event[label="{Event|eventId : String| }"]
+ Event->Declaration[arrowhead=vee,arrowtail=diamond,headlabel="declarations[*]{ordered}",group=Declaration,minlen=2,constraint=true,]
+ Event->Method[arrowhead=vee,arrowtail=diamond,headlabel="methods[1-*]{ordered}",group=Method,minlen=2,constraint=true,]
+ Event->Session[arrowhead=onormal,group=Session,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Method[label="{/Method/|direction : Direction| }"]
+ Method->TypeExpression[arrowhead=vee,arrowtail=none,headlabel="type",group=TypeExpression,minlen=2,constraint=false,]
+ Method->MethodName[arrowhead=vee,arrowtail=diamond,headlabel="methodName",group=MethodName,minlen=2,constraint=true,]
+ Method->Argument[arrowhead=vee,arrowtail=diamond,headlabel="arguments[*]{ordered}",group=Argument,minlen=2,constraint=true,]
+ Method->Session[arrowhead=onormal,group=Session,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleMethod[label="{SimpleMethod| | }"]
+ SimpleMethod->Statement[arrowhead=vee,arrowtail=diamond,headlabel="statements[1-*]{ordered}",group=Statement,minlen=2,constraint=true,]
+ SimpleMethod->Method[arrowhead=onormal,group=Method,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ComposedMethod[label="{ComposedMethod| | }"]
+ ComposedMethod->DefaultBranch[arrowhead=vee,arrowtail=diamond,headlabel="branches[1-*]{ordered}",group=DefaultBranch,minlen=2,constraint=true,]
+ ComposedMethod->Method[arrowhead=onormal,group=Method,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DefaultBranch[label="{DefaultBranch| | }"]
+ DefaultBranch->Statement[arrowhead=vee,arrowtail=diamond,headlabel="statements[1-*]{ordered}",group=Statement,minlen=2,constraint=true,]
+ DefaultBranch->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NamedBranch[label="{NamedBranch|name[1-*] : String| }"]
+ NamedBranch->DefaultBranch[arrowhead=onormal,group=DefaultBranch,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MethodName[label="{/MethodName/| | }"]
+ MethodName->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SIPMethodName[label="{SIPMethodName|name : SIPMethod| }"]
+ SIPMethodName->MethodName[arrowhead=onormal,group=MethodName,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ControlMethodName[label="{ControlMethodName|name : ControlMethod| }"]
+ ControlMethodName->MethodName[arrowhead=onormal,group=MethodName,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TypeExpression[label="{/TypeExpression/| | }"]
+ TypeExpression->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleType[label="{SimpleType|type : PrimitiveType| }"]
+ SimpleType->TypeExpression[arrowhead=onormal,group=TypeExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SequenceType[label="{SequenceType|modifier : Modifier\ntype : PrimitiveType\nsize[0-1] : Integer| }"]
+ SequenceType->TypeExpression[arrowhead=onormal,group=TypeExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DefinedType[label="{DefinedType|typeName : String| }"]
+ DefinedType->TypeExpression[arrowhead=onormal,group=TypeExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Argument[label="{Argument|argName : String| }"]
+ Argument->TypeExpression[arrowhead=vee,arrowtail=diamond,headlabel="argType",group=TypeExpression,minlen=2,constraint=true,]
+ Argument->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Declaration[label="{/Declaration/|name : String| }"]
+ Declaration->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VariableDeclaration[label="{VariableDeclaration| | }"]
+ VariableDeclaration->TypeExpression[arrowhead=vee,arrowtail=diamond,headlabel="type",group=TypeExpression,minlen=2,constraint=true,]
+ VariableDeclaration->Expression[arrowhead=vee,arrowtail=diamond,headlabel="initExp[0-1]",group=Expression,minlen=2,constraint=true,]
+ VariableDeclaration->Declaration[arrowhead=onormal,group=Declaration,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FunctionDeclaration[label="{/FunctionDeclaration/| | }"]
+ FunctionDeclaration->TypeExpression[arrowhead=vee,arrowtail=diamond,headlabel="returnType",group=TypeExpression,minlen=2,constraint=true,]
+ FunctionDeclaration->Argument[arrowhead=vee,arrowtail=diamond,headlabel="arguments[*]{ordered}",group=Argument,minlen=2,constraint=true,]
+ FunctionDeclaration->Declaration[arrowhead=onormal,group=Declaration,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExternalFunctionDeclaration[label="{ExternalFunctionDeclaration|location : Location| }"]
+ ExternalFunctionDeclaration->FunctionDeclaration[arrowhead=onormal,group=FunctionDeclaration,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LocalFunctionDeclaration[label="{LocalFunctionDeclaration| | }"]
+ LocalFunctionDeclaration->Statement[arrowhead=vee,arrowtail=diamond,headlabel="statements[1-*]{ordered}",group=Statement,minlen=2,constraint=true,]
+ LocalFunctionDeclaration->FunctionDeclaration[arrowhead=onormal,group=FunctionDeclaration,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StructureDeclaration[label="{StructureDeclaration| | }"]
+ StructureDeclaration->Argument[arrowhead=vee,arrowtail=diamond,headlabel="properties[1-*]{ordered}",group=Argument,minlen=2,constraint=true,]
+ StructureDeclaration->Declaration[arrowhead=onormal,group=Declaration,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FunctionCall[label="{FunctionCall| | }"]
+ FunctionCall->FunctionDeclaration[arrowhead=vee,arrowtail=none,headlabel="function",group=FunctionDeclaration,minlen=2,constraint=false,]
+ FunctionCall->Expression[arrowhead=vee,arrowtail=diamond,headlabel="parameters[*]{ordered}",group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Statement[label="{/Statement/| | }"]
+ Statement->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SetStat[label="{SetStat| | }"]
+ SetStat->Place[arrowhead=vee,arrowtail=diamond,headlabel="target",group=Place,minlen=2,constraint=true,]
+ SetStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="setValue",group=Expression,minlen=2,constraint=true,]
+ SetStat->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DeclarationStat[label="{DeclarationStat| | }"]
+ DeclarationStat->Declaration[arrowhead=vee,arrowtail=diamond,headlabel="declaration",group=Declaration,minlen=2,constraint=true,]
+ DeclarationStat->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReturnStat[label="{ReturnStat| | }"]
+ ReturnStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="returnedValue[0-1]",group=Expression,minlen=2,constraint=true,]
+ ReturnStat->NamedBranch[arrowhead=vee,arrowtail=none,headlabel="branch[0-1]",group=NamedBranch,minlen=2,constraint=false,]
+ ReturnStat->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IfThenStat[label="{IfThenStat| | }"]
+ IfThenStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="condition",group=Expression,minlen=2,constraint=true,]
+ IfThenStat->Statement[arrowhead=vee,arrowtail=diamond,headlabel="thenStatement[1-*]{ordered}",group=Statement,minlen=2,constraint=true,]
+ IfThenStat->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IfThenElseStat[label="{IfThenElseStat| | }"]
+ IfThenElseStat->Statement[arrowhead=vee,arrowtail=diamond,headlabel="elseStatements[1-*]{ordered}",group=Statement,minlen=2,constraint=true,]
+ IfThenElseStat->IfThenStat[arrowhead=onormal,group=IfThenStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+WhenStat[label="{WhenStat| | }"]
+ WhenStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="idExp",group=Expression,minlen=2,constraint=true,]
+ WhenStat->Statement[arrowhead=vee,arrowtail=diamond,headlabel="statements[1-*]{ordered}",group=Statement,minlen=2,constraint=true,]
+ WhenStat->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+WhenElseStat[label="{WhenElseStat| | }"]
+ WhenElseStat->Statement[arrowhead=vee,arrowtail=diamond,headlabel="elseStatements[1-*]{ordered}",group=Statement,minlen=2,constraint=true,]
+ WhenElseStat->WhenStat[arrowhead=onormal,group=WhenStat,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ForeachStat[label="{ForeachStat|iteratorName : String| }"]
+ ForeachStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="sequenceExp",group=Expression,minlen=2,constraint=true,]
+ ForeachStat->Statement[arrowhead=vee,arrowtail=diamond,headlabel="statements[1-*]{ordered}",group=Statement,minlen=2,constraint=true,]
+ ForeachStat->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SelectStat[label="{SelectStat| | }"]
+ SelectStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="matchedExp",group=Expression,minlen=2,constraint=true,]
+ SelectStat->SelectCase[arrowhead=vee,arrowtail=diamond,headlabel="selectCases[*]{ordered}",group=SelectCase,minlen=2,constraint=true,]
+ SelectStat->SelectDefault[arrowhead=vee,arrowtail=diamond,headlabel="sectectDefault[0-1]",group=SelectDefault,minlen=2,constraint=true,]
+ SelectStat->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FunctionCallStat[label="{FunctionCallStat| | }"]
+ FunctionCallStat->FunctionCall[arrowhead=vee,arrowtail=diamond,headlabel="functionCall",group=FunctionCall,minlen=2,constraint=true,]
+ FunctionCallStat->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ContinueStat[label="{ContinueStat| | }"]
+ ContinueStat->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BreakStat[label="{BreakStat| | }"]
+ BreakStat->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PushStat[label="{PushStat| | }"]
+ PushStat->Place[arrowhead=vee,arrowtail=diamond,headlabel="target",group=Place,minlen=2,constraint=true,]
+ PushStat->Expression[arrowhead=vee,arrowtail=diamond,headlabel="pushedValue",group=Expression,minlen=2,constraint=true,]
+ PushStat->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+WhenHeader[label="{WhenHeader|headerId : String\nname : String| }"]
+ WhenHeader->TypeExpression[arrowhead=vee,arrowtail=diamond,headlabel="headerType",group=TypeExpression,minlen=2,constraint=true,]
+ WhenHeader->Constant[arrowhead=vee,arrowtail=diamond,headlabel="value[0-1]",group=Constant,minlen=2,constraint=true,]
+ WhenHeader->WhenStat[arrowhead=diamond,arrowtail=none,headlabel="whenStat",taillabel="whenHeaders[1-*]{ordered}",group=WhenStat,minlen=2,constraint=true,]
+ WhenHeader->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SelectDefault[label="{SelectDefault| | }"]
+ SelectDefault->Statement[arrowhead=vee,arrowtail=diamond,headlabel="statements[*]{ordered}",group=Statement,minlen=2,constraint=true,]
+ SelectDefault->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SelectCase[label="{SelectCase| | }"]
+ SelectCase->Constant[arrowhead=vee,arrowtail=diamond,headlabel="values[1-*]{ordered}",group=Constant,minlen=2,constraint=true,]
+ SelectCase->SelectDefault[arrowhead=onormal,group=SelectDefault,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Expression[label="{/Expression/| | }"]
+ Expression->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConstantExp[label="{ConstantExp| | }"]
+ ConstantExp->Constant[arrowhead=vee,arrowtail=diamond,headlabel="value",group=Constant,minlen=2,constraint=true,]
+ ConstantExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperatorExp[label="{OperatorExp|opName : String| }"]
+ OperatorExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="rightExp",group=Expression,minlen=2,constraint=true,]
+ OperatorExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="leftExp[0-1]",group=Expression,minlen=2,constraint=true,]
+ OperatorExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ForwardExp[label="{ForwardExp|isParallel : Boolean| }"]
+ ForwardExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="exp[0-1]",group=Expression,minlen=2,constraint=true,]
+ ForwardExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+WithExp[label="{WithExp| | }"]
+ WithExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="exp",group=Expression,minlen=2,constraint=true,]
+ WithExp->MessageField[arrowhead=vee,arrowtail=diamond,headlabel="msgFields[1-*]{ordered}",group=MessageField,minlen=2,constraint=true,]
+ WithExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BlockExp[label="{BlockExp| | }"]
+ BlockExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="exp",group=Expression,minlen=2,constraint=true,]
+ BlockExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReasonExp[label="{ReasonExp| | }"]
+ ReasonExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BODYExp[label="{BODYExp| | }"]
+ BODYExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RequestURIExp[label="{RequestURIExp| | }"]
+ RequestURIExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PopExp[label="{PopExp| | }"]
+ PopExp->Place[arrowhead=vee,arrowtail=diamond,headlabel="source",group=Place,minlen=2,constraint=true,]
+ PopExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FunctionCallExp[label="{FunctionCallExp| | }"]
+ FunctionCallExp->FunctionCall[arrowhead=vee,arrowtail=diamond,headlabel="functionCall",group=FunctionCall,minlen=2,constraint=true,]
+ FunctionCallExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Place[label="{/Place/| | }"]
+ Place->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SIPHeaderPlace[label="{SIPHeaderPlace|header : SIPHeader| }"]
+ SIPHeaderPlace->Place[arrowhead=onormal,group=Place,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VariablePlace[label="{/VariablePlace/| | }"]
+ VariablePlace->Place[arrowhead=onormal,group=Place,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PropertyCallPlace[label="{PropertyCallPlace|propName : String| }"]
+ PropertyCallPlace->VariablePlace[arrowhead=vee,arrowtail=diamond,headlabel="source",group=VariablePlace,minlen=2,constraint=true,]
+ PropertyCallPlace->VariablePlace[arrowhead=onormal,group=VariablePlace,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Variable[label="{Variable| | }"]
+ Variable->Declaration[arrowhead=vee,arrowtail=none,headlabel="source",group=Declaration,minlen=2,constraint=false,]
+ Variable->VariablePlace[arrowhead=onormal,group=VariablePlace,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MessageField[label="{MessageField| | }"]
+ MessageField->Expression[arrowhead=vee,arrowtail=diamond,headlabel="exp",group=Expression,minlen=2,constraint=true,]
+ MessageField->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+HeadedMessageField[label="{HeadedMessageField|headerId : String| }"]
+ HeadedMessageField->MessageField[arrowhead=onormal,group=MessageField,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Constant[label="{/Constant/| | }"]
+ Constant->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BooleanConstant[label="{BooleanConstant|value : Boolean| }"]
+ BooleanConstant->Constant[arrowhead=onormal,group=Constant,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IntegerConstant[label="{IntegerConstant|value : Integer| }"]
+ IntegerConstant->Constant[arrowhead=onormal,group=Constant,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StringConstant[label="{StringConstant|value : String| }"]
+ StringConstant->Constant[arrowhead=onormal,group=Constant,minlen=2,constraint=true,]
+;
+ node[shape=record];
+URIConstant[label="{URIConstant|uri : String| }"]
+ URIConstant->Constant[arrowhead=onormal,group=Constant,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SequenceConstant[label="{SequenceConstant| | }"]
+ SequenceConstant->Constant[arrowhead=vee,arrowtail=diamond,headlabel="values[*]{ordered}",group=Constant,minlen=2,constraint=true,]
+ SequenceConstant->Constant[arrowhead=onormal,group=Constant,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ResponseConstant[label="{ResponseConstant| | }"]
+ ResponseConstant->Response[arrowhead=vee,arrowtail=diamond,headlabel="response",group=Response,minlen=2,constraint=true,]
+ ResponseConstant->Constant[arrowhead=onormal,group=Constant,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Response[label="{/Response/| | }"]
+ Response->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SuccessResponse[label="{SuccessResponse|successKind : SuccessKind| }"]
+ SuccessResponse->Response[arrowhead=onormal,group=Response,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ErrorResponse[label="{/ErrorResponse/| | }"]
+ ErrorResponse->Response[arrowhead=onormal,group=Response,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ClientErrorResponse[label="{ClientErrorResponse|errorKind : ClientErrorKind| }"]
+ ClientErrorResponse->ErrorResponse[arrowhead=onormal,group=ErrorResponse,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GlobalErrorResponse[label="{GlobalErrorResponse|errorKind : GlobalErrorKind| }"]
+ GlobalErrorResponse->ErrorResponse[arrowhead=onormal,group=ErrorResponse,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RedirectionErrorResponse[label="{RedirectionErrorResponse|errorKind : RedirectionErrorKind| }"]
+ RedirectionErrorResponse->ErrorResponse[arrowhead=onormal,group=ErrorResponse,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ServerErrorResponse[label="{ServerErrorResponse|errorKind : ServerErrorKind| }"]
+ ServerErrorResponse->ErrorResponse[arrowhead=onormal,group=ErrorResponse,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Enum"{
+labelloc=t
+color=black
+label=Enum
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+
+}
+}

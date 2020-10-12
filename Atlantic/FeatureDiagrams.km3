@@ -1,0 +1,73 @@
+-- @name		FeatureDiagrams
+-- @version		1.0
+-- @domains		GME, domain-specific modeling
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/10
+-- @description	This metamodel describes feature diagrams which are a part of the GME (Generic Modeling Environment). The Generic Modeling Environment is a configurable toolkit for creating domain-specific modeling and program synthesis environments. The configuration is accomplished through metamodels specifying the modeling paradigm (modeling language) of the application domain. The modeling paradigm contains all the syntactic, semantic, and presentation information regarding the domain; which concepts will be used to construct models, what relationships may exist among those concepts, how the concepts may be organized and viewed by the modeler, and rules governing the construction of models. The modeling paradigm defines the family of models that can be created using the resultant modeling environment. The metamodeling language is based on the UML class diagram notation and OCL constraints. 
+-- @see			The GME official site, http://www.isis.vanderbilt.edu/Projects/gme/
+	
+
+package FeatureDiagrams {
+
+	-- @begin Feature Diagrams structure
+
+	-- @comment <<model>>
+	class Node {
+		attribute description : String;
+		attribute preliminary : Boolean;
+		attribute object : String;
+		reference attributes[*] container : Attribute oppositeOf node; 
+		reference no_dst[*] : ORGroup oppositeOf no_src;
+		reference nx_dst[*] : XORGroup oppositeOf nx_src;
+		reference cn_dst[*] : Child oppositeOf cn_src;
+	}
+	
+	-- @comment <<atom>>
+	class Attribute {
+		attribute description : String;
+		attribute editable : Boolean;
+		attribute key : Boolean;
+		attribute value : String;
+		attribute name : String;
+		reference node : Node oppositeOf attributes;
+	}
+	
+	-- @comment <<model>>
+	class Root extends Node {}
+	
+	-- @comment <<model>>
+	class Child extends Node {
+		reference cn_src[*] : Node oppositeOf cn_dst;
+		reference cx_src[*] : XORGroup oppositeOf cx_dst;
+		reference co_src[*] : ORGroup oppositeOf co_dst;
+	}
+	
+	-- @comment <<atom>>
+	class XORGroup {
+		attribute preliminary : Boolean;
+		attribute name : String;
+		reference nx_src[*] : Node oppositeOf nx_dst;
+		reference cx_dst[*] : Child oppositeOf cx_src;
+	}
+	
+	-- @comment <<atom>>
+	class ORGroup {
+		attribute preliminary : Boolean;
+		attribute name : String;
+		reference no_src[*] : Node oppositeOf no_dst;
+		reference co_dst[*] : Child oppositeOf co_src;
+	}
+	
+	-- @end Feature Diagrams structure
+
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

@@ -1,0 +1,81 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_ExtendedUMLCorePackage"{
+labelloc=t
+color=black
+label=ExtendedUMLCorePackage
+ node[shape=record];
+Package[label="{Package| | }"]
+ Package->ProviderClause[arrowhead=onormal,group=ProviderClause,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ProviderClause[label="{ProviderClause| | }"]
+ ProviderClause->CollaborationPackage[arrowhead=vee,arrowtail=diamond,headlabel="ownedEltColl",group=CollaborationPackage,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CollaborationPackage[label="{CollaborationPackage| | }"]
+ CollaborationPackage->Collaboration[arrowhead=vee,arrowtail=none,headlabel="ownedElt",group=Collaboration,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Collaboration[label="{Collaboration| | }"]
+ Collaboration->AssociationRole[arrowhead=vee,arrowtail=diamond,headlabel="ownedEltAss",group=AssociationRole,minlen=2,constraint=true,]
+ Collaboration->ClassifierRole[arrowhead=vee,arrowtail=diamond,headlabel="ownedEltClass",group=ClassifierRole,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InteractionPackage[label="{InteractionPackage| | }"]
+ InteractionPackage->ProviderClause[arrowhead=none,arrowtail=none,headlabel="providerClause",taillabel="ownedEltInt[*]",group=ProviderClause,minlen=2,constraint=false,]
+ InteractionPackage->Interaction[arrowhead=vee,arrowtail=none,headlabel="ownedElt",group=Interaction,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Interaction[label="{Interaction| | }"]
+ Interaction->Collaboration[arrowhead=diamond,arrowtail=none,headlabel="context",taillabel="interaction[*]",group=Collaboration,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AssociationRole[label="{AssociationRole| | }"]
+;
+ node[shape=record];
+ClassifierRole[label="{ClassifierRole| | }"]
+ ClassifierRole->Message[arrowhead=none,arrowtail=none,headlabel="senderMess",taillabel="sender",group=Message,minlen=2,constraint=false,]
+ ClassifierRole->Interface[arrowhead=none,arrowtail=none,headlabel="base",taillabel="classifierRole[*]",group=Interface,minlen=2,constraint=false,]
+;
+ node[shape=record];
+AssociationEndRole[label="{AssociationEndRole| | }"]
+ AssociationEndRole->AssociationRole[arrowhead=diamond,arrowtail=none,headlabel="associationRole",taillabel="connection[22]",group=AssociationRole,minlen=2,constraint=true,]
+ AssociationEndRole->ClassifierRole[arrowhead=diamond,arrowtail=none,headlabel="type",taillabel="associationEndRole[*]",group=ClassifierRole,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Message[label="{Message| | }"]
+ Message->Message[arrowhead=none,arrowtail=none,headlabel="activator[0-1]",taillabel="message[*]",group=Message,minlen=2,constraint=false,]
+ Message->Interaction[arrowhead=diamond,arrowtail=none,headlabel="interaction[*]",taillabel="message[1-*]",group=Interaction,minlen=2,constraint=true,]
+ Message->ClassifierRole[arrowhead=none,arrowtail=none,headlabel="receiver",taillabel="receiverMess",group=ClassifierRole,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Request[label="{Request| | }"]
+ Request->Message[arrowhead=none,arrowtail=none,headlabel="message[*]",taillabel="specification",group=Message,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Operation[label="{Operation| | }"]
+ Operation->ClassifierRole[arrowhead=diamond,arrowtail=none,headlabel="classifierRole[*]",taillabel="availableFeature[*]",group=ClassifierRole,minlen=2,constraint=true,]
+ Operation->Interface[arrowhead=diamond,arrowtail=none,headlabel="owner",taillabel="feature[*]",group=Interface,minlen=2,constraint=true,]
+ Operation->Request[arrowhead=onormal,group=Request,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Interface[label="{Interface| | }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

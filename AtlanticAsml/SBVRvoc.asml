@@ -1,0 +1,419 @@
+abstract class LocatedElement
+  var location as Set of String
+  var commentsBefore as Set of String
+  var commentsAfter as Set of String
+
+class Root extends LocatedElement
+  // entries IsContainer
+  var entries as Set of VocabularyEntry
+
+class VocabularyEntry extends LocatedElement
+  // primaryRep IsContainer
+  var primaryRep as Set of PrimaryRepresentation
+  // caption IsContainer
+  var caption as Set of Caption
+
+abstract class Caption extends LocatedElement
+
+class DefCaption extends Caption
+  // definition IsContainer
+  var definition as Set of ConceptDefinition
+
+class DescCaption extends Caption
+  // description IsContainer
+  var description as Set of Note
+
+class SrcCaption extends Caption
+  // source IsContainer
+  var source as Set of ConceptSource
+
+class DBCaption extends Caption
+  // dictionaryBasis IsContainer
+  var dictionaryBasis as Set of ConceptSource
+
+class GenCCaption extends Caption
+  // generalConcept IsContainer
+  var generalConcept as Set of PrimaryRepresentation
+
+class CTypCaption extends Caption
+  // conceptType IsContainer
+  var conceptType as Set of PrimaryRepresentation
+
+class Necessity extends Caption
+  // exp IsContainer
+  var exp as Set of SBVRExpression
+
+class Possibility extends Caption
+  // exp IsContainer
+  var exp as Set of SBVRExpression
+
+class RefSCaption extends Caption
+  // referenceScheme IsContainer
+  var referenceScheme as Set of PrimaryRepresentation
+
+class NoteCaption extends Caption
+  // note IsContainer
+  var note as Set of Note
+
+class ExCaption extends Caption
+  // example IsContainer
+  var example as Set of SBVRExpression
+
+class SynCaption extends Caption
+  // synonym IsContainer
+  var synonym as Set of PrimaryRepresentation
+
+class SynFCaption extends Caption
+  // synonymousForm IsContainer
+  var synonymousForm as Set of SBVRExpression
+
+class SeeCaption extends Caption
+  // see IsContainer
+  var see as Set of PrimaryRepresentation
+
+class SFCaption extends Caption
+  // subjectField IsContainer
+  var subjectField as Set of PrimaryRepresentation
+
+class NSURICaption extends Caption
+  // namespaceURI IsContainer
+  var namespaceURI as Set of NameSpaceURI
+
+abstract class PrimaryRepresentation extends LocatedElement
+
+abstract class NotFactTypeRepresentation extends PrimaryRepresentation
+
+class TermRepresentation extends NotFactTypeRepresentation
+  // term IsContainer
+  var term as Set of StringWord
+
+class NameRepresentation extends NotFactTypeRepresentation
+  var hasThe as Set of Boolean
+  // name IsContainer
+  var name as Set of NameWord
+
+class FactTypeFormRepresentation extends PrimaryRepresentation
+  var verbExp as Set of Verb
+  // primaryRep1 IsContainer
+  var primaryRep1 as Set of NotFactTypeRepresentation
+  // primaryRep2 IsContainer
+  var primaryRep2 as Set of NotFactTypeRepresentation
+
+class ConceptDefinition extends LocatedElement
+  // exp IsContainer
+  var exp as Set of Concept
+  // conjexp IsContainer
+  var conjexp as Set of ConjConcept
+
+class ConceptSource extends LocatedElement
+  // source IsContainer
+  var source as Set of Word
+
+class Note extends LocatedElement
+  // sentences IsContainer
+  var sentences as Set of Sentence
+
+class Sentence extends LocatedElement
+  // words IsContainer
+  var words as Set of Word
+
+class NameSpaceURI extends LocatedElement
+  // URI IsContainer
+  var URI as Set of Word
+
+abstract class Word extends LocatedElement
+  var val as Set of String
+
+class StringWord extends Word
+
+class QuotedStringWord extends Word
+
+class NameWord extends Word
+
+class SBVRExpression extends LocatedElement
+  var hasPoint as Set of Boolean
+  // firstProposition IsContainer
+  var firstProposition as Set of SimpleSBVRProp
+  // nextProposition IsContainer
+  var nextProposition as Set of SBVRPropWithKW
+
+class SBVRPropWithKW extends LocatedElement
+  var conjonction as Set of ConjonctionnalKeyWord
+  var endConj as Set of EndOperator
+  // proposition IsContainer
+  var proposition as Set of SimpleSBVRProp
+
+class ModalForm extends LocatedElement
+  var modal as Set of ModalVerb
+  var isNeg as Set of Boolean
+
+class SimpleSBVRProp extends LocatedElement
+  var verbs as Set of Verb
+  // modal IsContainer
+  var modal as Set of ModalBegin
+  // concept1 IsContainer
+  var concept1 as Set of Concept
+  // modalVerb IsContainer
+  var modalVerb as Set of ModalForm
+  // concept2 IsContainer
+  var concept2 as Set of Concept
+
+class SubSBVRProp extends LocatedElement
+  var join as Set of Join
+  var modalVerb as Set of ModalVerb
+  var verbs as Set of Verb
+  // concept2 IsContainer
+  var concept2 as Set of Concept
+
+class LinkSBVRConcept extends LocatedElement
+  var link as Set of Link
+  // concept IsContainer
+  var concept as Set of Concept
+
+class ConjConcept extends LocatedElement
+  var conjonction as Set of ConjonctionnalKeyWord
+  // concept IsContainer
+  var concept as Set of Concept
+
+abstract class Concept extends LocatedElement
+  // subProp IsContainer
+  var subProp as Set of SubSBVRProp
+  // linkedConcept IsContainer
+  var linkedConcept as Set of LinkSBVRConcept
+
+class NameConcept extends Concept
+  var _the as Set of Qualif
+  // name IsContainer
+  var name as Set of NameWord
+
+class ObjectConcept extends Concept
+  // operatoredConcept IsContainer
+  var operatoredConcept as Set of NounConcept
+  // qualify IsContainer
+  var qualify as Set of Qualification
+
+class StringConcept extends Concept
+  // stringWord IsContainer
+  var stringWord as Set of QuotedStringWord
+
+class NounConcept extends LocatedElement
+  // qualif IsContainer
+  var qualif as Set of Qualifier
+  // noun IsContainer
+  var noun as Set of StringWord
+
+class Qualification extends LocatedElement
+  // generalConcept IsContainer
+  var generalConcept as Set of GeneralConcept
+
+abstract class GeneralConcept extends LocatedElement
+
+class NameGConcept extends GeneralConcept
+  // name IsContainer
+  var name as Set of NameConcept
+
+class NounGConcept extends GeneralConcept
+  // noun IsContainer
+  var noun as Set of StringWord
+
+class Qualifier extends LocatedElement
+  var op as Set of Qualif
+  var endOperator as Set of EndOperator
+  // min IsContainer
+  var min as Set of StringWord
+  // max IsContainer
+  var max as Set of StringWord
+
+class ModalBegin extends LocatedElement
+  var endOperator as Set of EndOperator
+
+class ModalBeginC extends ModalBegin
+
+enum Verb
+  _is
+  relevant
+  comprises
+  _to
+  work
+  _in
+  trades
+  _as
+  are
+  accepted
+  generally
+  important
+  across
+  share
+  sets
+  assigned
+  by
+  contains
+  _for
+  has
+  specifies
+  specified
+
+enum ConjonctionnalKeyWord
+  _and
+  _or
+  _if
+  whether
+
+enum ModalVerb
+  must
+  may
+  never
+  always
+
+enum Join
+  that
+  who
+
+enum Link
+  _of
+  quoteS
+
+enum Qualif
+  _the
+  _The
+  a
+  A
+  an
+  An
+  Each
+  each
+  Some
+  some
+  At
+  at
+  Exactly
+  exactly
+
+enum EndOperator
+  given
+  thanone
+  one
+  isobligatorythat
+  ispermittedthat
+  isprohibitedthat
+  isnecessarythat
+  ispossiblethat
+  isimpossiblethat
+  isnotthecasethat
+  least
+  leastone
+  most
+  mostone
+  leastnandatmostm
+  andonlyif
+  ornot
+  _not
+  _of
+
+var LocatedElement_Universe as Set of LocatedElement
+
+var Root_Universe as Set of Root
+
+var VocabularyEntry_Universe as Set of VocabularyEntry
+
+var Caption_Universe as Set of Caption
+
+var DefCaption_Universe as Set of DefCaption
+
+var DescCaption_Universe as Set of DescCaption
+
+var SrcCaption_Universe as Set of SrcCaption
+
+var DBCaption_Universe as Set of DBCaption
+
+var GenCCaption_Universe as Set of GenCCaption
+
+var CTypCaption_Universe as Set of CTypCaption
+
+var Necessity_Universe as Set of Necessity
+
+var Possibility_Universe as Set of Possibility
+
+var RefSCaption_Universe as Set of RefSCaption
+
+var NoteCaption_Universe as Set of NoteCaption
+
+var ExCaption_Universe as Set of ExCaption
+
+var SynCaption_Universe as Set of SynCaption
+
+var SynFCaption_Universe as Set of SynFCaption
+
+var SeeCaption_Universe as Set of SeeCaption
+
+var SFCaption_Universe as Set of SFCaption
+
+var NSURICaption_Universe as Set of NSURICaption
+
+var PrimaryRepresentation_Universe as Set of PrimaryRepresentation
+
+var NotFactTypeRepresentation_Universe as Set of NotFactTypeRepresentation
+
+var TermRepresentation_Universe as Set of TermRepresentation
+
+var NameRepresentation_Universe as Set of NameRepresentation
+
+var FactTypeFormRepresentation_Universe as Set of FactTypeFormRepresentation
+
+var ConceptDefinition_Universe as Set of ConceptDefinition
+
+var ConceptSource_Universe as Set of ConceptSource
+
+var Note_Universe as Set of Note
+
+var Sentence_Universe as Set of Sentence
+
+var NameSpaceURI_Universe as Set of NameSpaceURI
+
+var Word_Universe as Set of Word
+
+var StringWord_Universe as Set of StringWord
+
+var QuotedStringWord_Universe as Set of QuotedStringWord
+
+var NameWord_Universe as Set of NameWord
+
+var SBVRExpression_Universe as Set of SBVRExpression
+
+var SBVRPropWithKW_Universe as Set of SBVRPropWithKW
+
+var ModalForm_Universe as Set of ModalForm
+
+var SimpleSBVRProp_Universe as Set of SimpleSBVRProp
+
+var SubSBVRProp_Universe as Set of SubSBVRProp
+
+var LinkSBVRConcept_Universe as Set of LinkSBVRConcept
+
+var ConjConcept_Universe as Set of ConjConcept
+
+var Concept_Universe as Set of Concept
+
+var NameConcept_Universe as Set of NameConcept
+
+var ObjectConcept_Universe as Set of ObjectConcept
+
+var StringConcept_Universe as Set of StringConcept
+
+var NounConcept_Universe as Set of NounConcept
+
+var Qualification_Universe as Set of Qualification
+
+var GeneralConcept_Universe as Set of GeneralConcept
+
+var NameGConcept_Universe as Set of NameGConcept
+
+var NounGConcept_Universe as Set of NounGConcept
+
+var Qualifier_Universe as Set of Qualifier
+
+var ModalBegin_Universe as Set of ModalBegin
+
+var ModalBeginC_Universe as Set of ModalBeginC
+
+Main()

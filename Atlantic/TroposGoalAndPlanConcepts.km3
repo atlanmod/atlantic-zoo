@@ -1,0 +1,77 @@
+-- @name		Goal and Plan Concepts
+-- @version		1.0
+-- @domains		Tropos
+-- @authors		SIMON Eric(simon.eric3<at>gmail.com)
+-- @date		2006/07/18
+-- @description Transcription in KM3 of the UML class diagram, which specifies the goal and plan concepts in the Tropos metamodel.
+-- @see			The Tropos visual modeling language. A MOF 1.4 compliant meta-model
+-- @see 		Authors: David Bertolini, Anna Perini, Angelo Susi and Haralambos Mouratidis
+-- @see 		http://www.pa.icar.cnr.it/cossentino/al3tf2/docs/tropos.pdf, p5
+
+package GoalAndPlanConcepts {
+
+ class Actor {
+	reference decomposition[*] : Decomposition oppositeOf PointOfView;
+	reference contribution[*] : Contribution oppositeOf PointOfView;
+	reference meansEnd[*] : MeansEnd oppositeOf PointOfView;
+ }
+
+ class Decomposition {
+ 	reference PointOfView : Actor oppositeOf decomposition;
+ }
+ 
+ class Contribution {
+ 	attribute metric : String;
+ 	reference contributer : Goal oppositeOf contributionR;
+ 	reference contributed : Goal oppositeOf contributionD;
+ 	reference PointOfView : Actor oppositeOf contribution;
+ }
+ 
+ class Goal {
+ 	reference contributionR[*] : Contribution oppositeOf contributer;
+ 	reference contributionD[*] : Contribution oppositeOf contributed;
+ 	reference meansEndS[*] : MeansEnd oppositeOf means;
+ 	reference meansEndD[*] : MeansEnd oppositeOf end;
+ 	reference booleanDecomposition[0-1] : BooleanDecomposition oppositeOf root;
+ 	reference booleanDecLink[*] : BooleanDecLink oppositeOf target;
+ }
+ 
+ class MeansEnd {
+ 	reference meansR[0-1] : Resource oppositeOf meansEndR;
+ 	reference means[0-1] : Goal oppositeOf meansEndS;
+ 	reference end : Goal oppositeOf meansEndD;
+ 	reference PointOfView : Actor oppositeOf meansEnd;
+ 	reference meansP[0-1] : Plan oppositeOf meansEndP;
+ }
+ 
+ class Resource {
+ 	reference meansEndR[*] : MeansEnd oppositeOf meansR;
+ }
+ 
+ class Plan {
+ 	reference meansEndP[*] : MeansEnd oppositeOf meansP;
+ 	reference booleanDecompositionP[0-1] : BooleanDecomposition oppositeOf rootP;
+ 	reference booleanDecLinkP[*] : BooleanDecLink oppositeOf targetP;
+ }
+ 
+ class BooleanDecomposition extends Decomposition {
+ 	attribute type : String;
+ 	reference root[0-1] : Goal oppositeOf booleanDecomposition;
+ 	reference rootP[0-1] : Plan oppositeOf booleanDecompositionP;
+ 	reference booleanDecLinkD[1-*] container : BooleanDecLink oppositeOf booleanDecompositionB;
+ }
+ 
+ class BooleanDecLink {
+ 	reference booleanDecompositionB : BooleanDecomposition oppositeOf booleanDecLinkD;
+ 	reference target[0-1] : Goal oppositeOf booleanDecLink;
+ 	reference targetP[0-1] : Plan oppositeOf booleanDecLinkP;
+ }
+ 
+ class AndDecLink extends BooleanDecLink {}
+ class OrDecLink extends BooleanDecLink {}
+ 
+}
+
+package PrimitiveTypes {
+datatype String;
+}

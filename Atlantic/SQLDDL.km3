@@ -1,0 +1,101 @@
+-- @name		SQLDDL
+-- @version		1.0
+-- @domains		Databases
+-- @authors		Marcos Didonet Del Fabro (marcos.didonet-del-fabro@univ-nantes.fr)
+-- @date		2006/08/28
+-- @description	This metamodel is a subset of SQL Data Definition Language 
+
+
+package SQLDDL {
+
+	abstract class LocatedElement {
+		attribute location : String;
+		attribute commentsBefore[*] : String;
+		attribute commentsAfter[*] : String;
+	}
+
+	abstract class NamedElement extends LocatedElement {
+		attribute name : String;
+	}
+
+	class Database extends NamedElement {
+		reference tables[*] ordered container : Table oppositeOf database;
+	}
+
+	class Table extends NamedElement {
+		reference database : Database oppositeOf tables;
+		reference referencedBy[*] : ForeignKey oppositeOf referencedTable;
+
+		reference elements[*] ordered container : TableElement oppositeOf table;
+		reference parameters[*] ordered container : Parameter oppositeOf table;
+	}
+
+-- @begin Table Elements
+	abstract class TableElement extends LocatedElement {
+		reference table : Table oppositeOf elements;
+	}
+
+	class Column extends TableElement {
+		reference referencedBy[*] : ForeignKey oppositeOf referencedColumns;
+
+		attribute name : String;
+
+		reference type container : Type;
+		attribute canBeNull : Boolean;
+		reference default[0-1] container : Value;
+
+		reference keys[*] : Key oppositeOf columns;
+	}
+
+	abstract class Key extends TableElement {
+		attribute isUnique : Boolean;
+		attribute name[0-1] : String;
+		reference columns[1-*] ordered : Column oppositeOf keys;
+	}
+
+	class SimpleKey extends Key {
+	}
+
+	class PrimaryKey extends Key {
+	}
+
+	class ForeignKey extends Key {
+		reference referencedTable : Table oppositeOf referencedBy;
+		reference referencedColumns[1-*] : Column oppositeOf referencedBy;
+	}
+-- @end Table Elements
+
+	class Type extends NamedElement {
+		attribute length[0-2] : Integer;
+		attribute isUnsigned : Boolean;
+	}
+
+	class Parameter extends NamedElement {
+		reference table : Table oppositeOf parameters;
+
+		reference value[0-1] container : Value;
+	}
+
+-- @begin Values
+	abstract class Value extends LocatedElement {
+	}
+
+	class IntegerVal extends Value {
+		attribute value : Integer;
+	}
+
+	class NullVal extends Value {
+	}
+
+	class StringVal extends Value {
+		attribute value : String;
+	}
+-- @end Values
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}
+

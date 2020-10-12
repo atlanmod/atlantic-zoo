@@ -1,0 +1,89 @@
+package Metamodel;
+
+package PL/I {
+  class PLIClassifier {
+    !unique !ordered attr String[1] name;
+    !ordered ref PLIElement[*]#sharedType typedElements;
+  }
+
+  class PLISimpleType extends PLIClassifier {
+    !ordered ref PLIAlias[1]#type alias;
+  }
+
+  class PLINamedType extends PLIClassifier {
+  }
+
+  class PLIComposedType extends PLIClassifier {
+    !ordered val PLIElement[*]#group elements;
+  }
+
+  class PLIAlias {
+    !ordered val PLISimpleType[1]#alias type;
+    !ordered val PLIAttribute[+] contains;
+  }
+
+  class PLIAttribute {
+  }
+
+  class PLIComputationalType extends PLISimpleType {
+  }
+
+  class PLINonComputationalType extends PLISimpleType {
+  }
+
+  class PLIElement {
+    !unique !ordered attr String[1] level;
+    !unique !ordered attr String[1] name;
+    !ordered ref PLIClassifier#typedElements sharedType;
+    !ordered ref PLIComposedType#elements group;
+    !ordered ref PLIElementInitialValue initial;
+    !ordered ref PLISourceText[1] source;
+    !ordered val PLIArray#arrayOf array;
+  }
+
+  class PLIElementInitialValue {
+    !unique !ordered attr String[1] initialValue;
+  }
+
+  class PLISourceText {
+    !unique !ordered attr String[1] source;
+    !unique !ordered attr String[1] fileName;
+  }
+
+  class PLIArray {
+    !ordered ref PLIElement#array arrayOf;
+  }
+
+  class PLIFixedBoundArray extends PLIArray {
+    !unique !ordered attr Integer[1] IBound;
+    !unique !ordered attr Integer[1] uBound;
+    !ordered ref PLIElement[1] referredTo;
+  }
+
+  class PLIFixedLboundArray extends PLIArray {
+    !unique !ordered attr Integer[1] IBound;
+    !unique !ordered attr String[1] uBoundToAllocate;
+    !ordered ref PLIElement[1] referredTo;
+  }
+
+  class PLIHBoundArray extends PLIArray {
+    !unique !ordered attr Integer[1] uBound;
+    !unique !ordered attr String[1] IBoundToAllocate;
+    !ordered ref PLIElement[1] referredTo;
+  }
+
+  class PLIVariableBoundArray extends PLIArray {
+    !unique !ordered attr String[1] IBoundToAllocate;
+    !unique !ordered attr String[1] hBoundToAllocate;
+    !ordered ref PLIElement[1] referredTo;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+}
+

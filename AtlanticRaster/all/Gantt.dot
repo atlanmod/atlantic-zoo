@@ -1,0 +1,59 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_Gantt"{
+labelloc=t
+color=black
+label=Gantt
+ node[shape=record];
+Project[label="{Project|name : String\ncompany : String\nviewDate : Date\nviewIndex : Date\nganttDividerLocation : Integer\nressourceDividerLocation : Integer\nwebLink : String| }"]
+ Project->Tasks[arrowhead=vee,arrowtail=diamond,headlabel="tasks",group=Tasks,minlen=2,constraint=true,]
+ Project->Ressource[arrowhead=vee,arrowtail=diamond,headlabel="ressources[*]{ordered}",group=Ressource,minlen=2,constraint=true,]
+ Project->Allocation[arrowhead=vee,arrowtail=diamond,headlabel="allocations[*]{ordered}",group=Allocation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Tasks[label="{Tasks|color : String| }"]
+ Tasks->Task[arrowhead=vee,arrowtail=diamond,headlabel="tasks[*]{ordered}",group=Task,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Task[label="{Task|id : String\nname : String\nmeeting : Boolean\ncolor : String\nexpand : Boolean\ncomplete : Integer\nduration : Integer\npriority : Integer\nstart : Date| }"]
+ Task->Depend[arrowhead=vee,arrowtail=diamond,headlabel="depends[*]{ordered}",group=Depend,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Depend[label="{Depend|id : String\ntype : Integer\ndifference : Integer\nhardness : String| }"]
+ Depend->Task[arrowhead=vee,arrowtail=none,headlabel="task",group=Task,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Ressource[label="{Ressource|Id : String\nname : String\nfonction : String\ncontact : String\nphone : String| }"]
+;
+ node[shape=record];
+Date[label="{Date|year : Integer\nmonth : Integer\nday : Integer| }"]
+;
+ node[shape=record];
+Allocation[label="{Allocation|taskId : String\nressourceId : String\nname : String\nfunction : String\nresponsible : Boolean\nload : Integer| }"]
+;
+ node[shape=record];
+Vacation[label="{Vacation| | }"]
+;
+ node[shape=record];
+Description[label="{Description| | }"]
+;
+ node[shape=record];
+Previous[label="{Previous| | }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+
+}
+}

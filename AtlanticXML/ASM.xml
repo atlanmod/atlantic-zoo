@@ -1,0 +1,147 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'ASM'>
+    <Class name = 'LocatedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'location' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'XAsmFile' isAbstract = 'true' supertypes = 'ASM::LocatedElement'/>
+    <Class name = 'XAsmSpec' isAbstract = 'false' supertypes = 'ASM::XAsmFile'>
+      <Reference name = 'Asm' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Asm' opposite = ''/>
+    </Class>
+    <Class name = 'Asm' isAbstract = 'false' supertypes = 'ASM::LocatedElement'>
+      <Reference name = 'signature' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Signature' opposite = ''/>
+      <Attribute name = 'returnType' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'metaInformation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::MetaInformation' opposite = ''/>
+      <Reference name = 'body' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Body' opposite = ''/>
+    </Class>
+    <Class name = 'Signature' isAbstract = 'false' supertypes = 'ASM::LocatedElement'>
+      <Attribute name = 'isMain' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Argument' opposite = ''/>
+    </Class>
+    <Class name = 'Argument' isAbstract = 'false' supertypes = 'ASM::VariableDecl'>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Body' isAbstract = 'false' supertypes = 'ASM::XAsmFile'>
+      <Reference name = 'declarations' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ASM::Declaration' opposite = ''/>
+      <Reference name = 'initialization' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Initialization' opposite = ''/>
+      <Reference name = 'rules' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Rule' opposite = ''/>
+    </Class>
+    <Class name = 'MetaInformation' isAbstract = 'false' supertypes = 'ASM::LocatedElement'>
+      <Reference name = 'usedAsIn' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Signature' opposite = ''/>
+      <Attribute name = 'usedAs' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Enum::AsmType'/>
+      <Reference name = 'accessUpdateFunctions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ASM::AccessUpdateFunction' opposite = ''/>
+    </Class>
+    <Class name = 'AccessUpdateFunction' isAbstract = 'false' supertypes = 'ASM::LocatedElement'>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Enum::AccessUpdateType'/>
+      <Reference name = 'functions' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Function' opposite = ''/>
+    </Class>
+    <Class name = 'Declaration' isAbstract = 'true' supertypes = 'ASM::LocatedElement'/>
+    <Class name = 'Function' isAbstract = 'false' supertypes = 'ASM::Declaration, ASM::ElementDecl'>
+      <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Parameter' opposite = ''/>
+      <Attribute name = 'returnType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'initTerm' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Term' opposite = ''/>
+      <Attribute name = 'isExternal' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'Parameter' isAbstract = 'false' supertypes = 'ASM::LocatedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Universe' isAbstract = 'false' supertypes = 'ASM::Declaration'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'contents' lower = '0' upper = '-1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'superUniverses' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ASM::Universe' opposite = ''/>
+    </Class>
+    <Class name = 'Initialization' isAbstract = 'false' supertypes = 'ASM::LocatedElement'>
+      <Reference name = 'rules' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Rule' opposite = ''/>
+    </Class>
+    <Class name = 'Term' isAbstract = 'true' supertypes = 'ASM::LocatedElement'/>
+    <Class name = 'Constant' isAbstract = 'true' supertypes = 'ASM::Term'/>
+    <Class name = 'FunctionOrVariableTerm' isAbstract = 'false' supertypes = 'ASM::Term'>
+      <Reference name = 'declaration' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ASM::ElementDecl' opposite = ''/>
+      <Reference name = 'terms' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Term' opposite = ''/>
+    </Class>
+    <Class name = 'OperatorTerm' isAbstract = 'false' supertypes = 'ASM::Term'>
+      <Attribute name = 'opName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'leftExp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Term' opposite = ''/>
+      <Reference name = 'rightExp' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Term' opposite = ''/>
+    </Class>
+    <Class name = 'BooleanConstant' isAbstract = 'false' supertypes = 'ASM::Constant'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'IntegerConstant' isAbstract = 'false' supertypes = 'ASM::Constant'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'StringConstant' isAbstract = 'false' supertypes = 'ASM::Constant'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'UndefConstant' isAbstract = 'false' supertypes = 'ASM::Constant'/>
+    <Class name = 'Rule' isAbstract = 'true' supertypes = 'ASM::LocatedElement'>
+      <Attribute name = 'inSequence' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'SkipRule' isAbstract = 'false' supertypes = 'ASM::Rule'/>
+    <Class name = 'AsmInvocation' isAbstract = 'false' supertypes = 'ASM::Rule'>
+      <Attribute name = 'asmName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Term' opposite = ''/>
+    </Class>
+    <Class name = 'UpdateRule' isAbstract = 'false' supertypes = 'ASM::Rule'>
+      <Reference name = 'function' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::FunctionOrVariableTerm' opposite = ''/>
+      <Reference name = 'updateTerm' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Term' opposite = ''/>
+    </Class>
+    <Class name = 'ChooseRule' isAbstract = 'false' supertypes = 'ASM::Rule'>
+      <Reference name = 'chooseId' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::VariableDecl' opposite = ''/>
+      <Reference name = 'inSet' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Universe' opposite = ''/>
+      <Reference name = 'guard' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Term' opposite = ''/>
+      <Reference name = 'ifChoosenRules' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Rule' opposite = ''/>
+      <Reference name = 'ifNotChoosenRule' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Rule' opposite = ''/>
+    </Class>
+    <Class name = 'DoForallRule' isAbstract = 'false' supertypes = 'ASM::Rule'>
+      <Reference name = 'id' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::VariableDecl' opposite = ''/>
+      <Reference name = 'inSet' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Universe' opposite = ''/>
+      <Reference name = 'condition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Term' opposite = ''/>
+      <Reference name = 'doRule' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Rule' opposite = ''/>
+    </Class>
+    <Class name = 'ConditionalRule' isAbstract = 'false' supertypes = 'ASM::Rule'>
+      <Reference name = 'condition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Term' opposite = ''/>
+      <Reference name = 'thenRule' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Rule' opposite = ''/>
+      <Reference name = 'elseRule' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Rule' opposite = ''/>
+      <Reference name = 'elseIfRule' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::ElseIf' opposite = ''/>
+    </Class>
+    <Class name = 'ElseIf' isAbstract = 'false' supertypes = 'ASM::LocatedElement'>
+      <Reference name = 'condition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Term' opposite = ''/>
+      <Reference name = 'thenRule' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Rule' opposite = ''/>
+      <Reference name = 'elseRule' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Rule' opposite = ''/>
+      <Reference name = 'elseIfRule' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::ElseIf' opposite = ''/>
+    </Class>
+    <Class name = 'ExtendRule' isAbstract = 'false' supertypes = 'ASM::Rule'>
+      <Reference name = 'extensions' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Extension' opposite = ''/>
+      <Reference name = 'rules' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Rule' opposite = ''/>
+    </Class>
+    <Class name = 'ElementDecl' isAbstract = 'true' supertypes = 'ASM::LocatedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'VariableDecl' isAbstract = 'false' supertypes = 'ASM::ElementDecl'/>
+    <Class name = 'Extension' isAbstract = 'false' supertypes = 'ASM::LocatedElement'>
+      <Reference name = 'elements' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ASM::VariableDecl' opposite = ''/>
+      <Reference name = 'universe' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Universe' opposite = ''/>
+    </Class>
+    <Class name = 'ReturnRule' isAbstract = 'false' supertypes = 'ASM::Rule'>
+      <Reference name = 'term' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ASM::Term' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'Enum'>
+    <Enumeration name = 'AccessUpdateType'>
+      <EnumLiteral name = 'access'/>
+      <EnumLiteral name = 'update'/>
+    </Enumeration>
+    <Enumeration name = 'AsmType'>
+      <EnumLiteral name = 'function'/>
+      <EnumLiteral name = 'subasm'/>
+    </Enumeration>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'Boolean'/>
+  </Package>
+</Metamodel>

@@ -1,0 +1,79 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_UMLMetamodelFragment"{
+labelloc=t
+color=black
+label=UMLMetamodelFragment
+ node[shape=record];
+Class[label="{Class| | }"]
+ Class->Generalization[arrowhead=vee,arrowtail=none,headlabel="parent",group=Generalization,minlen=2,constraint=false,]
+ Class->Generalization[arrowhead=vee,arrowtail=none,headlabel="child",group=Generalization,minlen=2,constraint=false,]
+ Class->Dependency[arrowhead=none,arrowtail=none,headlabel="dependency",taillabel="client",group=Dependency,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Generalization[label="{Generalization| | }"]
+;
+ node[shape=record];
+Dependency[label="{Dependency| | }"]
+ Dependency->StateMachine[arrowhead=vee,arrowtail=none,headlabel="supplier",group=StateMachine,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Stereotype[label="{Stereotype|baseClass : String| }"]
+ Stereotype->Dependency[arrowhead=none,arrowtail=none,headlabel="extendedElement",taillabel="stereotype",group=Dependency,minlen=2,constraint=false,]
+;
+ node[shape=record];
+StateMachine[label="{StateMachine| | }"]
+ StateMachine->Class[arrowhead=vee,arrowtail=none,headlabel="context",group=Class,minlen=2,constraint=false,]
+;
+ node[shape=record];
+State[label="{State| | }"]
+ State->StateMachine[arrowhead=diamond,arrowtail=none,headlabel="stateMachine[0-1]",taillabel="top",group=StateMachine,minlen=2,constraint=true,]
+ State->Transition[arrowhead=vee,arrowtail=diamond,headlabel="internal",group=Transition,minlen=2,constraint=true,]
+ State->StateVertex[arrowhead=onormal,group=StateVertex,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompositeState[label="{CompositeState| | }"]
+ CompositeState->State[arrowhead=onormal,group=State,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleState[label="{SimpleState| | }"]
+ SimpleState->State[arrowhead=onormal,group=State,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FinalState[label="{FinalState| | }"]
+ FinalState->State[arrowhead=onormal,group=State,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StateVertex[label="{StateVertex| | }"]
+ StateVertex->CompositeState[arrowhead=diamond,arrowtail=none,headlabel="compositeState[0-1]",taillabel="subvertex",group=CompositeState,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PseudoState[label="{PseudoState| | }"]
+ PseudoState->StateVertex[arrowhead=onormal,group=StateVertex,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Transition[label="{Transition| | }"]
+ Transition->Event[arrowhead=vee,arrowtail=none,headlabel="trigger[0-1]",group=Event,minlen=2,constraint=false,]
+ Transition->StateVertex[arrowhead=vee,arrowtail=none,headlabel="source",group=StateVertex,minlen=2,constraint=false,]
+ Transition->StateVertex[arrowhead=vee,arrowtail=none,headlabel="target",group=StateVertex,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Event[label="{Event| | }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

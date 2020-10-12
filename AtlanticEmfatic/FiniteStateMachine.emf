@@ -1,0 +1,46 @@
+package Metamodel;
+
+package FSM {
+  class MgaObject {
+    !unique !ordered attr String name;
+    !unique !ordered attr String position;
+  }
+
+  class Transition extends MgaObject {
+    !ordered ref StateMachine[1]#transition stateMachine;
+    !ordered ref AssociationStateState[1]#transition associationStateState;
+  }
+
+  class State extends MgaObject {
+    !ordered ref StateMachine[1]#state stateMachine;
+    !ordered ref AssociationStateState[+]#dstTransition associationStateStatedst;
+    !ordered ref AssociationStateState[+]#srcTransition associationStateStatesrc;
+  }
+
+  class StateMachine extends MgaObject {
+    !ordered ref RootFolder[1]#stateMachine rootFolder;
+    !ordered val State[*]#stateMachine state;
+    !ordered val Transition[*]#stateMachine transition;
+  }
+
+  class RootFolder {
+    !unique !ordered attr String name;
+    !ordered val RootFolder[*] rootFolders;
+    !ordered val StateMachine[*]#rootFolder stateMachine;
+  }
+
+  class AssociationStateState {
+    !ordered ref Transition[1]#associationStateState transition;
+    !ordered ref State[+]#associationStateStatedst dstTransition;
+    !ordered ref State[+]#associationStateStatesrc srcTransition;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+}
+

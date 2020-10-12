@@ -1,0 +1,105 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'DiagramInterchange'>
+    <Class name = 'Dimension' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'width' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+      <Attribute name = 'heigth' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+    </Class>
+    <Class name = 'Point' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'x' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+      <Attribute name = 'y' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+    </Class>
+    <Class name = 'BezierPoint' isAbstract = 'false' supertypes = 'DiagramInterchange::Point'>
+      <Reference name = 'controls' lower = '0' upper = '2' isOrdered = 'true' isContainer = 'false' type = 'DiagramInterchange::Point' opposite = ''/>
+    </Class>
+    <Class name = 'Property' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'key' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'DiagramElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'isVisible' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'properties' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DiagramInterchange::Property' opposite = ''/>
+      <Reference name = 'references' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DiagramInterchange::Reference' opposite = 'DiagramInterchange::Reference::referenced'/>
+      <Reference name = 'de_container' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DiagramInterchange::GraphElement' opposite = 'DiagramInterchange::GraphElement::contained'/>
+    </Class>
+    <Class name = 'Reference' isAbstract = 'false' supertypes = 'DiagramInterchange::DiagramElement'>
+      <Attribute name = 'isIndividualRepresentation' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'referenced' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DiagramInterchange::DiagramElement' opposite = 'DiagramInterchange::DiagramElement::references'/>
+    </Class>
+    <Class name = 'GraphElement' isAbstract = 'true' supertypes = 'DiagramInterchange::DiagramElement'>
+      <Reference name = 'position' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DiagramInterchange::Point' opposite = ''/>
+      <Reference name = 'contained' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'DiagramInterchange::DiagramElement' opposite = 'DiagramInterchange::DiagramElement::de_container'/>
+      <Reference name = 'semanticModel' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'DiagramInterchange::SemanticModelBridge' opposite = 'DiagramInterchange::SemanticModelBridge::smb_graphElement'/>
+      <Reference name = 'anchorages' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DiagramInterchange::GraphConnector' opposite = 'DiagramInterchange::GraphConnector::gc_graphElement'/>
+      <Reference name = 'links' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DiagramInterchange::DiagramLink' opposite = 'DiagramInterchange::DiagramLink::dl_graphElement'/>
+    </Class>
+    <Class name = 'GraphEdge' isAbstract = 'false' supertypes = 'DiagramInterchange::GraphElement'>
+      <Reference name = 'waypoints' lower = '0' upper = '2' isOrdered = 'true' isContainer = 'false' type = 'DiagramInterchange::Point' opposite = ''/>
+      <Reference name = 'anchors' lower = '2' upper = '2' isOrdered = 'true' isContainer = 'false' type = 'DiagramInterchange::GraphConnector' opposite = 'DiagramInterchange::GraphConnector::graphEdges'/>
+    </Class>
+    <Class name = 'GraphNode' isAbstract = 'false' supertypes = 'DiagramInterchange::GraphElement'>
+      <Reference name = 'size' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DiagramInterchange::Dimension' opposite = ''/>
+    </Class>
+    <Class name = 'GraphConnector' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'position' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DiagramInterchange::Point' opposite = ''/>
+      <Reference name = 'gc_graphElement' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DiagramInterchange::GraphElement' opposite = 'DiagramInterchange::GraphElement::anchorages'/>
+      <Reference name = 'graphEdges' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DiagramInterchange::GraphEdge' opposite = 'DiagramInterchange::GraphEdge::anchors'/>
+    </Class>
+    <Class name = 'DiagramLink' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'zoom' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+      <Reference name = 'viewPort' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DiagramInterchange::Point' opposite = ''/>
+      <Reference name = 'dl_graphElement' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DiagramInterchange::GraphElement' opposite = 'DiagramInterchange::GraphElement::links'/>
+      <Reference name = 'dl_diagram' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DiagramInterchange::Diagram' opposite = 'DiagramInterchange::Diagram::diagramLinks'/>
+    </Class>
+    <Class name = 'SemanticModelBridge' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'presentation' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'smb_graphElement' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DiagramInterchange::GraphElement' opposite = 'DiagramInterchange::GraphElement::semanticModel'/>
+      <Reference name = 'smb_diagram' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DiagramInterchange::Diagram' opposite = 'DiagramInterchange::Diagram::namespace'/>
+    </Class>
+    <Class name = 'Diagram' isAbstract = 'false' supertypes = 'DiagramInterchange::GraphNode'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'zoom' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+      <Reference name = 'viewPort' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DiagramInterchange::Point' opposite = ''/>
+      <Reference name = 'diagramLinks' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DiagramInterchange::DiagramLink' opposite = 'DiagramInterchange::DiagramLink::dl_diagram'/>
+      <Reference name = 'namespace' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'DiagramInterchange::SemanticModelBridge' opposite = 'DiagramInterchange::SemanticModelBridge::smb_diagram'/>
+    </Class>
+    <Class name = 'SimpleSemanticModelElement' isAbstract = 'false' supertypes = 'DiagramInterchange::SemanticModelBridge'>
+      <Attribute name = 'typeInfo' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'UML1SemanticModelBridge' isAbstract = 'false' supertypes = 'DiagramInterchange::SemanticModelBridge'>
+      <Reference name = 'element' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DiagramInterchange::CoreElement' opposite = ''/>
+    </Class>
+    <Class name = 'CoreSemanticModelBridge' isAbstract = 'false' supertypes = 'DiagramInterchange::SemanticModelBridge'>
+      <Reference name = 'element' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DiagramInterchange::ElementsElement' opposite = ''/>
+    </Class>
+    <Class name = 'CoreElement' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'ElementsElement' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'LeafElement' isAbstract = 'true' supertypes = 'DiagramInterchange::DiagramElement'/>
+    <Class name = 'TextElement' isAbstract = 'false' supertypes = 'DiagramInterchange::LeafElement'>
+      <Attribute name = 'text' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Image' isAbstract = 'false' supertypes = 'DiagramInterchange::LeafElement'>
+      <Attribute name = 'uri' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'mimeType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'GraphicPrimitive' isAbstract = 'true' supertypes = 'DiagramInterchange::LeafElement'/>
+    <Class name = 'Polyline' isAbstract = 'false' supertypes = 'DiagramInterchange::GraphicPrimitive'>
+      <Reference name = 'waypoints' lower = '2' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'DiagramInterchange::Point' opposite = ''/>
+      <Attribute name = 'closed' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'Ellipse' isAbstract = 'false' supertypes = 'DiagramInterchange::GraphicPrimitive'>
+      <Reference name = 'center' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DiagramInterchange::Point' opposite = ''/>
+      <Attribute name = 'radiusX' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+      <Attribute name = 'radiusY' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+      <Attribute name = 'rotation' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+      <Attribute name = 'startAngle' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+      <Attribute name = 'endAngle' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Double'/>
+  </Package>
+</Metamodel>

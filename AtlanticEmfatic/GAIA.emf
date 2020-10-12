@@ -1,0 +1,102 @@
+package Metamodel;
+
+package GAIA {
+  class OrganizationalStructure {
+    !ordered val Organization[*] organization;
+  }
+
+  class Organization {
+    !ordered ref Organization[1]#interacts collaborates;
+    !ordered ref Organization[1]#collaborates interacts;
+    !ordered val AgentType[*] member;
+    !ordered ref OrganizationalRule[*] observes;
+  }
+
+  class OrganizationalRule {
+  }
+
+  class SafetyRule extends OrganizationalRule {
+  }
+
+  class LivenessRule extends OrganizationalRule {
+  }
+
+  class AgentType {
+    !ordered ref Service[+] provides;
+    !ordered ref AgentType[1]#agentType collaborates;
+    !ordered ref AgentType[1]#collaborates agentType;
+    !ordered ref Role[*] plays;
+  }
+
+  class Service {
+    !unique !ordered attr String[1] inputs;
+    !unique !ordered attr String[1] outputs;
+    !unique !ordered attr String[1] pre-conditions;
+    !unique !ordered attr String[1] post-conditions;
+  }
+
+  class Role {
+    !ordered ref Activity[+] activity;
+    !ordered ref Communication[*] communication;
+    !ordered ref Responsibility[+] responsibility;
+    !ordered ref AssociationConnector#role actsOn;
+  }
+
+  class Activity {
+  }
+
+  class Responsibility {
+  }
+
+  class LivenessProperty extends Responsibility {
+  }
+
+  class SafetyProperty extends Responsibility {
+  }
+
+  class AssociationConnector {
+    !ordered ref Resource[*] actsOn;
+    !ordered ref Role[1]#actsOn role;
+    !ordered ref Permission[*]#association permission;
+  }
+
+  class Permission {
+    !ordered ref AssociationConnector[1]#permission association;
+  }
+
+  class Resource {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] description;
+    !ordered ref Action[*] permitted_action;
+    !ordered ref Environnement[1]#resource environnement;
+  }
+
+  class Environnement {
+    !ordered val Resource[*]#environnement resource;
+  }
+
+  class Action {
+    !unique !ordered attr String[1] type;
+  }
+
+  class Communication {
+    !ordered ref OrganizationalRule[*] observes;
+    !ordered ref Protocol[1] protocol;
+  }
+
+  class Protocol {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] initiator;
+    !unique !ordered attr String[1] partner;
+    !unique !ordered attr String[1] inputs;
+    !unique !ordered attr String[1] outputs;
+    !unique !ordered attr String[1] description;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+}
+

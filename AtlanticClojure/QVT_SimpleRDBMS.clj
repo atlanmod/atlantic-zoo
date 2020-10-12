@@ -1,0 +1,6 @@
+( defstruct RModelElement :kind :name )
+( defstruct Schema :kind :name )
+( defstruct Table :schema :kind :name )
+( defstruct Column :type :owner :kind :name )
+( defstruct Key :owner :kind :name )
+( defstruct ForeignKey :owner :refersTo :kind :name )

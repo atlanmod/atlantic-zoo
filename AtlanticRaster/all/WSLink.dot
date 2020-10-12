@@ -1,0 +1,44 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+} subgraph "cluster_WSLink"{
+labelloc=t
+color=black
+label=WSLink
+ node[shape=record];
+LocatedElement[label="{/LocatedElement/|location : String\ncommentsBefore[*] : String\ncommentsAfter[*] : String| }"]
+;
+ node[shape=record];
+Network[label="{Network|name[0-1] : String| }"]
+ Network->Services[arrowhead=vee,arrowtail=diamond,headlabel="services[*]{ordered}",group=Services,minlen=2,constraint=true,]
+ Network->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Services[label="{/Services/|name : String\nURL : String\ndescriptions : String| }"]
+ Services->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+WebService[label="{WebService| | }"]
+ WebService->Services[arrowhead=vee,arrowtail=none,headlabel="linkedServices[*]",group=Services,minlen=2,constraint=false,]
+ WebService->Services[arrowhead=onormal,group=Services,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RSS[label="{RSS| | }"]
+ RSS->Services[arrowhead=onormal,group=Services,minlen=2,constraint=true,]
+;
+
+}
+}

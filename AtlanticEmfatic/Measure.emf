@@ -1,0 +1,75 @@
+package Metamodel;
+
+package Measure {
+  enum ModelKind {
+    KM3 = 0;
+    UML2 = 0;
+  }
+
+  class RootMeasureSet {
+    !unique !ordered attr ModelKind[1] modelType;
+    val Category[+]#root categories;
+    val MeasureSet[*]#root measureSets;
+  }
+
+  class Category {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] desc;
+    val Metric[+]#category metrics;
+    !ordered ref RootMeasureSet[1]#categories root;
+  }
+
+  class Metric {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] desc;
+    !unique !ordered attr String[1] preferredValue;
+    !ordered ref Category[1]#metrics category;
+  }
+
+  enum ElementKind {
+    metamodel = 0;
+    model = 0;
+    ~package = 0;
+    ~interface = 0;
+    ~class = 0;
+  }
+
+  class MeasureSet {
+    !unique !ordered attr String[1] elementName;
+    !unique !ordered attr ElementKind[1] elementType;
+    val Measure[*]#owner measures;
+    !ordered ref RootMeasureSet#measureSets root;
+    val MeasureSet[*]#parent subsets;
+    !ordered ref MeasureSet#subsets parent;
+  }
+
+  abstract class Measure {
+    !ordered ref Metric[1] metric;
+    !ordered ref MeasureSet[1]#measures owner;
+  }
+
+  class IntegerMeasure extends Measure {
+    !unique !ordered attr Integer[1] value;
+  }
+
+  class DoubleMeasure extends Measure {
+    !unique !ordered attr PrimitiveTypes.Double[1] value;
+  }
+
+  class PercentageMeasure extends Measure {
+    !unique !ordered attr PrimitiveTypes.Double[1] value;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype Double : "";
+
+}
+

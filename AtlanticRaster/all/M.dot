@@ -1,0 +1,193 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_M"{
+labelloc=t
+color=black
+label=M
+ node[shape=record];
+IdentifiedElement[label="{/IdentifiedElement/|qualifiers[*] : String\nidentifier : String| }"]
+;
+ node[shape=record];
+MElement[label="{/MElement/| | }"]
+ MElement->IdentifiedElement[arrowhead=onormal,group=IdentifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MElementReference[label="{MElementReference|alias[0-1] : String| }"]
+ MElementReference->MElement[arrowhead=vee,arrowtail=none,headlabel="referencedElement",group=MElement,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Module[label="{Module| | }"]
+ Module->MElement[arrowhead=onormal,group=MElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ModuleMember[label="{/ModuleMember/| | }"]
+ ModuleMember->Module[arrowhead=diamond,arrowtail=none,headlabel="module",taillabel="moduleMembers{ordered}",group=Module,minlen=2,constraint=true,]
+ ModuleMember->MElement[arrowhead=onormal,group=MElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ImportDirective[label="{ImportDirective| | }"]
+ ImportDirective->Module[arrowhead=diamond,arrowtail=none,headlabel="module",taillabel="imports{ordered}",group=Module,minlen=2,constraint=true,]
+ ImportDirective->MElementReference[arrowhead=vee,arrowtail=diamond,headlabel="importedElements[1-*]{ordered}",group=MElementReference,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExportDirective[label="{ExportDirective| | }"]
+ ExportDirective->Module[arrowhead=diamond,arrowtail=none,headlabel="module",taillabel="exports{ordered}",group=Module,minlen=2,constraint=true,]
+ ExportDirective->ModuleMember[arrowhead=vee,arrowtail=none,headlabel="exportedElements[1-*]{ordered}",group=ModuleMember,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Value[label="{/Value/| | }"]
+;
+ node[shape=record];
+NumericalValue[label="{/NumericalValue/| | }"]
+ NumericalValue->Value[arrowhead=onormal,group=Value,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StringValue[label="{StringValue|value : String| }"]
+ StringValue->Value[arrowhead=onormal,group=Value,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IntegerValue[label="{IntegerValue|value : Integer| }"]
+ IntegerValue->NumericalValue[arrowhead=onormal,group=NumericalValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DecimalValue[label="{DecimalValue|value : Double| }"]
+ DecimalValue->NumericalValue[arrowhead=onormal,group=NumericalValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BooleanValue[label="{BooleanValue|value : Boolean| }"]
+ BooleanValue->Value[arrowhead=onormal,group=Value,minlen=2,constraint=true,]
+;
+ subgraph "cluster_Types"{
+labelloc=t
+color=black
+label=Types
+ node[shape=record];
+DerivedType[label="{DerivedType| | }"]
+ DerivedType->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expression[0-1]",group=Expression,minlen=2,constraint=true,]
+ DerivedType->ModuleMember[arrowhead=onormal,group=ModuleMember,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TypeReference[label="{TypeReference|lowerBound[0-1] : Integer\nupperBound[0-1] : Integer| }"]
+ TypeReference->DerivedType[arrowhead=diamond,arrowtail=none,headlabel="subtype[0-1]",taillabel="supertypes{ordered}",group=DerivedType,minlen=2,constraint=true,]
+ TypeReference->Field[arrowhead=diamond,arrowtail=none,headlabel="field[0-1]",taillabel="type",group=Field,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IntrinsicTypeReference[label="{IntrinsicTypeReference|typeIdentifier : String| }"]
+ IntrinsicTypeReference->TypeReference[arrowhead=onormal,group=TypeReference,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DerivedTypeReference[label="{DerivedTypeReference| | }"]
+ DerivedTypeReference->DerivedType[arrowhead=vee,arrowtail=none,headlabel="type",group=DerivedType,minlen=2,constraint=false,]
+ DerivedTypeReference->TypeReference[arrowhead=onormal,group=TypeReference,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Field[label="{Field| | }"]
+ Field->DerivedType[arrowhead=diamond,arrowtail=none,headlabel="owner",taillabel="fields{ordered}",group=DerivedType,minlen=2,constraint=true,]
+ Field->IdentifiedElement[arrowhead=onormal,group=IdentifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Collection[label="{Collection| | }"]
+ Collection->IdentifiedElement[arrowhead=onormal,group=IdentifiedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ComputedValue[label="{ComputedValue| | }"]
+ ComputedValue->IdentifiedElement[arrowhead=onormal,group=IdentifiedElement,minlen=2,constraint=true,]
+;
+
+
+labelloc=t
+color=black
+label=Expressions
+ node[shape=record];
+Expression[label="{/Expression/| | }"]
+;
+ node[shape=record];
+InitializationExpression[label="{InitializationExpression| | }"]
+ InitializationExpression->DerivedType[arrowhead=diamond,arrowtail=none,headlabel="type",taillabel="initializationExpression",group=DerivedType,minlen=2,constraint=true,]
+ InitializationExpression->Value[arrowhead=vee,arrowtail=diamond,headlabel="values[*]{ordered}",group=Value,minlen=2,constraint=true,]
+ InitializationExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+WhereExpression[label="{WhereExpression| | }"]
+ WhereExpression->DerivedType[arrowhead=diamond,arrowtail=none,headlabel="type",taillabel="whereExpression",group=DerivedType,minlen=2,constraint=true,]
+ WhereExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IdentityExpression[label="{IdentityExpression| | }"]
+ IdentityExpression->Field[arrowhead=vee,arrowtail=none,headlabel="identity",group=Field,minlen=2,constraint=false,]
+ IdentityExpression->WhereExpression[arrowhead=onormal,group=WhereExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+QueryExpression[label="{/QueryExpression/| | }"]
+ QueryExpression->WhereExpression[arrowhead=diamond,arrowtail=none,headlabel="whereExpression",taillabel="queryExpressions{ordered}",group=WhereExpression,minlen=2,constraint=true,]
+ QueryExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EqualExpression[label="{EqualExpression| | }"]
+ EqualExpression->ValueExpression[arrowhead=vee,arrowtail=diamond,headlabel="leftValue",group=ValueExpression,minlen=2,constraint=true,]
+ EqualExpression->ValueExpression[arrowhead=vee,arrowtail=diamond,headlabel="rightValue",group=ValueExpression,minlen=2,constraint=true,]
+ EqualExpression->QueryExpression[arrowhead=onormal,group=QueryExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InExpression[label="{InExpression| | }"]
+ InExpression->ValueExpression[arrowhead=vee,arrowtail=diamond,headlabel="value",group=ValueExpression,minlen=2,constraint=true,]
+ InExpression->QueryExpression[arrowhead=onormal,group=QueryExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CollectionExpression[label="{CollectionExpression| | }"]
+ CollectionExpression->InExpression[arrowhead=diamond,arrowtail=none,headlabel="inExpression",taillabel="collection",group=InExpression,minlen=2,constraint=true,]
+ CollectionExpression->ValueExpression[arrowhead=vee,arrowtail=diamond,headlabel="collectionValue",group=ValueExpression,minlen=2,constraint=true,]
+ CollectionExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ValueExpression[label="{/ValueExpression/| | }"]
+ ValueExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DefaultValueExpression[label="{DefaultValueExpression| | }"]
+ DefaultValueExpression->ValueExpression[arrowhead=onormal,group=ValueExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StandardValueExpression[label="{StandardValueExpression|value : String| }"]
+ StandardValueExpression->ValueExpression[arrowhead=vee,arrowtail=diamond,headlabel="context[0-1]",group=ValueExpression,minlen=2,constraint=true,]
+ StandardValueExpression->ValueExpression[arrowhead=onormal,group=ValueExpression,minlen=2,constraint=true,]
+;
+
+
+labelloc=t
+color=black
+label=Languages
+ node[shape=record];
+Language[label="{Language| | }"]
+ Language->ModuleMember[arrowhead=onormal,group=ModuleMember,minlen=2,constraint=true,]
+;
+
+
+labelloc=t
+color=black
+label=ObjectModel
+ node[shape=record];
+Entity[label="{Entity| | }"]
+ Entity->ModuleMember[arrowhead=onormal,group=ModuleMember,minlen=2,constraint=true,]
+;
+
+}
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

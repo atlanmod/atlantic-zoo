@@ -1,0 +1,55 @@
+-- @name 		Integration of OCL Expressions in UML
+-- @domains 	UML
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/07/10
+-- @description This metamodel describes the Integration of OCL Expressions into the UML Core and Data Types Packages
+-- @see 		This metamodel has been extracted from information available on this book:
+-- @see 		Article "A Metamodel for OCL"
+-- @see 		by Mark Richters and Martin Gogolla
+-- @see 		Page 160, Section 3, Fig. 3 Integration of OCL Expressions into the UML Core and Data Types Packages
+-- @see 		Lecture Notes in Computer Science 1723
+-- @see 		Robert France, Bernhard Rumpe (Eds.)
+-- @see 		The Unified Modeling Language UML 99: Beyond the standard
+
+package OCLExpression {
+	package Core {
+		abstract class ModelElement {
+			 reference constraint [1-*] ordered : Constraint oppositeOf constrainedElement;
+		}
+	
+		class Constraint extends ModelElement {
+			reference constrainedElement [1-*] ordered : ModelElement oppositeOf constraint;
+			reference body : BooleanExpression oppositeOf constraint;
+		}
+	}
+
+	package DataTypes {
+		class Expression {
+			reference body [0-1] : OCLExpression oppositeOf owner;
+		}
+	
+		class BooleanExpression extends Expression {
+			reference constraint [0-1] container : Constraint oppositeOf body;
+		}
+	}
+
+	package OCl {
+		abstract class OCLExpression {
+			reference owner [0-1]: Expression oppositeOf body;
+		} 
+	}
+
+	class PreCondition extends Constraint {}
+
+	class PortCondition extends Constraint {}
+
+	class Invariant extends Constraint {}
+
+	class Guard extends Constraint {}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

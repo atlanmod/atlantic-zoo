@@ -1,0 +1,141 @@
+-- @name 		ACME
+-- @version 	1.2
+-- @domains 	Developping new architectural design and analysis tools
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/05/21
+-- @description ACME is a simple and generic software architecture description language (ADL)
+-- @see 		This metamodel has been extracted from information available on the ACME site : http://www.cs.cmu.edu/~ACME/.
+
+package ACME {	
+
+	--@begin ACME File
+	class ACMEFile {
+		reference entries[*] container : ACMEEntry;
+	}
+	--@end ACME FILE
+	
+	--@begin ACME Entry
+	abstract class ACMEEntry {
+	}
+	--@end ACME Entry
+	
+	--@begin Element
+	--@comments Generic element of ACME. Any element (port, role, component, connector and system) has properties and representations.
+	abstract class Element {		
+		-- identifier
+		attribute name : String;
+		reference representations [*] ordered container : Representation;
+		reference property [*] ordered container : Property;
+	}
+	--@end Element
+
+	class Type extends Element {}
+
+	--@begin System
+	-- @comments A system in ACME is a set of components and connectors. Systems are first order entities in ACME.
+	class System extends Element, ACMEEntry {
+		-- set of components
+		reference componentDeclaration [*] ordered container : ComponentInstance;
+		-- set of connector
+		reference connectorDeclaration [*] ordered container : Connector oppositeOf system;
+		-- set of attachment between component and connector
+		reference attachments [*] ordered container : Link oppositeOf systemAttachment;
+		reference bindings [*] ordered container : Link oppositeOf systemBinding;
+	}
+	--@end System
+	
+	--@begin representation
+	-- @comments A Representation is used to further describe an element in terms of the ACME system construct.
+	-- @comments Elements in ACME may have more than one representation.
+	class Representation  {
+	 	reference systems [*] ordered container : System;
+	}
+	--@end representation
+	
+	--@begin Component
+	--@comments Components are the basic building blocks in an ACME description of a system.
+	--@comments Components expose their functionality through their ports.
+	--@comments A component may have several ports corresponding to different interfaces to the component.
+	abstract class Component extends Element {
+		-- set of port
+		reference ports [*] ordered container : Port;
+	}
+	--@end Component
+	
+	--@begin Component Instance
+	class ComponentInstance extends Component {
+		attribute instanceOf : String;
+	}
+	--@end Component Instance
+
+	--@begin Component Type
+	class ComponentType extends Component, ACMEEntry {
+		attribute extend : String;
+	}
+	--@end Component Type
+		
+	--@begin Port	
+	--@comments A port represents a point of contact between the component and its environment.
+	class Port extends Element {
+	}
+	--@end Port
+
+	--@begin Connector
+	--@comments Connectors define the nature of an interaction between components. 
+	--@comments A connector includes a set of interfaces in the form of roles
+	class Connector extends Element {
+		-- set of role
+		reference roles [*] ordered container : Role;
+		reference system : System oppositeOf connectorDeclaration;
+	}
+	--@end Connecor
+	
+	--@begin Role
+	--@comments A role represents a point of contact between the connector and its environment.
+	class Role extends Element {
+	}
+	--@end Role
+	
+	--@begin Property
+ 	--@comments Elements in ACME include properties which can be used to describe aspects of its computational behavior or structure
+	class Property {
+		attribute name : String;
+		attribute val : String;
+	}
+	--@end Property
+	
+	--@begin Link
+	abstract class Link {
+		reference systemBinding : System oppositeOf bindings;
+		reference systemAttachment : System oppositeOf attachments;
+	}
+	--@end Link
+	
+	--@begin Attachment
+	--@comments Each attachment represents an interaction between a port of a component and a role of a connector
+	class Attachment extends Link {		
+		attribute comp : String; 
+		attribute port : String; 
+		attribute con : String; 
+		attribute role : String;
+	}
+	--@end Attachment
+	
+	--@begin Binding
+	--@comments For a component, a binding provides a way of associating a port on a component with some port within the representation.	
+	class Binding extends Link {		
+		attribute compSrc : String; 
+		attribute portSrc : String; 
+		attribute compDest : String; 
+		attribute portDest : String;
+	}
+	--@end Binding
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}
+
+

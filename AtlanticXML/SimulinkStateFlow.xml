@@ -1,0 +1,80 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'SimulinkStateFlow'>
+    <Class name = 'Simulink' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'subSystem' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SimulinkStateFlow::System' opposite = 'SimulinkStateFlow::System::simulink'/>
+    </Class>
+    <Class name = 'System' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'simulink' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimulinkStateFlow::Simulink' opposite = 'SimulinkStateFlow::Simulink::subSystem'/>
+      <Reference name = 'blocks' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimulinkStateFlow::Block' opposite = 'SimulinkStateFlow::Block::system'/>
+      <Reference name = 'lines' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimulinkStateFlow::Line' opposite = 'SimulinkStateFlow::Line::system'/>
+      <Reference name = 'subSystem' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SimulinkStateFlow::System' opposite = ''/>
+    </Class>
+    <Class name = 'Connector' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Line' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'block' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimulinkStateFlow::Block' opposite = 'SimulinkStateFlow::Block::lines'/>
+      <Reference name = 'system' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimulinkStateFlow::System' opposite = 'SimulinkStateFlow::System::lines'/>
+    </Class>
+    <Class name = 'BranchPoint' isAbstract = 'false' supertypes = 'SimulinkStateFlow::Connector'/>
+    <Class name = 'Port' isAbstract = 'false' supertypes = 'SimulinkStateFlow::Connector'>
+      <Attribute name = 'units' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'SimulinkStateFlow::Units'/>
+    </Class>
+    <Class name = 'Block' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'description' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'priority' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'natagme' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'blockType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'lines' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SimulinkStateFlow::Line' opposite = 'SimulinkStateFlow::Line::block'/>
+      <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SimulinkStateFlow::Parameter' opposite = 'SimulinkStateFlow::Parameter::block'/>
+      <Reference name = 'annotations' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SimulinkStateFlow::Annotation' opposite = 'SimulinkStateFlow::Annotation::block'/>
+      <Reference name = 'blockRefs' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SimulinkStateFlow::BlockRef' opposite = ''/>
+      <Reference name = 'system' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimulinkStateFlow::System' opposite = 'SimulinkStateFlow::System::blocks'/>
+    </Class>
+    <Class name = 'BlockRef' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Primitive' isAbstract = 'false' supertypes = 'SimulinkStateFlow::Block'>
+      <Attribute name = 'deadLine' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'period' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'executionTime' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'OutPut' isAbstract = 'false' supertypes = 'SimulinkStateFlow::Port'>
+      <Attribute name = 'number' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'TriggerPort' isAbstract = 'false' supertypes = 'SimulinkStateFlow::Port'>
+      <Attribute name = 'triggerType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'SimulinkStateFlow::TriggerEnum'/>
+    </Class>
+    <Class name = 'EnablePort' isAbstract = 'false' supertypes = 'SimulinkStateFlow::Port'>
+      <Attribute name = 'statesWhenEnabling' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'SimulinkStateFlow::EnableEnum'/>
+    </Class>
+    <Class name = 'Reference' isAbstract = 'false' supertypes = 'SimulinkStateFlow::Block'>
+      <Attribute name = 'sourceBlock' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'sourceType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Annotation' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'text' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'block' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimulinkStateFlow::Block' opposite = 'SimulinkStateFlow::Block::annotations'/>
+    </Class>
+    <Class name = 'Parameter' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'block' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimulinkStateFlow::Block' opposite = 'SimulinkStateFlow::Block::parameters'/>
+    </Class>
+    <Enumeration name = 'Units'>
+      <EnumLiteral name = 'alpha'/>
+      <EnumLiteral name = 'beta'/>
+    </Enumeration>
+    <Enumeration name = 'TriggerEnum'>
+      <EnumLiteral name = 'alpha'/>
+      <EnumLiteral name = 'beta'/>
+    </Enumeration>
+    <Enumeration name = 'EnableEnum'>
+      <EnumLiteral name = 'alpha'/>
+      <EnumLiteral name = 'beta'/>
+    </Enumeration>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Integer'/>
+  </Package>
+</Metamodel>

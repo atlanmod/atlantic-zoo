@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xmi:XMI xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore">
+  <ecore:EPackage name="PrimitiveTypes">
+    <eClassifiers xsi:type="ecore:EDataType" name="Integer"/>
+    <eClassifiers xsi:type="ecore:EDataType" name="String"/>
+    <eClassifiers xsi:type="ecore:EDataType" name="Boolean"/>
+  </ecore:EPackage>
+  <ecore:EPackage name="MGA">
+    <eClassifiers xsi:type="ecore:EClass" name="Project">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/String"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="cdate" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/String"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/String"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="comment" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/String"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="author" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/String"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="root_folder" ordered="false"
+          lowerBound="1" eType="#/1/Folder" containment="true" eOpposite="#/1/Folder/project"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Object" abstract="true">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="status" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/String"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/String"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/String"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="obj_id" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/String"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Folder" eSuperTypes="#/1/Object">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="project" ordered="false"
+          lowerBound="1" eType="#/1/Project" eOpposite="#/1/Project/root_folder"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="sub_folders" ordered="false"
+          upperBound="-1" eType="#/1/Folder" containment="true" eOpposite="#/1/Folder/parent_folder"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="parent_folder" ordered="false"
+          lowerBound="1" eType="#/1/Folder" eOpposite="#/1/Folder/sub_folders"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="models" ordered="false"
+          upperBound="-1" eType="#/1/Model" containment="true" eOpposite="#/1/Model/folder"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="atoms" ordered="false"
+          upperBound="-1" eType="#/1/Atom" containment="true" eOpposite="#/1/Atom/folder"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="refers" ordered="false"
+          upperBound="-1" eType="#/1/Reference" containment="true" eOpposite="#/1/Reference/folder"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="FCO" eSuperTypes="#/1/Object">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="model" ordered="false"
+          lowerBound="1" eType="#/1/Model" eOpposite="#/1/Model/fcos"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="isAbstract" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/Boolean"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="parent" ordered="false"
+          eType="#/1/FCO" eOpposite="#/1/FCO/children"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="children" ordered="false"
+          eType="#/1/FCO" eOpposite="#/1/FCO/parent"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="set" ordered="false"
+          eType="#/1/Set" eOpposite="#/1/Set/members"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" ordered="false"
+          upperBound="-1" eType="#/1/Attribute" containment="true" eOpposite="#/1/Attribute/fco"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Model" eSuperTypes="#/1/FCO">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="folder" ordered="false"
+          lowerBound="1" eType="#/1/Folder" eOpposite="#/1/Folder/models"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="fcos" ordered="false"
+          upperBound="-1" eType="#/1/FCO" containment="true" eOpposite="#/1/FCO/model"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="aspects" ordered="false"
+          upperBound="-1" eType="#/1/Aspect" containment="true" eOpposite="#/1/Aspect/model"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Set" eSuperTypes="#/1/FCO">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="members" ordered="false"
+          upperBound="-1" eType="#/1/FCO" eOpposite="#/1/FCO/set"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Atom" eSuperTypes="#/1/FCO">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="folder" ordered="false"
+          lowerBound="1" eType="#/1/Folder" eOpposite="#/1/Folder/atoms"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Other" eSuperTypes="#/1/Atom"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Connector" eSuperTypes="#/1/Atom"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ClassConnection" eSuperTypes="#/1/Atom"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ClassInheritance" eSuperTypes="#/1/Atom"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Proxy" eSuperTypes="#/1/Atom">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="referred" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/String"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Reference" eSuperTypes="#/1/FCO">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="folder" ordered="false"
+          lowerBound="1" eType="#/1/Folder" eOpposite="#/1/Folder/refers"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="conn_refer" ordered="false"
+          eType="#/1/ConnPoint" eOpposite="#/1/ConnPoint/conn_refer"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Connection" eSuperTypes="#/1/FCO">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="conn_points" ordered="false"
+          lowerBound="2" upperBound="-1" eType="#/1/ConnPoint" containment="true"
+          eOpposite="#/1/ConnPoint/connection"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Association" eSuperTypes="#/1/Connection">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="cardinality" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/String"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="card_name" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/String"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Composition" eSuperTypes="#/1/Connection">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="cardinality" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/String"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="role_name" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/String"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Inheritance" eSuperTypes="#/1/Connection"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ComposeLink" eSuperTypes="#/1/Connection"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AttributeLink" eSuperTypes="#/1/Connection"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ConstraintLink" eSuperTypes="#/1/Connection"/>
+    <eClassifiers xsi:type="ecore:EClass" name="OtherConnection" eSuperTypes="#/1/Connection"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ConnPoint">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="connection" ordered="false"
+          lowerBound="1" eType="#/1/Connection" eOpposite="#/1/Connection/conn_points"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="conn_refer" ordered="false"
+          upperBound="-1" eType="#/1/Reference" eOpposite="#/1/Reference/conn_refer"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="target" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/String"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="role" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/String"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Constraint" eSuperTypes="#/1/Atom">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="content" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/String"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ConstraintFunc" eSuperTypes="#/1/Atom">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="content" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/String"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Attribute" eSuperTypes="#/1/Atom">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="fco" ordered="false"
+          lowerBound="1" eType="#/1/FCO" eOpposite="#/1/FCO/attributes"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Bool" eSuperTypes="#/1/Attribute"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Enum" eSuperTypes="#/1/Attribute">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="menu_items" ordered="false"
+          upperBound="-1" eType="#/1/Literal" containment="true" eOpposite="#/1/Literal/enum"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Literal">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="enum" ordered="false"
+          lowerBound="1" eType="#/1/Enum" eOpposite="#/1/Enum/menu_items"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="content" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/String"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Field" eSuperTypes="#/1/Attribute">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="data_type" ordered="false"
+          unique="false" lowerBound="1" eType="#/0/String"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Aspect" eSuperTypes="#/1/Object">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="model" ordered="false"
+          lowerBound="1" eType="#/1/Model" eOpposite="#/1/Model/aspects"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="members" ordered="false"
+          upperBound="-1" eType="#/1/FCO"/>
+    </eClassifiers>
+  </ecore:EPackage>
+</xmi:XMI>

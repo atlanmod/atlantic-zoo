@@ -1,0 +1,74 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_IMSTransactionMessage"{
+labelloc=t
+color=black
+label=IMSTransactionMessage
+ node[shape=record];
+TwoByteField[label="{TwoByteField| | }"]
+;
+ node[shape=record];
+VariableLengthField[label="{VariableLengthField| | }"]
+;
+ node[shape=record];
+IMSTransactionMessage[label="{IMSTransactionMessage|OIMAPrefixFormat : OIMAPrefixFormats\nstandardFieldsFlag : Boolean| }"]
+ IMSTransactionMessage->OIMAPrefix[arrowhead=vee,arrowtail=diamond,headlabel="OIMAPrefixComponent[0-1]",group=OIMAPrefix,minlen=2,constraint=true,]
+ IMSTransactionMessage->StandardFields[arrowhead=vee,arrowtail=diamond,headlabel="standardFieldComponent[0-1]",group=StandardFields,minlen=2,constraint=true,]
+ IMSTransactionMessage->ApplicationData[arrowhead=vee,arrowtail=diamond,headlabel="messageComponent",group=ApplicationData,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OIMAPrefix[label="{OIMAPrefix| | }"]
+ OIMAPrefix->ControlData[arrowhead=vee,arrowtail=diamond,headlabel="controlDataComponent",group=ControlData,minlen=2,constraint=true,]
+ OIMAPrefix->StateData[arrowhead=vee,arrowtail=diamond,headlabel="stateDataComponent",group=StateData,minlen=2,constraint=true,]
+ OIMAPrefix->SecurityData[arrowhead=vee,arrowtail=diamond,headlabel="securityDataComponent[0-1]",group=SecurityData,minlen=2,constraint=true,]
+ OIMAPrefix->UserData[arrowhead=vee,arrowtail=diamond,headlabel="userDataComponent[0-1]",group=UserData,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ControlData[label="{ControlData| | }"]
+;
+ node[shape=record];
+StateData[label="{StateData| | }"]
+;
+ node[shape=record];
+SecurityData[label="{SecurityData| | }"]
+;
+ node[shape=record];
+UserData[label="{UserData| | }"]
+;
+ node[shape=record];
+StandardFields[label="{StandardFields| | }"]
+ StandardFields->TwoByteField[arrowhead=vee,arrowtail=none,headlabel="length",group=TwoByteField,minlen=2,constraint=false,]
+ StandardFields->TwoByteField[arrowhead=vee,arrowtail=none,headlabel="reservedField",group=TwoByteField,minlen=2,constraint=false,]
+ StandardFields->VariableLengthField[arrowhead=vee,arrowtail=none,headlabel="transactionCode",group=VariableLengthField,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ApplicationData[label="{ApplicationData| | }"]
+ ApplicationData->TDLangElement[arrowhead=vee,arrowtail=none,headlabel="languageElements[*]",group=TDLangElement,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Field[label="{Field| | }"]
+ Field->ApplicationData[arrowhead=diamond,arrowtail=none,headlabel="fieldContainer",taillabel="fieldComponents[1-*]",group=ApplicationData,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TDLangElement[label="{TDLangElement| | }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

@@ -1,0 +1,43 @@
+-- @name		ComponentUML
+-- @version		1.0
+-- @authors		Youssef Srour (Srour.youssef@gmail.com)
+-- @date		2006/07/28
+-- @description	This metamodel describes ComponentUML.
+-- @see  		http://delivery.acm.org/10.1145/1130000/1125810/p39-basin.pdf?key1=1125810&key2=6220095511&coll=GUIDE&dl=&CFID=15151515&CFTOKEN=6184618
+
+package ComponentUML{
+
+-- Begin class Entity
+	class Entity {
+		reference methods[*] : Method oppositeOf entity;
+		reference attributes[*] : Attribute oppositeOf entity;
+		reference associationEnds[*] : AssociationEnd oppositeOf type;
+	}-- End class Entity
+
+-- Begin class AssociationEnd
+	class AssociationEnd {
+		reference type : Entity oppositeOf associationEnds;
+		reference association : Association oppositeOf associationEnds;
+	}-- End class AssociationEnd
+
+-- Begin class Association
+	class Association {
+		reference associationEnds[2-2] : AssociationEnd oppositeOf association;
+	}-- End class Association
+
+-- Begin class Method
+	class Method {
+		reference entity : Entity oppositeOf methods ;
+	}-- End class Method
+
+-- Begin class Attribute
+	class Attribute {
+		reference entity : Entity oppositeOf attributes;
+	}-- End class Attribute
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+	datatype Integer;
+}

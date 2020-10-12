@@ -1,0 +1,124 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<rdf:RDF xmlns:rdf = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:rdfs = 'http://www.w3.org/2000/01/rdf-schema#' xmlns:xsd = 'http://www.w3.org/2001/XMLSchema#' xmlns:owl = 'http://www.w3.org/2002/07/owl#' xmlns = 'http://example.org/EG_MOF#' xml:base = 'http://example.org/EG_MOF'>
+  <owl:Ontology rdf:about = 'EG_MOF'/>
+  <owl:Class rdf:ID = 'Control'>
+    <rdfs:label>Control</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Node'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Start'>
+    <rdfs:label>Start</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Node'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Basic'>
+    <rdfs:label>Basic</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Node'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'ExecutionGraph'>
+    <rdfs:label>ExecutionGraph</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ExecutionGraph.nodeNested'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ExecutionGraph.node'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Fork'>
+    <rdfs:label>Fork</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Control'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Split'>
+    <rdfs:label>Split</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Control'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Loop'>
+    <rdfs:label>Loop</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Control'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Acquire'>
+    <rdfs:label>Acquire</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Control'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Node'>
+    <rdfs:label>Node</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Node.nested'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Node.successor'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Node.executionGraph'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Node.predecessor'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'End'>
+    <rdfs:label>End</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Node'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Branch'>
+    <rdfs:label>Branch</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Control'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Join'>
+    <rdfs:label>Join</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Control'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Release'>
+    <rdfs:label>Release</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Control'/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID = 'Node.predecessor'>
+    <rdfs:domain rdf:resource = '#Node'/>
+    <rdfs:range rdf:resource = '#Node'/>
+    <owl:inverseOf rdf:resource = '#Node.successor'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ExecutionGraph.node'>
+    <rdfs:domain rdf:resource = '#ExecutionGraph'/>
+    <rdfs:range rdf:resource = '#Node'/>
+    <owl:inverseOf rdf:resource = '#Node.executionGraph'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Node.successor'>
+    <rdfs:domain rdf:resource = '#Node'/>
+    <rdfs:range rdf:resource = '#Node'/>
+    <owl:inverseOf rdf:resource = '#Node.predecessor'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Node.executionGraph'>
+    <rdfs:domain rdf:resource = '#Node'/>
+    <rdfs:range rdf:resource = '#ExecutionGraph'/>
+    <owl:inverseOf rdf:resource = '#ExecutionGraph.node'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ExecutionGraph.nodeNested'>
+    <rdfs:domain rdf:resource = '#ExecutionGraph'/>
+    <rdfs:range rdf:resource = '#Node'/>
+    <owl:inverseOf rdf:resource = '#Node.nested'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Node.nested'>
+    <rdfs:domain rdf:resource = '#Node'/>
+    <rdfs:range rdf:resource = '#ExecutionGraph'/>
+    <owl:inverseOf rdf:resource = '#ExecutionGraph.nodeNested'/>
+  </owl:ObjectProperty>
+  <owl:FunctionalProperty rdf:about = '#Node.executionGraph'/>
+  <owl:FunctionalProperty rdf:about = '#ExecutionGraph.nodeNested'/>
+  <owl:SymmetricProperty rdf:about = '#Node.successor'/>
+  <owl:SymmetricProperty rdf:about = '#Node.predecessor'/>
+</rdf:RDF>

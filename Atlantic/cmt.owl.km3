@@ -1,0 +1,177 @@
+package cmt {
+
+	class Thing {
+		
+	}
+
+	class "Meta-Reviewer" extends Reviewer {
+		
+	}
+
+	class Reviewer extends ConferenceMember, User {
+		reference assignedByAdministrator[0-1] : Administrator oppositeOf assignReviewer;
+		reference adjustBid[0-1] : Bid oppositeOf adjustedBy;
+		reference readPaper[0-1] : Paper oppositeOf readByReviewer;
+		reference hasBeenAssigned[0-1] : Paper oppositeOf assignedTo;
+		reference writeReview[0-1] : Review oppositeOf writtenBy;
+		reference assignExternalReviewer[0-1] : ExternalReviewer oppositeOf assignedByReviewer;
+	}
+
+	class Decision {
+		
+	}
+
+	class Person {
+		reference hasConflictOfInterest[0-1] : Document;
+		attribute email[0-1] : String;
+	}
+
+	class Document {
+		
+	}
+
+	class Preference {
+		
+	}
+
+	class ProgramCommittee {
+		reference hasProgramCommitteeMember[0-1] : ProgramCommitteeMember oppositeOf memberOfProgramCommittee;
+	}
+
+	class Bid {
+		reference adjustedBy[0-1] : Reviewer oppositeOf adjustBid;
+	}
+
+	class Conference extends Thing {
+		reference hasConferenceMember[0-1] : ConferenceMember oppositeOf memberOfConference;
+		reference paperAssignmentFinalizedBy[0-1] : Administrator oppositeOf finalizePaperAssignment;
+		reference reviewCriteriaEnteredBy[0-1] : Administrator oppositeOf enterReviewCriteria;
+		reference paperAssignmentToolsRunBy[0-1] : Administrator oppositeOf runPaperAssignmentTools;
+		reference virtualMeetingEnabledBy[0-1] : Administrator oppositeOf enableVirtualMeeting;
+		reference hardcopyMailingManifestsPrintedBy[0-1] : Administrator oppositeOf printHardcopyMailingManifests;
+		reference detailsEnteredBy[0-1] : Administrator oppositeOf enterConferenceDetails;
+		reference reviewerBiddingStartedBy[0-1] : Administrator oppositeOf startReviewerBidding;
+		attribute date[0-1] : date;
+		attribute reviewsPerPaper[0-1] : Integer;
+		attribute logoURL[0-1] : anyURI;
+		attribute acceptsHardcopySubmissions[0-1] : Boolean;
+		attribute siteURL[0-1] : anyURI;
+	}
+
+	class ConferenceChair extends ConferenceMember, Chairman {
+		
+	}
+
+	class ConferenceMember extends Person {
+		reference memberOfConference[0-1] : Conference oppositeOf hasConferenceMember;
+	}
+
+	class AssociatedChair extends ConferenceMember, Chairman {
+		
+	}
+
+	class ProgramCommitteeMember extends Person, ConferenceMember {
+		reference memberOfProgramCommittee[0-1] : ProgramCommittee oppositeOf hasProgramCommitteeMember;
+		attribute maxPapers[0-1] : Integer;
+		reference addedBy[0-1] : Administrator oppositeOf addProgramCommitteeMember;
+	}
+
+	class AuthorNotReviewer extends Author {
+		
+	}
+
+	class SubjectArea {
+		
+	}
+
+	class ExternalReviewer extends Person {
+		reference assignedByReviewer : Reviewer oppositeOf assignExternalReviewer;
+	}
+
+	class Chairman extends Person, ConferenceMember {
+		
+	}
+
+	class ProgramCommitteeChair extends ProgramCommitteeMember, Chairman {
+		reference endReview[0-1] : Review;
+	}
+
+	class Acceptance extends Decision {
+		
+	}
+
+	class Rejection extends Decision {
+		
+	}
+
+	class Review extends Document {
+		reference writtenBy[0-1] : Reviewer oppositeOf writeReview;
+	}
+
+	class Paper extends Document {
+		reference "hasCo-author"[0-1] : "Co-author" oppositeOf "co-writePaper";
+		reference hasBid[0-1] : Bid;
+		reference hasDecision[0-1] : Decision;
+		reference assignedTo[0-1] : Reviewer oppositeOf hasBeenAssigned;
+		reference hasSubjectArea[0-1] : SubjectArea;
+		reference readByReviewer : Reviewer oppositeOf readPaper;
+		attribute paperID[0-1] : unsignedLong;
+		attribute title[0-1] : String;
+		reference hasAuthor[0-1] : Author oppositeOf writePaper;
+		reference acceptedBy[0-1] : Administrator oppositeOf acceptPaper;
+		reference rejectedBy[0-1] : Administrator oppositeOf rejectPaper;
+		reference "readByMeta-Reviewer"[0-1] : "Meta-Reviewer";
+	}
+
+	class Author extends ConferenceMember, User {
+		reference submitPaper[0-1] : Paper;
+		reference writePaper[0-1] : Paper oppositeOf hasAuthor;
+	}
+
+	class User extends Person {
+		
+	}
+
+	class "Co-author" extends Author {
+		reference "co-writePaper"[0-1] : Paper oppositeOf "hasCo-author";
+	}
+
+	class PaperAbstract extends Paper {
+		
+	}
+
+	class PaperFullVersion extends Paper {
+		
+	}
+
+	class Administrator extends User {
+		reference finalizePaperAssignment[0-1] : Conference oppositeOf paperAssignmentFinalizedBy;
+		reference runPaperAssignmentTools[0-1] : Conference oppositeOf paperAssignmentToolsRunBy;
+		reference enableVirtualMeeting[0-1] : Conference oppositeOf virtualMeetingEnabledBy;
+		reference startReviewerBidding[0-1] : Conference oppositeOf reviewerBiddingStartedBy;
+		reference assignReviewer[0-1] : Reviewer oppositeOf assignedByAdministrator;
+		reference rejectPaper[0-1] : Paper oppositeOf rejectedBy;
+		reference enterConferenceDetails[0-1] : Conference oppositeOf detailsEnteredBy;
+		reference printHardcopyMailingManifests[0-1] : Conference oppositeOf hardcopyMailingManifestsPrintedBy;
+		reference setMaxPapers[0-1] : ProgramCommitteeMember;
+		reference enterReviewCriteria[0-1] : Conference oppositeOf reviewCriteriaEnteredBy;
+		reference acceptPaper[0-1] : Paper oppositeOf acceptedBy;
+		reference addProgramCommitteeMember[0-1] : ProgramCommitteeMember oppositeOf addedBy;
+	}
+
+	class "Meta-Review" extends Review {
+		
+	}
+
+	datatype date;
+
+	datatype unsignedLong;
+
+	datatype anyURI;
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

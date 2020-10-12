@@ -1,0 +1,80 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_WSDL"{
+labelloc=t
+color=black
+label=WSDL
+ node[shape=record];
+Port[label="{Port|name : String| }"]
+ Port->Service[arrowhead=diamond,arrowtail=none,headlabel="service",taillabel="ports[*]",group=Service,minlen=2,constraint=true,]
+ Port->Binding[arrowhead=none,arrowtail=none,headlabel="binding",taillabel="ports[*]",group=Binding,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Service[label="{Service|name : String| }"]
+;
+ node[shape=record];
+Param[label="{Param|name : String| }"]
+ Param->Message[arrowhead=none,arrowtail=none,headlabel="message",taillabel="params[*]",group=Message,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Input[label="{Input| | }"]
+ Input->Operation[arrowhead=diamond,arrowtail=none,headlabel="operation",taillabel="input[0-1]",group=Operation,minlen=2,constraint=true,]
+ Input->Param[arrowhead=onormal,group=Param,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Output[label="{Output| | }"]
+ Output->Operation[arrowhead=diamond,arrowtail=none,headlabel="operation",taillabel="output[0-1]",group=Operation,minlen=2,constraint=true,]
+ Output->Param[arrowhead=onormal,group=Param,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PortType[label="{PortType|name : String| }"]
+;
+ node[shape=record];
+Operation[label="{Operation|name : String| }"]
+ Operation->PortType[arrowhead=diamond,arrowtail=none,headlabel="type",taillabel="operations[*]",group=PortType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StartWithExtensions[label="{StartWithExtensions| | }"]
+;
+ node[shape=record];
+Binding[label="{Binding|name : String| }"]
+ Binding->PortType[arrowhead=none,arrowtail=none,headlabel="type",taillabel="bindings[*]",group=PortType,minlen=2,constraint=false,]
+ Binding->StartWithExtensions[arrowhead=onormal,group=StartWithExtensions,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BindingFault[label="{BindingFault| | }"]
+ BindingFault->BindingOperation[arrowhead=diamond,arrowtail=diamond,headlabel="operation",taillabel="faults[*]",group=BindingOperation,minlen=2,constraint=true,]
+ BindingFault->Fault[arrowhead=vee,arrowtail=none,headlabel="binding",group=Fault,minlen=2,constraint=false,]
+ BindingFault->StartWithExtensions[arrowhead=onormal,group=StartWithExtensions,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BindingOperation[label="{BindingOperation|name : String| }"]
+ BindingOperation->Binding[arrowhead=diamond,arrowtail=none,headlabel="bind",taillabel="operations[*]",group=Binding,minlen=2,constraint=true,]
+ BindingOperation->Operation[arrowhead=vee,arrowtail=none,headlabel="binding",group=Operation,minlen=2,constraint=false,]
+ BindingOperation->StartWithExtensions[arrowhead=vee,arrowtail=none,headlabel="input[0-1]",group=StartWithExtensions,minlen=2,constraint=false,]
+ BindingOperation->StartWithExtensions[arrowhead=vee,arrowtail=none,headlabel="output[0-1]",group=StartWithExtensions,minlen=2,constraint=false,]
+ BindingOperation->StartWithExtensions[arrowhead=onormal,group=StartWithExtensions,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Fault[label="{Fault|name : String| }"]
+ Fault->Operation[arrowhead=diamond,arrowtail=none,headlabel="operation",taillabel="faults[*]",group=Operation,minlen=2,constraint=true,]
+ Fault->Message[arrowhead=none,arrowtail=none,headlabel="message",taillabel="faults[*]",group=Message,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Message[label="{Message|name : String| }"]
+;
+ node[shape=record];
+Part[label="{Part|name : String| }"]
+ Part->Message[arrowhead=none,arrowtail=none,headlabel="message",taillabel="parts[*]",group=Message,minlen=2,constraint=false,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

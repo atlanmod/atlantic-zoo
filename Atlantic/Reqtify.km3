@@ -1,0 +1,68 @@
+-- @name		Reqtify
+-- @version		0.1
+-- @domains		traceability tool
+-- @authors		Pauline Brunel (pabrunel@numericable.fr), Albin Jossic (jossic.albin@gmail.com) 
+-- @date		2005/07/21	
+-- @description	Reqtify Metamodel: TNI-Valiosys requirements traceability tool. Most projects often start with a systems and requirements engineering phase during which the system specification is defined, and the system requirements are captured and formalized. Reqtify takes as inputs the formalized requirements produced from this phase, and monitors their implementation throughout the rest of the lifecycle of project. Reqtify effectively manages requirements traceability and impact analysis across the entire lifecycle of the project, enabling quality development in both hardware and software projects.
+-- @see			http://users.reqtify.tni-software.com/documents/
+
+package Reqtify {
+	class Project {
+		reference documents [1-*] container : Document oppositeOf project;
+	}
+	-- @begin Element
+	abstract class TypedElement {
+		attribute type : String;
+	}
+		-- @begin ElementWithLabel
+	abstract class ElementWithIL extends TypedElement {
+		attribute name : String;	-- equivalent of the attribute ident
+		attribute label : String;
+	}
+			
+	class Document extends ElementWithIL {
+		reference project : Project oppositeOf documents;
+		reference sections [*] container : Section oppositeOf document;
+	}
+			-- @begin TextElement
+	abstract class TextElement extends ElementWithIL {
+	  	attribute description : String; 
+	}
+	-- @comments a section belongs either to another section or to a document
+	class Section extends TextElement {
+		reference document [0-1] : Document oppositeOf sections;
+		reference sectionChildren [*] container : Section oppositeOf sectionParent;
+		reference sectionParent [0-1] : Section oppositeOf sectionChildren;
+		reference requirements [*] container : AbstractRequirement oppositeOf section;
+	}
+				-- @begin requirements
+	-- @comments a requirement (macro or not) belongs either to a macroRequirement or to a section
+	abstract class AbstractRequirement extends TextElement {
+		reference section [0-1] : Section oppositeOf requirements;
+		reference isContained [0-1] : MacroRequirement oppositeOf contains;		
+		reference coverLinks [*] container : CoverLink;
+		reference "attribute" [*] container : Attribute;
+	}
+	
+	class Requirement extends AbstractRequirement {
+	}
+	
+	class MacroRequirement extends AbstractRequirement {
+		reference contains [*] container: AbstractRequirement oppositeOf isContained;
+	}
+				-- @end requirements
+			-- @end TextElement
+		-- @end ElementWithLabel
+	class CoverLink extends TypedElement {
+		reference linkWith : AbstractRequirement;
+	}
+	
+	class Attribute extends TypedElement {
+		attribute value : String;
+	}
+	-- @end Element
+}
+
+package PrimitiveTypes {
+  datatype String;
+}

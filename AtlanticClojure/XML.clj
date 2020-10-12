@@ -1,0 +1,5 @@
+( defstruct Node :name :value )
+( defstruct Attribute :name :value )
+( defstruct Text :name :value )
+( defstruct Element :name :value )
+( defstruct Root :name :value )

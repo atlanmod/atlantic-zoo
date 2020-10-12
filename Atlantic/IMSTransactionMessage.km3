@@ -1,0 +1,88 @@
+-- @name		IMSTransactionMessage 
+-- @version		1.0
+-- @domains		Transactions
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/11
+-- @description	This metamodel describes a subset of IMS OTMA (Open Transaction Manager Access) which is an IBM transaction-based and connectionless client/server protocol within an OS/390 sysplex environment. IMS Transaction Message meta-model captures the metadata associated with sending and receiving messages to and from IMS transaction applications.   
+-- @see			IBM IMS Product webpage, http://www-306.ibm.com/software/data/ims/
+
+package IMSTransactionMessage {
+
+	-- @begin IMS special types
+
+	enumeration OIMAPrefixFormats {
+		literal opp_one;
+		literal opp_two;
+	}
+	
+	-- @comment <<primitive>>
+	class TwoByteField {}
+	
+	-- @comment <<primitive>>
+	class VariableLengthField {}
+	
+	-- @end IMS special types
+	
+	
+	-- @begin IMS Transaction Message structure
+
+	class IMSTransactionMessage {
+		-- @comment Default value is "one".
+		attribute OIMAPrefixFormat : OIMAPrefixFormats;
+		attribute standardFieldsFlag : Boolean; 
+		reference OIMAPrefixComponent[0-1] container : OIMAPrefix;
+		reference standardFieldComponent[0-1] container : StandardFields;
+		reference messageComponent container : ApplicationData;
+	}
+
+	class OIMAPrefix {
+		reference controlDataComponent container : ControlData;
+		reference stateDataComponent container : StateData;
+		reference securityDataComponent[0-1] container : SecurityData;
+		reference userDataComponent[0-1] container : UserData;
+	}
+	
+	-- @comment ControlData appears in all prefixes.
+	class ControlData {}
+	
+	-- @comment StateData appears in the prefix preceding the first segment of all messages.
+	class StateData {}
+	
+	-- @comment SecurityData optionaly appears in the prefix preceding the first segment of all messages.
+	class SecurityData {}
+	
+	-- @comment UserData optionaly appears in the prefix preceding the first segment of all messages.
+	class UserData {}
+	
+	class StandardFields {
+		reference length : TwoByteField;
+		reference reservedField : TwoByteField;
+		-- @comment The transactionCode field can be from one to eight bytes in lentgh. It's included only in input messages.
+		reference transactionCode : VariableLengthField;
+	}
+	
+	-- @comment From ApplicationData 
+	class ApplicationData {
+		reference languageElements[*] : TDLangElement;
+		reference fieldComponents[1-*] container : Field oppositeOf fieldContainer;
+	}
+	
+	class Field {
+		reference fieldContainer : ApplicationData oppositeOf fieldComponents; 
+	}
+	
+	class TDLangElement {}
+	
+	-- @end IMS Transaction Message structure
+	
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

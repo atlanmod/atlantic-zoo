@@ -1,0 +1,194 @@
+universe PRR_Element
+
+	function location(a : PRR_Element, b : String) -> Bool
+
+	function commentsBefore(a : PRR_Element, b : String) -> Bool
+
+	function commentsAfter(a : PRR_Element, b : String) -> Bool
+
+	function order(a : PRR_Element, b : String) -> Integer
+
+	function order(a : PRR_Element, b : String) -> Integer
+
+	universe PRR_NamedElement < PRR_Element
+
+	function name(a : PRR_NamedElement, b : String) -> Bool
+
+	universe PRR_RuleSet < PRR_Element
+
+	function rules(a : PRR_RuleSet, b : PRR_Rule) -> Bool
+
+	function order(a : PRR_RuleSet, b : PRR_Rule) -> Integer
+
+	universe PRR_Rule < PRR_NamedElement
+
+	function binding(a : PRR_Rule, b : PRR_Binding) -> Bool
+
+	function condition(a : PRR_Rule, b : PRR_RuleCondition) -> Bool
+
+	function actions(a : PRR_Rule, b : PRR_RuleAction) -> Bool
+
+	function ruleOwner(a : PRR_Rule, b : PRR_RuleSet) -> Bool
+
+	function order(a : PRR_Rule, b : PRR_RuleAction) -> Integer
+
+	universe PRR_RuleAction < PRR_Element
+
+	function actionOwner(a : PRR_RuleAction, b : PRR_Rule) -> Bool
+
+	universe PRR_RuleCondition < PRR_Element
+
+	function ruleConditionOwner(a : PRR_RuleCondition, b : PRR_Rule) -> Bool
+
+	function conditionExp(a : PRR_RuleCondition, b : PRR_OclExpression) -> Bool
+
+	universe PRR_Binding < PRR_Element
+
+	function bindingOwner(a : PRR_Binding, b : PRR_Rule) -> Bool
+
+	function ruleVariable(a : PRR_Binding, b : PRR_RuleVariable) -> Bool
+
+	universe PRR_RuleVariable < PRR_VariableDeclaration
+
+	function ruleVariableOwner(a : PRR_RuleVariable, b : PRR_Binding) -> Bool
+
+	function filter(a : PRR_RuleVariable, b : PRR_OclExpression) -> Bool
+
+	universe PRR_DeleteAction < PRR_RuleAction
+
+		function objValue(a : PRR_DeleteAction, b : PRR_OclExpression) -> Bool
+
+		universe PRR_CreateAction < PRR_RuleAction PRR_VariableDeclaration
+
+		function insertArguments(a : PRR_CreateAction, b : PRR_OclExpression) -> Bool
+
+		function order(a : PRR_CreateAction, b : PRR_OclExpression) -> Integer
+
+		universe PRR_AssignAction < PRR_RuleAction
+
+		function objValue(a : PRR_AssignAction, b : PRR_OclExpression) -> Bool
+
+		function aValue(a : PRR_AssignAction, b : PRR_OclExpression) -> Bool
+
+		universe PRR_InvokeAction < PRR_RuleAction
+
+		function invocation(a : PRR_InvokeAction, b : PRR_OclExpression) -> Bool
+	
+
+	universe PRR_PropertyCallExp < PRR_OclExpression
+
+		function source(a : PRR_PropertyCallExp, b : PRR_OclExpression) -> Bool
+
+		universe PRR_OclExpression < PRR_Element
+
+		function loopExp(a : PRR_OclExpression, b : PRR_LoopExp) -> Bool
+
+		function appliedProperty(a : PRR_OclExpression, b : PRR_PropertyCallExp) -> Bool
+
+		function parentOperation(a : PRR_OclExpression, b : PRR_OperationCallExp) -> Bool
+
+		function parentInsert(a : PRR_OclExpression, b : PRR_CreateAction) -> Bool
+
+		function type(a : PRR_OclExpression, b : PRR_OclType) -> Bool
+
+		function filterRuleVariableOwner(a : PRR_OclExpression, b : PRR_RuleVariable) -> Bool
+
+		function conditionOwner(a : PRR_OclExpression, b : PRR_RuleCondition) -> Bool
+
+		function assignedObj(a : PRR_OclExpression, b : PRR_AssignAction) -> Bool
+
+		universe PRR_IteratorExp < PRR_LoopExp
+
+		function name(a : PRR_IteratorExp, b : String) -> Bool
+
+		universe PRR_LoopExp < PRR_PropertyCallExp
+
+		function body(a : PRR_LoopExp, b : PRR_OclExpression) -> Bool
+
+		function iterators(a : PRR_LoopExp, b : PRR_Iterator) -> Bool
+
+		universe PRR_OperatorCallExp < PRR_OperationCallExp
+
+		universe PRR_OperationCallExp < PRR_PropertyCallExp
+
+		function arguments(a : PRR_OperationCallExp, b : PRR_OclExpression) -> Bool
+
+		function operationName(a : PRR_OperationCallExp, b : String) -> Bool
+
+		function signature(a : PRR_OperationCallExp, b : String) -> Bool
+
+		function order(a : PRR_OperationCallExp, b : PRR_OclExpression) -> Integer
+
+		universe PRR_CollectionOperationCallExp < PRR_OperationCallExp
+
+		universe PRR_StringExp < PRR_PrimitiveExp
+
+		function stringSymbol(a : PRR_StringExp, b : String) -> Bool
+
+		universe PRR_BooleanExp < PRR_PrimitiveExp
+
+		function booleanSymbol(a : PRR_BooleanExp, b : Boolean) -> Bool
+
+		universe PRR_NumericExp < PRR_PrimitiveExp
+
+		universe PRR_IntegerExp < PRR_NumericExp
+
+		function integerSymbol(a : PRR_IntegerExp, b : Integer) -> Bool
+
+		universe PRR_RealExp < PRR_NumericExp
+
+		function realSymbol(a : PRR_RealExp, b : Double) -> Bool
+
+		universe PRR_PrimitiveExp < PRR_OclExpression
+
+		universe PRR_NavigationOrAttributeCallExp < PRR_PropertyCallExp
+
+		function name(a : PRR_NavigationOrAttributeCallExp, b : String) -> Bool
+
+		universe PRR_Iterator < PRR_VariableDeclaration
+
+		function loopExpr(a : PRR_Iterator, b : PRR_LoopExp) -> Bool
+
+		universe PRR_VariableDeclaration < PRR_Element
+
+		function type(a : PRR_VariableDeclaration, b : PRR_OclType) -> Bool
+
+		function varName(a : PRR_VariableDeclaration, b : String) -> Bool
+
+		function variableExp(a : PRR_VariableDeclaration, b : PRR_VariableExp) -> Bool
+
+		universe PRR_VariableExp < PRR_OclExpression
+
+		function referredVariable(a : PRR_VariableExp, b : PRR_VariableDeclaration) -> Bool
+
+		universe PRR_TypeExp < PRR_OclExpression
+
+		function referredType(a : PRR_TypeExp, b : PRR_OclType) -> Bool
+
+		universe PRR_AllInstanceExp < PRR_OclExpression
+
+		function sourceType(a : PRR_AllInstanceExp, b : PRR_OclType) -> Bool
+	
+
+	universe PRR_OclType < PRR_NamedElement
+
+		function variableDeclaration(a : PRR_OclType, b : PRR_VariableDeclaration) -> Bool
+
+		function oclExpression(a : PRR_OclType, b : PRR_OclExpression) -> Bool
+
+		function appliedAllInstance(a : PRR_OclType, b : PRR_AllInstanceExp) -> Bool
+
+		function typeExp(a : PRR_OclType, b : PRR_TypeExp) -> Bool
+
+		universe PRR_StringType < PRR_Primitive
+
+		universe PRR_Primitive < PRR_OclType
+
+		universe PRR_RealType < PRR_NumericType
+
+		universe PRR_BooleanType < PRR_Primitive
+
+		universe PRR_NumericType < PRR_Primitive
+
+		universe PRR_IntegerType < PRR_NumericType
+	

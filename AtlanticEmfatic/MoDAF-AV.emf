@@ -1,0 +1,227 @@
+package Metamodel;
+
+package MoDAF {
+  abstract class Element {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String content;
+  }
+
+  class MoDAFModel extends Element {
+    !ordered val Enterprise[1] enterprise;
+    !ordered val Environment[1] environment;
+    !ordered val OperationalMission[+] operationalMissions;
+    !ordered val Architecture[+] architectures;
+    !ordered val ArchitecturalDescription[+] architecturalDescription;
+    !ordered val ArchitecturalReference[+] architecturalReferences;
+    !ordered val ArchitecturalFramework[+] architecturalFrameworks;
+    !ordered val ArchitectureMetaData[*] architectureMetadatas;
+    !ordered val MetaData[*] metaDatas;
+    !ordered val Stakeholder[+] stakeholders;
+    !ordered val StakeholderHasConcern[+]#owner stakeholderHasConcerns;
+  }
+
+  class Enterprise extends Element {
+    !ordered ref Environment[1]#influences inhabits;
+    !ordered ref OperationalMission[+] fulfills;
+  }
+
+  class Environment extends ClassifiedElement {
+    !ordered ref Enterprise[1]#inhabits influences;
+  }
+
+  class OperationalMission extends Element {
+  }
+
+  class Architecture extends Element {
+    !ordered ref Enterprise[1] enterprise;
+    !ordered ref ArchitecturalDescription[1] describedBy;
+  }
+
+  class ArchitecturalDescription extends Element {
+    !unique !ordered attr String[1] approvialAuthority;
+    !unique !ordered attr String[1] architect;
+    !unique !ordered attr String[1] assumptionAndConstraints;
+    !unique !ordered attr String[1] creatingOrganisation;
+    !unique !ordered attr String[1] dateCompleted;
+    !unique !ordered attr String[1] purpose;
+    !unique !ordered attr String[1] recommendations;
+    !unique !ordered attr String[1] summaryOfFindings;
+    !unique !ordered attr String[1] tollsUsed;
+    !ordered ref View[+] viewpoints;
+    !ordered val ArchitecturalProduct[+] products;
+    !ordered ref Taxonomy[1] taxonomy;
+  }
+
+  class ArchitecturalReference extends Element {
+    !ordered ref ArchitecturalDescription[1] referred;
+    !ordered ref ArchitecturalDescription[1] referrer;
+  }
+
+  class ArchitecturalProduct extends Element {
+    !unique !ordered attr String[1] description;
+    !ordered val Elements[+] architecturalElements;
+    !ordered ref View[1] definingView;
+    !ordered ref Concern[*]#adressedBy addresses;
+  }
+
+  class Elements extends Element {
+  }
+
+  class ArchitecturalFramework extends Element {
+    !ordered val View[+]#definingFramework ownedMember;
+  }
+
+  class View extends Element {
+    !unique !ordered attr String[1] framework;
+    !unique !ordered attr String[1] frameworkWebsite;
+    !unique !ordered attr String[1] viewCode;
+    !unique !ordered attr String[1] viewDescription;
+    !unique !ordered attr String[1] viewName;
+    !ordered ref ArchitecturalFramework[1]#ownedMember definingFramework;
+    !ordered val Concern[*] usedToCover;
+  }
+
+  class Concern extends Element {
+    !ordered ref ArchitecturalProduct[*]#addresses adressedBy;
+  }
+
+  class StakeholderHasConcern {
+    !ordered ref Stakeholder[1] client;
+    !ordered ref Concern[1] supplier;
+    !ordered ref MoDAFModel[1]#stakeholderHasConcerns owner;
+  }
+
+  class Stakeholder extends Element {
+  }
+
+  class MetaData {
+    !unique !ordered attr String[1] dublinCoreElement;
+    !unique !ordered attr String[1] modMetaDataElement;
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] body;
+  }
+
+  class ArchitectureMetaData extends MetaData {
+    !ordered ref ArchitecturalDescription[1] annotatedArchitecture;
+  }
+
+  class Taxonomy extends Element {
+    !unique !ordered attr String[1] date;
+    !unique !ordered attr String[1] url;
+    !unique !ordered attr String[1] version;
+    !ordered val ClassifiedElement[*]#taxonomy contents;
+  }
+
+  abstract class ClassifiedElement extends Element {
+    !ordered ref Taxonomy[1]#contents taxonomy;
+  }
+
+  class Standard extends ClassifiedElement {
+    !unique !ordered attr String[1] identifier;
+    !unique !ordered attr String[1] publishedWebsite;
+    !unique !ordered attr String[1] publisher;
+    !ordered val TimeExpression[1] ratificationDate;
+    !unique !ordered attr String[1] version;
+    !ordered val TimeExpression[1] withdrawalDate;
+  }
+
+  class MeasurableProperty extends ClassifiedElement {
+    !ordered val LiteralSpecification maxValue;
+    !ordered val LiteralSpecification minValue;
+  }
+
+  class CapabilityRequirement extends ClassifiedElement {
+  }
+
+  class Effect extends ClassifiedElement {
+  }
+
+  class EnduringTask extends ClassifiedElement {
+  }
+
+  class OperationalConstraint extends ClassifiedElement {
+    !ordered val Property nodeUsageContext;
+  }
+
+  class PostType extends ClassifiedElement {
+  }
+
+  class OrganisationType extends ClassifiedElement {
+  }
+
+  class RoleInOrganisation extends ClassifiedElement {
+  }
+
+  class LocationType extends ClassifiedElement {
+  }
+
+  class OperationalActivity extends ClassifiedElement {
+  }
+
+  class Node extends ClassifiedElement {
+  }
+
+  class InformationExchange extends ClassifiedElement {
+    !unique !ordered attr String[1] identifier;
+    !unique !ordered attr String requirementText;
+  }
+
+  class Competence extends ClassifiedElement {
+  }
+
+  class InformationElement extends ClassifiedElement {
+  }
+
+  class NodeConnectionType extends ClassifiedElement {
+  }
+
+  class System extends ClassifiedElement {
+  }
+
+  class DataElement extends ClassifiedElement {
+  }
+
+  class SystemFunction extends ClassifiedElement {
+    !ordered val Property[1] systemUsageContext;
+  }
+
+  class SystemConnectionSpecification extends ClassifiedElement {
+  }
+
+  class ProjectType extends ClassifiedElement {
+  }
+
+  class Service extends ClassifiedElement {
+  }
+
+  class Unit extends ClassifiedElement {
+  }
+
+  class Dimension extends ClassifiedElement {
+  }
+
+  class OrganisationProjectRelationship extends ClassifiedElement {
+  }
+
+  class ProjectThreadType extends ClassifiedElement {
+  }
+
+  class TimeExpression {
+    !unique !ordered attr String[1] value;
+  }
+
+  class LiteralSpecification {
+    !unique !ordered attr String[1] value;
+  }
+
+  class Property {
+    !unique !ordered attr String[1] value;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+}
+

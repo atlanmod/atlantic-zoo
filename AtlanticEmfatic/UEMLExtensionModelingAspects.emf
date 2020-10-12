@@ -1,0 +1,111 @@
+package Metamodel;
+
+package UEML {
+  class UEMLObject {
+    !ordered ref Geometry#object has;
+    !ordered ref UEMLModel#contains model;
+  }
+
+  class UEMLModel extends UEMLObject {
+    !ordered val UEMLObject[*]#model contains;
+  }
+
+  class Geometry {
+    !ordered ref UEMLObject[1]#has object;
+  }
+
+  class Port extends UEMLObject {
+  }
+
+  class Flow extends UEMLObject {
+    !ordered ref AssociationConnector[1]#classAssociation associationConnector;
+  }
+
+  class Activity extends UEMLObject {
+    !ordered ref ResourceRole[*]#in resourceRole;
+    !ordered val Activity[*]#parent child;
+    !ordered ref Activity#child parent;
+    !ordered val OutputPort[+]#activity hasOutput;
+    !ordered val InputPort[+]#activity hasInput;
+    !ordered ref ActivityType[1]#activityT activityType;
+  }
+
+  class Object extends UEMLObject {
+    !ordered ref IOFlow#carries ioFlow;
+  }
+
+  class InformationObject extends Object {
+    !ordered ref ControlFlow#carries controlFlow;
+  }
+
+  class Resource extends Object {
+    !ordered ref ResourceFlow#resourceCarries carries;
+    !ordered ref ResourceRole[*]#resourcePlays plays;
+    !ordered ref ResourceType[1]#resource resourceType;
+  }
+
+  class MaterialResource extends Resource {
+  }
+
+  class HumanResource extends Resource {
+  }
+
+  class ResourceFlow extends Flow {
+    !ordered ref Resource[*]#carries resourceCarries;
+  }
+
+  class IOFlow extends Flow {
+    !ordered ref Object[*]#ioFlow carries;
+  }
+
+  class ControlFlow extends Flow {
+    !ordered ref InformationObject[*]#controlFlow carries;
+  }
+
+  class TriggerFlow extends ControlFlow {
+  }
+
+  class ConstraintFlow extends ControlFlow {
+  }
+
+  class ResourceRole extends Port {
+    !ordered ref Resource[*]#plays resourcePlays;
+    !ordered ref RoleType roleQualifier;
+    !ordered ref Activity[1]#resourceRole in;
+  }
+
+  class RoleType {
+  }
+
+  class Anchor extends Port {
+    !ordered ref AssociationConnector[1]#origin target;
+    !ordered ref AssociationConnector[1]#target origin;
+  }
+
+  class OutputPort extends Anchor {
+    !ordered ref Activity[1]#hasOutput activity;
+  }
+
+  class InputPort extends Anchor {
+    !ordered ref Activity[1]#hasInput activity;
+  }
+
+  class ConnectionOperator extends Anchor {
+  }
+
+  class AssociationConnector {
+    !ordered ref Anchor[*]#target origin;
+    !ordered ref Anchor[*]#origin target;
+    !ordered ref Flow[1]#associationConnector classAssociation;
+  }
+
+  class ResourceType {
+    !ordered ref Resource[*]#resourceType resource;
+  }
+
+  class ActivityType {
+    !ordered ref Activity[*]#activityType activityT;
+  }
+
+}
+

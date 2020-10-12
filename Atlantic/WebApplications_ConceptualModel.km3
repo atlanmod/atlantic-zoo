@@ -1,0 +1,111 @@
+-- @name 		Web applications: Conceptual Model
+-- @domains 	Web sites
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/07/10
+-- @description This metamodel fragment describes a complete conceptual model for web applications
+-- @see 		This metamodel fragment has been extracted from information available in the following article:
+-- @see 		Article "Rapid Developpment of Modular Dynamic Web Sites Using UML"
+-- @see 		by Tim Scharttkowsky, Marc Lohmann
+-- @see 		Page 340, Section 3.1, Fig. 2. Complete Conceptual Model for Web applications
+-- @see 		Lecture Notes in Computer Science 2460
+-- @see 		Jean Marc Jézéquel, Heinrich Hussman, Stephen Cook 
+-- @see 		UML 2002 - The Unified Modeling Language
+
+package CompleteWebApplication {
+	package Client {
+		class ClientPage {
+			reference hyperlink : HyperLink;
+		}
+		
+		class ClientPageModule {
+			reference consistsOf container : ClientPage; 
+			reference representsSMP : ServerPageModule;
+		}
+		
+		class LogicInterface extends ClientPageModule {
+			reference represents : LogicModule;
+			reference generatedBy : Renderer;
+		}
+		
+		class DesignElement extends ClientPageModule {
+			reference represents : DesignModule;
+		}
+	}
+	
+	class HyperLink {
+		reference server [*] : ServerPage oppositeOf link;
+	}
+	
+	package Server {
+		class ServerPage {
+			reference link [*] : HyperLink oppositeOf server;
+			reference generates [*] : ClientPage;
+			reference module [1-*] container : ServerPageModule oppositeOf contains;
+		}
+		
+		class ServerPageModule {
+			reference contains [1-*] : ServerPage oppositeOf module;
+			reference link : Link;
+			reference containsModule container : DesignModule;
+		}
+		
+		class DesignModule extends ServerPageModule {}
+		
+		class LogicModule extends ServerPageModule {
+			reference useCase [1-*] container: UseCase;
+			reference logicElement [1-*] container: LogicElement;
+		}
+		
+		class Link {
+			reference page : ServerPage;
+			reference posts : Data;
+		}
+		
+		class BeginUseCase extends Link {
+			reference useCase : UseCase;
+		}
+		
+		class UseCase extends Link {
+			reference logicElem [1-*] container : LogicElement oppositeOf uses;
+		}
+		
+		class LogicElement {
+			reference uses [1-*] : UseCase oppositeOf logicElem;
+			reference generatedBy : LogicElement oppositeOf next;
+			reference next : LogicElement oppositeOf generatedBy;
+		}
+		
+		class Alternative extends LogicElement {}
+		
+		class UserDecision extends LogicElement {
+			reference allows [1-*] container : Alternative; 
+		}
+		
+		class ServerDecision extends LogicElement {
+			reference evaluatesResultOf : Processor;
+		}
+		
+		class Processor extends LogicElement {
+			reference persistentData [*] : Data oppositeOf persist;
+			reference inputData [*] : Data oppositeOf uses;
+			reference outputData [1-*] : Data oppositeOf computes;
+		}
+		
+		class Renderer extends LogicElement {
+			reference renders [1-*] : Data oppositeOf renderer;
+		}
+		
+		class Data {
+			reference renderer [*] : Renderer oppositeOf renders;
+			reference persist [*] : Processor oppositeOf persistentData;
+			reference uses [*] : Processor oppositeOf inputData;
+			reference computes [*] : Processor oppositeOf outputData;
+		}
+	}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

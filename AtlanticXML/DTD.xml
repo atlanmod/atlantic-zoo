@@ -1,0 +1,76 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'DTD'>
+    <Enumeration name = 'Occurence'>
+      <EnumLiteral name = 'zeroOrOne'/>
+      <EnumLiteral name = 'zeroOrMore'/>
+      <EnumLiteral name = 'oneOrMore'/>
+      <EnumLiteral name = 'one'/>
+    </Enumeration>
+    <Enumeration name = 'OtherAttributeTypeEnum'>
+      <EnumLiteral name = 'cdata'/>
+      <EnumLiteral name = 'id'/>
+      <EnumLiteral name = 'idref'/>
+      <EnumLiteral name = 'entityType'/>
+      <EnumLiteral name = 'entities'/>
+      <EnumLiteral name = 'nmtoken'/>
+      <EnumLiteral name = 'nmtakens'/>
+    </Enumeration>
+    <Class name = 'TypeDescription' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Notation' isAbstract = 'false' supertypes = 'DTD::TypeDescription'>
+      <Attribute name = 'content' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Entity' isAbstract = 'false' supertypes = 'DTD::TypeDescription'>
+      <Attribute name = 'content' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'isInternal' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'Element' isAbstract = 'true' supertypes = 'DTD::TypeDescription'/>
+    <Class name = 'AnyElement' isAbstract = 'false' supertypes = 'DTD::Element'/>
+    <Class name = 'RestrictedElement' isAbstract = 'false' supertypes = 'DTD::Element'>
+      <Reference name = 'content' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'DTD::ElementContent' opposite = ''/>
+    </Class>
+    <Class name = 'ElementContent' isAbstract = 'true' supertypes = ''/>
+    <Class name = 'Mixed' isAbstract = 'false' supertypes = 'DTD::ElementContent'>
+      <Attribute name = 'elements' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Children' isAbstract = 'true' supertypes = 'DTD::ElementContent'>
+      <Attribute name = 'occ' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'DTD::Occurence'/>
+    </Class>
+    <Class name = 'Sequence' isAbstract = 'false' supertypes = 'DTD::Children'>
+      <Reference name = 'children' lower = '2' upper = '-1' isOrdered = 'true' isContainer = 'false' type = 'DTD::Children' opposite = ''/>
+    </Class>
+    <Class name = 'Leaf' isAbstract = 'false' supertypes = 'DTD::Children'>
+      <Attribute name = 'elementName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Choice' isAbstract = 'false' supertypes = 'DTD::Children'>
+      <Reference name = 'childrenChoice' lower = '2' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DTD::Children' opposite = ''/>
+    </Class>
+    <Class name = 'AttributeList' isAbstract = 'false' supertypes = 'DTD::TypeDescription'>
+      <Reference name = 'containsAttributes' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DTD::AttributeDescription' opposite = 'DTD::AttributeDescription::attributeList'/>
+    </Class>
+    <Class name = 'AttributeDescription' isAbstract = 'true' supertypes = 'DTD::TypeDescription'>
+      <Reference name = 'attributeList' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DTD::AttributeList' opposite = 'DTD::AttributeList::containsAttributes'/>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'DTD::AttributeType' opposite = ''/>
+    </Class>
+    <Class name = 'NoDefaultValue' isAbstract = 'false' supertypes = 'DTD::AttributeDescription'>
+      <Attribute name = 'isRequired' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'DefaultValue' isAbstract = 'false' supertypes = 'DTD::AttributeDescription'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'isFixed' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'AttributeType' isAbstract = 'true' supertypes = ''/>
+    <Class name = 'Enumeration' isAbstract = 'false' supertypes = 'DTD::AttributeType'>
+      <Attribute name = 'values' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'OtherAttributeType' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'DTD::OtherAttributeTypeEnum'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+  </Package>
+</Metamodel>

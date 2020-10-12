@@ -1,0 +1,97 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_ChocoModel"{
+labelloc=t
+color=black
+label=ChocoModel
+ node[shape=record];
+LocatedElement[label="{/LocatedElement/|location[0-1] : String\ncommentsBefore[*] : String\ncommentsAfter[*] : String| }"]
+;
+ node[shape=record];
+Package[label="{Package|name : String| }"]
+ Package->Import[arrowhead=vee,arrowtail=diamond,headlabel="import[*]",group=Import,minlen=2,constraint=true,]
+ Package->ChocoProblem[arrowhead=vee,arrowtail=diamond,headlabel="problem",group=ChocoProblem,minlen=2,constraint=true,]
+ Package->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Import[label="{Import|fqn : String| }"]
+ Import->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ChocoProblem[label="{ChocoProblem|name : String| }"]
+ ChocoProblem->Element[arrowhead=vee,arrowtail=diamond,headlabel="elements[*]",group=Element,minlen=2,constraint=true,]
+ ChocoProblem->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Element[label="{/Element/|label : String| }"]
+ Element->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Expression[label="{/Expression/| | }"]
+ Expression->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConstraintDef[label="{ConstraintDef|op : OpConstraint| }"]
+ ConstraintDef->Expression[arrowhead=vee,arrowtail=diamond,headlabel="left",group=Expression,minlen=2,constraint=true,]
+ ConstraintDef->Expression[arrowhead=vee,arrowtail=diamond,headlabel="right",group=Expression,minlen=2,constraint=true,]
+ ConstraintDef->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IntVar[label="{IntVar| | }"]
+ IntVar->Domain[arrowhead=vee,arrowtail=diamond,headlabel="domain",group=Domain,minlen=2,constraint=true,]
+ IntVar->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Domain[label="{Domain|lower : Integer\nupper : Integer| }"]
+ Domain->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IntConstant[label="{IntConstant|val : Integer| }"]
+ IntConstant->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SymbolicTerm[label="{SymbolicTerm| | }"]
+ SymbolicTerm->Expression[arrowhead=vee,arrowtail=none,headlabel="term",group=Expression,minlen=2,constraint=false,]
+ SymbolicTerm->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IntValue[label="{IntValue|val : Integer| }"]
+ IntValue->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IntExp[label="{IntExp|op : OpConstraint| }"]
+ IntExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="left",group=Expression,minlen=2,constraint=true,]
+ IntExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="right",group=Expression,minlen=2,constraint=true,]
+ IntExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Constraint[label="{Constraint|op : OpConstraint| }"]
+ Constraint->Expression[arrowhead=vee,arrowtail=diamond,headlabel="left",group=Expression,minlen=2,constraint=true,]
+ Constraint->Expression[arrowhead=vee,arrowtail=diamond,headlabel="right",group=Expression,minlen=2,constraint=true,]
+ Constraint->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PostConstraint[label="{PostConstraint|op : OpConstraint| }"]
+ PostConstraint->ConstraintDef[arrowhead=vee,arrowtail=none,headlabel="constraint",group=ConstraintDef,minlen=2,constraint=false,]
+ PostConstraint->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

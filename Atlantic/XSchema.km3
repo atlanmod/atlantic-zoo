@@ -1,0 +1,163 @@
+-- @name		XSchema
+-- @version		1.0
+-- @domains		XML
+-- @authors		Pierrick Guyard (pierrick.guyard@gmail.com), William Piers (william.piers@gmail.com), Ivan Kurtev (ivan.kurtev@univ-nantes.fr)
+-- @date		2005/07/06
+-- @description	This basic metamodel describes XSchema. DTDs have limited expressiveness and it is necessary to experiment with new ideas in schema design. These ideas include a syntax that is more like that of XML document content, certain kinds of extensibility and a cleaner separation between parsing and verifying. XSchema is an experimental schema language designed to provide a starting point for these experiments.
+
+package XSchema {
+
+	-- @comment definition of attribute use type
+	enumeration AttributeUseType {
+		literal null; --@comment value if it is not initiate
+		literal optional;
+		literal prohibited;
+		literal required;		
+	}
+	
+	abstract class AnnotedElement	{
+		reference annotations[*] container : Annotation oppositeOf annotedElement;
+	}
+
+	class Annotation {
+		-- for reader (human)
+		reference documentations[*] ordered container: Documentation;
+		-- for application
+		reference applicationInfos[*] ordered container : ApplicationInfo;
+		reference annotedElement : AnnotedElement oppositeOf annotations;
+	}
+	
+	class Documentation {
+		attribute text : String;
+	}
+	
+	class ApplicationInfo {
+		attribute text : String;
+	}
+				
+	abstract class NamedElement extends AnnotedElement {
+		attribute name : String;
+	}
+
+	class XSchema extends AnnotedElement {
+		attribute namespace : String;
+		reference contents[*] container : XSchemaContentElement oppositeOf schema;
+	}
+
+	abstract class XSchemaContentElement extends NamedElement {
+		reference schema[0-1] : XSchema oppositeOf contents;
+	}
+	
+	abstract class Parameters extends XSchemaContentElement {
+		reference typeRef[0-1] : AbstractType;				 --}
+		reference typeContain[0-1] container : AbstractType oppositeOf "container"; --} XOR
+		attribute fixed[0-1] : String;
+		attribute "default"[0-1] : String;
+	}
+	
+	class Element extends Parameters, AtomicContent {		
+		reference references[*] : ElementRef oppositeOf referencedElement;
+	}
+	
+	abstract class Occurable {
+		attribute minOccurs : String; -- default value 1
+		attribute maxOccurs : String; -- default value 1
+	}
+	
+	abstract class AbstractContent extends Occurable {
+		reference "container" : Container oppositeOf contents;
+		reference complexType : ComplexType oppositeOf content;
+	}
+	
+	abstract class Container extends AbstractContent {
+		reference contents[*] ordered container : AbstractContent oppositeOf "container";
+	}
+	
+	abstract class AtomicContent extends AbstractContent {
+	}
+	
+	class ElementRef extends AtomicContent {
+		reference referencedElement : Element oppositeOf references;
+	}
+	
+	class GroupRef extends AtomicContent {
+		reference referencedGroup : Group oppositeOf references;
+	}
+	
+	class All extends Container {
+	}
+	
+	class Group extends XSchemaContentElement,Container {
+		reference references[*] : GroupRef oppositeOf referencedGroup;
+	}
+	
+	class Choice extends Container {
+	}
+	
+	class Sequence extends Container {
+	}
+	
+	-- @begin attribute
+	abstract class AbstractAttributeGroupContent extends Occurable {
+		reference "container" : AttributeGroup oppositeOf contents;
+		reference complexType : ComplexType oppositeOf attributes;
+	}
+	
+	class AttributeGroup extends AbstractAttributeGroupContent, XSchemaContentElement {
+		reference contents[*] ordered container : AbstractAttributeGroupContent oppositeOf "container";
+		reference references[*] : AttributeGroupRef oppositeOf referencedAttributeGroup;
+	}
+	
+	class AttributeGroupRef extends AtomicAttributeGroupContent {
+		reference referencedAttributeGroup : AttributeGroup oppositeOf references;
+	}
+	
+	abstract class AtomicAttributeGroupContent extends AbstractAttributeGroupContent {
+	}
+	
+	class Attribute extends Parameters, AtomicAttributeGroupContent{
+		attribute use[0-1] : AttributeUseType;
+		reference references[*] : AttributeRef oppositeOf referencedAttribute;
+	}
+	
+	class AttributeRef extends AtomicAttributeGroupContent{
+		reference referencedAttribute : Attribute oppositeOf references;
+	}
+
+
+	-- @end attribute
+
+	-- @begin type
+	abstract class AbstractType extends XSchemaContentElement {
+		reference "container" : Parameters oppositeOf typeContain ;
+	}
+	
+	-- xsd:simpleType
+	class SimpleType extends AbstractType {
+		reference extensions[*] : ComplexTypeSimpleContent oppositeOf base;
+	}
+
+		-- @begin xsd:complexType
+	class ComplexType extends AbstractType {
+		reference extensions[*] : ComplexTypeComplexContent oppositeOf base;
+		reference content[0-1] container : AbstractContent oppositeOf complexType;
+		reference attributes[*] container : AbstractAttributeGroupContent oppositeOf complexType;	
+	}
+	
+	class ComplexTypeSimpleContent extends ComplexType {
+		reference base : SimpleType oppositeOf extensions;
+	}
+	
+	class ComplexTypeComplexContent extends ComplexType {
+		reference base : ComplexType oppositeOf extensions;
+	}
+		
+		-- @end xsd:complexType
+	-- @end type
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+	datatype Boolean;
+}

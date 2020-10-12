@@ -1,0 +1,219 @@
+-- @name		WordprocessingMLSimplified
+-- @version		1.2
+-- @domains		Microsoft Office Word, XML
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com)
+-- @date		2005/07/01
+-- @description	This metamodel describes a simplified subset of WordprocessingML, an XML dialect developed by Microsoft to represent the information in an Word document. This format is an alternative file format to the well-known .doc binary format and saves all of the same information that is saved in the Word binary format. This metamodel only manages raw textual data in very simple word documents (advanced properties of Word are not developed in this metamodel...).
+-- @see			wordnet.xsd; Microsoft Office 2003 XML Reference Schemas; http://www.microsoft.com/downloads/details.aspx?familyid=FE118952-3547-420A-A412-00A2662442D9&displaylang=en
+
+package WordprocessingMLBasicDef {
+
+-- @begin MS Office - Word special types
+	
+		-- @comment Defines a property that uses a string.
+		class StringProperty extends StringType {}
+		
+		-- @comment Defines the string value type
+		class StringType {
+			-- @comment Gets or sets the value of a string.
+			attribute val : String;
+		}
+	
+		-- @comment Specifies the different break types.
+		enumeration BreakType {
+			literal bt_page;
+			literal bt_column;
+			literal bt_text_wrapping;
+		}
+		
+		-- @comment Specifies the different footnote/endnote values
+		enumeration NoteValue {
+			-- @comment Normal footnote/endnote.
+			literal ftn_normal;
+			-- @comment Separates document text from footnotes/endnotes.
+			literal ftn_separator;
+			-- @comment Is printed above footnotes/endnotes on the next page when footnotes/endnotes overflow onto the next page.
+			literal ftn_continuation_separator;
+			-- @comment A notice to let readers now that the footnotes/endnotes have continued on the next page.
+			literal ftn_continuation_notice;
+		}
+		
+		-- @comment Defines the two different values of the On/Off type.
+		enumeration OnOffType {
+			literal oot_on;
+			literal oot_off;
+		}
+		
+		-- @comment Defines a property that uses a field character type.
+		enumeration FldCharTypeProperty {
+			literal fctp_begin;
+			literal fctp_separate;
+			literal fctp_end;
+		}
+		
+-- @end MS Office - Word special types
+	
+	
+-- @begin MS Office - Word Document Basic Definition
+	
+	-- @comment Defines a Microsoft Office Word 2003 document.
+	class WordDocument {			
+		-- @comment Specifies whether to ignore an element and its contents. If a namespace is specified for the ignoreSubtree element's val attribute (val=uri), when Word encounters an element in this namespace, Word will ignore the element and all of its contents.
+		reference ignoreSubtree[0-1] container : StringProperty;
+		-- @comment Specifies whether to ignore an element, but process its contents. If a namespace is specified for the ignoreElements element's val attribute (val=uri), when Word encounters an element in this namespace, Word ignores only the element (all of the element's contents will be processed).
+		reference ignoreElements[0-1] container : StringProperty;		
+			
+		-- @comment Contains the body of the document.
+		reference body container : BodyElt oppositeOf be_wordDocument;		
+			
+		-- @comment Macros, HTML, embedded objects and OCX controls are not managed by this metamodel.
+	}
+
+	-- @comment Defines the body of the document.
+	class BodyElt{
+		reference be_wordDocument : WordDocument oppositeOf body;
+		
+		-- @comment Defines the elements contained in the body of the document.
+		reference blockLevelElts[*] ordered container : BlockLevelElt oppositeOf ble_bodyElt;	
+	}
+	
+	-- @comment Elements that can occur anywhere where we start a new block, such inside the body, comments, headers, textboxes, etc.
+	abstract class BlockLevelElt {
+		reference ble_bodyElt : BodyElt oppositeOf blockLevelElts;
+		reference ble_note : NoteElt oppositeOf n_blockLevelElts;
+	}
+	
+	-- @comment Block level elements that can occur inside a cfChunk and other places.
+	abstract class BlockLevelChunkElt extends BlockLevelElt {}
+	
+	
+	-- @begin Detail of ParaElt
+	
+	-- @comment Defines a paragraph element; analogous to the HTML &lt;p&gt; tag.
+	class ParaElt extends BlockLevelChunkElt {
+		-- @comment Represents the content of a paragraph.
+		reference pContentElts[*] ordered container : ParaContentElt oppositeOf pce_pElt;
+	}
+	
+	-- @comment Defines an element contained in a paragraph.
+	abstract class ParaContentElt {
+		reference  pce_pElt : ParaElt oppositeOf pContentElts;
+	}
+	
+	-- @comment Defines a run of content (text, picture, and so on) and groups run properties with this content.
+	class RunElt extends ParaContentElt {
+		-- @comment Represents the content of this run.
+		reference rContentElts[*] ordered container : RunContentElt oppositeOf rce_rElt;
+	}
+	
+	-- @comment Defines an element contained in a run.
+	abstract class RunContentElt {
+		reference  rce_rElt : RunElt oppositeOf rContentElts;
+	}
+	
+	-- @comment Represents a text-wrapping break.
+	class BreakElt extends RunContentElt {
+		-- @comment Specifies the break type.
+		attribute type[0-1] : BreakType;
+	}
+	
+	-- @comment Represents text content.
+	class Text extends RunContentElt, StringType {}
+	
+	-- @comment Represents revision-deleted text content. Using this element instead of the "Text" element does not make text revision-marked deleted. The delText element should be inside an Annotation Markup Language (AML) Word.Deletion block.
+	class DelText extends RunContentElt, StringType {}
+	
+	-- @comment Represents field instruction content.
+	class InstrText extends RunContentElt, StringType {}
+	
+	-- @comment Represents revision-deleted field-instruction content. Using this element instead of the instrText element does not make field-instruction text revision-marked deleted. The delInstrText element should be inside an Annotation Markup Language (AML) Word.Deletion block.
+	class DelInstrText extends RunContentElt, StringType {} 
+	
+	-- @comment Represents a nonbreaking hyphen 
+	class NoBreakHyphen extends RunContentElt {}
+	
+	-- @comment Represents a soft-hyphen (optional hyphen). 
+	class SoftHyphen extends RunContentElt {}
+	
+	-- @comment Represents an annotation reference mark.
+	class AnnotationRef extends RunContentElt {}
+				
+	-- @comment Represents a footnote reference mark.
+	class FootnoteRef extends RunContentElt {}
+			
+	-- @comment Represents an endnote reference mark.
+	class EndnoteRef extends RunContentElt {}
+				
+	-- @comment Represents a footnote or endnote separator mark.
+	class Separator extends RunContentElt {}
+			
+	-- @comment Represents a footnote or endnote continuation separator mark.
+	class ContinuationSeparator extends RunContentElt {}
+	
+	-- @comment Represents a page number at display time.
+	class PgNum extends RunContentElt {}
+	
+	-- @comment Specifies that this paragraph mark isn't a paragraph mark -- it's just a carriage return in the paragraph.
+	class Cr extends RunContentElt {}
+				
+	-- @comment Represents a footnote that appears at this point in the document. 
+	class Footnote extends RunContentElt, NoteElt {}
+	
+	-- @comment Represents a footnote that appears at this point in the document. 
+	class Endnote extends RunContentElt, NoteElt {}
+	
+	-- @comment Defines a note that appears at this point in the document. The contents of the footnote are in this element.
+	abstract class NoteElt {
+		-- @comment Represents the content of the footnote.
+		reference n_blockLevelElts[1-*] ordered container : BlockLevelElt oppositeOf ble_note;
+		-- @comment Gets or sets the note type. This attribute is required if this is a note separator.
+		attribute type[0-1] : NoteValue;
+		-- @comment Suppresses automatic insertion of an endnote reference character.
+		attribute suppressRef[0-1] : OnOffType;
+	}		
+		
+	-- @comment Represents a picture or other binary object that appears at this point in the document.	
+	class Picture extends RunContentElt {}
+	
+	-- @comment Represents a symbol character.
+	class Symbol extends RunContentElt, SymElt {}
+	
+	-- @comment Defines a symbol character.
+	class SymElt {
+		-- @comment Gets or sets the symbol font.
+		reference font container : StringType;
+		-- @comment It is an hexadecimal number. Gets or sets the character code of the symbol.
+		reference char container : StringType;
+	}
+	
+	-- @comment Represents a tab character.
+	class Tab extends RunContentElt {}
+	
+	-- @comment Represents a field-delimiting character
+	class FldChar extends RunContentElt, FldCharElt {}
+		
+	-- @comment Defines a field-delimiting character.
+	class FldCharElt {
+		-- @comment Represents field data.
+		reference fldData[0-1] container : StringType;
+		-- @comment Specifies whether this field-delimiting character begins a field definition, separates the field definition from the field instructions, or ends the field definition.
+		attribute fldCharType : FldCharTypeProperty;
+		-- @comment Gets or sets whether the field is locked from being recalculated.
+		attribute fldLock : OnOffType;
+	}
+	
+	-- @end Detail of ParaElt
+	
+-- @end MS Office - Word Document Basic Definition
+
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

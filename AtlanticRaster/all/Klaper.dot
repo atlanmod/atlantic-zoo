@@ -1,0 +1,93 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_Klaper"{
+labelloc=t
+color=black
+label=Klaper
+ node[shape=record];
+Resource[label="{Resource|name : String\ntype : String\ncapacity : Integer\nschedulingPolicy : String\ndescription : String| }"]
+ Resource->Acquire[arrowhead=none,arrowtail=none,headlabel="acquire",taillabel="resource",group=Acquire,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Service[label="{Service|name : String\nformalParams : String\nspeedAttr : String\nfailAttr : String\ndescription : String| }"]
+ Service->Behavior[arrowhead=none,arrowtail=none,headlabel="behaviorUsed[*]",taillabel="usedService[*]",group=Behavior,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Behavior[label="{Behavior| | }"]
+ Behavior->Service[arrowhead=none,arrowtail=none,headlabel="service",taillabel="behavior[1-*]",group=Service,minlen=2,constraint=false,]
+;
+ node[shape=record];
+WorkLoad[label="{WorkLoad|workLoadType : String\narrivalProcess : String\npopulation : String\ninitialResource : String| }"]
+ WorkLoad->Behavior[arrowhead=none,arrowtail=none,headlabel="behavior",taillabel="workLoad[0-1]",group=Behavior,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Step[label="{Step|name : String\nrepetition : String\ninternalExecTime : String\ninternalFailProb : String\ncompletionModel : String| }"]
+ Step->Step[arrowhead=none,arrowtail=none,headlabel="successor[*]",taillabel="predecessor[*]",group=Step,minlen=2,constraint=false,]
+ Step->Behavior[arrowhead=diamond,arrowtail=none,headlabel="behavior",taillabel="stepb[1-*]",group=Behavior,minlen=2,constraint=true,]
+ Step->Behavior[arrowhead=none,arrowtail=none,headlabel="nestedBehavior[0-1]",taillabel="stepn",group=Behavior,minlen=2,constraint=false,]
+ Step->Behavior[arrowhead=onormal,group=Behavior,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Start[label="{Start| | }"]
+ Start->Step[arrowhead=onormal,group=Step,minlen=2,constraint=true,]
+;
+ node[shape=record];
+End[label="{End| | }"]
+ End->Step[arrowhead=onormal,group=Step,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Control[label="{Control| | }"]
+ Control->Step[arrowhead=onormal,group=Step,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InternalActivity[label="{InternalActivity| | }"]
+ InternalActivity->Step[arrowhead=onormal,group=Step,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ServiceCall[label="{ServiceCall|resourceType : String\nserviceName : String\nisSynch : Boolean| }"]
+ ServiceCall->Step[arrowhead=diamond,arrowtail=none,headlabel="step",taillabel="serviceCall[*]",group=Step,minlen=2,constraint=true,]
+ ServiceCall->Service[arrowhead=none,arrowtail=none,headlabel="calledService[0-1]",taillabel="serviceCall[*]",group=Service,minlen=2,constraint=false,]
+ ServiceCall->Step[arrowhead=onormal,group=Step,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActualParam[label="{ActualParam|value : String| }"]
+ ActualParam->ServiceCall[arrowhead=none,arrowtail=none,headlabel="serviceCall",taillabel="actualParam[*]{ordered}",group=ServiceCall,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Branch[label="{Branch|branchProbs : String| }"]
+ Branch->Control[arrowhead=onormal,group=Control,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Fork[label="{Fork| | }"]
+ Fork->Control[arrowhead=onormal,group=Control,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Join[label="{Join| | }"]
+ Join->Control[arrowhead=onormal,group=Control,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Acquire[label="{Acquire|resourceUnits : String| }"]
+ Acquire->Control[arrowhead=onormal,group=Control,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Release[label="{Release|resourceUnits : String| }"]
+ Release->Resource[arrowhead=none,arrowtail=none,headlabel="resource",taillabel="release",group=Resource,minlen=2,constraint=false,]
+ Release->Control[arrowhead=onormal,group=Control,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

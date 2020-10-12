@@ -1,0 +1,65 @@
+-- @name 		Simple Airline Domain
+-- @domains 	Airline domain
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/07/10
+-- @description This metamodel fragment describes a partial airline domain metamodel
+-- @see 		This metamodel fragment has been extracted from information available in the following article:
+-- @see 		Article "The Object Constraint Language and Its Application in the UML Metamodel"
+-- @see 		by Anneke Kleppe, Jos Warmer, Steve Cook
+-- @see 		Page 150, Section 2.2, Fig 1. Class diagram for simple airline domain
+-- @see 		Lecture Notes in Computer Science 1618
+-- @see 		Jean Bézivin, Pierre Alain Muller
+-- @see 		The Unified Modeling Language UML 98: Beyond the notation
+
+package SimpleAirlineDomain {
+
+	class Airport {
+		attribute name : String;
+		reference departingFlight [*] : Flight oppositeOf origin;
+		reference arrivingFlight [*] : Flight oppositeOf destination;
+	}
+	
+	class Flight {
+		reference departTime : Time;
+		reference duration : Time;
+		attribute maxnrPassengers : Integer;
+		reference passenger [*] ordered : Passenger oppositeOf flight;
+		reference airline : Airline oppositeOf flight;
+		reference origin : Airport oppositeOf departingFlight;
+		reference destination : Airport oppositeOf arrivingFlight;
+	}
+	
+	class Airline {
+		attribute name : String;
+		attribute nationality : String;
+		reference flight [*] : Flight oppositeOf airline;
+	}
+	
+	class Passenger {
+		attribute name : String;
+		attribute age : Integer;
+		attribute gender : Genre;
+		attribute needsAssistance : Boolean;
+		reference flight : Flight oppositeOf passenger;
+	}
+	
+	enumeration Genre {
+		literal male;
+		literal female;
+	}
+	
+	class Time {
+		attribute year : Integer;
+		attribute month : Integer;
+		attribute day  : Integer;
+		attribute hour : Integer;
+		attribute minute : Integer;
+		attribute second : Integer;
+	}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

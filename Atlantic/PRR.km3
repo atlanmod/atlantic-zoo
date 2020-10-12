@@ -1,0 +1,228 @@
+-- @name		PRR (Production Rule Representation)
+-- @version		0.1
+-- @domain		Business Rules
+-- @authors		Anas Abouzahra (anas@sodius.com)
+-- @date		2006/06/22
+-- @description	This is a subset of the metamodel PRR; the OMG new standard for Production Rules
+-- @see		 	http://www.omg.org/docs/bmi/06-01-07.pdf
+
+package PrimitiveTypes {
+	datatype Double;
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+}
+
+package PRR {
+
+	class Element {
+		attribute location : String;
+		attribute commentsBefore[*] ordered : String;
+		attribute commentsAfter[*] ordered : String;
+	}
+	
+	abstract class NamedElement extends Element {
+		attribute name : String;		
+	}
+
+	class RuleSet extends Element {
+		reference rules [*] ordered container : Rule oppositeOf ruleOwner; 		
+	}
+	
+	class Rule extends NamedElement {
+		reference binding [0-1] container : Binding oppositeOf bindingOwner;
+		reference condition [0-1] container : RuleCondition oppositeOf ruleConditionOwner; 
+		reference actions [*] ordered container : RuleAction oppositeOf actionOwner;
+		reference ruleOwner [0-1] : RuleSet oppositeOf rules;
+	}
+	 
+	class RuleAction extends Element {
+		reference actionOwner [0-1] : Rule oppositeOf actions;
+	}
+	
+	class RuleCondition extends Element {
+		reference ruleConditionOwner [0-1] : Rule oppositeOf condition;
+		reference conditionExp [0-1] container : OclExpression oppositeOf conditionOwner;
+	}
+	
+	class Binding extends Element {
+		reference bindingOwner : Rule oppositeOf binding; 
+		reference ruleVariable [*] container : RuleVariable oppositeOf ruleVariableOwner; 
+	}
+	
+	class RuleVariable extends VariableDeclaration { 
+		reference ruleVariableOwner : Binding oppositeOf ruleVariable;
+		reference filter[0-1] container : OclExpression oppositeOf filterRuleVariableOwner;
+	}
+
+package PRRActions	{
+
+	class DeleteAction extends RuleAction {
+		reference objValue container : OclExpression; 
+	}
+	
+	class CreateAction extends RuleAction, VariableDeclaration {
+		reference insertArguments [*] ordered container : OclExpression oppositeOf parentInsert;
+	}
+	
+	class AssignAction extends RuleAction {
+		reference objValue container : OclExpression oppositeOf assignedObj; 
+		reference aValue container : OclExpression;
+	}
+	
+	class InvokeAction extends RuleAction {
+		reference invocation container : OclExpression; 
+	}
+	
+}
+
+package PRRExpressions {
+
+	abstract class PropertyCallExp extends OclExpression {
+		reference source [0-1] container : OclExpression oppositeOf appliedProperty;
+		
+	}
+	
+	abstract class OclExpression extends Element {
+		reference loopExp[0-1] : LoopExp oppositeOf body;
+		reference appliedProperty[0-1] : PropertyCallExp oppositeOf source;
+		reference parentOperation[0-1] : OperationCallExp oppositeOf arguments;
+		reference parentInsert [0-1] : CreateAction oppositeOf insertArguments;
+		reference type container : OclType oppositeOf oclExpression;
+		reference filterRuleVariableOwner[0-1] : RuleVariable oppositeOf filter;
+		reference conditionOwner [0-1] : RuleCondition oppositeOf conditionExp;	
+		reference assignedObj [0-1] : AssignAction oppositeOf objValue;	
+
+	}
+	
+	class IteratorExp extends LoopExp {
+		attribute name : String;
+		
+	}
+	
+	class LoopExp extends PropertyCallExp {
+		reference body container : OclExpression oppositeOf loopExp;
+		reference iterators[1-*] container : Iterator oppositeOf loopExpr;
+		
+	}
+	
+	class OperatorCallExp extends OperationCallExp {
+		
+	}
+	
+	class OperationCallExp extends PropertyCallExp {
+		reference arguments[*] ordered container : OclExpression oppositeOf parentOperation;
+		attribute operationName : String;
+		attribute signature[0-1] : String;
+		
+	}
+	
+	class CollectionOperationCallExp extends OperationCallExp {
+		
+	}
+	
+	class StringExp extends PrimitiveExp {
+		attribute stringSymbol : String;
+		
+	}
+
+	class BooleanExp extends PrimitiveExp {
+		attribute booleanSymbol : Boolean;
+		
+	}
+	
+	abstract class NumericExp extends PrimitiveExp {
+		
+	}
+	
+	class IntegerExp extends NumericExp {
+		attribute integerSymbol : Integer;
+		
+	}
+	
+	class RealExp extends NumericExp {
+		attribute realSymbol : Double;
+		
+	}
+
+	abstract class PrimitiveExp extends OclExpression {
+		
+	}
+	
+	class NavigationOrAttributeCallExp extends PropertyCallExp {
+		attribute name : String;
+		
+	}
+	
+	class Iterator extends VariableDeclaration {
+		reference loopExpr[0-1] : LoopExp oppositeOf iterators;
+		
+	}
+	
+	class VariableDeclaration extends Element {
+		reference type container : OclType oppositeOf variableDeclaration;
+		attribute varName : String;
+		reference variableExp[*] : VariableExp oppositeOf referredVariable;
+		
+	}
+	
+	class VariableExp extends OclExpression {
+		reference referredVariable : VariableDeclaration oppositeOf variableExp;
+		
+	}
+	
+	class TypeExp extends OclExpression {
+		reference referredType[0-1]  container : OclType oppositeOf typeExp  ;
+	}
+	
+	class AllInstanceExp extends OclExpression {
+		reference sourceType container : OclType oppositeOf appliedAllInstance;
+
+	}
+	
+}
+
+package PRRTypes {
+
+	--abstract class Type extends NamedElement {
+	--reference variableDeclaration[*] : VariableDeclaration oppositeOf type;
+	--reference oclExpression[*] : OclExpression oppositeOf type;
+	--}
+
+	class OclType extends NamedElement{
+	reference variableDeclaration[*] : VariableDeclaration oppositeOf type;
+	reference oclExpression[*] : OclExpression oppositeOf type;
+	reference appliedAllInstance[0-1] : AllInstanceExp oppositeOf sourceType;
+	reference typeExp[*] : TypeExp oppositeOf referredType ;
+	}
+
+	class StringType extends Primitive {
+		
+	}
+
+	abstract class Primitive extends OclType {
+		
+	}
+
+	class RealType extends NumericType {
+		
+	}
+
+	class BooleanType extends Primitive {
+		
+	}
+
+	abstract class NumericType extends Primitive {
+		
+	}
+
+	class IntegerType extends NumericType {
+		
+	}
+
+	--class ClassType extends Type {
+	--reference appliedAllInstance[0-1] : AllInstanceExp oppositeOf sourceType;
+	--}
+}
+
+}

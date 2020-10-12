@@ -1,0 +1,77 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'ChocoModel'>
+    <Class name = 'LocatedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'location' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsBefore' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsAfter' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Enumeration name = 'OpConstraint'>
+      <EnumLiteral name = 'eq'/>
+      <EnumLiteral name = 'and2'/>
+      <EnumLiteral name = 'or2'/>
+      <EnumLiteral name = 'gt'/>
+      <EnumLiteral name = 'ge'/>
+      <EnumLiteral name = 'lt'/>
+      <EnumLiteral name = 'le'/>
+      <EnumLiteral name = 'plus'/>
+    </Enumeration>
+    <Class name = 'Package' isAbstract = 'false' supertypes = 'ChocoModel::LocatedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'import' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ChocoModel::Import' opposite = ''/>
+      <Reference name = 'problem' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ChocoModel::ChocoProblem' opposite = ''/>
+    </Class>
+    <Class name = 'Import' isAbstract = 'false' supertypes = 'ChocoModel::LocatedElement'>
+      <Attribute name = 'fqn' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ChocoProblem' isAbstract = 'false' supertypes = 'ChocoModel::LocatedElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'elements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ChocoModel::Element' opposite = ''/>
+    </Class>
+    <Class name = 'Element' isAbstract = 'true' supertypes = 'ChocoModel::LocatedElement'>
+      <Attribute name = 'label' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Expression' isAbstract = 'true' supertypes = 'ChocoModel::Element'/>
+    <Class name = 'ConstraintDef' isAbstract = 'false' supertypes = 'ChocoModel::Expression'>
+      <Attribute name = 'op' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'ChocoModel::OpConstraint'/>
+      <Reference name = 'left' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ChocoModel::Expression' opposite = ''/>
+      <Reference name = 'right' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ChocoModel::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'IntVar' isAbstract = 'false' supertypes = 'ChocoModel::Expression'>
+      <Reference name = 'domain' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ChocoModel::Domain' opposite = ''/>
+    </Class>
+    <Class name = 'Domain' isAbstract = 'false' supertypes = 'ChocoModel::LocatedElement'>
+      <Attribute name = 'lower' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'upper' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'IntConstant' isAbstract = 'false' supertypes = 'ChocoModel::Expression'>
+      <Attribute name = 'val' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'SymbolicTerm' isAbstract = 'false' supertypes = 'ChocoModel::Expression'>
+      <Reference name = 'term' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ChocoModel::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'IntValue' isAbstract = 'false' supertypes = 'ChocoModel::Expression'>
+      <Attribute name = 'val' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'IntExp' isAbstract = 'false' supertypes = 'ChocoModel::Expression'>
+      <Attribute name = 'op' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'ChocoModel::OpConstraint'/>
+      <Reference name = 'left' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ChocoModel::Expression' opposite = ''/>
+      <Reference name = 'right' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ChocoModel::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'Constraint' isAbstract = 'false' supertypes = 'ChocoModel::Expression'>
+      <Attribute name = 'op' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'ChocoModel::OpConstraint'/>
+      <Reference name = 'left' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ChocoModel::Expression' opposite = ''/>
+      <Reference name = 'right' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ChocoModel::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'PostConstraint' isAbstract = 'false' supertypes = 'ChocoModel::Element'>
+      <Attribute name = 'op' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'ChocoModel::OpConstraint'/>
+      <Reference name = 'constraint' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ChocoModel::ConstraintDef' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Double'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

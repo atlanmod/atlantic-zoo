@@ -1,0 +1,47 @@
+package Metamodel;
+
+package QoSProfile {
+  class QoSComponent {
+    !ordered val Operation[1] operations;
+    !ordered ref QoSProfile[*]#for profile;
+  }
+
+  class Operation {
+  }
+
+  abstract class QoSProfile {
+    !ordered ref QoSComponent[1]#profile for;
+  }
+
+  class CompoundProfile extends QoSProfile {
+    !ordered ref ProfileTransition[*]#compoundProfile profileTransition;
+    val SimpleProfile[+]#compoundProfile simpleProfile;
+  }
+
+  class SimpleProfile extends QoSProfile {
+    !ordered ref CompoundProfile[1]#simpleProfile compoundProfile;
+    !ordered ref QoSStatement[1] uses;
+    !ordered ref QoSStatement[1] provides;
+  }
+
+  class QoSStatement {
+  }
+
+  class ProfileTransition {
+    ref Operation[*] operations;
+    !ordered ref SimpleProfile[1] from;
+    !ordered ref SimpleProfile[1] to;
+    !ordered val CompoundProfile[1]#profileTransition compoundProfile;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

@@ -1,0 +1,7 @@
+( defstruct Project )
+( defstruct Build :sourceDirectory )
+( defstruct Resource )
+( defstruct MailingList :name :subscribe :unsubscribe :post :archive :otherArchives )
+( defstruct Person :name :email :url :organization :organizationUrl :roles :timezone :properties )
+( defstruct Developer :id :name :email :url :organization :organizationUrl :roles :timezone :properties )
+( defstruct Contributor :name :email :url :organization :organizationUrl :roles :timezone :properties )

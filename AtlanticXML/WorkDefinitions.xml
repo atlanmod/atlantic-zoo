@@ -1,0 +1,38 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'WorkDefinitions'>
+    <Class name = 'WorkDefinition' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'parentWorks' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'WorkDefinitions::WorkDefinition' opposite = 'WorkDefinitions::WorkDefinition::subWorks'/>
+      <Reference name = 'subWorks' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'WorkDefinitions::WorkDefinition' opposite = 'WorkDefinitions::WorkDefinition::parentWorks'/>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WorkDefinitions::ProcessPerformer' opposite = 'WorkDefinitions::ProcessPerformer::features'/>
+    </Class>
+    <Class name = 'ProcessPerformer' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'features' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'WorkDefinitions::WorkDefinition' opposite = 'WorkDefinitions::WorkDefinition::owner'/>
+    </Class>
+    <Class name = 'Role' isAbstract = 'false' supertypes = 'WorkDefinitions::ProcessPerformer'>
+      <Reference name = 'products' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'WorkDefinitions::WorkProduct' opposite = 'WorkDefinitions::WorkProduct::responsible'/>
+    </Class>
+    <Class name = 'WorkProduct' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'responsible' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WorkDefinitions::Role' opposite = 'WorkDefinitions::Role::products'/>
+    </Class>
+    <Class name = 'Lifecycle' isAbstract = 'false' supertypes = 'WorkDefinitions::WorkDefinition'>
+      <Reference name = 'phases' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'WorkDefinitions::Phase' opposite = 'WorkDefinitions::Phase::lifeCycle'/>
+    </Class>
+    <Class name = 'Phase' isAbstract = 'false' supertypes = 'WorkDefinitions::WorkDefinition'>
+      <Reference name = 'lifeCycle' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WorkDefinitions::Lifecycle' opposite = 'WorkDefinitions::Lifecycle::phases'/>
+      <Reference name = 'iterations' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'WorkDefinitions::Iteration' opposite = 'WorkDefinitions::Iteration::phase'/>
+    </Class>
+    <Class name = 'Iteration' isAbstract = 'false' supertypes = 'WorkDefinitions::WorkDefinition'>
+      <Reference name = 'phase' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WorkDefinitions::Phase' opposite = 'WorkDefinitions::Phase::iterations'/>
+      <Reference name = 'activities' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'WorkDefinitions::Activity' opposite = 'WorkDefinitions::Activity::iteration'/>
+    </Class>
+    <Class name = 'Activity' isAbstract = 'false' supertypes = 'WorkDefinitions::WorkDefinition'>
+      <Reference name = 'iteration' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WorkDefinitions::Iteration' opposite = 'WorkDefinitions::Iteration::activities'/>
+      <Reference name = 'steps' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'WorkDefinitions::Step' opposite = ''/>
+    </Class>
+    <Class name = 'Step' isAbstract = 'false' supertypes = ''/>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+  </Package>
+</Metamodel>

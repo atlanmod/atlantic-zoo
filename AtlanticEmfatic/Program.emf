@@ -1,0 +1,120 @@
+package Metamodel;
+
+package Program {
+  abstract class LocatedElement {
+    !unique !ordered attr String[1] location;
+  }
+
+  abstract class NamedElement extends LocatedElement {
+    !unique !ordered attr String[1] name;
+  }
+
+  abstract class Structure extends NamedElement {
+    val VariableDeclaration[*]#structure variables;
+  }
+
+  abstract class ProcContainerElement extends Structure {
+    val Procedure[*]#container procedures;
+  }
+
+  class Program extends ProcContainerElement {
+    val Monitor[*]#program monitors;
+  }
+
+  class Monitor extends ProcContainerElement {
+    !ordered ref Program[1]#monitors program;
+  }
+
+  class Procedure extends Structure {
+    !ordered ref ProcContainerElement[1]#procedures container;
+    val Parameter[*]#procedure parameters;
+    val Statement[*] statements;
+  }
+
+  class VariableDeclaration extends NamedElement {
+    !ordered ref Type[1] type;
+    !ordered val Expression initialValue;
+    !ordered ref Structure[1]#variables structure;
+  }
+
+  class Parameter extends VariableDeclaration {
+    !unique !ordered attr Direction[1] direction;
+    !ordered ref Procedure[1]#parameters procedure;
+  }
+
+  enum Direction {
+    in = 0;
+    out = 0;
+  }
+
+  class Type extends NamedElement {
+  }
+
+  abstract class Expression extends LocatedElement {
+  }
+
+  class VariableExp extends Expression {
+    !ordered ref VariableDeclaration[1] declaration;
+  }
+
+  abstract class PropertyCallExp extends Expression {
+    !ordered val Expression[1] source;
+    !unique !ordered attr String[1] name;
+  }
+
+  class OperatorCallExp extends PropertyCallExp {
+    !ordered val Expression[1] right;
+  }
+
+  class AttributeCallExp extends PropertyCallExp {
+  }
+
+  class ProcedureCallExp extends PropertyCallExp {
+    val Expression[*] arguments;
+  }
+
+  abstract class LiteralExp extends Expression {
+  }
+
+  class BooleanExp extends LiteralExp {
+    !unique !ordered attr Boolean[1] symbol;
+  }
+
+  class IntegerExp extends LiteralExp {
+    !unique !ordered attr Integer[1] symbol;
+  }
+
+  abstract class Statement extends LocatedElement {
+  }
+
+  class AssignmentStat extends Statement {
+    !ordered val VariableExp[1] target;
+    !ordered val Expression[1] value;
+  }
+
+  class ConditionalStat extends Statement {
+    !ordered val Expression[1] condition;
+    !ordered val Statement[+] thenStats;
+    !ordered val Statement[*] elseStats;
+  }
+
+  class WhileStat extends Statement {
+    !ordered val Expression[1] condition;
+    !ordered val Statement[+] doStats;
+  }
+
+  class ExpressionStat extends Statement {
+    !ordered val Expression[1] expression;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

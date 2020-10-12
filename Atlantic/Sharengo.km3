@@ -1,0 +1,53 @@
+-- @name		Sharengo
+-- @version		1.0
+-- @authors		Jerome Benois (benois@argia-engineering.fr), Laurent Belmonte (belmonte@argia-engineering.fr)
+-- @date		2007/02/27
+-- @description	This metamodel is a very simple SharenGo metamodel. SharenGo is a group aiming to organize, explain and work on principles of sharing between differents companies in the context of IT but oriented on the core business (not IT related) of all participants.
+-- @see 		http://www.sharengo.org/
+
+package MMASharengo {
+
+	abstract class ModelElement {
+		attribute name : String;
+	}
+	
+	abstract class Classifier extends ModelElement{
+	}
+	
+	class Operation extends ModelElement {		
+	}
+	
+	class Service extends Classifier {		
+		reference operations[0-*] container : ServiceOperation;				
+	}
+	
+	class BusinessObject extends Classifier {
+    	reference operations[0-*] container : BusinessObjectOperation;
+	}
+
+	class ServiceOperation extends Operation {
+		reference BOFlows[0-*] container : Service2BusinessObjectFlow;
+		reference rules[0-*] container : BusinessRule;
+	}
+	
+	class BusinessObjectOperation extends Operation {		
+		reference rules[0-*] container : BusinessRule;
+	}
+	
+	class BusinessRule extends ModelElement {
+		attribute expr :String;
+	}
+	
+	abstract class Flow extends ModelElement {
+		attribute source : String;
+		attribute target : String;		
+	}
+	
+	class Service2BusinessObjectFlow extends Flow {		
+	}
+	
+}
+
+package PrimitiveTypes {
+	datatype String;
+}

@@ -1,0 +1,7 @@
+( defstruct Application :name :version :author :extensionPoints )
+( defstruct ExtensionPoint :name :id :application :plugIn )
+( defstruct Description :xmlSchema )
+( defstruct Extension :name :id :isConfiguredInto )
+( defstruct PlugIn :id :displayableName :version :supplier :configures )
+( defstruct Librairy :name :plugIn :classes )
+( defstruct Class :name :librairy )

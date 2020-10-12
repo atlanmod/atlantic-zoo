@@ -1,0 +1,73 @@
+package Metamodel;
+
+package GoalAndPlanConcepts {
+  class Actor {
+    !ordered ref Decomposition[*]#PointOfView decomposition;
+    !ordered ref Contribution[*]#PointOfView contribution;
+    !ordered ref MeansEnd[*]#PointOfView meansEnd;
+  }
+
+  class Decomposition {
+    !ordered ref Actor[1]#decomposition PointOfView;
+  }
+
+  class Contribution {
+    !unique !ordered attr String[1] metric;
+    !ordered ref Goal[1]#contributionR contributer;
+    !ordered ref Goal[1]#contributionD contributed;
+    !ordered ref Actor[1]#contribution PointOfView;
+  }
+
+  class Goal {
+    !ordered ref Contribution[*]#contributer contributionR;
+    !ordered ref Contribution[*]#contributed contributionD;
+    !ordered ref MeansEnd[*]#means meansEndS;
+    !ordered ref MeansEnd[*]#end meansEndD;
+    !ordered ref BooleanDecomposition#root booleanDecomposition;
+    !ordered ref BooleanDecLink[*]#target booleanDecLink;
+  }
+
+  class MeansEnd {
+    !ordered ref Resource#meansEndR meansR;
+    !ordered ref Goal#meansEndS means;
+    !ordered ref Goal[1]#meansEndD end;
+    !ordered ref Actor[1]#meansEnd PointOfView;
+    !ordered ref Plan#meansEndP meansP;
+  }
+
+  class Resource {
+    !ordered ref MeansEnd[*]#meansR meansEndR;
+  }
+
+  class Plan {
+    !ordered ref MeansEnd[*]#meansP meansEndP;
+    !ordered ref BooleanDecomposition#rootP booleanDecompositionP;
+    !ordered ref BooleanDecLink[*]#targetP booleanDecLinkP;
+  }
+
+  class BooleanDecomposition extends Decomposition {
+    !unique !ordered attr String[1] type;
+    !ordered ref Goal#booleanDecomposition root;
+    !ordered ref Plan#booleanDecompositionP rootP;
+    !ordered val BooleanDecLink[+]#booleanDecompositionB booleanDecLinkD;
+  }
+
+  class BooleanDecLink {
+    !ordered ref BooleanDecomposition[1]#booleanDecLinkD booleanDecompositionB;
+    !ordered ref Goal#booleanDecLink target;
+    !ordered ref Plan#booleanDecLinkP targetP;
+  }
+
+  class AndDecLink extends BooleanDecLink {
+  }
+
+  class OrDecLink extends BooleanDecLink {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+}
+

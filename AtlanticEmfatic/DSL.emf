@@ -1,0 +1,81 @@
+package Metamodel;
+
+package DSL {
+  abstract class NamedElement {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] identity;
+  }
+
+  abstract class LoadedElement extends Namespace {
+    !unique !ordered attr Boolean[1] isLoaded;
+  }
+
+  abstract class Namespace extends NamedElement {
+    !unique !ordered attr String[1] namespace;
+  }
+
+  class DomainModel extends LoadedElement {
+    !ordered val Classifier[*]#domainModel classifiers;
+    !ordered val Type[*] types;
+  }
+
+  abstract class Classifier extends LoadedElement {
+    !unique !ordered attr Boolean[1] isAbstract;
+    !ordered val ValueProperty[*]#owner properties;
+    !ordered ref Classifier#subTypes superType;
+    !ordered ref Classifier[*]#superType subTypes;
+    !ordered ref DomainModel[1]#classifiers domainModel;
+  }
+
+  class Class extends Classifier {
+    !unique !ordered attr Boolean[1] isSerializationRoot;
+  }
+
+  class Relationship extends Classifier {
+    !unique !ordered attr Boolean[1] isEmbedding;
+    !ordered val Role[2]#relation roles;
+  }
+
+  class Role extends NamedElement {
+    !unique !ordered attr Integer[1] min;
+    !unique !ordered attr Integer[1] max;
+    !unique !ordered attr Boolean[1] isUnbounded;
+    !unique !ordered attr String[1] accepts;
+    !unique !ordered attr Boolean[1] isOrdered;
+    !unique !ordered attr Boolean[1] isNavigableFrom;
+    !unique !ordered attr Boolean[1] isPropertyGenerator;
+    !ordered ref Classifier[1] source;
+    !ordered ref Classifier[1] type;
+    !ordered ref Relationship[1]#roles relation;
+  }
+
+  class ValueProperty extends NamedElement {
+    !ordered ref Classifier[1]#properties owner;
+    !ordered ref Type[1] type;
+  }
+
+  abstract class Type extends Namespace {
+  }
+
+  class SimpleType extends Type {
+  }
+
+  class EnumerationLiteral extends NamedElement {
+    !unique !ordered attr Integer[1] value;
+  }
+
+  class Enumeration extends Type {
+    !ordered val EnumerationLiteral[*] literals;
+  }
+
+  package PrimitiveTypes {
+    datatype Boolean : "";
+
+    datatype Integer : "";
+
+    datatype String : "";
+
+  }
+
+}
+

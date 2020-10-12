@@ -1,0 +1,35 @@
+-- @name		Relational 
+-- @version		1.1
+-- @domains		DataBase
+-- @authors		Frédéric Jouault (frederic.jouault@univ-nantes.fr)
+-- @date		2005/03/18
+-- @description	This metamodel describes simple relational database models. It consists of classes having a name which they inherit from the abstract class Named. The principal class Table contains a set of Columns and has a reference to its keys. The class Column has the references owner and keyOf pointing to the Table it belongs to and of which it is part of the key (in case it is a key). Furthermore, Column has a reference to Type.
+
+package Relational {
+
+	abstract class Named {
+		attribute name : String;
+	}
+
+	class Table extends Named {
+		reference col[*] ordered container : Column oppositeOf owner;
+		reference key[*] : Column oppositeOf keyOf;
+	}
+
+	class Column extends Named {
+		reference owner : Table oppositeOf col;		-- +: opposite of col
+		reference keyOf[0-1] : Table oppositeOf key;	-- +: opposite of key
+		reference type : Type;
+	}
+
+	class Type extends Named {	-- +: "extends Named" missing in DSTC paper
+
+	}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}
+

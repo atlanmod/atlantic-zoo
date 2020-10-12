@@ -1,0 +1,48 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_FSM"{
+labelloc=t
+color=black
+label=FSM
+ node[shape=record];
+MgaObject[label="{MgaObject|name[0-1] : String\nposition[0-1] : String| }"]
+;
+ node[shape=record];
+Transition[label="{Transition| | }"]
+ Transition->StateMachine[arrowhead=diamond,arrowtail=none,headlabel="stateMachine",taillabel="transition[*]",group=StateMachine,minlen=2,constraint=true,]
+ Transition->AssociationStateState[arrowhead=none,arrowtail=none,headlabel="associationStateState",taillabel="transition",group=AssociationStateState,minlen=2,constraint=false,]
+ Transition->MgaObject[arrowhead=onormal,group=MgaObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+State[label="{State| | }"]
+ State->StateMachine[arrowhead=diamond,arrowtail=none,headlabel="stateMachine",taillabel="state[*]",group=StateMachine,minlen=2,constraint=true,]
+ State->AssociationStateState[arrowhead=none,arrowtail=none,headlabel="associationStateStatedst[1-*]",taillabel="dstTransition[1-*]",group=AssociationStateState,minlen=2,constraint=false,]
+ State->AssociationStateState[arrowhead=none,arrowtail=none,headlabel="associationStateStatesrc[1-*]",taillabel="srcTransition[1-*]",group=AssociationStateState,minlen=2,constraint=false,]
+ State->MgaObject[arrowhead=onormal,group=MgaObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StateMachine[label="{StateMachine| | }"]
+ StateMachine->RootFolder[arrowhead=diamond,arrowtail=none,headlabel="rootFolder",taillabel="stateMachine[*]",group=RootFolder,minlen=2,constraint=true,]
+ StateMachine->MgaObject[arrowhead=onormal,group=MgaObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RootFolder[label="{RootFolder|name[0-1] : String| }"]
+ RootFolder->RootFolder[arrowhead=vee,arrowtail=diamond,headlabel="rootFolders[*]",group=RootFolder,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AssociationStateState[label="{AssociationStateState| | }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

@@ -1,0 +1,79 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'SpreadsheetMLSimplified'>
+    <Class name = 'DateTimeType' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'year' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'month' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'day' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'hour' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'minute' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'second' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'ValueType' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'vt_data' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SpreadsheetMLSimplified::Data' opposite = 'SpreadsheetMLSimplified::Data::value'/>
+    </Class>
+    <Class name = 'StringValue' isAbstract = 'false' supertypes = 'SpreadsheetMLSimplified::ValueType'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'NumberValue' isAbstract = 'false' supertypes = 'SpreadsheetMLSimplified::ValueType'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+    </Class>
+    <Class name = 'DateTimeTypeValue' isAbstract = 'false' supertypes = 'SpreadsheetMLSimplified::ValueType'>
+      <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SpreadsheetMLSimplified::DateTimeType' opposite = ''/>
+    </Class>
+    <Class name = 'BooleanValue' isAbstract = 'false' supertypes = 'SpreadsheetMLSimplified::ValueType'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'ErrorValue' isAbstract = 'false' supertypes = 'SpreadsheetMLSimplified::ValueType'/>
+    <Class name = 'Workbook' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'wb_worksheets' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SpreadsheetMLSimplified::Worksheet' opposite = 'SpreadsheetMLSimplified::Worksheet::ws_workbook'/>
+    </Class>
+    <Class name = 'Worksheet' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'ws_workbook' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SpreadsheetMLSimplified::Workbook' opposite = 'SpreadsheetMLSimplified::Workbook::wb_worksheets'/>
+      <Reference name = 'ws_table' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SpreadsheetMLSimplified::Table' opposite = 'SpreadsheetMLSimplified::Table::t_worksheet'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Table' isAbstract = 'false' supertypes = ''>
+      <Reference name = 't_worksheet' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SpreadsheetMLSimplified::Worksheet' opposite = 'SpreadsheetMLSimplified::Worksheet::ws_table'/>
+      <Reference name = 't_cols' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SpreadsheetMLSimplified::Column' opposite = 'SpreadsheetMLSimplified::Column::c_table'/>
+      <Reference name = 't_rows' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SpreadsheetMLSimplified::Row' opposite = 'SpreadsheetMLSimplified::Row::r_table'/>
+    </Class>
+    <Class name = 'TableElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'index' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'ColOrRowElement' isAbstract = 'true' supertypes = 'SpreadsheetMLSimplified::TableElement'>
+      <Attribute name = 'hidden' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'span' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'Column' isAbstract = 'false' supertypes = 'SpreadsheetMLSimplified::ColOrRowElement'>
+      <Reference name = 'c_table' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SpreadsheetMLSimplified::Table' opposite = 'SpreadsheetMLSimplified::Table::t_cols'/>
+      <Attribute name = 'autoFitWidth' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'width' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+    </Class>
+    <Class name = 'Row' isAbstract = 'false' supertypes = 'SpreadsheetMLSimplified::ColOrRowElement'>
+      <Reference name = 'r_table' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SpreadsheetMLSimplified::Table' opposite = 'SpreadsheetMLSimplified::Table::t_rows'/>
+      <Reference name = 'r_cells' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'SpreadsheetMLSimplified::Cell' opposite = 'SpreadsheetMLSimplified::Cell::c_row'/>
+      <Attribute name = 'autoFitHeight' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'height' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+    </Class>
+    <Class name = 'Cell' isAbstract = 'false' supertypes = 'SpreadsheetMLSimplified::TableElement'>
+      <Reference name = 'c_row' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SpreadsheetMLSimplified::Row' opposite = 'SpreadsheetMLSimplified::Row::r_cells'/>
+      <Attribute name = 'arrayRange' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'formula' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'hRef' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'mergeAcross' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+      <Attribute name = 'mergeDown' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+      <Reference name = 'c_data' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SpreadsheetMLSimplified::Data' opposite = 'SpreadsheetMLSimplified::Data::d_cell'/>
+    </Class>
+    <Class name = 'Data' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'd_cell' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SpreadsheetMLSimplified::Cell' opposite = 'SpreadsheetMLSimplified::Cell::c_data'/>
+      <Reference name = 'value' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'SpreadsheetMLSimplified::ValueType' opposite = 'SpreadsheetMLSimplified::ValueType::vt_data'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Double'/>
+  </Package>
+</Metamodel>

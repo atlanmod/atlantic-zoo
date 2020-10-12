@@ -1,0 +1,111 @@
+-- @name		yUML
+-- @version		1.0
+-- @domains		UML, Web
+-- @authors		Cauê Avila Clasen
+-- @date		2009/11/10
+-- @description	yUML is an online tool for creating and publishing UML diagrams. See http://yuml.me
+
+package yUML {
+
+	abstract class LocatedElement {
+		attribute location[0-1] : String;
+		attribute commentsBefore[*] ordered : String;
+		attribute commentsAfter[*] ordered : String;
+	}
+
+	class Model extends LocatedElement {
+		reference classes[*] ordered container : Class;
+		reference elements[*] ordered container : ModelElement 
+			oppositeOf model;
+	}
+
+	class Class extends LocatedElement {
+		attribute name : String;
+	}
+
+	abstract class ModelElement extends LocatedElement {
+		reference model : Model oppositeOf elements;
+	}
+
+
+	abstract class ColorableElement extends ModelElement {
+		attribute color[0-1] : String;
+	} 
+
+	class ClassReference extends ColorableElement {
+		reference "class" : Class;
+		attribute stereotype[0-1] : String;
+		reference definition[0-1] container : ClassDefinition;
+	}
+
+	enumeration AssociationType {
+		literal simpleAssociation;
+		literal aggregation;
+		literal composition;
+	}
+
+	abstract class Relationship extends ModelElement {
+		reference source container : ClassReference;
+		reference target container : ClassReference;
+	}
+
+	class ClassDefinition extends LocatedElement{
+		reference attributes[*] ordered container : Attribute;
+		reference methods[*] ordered container : Method; 
+	}
+	
+	class Association extends Relationship {
+		attribute type : AssociationType;
+		reference sourceCardinality[0-1] container : Cardinality;
+		attribute sourceLabel[0-1] : String;
+		attribute navigableSource : Boolean;
+		attribute sourceVisibility : Visibility;
+		reference targetCardinality[0-1] container : Cardinality;
+		attribute targetLabel[0-1] : String;
+		attribute navigableTarget : Boolean;
+		attribute targetVisibility : Visibility;
+	}
+	
+	class Inheritance extends Relationship {
+	}
+	
+	class Cardinality extends LocatedElement {
+		attribute lowerBound[0-1] : Integer;
+		attribute upperBound : Integer;
+	}
+
+	enumeration Visibility {
+		literal unspecified;
+		literal public;
+		literal private;
+		literal protected;
+		literal "package";
+	}
+
+	abstract class ClassMember extends LocatedElement {
+		attribute visibility : Visibility;
+		attribute name : String;
+	}
+	
+	class Attribute extends ClassMember {
+		attribute type[0-1] : String;
+	}
+	
+	class Method extends ClassMember {
+		attribute arguments[*] : String; -- not yet supported by yUML
+	}
+	
+	class Note extends ColorableElement {
+		attribute text[*] : String;
+	}
+	
+	class NoteAssociation extends Relationship {
+		reference note container : Note;
+	}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;	
+	datatype Integer;
+	datatype String;
+}

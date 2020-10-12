@@ -1,0 +1,815 @@
+package Metamodel;
+
+package UML {
+}
+
+package Common_Behavior {
+  abstract class Instance extends Core.ModelElement {
+    !ordered val Instance[*] ownedInstance;
+    !ordered ref LinkEnd[*]#instance linkEnd;
+    !ordered ref Core.Classifier[+] classifier;
+    !ordered ref ComponentInstance#resident componentInstance;
+    !ordered val AttributeLink[*]#instance slot;
+    !ordered val Link[*] ownedLink;
+  }
+
+  class Signal extends Core.Classifier {
+  }
+
+  abstract class Action extends Core.ModelElement {
+    val Argument[*]#action actualArgument;
+    !ordered ref ActionSequence#action actionSequence;
+    !ordered ref Data_Types.IterationExpression recurrence;
+    !ordered ref Data_Types.ObjectSetExpression target;
+    !unique !ordered attr Boolean[1] isAsynchronous;
+    !ordered ref Data_Types.ActionExpression script;
+  }
+
+  class CreateAction extends Action {
+    !ordered ref Core.Classifier[1] instantiation;
+  }
+
+  class DestroyAction extends Action {
+  }
+
+  class UninterpretedAction extends Action {
+  }
+
+  class AttributeLink extends Core.ModelElement {
+    !ordered ref Instance#slot instance;
+    !ordered ref Instance[1] value;
+    !ordered ref LinkEnd#qualifiedValue linkEnd;
+    !ordered ref Core.Attribute[1] attribute;
+  }
+
+  class Object extends Instance {
+  }
+
+  class Link extends Core.ModelElement {
+    !ordered ref Core.Association[1] association;
+    !ordered val LinkEnd[2..*]#link connection;
+  }
+
+  class LinkObject extends Object, Link {
+  }
+
+  class DataValue extends Instance {
+  }
+
+  class CallAction extends Action {
+    !ordered ref Core.Operation[1] operation;
+  }
+
+  class SendAction extends Action {
+    !ordered ref Signal[1] signal;
+  }
+
+  class ActionSequence extends Action {
+    val Action[*]#actionSequence action;
+  }
+
+  class Argument extends Core.ModelElement {
+    !ordered ref Action#actualArgument action;
+    !ordered ref Data_Types.Expression[1] value;
+  }
+
+  class Reception extends Core.BehavioralFeature {
+    !ordered ref Signal[1] signal;
+    !unique !ordered attr String specification;
+    !unique !ordered attr Boolean[1] isRoot;
+    !unique !ordered attr Boolean[1] isLeaf;
+    !unique !ordered attr Boolean[1] isAbstract;
+  }
+
+  class LinkEnd extends Core.ModelElement {
+    !ordered ref Link[1]#connection link;
+    val AttributeLink[*]#linkEnd qualifiedValue;
+    !ordered ref Instance[1]#linkEnd instance;
+    !ordered ref Core.AssociationEnd[1] associationEnd;
+  }
+
+  class ReturnAction extends Action {
+  }
+
+  class TerminateAction extends Action {
+  }
+
+  class Stimulus extends Core.ModelElement {
+    ref Instance[*] argument;
+    !ordered ref Link communicationLink;
+    !ordered ref Instance[1] receiver;
+    !ordered ref Action[1] dispatchAction;
+    !ordered ref Instance[1] sender;
+  }
+
+  class Exception extends Signal {
+  }
+
+  class ComponentInstance extends Instance {
+    !ordered ref Instance[*]#componentInstance resident;
+    !ordered ref NodeInstance#resident nodeInstance;
+  }
+
+  class NodeInstance extends Instance {
+    !ordered ref ComponentInstance[*]#nodeInstance resident;
+  }
+
+  class SubsystemInstance extends Instance {
+  }
+
+}
+
+package Data_Types {
+  enum AggregationKind {
+    ak_none = 0;
+    ak_aggregate = 0;
+    ak_composite = 0;
+  }
+
+  enum CallConcurrencyKind {
+    cck_sequential = 0;
+    cck_guarded = 0;
+    cck_concurrent = 0;
+  }
+
+  enum ChangeableKind {
+    ck_changeable = 0;
+    ck_frozen = 0;
+    ck_addOnly = 0;
+  }
+
+  enum OrderingKind {
+    ok_unordered = 0;
+    ok_ordered = 0;
+  }
+
+  enum ParameterDirectionKind {
+    pdk_in = 0;
+    pdk_inout = 0;
+    pdk_out = 0;
+    pdk_return = 0;
+  }
+
+  enum ScopeKind {
+    sk_instance = 0;
+    sk_classifier = 0;
+  }
+
+  enum VisibilityKind {
+    vk_public = 0;
+    vk_protected = 0;
+    vk_private = 0;
+    vk_package = 0;
+  }
+
+  class Multiplicity {
+    !ordered val MultiplicityRange[+]#multiplicity range;
+  }
+
+  class MultiplicityRange {
+    !ordered ref Multiplicity[1]#range multiplicity;
+    !unique !ordered attr Integer[1] lower;
+    !unique !ordered attr Integer[1] upper;
+  }
+
+  class Expression {
+    !unique !ordered attr String language;
+    !unique !ordered attr String[1] body;
+  }
+
+  class BooleanExpression extends Expression {
+  }
+
+  class TypeExpression extends Expression {
+  }
+
+  class MappingExpression extends Expression {
+  }
+
+  class ProcedureExpression extends Expression {
+  }
+
+  class ObjectSetExpression extends Expression {
+  }
+
+  class ActionExpression extends Expression {
+  }
+
+  class IterationExpression extends Expression {
+  }
+
+  class TimeExpression extends Expression {
+  }
+
+  class ArgListsExpression extends Expression {
+  }
+
+  enum PseudostateKind {
+    pk_choice = 0;
+    pk_deepHistory = 0;
+    pk_fork = 0;
+    pk_initial = 0;
+    pk_join = 0;
+    pk_junction = 0;
+    pk_shallowHistory = 0;
+  }
+
+}
+
+package Model_Management {
+  class Package extends Core.GeneralizableElement, Core.Namespace {
+    !ordered val ElementImport[*]#~package elementImport;
+  }
+
+  class Model extends Package {
+  }
+
+  class Subsystem extends Package, Core.Classifier {
+    !unique !ordered attr Boolean[1] isInstantiable;
+  }
+
+  class ElementImport {
+    !ordered ref Package[1]#elementImport ~package;
+    !ordered ref Core.ModelElement[1] importedElement;
+    !unique !ordered attr Data_Types.VisibilityKind visibility;
+    !unique !ordered attr String alias;
+    !unique !ordered attr Boolean[1] isSpecification;
+  }
+
+}
+
+package Core {
+  abstract class Element {
+  }
+
+  abstract class ModelElement extends Element {
+    !ordered val TaggedValue[*]#modelElement taggedValue;
+    !ordered ref Dependency[*]#client clientDependency;
+    !ordered ref Constraint[*]#constrainedElement constraint;
+    !ordered ref Stereotype[*] stereotype;
+    !ordered ref Comment[*]#annotatedElement comment;
+    !ordered ref Flow[*]#source sourceFlow;
+    !ordered ref Flow[*]#target targetFlow;
+    val TemplateParameter[*]#template templateParameter;
+    !ordered ref Namespace#ownedElement namespace;
+    !unique !ordered attr String name;
+    !unique !ordered attr Data_Types.VisibilityKind visibility;
+    !unique !ordered attr Boolean[1] isSpecification;
+  }
+
+  abstract class GeneralizableElement extends ModelElement {
+    !ordered ref Generalization[*]#child generalization;
+    !unique !ordered attr Boolean[1] isRoot;
+    !unique !ordered attr Boolean[1] isLeaf;
+    !unique !ordered attr Boolean[1] isAbstract;
+  }
+
+  abstract class Namespace extends ModelElement {
+    !ordered val ModelElement[*]#namespace ownedElement;
+  }
+
+  abstract class Classifier extends GeneralizableElement, Namespace {
+    !ordered ref Generalization[*]#powertype powertypeRange;
+    val Feature[*]#owner feature;
+  }
+
+  class Class extends Classifier {
+    !unique !ordered attr Boolean[1] isActive;
+  }
+
+  class DataType extends Classifier {
+  }
+
+  abstract class Feature extends ModelElement {
+    !ordered ref Classifier#feature owner;
+    !unique !ordered attr Data_Types.ScopeKind[1] ownerScope;
+  }
+
+  abstract class StructuralFeature extends Feature {
+    !ordered ref Classifier[1] type;
+    !ordered ref Data_Types.Multiplicity multiplicity;
+    !unique !ordered attr Data_Types.ChangeableKind changeability;
+    !unique !ordered attr Data_Types.ScopeKind targetScope;
+    !unique !ordered attr Data_Types.OrderingKind ordering;
+  }
+
+  class AssociationEnd extends ModelElement {
+    !ordered ref Association[1]#connection association;
+    !ordered ref Classifier[*] specification;
+    !ordered ref Classifier[1] participant;
+    val Attribute[*]#associationEnd qualifier;
+    !unique !ordered attr Boolean[1] isNavigable;
+    !unique !ordered attr Data_Types.OrderingKind ordering;
+    !unique !ordered attr Data_Types.AggregationKind aggregation;
+    !unique !ordered attr Data_Types.ScopeKind targetScope;
+    !ordered ref Data_Types.Multiplicity multiplicity;
+    !unique !ordered attr Data_Types.ChangeableKind changeability;
+  }
+
+  class Interface extends Classifier {
+  }
+
+  class Constraint extends ModelElement {
+    ref ModelElement[*]#constraint constrainedElement;
+    !ordered ref Data_Types.BooleanExpression body;
+  }
+
+  abstract class Relationship extends ModelElement {
+  }
+
+  class Association extends GeneralizableElement, Relationship {
+    val AssociationEnd[2..*]#association connection;
+  }
+
+  class Attribute extends StructuralFeature {
+    !ordered ref AssociationEnd#qualifier associationEnd;
+    !ordered ref Data_Types.Expression initialValue;
+  }
+
+  abstract class BehavioralFeature extends Feature {
+    val Parameter[*]#behavioralFeature parameter;
+    !unique !ordered attr Boolean[1] isQuery;
+  }
+
+  class Operation extends BehavioralFeature {
+    !unique !ordered attr Data_Types.CallConcurrencyKind concurrency;
+    !unique !ordered attr Boolean[1] isRoot;
+    !unique !ordered attr Boolean[1] isLeaf;
+    !unique !ordered attr Boolean[1] isAbstract;
+    !unique !ordered attr String specification;
+  }
+
+  class Parameter extends ModelElement {
+    !ordered ref Classifier[1] type;
+    !ordered ref BehavioralFeature#parameter behavioralFeature;
+    !ordered ref Data_Types.Expression defaultValue;
+    !unique !ordered attr Data_Types.ParameterDirectionKind[1] kind;
+  }
+
+  class Method extends BehavioralFeature {
+    !ordered ref Operation[1] specification;
+    !ordered ref Data_Types.ProcedureExpression[1] body;
+  }
+
+  class Generalization extends Relationship {
+    !ordered ref GeneralizableElement[1] parent;
+    !ordered ref Classifier#powertypeRange powertype;
+    !ordered ref GeneralizableElement[1]#generalization child;
+    !unique !ordered attr String discriminator;
+  }
+
+  class AssociationClass extends Association, Class {
+  }
+
+  class Dependency extends Relationship {
+    !ordered ref ModelElement[+]#clientDependency client;
+    !ordered ref ModelElement[+] supplier;
+  }
+
+  class Abstraction extends Dependency {
+    !ordered ref Data_Types.MappingExpression mapping;
+  }
+
+  abstract class PresentationElement extends Element {
+    !ordered ref ModelElement[*] subject;
+  }
+
+  class Usage extends Dependency {
+  }
+
+  class Binding extends Dependency {
+    val TemplateArgument[+]#binding argument;
+  }
+
+  class Component extends Classifier {
+    !ordered ref Node[*]#deployedComponent deploymentLocation;
+    !ordered val ElementResidence[*]#container residentElement;
+    !ordered ref Artifact[*] implementation;
+  }
+
+  class Node extends Classifier {
+    !ordered ref Component[*]#deploymentLocation deployedComponent;
+  }
+
+  class Permission extends Dependency {
+  }
+
+  class Comment extends ModelElement {
+    !ordered ref ModelElement[*]#comment annotatedElement;
+    !unique !ordered attr String[1] body;
+  }
+
+  class Flow extends Relationship {
+    !ordered ref ModelElement[*]#sourceFlow source;
+    !ordered ref ModelElement[*]#targetFlow target;
+  }
+
+  class ElementResidence {
+    !ordered ref Component[1]#residentElement container;
+    !ordered ref ModelElement[1] resident;
+    !unique !ordered attr Data_Types.VisibilityKind visibility;
+  }
+
+  class TemplateParameter {
+    !ordered ref ModelElement[1]#templateParameter template;
+    !ordered val ModelElement[1] parameter;
+    !ordered ref ModelElement defaultElement;
+  }
+
+  class Primitive extends DataType {
+  }
+
+  class Enumeration extends DataType {
+    val EnumerationLiteral[+]#enumeration literal;
+  }
+
+  class EnumerationLiteral extends ModelElement {
+    !ordered ref Enumeration[1]#literal enumeration;
+  }
+
+  class Stereotype extends GeneralizableElement {
+    !ordered val Constraint[*] stereotypeConstraint;
+    !ordered val TagDefinition[*]#owner definedTag;
+    !unique !ordered attr String icon;
+    !unique !ordered attr String[+] baseClass;
+  }
+
+  class TagDefinition extends ModelElement {
+    !ordered ref Stereotype#definedTag owner;
+    !unique !ordered attr String tagType;
+    !ordered ref Data_Types.Multiplicity multiplicity;
+  }
+
+  class TaggedValue extends ModelElement {
+    !ordered ref TagDefinition[1] type;
+    !ordered ref ModelElement[*] referenceValue;
+    !ordered ref ModelElement[1]#taggedValue modelElement;
+    !unique !ordered attr String[*] dataValue;
+  }
+
+  class ProgrammingLanguageDataType extends DataType {
+    !ordered ref Data_Types.TypeExpression[1] expression;
+  }
+
+  class Artifact extends Classifier {
+  }
+
+  class TemplateArgument {
+    !ordered ref Binding[1]#argument binding;
+    !ordered ref ModelElement[1] modelElement;
+  }
+
+}
+
+package Collaborations {
+  class Collaboration extends Core.GeneralizableElement, Core.Namespace {
+    !ordered ref Collaboration[*] usedCollaboration;
+    !ordered ref Core.Operation representedOperation;
+    !ordered ref Core.Classifier representedClassifier;
+    !ordered val Interaction[*]#context interaction;
+    !ordered ref Core.ModelElement[*] constrainingElement;
+  }
+
+  class ClassifierRole extends Core.Classifier {
+    !ordered ref Core.ModelElement[*] availableContents;
+    !ordered ref Core.Classifier[+] base;
+    !ordered ref Common_Behavior.Instance[*] conformingInstance;
+    !ordered ref Core.Feature[*] availableFeature;
+    !ordered ref Data_Types.Multiplicity multiplicity;
+  }
+
+  class AssociationRole extends Core.Association {
+    !ordered ref Core.Association base;
+    !ordered ref Common_Behavior.Link[*] conformingLink;
+    !ordered ref Message[*]#communicationConnection message;
+    !ordered ref Data_Types.Multiplicity multiplicity;
+  }
+
+  class AssociationEndRole extends Core.AssociationEnd {
+    !ordered ref Core.AssociationEnd base;
+    !ordered ref Core.Attribute[*] availableQualifier;
+    !ordered ref Data_Types.Multiplicity collaborationMultiplicity;
+  }
+
+  class Message extends Core.ModelElement {
+    !ordered ref Interaction[1]#message interaction;
+    !ordered ref Common_Behavior.Stimulus[*] conformingStimulus;
+    !ordered ref Common_Behavior.Action[1] action;
+    !ordered ref AssociationRole#message communicationConnection;
+    !ordered ref Message activator;
+    !ordered ref ClassifierRole[1] receiver;
+    !ordered ref ClassifierRole[1] sender;
+    !ordered ref Message[*] predecessor;
+  }
+
+  class Interaction extends Core.ModelElement {
+    !ordered val Message[+]#interaction message;
+    !ordered ref Collaboration[1]#interaction context;
+  }
+
+  class InteractionInstanceSet extends Core.ModelElement {
+    !ordered ref Interaction interaction;
+    !ordered ref CollaborationInstanceSet[1]#interactionInstanceSet context;
+    !ordered ref Common_Behavior.Stimulus[+] participatingStimulus;
+  }
+
+  class CollaborationInstanceSet extends Core.ModelElement {
+    !ordered ref Collaboration collaboration;
+    !ordered ref Core.ModelElement[*] constrainingElement;
+    !ordered ref Common_Behavior.Instance[+] participatingInstance;
+    !ordered val InteractionInstanceSet[*]#context interactionInstanceSet;
+    !ordered ref Common_Behavior.Link[*] participatingLink;
+  }
+
+}
+
+package State_Machines {
+  class StateMachine extends Core.ModelElement {
+    !ordered ref Core.ModelElement context;
+    !ordered ref SubmachineState[*]#submachine submachineState;
+    !ordered val State[1]#stateMachine top;
+    !ordered val Transition[*]#stateMachine transitions;
+  }
+
+  abstract class Event extends Core.ModelElement {
+    val Core.Parameter[*] parameter;
+  }
+
+  abstract class StateVertex extends Core.ModelElement {
+    !ordered ref CompositeState#subvertex container;
+    !ordered ref Transition[*]#target incoming;
+    !ordered ref Transition[*]#source outgoing;
+  }
+
+  abstract class State extends StateVertex {
+    !ordered ref Event[*] deferrableEvent;
+    !ordered val Transition[*] internalTransition;
+    !ordered val Common_Behavior.Action exit;
+    !ordered val Common_Behavior.Action doActivity;
+    !ordered val Common_Behavior.Action entry;
+    !ordered ref StateMachine#top stateMachine;
+  }
+
+  class TimeEvent extends Event {
+    !ordered ref Data_Types.TimeExpression[1] when;
+  }
+
+  class CallEvent extends Event {
+    !ordered ref Core.Operation[1] operation;
+  }
+
+  class SignalEvent extends Event {
+    !ordered ref Common_Behavior.Signal[1] signal;
+  }
+
+  class Transition extends Core.ModelElement {
+    !ordered ref StateVertex[1]#incoming target;
+    !ordered ref Event trigger;
+    !ordered ref StateMachine#transitions stateMachine;
+    !ordered ref StateVertex[1]#outgoing source;
+    !ordered val Common_Behavior.Action effect;
+    !ordered val Guard#transition guard;
+  }
+
+  class CompositeState extends State {
+    !ordered val StateVertex[*]#container subvertex;
+    !unique !ordered attr Boolean[1] isConcurrent;
+  }
+
+  class ChangeEvent extends Event {
+    !ordered ref Data_Types.BooleanExpression[1] changeExpression;
+  }
+
+  class Guard extends Core.ModelElement {
+    !ordered ref Transition[1]#guard transition;
+    !ordered ref Data_Types.BooleanExpression[1] expression;
+  }
+
+  class Pseudostate extends StateVertex {
+    !unique !ordered attr Data_Types.PseudostateKind[1] kind;
+  }
+
+  class SimpleState extends State {
+  }
+
+  class SubmachineState extends CompositeState {
+    !ordered ref StateMachine[1]#submachineState submachine;
+  }
+
+  class SynchState extends StateVertex {
+    !unique !ordered attr Integer[1] bound;
+  }
+
+  class StubState extends StateVertex {
+    !unique !ordered attr String[1] referenceState;
+  }
+
+  class FinalState extends State {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Float : "";
+
+  datatype Integer : "";
+
+  datatype Long : "";
+
+  datatype String : "";
+
+  datatype Double : "";
+
+}
+
+package Diagram_Interchange {
+  class Point {
+    !unique !ordered attr PrimitiveTypes.Double[1] x;
+    !unique !ordered attr PrimitiveTypes.Double[1] y;
+  }
+
+  class Dimension {
+    !unique !ordered attr PrimitiveTypes.Double[1] width;
+    !unique !ordered attr PrimitiveTypes.Double[1] height;
+  }
+
+  class BezierPoint {
+    !ordered ref Point[1] base;
+    !ordered ref Point[1] control1;
+    !ordered ref Point[1] control2;
+  }
+
+  abstract class DiagramElement {
+    !ordered ref GraphElement#contained container;
+    !ordered val Property[*] property;
+    !ordered ref Reference[*]#referenced reference;
+    !unique !ordered attr Boolean[1] isVisible;
+  }
+
+  abstract class GraphElement extends DiagramElement {
+    !ordered val SemanticModelBridge[1]#graphElement semanticModel;
+    val DiagramElement[*]#container contained;
+    !ordered val GraphConnector[*]#graphElement anchorage;
+    !ordered val DiagramLink[*]#graphElement link;
+    !ordered ref Point[1] position;
+  }
+
+  abstract class SemanticModelBridge {
+    !ordered ref Diagram#owner diagram;
+    !ordered ref GraphElement[1]#semanticModel graphElement;
+    !unique !ordered attr String[1] presentation;
+  }
+
+  class GraphEdge extends GraphElement {
+    ref GraphConnector[2]#graphEdge anchor;
+    ref BezierPoint[2..*] waypoints;
+  }
+
+  class GraphNode extends GraphElement {
+    !ordered ref Dimension size;
+  }
+
+  class GraphConnector {
+    !ordered ref GraphElement[1]#anchorage graphElement;
+    !ordered ref GraphEdge[*]#anchor graphEdge;
+    !ordered ref Point[1] position;
+  }
+
+  abstract class LeafElement extends DiagramElement {
+  }
+
+  class Reference extends DiagramElement {
+    !ordered ref DiagramElement[1]#reference referenced;
+  }
+
+  class TextElement extends LeafElement {
+    !unique !ordered attr String[1] text;
+  }
+
+  abstract class GraphicPrimitive extends LeafElement {
+  }
+
+  class Polyline extends GraphicPrimitive {
+    ref BezierPoint[2..*] waypoints;
+    !unique !ordered attr Boolean[1] closed;
+  }
+
+  class Ellipse extends GraphicPrimitive {
+    !ordered ref Point[1] center;
+    !unique !ordered attr PrimitiveTypes.Double[1] radiusX;
+    !unique !ordered attr PrimitiveTypes.Double[1] radiusY;
+    !unique !ordered attr PrimitiveTypes.Double[1] rotation;
+    !unique !ordered attr PrimitiveTypes.Double[1] startAngle;
+    !unique !ordered attr PrimitiveTypes.Double[1] endAngle;
+  }
+
+  class Image extends LeafElement {
+    !unique !ordered attr String[1] uri;
+    !unique !ordered attr String[1] mimeType;
+  }
+
+  class Property {
+    !unique !ordered attr String[1] key;
+    !unique !ordered attr String[1] value;
+  }
+
+  class SimpleSemanticModelElement extends SemanticModelBridge {
+    !unique !ordered attr String[1] typeInfo;
+  }
+
+  class Uml1SemanticModelBridge extends SemanticModelBridge {
+    !ordered ref Core.Element[1] element;
+  }
+
+  class CoreSemanticModelBridge extends SemanticModelBridge {
+  }
+
+  class DiagramLink {
+    !ordered ref GraphElement[1]#link graphElement;
+    !ordered ref Diagram[1]#diagramLink diagram;
+    !unique !ordered attr PrimitiveTypes.Double[1] zoom;
+    !ordered ref Point[1] viewport;
+  }
+
+  class Diagram extends GraphNode {
+    !ordered val SemanticModelBridge[1]#diagram owner;
+    !ordered ref DiagramLink[*]#diagram diagramLink;
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr PrimitiveTypes.Double[1] zoom;
+    !ordered ref Point[1] viewport;
+  }
+
+}
+
+package Activity_Graphs {
+  class ActivityGraph extends State_Machines.StateMachine {
+    !ordered val Partition[*]#activityGraph partition;
+  }
+
+  class Partition extends Core.ModelElement {
+    !ordered ref Core.ModelElement[*] contents;
+    !ordered ref ActivityGraph[1]#partition activityGraph;
+  }
+
+  class SubactivityState extends State_Machines.SubmachineState {
+    !unique !ordered attr Boolean[1] isDynamic;
+    !ordered ref Data_Types.ArgListsExpression dynamicArguments;
+    !ordered ref Data_Types.Multiplicity dynamicMultiplicity;
+  }
+
+  class ActionState extends State_Machines.SimpleState {
+    !unique !ordered attr Boolean[1] isDynamic;
+    !ordered ref Data_Types.ArgListsExpression dynamicArguments;
+    !ordered ref Data_Types.Multiplicity dynamicMultiplicity;
+  }
+
+  class CallState extends ActionState {
+  }
+
+  class ObjectFlowState extends State_Machines.SimpleState {
+    !ordered ref Core.Classifier[1] type;
+    !ordered ref Core.Parameter[*] parameter;
+    !unique !ordered attr Boolean[1] isSynch;
+  }
+
+  class ClassifierInState extends Core.Classifier {
+    !ordered ref State_Machines.State[+] inState;
+    !ordered ref Core.Classifier[1] type;
+  }
+
+}
+
+package Use_Cases {
+  class UseCase extends Core.Classifier {
+    !ordered ref Include[*]#base include;
+    !ordered ref Extend[*]#extension extend;
+    !ordered val ExtensionPoint[*]#useCase extensionPoint;
+  }
+
+  class Actor extends Core.Classifier {
+  }
+
+  class UseCaseInstance extends Common_Behavior.Instance {
+  }
+
+  class Extend extends Core.Relationship {
+    ref ExtensionPoint[+] extensionPoint;
+    !ordered ref UseCase[1]#extend extension;
+    !ordered ref UseCase[1] base;
+    !ordered ref Data_Types.BooleanExpression[1] condition;
+  }
+
+  class Include extends Core.Relationship {
+    !ordered ref UseCase[1] addition;
+    !ordered ref UseCase[1]#include base;
+  }
+
+  class ExtensionPoint extends Core.ModelElement {
+    !ordered ref UseCase[1]#extensionPoint useCase;
+    !unique !ordered attr String[1] location;
+  }
+
+}
+

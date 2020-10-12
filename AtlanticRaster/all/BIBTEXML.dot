@@ -1,0 +1,153 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_BIBTEXML"{
+labelloc=t
+color=black
+label=BIBTEXML
+ node[shape=record];
+BibtexFile[label="{BibtexFile| | }"]
+ BibtexFile->Entry[arrowhead=vee,arrowtail=diamond,headlabel="entries[*]",group=Entry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Author[label="{Author|name : String| }"]
+;
+ node[shape=record];
+Entry[label="{/Entry/|id : String\nabstract[0-1] : String| }"]
+;
+ node[shape=record];
+AuthoredEntry[label="{/AuthoredEntry/| | }"]
+ AuthoredEntry->Author[arrowhead=vee,arrowtail=diamond,headlabel="authors[1-*]",group=Author,minlen=2,constraint=true,]
+ AuthoredEntry->Entry[arrowhead=onormal,group=Entry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BookTitledEntry[label="{/BookTitledEntry/|booktitle : String| }"]
+ BookTitledEntry->Entry[arrowhead=onormal,group=Entry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InstitutionEntry[label="{/InstitutionEntry/|institution : String| }"]
+ InstitutionEntry->Entry[arrowhead=onormal,group=Entry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EditoredEntry[label="{/EditoredEntry/|editor : String| }"]
+ EditoredEntry->Entry[arrowhead=onormal,group=Entry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DatedEntry[label="{/DatedEntry/|year : String\nmonth[0-1] : String| }"]
+ DatedEntry->Entry[arrowhead=onormal,group=Entry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+JournalEntry[label="{/JournalEntry/|journal : String| }"]
+ JournalEntry->Entry[arrowhead=onormal,group=Entry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TitledEntry[label="{/TitledEntry/|title : String| }"]
+ TitledEntry->Entry[arrowhead=onormal,group=Entry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NotedEntry[label="{/NotedEntry/|note : String| }"]
+ NotedEntry->Entry[arrowhead=onormal,group=Entry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PublisheredEntry[label="{/PublisheredEntry/|publisher : String| }"]
+ PublisheredEntry->Entry[arrowhead=onormal,group=Entry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SchoolEntry[label="{/SchoolEntry/|school : String| }"]
+ SchoolEntry->Entry[arrowhead=onormal,group=Entry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Article[label="{Article|volume[0-1] : String\nnumber[0-1] : String\npages[0-1] : String\nnote[0-1] : String| }"]
+ Article->AuthoredEntry[arrowhead=onormal,group=AuthoredEntry,minlen=2,constraint=true,]
+ Article->DatedEntry[arrowhead=onormal,group=DatedEntry,minlen=2,constraint=true,]
+ Article->TitledEntry[arrowhead=onormal,group=TitledEntry,minlen=2,constraint=true,]
+ Article->JournalEntry[arrowhead=onormal,group=JournalEntry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Book[label="{Book|volume[0-1] : String\nnumber[0-1] : String\nseries[0-1] : String\naddress[0-1] : String\nedition[0-1] : String\nnote[0-1] : String| }"]
+ Book->AuthoredEntry[arrowhead=onormal,group=AuthoredEntry,minlen=2,constraint=true,]
+ Book->EditoredEntry[arrowhead=onormal,group=EditoredEntry,minlen=2,constraint=true,]
+ Book->PublisheredEntry[arrowhead=onormal,group=PublisheredEntry,minlen=2,constraint=true,]
+ Book->DatedEntry[arrowhead=onormal,group=DatedEntry,minlen=2,constraint=true,]
+ Book->TitledEntry[arrowhead=onormal,group=TitledEntry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Booklet[label="{Booklet|howpublished : String\naddress[0-1] : String\nnote[0-1] : String| }"]
+ Booklet->Author[arrowhead=vee,arrowtail=none,headlabel="authors[*]",group=Author,minlen=2,constraint=false,]
+ Booklet->DatedEntry[arrowhead=onormal,group=DatedEntry,minlen=2,constraint=true,]
+ Booklet->TitledEntry[arrowhead=onormal,group=TitledEntry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InBook[label="{InBook|chapter : String\ntype : String| }"]
+ InBook->Book[arrowhead=onormal,group=Book,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InCollection[label="{InCollection|chapter[0-1] : String\ntype[0-1] : String| }"]
+ InCollection->Book[arrowhead=onormal,group=Book,minlen=2,constraint=true,]
+ InCollection->BookTitledEntry[arrowhead=onormal,group=BookTitledEntry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Manual[label="{Manual|organization[0-1] : String\naddress[0-1] : String\nedition[0-1] : String\nnote[0-1] : String| }"]
+ Manual->TitledEntry[arrowhead=onormal,group=TitledEntry,minlen=2,constraint=true,]
+ Manual->AuthoredEntry[arrowhead=onormal,group=AuthoredEntry,minlen=2,constraint=true,]
+ Manual->DatedEntry[arrowhead=onormal,group=DatedEntry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TechReport[label="{TechReport|type[0-1] : String\nnumber[0-1] : String\naddress[0-1] : String\nnote[0-1] : String| }"]
+ TechReport->AuthoredEntry[arrowhead=onormal,group=AuthoredEntry,minlen=2,constraint=true,]
+ TechReport->InstitutionEntry[arrowhead=onormal,group=InstitutionEntry,minlen=2,constraint=true,]
+ TechReport->DatedEntry[arrowhead=onormal,group=DatedEntry,minlen=2,constraint=true,]
+ TechReport->TitledEntry[arrowhead=onormal,group=TitledEntry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ThesisEntry[label="{/ThesisEntry/|type[0-1] : String\naddress[0-1] : String\nnote[0-1] : String| }"]
+ ThesisEntry->AuthoredEntry[arrowhead=onormal,group=AuthoredEntry,minlen=2,constraint=true,]
+ ThesisEntry->DatedEntry[arrowhead=onormal,group=DatedEntry,minlen=2,constraint=true,]
+ ThesisEntry->TitledEntry[arrowhead=onormal,group=TitledEntry,minlen=2,constraint=true,]
+ ThesisEntry->SchoolEntry[arrowhead=onormal,group=SchoolEntry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PhdThesis[label="{PhdThesis| | }"]
+ PhdThesis->ThesisEntry[arrowhead=onormal,group=ThesisEntry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MastersThesis[label="{MastersThesis| | }"]
+ MastersThesis->ThesisEntry[arrowhead=onormal,group=ThesisEntry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Proceedings[label="{Proceedings|editor[0-1] : String\nvolume[0-1] : String\nnumber[0-1] : String\nseries[0-1] : String\naddress[0-1] : String\norganization[0-1] : String\npublisher[0-1] : String\nnote[0-1] : String| }"]
+ Proceedings->DatedEntry[arrowhead=onormal,group=DatedEntry,minlen=2,constraint=true,]
+ Proceedings->TitledEntry[arrowhead=onormal,group=TitledEntry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InProceedings[label="{InProceedings|pages[0-1] : String| }"]
+ InProceedings->AuthoredEntry[arrowhead=onormal,group=AuthoredEntry,minlen=2,constraint=true,]
+ InProceedings->BookTitledEntry[arrowhead=onormal,group=BookTitledEntry,minlen=2,constraint=true,]
+ InProceedings->Proceedings[arrowhead=onormal,group=Proceedings,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Conference[label="{Conference| | }"]
+ Conference->InProceedings[arrowhead=onormal,group=InProceedings,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Unpublished[label="{Unpublished| | }"]
+ Unpublished->AuthoredEntry[arrowhead=onormal,group=AuthoredEntry,minlen=2,constraint=true,]
+ Unpublished->TitledEntry[arrowhead=onormal,group=TitledEntry,minlen=2,constraint=true,]
+ Unpublished->NotedEntry[arrowhead=onormal,group=NotedEntry,minlen=2,constraint=true,]
+ Unpublished->DatedEntry[arrowhead=onormal,group=DatedEntry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Misc[label="{Misc|title[0-1] : String\nhowpublished[0-1] : String\nmonth[0-1] : String\nyear[0-1] : String\nnote[0-1] : String| }"]
+ Misc->Author[arrowhead=vee,arrowtail=none,headlabel="authors[*]",group=Author,minlen=2,constraint=false,]
+ Misc->Entry[arrowhead=onormal,group=Entry,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

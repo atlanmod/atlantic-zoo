@@ -1,0 +1,7 @@
+( defstruct Plan :super_plan )
+( defstruct Objective :objective_plan )
+( defstruct EvaluationCriteria :criteria_objective )
+( defstruct Action :action_plan :super_action :actor )
+( defstruct Actor :actor_action :super_actor )
+( defstruct Resource :resource_action )
+( defstruct TimeSpec :timeSpec_action )

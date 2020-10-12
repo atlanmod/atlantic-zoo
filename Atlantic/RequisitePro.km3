@@ -1,0 +1,60 @@
+-- @name		RequisitePro
+-- @version		0.1
+-- @domains		traceability tool
+-- @authors		David Touzet (david.touzet@univ-nantes.fr)
+-- @date		2005/08/02
+-- @description	A metamodel describing the traceability tool RequisitePro:The IBM Rational RequisitePro solution is a requirements and use case management tool for project teams who want to improve the communication of project goals, enhance collaborative development, reduce project risk and increase the quality of applications before deployment.
+
+
+package RequisitePro {
+
+	abstract class DescribedElt {
+		attribute description: String;
+	}
+
+	abstract class NamedElt {
+		attribute name: String;
+	}
+
+    -- @begin ContainerElement
+	abstract class ContainerElt extends NamedElt, DescribedElt {
+		reference content [*]container : ContainedElt oppositeOf "package";
+		reference packages [*] container: Package oppositeOf parentPackage;
+	}
+
+	class Project extends ContainerElt {
+	}
+
+	class Package extends ContainerElt {
+		reference parentPackage: ContainerElt oppositeOf packages;
+	}
+	-- @end ContainerElement
+	-- @begin ContainedElement
+	abstract class ContainedElt {
+		reference "package": ContainerElt oppositeOf content;
+	}
+	abstract class TypedElt {
+		attribute type: String;
+	}
+	
+	class Document extends DescribedElt, NamedElt, ContainedElt, TypedElt {
+	}
+	
+	class Attribute extends TypedElt {
+		attribute value: String;
+	}
+	
+	class Requirement extends NamedElt, ContainedElt, TypedElt {
+		attribute text: String;
+		reference attributes[*] container: Attribute;
+		reference location : Document;
+		reference parent[0-1]: Requirement oppositeOf children;
+		reference children[*]: Requirement oppositeOf parent;
+		reference coverLink [*] : Requirement;
+	}
+	-- @end ContainedElement
+}
+
+package PrimitiveTypes {
+  datatype String;
+}

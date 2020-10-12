@@ -1,0 +1,87 @@
+-- @name 		OCL Values
+-- @domains 	OCL
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/07/10
+-- @description This metamodel describes OCL Values
+-- @see 		This metamodel has been extracted from information available in the following article:
+-- @see 		Article "A Metamodel for OCL"
+-- @see 		by Mark Richters and Martin Gogolla
+-- @see 		Page 160, Section 6, Fig. 11 Metamodel for Values
+-- @see 		Lecture Notes in Computer Science 1723
+-- @see 		Robert France, Bernhard Rumpe (Eds.)
+-- @see 		The Unified Modeling Language UML 99: Beyond the standard
+
+package OCLValues {
+	abstract class Value {
+		reference type container : Type oppositeOf value; 
+		reference bagValue [*] : BagValue oppositeOf elements;
+		reference sequenceValue [*] : SequenceValue oppositeOf elements;
+		reference setValue [*] : SetValue oppositeOf elements;
+	}
+	
+	abstract class Type {
+		reference value [*] : Value oppositeOf type; 
+	}
+	
+	abstract class BasicValue extends Value {}
+	
+	class IntegerValue extends BasicValue {
+		attribute val : Integer;
+	}
+
+	class RealValue extends BasicValue {
+		attribute val : Double;
+	}
+	
+	class StringValue extends BasicValue {
+		attribute val : String;
+	}
+
+	class BooleanValue extends BasicValue {
+		attribute val : Boolean;
+	}
+	
+	class ObjectValue extends Value {
+		reference object container : Object oppositeOf objectValue;
+	}
+	
+	class Object {
+		reference objectValue [0-1] : ObjectValue oppositeOf object;
+	}
+	
+	class EnumValue extends Value {
+		reference enumLiteral container : EnumLiteral oppositeOf enumValue;
+	}
+	
+	class EnumLiteral {
+		reference enumValue [0-1] : EnumValue oppositeOf enumLiteral;
+	}
+	
+	class UndefinedValue extends Value {}
+	
+	abstract class CollectionValue extends Value {
+	}
+	
+	class BagValue {
+		reference elements [*] container : Value oppositeOf bagValue;
+	}
+	
+	class SequenceValue {
+		reference elements [*] ordered container : Value oppositeOf sequenceValue;
+	}
+	
+	class SetValue {
+		reference elements [*] container : Value oppositeOf setValue;
+	}
+	
+	class Count {
+		attribute num : Integer;
+	}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+	datatype Double;
+}

@@ -1,0 +1,1029 @@
+-- @name		System Definition Model
+-- @version		0.2
+-- @domains		DSI, SDM Metamodel, XML
+-- @authors		Albin Jossic (jossic.albin@gmail.com), Microsoft 
+-- @date		2005/06/13	
+-- @description	The Microsoft SDM (System Definition Model) metamodel. It is derived from the XML schema "SystemDefinitionModel.xsd" for designing distributed systems in the Microsoft Visual Studio 2005 Beta2 development platform.
+-- @see			SystemDefinitionModel.xsd, DeploymentReport.km3
+
+
+package SDM {
+	
+	
+		-----------------------------------------------------------------------------------------------------------
+   		-- @comment System Definition Model
+		-----------------------------------------------------------------------------------------------------------
+			
+	---------------------------------------------------------------------------------------------------------------
+    -- @comment System Definition Model element root
+	---------------------------------------------------------------------------------------------------------------
+	class SystemDefinitionModel {
+		reference information [0-1] container : Information oppositeOf sdm ;
+		reference import [0-*] container : Import oppositeOf sdm ;
+		reference designData [0-1] : DesignData ;
+		reference settingDefinitions [0-1] : SettingDefinitions ;
+		
+		reference communicationDefinition [0-*] container : SDMCommunicationDefinition oppositeOf sdm ;
+		reference containmentDefinition [0-*] container : SDMContainmentDefinition oppositeOf sdm ;
+		reference delegationDefinition [0-*] container : SDMDelegationDefinition oppositeOf sdm ;
+		reference referenceDefinition [0-*] container : SDMReferenceDefinition oppositeOf sdm ;
+		reference endpointDefinition [0-*] container : SDMEndpointDefinition oppositeOf sdm ;
+		reference resourceDefinition [0-*] container : SDMResourceDefinition oppositeOf sdm ;
+		reference systemDefinition [0-*] container : SDMSystemDefinition oppositeOf sdm ;
+		reference constraintDefinition [0-*] container : SDMConstraintDefinition oppositeOf sdm ;
+		reference manager [0-*] container : SDMManager oppositeOf sdm ;
+		
+		reference nameSpace [0-1] : NameSpace ;
+		reference namespaceIdentity : NamespaceIdentity ;
+		reference documentLanguage [0-*] : Culture ;
+		reference compilationHash [0-*] : CompilationHashType ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment information of sdm
+	---------------------------------------------------------------------------------------------------------------
+	class Information {
+		reference sdm : SystemDefinitionModel oppositeOf information ;
+		attribute friendlyname [0-1] : String ;
+		attribute companyname [0-1] : String ;
+		attribute copyright [0-1] : String ;
+		attribute trademark [0-1] : String ;
+		reference description [0-1] : Description ;
+		attribute comments [0-1] : String ;
+		reference compilerversion [0-1] : FourPartVersionType ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Import of sdm
+	---------------------------------------------------------------------------------------------------------------
+	class Import {
+		reference sdm : SystemDefinitionModel oppositeOf import ;
+		reference alias : SimpleName ;
+		reference identity container : ImportNamespaceIdentity oppositeOf import ;
+	}
+	
+	class ImportNamespaceIdentity extends NamespaceIdentity {
+		reference import : Import oppositeOf identity ;
+	}
+		
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment "choice" element of sdm
+	---------------------------------------------------------------------------------------------------------------
+	class SDMCommunicationDefinition extends CommunicationDefinition {
+		reference sdm : SystemDefinitionModel oppositeOf communicationDefinition ;
+	}
+	
+	class SDMContainmentDefinition extends ContainmentDefinition {
+		reference sdm : SystemDefinitionModel oppositeOf containmentDefinition ;
+	}
+	
+	class SDMDelegationDefinition extends DelegationDefinition {
+		reference sdm : SystemDefinitionModel oppositeOf delegationDefinition ;
+	}
+	
+	class SDMReferenceDefinition extends ReferenceDefinition {
+		reference sdm : SystemDefinitionModel oppositeOf referenceDefinition ;
+	}
+	
+	class SDMEndpointDefinition extends EndpointDefinition {
+		reference sdm : SystemDefinitionModel oppositeOf endpointDefinition ;
+	}
+	
+	class SDMResourceDefinition extends ResourceDefinition {
+		reference sdm : SystemDefinitionModel oppositeOf resourceDefinition ;
+	}
+	
+	class SDMSystemDefinition extends SystemDefinition {
+		reference sdm : SystemDefinitionModel oppositeOf systemDefinition ;
+	}
+	
+	class SDMConstraintDefinition extends ConstraintDefinition {
+		reference sdm : SystemDefinitionModel oppositeOf constraintDefinition ;
+	}
+	
+	class SDMManager extends ManagerDeclaration {
+		reference sdm : SystemDefinitionModel oppositeOf manager ;
+	}
+	
+	
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment Manager
+		-----------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment ManagerDeclaration
+	---------------------------------------------------------------------------------------------------------------	
+	class ManagerDeclaration {
+		reference description [0-1] : Description ;
+		reference name [0-1] : SimpleName ;
+		attribute assemblyName : String ;
+		reference version [0-1] : FourPartVersionType ;
+		reference publicKeyToken [0-1] : PublicKeyTokenType ;
+		reference culture [0-1] : CultureNeutral ;
+		attribute platform [0-1] : Platform ;
+		reference sourcePath [0-1] : Path ;
+	}
+		
+	
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment Object
+		-----------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment ObjectDefinition
+	---------------------------------------------------------------------------------------------------------------
+	class ObjectDefinition extends Definition {
+		reference flow [0-*] container : OBFlow oppositeOf objectDefinition ;
+		reference relationshipConstraint [0-*] container : OBRelationshipConstraint oppositeOf objectDefinition ;
+		reference constraint [0-*] container : OBConstraint oppositeOf objectDefinition ;
+		reference constraintGroup [0-*] container : OBConstraintGroup oppositeOf objectDefinition ;
+		reference endpointDefinition [0-*] container : OBEndpointDefinition oppositeOf objectDefinition ;
+		reference systemDefinition [0-*] container : OBSystemDefinition oppositeOf objectDefinition ;
+		reference resourceDefinition [0-*] container : OBResourceDefinition oppositeOf objectDefinition ;
+		reference communicationDefinition [0-*] container : OBCommunicationDefinition oppositeOf objectDefinition ;
+		reference containmentDefinition [0-*] container : OBContainmentDefinition oppositeOf objectDefinition ;
+		reference delegationDefinition [0-*] container : OBDelegationDefinition oppositeOf objectDefinition ;
+		reference referenceDefinition [0-*] container : OBReferenceDefinition oppositeOf objectDefinition ;
+		reference hostingDefinition [0-*] container : OBHostingDefinition oppositeOf objectDefinition ;
+		reference endpoint [0-*] container : OBEndpoint oppositeOf objectDefinition ;
+		reference subsystem [0-*] container : OBSubsystem oppositeOf objectDefinition ;
+		reference resource [0-*] container : OBResource oppositeOf objectDefinition ;
+		reference hosting [0-*] container : OBHosting oppositeOf objectDefinition ;
+		reference containment [0-*] container : OBContainment oppositeOf objectDefinition ;
+		reference connection [0-*] container : OBConnection oppositeOf objectDefinition ;
+		reference delegation [0-*] container : OBDelegation oppositeOf objectDefinition ;
+		reference obreference [0-*] container : OBReference oppositeOf objectDefinition ;		
+		
+		attribute layer [0-1] : String ;
+		reference "extends" [0-1] : QualifiedName ;
+		attribute "abstract" [0-1] : Boolean ;
+	}
+	
+	class OBFlow extends FlowMember {
+		reference objectDefinition : ObjectDefinition oppositeOf flow ;
+	}
+	
+	class OBRelationshipConstraint extends RelationshipConstraint {
+		reference objectDefinition : ObjectDefinition oppositeOf relationshipConstraint ;
+	}
+		
+	class OBConstraint extends ConstraintMember {
+		reference objectDefinition : ObjectDefinition oppositeOf constraint ;
+	}
+	
+	class OBConstraintGroup extends ConstraintGroup {
+		reference objectDefinition : ObjectDefinition oppositeOf constraintGroup ;
+	}
+	
+	class OBEndpointDefinition extends EndpointDefinition {
+		reference objectDefinition : ObjectDefinition oppositeOf endpointDefinition ;
+	}
+	
+	class OBSystemDefinition extends SystemDefinition {
+		reference objectDefinition : ObjectDefinition oppositeOf systemDefinition ;
+	}
+	
+	class OBResourceDefinition extends ResourceDefinition {
+		reference objectDefinition : ObjectDefinition oppositeOf resourceDefinition ;
+	}
+	
+	class OBCommunicationDefinition extends CommunicationDefinition {
+		reference objectDefinition : ObjectDefinition oppositeOf communicationDefinition  ;
+	}
+	
+	class OBContainmentDefinition extends ContainmentDefinition {
+		reference objectDefinition : ObjectDefinition oppositeOf containmentDefinition ;
+	}
+	
+	class OBDelegationDefinition extends DelegationDefinition {
+		reference objectDefinition : ObjectDefinition oppositeOf delegationDefinition ;
+	}
+	
+	class OBReferenceDefinition extends ReferenceDefinition {
+		reference objectDefinition : ObjectDefinition oppositeOf referenceDefinition ;
+	}
+	
+	class OBHostingDefinition extends HostingDefinition {
+		reference objectDefinition : ObjectDefinition oppositeOf hostingDefinition ;
+	}
+	
+	class OBEndpoint extends EndpointMember {
+		reference objectDefinition : ObjectDefinition oppositeOf endpoint ;
+	}
+	
+	class OBSubsystem extends SystemMember {
+		reference objectDefinition : ObjectDefinition oppositeOf subsystem ;
+	}
+	
+	class OBResource extends ResourceMember {
+		reference objectDefinition : ObjectDefinition oppositeOf resource ;
+	}
+	
+	class OBHosting extends HostingMember {
+		reference objectDefinition : ObjectDefinition oppositeOf hosting ;
+	}
+	
+	class OBContainment extends ContainmentMember {
+		reference objectDefinition : ObjectDefinition oppositeOf containment ;
+	}
+	
+	class OBConnection extends  CommunicationMember{
+		reference objectDefinition : ObjectDefinition oppositeOf connection ;
+	}
+	
+	class OBDelegation extends DelegationMember {
+		reference objectDefinition : ObjectDefinition oppositeOf delegation ;
+	}
+	
+	class OBReference extends ReferenceMember {
+		reference objectDefinition : ObjectDefinition oppositeOf obreference ;
+	}
+	
+			
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment System Endpoint and Resource types
+		-----------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment SystemDefinition
+	---------------------------------------------------------------------------------------------------------------
+	class SystemDefinition extends ObjectDefinition {
+		attribute simulationRoot[0-1] : Boolean ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment EndpointDefinition
+	---------------------------------------------------------------------------------------------------------------	
+	class EndpointDefinition extends ObjectDefinition {}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment ResourceDefinition
+	---------------------------------------------------------------------------------------------------------------
+	class ResourceDefinition extends ObjectDefinition {}
+	
+	
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment Relationships
+		-----------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment RelationshipDefinition
+	---------------------------------------------------------------------------------------------------------------
+	class RelationshipDefinition extends Definition {
+		reference objectConstraint [0-*] container : RDObjectConstraint oppositeOf relationshipDefinition ;
+		reference constraint [0-*] container : RDConstraint oppositeOf relationshipDefinition ;
+		reference constraintGroup [0-*] container : RDConstraintGroup oppositeOf relationshipDefinition ;
+		reference flow [0-*] container : RDFlow oppositeOf relationshipDefinition ;
+		reference connection [0-*] container : RDConnection oppositeOf relationshipDefinition ;
+		reference hosting [0-*] container : RDHosting oppositeOf relationshipDefinition ;
+		reference delegation [0-*] container : RDDelegation oppositeOf relationshipDefinition ;
+		reference "reference" [0-*] container : RDReference oppositeOf relationshipDefinition ;
+		reference containment [0-*] container : RDContainment oppositeOf relationshipDefinition ;
+		
+		reference "extends" : QualifiedName ;
+		attribute "abstract" [0-1] : Boolean ;
+	}
+	
+	class RDObjectConstraint extends ObjectConstraint {
+		reference relationshipDefinition : RelationshipDefinition oppositeOf objectConstraint ;
+	}
+	
+	class RDConstraint extends ConstraintMember {
+		reference relationshipDefinition : RelationshipDefinition oppositeOf constraint ;
+	}
+	
+	class RDConstraintGroup extends ConstraintGroup {
+		reference relationshipDefinition : RelationshipDefinition oppositeOf constraintGroup ;
+	}
+	
+	class RDFlow extends FlowMember {
+		reference relationshipDefinition : RelationshipDefinition oppositeOf flow ;
+	}
+	
+	class RDConnection extends CommunicationMember {
+		reference relationshipDefinition : RelationshipDefinition oppositeOf connection ;
+	}
+	
+	class RDHosting extends HostingMember {
+		reference relationshipDefinition : RelationshipDefinition oppositeOf hosting ;
+	}
+	
+	class RDDelegation extends DelegationMember {
+		reference relationshipDefinition : RelationshipDefinition oppositeOf delegation ;
+	}
+	
+	class RDReference extends ReferenceMember {
+		reference relationshipDefinition : RelationshipDefinition oppositeOf "reference" ;
+	}
+	
+	class RDContainment extends ContainmentMember {
+		reference relationshipDefinition : RelationshipDefinition oppositeOf containment ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment CommunicationDefinition
+	---------------------------------------------------------------------------------------------------------------
+	class CommunicationDefinition extends RelationshipDefinition {
+		reference clientDefinition : QualifiedName ;
+		reference serverDefinition : QualifiedName ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment HostingDefinition
+	---------------------------------------------------------------------------------------------------------------
+	class HostingDefinition extends RelationshipDefinition {
+		reference guestDefinition : QualifiedName ;
+		reference hostDefinition : QualifiedName ;
+		attribute simulationRoot : Boolean ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment ContainmentDefinition
+	---------------------------------------------------------------------------------------------------------------
+	class ContainmentDefinition extends RelationshipDefinition {
+		reference parentDefinition : QualifiedName ;
+		reference memberDefinition : QualifiedName ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment DelegationDefinition
+	---------------------------------------------------------------------------------------------------------------
+	class DelegationDefinition extends RelationshipDefinition {
+		reference proxyDefinition : QualifiedName ;
+		reference delegateDefinition : QualifiedName ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment ReferenceDefinition
+	---------------------------------------------------------------------------------------------------------------
+	class ReferenceDefinition extends RelationshipDefinition {
+		reference dependentDefinition : QualifiedName ;
+		reference sourceDefinition : QualifiedName ;
+	}
+	
+	
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment Member base types
+		-----------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Member
+	---------------------------------------------------------------------------------------------------------------
+	class Member {
+		reference description [0-*] : Description ;
+		reference designData : DesignData ;
+		
+		reference settingValue [0-*] container : MembSettingValue oppositeOf member ;
+		reference settingValueList [0-*] container : MembSettingValueList oppositeOf member ;
+		
+		reference name : SimpleName ;
+		reference definition : QualifiedName ;
+	}
+	
+	class MembSettingValue extends SettingValue {
+		reference member : Member oppositeOf settingValue ;
+	}
+	
+	class MembSettingValueList extends SettingValueList {
+		reference member : Member oppositeOf settingValueList ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment ObjectMember
+	---------------------------------------------------------------------------------------------------------------
+	class ObjectMember extends Member {
+		reference minOccurs [0-1] : MinOccurs ;
+		reference maxOccurs [0-1] : MaxOccurs ;
+		attribute "reference" : Boolean ;
+		attribute proxy [0-1] : Boolean ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment RelationshipMember
+	---------------------------------------------------------------------------------------------------------------
+	class RelationshipMember extends Member {}
+	
+	
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment Object Members
+		-----------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment SystemMember
+	---------------------------------------------------------------------------------------------------------------
+	class SystemMember extends ObjectMember {}
+		
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment EndpointMember
+	---------------------------------------------------------------------------------------------------------------
+	class EndpointMember extends ObjectMember {}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment ResourceMember
+	---------------------------------------------------------------------------------------------------------------
+	class ResourceMember extends ObjectMember {}
+		
+		
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment Relationship Members
+		-----------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment HostingMember
+	---------------------------------------------------------------------------------------------------------------
+	class HostingMember extends RelationshipMember {
+		reference guestMember : Path ;
+		reference hostMember : Path ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment CommunicationMember
+	---------------------------------------------------------------------------------------------------------------
+	class CommunicationMember extends RelationshipMember {
+		reference clientMember : Path ;
+		reference serverMember : Path ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment ContainmentMember
+	---------------------------------------------------------------------------------------------------------------
+	class ContainmentMember extends RelationshipMember {
+		reference childMember : Path ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment DelegationMember
+	---------------------------------------------------------------------------------------------------------------
+	class DelegationMember extends RelationshipMember {
+		reference proxyMember : Path ;
+		reference delegateMember : Path ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment ReferenceMember
+	---------------------------------------------------------------------------------------------------------------
+	class ReferenceMember extends RelationshipMember {
+		reference dependentMember : Path ;
+		reference sourceMember : Path ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment DesignData
+	---------------------------------------------------------------------------------------------------------------
+	
+	class DesignData {
+		reference nameSpace [0-*] container : NameSpace oppositeOf designData ;
+	}
+	
+	class NameSpace extends Element {
+		reference designData : DesignData oppositeOf nameSpace ;
+	}
+	
+	
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment Constraints
+		-----------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment ObjectConstraint
+	-- @comment constrains the Definition that participate in role in this Relationship
+	---------------------------------------------------------------------------------------------------------------
+	class ObjectConstraint extends StructuralConstraint {
+		reference constraint [0-*] container : OCConstraint oppositeOf objectConstraint;
+		reference relationshipConstraint [0-*] container : OCRelationshipConstraint oppositeOf objectConstraint_OC;
+		reference constraintGroup [0-*] container : OCConstraintGroup oppositeOf objectConstraint_OC;
+		
+		attribute primaryRole : RolesList ;
+		reference primaryObjectDefinition : QualifiedName ;
+		attribute secondaryRole [0-*] : RolesList ;
+		reference secondaryObjectDefinition [0-*] : QualifiedName ;
+		reference minOccurs [0-*] : MinOccurs ;
+		reference maxOccurs [0-*] : MaxOccurs ;
+	}
+	
+	class OCConstraint extends ConstraintMember {
+		reference objectConstraint : ObjectConstraint oppositeOf constraint ;
+	}
+	
+	class OCRelationshipConstraint extends RelationshipConstraint {
+		reference objectConstraint_OC : ObjectConstraint oppositeOf relationshipConstraint ;
+	}
+	
+	class OCConstraintGroup extends ConstraintGroup {
+		reference objectConstraint_OC : ObjectConstraint oppositeOf constraintGroup ;
+	}
+	
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment RelationshipConstraint
+	---------------------------------------------------------------------------------------------------------------
+	class RelationshipConstraint extends StructuralConstraint {
+		reference constraint [0-*] container : RCConstraint oppositeOf relationshipConstraint;
+		reference relationshipConstraint [0-*] container : RCRelationshipConstraint oppositeOf relationshipConstraint_RC;
+		reference objectConstraint [0-*] container : RCObjectConstraint oppositeOf relationshipConstraint_RC;
+		reference constraintGroup [0-*] container : RCConstraintGroup oppositeOf relationshipConstraint_RC;
+		
+		reference relationshipDefinition : QualifiedName ;
+		attribute targetRole : RolesList ;
+		reference targetObjectDefinition [0-1] : QualifiedName ;
+		reference minOccurs [0-1] : MinOccurs ;
+		reference maxOccurs [0-1] : MaxOccurs ;
+		attribute delegationAware [0-1] : Boolean ;
+	}
+	
+	class RCConstraint extends ConstraintMember {
+		reference relationshipConstraint : RelationshipConstraint oppositeOf constraint ;
+	}
+	
+	class RCRelationshipConstraint extends RelationshipConstraint {
+		reference relationshipConstraint_RC : RelationshipConstraint oppositeOf relationshipConstraint;
+	}
+	
+	class RCObjectConstraint extends ObjectConstraint {
+		reference relationshipConstraint_RC : RelationshipConstraint oppositeOf objectConstraint;
+	}
+	
+	class RCConstraintGroup extends ConstraintGroup {
+		reference relationshipConstraint_RC : RelationshipConstraint oppositeOf constraintGroup;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Constraint group
+	---------------------------------------------------------------------------------------------------------------
+	class ConstraintGroup extends StructuralConstraint {
+		reference constraint [0-*] container : CGConstraint oppositeOf constraintGroup ;
+		reference relationshipConstraint [0-*] container : CGRelationshipConstraint oppositeOf constraintGroup_CG;
+		reference objectConstraint [0-*] container : CGObjectConstraint oppositeOf constraintGroup_CG;
+	}
+	
+	class CGConstraint extends ConstraintMember {
+		reference constraintGroup : ConstraintGroup oppositeOf constraint ;
+	}
+	
+	class CGRelationshipConstraint extends RelationshipConstraint {
+		reference constraintGroup_CG : ConstraintGroup oppositeOf relationshipConstraint ;
+	}
+	
+	class CGObjectConstraint extends ObjectConstraint {
+		reference constraintGroup_CG : ConstraintGroup oppositeOf objectConstraint ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment StructuralConstraint
+	---------------------------------------------------------------------------------------------------------------
+	class StructuralConstraint {
+		reference description [0-1] : Description ;
+		reference designData [0-1] : DesignData ;
+		reference name : SimpleName ;
+		attribute evaluate [0-1] : ConstraintEvaluation ;
+		attribute raiseError [0-1] : Boolean ;
+		attribute returnEarly [0-1] : Boolean ;
+	}
+		
+				
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment Setting Constraints
+		-----------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment ConstraintDefinition
+	---------------------------------------------------------------------------------------------------------------
+	class ConstraintDefinition extends Definition {
+		reference relationshipConstraint [0-*] container : CDRelationshipConstraint oppositeOf constraintDefinition ;
+		reference constraintGroup [0-*] container : CDConstraintGroup oppositeOf constraintDefinition ;
+		reference objectConstraint [0-*] container : CDObjectConstraint oppositeOf constraintDefinition ;
+		reference constraint [0-*] container : CDConstraint oppositeOf constraintDefinition ;
+		
+		reference targetDefinition [0-1] : QualifiedName ;
+		attribute returnEarly [0-1] : Boolean ;
+	}
+	
+	class CDRelationshipConstraint extends RelationshipConstraint {
+		reference constraintDefinition : ConstraintDefinition oppositeOf relationshipConstraint ;
+	}
+	
+	class CDConstraintGroup extends ConstraintGroup {
+		reference constraintDefinition : ConstraintDefinition oppositeOf constraintGroup ;
+	}
+	
+	class CDObjectConstraint extends ObjectConstraint {
+		reference constraintDefinition : ConstraintDefinition oppositeOf objectConstraint ;
+	}
+	
+	class CDConstraint extends ConstraintMember {
+		reference constraintDefinition : ConstraintDefinition oppositeOf constraint ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment ConstraintMember
+	---------------------------------------------------------------------------------------------------------------
+	class ConstraintMember extends Member {
+		reference input [0-*] : Input ;
+				
+		attribute raiseError [0-1] : Boolean ;
+		attribute evaluate [0-1] : ConstraintEvaluation ;
+	}
+	
+		
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment Definition
+		-----------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Definition
+	---------------------------------------------------------------------------------------------------------------
+	class Definition {
+		reference description [0-1] : Description ;
+		reference designData [0-1] : DesignData ;
+		
+		reference settingDeclaration [0-*] container : DefSettingDeclaration oppositeOf definition_DSD ;
+		reference settingValue [0-*] container : DefSettingValue oppositeOf definition ;
+		reference settingValueList [0-*] container : DefSettingValueList oppositeOf definition ;
+		
+		reference name : SimpleName ;
+		reference manager [0-1] : QualifiedName ;
+		attribute className [0-1] : String ;
+	}
+	
+	class DefSettingDeclaration extends SettingMember {
+		reference definition_DSD : Definition oppositeOf settingDeclaration;
+	}
+	
+	class DefSettingValue extends SettingValue {
+		reference definition : Definition oppositeOf settingValue ;
+	}
+	
+	class DefSettingValueList extends SettingValueList {
+		reference definition : Definition oppositeOf settingValueList ;
+	}
+	
+		
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment Names
+		-----------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment SimpleName 
+	-- @comment pattern = "[_\p{Ll}\p{Lu}\p{Lt}\p{Lm}\p{Lo}\p{Nl}]{1}[\w\p{Lm}\p{Nl}\p{Cf}\p{Mn}\p{Mc}]*"
+	---------------------------------------------------------------------------------------------------------------
+	class SimpleName extends Element {}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment QualifiedName 
+	-- @comment pattern = "[_\p{Ll}\p{Lu}\p{Lt}\p{Lm}\p{Lo}\p{Nl}]{1}[\w\p{Lm}\p{Nl}\p{Cf}\p{Mn}\p{Mc}]*
+	-- @comment            (:[_\p{Ll}\p{Lu}\p{Lt}\p{Lm}\p{Lo}\p{Nl}]{1}[\w\p{Lm}\p{Nl}\p{Cf}\p{Mn}\p{Mc}]*)?
+	-- @comment            (\.[_\p{Ll}\p{Lu}\p{Lt}\p{Lm}\p{Lo}\p{Nl}]{1}[\w\p{Lm}\p{Nl}\p{Cf}\p{Mn}\p{Mc}]*)*
+	---------------------------------------------------------------------------------------------------------------
+	class QualifiedName extends Element {}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Path 
+	-- @comment pattern = "[_\p{Ll}\p{Lu}\p{Lt}\p{Lm}\p{Lo}\p{Nl}]{1}[\w\p{Lm}\p{Nl}\p{Cf}\p{Mn}\p{Mc}]*
+	-- @comment            (\.[_\p{Ll}\p{Lu}\p{Lt}\p{Lm}\p{Lo}\p{Nl}]{1}[\w\p{Lm}\p{Nl}\p{Cf}\p{Mn}\p{Mc}]*)*"
+	---------------------------------------------------------------------------------------------------------------
+	class Path extends Element {}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment SettingPath 
+	-- @comment pattern = "[_\p{Ll}\p{Lu}\p{Lt}\p{Lm}\p{Lo}\p{Nl}]{1}[\w\p{Lm}\p{Nl}\p{Cf}\p{Mn}\p{Mc}]*
+	-- @comment            (\.[_\p{Ll}\p{Lu}\p{Lt}\p{Lm}\p{Lo}\p{Nl}]{1}[\w\p{Lm}\p{Nl}\p{Cf}\p{Mn}\p{Mc}]*)*
+	-- @comment            (@[_\p{Ll}\p{Lu}\p{Lt}\p{Lm}\p{Lo}\p{Nl}]{1}[\w\p{Lm}\p{Nl}\p{Cf}\p{Mn}\p{Mc}]*)?"
+	---------------------------------------------------------------------------------------------------------------
+	class SettingPath extends Element {}
+		
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment NamespaceIdentity
+	---------------------------------------------------------------------------------------------------------------
+	class  NamespaceIdentity {
+		reference name : Path ;
+		reference version [0-1] : FourPartVersionType ;
+		reference publicKey [0-1] : PublicKeyType ;
+		reference publicKeyToken [0-1] : PublicKeyTokenType ;
+		reference culture [0-1] : CultureNeutral ;
+		attribute platform [0-1] : Platform ;
+	}
+
+	
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment Flows
+		-----------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment FlowDefinition 
+	---------------------------------------------------------------------------------------------------------------
+	class FlowDefinition extends Definition {}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment FlowMember 
+	---------------------------------------------------------------------------------------------------------------
+	class FlowMember extends Member {
+		reference input [0-*] : Input ;
+		reference output [0-*] : Output ;
+	}
+
+	
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment Value Transfer
+		-----------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment ValueTransfer 
+	---------------------------------------------------------------------------------------------------------------
+	class ValueTransfer {
+		reference name : SimpleName ;
+		reference path : SettingPath ;
+		attribute cast [0-1] : Boolean ;
+		attribute convert [0-1] : Boolean ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Output 
+	---------------------------------------------------------------------------------------------------------------
+	class Output extends ValueTransfer {
+		attribute fixed [0-1] : Boolean ;
+		attribute replace [0-1] : Boolean ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Input 
+	---------------------------------------------------------------------------------------------------------------
+	class Input extends ValueTransfer {}
+
+	
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment Settings Types
+		-----------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment SettingDefinitions 
+	---------------------------------------------------------------------------------------------------------------
+	class SettingDefinitions {
+		reference nameSpace [0-1] : NameSpace ;
+		reference manager : QualifiedName ;
+		attribute clrNameSpace : String ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment ClrClassName = ClrNamespace
+	-- @comment This attribute is used to mark up the XSD for the individual setting defintions 
+	-- @comment to provide a CLR name for a setting definition. The default is the name from the XSD.
+	---------------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Manager
+	-- @comment This attribute is used to mark up the XSD for the individual setting definitions 
+	-- @comment to provide a manager name for a setting definition. The default is the name from the XSD.
+	---------------------------------------------------------------------------------------------------------------
+	
+			
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment Setting Declaration
+		-----------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment SettingMember 
+	---------------------------------------------------------------------------------------------------------------
+	class SettingMember extends Member {
+		reference facet [0-*] : Facet ;
+		reference settingAttributes : SettingsAttributes ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment SettingsAttributes 
+	---------------------------------------------------------------------------------------------------------------
+	class SettingsAttributes {
+		attribute list : Boolean ;
+		attribute access : SettingMemberAccess ;
+		attribute secure : SettingMemberSecure ;
+		attribute deploymentTime : Boolean ;
+		attribute required : Boolean ;
+		attribute canBeNull : Boolean ;
+		attribute elementsCanBeNull :Boolean ;
+		attribute defaultRead : String ;
+		attribute defaultWrite : String ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment SettingMemberAccess
+	-- @comment value = {"ReadWrite"|"ReadOnly"|"WriteOnly"}
+	---------------------------------------------------------------------------------------------------------------
+	enumeration SettingMemberAccess {
+		literal ReadWrite ;
+		literal ReadOnly ;
+		literal WriteOnly ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment SettingMemberSecure
+	-- @comment value = {"Always"|"PerInstance"|"Never"}
+	---------------------------------------------------------------------------------------------------------------
+	enumeration SettingMemberSecure {
+		literal Always ;
+		literal PerInstance ;
+		literal Never ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Facet
+	---------------------------------------------------------------------------------------------------------------
+	class Facet {
+		reference name : SimpleName ;
+	}
+	
+	
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment Settings Value
+		-----------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment SettingValue 
+	---------------------------------------------------------------------------------------------------------------
+	class SettingValue {
+		attribute contents [0-*] : String ;
+		reference settingValueAttributes : SettingValueAttributes ;
+	}
+	
+	class SettingValueList {
+		reference value [0-*] : Value ;
+		reference settingValueAttributes : SettingValueAttributes ;
+	}	
+	
+	class Value {
+		attribute contents [0-*] : String ;
+		attribute null : Boolean ;
+	}
+	
+	class SettingValueAttributes {
+		reference path : SettingPath ;
+		attribute null [0-1] : Boolean ;
+		attribute fixed [0-1] : Boolean ;
+		attribute unset [0-1] : Boolean ;
+		reference definition [0-1] : QualifiedName ;
+		attribute convert [0-1] : Boolean ;
+		attribute secure [0-1] : Boolean ;
+		attribute "reference" [0-1] : Boolean ;
+	}
+
+			
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment Description nodes
+		-----------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Description 
+	---------------------------------------------------------------------------------------------------------------
+	class Description {
+		reference entry [0-*] container : Entry oppositeOf description ;
+		attribute resourceId [0-1] : String ;
+		reference manager [0-1] : QualifiedName ;
+	}
+	
+	class Entry extends DescriptionEntry {
+		reference description : Description oppositeOf entry ;
+	}
+	
+	class DescriptionEntry {
+		attribute name : String ;
+		attribute resourceId [0-1] : String ;
+		reference manager [0-1] : QualifiedName;
+		reference substitute [0-1] container : Substitute oppositeOf descriptionEntry ;
+	}
+	
+	class Substitute extends PathList {
+		reference descriptionEntry [0-1] container : DescriptionEntry oppositeOf substitute ;
+	}
+	
+	class PathList {
+		reference settingPath [0-*] : SettingPath ;
+	}
+	
+	    	
+    	-----------------------------------------------------------------------------------------------------------
+		-- @comment SimpleType
+		-----------------------------------------------------------------------------------------------------------
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment MaxOccurs a non negative integer or "unbounded"
+	---------------------------------------------------------------------------------------------------------------
+	class MaxOccurs extends Element {}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment MinOccurs a non negative integer 
+	---------------------------------------------------------------------------------------------------------------
+	class MinOccurs extends Element {}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment FourPartVersionType type for version number
+	-- @comment pattern = "([0-9]{1,4}|[0-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])
+	-- @comment            (\.([0-9]{1,4}|[0-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])){3}"
+	---------------------------------------------------------------------------------------------------------------
+	class FourPartVersionType extends Element {}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment PublicKeyType public key for verifying signed docs
+	-- @comment pattern = "([0-9]|[a-f]|[A-F]){192,}"
+	---------------------------------------------------------------------------------------------------------------
+	class PublicKeyType extends Element {}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment PublicKeyTokenType 
+	-- @comment pattern = "([0-9]|[a-f]|[A-F]){16}"
+	---------------------------------------------------------------------------------------------------------------
+	class PublicKeyTokenType extends Element {}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment CompilationHashType 
+	-- @comment pattern = "([0-9]|[A-F]){40}"
+	---------------------------------------------------------------------------------------------------------------
+	class CompilationHashType extends Element {}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment RolesList roles for all Relationships
+	---------------------------------------------------------------------------------------------------------------
+	enumeration RolesList {
+		literal Host ;
+		literal Guest ;
+		literal Parent ;
+		literal Member ;
+		literal Source ;
+		literal Dependent ;
+		literal Proxy ;
+		literal Delegate ;
+		literal Client ;
+		literal Server ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Culture culture string
+	-- @comment pattern = "[a-z]{2,3}(-[A-Z]{2,3}(-[a-zA-Z]{4})?)?"
+	---------------------------------------------------------------------------------------------------------------
+	class Culture extends Element {}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment CultureNeutral culture string
+	-- @comment pattern = "[a-z]{2,3}(-[A-Z]{2,3}(-[a-zA-Z]{4})?)?"
+	-- @comment and value = {"*"|"neutral"}
+	---------------------------------------------------------------------------------------------------------------
+	class CultureNeutral extends Element {}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment ProcessorArchitectures 
+	---------------------------------------------------------------------------------------------------------------
+	enumeration ProcessorArchitectures {
+		literal x86 ;
+		literal ia64 ;
+		literal amd64 ;
+		literal wow64 ;
+		literal msil ;
+		literal shx ;
+		literal arm ;
+		literal data ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Platform 
+	---------------------------------------------------------------------------------------------------------------
+	enumeration Platform {
+		literal x86 ;
+		literal ia64 ;
+		literal amd64 ;
+		literal wow64 ;
+		literal msil ;
+		literal shx ;
+		literal arm ;
+		literal data ;
+		literal "*" ;
+		literal neutral ;
+	}
+	
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment ConstraintEvaluation 
+	---------------------------------------------------------------------------------------------------------------
+	enumeration ConstraintEvaluation {
+		literal Design ;
+		literal Never ;
+	}
+	
+	
+		-----------------------------------------------------------------------------------------------------------
+		-- @comment Basic Type
+		-----------------------------------------------------------------------------------------------------------
+			
+	---------------------------------------------------------------------------------------------------------------
+	-- @comment Element
+	---------------------------------------------------------------------------------------------------------------
+	class Element {
+		attribute value : String ;
+	}
+	
+}
+
+-------------------------------------------------------------------------------------------------------------------
+-- @end System Definition Model
+-------------------------------------------------------------------------------------------------------------------
+
+package PrimitiveTypes {
+  datatype String ;
+  datatype Integer ;
+  datatype Boolean ;
+}

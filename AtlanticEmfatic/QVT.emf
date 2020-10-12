@@ -1,0 +1,724 @@
+package Metamodel;
+
+package qvttemplate {
+  abstract class TemplateExp extends essentialocl.LiteralExp {
+    !ordered val essentialocl.Variable bindsTo;
+    !ordered val essentialocl.OclExpression where;
+  }
+
+  class ObjectTemplateExp extends TemplateExp {
+    val PropertyTemplateItem[*]#objContainer part;
+    !ordered ref emof.Class[1] referredClass;
+  }
+
+  class CollectionTemplateExp extends TemplateExp {
+    val essentialocl.OclExpression[*] part;
+    !unique !ordered attr essentialocl.CollectionKind kind;
+    !ordered ref essentialocl.CollectionType referredCollectionType;
+    !ordered ref essentialocl.OclExpression match;
+  }
+
+  class PropertyTemplateItem extends emof.Element {
+    !ordered ref ObjectTemplateExp[1]#part objContainer;
+    !ordered val essentialocl.OclExpression[1] value;
+    !ordered ref emof.Property[1] referredProperty;
+  }
+
+}
+
+package imperativeocl {
+  class ImperativeIterateExp extends ImperativeLoopExp {
+    !ordered val essentialocl.Variable[1] target;
+  }
+
+  class AssignExp extends ImperativeExpression {
+    val essentialocl.OclExpression[*] value;
+    !ordered val essentialocl.OclExpression[1] left;
+    !ordered val essentialocl.OclExpression defaultValue;
+    !unique !ordered attr Boolean isReset;
+  }
+
+  class BlockExp extends ImperativeExpression {
+    val essentialocl.OclExpression[*] body;
+  }
+
+  class SwitchExp extends essentialocl.CallExp, ImperativeExpression {
+    val AltExp[*] alternativePart;
+    !ordered val essentialocl.OclExpression elsePart;
+  }
+
+  class VariableInitExp extends ImperativeExpression {
+    !ordered val essentialocl.Variable[1] referredVariable;
+    !unique !ordered attr Boolean withResult;
+  }
+
+  class WhileExp extends ImperativeExpression {
+    !ordered val essentialocl.OclExpression[1] condition;
+    !ordered val essentialocl.OclExpression[1] body;
+  }
+
+  class ComputeExp extends ImperativeExpression {
+    !ordered val essentialocl.Variable[1]#computeOwner returnedElement;
+    !ordered val essentialocl.OclExpression[1] body;
+  }
+
+  class AltExp extends ImperativeExpression {
+    !ordered val essentialocl.OclExpression[1] condition;
+    !ordered val essentialocl.OclExpression[1] body;
+  }
+
+  class UnlinkExp extends ImperativeExpression {
+    !ordered val essentialocl.OclExpression[1] target;
+    !ordered val essentialocl.OclExpression[1] item;
+  }
+
+  class ReturnExp extends ImperativeExpression {
+    !ordered val essentialocl.OclExpression[1] value;
+  }
+
+  class BreakExp extends ImperativeExpression {
+  }
+
+  class TryExp extends ImperativeExpression {
+    !ordered val essentialocl.OclExpression[1]#tryBodyOwner tryBody;
+    ref emof.Type[*] exception;
+    !ordered val essentialocl.OclExpression exceptBody;
+  }
+
+  class RaiseExp extends ImperativeExpression {
+    !ordered ref emof.Type[1] exception;
+  }
+
+  class ContinueExp extends ImperativeExpression {
+  }
+
+  class ForExp extends ImperativeLoopExp {
+  }
+
+  class TupleExp extends ImperativeExpression {
+    val essentialocl.OclExpression[+] element;
+  }
+
+  class Typedef extends emof.Class {
+    !ordered ref emof.Type[1] base;
+    !ordered val essentialocl.OclExpression condition;
+  }
+
+  class InstantiationExp extends ImperativeExpression {
+    !ordered ref emof.Class[1] instantiatedClass;
+    !ordered ref essentialocl.Variable extent;
+    val essentialocl.OclExpression[*] argument;
+  }
+
+  class DictionaryType extends essentialocl.CollectionType {
+    !ordered ref emof.Type keyType;
+  }
+
+  class DictLiteralExp extends essentialocl.LiteralExp {
+    val DictLiteralPart[*] part;
+  }
+
+  class DictLiteralPart extends emof.Element {
+    !ordered val essentialocl.OclExpression[1] key;
+    !ordered val essentialocl.OclExpression[1] value;
+  }
+
+  class TemplateParameterType extends emof.Type {
+    !unique !ordered attr String specification;
+  }
+
+  class LogExp extends ImperativeExpression {
+    !unique !ordered attr String text;
+    !unique !ordered attr Integer level;
+    !ordered val essentialocl.OclExpression condition;
+    !ordered ref emof.Element element;
+  }
+
+  class AssertExp extends ImperativeExpression {
+    !unique !ordered attr SeverityKind severity;
+    !ordered val LogExp log;
+    !ordered val essentialocl.OclExpression[1] assertion;
+  }
+
+  enum SeverityKind {
+    error = 0;
+    fatal = 0;
+    warning = 0;
+  }
+
+  abstract class ImperativeLoopExp extends essentialocl.LoopExp, ImperativeExpression {
+    !ordered val essentialocl.OclExpression condition;
+  }
+
+  class CollectorExp extends ImperativeLoopExp {
+    !ordered val essentialocl.Variable[1] target;
+  }
+
+  abstract class ImperativeExpression extends essentialocl.OclExpression {
+  }
+
+  class UnpackExp extends ImperativeExpression {
+    val essentialocl.Variable[+] variable;
+  }
+
+  class AnonymousTupleType extends emof.Class {
+    ref emof.Type[*] elementType;
+  }
+
+  class AnonymousTupleLiteralExp extends essentialocl.LiteralExp {
+    val AnonymousTupleLiteralPart[*] part;
+  }
+
+  class AnonymousTupleLiteralPart extends emof.Element {
+    val essentialocl.OclExpression[*] value;
+  }
+
+  class ListType extends essentialocl.CollectionType {
+  }
+
+}
+
+package emof {
+  class Class extends Type {
+    val Property[*]#Class ownedAttribute;
+    val Operation[*]#~class ownedOperation;
+    ref Class[*] superClass;
+    !unique !ordered attr Boolean isAbstract;
+  }
+
+  abstract class DataType extends Type {
+  }
+
+  abstract class Element extends Object {
+    ref Tag[*]#element tag;
+    val Comment[*] ownedComment;
+  }
+
+  class Tag extends Element {
+    ref Element[*]#tag element;
+    !ordered ref qvtbase.Transformation#ownedTag transformation;
+    !ordered ref qvtoperational.Module#ownedTag owner;
+    !unique !ordered attr String value;
+    !unique !ordered attr String name;
+  }
+
+  class Enumeration extends DataType {
+    val EnumerationLiteral[*]#enumeration ownedLiteral;
+  }
+
+  abstract class NamedElement extends Element {
+    !unique !ordered attr String name;
+  }
+
+  class Extent extends Object {
+  }
+
+  class Object {
+  }
+
+  class Operation extends MultiplicityElement, TypedElement {
+    !ordered ref Class[1]#ownedOperation ~class;
+    val Parameter[*]#operation ownedParameter;
+    ref Type[*] raisedException;
+  }
+
+  abstract class MultiplicityElement {
+    !unique !ordered attr Boolean isOrdered;
+    !unique !ordered attr Boolean isUnique;
+    !unique !ordered attr Integer lower;
+    !unique !ordered attr UnlimitedNatural upper;
+  }
+
+  class Package extends NamedElement {
+    val Type[*]#~package ownedType;
+    ref Package[*] nestedPackage;
+    !unique !ordered attr String uri;
+  }
+
+  abstract class Type extends NamedElement {
+    !ordered ref Package[1]#ownedType ~package;
+  }
+
+  class Parameter extends MultiplicityElement, TypedElement {
+    !ordered ref Operation#ownedParameter operation;
+  }
+
+  class EnumerationLiteral extends NamedElement {
+    !ordered ref Enumeration#ownedLiteral enumeration;
+  }
+
+  class Property extends MultiplicityElement, TypedElement {
+    !ordered ref Class[1]#ownedAttribute Class;
+    !ordered ref Property opposite;
+    !ordered ref qvtoperational.Module#configProperty module;
+    !unique !ordered attr Boolean isReadOnly;
+    !unique !ordered attr Boolean isDerived;
+    !unique !ordered attr Boolean isComposite;
+    !unique !ordered attr Boolean isId;
+    !unique !ordered attr String default;
+  }
+
+  abstract class TypedElement extends NamedElement {
+    !ordered ref Type type;
+  }
+
+  class PrimitiveType extends DataType {
+  }
+
+  class URIExtent extends Extent {
+  }
+
+  datatype Boolean : "";
+
+  datatype String : "";
+
+  datatype UnlimitedNatural : "";
+
+  datatype Integer : "";
+
+  datatype Real : "";
+
+  class Comment extends Element {
+    ref NamedElement[*] annotatedElement;
+  }
+
+}
+
+package qvtoperational {
+  class MappingBody extends OperationBody {
+    val essentialocl.OclExpression[*] initSection;
+    val essentialocl.OclExpression[*] endSection;
+  }
+
+  class Helper extends ImperativeOperation {
+    !unique !ordered attr Boolean isQuery;
+  }
+
+  class ResolveExp extends essentialocl.CallExp {
+    !ordered val essentialocl.OclExpression condition;
+    !unique !ordered attr Boolean one;
+    !unique !ordered attr Boolean isInverse;
+    !unique !ordered attr Boolean isDeferred;
+  }
+
+  class ResolveInExp extends ResolveExp {
+    !ordered ref MappingOperation inMapping;
+  }
+
+  class OperationalTransformation extends Module {
+    ref emof.Class[*] intermediateClass;
+    !ordered ref qvtbase.Transformation refined;
+    ref emof.Property[*] intermediateProperty;
+    val ModelParameter[*] modelParameter;
+    !ordered ref EntryOperation entry;
+    val qvtrelation.Relation[*] relation;
+  }
+
+  class MappingParameter extends VarParameter {
+    !ordered ref qvtrelation.RelationDomain refinedDomain;
+    !ordered ref ModelParameter extent;
+  }
+
+  class MappingOperation extends ImperativeOperation, emof.Operation, emof.NamedElement {
+    ref MappingOperation[*] disjunct;
+    !ordered ref qvtrelation.Relation[1] refinedRelation;
+    ref MappingOperation[*] merged;
+    ref MappingOperation[*] inherited;
+    val essentialocl.OclExpression[*] when;
+  }
+
+  class MappingCallExp extends ImperativeCallExp {
+    !unique !ordered attr Boolean isStrict;
+  }
+
+  class Constructor extends ImperativeOperation {
+  }
+
+  class ContextualProperty extends emof.Property {
+    !ordered ref emof.Class[1] context;
+    !ordered ref emof.Property overridden;
+  }
+
+  class EntryOperation extends ImperativeOperation {
+  }
+
+  class ImperativeCallExp extends essentialocl.OperationCallExp {
+    !unique !ordered attr Boolean isVirtual;
+  }
+
+  class ImperativeOperation extends emof.Operation {
+    !ordered val VarParameter#ctxOwner context;
+    val VarParameter[*]#resOwner result;
+    !ordered ref ImperativeOperation overridden;
+    !ordered val OperationBody#operation body;
+    !unique !ordered attr Boolean isBlackbox;
+  }
+
+  enum DirectionKind {
+    in = 0;
+    inout = 0;
+    out = 0;
+  }
+
+  class Library extends Module {
+  }
+
+  class ModelParameter extends VarParameter {
+  }
+
+  class ModelType extends emof.Class, emof.URIExtent {
+    ref emof.Package[*] metamodel;
+    val essentialocl.OclExpression[*] additionalCondition;
+    !unique !ordered attr String conformanceKind;
+  }
+
+  class Module extends emof.Class, emof.Package {
+    val emof.Tag[*]#owner ownedTag;
+    ref emof.Property[*]#module configProperty;
+    val ModuleImport[*]#module moduleImport;
+    ref ModelType[*] usedModelType;
+    !unique !ordered attr Boolean isBlackbox;
+  }
+
+  class ModuleImport extends emof.Element {
+    ref ModelType[*] binding;
+    !ordered ref Module#moduleImport module;
+    !ordered ref Module[1] importedModule;
+    !unique !ordered attr ImportKind kind;
+  }
+
+  enum ImportKind {
+    extension = 0;
+    access = 0;
+  }
+
+  class VarParameter extends emof.Parameter, essentialocl.Variable {
+    !ordered ref ImperativeOperation#context ctxOwner;
+    !ordered ref ImperativeOperation#result resOwner;
+    !unique !ordered attr DirectionKind kind;
+  }
+
+  class OperationBody extends emof.Element {
+    !ordered ref ImperativeOperation#body operation;
+    val essentialocl.OclExpression[*] content;
+  }
+
+  class ConstructorBody extends OperationBody {
+  }
+
+  class ObjectExp extends imperativeocl.InstantiationExp {
+    !ordered ref essentialocl.Variable referredObject;
+    !ordered val ConstructorBody[1] body;
+  }
+
+}
+
+package qvtcore {
+  abstract class Area {
+    !ordered val GuardPattern[1]#area guardPattern;
+    !ordered val BottomPattern[1]#area bottomPattern;
+  }
+
+  class Assignment {
+    !ordered ref BottomPattern[1]#assignment bottomPattern;
+    !ordered val essentialocl.OclExpression[1] slotExpression;
+    !ordered val essentialocl.OclExpression[1] value;
+    !ordered ref emof.Property[1] targetProperty;
+    !unique !ordered attr Boolean isDefault;
+  }
+
+  class BottomPattern extends CorePattern {
+    !ordered ref Area[1]#bottomPattern area;
+    val Assignment[*]#bottomPattern assignment;
+    val RealizedVariable[*] realizedVariable;
+    val EnforcementOperation[*]#bottomPattern enforcementOperation;
+  }
+
+  class GuardPattern extends CorePattern {
+    !ordered ref Area[1]#guardPattern area;
+  }
+
+  class Mapping extends qvtbase.Rule, Area {
+    ref Mapping[*] specification;
+    ref Mapping[*]#context local;
+    !ordered ref Mapping#local context;
+  }
+
+  class RealizedVariable extends essentialocl.Variable {
+  }
+
+  class CoreDomain extends qvtbase.Domain, Area {
+  }
+
+  class CorePattern extends qvtbase.Pattern {
+  }
+
+  class EnforcementOperation {
+    !unique !ordered attr EnforcementMode enforcementMode;
+    !ordered ref BottomPattern#enforcementOperation bottomPattern;
+    !ordered ref essentialocl.OperationCallExp[1] operationCallExp;
+  }
+
+  enum EnforcementMode {
+    Deletion = 0;
+    Creation = 0;
+  }
+
+}
+
+package qvtbase {
+  class Domain extends emof.NamedElement {
+    !unique !ordered attr Boolean isCheckable;
+    !unique !ordered attr Boolean isEnforceable;
+    !ordered ref Rule[1]#domain rule;
+    !ordered ref TypedModel[1] typedModel;
+  }
+
+  class Transformation extends emof.Class, emof.Package {
+    val emof.Tag[*]#transformation ownedTag;
+    val TypedModel[*]#transformation modelParameter;
+    val Rule[*]#transformation rule;
+    !ordered ref Transformation ~extends;
+  }
+
+  class TypedModel extends emof.NamedElement {
+    !ordered ref Transformation[1]#modelParameter transformation;
+    ref emof.Package[+] usedPackage;
+    ref TypedModel[*] dependsOn;
+  }
+
+  class Rule extends emof.NamedElement {
+    val Domain[*]#rule domain;
+    !ordered ref Transformation[1]#rule transformation;
+    !ordered ref Rule overrides;
+  }
+
+  class Pattern extends emof.Element {
+    val Predicate[*]#pattern predicate;
+    val essentialocl.Variable[*] bindsTo;
+    !ordered ref qvtrelation.Relation#where whenOwner;
+    !ordered ref qvtrelation.Relation#when whereOwner;
+  }
+
+  class Predicate extends emof.Element {
+    !ordered val essentialocl.OclExpression[1] conditionExpression;
+    !ordered ref Pattern[1]#predicate pattern;
+  }
+
+  class Function extends emof.Operation {
+    !ordered val essentialocl.OclExpression queryExpression;
+  }
+
+  class FunctionParameter extends emof.Parameter, essentialocl.Variable {
+  }
+
+}
+
+package qvtrelation {
+  class RelationalTransformation extends qvtbase.Transformation {
+    !ordered val Key[*]#transformation ownedKey;
+  }
+
+  class Relation extends qvtbase.Rule {
+    !unique !ordered attr Boolean isTopLevel;
+    val essentialocl.Variable[*] variable;
+    ref RelationImplementation[*]#relation operationalImpl;
+    !ordered val qvtbase.Pattern#whenOwner where;
+    !ordered val qvtbase.Pattern#whereOwner when;
+  }
+
+  class RelationDomain extends qvtbase.Domain {
+    !ordered val DomainPattern[1] pattern;
+    !ordered ref essentialocl.Variable[1] rootVariable;
+  }
+
+  class DomainPattern extends qvtbase.Pattern {
+    !ordered val qvttemplate.TemplateExp templateExpression;
+  }
+
+  class RelationImplementation extends emof.Element {
+    !ordered ref Relation#operationalImpl relation;
+    !ordered ref emof.Operation[1] impl;
+    !ordered ref qvtbase.TypedModel[1] inDirectionOf;
+  }
+
+  class Key extends emof.Element {
+    !ordered ref emof.Class[1] identifies;
+    ref emof.Property[+] part;
+    !ordered ref RelationalTransformation#ownedKey transformation;
+  }
+
+}
+
+package essentialocl {
+  class BooleanLiteralExp extends PrimitiveLiteralExp {
+    !unique !ordered attr Boolean booleanSymbol;
+  }
+
+  abstract class CallExp extends OclExpression {
+    !ordered val OclExpression source;
+  }
+
+  enum CollectionKind {
+    OrderedSet = 0;
+    Set = 0;
+    Bag = 0;
+    Sequence = 0;
+  }
+
+  abstract class OclExpression extends emof.TypedElement {
+    !ordered ref imperativeocl.TryExp#tryBody tryBodyOwner;
+  }
+
+  class UnlimitedNaturalExp extends NumericLiteralExp {
+    !unique !ordered attr emof.UnlimitedNatural symbol;
+  }
+
+  class IfExp extends OclExpression {
+    !ordered val OclExpression[1] condition;
+    !ordered val OclExpression[1] thenExpression;
+    !ordered val OclExpression[1] elseExpression;
+  }
+
+  class LetExp extends OclExpression {
+    val OclExpression[*] in;
+    !ordered val Variable[1]#LetExp variable;
+  }
+
+  class Variable extends emof.TypedElement {
+    !ordered val OclExpression initExpression;
+    !ordered ref LetExp#variable LetExp;
+    !ordered ref imperativeocl.ComputeExp#returnedElement computeOwner;
+    !ordered ref emof.Parameter bindParameter;
+  }
+
+  class PropertyCallExp extends FeaturePropertyCall {
+    !ordered ref emof.Property referredProperty;
+  }
+
+  class VariableExp extends OclExpression {
+    !ordered ref Variable referredVariable;
+  }
+
+  class TypeExp extends OclExpression {
+    !ordered ref emof.Type referredType;
+  }
+
+  abstract class LoopExp extends CallExp, OclExpression {
+    !ordered val OclExpression[1] body;
+    val Variable[*] iterator;
+  }
+
+  class IteratorExp extends LoopExp {
+  }
+
+  class StringLiteralExp extends PrimitiveLiteralExp {
+    !unique !ordered attr String stringSymbol;
+  }
+
+  class IntegerLiteralExp extends NumericLiteralExp {
+    !unique !ordered attr Integer integerSymbol;
+  }
+
+  class OperationCallExp extends FeaturePropertyCall {
+    val OclExpression[*] argument;
+    !ordered ref emof.Operation referredOperation;
+  }
+
+  class RealLiteralExp extends NumericLiteralExp {
+    !unique !ordered attr emof.Real realSymbol;
+  }
+
+  abstract class LiteralExp extends OclExpression {
+  }
+
+  class IterateExp extends LoopExp {
+    !ordered val Variable result;
+  }
+
+  abstract class PrimitiveLiteralExp extends LiteralExp {
+  }
+
+  abstract class NumericLiteralExp extends PrimitiveLiteralExp {
+  }
+
+  class CollectionLiteralExp extends LiteralExp {
+    !unique !ordered attr CollectionKind kind;
+    val CollectionLiteralPart[*]#CollectionLiteralExp part;
+  }
+
+  abstract class CollectionLiteralPart extends emof.TypedElement {
+    !ordered ref CollectionLiteralExp[1]#part CollectionLiteralExp;
+  }
+
+  class CollectionItem extends CollectionLiteralPart {
+    !ordered val OclExpression[1] item;
+  }
+
+  class CollectionRange extends CollectionLiteralPart {
+    !ordered val OclExpression[1] first;
+    !ordered val OclExpression[1] last;
+  }
+
+  class TupleLiteralExp extends LiteralExp {
+    val TupleLiteralPart[*]#TupleLiteralExp part;
+  }
+
+  class NullLiteralExp extends LiteralExp {
+  }
+
+  class ExpressionInOcl extends OpaqueExpression {
+    !ordered val OclExpression[1] bodyExpression;
+    !ordered val Variable context;
+    !ordered val Variable resultVariable;
+    !ordered val Variable parameterVariable;
+  }
+
+  class OpaqueExpression {
+  }
+
+  class InvalidLiteralExp extends LiteralExp {
+  }
+
+  abstract class FeaturePropertyCall extends CallExp {
+  }
+
+  class TupleLiteralPart extends emof.TypedElement {
+    !ordered ref TupleLiteralExp#part TupleLiteralExp;
+    !ordered val emof.Property attribute;
+  }
+
+  class BagType extends CollectionType {
+  }
+
+  abstract class CollectionType extends emof.DataType {
+    !ordered ref emof.Type elementType;
+  }
+
+  class EnumLiteralExp extends LiteralExp {
+    !ordered ref emof.EnumerationLiteral referredEnumLiteral;
+  }
+
+  class InvalidType extends emof.Type {
+  }
+
+  class OrderedSetType extends CollectionType {
+  }
+
+  class SequenceType extends CollectionType {
+  }
+
+  class SetType extends CollectionType {
+  }
+
+  class TupleType extends emof.Class, emof.DataType {
+  }
+
+  class VoidType extends emof.Type {
+  }
+
+  class AnyType extends emof.Class, emof.Type {
+  }
+
+}
+

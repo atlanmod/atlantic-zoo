@@ -1,0 +1,48 @@
+package Metamodel;
+
+package Repository {
+  class Subsystem {
+    !ordered val Class[*]#parentSubsystem classes;
+    !ordered val Relation[*]#subsystem relations;
+  }
+
+  class Relation {
+    !ordered ref Subsystem[1]#relations subsystem;
+    !ordered ref Class[2]#relations classes;
+  }
+
+  class Class {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr Boolean[1] is_deferred;
+    !ordered val Feature[*]#theClass features;
+    !ordered ref Subsystem[1]#classes parentSubsystem;
+    !ordered ref Subsystem[1] subsystem;
+    !ordered ref Relation[*]#classes relations;
+  }
+
+  class Feature {
+    !ordered ref Class[1]#features theClass;
+    !ordered ref Type[1] type;
+  }
+
+  class Type {
+    !unique !ordered attr String[1] name;
+  }
+
+  class Entity extends Feature {
+  }
+
+  class Routine extends Feature {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+}
+

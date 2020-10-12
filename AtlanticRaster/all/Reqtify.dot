@@ -1,0 +1,67 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_Reqtify"{
+labelloc=t
+color=black
+label=Reqtify
+ node[shape=record];
+Project[label="{Project| | }"]
+;
+ node[shape=record];
+TypedElement[label="{/TypedElement/|type : String| }"]
+;
+ node[shape=record];
+ElementWithIL[label="{/ElementWithIL/|name : String\nlabel : String| }"]
+ ElementWithIL->TypedElement[arrowhead=onormal,group=TypedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Document[label="{Document| | }"]
+ Document->Project[arrowhead=diamond,arrowtail=none,headlabel="project",taillabel="documents[1-*]",group=Project,minlen=2,constraint=true,]
+ Document->ElementWithIL[arrowhead=onormal,group=ElementWithIL,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TextElement[label="{/TextElement/|description : String| }"]
+ TextElement->ElementWithIL[arrowhead=onormal,group=ElementWithIL,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Section[label="{Section| | }"]
+ Section->Document[arrowhead=diamond,arrowtail=none,headlabel="document[0-1]",taillabel="sections[*]",group=Document,minlen=2,constraint=true,]
+ Section->Section[arrowhead=diamond,arrowtail=none,headlabel="sectionParent[0-1]",taillabel="sectionChildren[*]",group=Section,minlen=2,constraint=true,]
+ Section->TextElement[arrowhead=onormal,group=TextElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AbstractRequirement[label="{/AbstractRequirement/| | }"]
+ AbstractRequirement->Section[arrowhead=diamond,arrowtail=none,headlabel="section[0-1]",taillabel="requirements[*]",group=Section,minlen=2,constraint=true,]
+ AbstractRequirement->MacroRequirement[arrowhead=diamond,arrowtail=none,headlabel="isContained[0-1]",taillabel="contains[*]",group=MacroRequirement,minlen=2,constraint=true,]
+ AbstractRequirement->CoverLink[arrowhead=vee,arrowtail=diamond,headlabel="coverLinks[*]",group=CoverLink,minlen=2,constraint=true,]
+ AbstractRequirement->Attribute[arrowhead=vee,arrowtail=diamond,headlabel="attribute[*]",group=Attribute,minlen=2,constraint=true,]
+ AbstractRequirement->TextElement[arrowhead=onormal,group=TextElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Requirement[label="{Requirement| | }"]
+ Requirement->AbstractRequirement[arrowhead=onormal,group=AbstractRequirement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MacroRequirement[label="{MacroRequirement| | }"]
+ MacroRequirement->AbstractRequirement[arrowhead=onormal,group=AbstractRequirement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CoverLink[label="{CoverLink| | }"]
+ CoverLink->AbstractRequirement[arrowhead=vee,arrowtail=none,headlabel="linkWith",group=AbstractRequirement,minlen=2,constraint=false,]
+ CoverLink->TypedElement[arrowhead=onormal,group=TypedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Attribute[label="{Attribute|value : String| }"]
+ Attribute->TypedElement[arrowhead=onormal,group=TypedElement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

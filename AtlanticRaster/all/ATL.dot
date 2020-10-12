@@ -1,0 +1,435 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_ATL"{
+labelloc=t
+color=black
+label=ATL
+ node[shape=record];
+LocatedElement[label="{/LocatedElement/|location[0-1] : String\ncommentsBefore[*] : String\ncommentsAfter[*] : String| }"]
+;
+ node[shape=record];
+Unit[label="{Unit|name : String| }"]
+ Unit->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Library[label="{Library| | }"]
+ Library->Unit[arrowhead=onormal,group=Unit,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Query[label="{Query| | }"]
+ Query->OclExpression[arrowhead=vee,arrowtail=diamond,headlabel="body",group=OclExpression,minlen=2,constraint=true,]
+ Query->Unit[arrowhead=onormal,group=Unit,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Module[label="{Module|isRefining : Boolean| }"]
+ Module->OclModel[arrowhead=vee,arrowtail=diamond,headlabel="inModels[1-*]{ordered}",group=OclModel,minlen=2,constraint=true,]
+ Module->OclModel[arrowhead=vee,arrowtail=diamond,headlabel="outModels[1-*]",group=OclModel,minlen=2,constraint=true,]
+ Module->Unit[arrowhead=onormal,group=Unit,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ModuleElement[label="{/ModuleElement/| | }"]
+ ModuleElement->Module[arrowhead=diamond,arrowtail=none,headlabel="module",taillabel="elements{ordered}",group=Module,minlen=2,constraint=true,]
+ ModuleElement->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Helper[label="{Helper| | }"]
+ Helper->Query[arrowhead=diamond,arrowtail=none,headlabel="query[0-1]",taillabel="helpers{ordered}",group=Query,minlen=2,constraint=true,]
+ Helper->Library[arrowhead=diamond,arrowtail=none,headlabel="library[0-1]",taillabel="helpers{ordered}",group=Library,minlen=2,constraint=true,]
+ Helper->OclFeatureDefinition[arrowhead=vee,arrowtail=diamond,headlabel="definition",group=OclFeatureDefinition,minlen=2,constraint=true,]
+ Helper->ModuleElement[arrowhead=onormal,group=ModuleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Rule[label="{/Rule/|name : String| }"]
+ Rule->ModuleElement[arrowhead=onormal,group=ModuleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MatchedRule[label="{MatchedRule|isAbstract : Boolean\nisRefining : Boolean\nisNoDefault : Boolean| }"]
+ MatchedRule->MatchedRule[arrowhead=none,arrowtail=none,headlabel="superRule[0-1]",taillabel="children",group=MatchedRule,minlen=2,constraint=false,]
+ MatchedRule->Rule[arrowhead=onormal,group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LazyMatchedRule[label="{LazyMatchedRule|isUnique : Boolean| }"]
+ LazyMatchedRule->MatchedRule[arrowhead=onormal,group=MatchedRule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CalledRule[label="{CalledRule|isEntrypoint : Boolean\nisEndpoint : Boolean| }"]
+ CalledRule->Parameter[arrowhead=vee,arrowtail=diamond,headlabel="parameters[*]",group=Parameter,minlen=2,constraint=true,]
+ CalledRule->Rule[arrowhead=onormal,group=Rule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InPattern[label="{InPattern| | }"]
+ InPattern->MatchedRule[arrowhead=diamond,arrowtail=none,headlabel="rule",taillabel="inPattern",group=MatchedRule,minlen=2,constraint=true,]
+ InPattern->OclExpression[arrowhead=vee,arrowtail=diamond,headlabel="filter[0-1]",group=OclExpression,minlen=2,constraint=true,]
+ InPattern->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OutPattern[label="{OutPattern| | }"]
+ OutPattern->Rule[arrowhead=diamond,arrowtail=none,headlabel="rule",taillabel="outPattern",group=Rule,minlen=2,constraint=true,]
+ OutPattern->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PatternElement[label="{/PatternElement/| | }"]
+ PatternElement->VariableDeclaration[arrowhead=onormal,group=VariableDeclaration,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InPatternElement[label="{/InPatternElement/| | }"]
+ InPatternElement->InPattern[arrowhead=diamond,arrowtail=none,headlabel="inPattern",taillabel="elements",group=InPattern,minlen=2,constraint=true,]
+ InPatternElement->OclModel[arrowhead=vee,arrowtail=none,headlabel="models[*]",group=OclModel,minlen=2,constraint=false,]
+ InPatternElement->PatternElement[arrowhead=onormal,group=PatternElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleInPatternElement[label="{SimpleInPatternElement| | }"]
+ SimpleInPatternElement->InPatternElement[arrowhead=onormal,group=InPatternElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OutPatternElement[label="{/OutPatternElement/| | }"]
+ OutPatternElement->OutPattern[arrowhead=diamond,arrowtail=none,headlabel="outPattern",taillabel="elements{ordered}",group=OutPattern,minlen=2,constraint=true,]
+ OutPatternElement->InPatternElement[arrowhead=none,arrowtail=none,headlabel="sourceElement[0-1]",taillabel="mapsTo",group=InPatternElement,minlen=2,constraint=false,]
+ OutPatternElement->OclModel[arrowhead=vee,arrowtail=none,headlabel="model[0-1]",group=OclModel,minlen=2,constraint=false,]
+ OutPatternElement->PatternElement[arrowhead=onormal,group=PatternElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleOutPatternElement[label="{SimpleOutPatternElement| | }"]
+ SimpleOutPatternElement->OclExpression[arrowhead=vee,arrowtail=diamond,headlabel="reverseBindings[*]{ordered}",group=OclExpression,minlen=2,constraint=true,]
+ SimpleOutPatternElement->OutPatternElement[arrowhead=onormal,group=OutPatternElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ForEachOutPatternElement[label="{ForEachOutPatternElement| | }"]
+ ForEachOutPatternElement->OclExpression[arrowhead=vee,arrowtail=diamond,headlabel="collection",group=OclExpression,minlen=2,constraint=true,]
+ ForEachOutPatternElement->Iterator[arrowhead=vee,arrowtail=diamond,headlabel="iterator",group=Iterator,minlen=2,constraint=true,]
+ ForEachOutPatternElement->OutPatternElement[arrowhead=onormal,group=OutPatternElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Binding[label="{Binding|propertyName : String\nisAssignment : Boolean| }"]
+ Binding->OclExpression[arrowhead=vee,arrowtail=diamond,headlabel="value",group=OclExpression,minlen=2,constraint=true,]
+ Binding->OutPatternElement[arrowhead=diamond,arrowtail=none,headlabel="outPatternElement",taillabel="bindings{ordered}",group=OutPatternElement,minlen=2,constraint=true,]
+ Binding->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RuleVariableDeclaration[label="{RuleVariableDeclaration| | }"]
+ RuleVariableDeclaration->Rule[arrowhead=diamond,arrowtail=none,headlabel="rule",taillabel="variables{ordered}",group=Rule,minlen=2,constraint=true,]
+ RuleVariableDeclaration->VariableDeclaration[arrowhead=onormal,group=VariableDeclaration,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LibraryRef[label="{LibraryRef|name : String| }"]
+ LibraryRef->Unit[arrowhead=diamond,arrowtail=none,headlabel="unit",taillabel="libraries",group=Unit,minlen=2,constraint=true,]
+ LibraryRef->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActionBlock[label="{ActionBlock| | }"]
+ ActionBlock->Rule[arrowhead=diamond,arrowtail=none,headlabel="rule",taillabel="actionBlock",group=Rule,minlen=2,constraint=true,]
+ ActionBlock->Statement[arrowhead=vee,arrowtail=diamond,headlabel="statements[*]{ordered}",group=Statement,minlen=2,constraint=true,]
+ ActionBlock->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Statement[label="{/Statement/| | }"]
+ Statement->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExpressionStat[label="{ExpressionStat| | }"]
+ ExpressionStat->OclExpression[arrowhead=vee,arrowtail=diamond,headlabel="expression",group=OclExpression,minlen=2,constraint=true,]
+ ExpressionStat->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BindingStat[label="{BindingStat|propertyName : String\nisAssignment : Boolean| }"]
+ BindingStat->OclExpression[arrowhead=vee,arrowtail=diamond,headlabel="source",group=OclExpression,minlen=2,constraint=true,]
+ BindingStat->OclExpression[arrowhead=vee,arrowtail=diamond,headlabel="value",group=OclExpression,minlen=2,constraint=true,]
+ BindingStat->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IfStat[label="{IfStat| | }"]
+ IfStat->OclExpression[arrowhead=vee,arrowtail=diamond,headlabel="condition",group=OclExpression,minlen=2,constraint=true,]
+ IfStat->Statement[arrowhead=vee,arrowtail=diamond,headlabel="thenStatements[*]{ordered}",group=Statement,minlen=2,constraint=true,]
+ IfStat->Statement[arrowhead=vee,arrowtail=diamond,headlabel="elseStatements[*]{ordered}",group=Statement,minlen=2,constraint=true,]
+ IfStat->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ForStat[label="{ForStat| | }"]
+ ForStat->Iterator[arrowhead=vee,arrowtail=diamond,headlabel="iterator",group=Iterator,minlen=2,constraint=true,]
+ ForStat->OclExpression[arrowhead=vee,arrowtail=diamond,headlabel="collection",group=OclExpression,minlen=2,constraint=true,]
+ ForStat->Statement[arrowhead=vee,arrowtail=diamond,headlabel="statements[*]{ordered}",group=Statement,minlen=2,constraint=true,]
+ ForStat->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+
+
+labelloc=t
+color=black
+label=OCL
+ node[shape=record];
+OclExpression[label="{/OclExpression/| | }"]
+ OclExpression->IfExp[arrowhead=diamond,arrowtail=none,headlabel="ifExp3[0-1]",taillabel="elseExpression",group=IfExp,minlen=2,constraint=true,]
+ OclExpression->PropertyCallExp[arrowhead=diamond,arrowtail=none,headlabel="appliedProperty[0-1]",taillabel="source",group=PropertyCallExp,minlen=2,constraint=true,]
+ OclExpression->CollectionExp[arrowhead=diamond,arrowtail=none,headlabel="collection[0-1]",taillabel="elements{ordered}",group=CollectionExp,minlen=2,constraint=true,]
+ OclExpression->LetExp[arrowhead=diamond,arrowtail=none,headlabel="letExp[0-1]",taillabel="in_",group=LetExp,minlen=2,constraint=true,]
+ OclExpression->LoopExp[arrowhead=diamond,arrowtail=none,headlabel="loopExp[0-1]",taillabel="body",group=LoopExp,minlen=2,constraint=true,]
+ OclExpression->OperationCallExp[arrowhead=diamond,arrowtail=none,headlabel="parentOperation[0-1]",taillabel="arguments{ordered}",group=OperationCallExp,minlen=2,constraint=true,]
+ OclExpression->VariableDeclaration[arrowhead=diamond,arrowtail=none,headlabel="initializedVariable[0-1]",taillabel="initExpression",group=VariableDeclaration,minlen=2,constraint=true,]
+ OclExpression->IfExp[arrowhead=diamond,arrowtail=none,headlabel="ifExp2[0-1]",taillabel="thenExpression",group=IfExp,minlen=2,constraint=true,]
+ OclExpression->Operation[arrowhead=diamond,arrowtail=none,headlabel="owningOperation[0-1]",taillabel="body",group=Operation,minlen=2,constraint=true,]
+ OclExpression->IfExp[arrowhead=diamond,arrowtail=none,headlabel="ifExp1[0-1]",taillabel="condition",group=IfExp,minlen=2,constraint=true,]
+ OclExpression->Attribute[arrowhead=diamond,arrowtail=none,headlabel="owningAttribute[0-1]",taillabel="initExpression",group=Attribute,minlen=2,constraint=true,]
+ OclExpression->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VariableExp[label="{VariableExp| | }"]
+ VariableExp->OclExpression[arrowhead=onormal,group=OclExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SuperExp[label="{SuperExp| | }"]
+ SuperExp->OclExpression[arrowhead=onormal,group=OclExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PrimitiveExp[label="{/PrimitiveExp/| | }"]
+ PrimitiveExp->OclExpression[arrowhead=onormal,group=OclExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StringExp[label="{StringExp|stringSymbol : String| }"]
+ StringExp->PrimitiveExp[arrowhead=onormal,group=PrimitiveExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BooleanExp[label="{BooleanExp|booleanSymbol : Boolean| }"]
+ BooleanExp->PrimitiveExp[arrowhead=onormal,group=PrimitiveExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NumericExp[label="{/NumericExp/| | }"]
+ NumericExp->PrimitiveExp[arrowhead=onormal,group=PrimitiveExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RealExp[label="{RealExp|realSymbol : Double| }"]
+ RealExp->NumericExp[arrowhead=onormal,group=NumericExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IntegerExp[label="{IntegerExp|integerSymbol : Integer| }"]
+ IntegerExp->NumericExp[arrowhead=onormal,group=NumericExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CollectionExp[label="{/CollectionExp/| | }"]
+ CollectionExp->OclExpression[arrowhead=onormal,group=OclExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BagExp[label="{BagExp| | }"]
+ BagExp->CollectionExp[arrowhead=onormal,group=CollectionExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OrderedSetExp[label="{OrderedSetExp| | }"]
+ OrderedSetExp->CollectionExp[arrowhead=onormal,group=CollectionExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SequenceExp[label="{SequenceExp| | }"]
+ SequenceExp->CollectionExp[arrowhead=onormal,group=CollectionExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SetExp[label="{SetExp| | }"]
+ SetExp->CollectionExp[arrowhead=onormal,group=CollectionExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TupleExp[label="{TupleExp| | }"]
+ TupleExp->OclExpression[arrowhead=onormal,group=OclExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TuplePart[label="{TuplePart| | }"]
+ TuplePart->TupleExp[arrowhead=diamond,arrowtail=none,headlabel="tuple",taillabel="tuplePart{ordered}",group=TupleExp,minlen=2,constraint=true,]
+ TuplePart->VariableDeclaration[arrowhead=onormal,group=VariableDeclaration,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MapExp[label="{MapExp| | }"]
+ MapExp->OclExpression[arrowhead=onormal,group=OclExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MapElement[label="{MapElement| | }"]
+ MapElement->MapExp[arrowhead=diamond,arrowtail=none,headlabel="map",taillabel="elements{ordered}",group=MapExp,minlen=2,constraint=true,]
+ MapElement->OclExpression[arrowhead=vee,arrowtail=diamond,headlabel="key",group=OclExpression,minlen=2,constraint=true,]
+ MapElement->OclExpression[arrowhead=vee,arrowtail=diamond,headlabel="value",group=OclExpression,minlen=2,constraint=true,]
+ MapElement->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EnumLiteralExp[label="{EnumLiteralExp|name : String| }"]
+ EnumLiteralExp->OclExpression[arrowhead=onormal,group=OclExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OclUndefinedExp[label="{OclUndefinedExp| | }"]
+ OclUndefinedExp->OclExpression[arrowhead=onormal,group=OclExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PropertyCallExp[label="{/PropertyCallExp/| | }"]
+ PropertyCallExp->OclExpression[arrowhead=onormal,group=OclExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NavigationOrAttributeCallExp[label="{NavigationOrAttributeCallExp|name : String| }"]
+ NavigationOrAttributeCallExp->PropertyCallExp[arrowhead=onormal,group=PropertyCallExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperationCallExp[label="{OperationCallExp|operationName : String| }"]
+ OperationCallExp->PropertyCallExp[arrowhead=onormal,group=PropertyCallExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperatorCallExp[label="{OperatorCallExp| | }"]
+ OperatorCallExp->OperationCallExp[arrowhead=onormal,group=OperationCallExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CollectionOperationCallExp[label="{CollectionOperationCallExp| | }"]
+ CollectionOperationCallExp->OperationCallExp[arrowhead=onormal,group=OperationCallExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LoopExp[label="{/LoopExp/| | }"]
+ LoopExp->PropertyCallExp[arrowhead=onormal,group=PropertyCallExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IterateExp[label="{IterateExp| | }"]
+ IterateExp->LoopExp[arrowhead=onormal,group=LoopExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IteratorExp[label="{IteratorExp|name : String| }"]
+ IteratorExp->LoopExp[arrowhead=onormal,group=LoopExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LetExp[label="{LetExp| | }"]
+ LetExp->OclExpression[arrowhead=onormal,group=OclExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IfExp[label="{IfExp| | }"]
+ IfExp->OclExpression[arrowhead=onormal,group=OclExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VariableDeclaration[label="{VariableDeclaration|id[0-1] : String\nvarName : String| }"]
+ VariableDeclaration->LetExp[arrowhead=diamond,arrowtail=none,headlabel="letExp[0-1]",taillabel="variable",group=LetExp,minlen=2,constraint=true,]
+ VariableDeclaration->IterateExp[arrowhead=diamond,arrowtail=none,headlabel="baseExp[0-1]",taillabel="result",group=IterateExp,minlen=2,constraint=true,]
+ VariableDeclaration->VariableExp[arrowhead=none,arrowtail=none,headlabel="variableExp[*]",taillabel="referredVariable",group=VariableExp,minlen=2,constraint=false,]
+ VariableDeclaration->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Iterator[label="{Iterator| | }"]
+ Iterator->LoopExp[arrowhead=diamond,arrowtail=none,headlabel="loopExpr[0-1]",taillabel="iterators",group=LoopExp,minlen=2,constraint=true,]
+ Iterator->VariableDeclaration[arrowhead=onormal,group=VariableDeclaration,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parameter[label="{Parameter| | }"]
+ Parameter->Operation[arrowhead=diamond,arrowtail=none,headlabel="operation",taillabel="parameters{ordered}",group=Operation,minlen=2,constraint=true,]
+ Parameter->VariableDeclaration[arrowhead=onormal,group=VariableDeclaration,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CollectionType[label="{CollectionType| | }"]
+ CollectionType->OclType[arrowhead=onormal,group=OclType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OclType[label="{OclType|name : String| }"]
+ OclType->OclContextDefinition[arrowhead=diamond,arrowtail=none,headlabel="definitions[0-1]",taillabel="context_",group=OclContextDefinition,minlen=2,constraint=true,]
+ OclType->OclExpression[arrowhead=diamond,arrowtail=none,headlabel="oclExpression[0-1]",taillabel="type",group=OclExpression,minlen=2,constraint=true,]
+ OclType->Operation[arrowhead=diamond,arrowtail=none,headlabel="operation[0-1]",taillabel="returnType",group=Operation,minlen=2,constraint=true,]
+ OclType->MapType[arrowhead=diamond,arrowtail=none,headlabel="mapType2[0-1]",taillabel="valueType",group=MapType,minlen=2,constraint=true,]
+ OclType->Attribute[arrowhead=diamond,arrowtail=none,headlabel="attribute[0-1]",taillabel="type",group=Attribute,minlen=2,constraint=true,]
+ OclType->MapType[arrowhead=diamond,arrowtail=none,headlabel="mapType[0-1]",taillabel="keyType",group=MapType,minlen=2,constraint=true,]
+ OclType->CollectionType[arrowhead=diamond,arrowtail=none,headlabel="collectionTypes[0-1]",taillabel="elementType",group=CollectionType,minlen=2,constraint=true,]
+ OclType->TupleTypeAttribute[arrowhead=diamond,arrowtail=none,headlabel="tupleTypeAttribute[0-1]",taillabel="type",group=TupleTypeAttribute,minlen=2,constraint=true,]
+ OclType->VariableDeclaration[arrowhead=diamond,arrowtail=none,headlabel="variableDeclaration[0-1]",taillabel="type",group=VariableDeclaration,minlen=2,constraint=true,]
+ OclType->OclExpression[arrowhead=onormal,group=OclExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Primitive[label="{/Primitive/| | }"]
+ Primitive->OclType[arrowhead=onormal,group=OclType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StringType[label="{StringType| | }"]
+ StringType->Primitive[arrowhead=onormal,group=Primitive,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BooleanType[label="{BooleanType| | }"]
+ BooleanType->Primitive[arrowhead=onormal,group=Primitive,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NumericType[label="{/NumericType/| | }"]
+ NumericType->Primitive[arrowhead=onormal,group=Primitive,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IntegerType[label="{IntegerType| | }"]
+ IntegerType->NumericType[arrowhead=onormal,group=NumericType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RealType[label="{RealType| | }"]
+ RealType->NumericType[arrowhead=onormal,group=NumericType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BagType[label="{BagType| | }"]
+ BagType->CollectionType[arrowhead=onormal,group=CollectionType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OrderedSetType[label="{OrderedSetType| | }"]
+ OrderedSetType->CollectionType[arrowhead=onormal,group=CollectionType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SequenceType[label="{SequenceType| | }"]
+ SequenceType->CollectionType[arrowhead=onormal,group=CollectionType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SetType[label="{SetType| | }"]
+ SetType->CollectionType[arrowhead=onormal,group=CollectionType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OclAnyType[label="{OclAnyType| | }"]
+ OclAnyType->OclType[arrowhead=onormal,group=OclType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TupleType[label="{TupleType| | }"]
+ TupleType->OclType[arrowhead=onormal,group=OclType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TupleTypeAttribute[label="{TupleTypeAttribute|name : String| }"]
+ TupleTypeAttribute->TupleType[arrowhead=diamond,arrowtail=none,headlabel="tupleType",taillabel="attributes{ordered}",group=TupleType,minlen=2,constraint=true,]
+ TupleTypeAttribute->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OclModelElement[label="{OclModelElement| | }"]
+ OclModelElement->OclType[arrowhead=onormal,group=OclType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MapType[label="{MapType| | }"]
+ MapType->OclType[arrowhead=onormal,group=OclType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OclFeatureDefinition[label="{OclFeatureDefinition| | }"]
+ OclFeatureDefinition->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OclContextDefinition[label="{OclContextDefinition| | }"]
+ OclContextDefinition->OclFeatureDefinition[arrowhead=diamond,arrowtail=none,headlabel="definition",taillabel="context_",group=OclFeatureDefinition,minlen=2,constraint=true,]
+ OclContextDefinition->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OclFeature[label="{/OclFeature/| | }"]
+ OclFeature->OclFeatureDefinition[arrowhead=diamond,arrowtail=none,headlabel="definition[0-1]",taillabel="feature",group=OclFeatureDefinition,minlen=2,constraint=true,]
+ OclFeature->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Attribute[label="{Attribute|name : String| }"]
+ Attribute->OclFeature[arrowhead=onormal,group=OclFeature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Operation[label="{Operation|name : String| }"]
+ Operation->OclFeature[arrowhead=onormal,group=OclFeature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OclModel[label="{OclModel|name : String| }"]
+ OclModel->OclModelElement[arrowhead=none,arrowtail=none,headlabel="elements[*]",taillabel="model",group=OclModelElement,minlen=2,constraint=false,]
+ OclModel->OclModel[arrowhead=none,arrowtail=none,headlabel="model[*]",taillabel="metamodel",group=OclModel,minlen=2,constraint=false,]
+ OclModel->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

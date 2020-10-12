@@ -1,0 +1,85 @@
+package Metamodel;
+
+package IEEE1471 {
+  abstract class Element {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String content;
+  }
+
+  class IEEE1471Model extends Element {
+    !ordered val System[1] system;
+    !ordered val Environment[1] environment;
+    !ordered val Mission[*] missions;
+    !ordered val Architecture[1] architecture;
+    !ordered val Stakeholder[*] stakeholders;
+    !ordered val Concern[*] concerns;
+    !ordered val Viewpoint[*] viewpoints;
+    !ordered val LibraryViewpoint[*] libraryViewpoints;
+    !ordered val ArchitecturalDescription[1] architecturalDescription;
+    !ordered val Rationale[1] rationale;
+  }
+
+  class System extends Element {
+    !ordered ref Mission[+] fulfils;
+    !ordered ref Environment[1]#influences inhabits;
+    !ordered ref Architecture[1] hasAn;
+    !ordered ref Stakeholder[+] has;
+  }
+
+  class Mission extends Element {
+  }
+
+  class Environment extends Element {
+    !ordered ref System[1]#inhabits influences;
+  }
+
+  class Architecture extends Element {
+    !ordered ref ArchitecturalDescription[1] describedBy;
+  }
+
+  class Rationale extends Element {
+    !ordered ref ArchitecturalDescription[1] provides;
+  }
+
+  class ArchitecturalDescription extends Element {
+    !ordered ref Stakeholder[+] identifiesS;
+    !ordered ref Concern[+] identifiesC;
+    !ordered ref Viewpoint[+] selects;
+    !ordered val View[+] organizedBy;
+    !ordered val Model[+]#participatesInAD aggregates;
+  }
+
+  class View extends Element {
+    !ordered ref Viewpoint[1] conformsTo;
+    !ordered ref Model[+]#participatesInV consitsOf;
+  }
+
+  class Model extends Element {
+    !ordered ref View[+]#consitsOf participatesInV;
+    !ordered ref ArchitecturalDescription[1]#aggregates participatesInAD;
+  }
+
+  class Stakeholder extends Element {
+    !ordered ref Concern[+]#isImportantTo has;
+  }
+
+  class Concern extends Element {
+    !ordered ref Stakeholder[+]#has isImportantTo;
+  }
+
+  class Viewpoint extends Element {
+    !ordered ref LibraryViewpoint hasSource;
+    !ordered ref Concern[+] usedToCover;
+    !ordered ref Model[+] establishesMethodsFor;
+  }
+
+  class LibraryViewpoint extends Element {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+}
+

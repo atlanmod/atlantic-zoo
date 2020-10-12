@@ -1,0 +1,143 @@
+package Metamodel;
+
+package LaTeX {
+  abstract class ValuedElement {
+    !unique !ordered attr String[1] value;
+  }
+
+  class Type extends ValuedElement {
+  }
+
+  class Title extends ValuedElement {
+  }
+
+  class Name extends ValuedElement {
+    !ordered ref Author#names author;
+    !ordered ref Organisation#names organisation;
+  }
+
+  class Date extends ValuedElement {
+  }
+
+  class Author {
+    !ordered val Name[+]#author names;
+  }
+
+  class Adress extends ValuedElement {
+  }
+
+  class Organisation {
+    !ordered val Name[+]#organisation names;
+    !ordered val Adress[1] adress;
+    !ordered ref Heading[1]#organisations heading;
+  }
+
+  class Phone extends ValuedElement {
+  }
+
+  class Fax extends ValuedElement {
+  }
+
+  class EMail extends ValuedElement {
+  }
+
+  class Heading {
+    !ordered val Organisation[*]#heading organisations;
+    !ordered val Phone phone;
+    !ordered val Fax fax;
+    !ordered val EMail email;
+  }
+
+  class Abstract extends ValuedElement {
+  }
+
+  class Keywords extends ValuedElement {
+  }
+
+  class SectionBody {
+    !ordered val Corps[*]#sectionbody corps;
+    !ordered ref Section[1]#sectionBody section;
+  }
+
+  abstract class Corps {
+    !ordered ref SectionBody[1]#corps sectionbody;
+  }
+
+  class Value extends Corps, ValuedElement {
+  }
+
+  class Cite extends Corps, ValuedElement {
+  }
+
+  class Path extends ValuedElement {
+  }
+
+  class Label extends ValuedElement {
+  }
+
+  class Figure extends Corps {
+    !ordered val Path[1] path;
+    !ordered val Label[1] label;
+    !ordered val Title[1] title;
+  }
+
+  class Item extends ValuedElement {
+    !ordered ref Items#item itemscontainer;
+    !ordered ref Enumerate#item enumeratecontainer;
+  }
+
+  class Items extends Corps {
+    !ordered val Item[+]#itemscontainer item;
+  }
+
+  class Enumerate extends Corps {
+    !ordered val Item[+]#enumeratecontainer item;
+  }
+
+  class Section extends Corps {
+    !ordered val Title[1] title;
+    !ordered val SectionBody[1]#section sectionBody;
+  }
+
+  class Description extends ValuedElement {
+    !ordered val Date[1] date;
+  }
+
+  class Citation {
+    !ordered val Label[1] label;
+    !ordered val Author[1] author;
+    !ordered val Description[1] description;
+    !ordered ref Bibliography[1]#citations bibliography;
+  }
+
+  class Bibliography {
+    !ordered val Citation[+]#bibliography citations;
+    !ordered ref DocumentBody[1]#bibliography documentbody;
+  }
+
+  class DocumentBody {
+    !ordered val Section[+] sections;
+    !ordered val Bibliography[*]#documentbody bibliography;
+    !ordered ref Document[1]#documentbody document;
+  }
+
+  class Document {
+    !ordered val Type[1] type;
+    !ordered val Title[1] title;
+    !ordered val Author author;
+    !ordered val Date date;
+    !ordered val Heading heading;
+    !ordered val Abstract ~abstract;
+    !ordered val Keywords keywords;
+    !ordered val DocumentBody[1]#document documentbody;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

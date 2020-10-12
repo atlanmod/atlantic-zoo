@@ -1,0 +1,158 @@
+-- @name		OCCAM
+-- @version		0.1
+-- @authors		Youssef SROUR (Srour.youssef@gmail.com)
+-- @date		2006/07/25
+-- @description	This metamodel describes OCCAM. OCCAM is a parallel processing language designed by a team at INMOS in conjunction with the design of the transputer processor, and based on T. Hoare s ideas of CSP.
+-- @see			http://www.wotug.org/occam/
+
+package OCCAM {
+
+	-- Begin class OCCAM_Program
+	class OCCAM_Program {
+		reference occam_Elements [*] container : OCCAM_Element;
+		reference files [*] container : File;
+	}
+	-- End class OCCAM_Programme
+
+	-- Begin class OCCAM_Element
+	class OCCAM_Element{
+		attribute name [0-1] : String;
+	}
+	-- End class OCCAM_Element
+
+	-- Begin class Process
+	class Process extends OCCAM_Element {
+		reference declaration container : Declaration oppositeOf process;
+		reference constructors [*] container : Constructor oppositeOf process;
+		reference parameters [*] : DataType;
+		reference libraries [*] : Library;
+		reference toChannel : Channel;
+		
+	}
+	-- End class Process
+
+	-- Begin class Channel
+	class Channel {
+		attribute name : String;
+		attribute type : String; -- FomfServer or ToServer
+		reference toServer : Server;
+		reference toProcess : Process;
+	}
+	-- End class Channel
+
+	-- Begin class Action
+	class Action extends OCCAM_Element {
+		reference constructor : Constructor oppositeOf actions;
+		reference while : While oppositeOf actions;
+		reference if : If oppositeOf actions;
+	}
+	-- End class Action
+
+	-- Begin class Assignment
+	class Assignment extends Action {
+		
+	}
+	-- End class Assignment
+
+	-- Begin class Input
+	class Input extends Action {
+		
+	}
+	-- End class Input
+
+	-- Begin class Output
+	class Output extends Action {
+		
+	}
+	-- End class Output
+
+	-- Begin class Constructor
+	class Constructor extends OCCAM_Element {
+		reference process : Process oppositeOf constructors;
+		reference actions [*] container : Action oppositeOf constructor;
+		reference buckels [*] container : Buckel oppositeOf constructor;
+		reference childrens [*] container : Constructor;
+	}
+	-- End class Constructor
+
+	-- Begin class Buckel
+	class Buckel {
+		reference constructor : Constructor oppositeOf buckels;	
+	}
+	-- End class Buckel
+
+	-- Begin class If
+	class If extends Buckel {
+		reference conditions[*] container : Condition oppositeOf if;
+		reference actions [*] container : Action oppositeOf if;
+	}
+	-- End class If
+
+	-- Begin class While
+	class While extends Buckel {
+		reference conditions[*] container : Condition oppositeOf while;
+		reference actions [*] container : Action oppositeOf while;
+	}
+	-- End class While
+
+	-- Begin class Condition
+	class Condition {
+		attribute elementRight : String;
+		attribute elementLeft : String;
+		attribute typeCondition : String;
+		reference if: If oppositeOf conditions;
+		reference while : While oppositeOf conditions;
+	}
+	-- End class Condition
+
+	-- Begin class Sequential
+	class Sequential extends Constructor { }
+	-- End class Sequential
+
+	-- Begin class Parallel
+	class Parallel extends Constructor { }
+	-- End class Parallel
+
+	-- Begin class Alternative
+	class Alternative extends Constructor {	}
+	-- End class Alternative
+
+	-- Begin class Variable
+	class DataType extends OCCAM_Element {
+		attribute dataType : String;
+	}
+	-- End class Variable
+
+	-- Begin class Library
+	class Library {
+		attribute name : String;		
+	}
+	-- End class Library
+
+	-- Begin class File
+	class File {
+		attribute name : String;		
+	}
+	-- End class File
+
+	-- Begin class Server
+	class Server {
+		attribute name : String;
+		reference toChannel : Channel;	
+	}
+	-- End class Server
+
+	-- Begin class Declaration
+	class Declaration {
+		attribute name : String;
+		reference process : Process oppositeOf declaration;
+		reference elements [*] container : DataType;	
+	}
+	-- End class Declaration
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+	datatype Integer;
+} 

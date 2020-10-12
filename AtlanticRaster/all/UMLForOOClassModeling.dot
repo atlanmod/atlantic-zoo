@@ -1,0 +1,71 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_UMLForOOClassModeling"{
+labelloc=t
+color=black
+label=UMLForOOClassModeling
+ node[shape=record];
+MultiplicityType[label="{MultiplicityType|lower : Integer\nupper : Integer\nisOrdered : Boolean\nisUnique : Boolean| }"]
+;
+ node[shape=record];
+ModelElement[label="{ModelElement|name : String| }"]
+;
+ node[shape=record];
+Feature[label="{Feature|ownerScope : ScopeKind\nvisibility : VisibilityKind| }"]
+ Feature->Classifier[arrowhead=diamond,arrowtail=none,headlabel="owner[0-1]",taillabel="feature[*]{ordered}",group=Classifier,minlen=2,constraint=true,]
+ Feature->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NameSpace[label="{NameSpace| | }"]
+ NameSpace->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GeneralizableElement[label="{GeneralizableElement|isRoot : Boolean\nisLeaf : Boolean\nisAbstract : Boolean| }"]
+ GeneralizableElement->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Classifier[label="{Classifier| | }"]
+ Classifier->NameSpace[arrowhead=onormal,group=NameSpace,minlen=2,constraint=true,]
+ Classifier->GeneralizableElement[arrowhead=onormal,group=GeneralizableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Class[label="{Class|isActive : Boolean| }"]
+ Class->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StructuralFeature[label="{StructuralFeature|isChangeable : Boolean\ntargetScope : ScopeKind| }"]
+ StructuralFeature->MultiplicityType[arrowhead=vee,arrowtail=none,headlabel="multiplicity",group=MultiplicityType,minlen=2,constraint=false,]
+ StructuralFeature->Feature[arrowhead=onormal,group=Feature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Attribute[label="{Attribute|initialValue : String| }"]
+ Attribute->StructuralFeature[arrowhead=onormal,group=StructuralFeature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BehavioralFeature[label="{BehavioralFeature|isQuery : Boolean| }"]
+ BehavioralFeature->Feature[arrowhead=onormal,group=Feature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Operation[label="{Operation|isRoot : Boolean\nisLeaf : Boolean\nisAbstract : Boolean\nspecification : String| }"]
+ Operation->BehavioralFeature[arrowhead=onormal,group=BehavioralFeature,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

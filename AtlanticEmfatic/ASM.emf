@@ -1,0 +1,196 @@
+package Metamodel;
+
+package ASM {
+  abstract class LocatedElement {
+    !unique !ordered attr String[1] location;
+  }
+
+  abstract class XAsmFile extends LocatedElement {
+  }
+
+  class XAsmSpec extends XAsmFile {
+    !ordered val Asm[+] Asm;
+  }
+
+  class Asm extends LocatedElement {
+    !ordered val Signature[1] signature;
+    !unique !ordered attr String returnType;
+    !ordered val MetaInformation[1] metaInformation;
+    !ordered val Body[1] body;
+  }
+
+  class Signature extends LocatedElement {
+    !unique !ordered attr Boolean[1] isMain;
+    !unique !ordered attr String[1] name;
+    !ordered val Argument[*] arguments;
+  }
+
+  class Argument extends VariableDecl {
+    !unique !ordered attr String[1] type;
+  }
+
+  class Body extends XAsmFile {
+    val Declaration[*] declarations;
+    !ordered val Initialization initialization;
+    !ordered val Rule[*] rules;
+  }
+
+  class MetaInformation extends LocatedElement {
+    !ordered val Signature[*] usedAsIn;
+    !unique !ordered attr Enum.AsmType[1] usedAs;
+    !ordered val AccessUpdateFunction[*] accessUpdateFunctions;
+  }
+
+  class AccessUpdateFunction extends LocatedElement {
+    !unique !ordered attr Enum.AccessUpdateType[1] type;
+    !ordered val Function[+] functions;
+  }
+
+  abstract class Declaration extends LocatedElement {
+  }
+
+  class Function extends Declaration, ElementDecl {
+    !ordered val Parameter[*] parameters;
+    !unique !ordered attr String[1] returnType;
+    !ordered val Term initTerm;
+    !unique !ordered attr Boolean[1] isExternal;
+  }
+
+  class Parameter extends LocatedElement {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] type;
+  }
+
+  class Universe extends Declaration {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[*] contents;
+    !ordered ref Universe[*] superUniverses;
+  }
+
+  class Initialization extends LocatedElement {
+    !ordered val Rule[+] rules;
+  }
+
+  abstract class Term extends LocatedElement {
+  }
+
+  abstract class Constant extends Term {
+  }
+
+  class FunctionOrVariableTerm extends Term {
+    !ordered ref ElementDecl[1] declaration;
+    !ordered val Term[*] terms;
+  }
+
+  class OperatorTerm extends Term {
+    !unique !ordered attr String[1] opName;
+    !ordered val Term[1] leftExp;
+    !ordered val Term rightExp;
+  }
+
+  class BooleanConstant extends Constant {
+    !unique !ordered attr Boolean[1] value;
+  }
+
+  class IntegerConstant extends Constant {
+    !unique !ordered attr Integer[1] value;
+  }
+
+  class StringConstant extends Constant {
+    !unique !ordered attr String[1] value;
+  }
+
+  class UndefConstant extends Constant {
+  }
+
+  abstract class Rule extends LocatedElement {
+    !unique !ordered attr Boolean[1] inSequence;
+  }
+
+  class SkipRule extends Rule {
+  }
+
+  class AsmInvocation extends Rule {
+    !unique !ordered attr String[1] asmName;
+    !ordered val Term[*] arguments;
+  }
+
+  class UpdateRule extends Rule {
+    !ordered val FunctionOrVariableTerm[1] function;
+    !ordered val Term[1] updateTerm;
+  }
+
+  class ChooseRule extends Rule {
+    !ordered val VariableDecl[1] chooseId;
+    !ordered val Universe inSet;
+    !ordered val Term guard;
+    !ordered val Rule[+] ifChoosenRules;
+    !ordered val Rule ifNotChoosenRule;
+  }
+
+  class DoForallRule extends Rule {
+    !ordered val VariableDecl[1] ~id;
+    !ordered val Universe inSet;
+    !ordered val Term condition;
+    !ordered val Rule[+] doRule;
+  }
+
+  class ConditionalRule extends Rule {
+    !ordered val Term[1] condition;
+    !ordered val Rule[+] thenRule;
+    !ordered val Rule elseRule;
+    !ordered val ElseIf elseIfRule;
+  }
+
+  class ElseIf extends LocatedElement {
+    !ordered val Term[1] condition;
+    !ordered val Rule[+] thenRule;
+    !ordered val Rule elseRule;
+    !ordered val ElseIf elseIfRule;
+  }
+
+  class ExtendRule extends Rule {
+    !ordered val Extension[+] extensions;
+    !ordered val Rule[+] rules;
+  }
+
+  abstract class ElementDecl extends LocatedElement {
+    !unique !ordered attr String[1] name;
+  }
+
+  class VariableDecl extends ElementDecl {
+  }
+
+  class Extension extends LocatedElement {
+    !ordered val VariableDecl[+] elements;
+    !ordered val Universe[1] universe;
+  }
+
+  class ReturnRule extends Rule {
+    !ordered val Term[1] term;
+  }
+
+}
+
+package Enum {
+  enum AccessUpdateType {
+    access = 0;
+    update = 0;
+  }
+
+  enum AsmType {
+    function = 0;
+    subasm = 0;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+  datatype Boolean : "";
+
+}
+

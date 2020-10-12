@@ -1,0 +1,70 @@
+package fm3 {
+
+	abstract class LocatedElement {
+		attribute location[0-1] : String;
+		attribute commentsBefore[*] ordered : String;
+		attribute commentsAfter[*] ordered : String;
+	}
+
+	class Root extends LocatedElement {
+		reference elements[*] ordered container : Element;
+	}
+
+	abstract class Element extends LocatedElement {
+		attribute name : String;
+		attribute fullName : String;
+		attribute ID : Integer;
+	}
+
+	class Class extends Element {
+		attribute "abstract" : Boolean;
+		attribute primitive : Boolean;
+		attribute root : Boolean;
+		reference superclass[*] ordered : FullClassRef;
+		reference "package" : Package oppositeOf classes;
+		reference allAttributes[*] ordered : Property;
+		reference attributes[*] ordered container : Property oppositeOf "class";
+		reference owner : Package;
+	}
+
+	class Package extends Element {
+		reference classes[*] ordered container : Class oppositeOf "package";
+		reference extensions[*] ordered : Property oppositeOf "package";
+		reference owner : Element;
+	}
+
+	class Property extends Element {
+		attribute composite : Boolean;
+		attribute "container" : Boolean;
+		attribute derived : Boolean;
+		attribute multivaluated : Boolean;
+		reference "class" : Class oppositeOf attributes;
+		reference type container : ClassRef;
+		reference "package" : Package oppositeOf extensions;
+		reference opposite : ClassRef;
+		reference owner : Class;
+	}
+
+	abstract class ClassRef extends LocatedElement {
+		
+	}
+
+	class FullClassRef extends ClassRef {
+		reference "class" : Element;
+	}
+
+	class PTClassRef extends ClassRef {
+		attribute name : String;
+	}
+}
+
+package PrimitiveTypes {
+
+	datatype Boolean;
+
+	datatype Double;
+
+	datatype Integer;
+
+	datatype String;
+}

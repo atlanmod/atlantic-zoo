@@ -1,0 +1,57 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_MSProject"{
+labelloc=t
+color=black
+label=MSProject
+ node[shape=record];
+MSPProject[label="{MSPProject| | }"]
+;
+ node[shape=record];
+MSPTask[label="{MSPTask|finishDate : Date\nstartDate : Date| }"]
+ MSPTask->MSPProject[arrowhead=diamond,arrowtail=none,headlabel="project",taillabel="task[*]",group=MSPProject,minlen=2,constraint=true,]
+ MSPTask->MSPTask[arrowhead=none,arrowtail=none,headlabel="subTask[*]",taillabel="superTask[0-1]",group=MSPTask,minlen=2,constraint=false,]
+;
+ node[shape=record];
+MSPLink[label="{MSPLink| | }"]
+ MSPLink->MSPProject[arrowhead=diamond,arrowtail=none,headlabel="project",taillabel="link[*]",group=MSPProject,minlen=2,constraint=true,]
+ MSPLink->MSPTask[arrowhead=none,arrowtail=none,headlabel="succ",taillabel="inLink[*]",group=MSPTask,minlen=2,constraint=false,]
+ MSPLink->MSPTask[arrowhead=none,arrowtail=none,headlabel="pred",taillabel="outLink[*]",group=MSPTask,minlen=2,constraint=false,]
+;
+ node[shape=record];
+MSPAssignment[label="{MSPAssignment| | }"]
+ MSPAssignment->MSPTask[arrowhead=none,arrowtail=none,headlabel="task",taillabel="assignment[*]",group=MSPTask,minlen=2,constraint=false,]
+;
+ node[shape=record];
+MSPResource[label="{MSPResource|cost : Double| }"]
+ MSPResource->MSPProject[arrowhead=diamond,arrowtail=none,headlabel="project",taillabel="resource[*]",group=MSPProject,minlen=2,constraint=true,]
+ MSPResource->MSPAssignment[arrowhead=none,arrowtail=none,headlabel="assignment[*]",taillabel="resource",group=MSPAssignment,minlen=2,constraint=false,]
+;
+ node[shape=record];
+MSPHumanResource[label="{MSPHumanResource|email : String| }"]
+ MSPHumanResource->MSPResource[arrowhead=onormal,group=MSPResource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MSPMachine[label="{MSPMachine| | }"]
+ MSPMachine->MSPResource[arrowhead=onormal,group=MSPResource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Date[label="{Date|day : Integer\nmonth : Integer\nyear : Integer| }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

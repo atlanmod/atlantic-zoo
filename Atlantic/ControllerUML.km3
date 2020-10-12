@@ -1,0 +1,68 @@
+-- @name		ControllerUML
+-- @version		1.0
+-- @authors		Youssef Srour (Srour.youssef@gmail.com)
+-- @date		2006/07/28
+-- @description	This metamodel describes ControllerUML.
+-- @see  		http://delivery.acm.org/10.1145/1130000/1125810/p39-basin.pdf?key1=1125810&key2=6220095511&coll=GUIDE&dl=&CFID=15151515&CFTOKEN=6184618
+
+package ControllerUML{
+
+-- Begin class ControllerAttribute
+	class ControllerAttribute {
+		reference controller : Controller oppositeOf controllerAttribute;
+	}-- End class ControllerAttribute
+
+-- Begin class Controller
+	class Controller {
+		reference controllerAttribute [*] : ControllerAttribute oppositeOf controller;
+		reference behavior container : StateMachine;
+	}-- End class Controller
+
+-- Begin class StateMachine
+	class StateMachine {
+		reference states [*] container : State;
+	}-- End class StateMachine
+
+-- Begin class State
+	class State {
+		reference substates [*] container : State oppositeOf theContainer;
+		reference theContainer [0-1] : State oppositeOf substates;
+		reference outGoing [*] container : StateTransition oppositeOf source;
+		reference incoming [*] : StateTransition oppositeOf target;
+		
+	}-- End class State
+
+-- Begin class SubControllerState
+	class SubControllerState extends State {
+		reference controller : Controller;
+	}-- End class SubControllerState
+
+-- Begin class ViewState
+	class ViewState extends State {
+		
+	}-- End class ViewState
+
+-- Begin class StateTransition
+	class StateTransition {
+		reference source : State oppositeOf outGoing;
+		reference target : State oppositeOf incoming;
+		reference trigger : Event;
+		reference effect [0-1] container : StateMachineAction; 
+	}-- End class StateTransition
+
+-- Begin class StateMachineAction
+	class StateMachineAction {
+		
+	}-- End class StateMachineAction
+
+-- Begin class Event
+	class Event {
+		
+	}-- End class Event
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+	datatype Integer;
+}

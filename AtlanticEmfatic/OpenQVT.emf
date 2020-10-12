@@ -1,0 +1,92 @@
+package Metamodel;
+
+package OpenQVT {
+  class Variable {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr String[1] value;
+    !unique !ordered attr String[1] visibility;
+    !ordered ref Context[1]#variables context;
+  }
+
+  class Context {
+    !ordered val Variable[*]#context variables;
+    !ordered ref Rule[1]#context rule;
+  }
+
+  class Rule {
+    !ordered val Context[1]#rule context;
+    !ordered val Rule[1]#superRule subRule;
+    !ordered ref Rule[1]#subRule superRule;
+    !ordered val Service[*]#rule services;
+  }
+
+  class RootRule extends Rule {
+    !ordered ref RuleSet[1]#rootRule ruleSet;
+  }
+
+  class RuleSetCall extends Rule {
+    !ordered ref RuleSet[1] ruleSet;
+  }
+
+  class QARule extends Rule {
+    !ordered val Query[1]#qARule query;
+    !ordered val Action[1]#qARule action;
+  }
+
+  class RuleSet {
+    !ordered val RootRule[1]#ruleSet rootRule;
+  }
+
+  class Service {
+    !unique !ordered attr String[1] visibility;
+    !unique !ordered attr String[1] signature;
+    !ordered ref Rule[1]#services rule;
+  }
+
+  class OCLService extends Service {
+  }
+
+  class RTransService extends Service {
+  }
+
+  class JavaService extends Service {
+  }
+
+  abstract class RulePart {
+    !ordered ref Service[1] service;
+  }
+
+  class Action extends RulePart {
+    !ordered ref QARule[1]#action qARule;
+  }
+
+  class RTransAction extends Action {
+  }
+
+  class JavaAction extends Action {
+  }
+
+  class Query extends RulePart {
+    !ordered ref QARule[1]#query qARule;
+  }
+
+  class OCLFilter extends Query {
+  }
+
+  class RTransQuery extends Query {
+  }
+
+  class JavaQuery extends Query {
+  }
+
+  class JavaFilter extends Query {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+}
+

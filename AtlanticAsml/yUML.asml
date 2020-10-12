@@ -1,0 +1,119 @@
+abstract class LocatedElement
+  var location as Set of String
+  var commentsBefore as Set of String
+  var commentsAfter as Set of String
+
+class Model extends LocatedElement
+  // classes IsContainer
+  var classes as Set of _Class
+  // elements IsContainer
+  var elements as Set of ModelElement
+
+class _Class extends LocatedElement
+  var name as Set of String
+
+abstract class ModelElement extends LocatedElement
+  var model as Set of Model
+
+abstract class ColorableElement extends ModelElement
+  var color as Set of String
+
+class ClassReference extends ColorableElement
+  var stereotype as Set of String
+  var _class as Set of _Class
+  // definition IsContainer
+  var definition as Set of ClassDefinition
+
+abstract class Relationship extends ModelElement
+  // source IsContainer
+  var source as Set of ClassReference
+  // target IsContainer
+  var target as Set of ClassReference
+
+class ClassDefinition extends LocatedElement
+  // attributes IsContainer
+  var attributes as Set of _Attribute
+  // methods IsContainer
+  var methods as Set of Method
+
+class Association extends Relationship
+  var _type as Set of AssociationType
+  var sourceLabel as Set of String
+  var navigableSource as Set of Boolean
+  var sourceVisibility as Set of Visibility
+  var targetLabel as Set of String
+  var navigableTarget as Set of Boolean
+  var targetVisibility as Set of Visibility
+  // sourceCardinality IsContainer
+  var sourceCardinality as Set of Cardinality
+  // targetCardinality IsContainer
+  var targetCardinality as Set of Cardinality
+
+class Inheritance extends Relationship
+
+class Cardinality extends LocatedElement
+  var lowerBound as Set of Integer
+  var upperBound as Set of Integer
+
+abstract class ClassMember extends LocatedElement
+  var visibility as Set of Visibility
+  var name as Set of String
+
+class _Attribute extends ClassMember
+  var _type as Set of String
+
+class Method extends ClassMember
+  var arguments as Set of String
+
+class Note extends ColorableElement
+  var text as Set of String
+
+class NoteAssociation extends Relationship
+  // note IsContainer
+  var note as Set of Note
+
+enum AssociationType
+  simpleAssociation
+  aggregation
+  composition
+
+enum Visibility
+  unspecified
+  _public
+  _private
+  _protected
+  package
+
+var LocatedElement_Universe as Set of LocatedElement
+
+var Model_Universe as Set of Model
+
+var _Class_Universe as Set of _Class
+
+var ModelElement_Universe as Set of ModelElement
+
+var ColorableElement_Universe as Set of ColorableElement
+
+var ClassReference_Universe as Set of ClassReference
+
+var Relationship_Universe as Set of Relationship
+
+var ClassDefinition_Universe as Set of ClassDefinition
+
+var Association_Universe as Set of Association
+
+var Inheritance_Universe as Set of Inheritance
+
+var Cardinality_Universe as Set of Cardinality
+
+var ClassMember_Universe as Set of ClassMember
+
+var _Attribute_Universe as Set of _Attribute
+
+var Method_Universe as Set of Method
+
+var Note_Universe as Set of Note
+
+var NoteAssociation_Universe as Set of NoteAssociation
+
+Main()

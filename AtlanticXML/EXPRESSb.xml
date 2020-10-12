@@ -1,0 +1,694 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'express'>
+    <DataType name = 'Dummy'/>
+    <Package name = 'rules'>
+      <Class name = 'ONEOFConstraint' isAbstract = 'false' supertypes = 'rules::SubtypeConstraint'/>
+      <Class name = 'SupertypeRule' isAbstract = 'false' supertypes = 'core::CommonElement'>
+        <Reference name = 'namedSupertype' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::EntityType' opposite = ''/>
+        <Reference name = 'constraints' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'rules::SubtypeConstraint' opposite = 'rules::SubtypeConstraint::collection'/>
+        <Attribute name = 'assertsAbstract' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+      </Class>
+      <Class name = 'SubtypeConstraint' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'constrainedSubtypes' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'rules::Extent' opposite = 'rules::Extent::constraints'/>
+        <Reference name = 'equivalentRule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::Expression' opposite = ''/>
+        <Reference name = 'collection' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'rules::SupertypeRule' opposite = 'rules::SupertypeRule::constraints'/>
+      </Class>
+      <Class name = 'Extent' isAbstract = 'false' supertypes = 'instances::SETValue'>
+        <Reference name = 'constraints' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'rules::SubtypeConstraint' opposite = 'rules::SubtypeConstraint::constrainedSubtypes'/>
+        <Reference name = 'content' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'instances::EntityInstance' opposite = ''/>
+        <Reference name = 'withinPopulation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'instances::Population' opposite = ''/>
+        <Reference name = 'constraintRules' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'rules::GlobalRule' opposite = 'rules::GlobalRule::constrainedExtents'/>
+        <Reference name = 'forType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::EntityType' opposite = 'core::EntityType::extension'/>
+        <Reference name = 'id' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::ScopedId' opposite = ''/>
+      </Class>
+      <Class name = 'TOTAL_OVERConstraint' isAbstract = 'false' supertypes = 'rules::SubtypeConstraint'/>
+      <Class name = 'ANDConstraint' isAbstract = 'false' supertypes = 'rules::SubtypeConstraint'/>
+      <Class name = 'GlobalRule' isAbstract = 'false' supertypes = 'core::SchemaElement, core::AlgorithmScope'>
+        <Reference name = 'supportingBody' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'algorithms::Statement' opposite = ''/>
+        <Reference name = 'constrainedExtents' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'rules::Extent' opposite = 'rules::Extent::constraintRules'/>
+        <Reference name = 'containsRules' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'rules::NamedRule' opposite = ''/>
+      </Class>
+      <Class name = 'NamedRule' isAbstract = 'false' supertypes = 'core::LocalElement'>
+        <Reference name = 'assertsExpression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::Expression' opposite = ''/>
+        <Attribute name = 'position' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Integer'/>
+      </Class>
+    </Package>
+    <Package name = 'statements'>
+      <Class name = 'ProcedureCall' isAbstract = 'false' supertypes = 'algorithms::Statement'>
+        <Reference name = 'invokes' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::Procedure' opposite = ''/>
+        <Reference name = 'actualParameters' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'expressions::ActualParameter' opposite = 'expressions::ActualParameter::inProcedureCall'/>
+      </Class>
+      <Class name = 'SkipStatement' isAbstract = 'false' supertypes = 'statements::ControlStatement'/>
+      <Class name = 'AliasStatement' isAbstract = 'false' supertypes = 'algorithms::Statement, core::LocalScope'>
+        <Reference name = 'bindsToReference' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'statements::VARExpression' opposite = ''/>
+        <Reference name = 'body' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'algorithms::Statement' opposite = ''/>
+        <Reference name = 'aliasVariable' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'statements::AliasVariable' opposite = ''/>
+      </Class>
+      <Class name = 'ControlVariable' isAbstract = 'false' supertypes = 'algorithms::NamedVariable'>
+        <Reference name = 'boundValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+        <Reference name = 'initialValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+        <Reference name = 'increment' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+      </Class>
+      <Class name = 'AliasVariable' isAbstract = 'false' supertypes = 'algorithms::NamedVariable, algorithms::VARVariable'>
+        <Reference name = 'referent' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'statements::VARExpression' opposite = ''/>
+      </Class>
+      <Class name = 'ControlStatement' isAbstract = 'true' supertypes = 'algorithms::Statement'/>
+      <Class name = 'VARCell' isAbstract = 'false' supertypes = 'statements::VARExpression'>
+        <Reference name = 'refersTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::VARVariable' opposite = ''/>
+        <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::Identifier'/>
+      </Class>
+      <Class name = 'NullStatement' isAbstract = 'false' supertypes = 'statements::ControlStatement'/>
+      <Class name = 'VARExpression' isAbstract = 'true' supertypes = ''>
+        <Attribute name = 'text' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::ExpressText'/>
+      </Class>
+      <Class name = 'AttributeCell' isAbstract = 'false' supertypes = 'statements::VARExpression'>
+        <Reference name = 'refersTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::ExplicitAttribute' opposite = ''/>
+        <Reference name = 'baseEntity' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'statements::VARExpression' opposite = ''/>
+        <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::Identifier'/>
+      </Class>
+      <Class name = 'StatementBlock' isAbstract = 'false' supertypes = 'algorithms::Statement'>
+        <Reference name = 'bodyStatements_Statement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'algorithms::Statement' opposite = 'algorithms::Statement::inBlock'/>
+        <Attribute name = 'delimited' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+      </Class>
+      <Class name = 'CaseAction' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'labelValue' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+        <Reference name = 'action' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'algorithms::Statement' opposite = ''/>
+        <Attribute name = 'isDefault' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+      </Class>
+      <Class name = 'MemberCell' isAbstract = 'false' supertypes = 'statements::VARExpression'>
+        <Reference name = 'indexValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+        <Reference name = 'baseAggregate' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'statements::VARExpression' opposite = ''/>
+      </Class>
+      <Class name = 'RepeatStatement' isAbstract = 'false' supertypes = 'algorithms::Statement, core::LocalScope'>
+        <Reference name = 'whileExpression' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+        <Reference name = 'body' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'algorithms::Statement' opposite = 'algorithms::Statement::controlledBy'/>
+        <Reference name = 'controlVariable' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'statements::ControlVariable' opposite = ''/>
+        <Reference name = 'untilExpression' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+      </Class>
+      <Class name = 'GroupCell' isAbstract = 'false' supertypes = 'statements::VARExpression'>
+        <Reference name = 'baseEntity' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'statements::VARExpression' opposite = ''/>
+        <Reference name = 'refersTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::SingleEntityType' opposite = ''/>
+        <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::Identifier'/>
+      </Class>
+      <Class name = 'VariableCell' isAbstract = 'false' supertypes = 'statements::VARExpression'>
+        <Reference name = 'refersTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::Variable' opposite = ''/>
+        <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::Identifier'/>
+      </Class>
+      <Class name = 'CaseStatement' isAbstract = 'false' supertypes = 'algorithms::Statement'>
+        <Reference name = 'cases' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'statements::CaseAction' opposite = ''/>
+        <Reference name = 'selectionExpression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+      </Class>
+      <Class name = 'IfStatement' isAbstract = 'false' supertypes = 'algorithms::Statement'>
+        <Reference name = 'ifCondition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::Expression' opposite = ''/>
+        <Reference name = 'elseActions' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'algorithms::Statement' opposite = ''/>
+        <Reference name = 'thenActions' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'algorithms::Statement' opposite = ''/>
+      </Class>
+      <Class name = 'EscapeStatement' isAbstract = 'false' supertypes = 'statements::ControlStatement'/>
+      <Class name = 'ReturnStatement' isAbstract = 'false' supertypes = 'statements::ControlStatement'>
+        <Reference name = 'returnValue' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+      </Class>
+      <Class name = 'Assignment' isAbstract = 'false' supertypes = 'algorithms::Statement'>
+        <Reference name = 'assignedValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+        <Reference name = 'variable' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'statements::VARExpression' opposite = ''/>
+      </Class>
+    </Package>
+    <Package name = 'mof'>
+      <DataType name = 'String'/>
+      <DataType name = 'Integer'/>
+      <DataType name = 'Boolean'/>
+    </Package>
+    <Package name = 'expressions'>
+      <Class name = 'Selector' isAbstract = 'true' supertypes = 'core::Expression'>
+        <Reference name = 'entityInstance' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+      </Class>
+      <Class name = 'RepeatCount' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'derivation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+      </Class>
+      <Class name = 'EnumItemRef' isAbstract = 'false' supertypes = 'expressions::Primary'>
+        <Reference name = 'refersTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'instances::EnumerationItem' opposite = ''/>
+        <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::Identifier'/>
+      </Class>
+      <Class name = 'Literal' isAbstract = 'false' supertypes = 'expressions::Primary'>
+        <Reference name = 'refersTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'instances::SimpleValue' opposite = ''/>
+      </Class>
+      <Class name = 'BinaryIndex' isAbstract = 'false' supertypes = 'expressions::IndexOperation'>
+        <Reference name = 'firstBit' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+        <Reference name = 'lastBit' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+      </Class>
+      <Class name = 'IndeterminateRef' isAbstract = 'false' supertypes = 'expressions::Primary'>
+        <Reference name = 'refersTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'instances::Indeterminate' opposite = ''/>
+      </Class>
+      <Class name = 'SELFRef' isAbstract = 'false' supertypes = 'expressions::Primary'/>
+      <Class name = 'IndexOperation' isAbstract = 'true' supertypes = 'core::Expression'>
+        <Reference name = 'baseValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+      </Class>
+      <Class name = 'BinaryOperation' isAbstract = 'false' supertypes = 'expressions::Operation'>
+        <Reference name = 'leftOperand' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+        <Reference name = 'rightOperand' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+        <Attribute name = 'operator' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'expressions::BinaryOperator'/>
+      </Class>
+      <Class name = 'AggregateInitializer' isAbstract = 'false' supertypes = 'core::Expression'>
+        <Reference name = 'resultValue' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'instances::GenericAggregate' opposite = ''/>
+        <Reference name = 'bindings' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'expressions::MemberBinding' opposite = ''/>
+      </Class>
+      <Class name = 'StringIndex' isAbstract = 'false' supertypes = 'expressions::IndexOperation'>
+        <Reference name = 'firstCode' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+        <Reference name = 'lastCode' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+      </Class>
+      <Class name = 'PartialEntityConstructor' isAbstract = 'false' supertypes = 'core::Expression'>
+        <Reference name = 'resultValue' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'instances::PartialEntityValue' opposite = ''/>
+        <Reference name = 'attributeGroup' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::SingleEntityType' opposite = ''/>
+        <Reference name = 'bindings' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'expressions::AttributeBinding' opposite = ''/>
+        <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::Identifier'/>
+      </Class>
+      <Class name = 'Coercion' isAbstract = 'false' supertypes = 'expressions::Operation'>
+        <Reference name = 'operand' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+        <Reference name = 'targetType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::VariableType' opposite = ''/>
+      </Class>
+      <Class name = 'Primary' isAbstract = 'true' supertypes = 'core::Expression'/>
+      <Class name = 'ActualParameter' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'inProcedureCall' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'statements::ProcedureCall' opposite = 'statements::ProcedureCall::actualParameters'/>
+        <Reference name = 'inFunctionCall' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'expressions::FunctionCall' opposite = 'expressions::FunctionCall::actualParameters'/>
+        <Reference name = 'formalParameter' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::Parameter' opposite = ''/>
+        <Reference name = 'actualReferent' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'statements::VARExpression' opposite = ''/>
+        <Reference name = 'actualValue' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+        <Attribute name = 'position' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Integer'/>
+      </Class>
+      <Class name = 'ParameterRef' isAbstract = 'false' supertypes = 'expressions::Primary'>
+        <Reference name = 'refersTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::Parameter' opposite = ''/>
+        <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::Identifier'/>
+      </Class>
+      <Class name = 'AttributeRef' isAbstract = 'false' supertypes = 'expressions::Selector'>
+        <Reference name = 'refersTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Attribute' opposite = ''/>
+        <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::Identifier'/>
+      </Class>
+      <Class name = 'AggregateIndex' isAbstract = 'false' supertypes = 'expressions::IndexOperation'>
+        <Reference name = 'indexValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::Expression' opposite = ''/>
+      </Class>
+      <Class name = 'GroupRef' isAbstract = 'false' supertypes = 'expressions::Selector'>
+        <Reference name = 'refersTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::SingleEntityType' opposite = ''/>
+        <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::Identifier'/>
+      </Class>
+      <Class name = 'UnaryOperation' isAbstract = 'false' supertypes = 'expressions::Operation'>
+        <Reference name = 'unaryOperand' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+        <Attribute name = 'operator' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'expressions::UnaryOperator'/>
+      </Class>
+      <Class name = 'UsedInRef' isAbstract = 'false' supertypes = 'expressions::Selector'>
+        <Reference name = 'inverseOf' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Attribute' opposite = ''/>
+      </Class>
+      <Class name = 'ConstantRef' isAbstract = 'false' supertypes = 'expressions::Primary'>
+        <Reference name = 'refersTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'instances::Constant' opposite = ''/>
+        <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::Identifier'/>
+      </Class>
+      <Class name = 'QueryExpression' isAbstract = 'false' supertypes = 'core::LocalScope, core::Expression'>
+        <Reference name = 'selectCondition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::Expression' opposite = ''/>
+        <Reference name = 'queryVariable' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'expressions::QueryVariable' opposite = ''/>
+        <Reference name = 'aggregateOperand' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+      </Class>
+      <Class name = 'QueryVariable' isAbstract = 'false' supertypes = 'algorithms::NamedVariable'/>
+      <Class name = 'Operation' isAbstract = 'true' supertypes = 'core::Expression'/>
+      <Class name = 'AttributeBinding' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'attributeValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+        <Reference name = 'toValue' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'instances::AttributeValue' opposite = ''/>
+        <Reference name = 'attribute' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::ExplicitAttribute' opposite = ''/>
+        <Attribute name = 'position' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Integer'/>
+      </Class>
+      <Class name = 'FunctionCall' isAbstract = 'false' supertypes = 'core::Expression'>
+        <Reference name = 'actualParameters' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'expressions::ActualParameter' opposite = 'expressions::ActualParameter::inFunctionCall'/>
+        <Reference name = 'invokesFunction' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::Function' opposite = ''/>
+        <Reference name = 'returnsResult' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::FunctionResult' opposite = ''/>
+      </Class>
+      <Class name = 'MemberBinding' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'repetition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'expressions::RepeatCount' opposite = ''/>
+        <Reference name = 'toSlot' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'instances::ListMember' opposite = ''/>
+        <Reference name = 'memberValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+        <Attribute name = 'position' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Integer'/>
+      </Class>
+      <Class name = 'ExtentRef' isAbstract = 'false' supertypes = 'expressions::Primary'>
+        <Reference name = 'refersTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::NamedType' opposite = ''/>
+        <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::Identifier'/>
+      </Class>
+      <Class name = 'VariableRef' isAbstract = 'false' supertypes = 'expressions::Primary'>
+        <Reference name = 'refersTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::NamedVariable' opposite = ''/>
+        <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::Identifier'/>
+      </Class>
+      <DataType name = 'UnaryOperator'/>
+      <DataType name = 'BinaryOperator'/>
+    </Package>
+    <Package name = 'core'>
+      <Class name = 'TypeElement' isAbstract = 'true' supertypes = 'core::NamedElement'/>
+      <Class name = 'SingleEntityType' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'declaresExplicitAttribute' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::ExplicitAttribute' opposite = ''/>
+        <Reference name = 'declaresAttribute' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'core::Attribute' opposite = 'core::Attribute::ofEntity'/>
+        <Reference name = 'declaredIn' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::EntityType' opposite = 'core::EntityType::declares'/>
+        <Reference name = 'equivalent' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::PartialEntityType' opposite = ''/>
+        <Reference name = 'id' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::ScopedId' opposite = ''/>
+      </Class>
+      <Class name = 'AGGREGATEType' isAbstract = 'false' supertypes = 'core::GeneralizedType'>
+        <Reference name = 'upperBound' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::SizeConstraint' opposite = ''/>
+        <Reference name = 'memberType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::ParameterType' opposite = ''/>
+        <Reference name = 'constraint' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::ActualStructureConstraint' opposite = 'algorithms::ActualStructureConstraint::matchingStructure'/>
+        <Reference name = 'lowerBound' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::SizeConstraint' opposite = ''/>
+      </Class>
+      <Class name = 'GeneralBAGType' isAbstract = 'false' supertypes = 'core::GeneralAggregationType'/>
+      <Class name = 'DomainRule' isAbstract = 'false' supertypes = 'core::DomainConstraint, core::TypeElement'>
+        <Attribute name = 'position' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Integer'/>
+      </Class>
+      <Class name = 'GeneralAggregationType' isAbstract = 'true' supertypes = 'core::GeneralizedType, core::AggregationType'>
+        <Reference name = 'memberType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::GeneralizedType' opposite = ''/>
+      </Class>
+      <Class name = 'ConcreteType' isAbstract = 'true' supertypes = 'core::InstantiableType'/>
+      <Class name = 'Expression' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'evaluation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Instance' opposite = ''/>
+        <Reference name = 'interpretationContext' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Scope' opposite = ''/>
+        <Reference name = 'dataType' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::DataType' opposite = ''/>
+        <Attribute name = 'text' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::ExpressText'/>
+      </Class>
+      <Class name = 'InverseAttribute' isAbstract = 'false' supertypes = 'core::Attribute'>
+        <Reference name = 'modelsRole' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::DomainRole' opposite = 'core::DomainRole::rangeView'/>
+        <Reference name = 'explicit' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::InvertibleAttribute' opposite = 'core::InvertibleAttribute::inverse'/>
+        <Attribute name = 'isUnique' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+      </Class>
+      <Class name = 'EnumerationType' isAbstract = 'false' supertypes = 'core::DefinedType'>
+        <Reference name = 'values' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'instances::EnumerationItem' opposite = ''/>
+        <Reference name = 'declaredItems' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'instances::EnumerationItem' opposite = 'instances::EnumerationItem::declaredIn'/>
+        <Reference name = 'extension' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::EnumerationType' opposite = 'core::EnumerationType::base'/>
+        <Reference name = 'base' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::EnumerationType' opposite = 'core::EnumerationType::extension'/>
+        <Attribute name = 'isExtensible' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+      </Class>
+      <Class name = 'VariableType' isAbstract = 'true' supertypes = 'core::DataType, core::AttributeType'/>
+      <Class name = 'ArrayBound' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'boundExpression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+        <Attribute name = 'bound' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Integer'/>
+      </Class>
+      <Class name = 'GeneralSETType' isAbstract = 'false' supertypes = 'core::GeneralAggregationType'/>
+      <Class name = 'LISTType' isAbstract = 'false' supertypes = 'core::ConcreteAggregationType'/>
+      <Class name = 'Redeclaration' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'derivation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+        <Reference name = 'restrictedType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::AttributeType' opposite = ''/>
+        <Reference name = 'refines' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Redeclaration' opposite = ''/>
+        <Reference name = 'upperBound' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::SizeConstraint' opposite = ''/>
+        <Reference name = 'lowerBound' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::SizeConstraint' opposite = ''/>
+        <Reference name = 'scope' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::EntityType' opposite = 'core::EntityType::redeclarations'/>
+        <Reference name = 'originalAttribute' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Attribute' opposite = ''/>
+        <Reference name = 'refinedRole' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Role' opposite = ''/>
+        <Attribute name = 'position' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Integer'/>
+        <Attribute name = 'isMandatory' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+        <Reference name = 'alias' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::ScopedId' opposite = ''/>
+      </Class>
+      <Class name = 'EntityType' isAbstract = 'false' supertypes = 'core::NamedType, core::InstantiableType'>
+        <Reference name = 'playsRole' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::Role' opposite = 'core::Role::ofEntity'/>
+        <Reference name = 'redeclarations' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'core::Redeclaration' opposite = 'core::Redeclaration::scope'/>
+        <Reference name = 'attributes' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'core::Attribute' opposite = 'core::Attribute::owningEntity'/>
+        <Reference name = 'playsRangeRole' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::RangeRole' opposite = 'core::RangeRole::range'/>
+        <Reference name = 'declares' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::SingleEntityType' opposite = 'core::SingleEntityType::declaredIn'/>
+        <Reference name = 'extension' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'rules::Extent' opposite = 'rules::Extent::forType'/>
+        <Reference name = 'invertibleAttributes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::InvertibleAttribute' opposite = 'core::InvertibleAttribute::referencingType'/>
+        <Reference name = 'playsDomainRole' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::DomainRole' opposite = 'core::DomainRole::domain'/>
+        <Reference name = 'uniqueRules' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::UniqueRule' opposite = 'core::UniqueRule::domain'/>
+        <Reference name = 'usedIn' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::InvertibleAttribute' opposite = 'core::InvertibleAttribute::rangeType'/>
+        <Reference name = 'subtypeOf' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::EntityType' opposite = ''/>
+        <Attribute name = 'isAbstract' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+      </Class>
+      <Class name = 'DataType' isAbstract = 'true' supertypes = ''>
+        <Reference name = 'instances' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::Instance' opposite = 'core::Instance::ofType'/>
+      </Class>
+      <Class name = 'PartialEntityType' isAbstract = 'false' supertypes = 'core::DataType'>
+        <Reference name = 'components' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::SingleEntityType' opposite = ''/>
+      </Class>
+      <Class name = 'Schema' isAbstract = 'false' supertypes = 'core::Scope'>
+        <Reference name = 'documentation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::Remark' opposite = 'core::Remark::describesSchema'/>
+        <Reference name = 'interfaces' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'core::InterfacedElement' opposite = 'core::InterfacedElement::interfacingSchema'/>
+        <Reference name = 'schemaElements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'core::SchemaElement' opposite = 'core::SchemaElement::definedIn'/>
+        <Reference name = 'interfacedElements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::SchemaElement' opposite = 'core::SchemaElement::referencedIn'/>
+        <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::Identifier'/>
+        <Attribute name = 'version' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::Identifier'/>
+      </Class>
+      <Class name = 'InvertibleAttribute' isAbstract = 'false' supertypes = 'core::ExplicitAttribute'>
+        <Reference name = 'inverse' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::InverseAttribute' opposite = 'core::InverseAttribute::explicit'/>
+        <Reference name = 'rangeType' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::EntityType' opposite = 'core::EntityType::usedIn'/>
+        <Reference name = 'createsRelationship' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Relationship' opposite = 'core::Relationship::basedOn'/>
+        <Reference name = 'referencingType' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::EntityType' opposite = 'core::EntityType::invertibleAttributes'/>
+        <Reference name = 'modelsRole' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::RangeRole' opposite = 'core::RangeRole::domainView'/>
+      </Class>
+      <Class name = 'GeneralizedType' isAbstract = 'true' supertypes = 'core::ParameterType, core::AttributeType'>
+        <Reference name = 'occursIn' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::ParameterType' opposite = 'core::ParameterType::contains'/>
+      </Class>
+      <Class name = 'InterfacedElement' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'interfacingSchema' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Schema' opposite = 'core::Schema::interfaces'/>
+        <Reference name = 'refersTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::SchemaElement' opposite = 'core::SchemaElement::referencedAs'/>
+        <Attribute name = 'isUSE' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+        <Reference name = 'interfacedId' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::ScopedId' opposite = ''/>
+      </Class>
+      <Class name = 'NumericType' isAbstract = 'false' supertypes = 'core::SimpleType'/>
+      <Class name = 'DefinedType' isAbstract = 'true' supertypes = 'core::NamedType, core::ConcreteType'/>
+      <Class name = 'UniqueRule' isAbstract = 'false' supertypes = 'core::TypeElement'>
+        <Reference name = 'domain' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::EntityType' opposite = 'core::EntityType::uniqueRules'/>
+        <Reference name = 'keyComponent' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::Attribute' opposite = ''/>
+        <Attribute name = 'position' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Integer'/>
+      </Class>
+      <Class name = 'DomainRole' isAbstract = 'false' supertypes = 'core::Role'>
+        <Reference name = 'rangeView' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::InverseAttribute' opposite = 'core::InverseAttribute::modelsRole'/>
+        <Reference name = 'domain' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::EntityType' opposite = 'core::EntityType::playsDomainRole'/>
+        <Reference name = 'id' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::ScopedId' opposite = ''/>
+      </Class>
+      <Class name = 'DomainConstraint' isAbstract = 'true' supertypes = ''>
+        <Reference name = 'domain' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::AttributeType' opposite = 'core::AttributeType::constraints'/>
+        <Reference name = 'asserts' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::Expression' opposite = ''/>
+      </Class>
+      <Class name = 'InstantiableType' isAbstract = 'true' supertypes = 'core::ParameterType, core::VariableType'>
+        <Reference name = 'fundamentalType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::InstantiableType' opposite = ''/>
+      </Class>
+      <Class name = 'GeneralLISTType' isAbstract = 'false' supertypes = 'core::GeneralAggregationType'/>
+      <Class name = 'NamedElement' isAbstract = 'true' supertypes = ''>
+        <Reference name = 'namespace' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Scope' opposite = 'core::Scope::namedElements'/>
+        <Reference name = 'documentation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::Remark' opposite = 'core::Remark::describesElement'/>
+        <Reference name = 'id' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::ScopedId' opposite = ''/>
+      </Class>
+      <Class name = 'Attribute' isAbstract = 'true' supertypes = 'core::TypeElement'>
+        <Reference name = 'attributeType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::AttributeType' opposite = 'core::AttributeType::role'/>
+        <Reference name = 'ofEntity' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::SingleEntityType' opposite = 'core::SingleEntityType::declaresAttribute'/>
+        <Attribute name = 'isAbstract' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+        <Attribute name = 'position' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Integer'/>
+        <Reference name = 'owningEntity' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::EntityType' opposite = 'core::EntityType::attributes'/>
+      </Class>
+      <Class name = 'BAGType' isAbstract = 'false' supertypes = 'core::ConcreteAggregationType'/>
+      <Class name = 'RealType' isAbstract = 'false' supertypes = 'core::NumericType'>
+        <Attribute name = 'precision' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Integer'/>
+      </Class>
+      <Class name = 'LogicType' isAbstract = 'false' supertypes = 'core::SimpleType'/>
+      <Class name = 'GenericType' isAbstract = 'false' supertypes = 'core::GeneralizedType'>
+        <Reference name = 'constraint' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::ActualTypeConstraint' opposite = 'algorithms::ActualTypeConstraint::matchingType'/>
+        <Attribute name = 'isEntity' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+      </Class>
+      <Class name = 'StringType' isAbstract = 'false' supertypes = 'core::SimpleType'>
+        <Reference name = 'stringLengthConstraint' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::LengthConstraint' opposite = ''/>
+      </Class>
+      <Class name = 'AnonymousType' isAbstract = 'true' supertypes = 'core::ConcreteType, core::InstantiableType'>
+        <Reference name = 'specializes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::AnonymousType' opposite = ''/>
+      </Class>
+      <Class name = 'AlgorithmScope' isAbstract = 'true' supertypes = 'core::LocalScope'>
+        <Reference name = 'commonElements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::CommonElement' opposite = 'core::CommonElement::localScope'/>
+        <Reference name = 'variables' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::Variable' opposite = ''/>
+      </Class>
+      <Class name = 'Instance' isAbstract = 'true' supertypes = ''>
+        <Reference name = 'appearsInPopulation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'instances::Population' opposite = 'instances::Population::compositionInstance'/>
+        <Reference name = 'ofType' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::DataType' opposite = 'core::DataType::instances'/>
+      </Class>
+      <Class name = 'AttributeType' isAbstract = 'true' supertypes = ''>
+        <Reference name = 'role' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::Attribute' opposite = 'core::Attribute::attributeType'/>
+        <Reference name = 'constraints' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::DomainConstraint' opposite = 'core::DomainConstraint::domain'/>
+      </Class>
+      <Class name = 'DerivedAttribute' isAbstract = 'false' supertypes = 'core::Attribute'>
+        <Reference name = 'derivation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+      </Class>
+      <Class name = 'RangeRole' isAbstract = 'false' supertypes = 'core::Role'>
+        <Reference name = 'domainView' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::InvertibleAttribute' opposite = 'core::InvertibleAttribute::modelsRole'/>
+        <Reference name = 'range' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::EntityType' opposite = 'core::EntityType::playsRangeRole'/>
+        <Reference name = 'id' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::ScopedId' opposite = ''/>
+      </Class>
+      <Class name = 'LocalElement' isAbstract = 'true' supertypes = 'core::NamedElement'/>
+      <Class name = 'Remark' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'describesSchema' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::Schema' opposite = 'core::Schema::documentation'/>
+        <Reference name = 'appearsIn' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Scope' opposite = 'core::Scope::includesRemarks'/>
+        <Reference name = 'describesElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::NamedElement' opposite = 'core::NamedElement::documentation'/>
+        <Attribute name = 'isTagged' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+        <Attribute name = 'isTail' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+        <Attribute name = 'text' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::ExpressText'/>
+      </Class>
+      <Class name = 'SizeConstraint' isAbstract = 'false' supertypes = 'core::DomainConstraint'>
+        <Attribute name = 'bound' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Integer'/>
+      </Class>
+      <Class name = 'Role' isAbstract = 'true' supertypes = ''>
+        <Reference name = 'inRelationship' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Relationship' opposite = 'core::Relationship::roles'/>
+        <Reference name = 'ofEntity' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::EntityType' opposite = 'core::EntityType::playsRole'/>
+        <Reference name = 'upperBound' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::SizeConstraint' opposite = ''/>
+        <Reference name = 'lowerBound' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::SizeConstraint' opposite = ''/>
+      </Class>
+      <Class name = 'SETType' isAbstract = 'false' supertypes = 'core::ConcreteAggregationType'/>
+      <Class name = 'SpecializedType' isAbstract = 'false' supertypes = 'core::DefinedType'>
+        <Reference name = 'underlyingType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::ConcreteType' opposite = ''/>
+      </Class>
+      <Class name = 'GeneralARRAYType' isAbstract = 'false' supertypes = 'core::GeneralAggregationType'>
+        <Reference name = 'hiIndex' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::ArrayBound' opposite = ''/>
+        <Reference name = 'loIndex' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::ArrayBound' opposite = ''/>
+        <Attribute name = 'isOptional' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+      </Class>
+      <Class name = 'Relationship' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'domain' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::DomainRole' opposite = ''/>
+        <Reference name = 'roles' lower = '2' upper = '2' isOrdered = 'false' isContainer = 'false' type = 'core::Role' opposite = 'core::Role::inRelationship'/>
+        <Reference name = 'basedOn' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::InvertibleAttribute' opposite = 'core::InvertibleAttribute::createsRelationship'/>
+        <Reference name = 'range' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::RangeRole' opposite = ''/>
+      </Class>
+      <Class name = 'LengthConstraint' isAbstract = 'false' supertypes = 'core::DomainConstraint'>
+        <Attribute name = 'maxLength' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Integer'/>
+        <Attribute name = 'isFixed' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+      </Class>
+      <Class name = 'LocalScope' isAbstract = 'true' supertypes = 'core::Scope'>
+        <Reference name = 'localElements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::LocalElement' opposite = ''/>
+      </Class>
+      <Class name = 'NamedType' isAbstract = 'true' supertypes = 'core::InstantiableType, core::Scope, core::CommonElement, core::AttributeType'>
+        <Reference name = 'instantiates' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::SelectType' opposite = 'core::SelectType::allowedTypes'/>
+        <Reference name = 'domainRules' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::DomainRule' opposite = ''/>
+      </Class>
+      <Class name = 'BinaryType' isAbstract = 'false' supertypes = 'core::SimpleType'>
+        <Reference name = 'binaryLengthConstraint' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::LengthConstraint' opposite = ''/>
+      </Class>
+      <Class name = 'ScopedId' isAbstract = 'false' supertypes = ''>
+        <Attribute name = 'localName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::Identifier'/>
+        <Reference name = 'definingScope' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Scope' opposite = ''/>
+      </Class>
+      <Class name = 'AggregationType' isAbstract = 'true' supertypes = ''>
+        <Reference name = 'lowerBound' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::SizeConstraint' opposite = ''/>
+        <Reference name = 'upperBound' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::SizeConstraint' opposite = ''/>
+        <Attribute name = 'isUnique' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+        <Attribute name = 'ordering' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::OrderingKind'/>
+      </Class>
+      <Class name = 'Scope' isAbstract = 'true' supertypes = ''>
+        <Reference name = 'namedElements' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'core::NamedElement' opposite = 'core::NamedElement::namespace'/>
+        <Reference name = 'includesRemarks' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::Remark' opposite = 'core::Remark::appearsIn'/>
+      </Class>
+      <Class name = 'ParameterType' isAbstract = 'true' supertypes = ''>
+        <Reference name = 'contains' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::GeneralizedType' opposite = 'core::GeneralizedType::occursIn'/>
+      </Class>
+      <Class name = 'SelectType' isAbstract = 'false' supertypes = 'core::DefinedType'>
+        <Reference name = 'allowedTypes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::NamedType' opposite = 'core::NamedType::instantiates'/>
+        <Reference name = 'extension' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::SelectType' opposite = 'core::SelectType::base'/>
+        <Reference name = 'base' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::SelectType' opposite = 'core::SelectType::extension'/>
+        <Reference name = 'selectList' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::NamedType' opposite = ''/>
+        <Attribute name = 'isExtensible' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+        <Attribute name = 'isEntity' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+      </Class>
+      <Class name = 'ActualType' isAbstract = 'true' supertypes = 'core::VariableType'>
+        <Reference name = 'scope' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::Algorithm' opposite = ''/>
+      </Class>
+      <Class name = 'ExplicitAttribute' isAbstract = 'false' supertypes = 'core::Attribute'>
+        <Attribute name = 'isOptional' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+      </Class>
+      <Class name = 'SimpleType' isAbstract = 'true' supertypes = 'core::AnonymousType'>
+        <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::Keyword'/>
+      </Class>
+      <Class name = 'CommonElement' isAbstract = 'true' supertypes = 'core::SchemaElement'>
+        <Reference name = 'localScope' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::AlgorithmScope' opposite = 'core::AlgorithmScope::commonElements'/>
+      </Class>
+      <Class name = 'SchemaElement' isAbstract = 'true' supertypes = 'core::NamedElement'>
+        <Reference name = 'referencedAs' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::InterfacedElement' opposite = 'core::InterfacedElement::refersTo'/>
+        <Reference name = 'referencedIn' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::Schema' opposite = 'core::Schema::interfacedElements'/>
+        <Reference name = 'definedIn' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Schema' opposite = 'core::Schema::schemaElements'/>
+      </Class>
+      <Class name = 'ConcreteAggregationType' isAbstract = 'true' supertypes = 'core::AnonymousType, core::AggregationType'>
+        <Reference name = 'memberType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::InstantiableType' opposite = ''/>
+      </Class>
+      <Class name = 'ARRAYType' isAbstract = 'false' supertypes = 'core::ConcreteAggregationType'>
+        <Reference name = 'loIndex' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::ArrayBound' opposite = ''/>
+        <Reference name = 'hiIndex' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::ArrayBound' opposite = ''/>
+        <Attribute name = 'isOptional' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+      </Class>
+      <DataType name = 'Keyword'/>
+      <DataType name = 'ExpressText'/>
+      <DataType name = 'Identifier'/>
+      <DataType name = 'OrderingKind'/>
+    </Package>
+    <Package name = 'java'>
+      <Package name = 'lang'>
+        <DataType name = 'int'/>
+        <DataType name = 'void'/>
+      </Package>
+    </Package>
+    <Package name = 'algorithms'>
+      <Class name = 'ActualTypeConstraint' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'matchingType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::GenericType' opposite = 'core::GenericType::constraint'/>
+        <Reference name = 'requiredType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::ActualDataType' opposite = ''/>
+        <Attribute name = 'label' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::Identifier'/>
+      </Class>
+      <Class name = 'FunctionResult' isAbstract = 'false' supertypes = 'algorithms::Variable'/>
+      <Class name = 'Function' isAbstract = 'false' supertypes = 'algorithms::Algorithm'>
+        <Reference name = 'result' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'algorithms::FunctionResult' opposite = ''/>
+      </Class>
+      <Class name = 'InParameter' isAbstract = 'false' supertypes = 'algorithms::Parameter'>
+        <Reference name = 'variable' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::InVariable' opposite = 'algorithms::InVariable::source'/>
+      </Class>
+      <Class name = 'LocalVariable' isAbstract = 'false' supertypes = 'algorithms::Variable'>
+        <Reference name = 'initialValue' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+      </Class>
+      <Class name = 'ActualStructure' isAbstract = 'false' supertypes = 'algorithms::GenericElement, core::AGGREGATEType'/>
+      <Class name = 'ActualGenericType' isAbstract = 'false' supertypes = 'core::ActualType'>
+        <Reference name = 'refersTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::ActualDataType' opposite = ''/>
+        <Attribute name = 'isEntity' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+        <Attribute name = 'label' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::Identifier'/>
+      </Class>
+      <Class name = 'Statement' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'inBlock' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'statements::StatementBlock' opposite = 'statements::StatementBlock::bodyStatements_Statement'/>
+        <Reference name = 'bodyStatementsSkipStatement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'statements::SkipStatement' opposite = ''/>
+        <Reference name = 'bodyStatementsEscapeStatement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'statements::EscapeStatement' opposite = ''/>
+        <Reference name = 'controlledBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'statements::RepeatStatement' opposite = 'statements::RepeatStatement::body'/>
+        <Reference name = 'implements' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::Algorithm' opposite = 'algorithms::Algorithm::body'/>
+        <Attribute name = 'text' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::ExpressText'/>
+      </Class>
+      <Class name = 'NamedVariable' isAbstract = 'true' supertypes = 'core::LocalElement'>
+        <Reference name = 'variableType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::VariableType' opposite = ''/>
+      </Class>
+      <Class name = 'InVariable' isAbstract = 'false' supertypes = 'algorithms::Variable'>
+        <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::InParameter' opposite = 'algorithms::InParameter::variable'/>
+      </Class>
+      <Class name = 'Procedure' isAbstract = 'false' supertypes = 'algorithms::Algorithm'/>
+      <Class name = 'ActualARRAYType' isAbstract = 'false' supertypes = 'algorithms::ActualAggregationType'>
+        <Reference name = 'hiIndex' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::ArrayBound' opposite = ''/>
+        <Reference name = 'loIndex' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::ArrayBound' opposite = ''/>
+        <Attribute name = 'isOptional' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+      </Class>
+      <Class name = 'ActualSETType' isAbstract = 'false' supertypes = 'algorithms::ActualAggregationType'/>
+      <Class name = 'ActualAGGREGATEType' isAbstract = 'false' supertypes = 'core::ActualType'>
+        <Reference name = 'upperBound' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::SizeConstraint' opposite = ''/>
+        <Reference name = 'refersTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::ActualStructure' opposite = ''/>
+        <Reference name = 'memberType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::VariableType' opposite = ''/>
+        <Reference name = 'lowerBound' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::SizeConstraint' opposite = ''/>
+        <Attribute name = 'label' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::Identifier'/>
+      </Class>
+      <Class name = 'Parameter' isAbstract = 'true' supertypes = 'core::LocalElement'>
+        <Reference name = 'structureConstraints' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'algorithms::ActualStructureConstraint' opposite = ''/>
+        <Reference name = 'typeConstraints' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'algorithms::ActualTypeConstraint' opposite = ''/>
+        <Reference name = 'formalParameterType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::ParameterType' opposite = ''/>
+        <Attribute name = 'inout' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Boolean'/>
+        <Attribute name = 'position' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Integer'/>
+      </Class>
+      <Class name = 'ActualStructureConstraint' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'matchingStructure' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::AGGREGATEType' opposite = 'core::AGGREGATEType::constraint'/>
+        <Reference name = 'requiredStructure' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::ActualStructure' opposite = ''/>
+        <Attribute name = 'label' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'core::Identifier'/>
+      </Class>
+      <Class name = 'Algorithm' isAbstract = 'true' supertypes = 'core::AlgorithmScope, core::CommonElement'>
+        <Reference name = 'body' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'algorithms::Statement' opposite = 'algorithms::Statement::implements'/>
+        <Reference name = 'formalParameters' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::Parameter' opposite = ''/>
+      </Class>
+      <Class name = 'ActualAggregationType' isAbstract = 'true' supertypes = 'core::ActualType, core::AggregationType'>
+        <Reference name = 'memberType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::ActualType' opposite = ''/>
+      </Class>
+      <Class name = 'VARVariable' isAbstract = 'true' supertypes = ''/>
+      <Class name = 'ActualLISTType' isAbstract = 'false' supertypes = 'algorithms::ActualAggregationType'/>
+      <Class name = 'Variable' isAbstract = 'true' supertypes = 'algorithms::NamedVariable'/>
+      <Class name = 'GenericElement' isAbstract = 'true' supertypes = 'core::LocalElement'>
+        <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'algorithms::Parameter' opposite = ''/>
+        <Reference name = 'label' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::ScopedId' opposite = ''/>
+      </Class>
+      <Class name = 'VARParameter' isAbstract = 'false' supertypes = 'algorithms::Parameter, algorithms::VARVariable'/>
+      <Class name = 'ActualDataType' isAbstract = 'false' supertypes = 'core::GenericType, algorithms::GenericElement'/>
+      <Class name = 'ActualBAGType' isAbstract = 'false' supertypes = 'algorithms::ActualAggregationType'/>
+    </Package>
+    <Package name = 'instances'>
+      <Class name = 'AttributeValue' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'actualValue' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Instance' opposite = ''/>
+        <Reference name = 'attribute' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::ExplicitAttribute' opposite = ''/>
+      </Class>
+      <Class name = 'ARRAYValue' isAbstract = 'false' supertypes = 'instances::AggregateValue'>
+        <Reference name = 'memberSlot' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'instances::ArrayMember' opposite = ''/>
+      </Class>
+      <Class name = 'RoleName' isAbstract = 'false' supertypes = 'instances::StringValue'>
+        <Reference name = 'refersTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Attribute' opposite = ''/>
+        <Reference name = 'represents' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::ScopedId' opposite = ''/>
+      </Class>
+      <Class name = 'EntityInstance' isAbstract = 'false' supertypes = 'instances::TypedInstance'>
+        <Reference name = 'state' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'instances::EntityValue' opposite = 'instances::EntityValue::describes'/>
+        <Reference name = 'instanceOf' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::EntityType' opposite = ''/>
+        <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'instances::EntityName'/>
+      </Class>
+      <Class name = 'IntegerValue' isAbstract = 'false' supertypes = 'instances::RealValue'/>
+      <Class name = 'AggregateValue' isAbstract = 'true' supertypes = 'instances::ConcreteValue'/>
+      <Class name = 'Constant' isAbstract = 'false' supertypes = 'core::CommonElement'>
+        <Reference name = 'valueExpression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Expression' opposite = ''/>
+        <Reference name = 'actualValue' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Instance' opposite = ''/>
+        <Reference name = 'dataType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::InstantiableType' opposite = ''/>
+      </Class>
+      <Class name = 'LogicalValue' isAbstract = 'false' supertypes = 'instances::SimpleValue'/>
+      <Class name = 'TypedInstance' isAbstract = 'true' supertypes = 'core::Instance'>
+        <Reference name = 'satisfiesType' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::SelectType' opposite = ''/>
+      </Class>
+      <Class name = 'ListMember' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'memberValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Instance' opposite = ''/>
+        <Attribute name = 'position' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Integer'/>
+      </Class>
+      <Class name = 'BagMember' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'memberValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Instance' opposite = ''/>
+        <Attribute name = 'count' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Integer'/>
+      </Class>
+      <Class name = 'SingleEntityValue' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'equivalent' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'instances::PartialEntityValue' opposite = ''/>
+        <Reference name = 'ofType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::SingleEntityType' opposite = ''/>
+        <Reference name = 'properties' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'instances::AttributeValue' opposite = ''/>
+      </Class>
+      <Class name = 'Indeterminate' isAbstract = 'false' supertypes = 'core::Instance'/>
+      <Class name = 'SingleLeafInstance' isAbstract = 'false' supertypes = 'instances::EntityInstance'>
+        <Reference name = 'characterizingType' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::EntityType' opposite = ''/>
+      </Class>
+      <Class name = 'GenericAggregate' isAbstract = 'false' supertypes = 'instances::LISTValue'/>
+      <Class name = 'BinaryValue' isAbstract = 'false' supertypes = 'instances::SimpleValue'/>
+      <Class name = 'SpecializedValue' isAbstract = 'false' supertypes = 'instances::TypedInstance'>
+        <Reference name = 'fundamentalValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'instances::ConcreteValue' opposite = ''/>
+      </Class>
+      <Class name = 'BAGValue' isAbstract = 'false' supertypes = 'instances::AggregateValue'>
+        <Reference name = 'memberSlot' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'instances::BagMember' opposite = ''/>
+      </Class>
+      <Class name = 'EnumerationItem' isAbstract = 'false' supertypes = 'core::TypeElement, instances::TypedInstance, instances::ConcreteValue'>
+        <Reference name = 'declaredIn' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::EnumerationType' opposite = 'core::EnumerationType::declaredItems'/>
+        <Attribute name = 'position' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Integer'/>
+      </Class>
+      <Class name = 'EntityValue' isAbstract = 'false' supertypes = 'instances::PartialEntityValue'>
+        <Reference name = 'correspondsTo' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::EntityType' opposite = ''/>
+        <Reference name = 'describes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'instances::EntityInstance' opposite = 'instances::EntityInstance::state'/>
+      </Class>
+      <Class name = 'SETValue' isAbstract = 'false' supertypes = 'instances::AggregateValue'>
+        <Reference name = 'memberValue' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::Instance' opposite = ''/>
+      </Class>
+      <Class name = 'ArrayMember' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'memberValue' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::Instance' opposite = ''/>
+        <Attribute name = 'index' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::Integer'/>
+      </Class>
+      <Class name = 'Population' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'compositionEntityInstance' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'instances::EntityInstance' opposite = ''/>
+        <Reference name = 'compositionInstance' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::Instance' opposite = 'core::Instance::appearsInPopulation'/>
+        <Reference name = 'governingSchema' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'core::Schema' opposite = ''/>
+      </Class>
+      <Class name = 'RealValue' isAbstract = 'false' supertypes = 'instances::NumberValue'/>
+      <Class name = 'BooleanValue' isAbstract = 'false' supertypes = 'instances::LogicalValue'/>
+      <Class name = 'LISTValue' isAbstract = 'false' supertypes = 'core::Instance, instances::AggregateValue'>
+        <Reference name = 'memberSlot' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'instances::ListMember' opposite = ''/>
+      </Class>
+      <Class name = 'StringValue' isAbstract = 'false' supertypes = 'instances::SimpleValue'/>
+      <Class name = 'TypeName' isAbstract = 'false' supertypes = 'instances::StringValue'>
+        <Reference name = 'refersTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'core::NamedType' opposite = ''/>
+        <Reference name = 'represents' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'core::ScopedId' opposite = ''/>
+      </Class>
+      <Class name = 'PartialEntityValue' isAbstract = 'false' supertypes = 'core::Instance'>
+        <Reference name = 'components' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'instances::SingleEntityValue' opposite = ''/>
+      </Class>
+      <Class name = 'NumberValue' isAbstract = 'false' supertypes = 'instances::SimpleValue'/>
+      <Class name = 'MultiLeafInstance' isAbstract = 'false' supertypes = 'instances::EntityInstance'/>
+      <Class name = 'SimpleValue' isAbstract = 'true' supertypes = 'instances::ConcreteValue'>
+        <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'mof::String'/>
+      </Class>
+      <Class name = 'ConcreteValue' isAbstract = 'true' supertypes = 'core::Instance'/>
+      <DataType name = 'EntityName'/>
+    </Package>
+  </Package>
+</Metamodel>

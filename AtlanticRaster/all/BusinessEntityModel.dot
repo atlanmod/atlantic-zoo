@@ -1,0 +1,65 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_BusinessEntityModel"{
+labelloc=t
+color=black
+label=BusinessEntityModel
+ node[shape=record];
+DataType[label="{DataType| | }"]
+;
+ node[shape=record];
+Action[label="{Action| | }"]
+;
+ node[shape=record];
+Class[label="{Class| | }"]
+;
+ node[shape=record];
+BusinessEntityPropertySet[label="{/BusinessEntityPropertySet/| | }"]
+ BusinessEntityPropertySet->DataType[arrowhead=onormal,group=DataType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BusinessRole[label="{/BusinessRole/| | }"]
+ BusinessRole->BusinessEntityPropertySet[arrowhead=vee,arrowtail=none,headlabel="characterisedby",group=BusinessEntityPropertySet,minlen=2,constraint=false,]
+ BusinessRole->Class[arrowhead=vee,arrowtail=none,headlabel="typ",group=Class,minlen=2,constraint=false,]
+ BusinessRole->Task[arrowhead=none,arrowtail=none,headlabel="task[*]",taillabel="associatedWith[1-*]",group=Task,minlen=2,constraint=false,]
+ BusinessRole->BusinessEntity[arrowhead=none,arrowtail=none,headlabel="fille[1-*]",taillabel="placehold[1-*]",group=BusinessEntity,minlen=2,constraint=false,]
+ BusinessRole->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Task[label="{Task| | }"]
+ Task->ArtifactRole[arrowhead=vee,arrowtail=none,headlabel="needs[*]",group=ArtifactRole,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ArtifactRole[label="{ArtifactRole| | }"]
+ ArtifactRole->BusinessRole[arrowhead=onormal,group=BusinessRole,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PerformerRole[label="{PerformerRole| | }"]
+ PerformerRole->Task[arrowhead=vee,arrowtail=none,headlabel="perform",group=Task,minlen=2,constraint=false,]
+ PerformerRole->BusinessRole[arrowhead=onormal,group=BusinessRole,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OrganisationalUnit[label="{OrganisationalUnit| | }"]
+ OrganisationalUnit->BusinessRole[arrowhead=onormal,group=BusinessRole,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BusinessEntity[label="{BusinessEntity| | }"]
+ BusinessEntity->Class[arrowhead=onormal,group=Class,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

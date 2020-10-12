@@ -1,0 +1,114 @@
+-- @name		C
+-- @version		1.0
+-- @domains		Programming language
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/08
+-- @description	This metamodel describes C which is a standardized imperative computer programming language developed in the early 1970s by Ken Thompson and Dennis Ritchie for use on the UNIX operating system. It has since spread to many other operating systems, and is one of the most widely used programming languages. C is prized for its efficiency, and is the most popular programming language for writing system software, though it is also used for writing applications. It is also commonly used in computer science education, despite not being designed for novices. This simplified metamodel describes a subset of the C language.
+-- @see			The C ANSI/ISO Specification, http://www.nirvani.net.nyud.net:8090/docs/ansi_c.pdf
+
+package C {
+
+	-- @begin C data types definition
+
+	class CDataType extends CClassifier {}
+	
+	class CIntegral extends CDataType {}
+	
+	class CFloating extends CDataType {}
+	
+	class CBitField extends CDataType {}
+	
+	class CVoid extends CDataType {}
+	
+	class CEnumeration extends CIntegral {}
+	
+	class CInt extends CIntegral {}
+	
+	class CChar extends CIntegral {}
+	
+	class CDouble extends CFloating {}
+	
+	class CFloat extends CFloating {}
+	
+	class CLongDouble extends CFloating {}
+	
+	class CUnsignedInt extends CInt {}
+	
+	class CLong extends CInt {}
+	
+	class CLongLong extends CInt {}
+	
+	class CShort extends CInt {}
+	
+	class CSignedChar extends CChar {}
+	
+	class CUnsignedChar extends CChar {}
+	
+	class CWChar extends CChar {}
+	
+	class UnsignedLong extends CUnsignedInt {}
+	
+	class UnsignedLongLong extends CUnsignedInt {}
+	
+	class UnsignedShort extends CUnsignedInt {} 
+	
+	-- @end C data types definition
+	
+	
+	-- @begin C language structure
+
+	class CClassifier {}
+	
+	class Derived extends CClassifier {}
+	
+	class CStructureContents {
+		reference sc_container[0-1] : CStructured oppositeOf contains;
+	}
+	
+	class CStructured extends CClassifier, CStructureContents {
+		reference contains[*] container : CStructureContents oppositeOf sc_container;
+	}
+	
+	class CStruct extends CStructured {}
+	
+	class CUnion extends CStructured {}
+	
+	class CSourceText {
+		attribute source : String;
+		attribute fileName : String;
+	}
+	
+	class CTypedElement {
+		reference type : CClassifier;
+		reference source : CSourceText;
+	}
+	
+	class CStructuralFeature extends CStructureContents, CTypedElement {}
+	
+	class CField extends CStructuralFeature {}
+	
+	class CParameter extends CTypedElement {
+		reference behavioralFeature[0-1] : BehavioralFeature oppositeOf parameters;
+	}  
+	
+	class BehavioralFeature {
+		reference parameters[*] container : CParameter oppositeOf behavioralFeature;
+	}
+	
+	class CFunction extends BehavioralFeature {
+		attribute isVarArg : Boolean;
+	}
+	
+	-- @end C language structure
+
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

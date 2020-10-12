@@ -1,0 +1,119 @@
+module KM32GraphML; -- Module Template
+create OUT : GraphML from IN : KM3;
+
+helper def : excludeDataType : Boolean =
+	false;
+
+--helper def : allPackages : Sequence(KM3!Package) =
+--	KM3!Package.allInstancesFrom('IN')->asSequence();
+
+rule createGraph {
+	from	
+		s	:	KM3!Metamodel
+	to 
+		root : GraphML!Root (
+			keys <- Sequence{key},
+			graphs <- s.contents
+		),
+		key : GraphML!Key(
+			id <- 'label',
+			"for" <- #node,
+			attrName <- 'label',
+			type <- #string
+		)
+}
+
+rule Package2Graph {
+	from
+		s	:	KM3!Package
+	to		
+		t	:	GraphML!Graph (
+			contents <- Sequence{s.contents, packNode,
+				s.contents->select(c | c.oclIsKindOf(KM3!Class))
+					->collect(c | c.supertypes->collect(st | thisModule.createStypeEdge(c, st))
+						->flatten())->flatten(),
+				s.contents->select(c | c.oclIsKindOf(KM3!Class))
+					->collect(c | c.structuralFeatures)->flatten()
+						->select(c | c.oclIsKindOf(KM3!Reference)).debug('here')->select(c | c.type.oclIsKindOf(KM3!Class))
+							->collect(c | thisModule.createReferenceEdge(c.owner, c.type))->flatten()
+						}->flatten(),
+			edgeDefault <- #undirected,
+			id <- s.name + 'Graph'
+		),
+		packNode	:	GraphML!Node (
+			id <- 'package_'+s.name,
+			datas <- Sequence{data}
+		),
+		data : GraphML!Data (
+			key <- 'label',
+			value <- 'package_'+s.name
+		)
+}
+
+unique lazy rule createStypeEdge {
+	from
+		sub	:	KM3!Class,
+		sup	:	KM3!Class
+	to
+		edge : GraphML!Edge (
+			id <- sub.name+'_extends_'+sup.name,
+			source <- sub,
+			target <- sup
+		)
+}
+
+unique lazy rule createReferenceEdge {
+	from
+		lef	:	KM3!Class,
+		rig	:	KM3!Class
+	to
+		edge : GraphML!Edge (
+			id <- 'referenceEdge_'+lef.name+'2'+rig.name,
+			source <- lef,
+			target <- rig
+		)
+}
+
+rule Datatype2Node {
+	from
+		s	:	KM3!DataType (not thisModule.excludeDataType)
+	to
+		t	:	GraphML!Node (
+			id <- 'dataType_'+s.name,
+			datas <- Sequence{data}
+		),
+		data : GraphML!Data (
+			key <- 'label',
+			value <- 'dataType_'+s.name
+		)
+}
+
+rule Enumeration2Node {
+	from
+		s	:	KM3!Enumeration
+	to
+		t	:	GraphML!Node (
+			id <- 'enum_'+s.name,
+			datas <- Sequence{data}
+		),
+		data : GraphML!Data (
+			key <- 'label',
+			value <- 'enum_'+s.name
+		)
+}
+
+
+
+rule Class2Node {
+	from 
+		s	:	KM3!Class
+	to
+		t	:	GraphML!Node (
+			id <- 'class_'+s.package.name+'::'+s.name,
+			datas <- Sequence{data}
+		),
+		data : GraphML!Data (
+			key <- 'label',
+			value <- 'class_'+s.package.name+'::'+s.name
+		)
+}

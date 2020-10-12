@@ -1,0 +1,263 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_Core"{
+labelloc=t
+color=black
+label=Core
+ node[shape=record];
+Element[label="{/Element/| | }"]
+;
+ node[shape=record];
+ModelElement[label="{/ModelElement/|name[0-1] : String\nvisibility[0-1] : VisibilityKind\nisSpecification : Boolean| }"]
+ ModelElement->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GeneralizableElement[label="{/GeneralizableElement/|isRoot : Boolean\nisLeaf : Boolean\nisAbstract : Boolean| }"]
+ GeneralizableElement->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Namespace[label="{/Namespace/| | }"]
+ Namespace->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Classifier[label="{/Classifier/| | }"]
+ Classifier->GeneralizableElement[arrowhead=onormal,group=GeneralizableElement,minlen=2,constraint=true,]
+ Classifier->Namespace[arrowhead=onormal,group=Namespace,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Feature[label="{/Feature/|ownerScope : ScopeKind| }"]
+ Feature->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StructuralFeature[label="{/StructuralFeature/|multiplicity[0-1] : Multiplicity\nchangeability[0-1] : ChangeableKind\ntargetScope[0-1] : ScopeKind\nordering[0-1] : OrderingKind| }"]
+ StructuralFeature->Feature[arrowhead=onormal,group=Feature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AssociationEnd[label="{AssociationEnd|isNavigable : Boolean\nordering[0-1] : OrderingKind\naggregation[0-1] : AggregationKind\ntargetScope[0-1] : ScopeKind\nmultiplicity[0-1] : Multiplicity\nchangeability[0-1] : ChangeableKind| }"]
+ AssociationEnd->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Relationship[label="{/Relationship/| | }"]
+ Relationship->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Association[label="{Association| | }"]
+ Association->GeneralizableElement[arrowhead=onormal,group=GeneralizableElement,minlen=2,constraint=true,]
+ Association->Relationship[arrowhead=onormal,group=Relationship,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Attribute[label="{Attribute|initialValue[0-1] : Expression| }"]
+ Attribute->StructuralFeature[arrowhead=onormal,group=StructuralFeature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BehavioralFeature[label="{/BehavioralFeature/|isQuery : Boolean| }"]
+ BehavioralFeature->Feature[arrowhead=onormal,group=Feature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Operation[label="{Operation|concurrency[0-1] : CallConcurrencyKind\nisRoot : Boolean\nisLeaf : Boolean\nisAbstract : Boolean\nspecification[0-1] : String| }"]
+ Operation->BehavioralFeature[arrowhead=onormal,group=BehavioralFeature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parameter[label="{Parameter|defaultValue[0-1] : Expression\nkind : ParameterDirectionKind| }"]
+ Parameter->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Generalization[label="{Generalization|discriminator[0-1] : String| }"]
+ Generalization->Relationship[arrowhead=onormal,group=Relationship,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Common_Behavior"{
+labelloc=t
+color=black
+label=Common_Behavior
+ node[shape=record];
+Instance[label="{/Instance/| | }"]
+ Instance->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Signal[label="{Signal| | }"]
+ Signal->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Action[label="{/Action/|recurrence[0-1] : IterationExpression\ntarget[0-1] : ObjectSetExpression\nisAsynchronous : Boolean\nscript[0-1] : ActionExpression| }"]
+ Action->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CreateAction[label="{CreateAction| | }"]
+ CreateAction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DestroyAction[label="{DestroyAction| | }"]
+ DestroyAction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UninterpretedAction[label="{UninterpretedAction| | }"]
+ UninterpretedAction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AttributeLink[label="{AttributeLink| | }"]
+ AttributeLink->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Object[label="{Object| | }"]
+ Object->Instance[arrowhead=onormal,group=Instance,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Link[label="{Link| | }"]
+ Link->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LinkObject[label="{LinkObject| | }"]
+ LinkObject->Object[arrowhead=onormal,group=Object,minlen=2,constraint=true,]
+ LinkObject->Link[arrowhead=onormal,group=Link,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataValue[label="{DataValue| | }"]
+ DataValue->Instance[arrowhead=onormal,group=Instance,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CallAction[label="{CallAction| | }"]
+ CallAction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SendAction[label="{SendAction| | }"]
+ SendAction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActionSequence[label="{ActionSequence| | }"]
+ ActionSequence->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Argument[label="{Argument|value : Expression| }"]
+ Argument->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Reception[label="{Reception|specification[0-1] : String\nisRoot : Boolean\nisLeaf : Boolean\nisAbstract : Boolean| }"]
+ Reception->BehavioralFeature[arrowhead=onormal,group=BehavioralFeature,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LinkEnd[label="{LinkEnd| | }"]
+ LinkEnd->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReturnAction[label="{ReturnAction| | }"]
+ ReturnAction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TerminateAction[label="{TerminateAction| | }"]
+ TerminateAction->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Stimulus[label="{Stimulus| | }"]
+ Stimulus->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Exception[label="{Exception| | }"]
+ Exception->Signal[arrowhead=onormal,group=Signal,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ComponentInstance[label="{ComponentInstance| | }"]
+ ComponentInstance->Instance[arrowhead=onormal,group=Instance,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NodeInstance[label="{NodeInstance| | }"]
+ NodeInstance->Instance[arrowhead=onormal,group=Instance,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SubsystemInstance[label="{SubsystemInstance| | }"]
+ SubsystemInstance->Instance[arrowhead=onormal,group=Instance,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Collaborations"{
+labelloc=t
+color=black
+label=Collaborations
+ node[shape=record];
+Collaboration[label="{Collaboration| | }"]
+ Collaboration->GeneralizableElement[arrowhead=onormal,group=GeneralizableElement,minlen=2,constraint=true,]
+ Collaboration->Namespace[arrowhead=onormal,group=Namespace,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ClassifierRole[label="{ClassifierRole|multiplicity[0-1] : Multiplicity| }"]
+ ClassifierRole->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AssociationRole[label="{AssociationRole|multiplicity[0-1] : Multiplicity| }"]
+ AssociationRole->Association[arrowhead=onormal,group=Association,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AssociationEndRole[label="{AssociationEndRole|collaborationMultiplicity[0-1] : Multiplicity| }"]
+ AssociationEndRole->AssociationEnd[arrowhead=onormal,group=AssociationEnd,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Message[label="{Message| | }"]
+ Message->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Interaction[label="{Interaction| | }"]
+ Interaction->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InteractionInstanceSet[label="{InteractionInstanceSet| | }"]
+ InteractionInstanceSet->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CollaborationInstanceSet[label="{CollaborationInstanceSet| | }"]
+ CollaborationInstanceSet->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Data_Types"{
+labelloc=t
+color=black
+label=Data_Types
+ node[shape=record];
+Multiplicity[label="{Multiplicity| | }"]
+;
+ node[shape=record];
+MultiplicityRange[label="{MultiplicityRange|lower : Integer\nupper : Integer| }"]
+;
+ node[shape=record];
+Expression[label="{Expression|language[0-1] : String\nbody : String| }"]
+;
+ node[shape=record];
+BooleanExpression[label="{BooleanExpression| | }"]
+ BooleanExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ObjectSetExpression[label="{ObjectSetExpression| | }"]
+ ObjectSetExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActionExpression[label="{ActionExpression| | }"]
+ ActionExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IterationExpression[label="{IterationExpression| | }"]
+ IterationExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Float[label="{&#171;DataType&#187;\nFloat|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+Long[label="{&#171;DataType&#187;\nLong|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

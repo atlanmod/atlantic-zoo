@@ -1,0 +1,195 @@
+-- @name		BibTeXML
+-- @version		1.2
+-- @domains		bibliography, XML
+-- @authors		David Touzet (david.touzet@univ-nantes.fr), Guillaume Hillairet (g.hillairet@gmail.com)
+-- @date		2006/07/05
+-- @description	This is a metamodel of BibTeXML which is an XML-based format for the BibTeX bibliographic tool system for use with LaTeX.  A bibliography is modelized by a BibTeX File element. This element is composed of BibTeX Entries which are each associated with an id. All entries inherit, directly or indirectly, of the abstract BibTeX Entry element. The abstract classes Authored Entry, Dated Entry, Titled Entry and Book Titled Entry, as well as the Misc entry, directly inherit of BibTeX Entry. There are 13 possible entry types: PhD Thesis, Master Thesis, Article, Tech Report, Unpublished, Manual, In Proceedings, Proceedings, Booklet, In Collection, Book, In Book and Misc. Concrete BibTeX entries inherits from some of these abstract classes according to their set of mandatory fields. 
+-- @see			http://bibtexml.sourceforge.net
+
+package BIBTEXML {
+
+	class BibtexFile {
+    	reference entries[*] container : Entry;
+	}
+
+	class Author {
+		attribute name : String;
+	}
+
+	abstract class Entry {
+    	attribute id : String;
+    	attribute "abstract"[0-1] : String;
+	}
+
+--	abstract class AddressedEntry extends Entry {
+--		attribute address : String;
+--	}
+	
+	abstract class AuthoredEntry extends Entry {
+    	reference authors[1-*] container : Author;
+  	}
+
+	abstract class BookTitledEntry extends Entry {
+		attribute booktitle : String;
+	}
+	
+--	abstract class ChapteredEntry extends Entry {
+--		attribute chapter : String;
+--	}
+	
+	abstract class InstitutionEntry extends Entry {
+		attribute institution : String;
+	}
+	
+--	abstract class EditionedEntry extends Entry {
+--		attribute edition : String;
+--	}
+	
+	abstract class EditoredEntry extends Entry {
+		attribute editor : String;
+	}
+	
+	abstract class DatedEntry extends Entry {
+		attribute year : String;
+		attribute month[0-1] : String;
+	}
+	
+--	abstract class HowpublishedEntry extends Entry {
+--		attribute howpublished : String;
+--	}
+	
+	abstract class JournalEntry extends Entry {
+		attribute journal : String;
+	}
+
+	abstract class TitledEntry extends Entry {
+		attribute title : String;
+	}
+
+	abstract class NotedEntry extends Entry {
+		attribute note : String;
+	}
+	
+--	abstract class NumberedEntry extends Entry {
+--		attribute number : String;
+--	}
+--
+--	abstract class PagedEntry extends Entry {
+--		attribute pages : String;
+--	}
+--	
+--	abstract class VolumeEntry extends Entry {
+--		attribute volume : String;
+--	}
+--	
+--	abstract class OrganizationEntry extends Entry {
+--		attribute organization : String;
+--	}
+--
+	abstract class PublisheredEntry extends Entry {
+		attribute publisher : String;
+	}
+
+	abstract class SchoolEntry extends Entry {
+		attribute school : String;
+	}
+
+--	abstract class SeriesEntry extends Entry {
+--		attribute Series : String;
+--	}
+--
+--	abstract class TypedEntry extends Entry {
+--		attribute type : String;
+--	}
+
+	--@begin Bibtex Entry	
+	class Article extends AuthoredEntry, DatedEntry, TitledEntry, JournalEntry {
+		attribute volume[0-1] : String;
+		attribute number[0-1] : String;
+		attribute pages[0-1] : String;
+		attribute note[0-1] : String;
+	}
+
+	class Book extends AuthoredEntry, EditoredEntry, PublisheredEntry, DatedEntry, TitledEntry {
+		attribute volume[0-1] : String;
+		attribute number[0-1] : String;
+		attribute series[0-1] : String;
+		attribute address[0-1] : String;
+		attribute edition[0-1] : String;
+		attribute note[0-1] : String;
+	}
+	
+	class Booklet extends DatedEntry, TitledEntry {
+		reference authors[*] : Author;
+		attribute howpublished : String;
+		attribute address[0-1] : String;
+		attribute note[0-1] : String;
+	}
+	
+	class InBook extends Book {
+		attribute chapter : String;
+		attribute type : String;
+	}
+	
+	class InCollection extends Book, BookTitledEntry {
+		attribute chapter[0-1] : String;
+		attribute type[0-1] : String;		
+	}
+	
+	class Manual extends TitledEntry, AuthoredEntry, DatedEntry {
+		attribute organization[0-1] : String;
+		attribute address[0-1] : String;
+		attribute edition[0-1] : String;
+		attribute note[0-1] : String;
+	}
+	
+	class TechReport extends AuthoredEntry, InstitutionEntry, DatedEntry, TitledEntry {
+		attribute type[0-1] : String;
+		attribute number[0-1] : String;
+		attribute address[0-1] : String;
+		attribute note[0-1] : String;		
+	}
+
+	abstract class ThesisEntry extends AuthoredEntry, DatedEntry, TitledEntry, SchoolEntry {
+		attribute type[0-1] : String;
+		attribute address[0-1] : String;
+		attribute note[0-1] : String;
+	}
+
+	class PhdThesis extends ThesisEntry {}
+
+	class MastersThesis extends ThesisEntry {}
+
+	class Proceedings extends DatedEntry, TitledEntry {
+		attribute editor[0-1] : String;
+		attribute volume[0-1] : String;
+		attribute number[0-1] : String;
+		attribute series[0-1] : String;
+		attribute address[0-1] : String;
+		attribute organization[0-1] : String;
+		attribute publisher[0-1] : String;
+		attribute note[0-1] : String;
+	}
+
+	class InProceedings extends AuthoredEntry, BookTitledEntry, Proceedings {
+		attribute pages[0-1] : String;		
+	}
+	
+	class Conference extends InProceedings {}
+	
+ 	class Unpublished extends AuthoredEntry, TitledEntry, NotedEntry, DatedEntry {}
+	
+	class Misc extends Entry {
+		reference authors[*] : Author;
+		attribute title[0-1] : String;
+		attribute howpublished[0-1] : String;
+		attribute month[0-1] : String;
+		attribute year[0-1] : String;
+		attribute note[0-1] : String;
+	}
+	--@end Bibtex Entry
+}
+
+package PrimitiveTypes {
+  datatype String;
+}

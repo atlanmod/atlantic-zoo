@@ -1,0 +1,75 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_LQN"{
+labelloc=t
+color=black
+label=LQN
+ node[shape=record];
+LQN[label="{LQN|name : String\ncomment : String\nauthor : String\ncreated_On : Date\nmodified_On : Date| }"]
+;
+ node[shape=record];
+Task[label="{Task|name : String\ntype : TaskType\npriority : Integer\nmutliplicity : Integer\nreplicas : Integer| }"]
+ Task->LQN[arrowhead=diamond,arrowtail=none,headlabel="lqn",taillabel="task[1-*]",group=LQN,minlen=2,constraint=true,]
+ Task->Activity[arrowhead=none,arrowtail=none,headlabel="activity[1-*]",taillabel="task",group=Activity,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Processor[label="{Processor|name : String\nscheduling : SchedulingType\nmutliplicity : Integer\nreplicas : Integer\nspped : Integer| }"]
+ Processor->Task[arrowhead=none,arrowtail=none,headlabel="task",taillabel="processor",group=Task,minlen=2,constraint=false,]
+ Processor->LQN[arrowhead=diamond,arrowtail=none,headlabel="lqn",taillabel="processor[1-*]",group=LQN,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Entry[label="{Entry|name : String\nnum_Phase : Integer\narrival_Rate : Integer\ncontained_In : Task\nreplay_To : Entry| }"]
+ Entry->Call[arrowhead=none,arrowtail=none,headlabel="callreceives",taillabel="entryreceives[0-1]",group=Call,minlen=2,constraint=false,]
+ Entry->Phase[arrowhead=none,arrowtail=none,headlabel="phase[1-*]",taillabel="entry",group=Phase,minlen=2,constraint=false,]
+ Entry->Task[arrowhead=diamond,arrowtail=none,headlabel="task",taillabel="entry[1-*]",group=Task,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Phase[label="{Phase|number : Integer\ntype : PhaseType\nthink_Time : Integer\nexecution_Demand : Integer\nCOV : Integer| }"]
+;
+ node[shape=record];
+Activity[label="{Activity|name : String\narrival_Rate : Integer\ncontained_In : Task\nreplay_To : Entry| }"]
+ Activity->Link[arrowhead=none,arrowtail=none,headlabel="linkPrecedes[1-*]",taillabel="activityPrecedes",group=Link,minlen=2,constraint=false,]
+ Activity->Link[arrowhead=none,arrowtail=none,headlabel="linkfollows[1-*]",taillabel="activityfollows",group=Link,minlen=2,constraint=false,]
+ Activity->Phase[arrowhead=none,arrowtail=none,headlabel="phase",taillabel="activity",group=Phase,minlen=2,constraint=false,]
+ Activity->Entry[arrowhead=diamond,arrowtail=none,headlabel="entry",taillabel="activity[0-1]",group=Entry,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Link[label="{Link|type : LinkType\nmean_Links : Integer\nfromActivity : Activity\ntoActivity : Activity| }"]
+;
+ node[shape=record];
+CallPhase[label="{CallPhase|mean_Calls : Integer\nrefers_To : Phase| }"]
+;
+ node[shape=record];
+Call[label="{Call|toEntry : Entry\nnum_Phases : Integer\ntype : CallType| }"]
+ Call->CallPhase[arrowhead=none,arrowtail=none,headlabel="callPhase[1-*]",taillabel="call[1-*]",group=CallPhase,minlen=2,constraint=false,]
+ Call->Activity[arrowhead=none,arrowtail=none,headlabel="activity",taillabel="call[*]",group=Activity,minlen=2,constraint=false,]
+ Call->Entry[arrowhead=none,arrowtail=none,headlabel="entrysends[0-1]",taillabel="callsends",group=Entry,minlen=2,constraint=false,]
+;
+ node[shape=record];
+EntryCall[label="{EntryCall|from_Entry : Entry| }"]
+ EntryCall->Call[arrowhead=onormal,group=Call,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActivityCall[label="{ActivityCall|fromActivity : Activity| }"]
+ ActivityCall->Call[arrowhead=onormal,group=Call,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Date[label="{Date|day : String\nmonth : String\nyear : String| }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

@@ -1,0 +1,208 @@
+-- @name		BMM
+-- @version		1.0
+-- @domains		Business Motivation Model
+-- @authors		OMG, translated by Guillaume Doux
+-- @date		January 2010 
+-- @description	The Business Motivation Model from the OMG, written from the OMG BMM specification, generated from the CMOF XMI  
+-- @see			http://www.omg.org/spec/BMM/ http://www.omg.org/cgi-bin/doc?dtc/2007-08-05
+
+package bmm {
+
+	class Assessment extends MotivationElement {
+		reference motivatedDirective[*] : Directive oppositeOf motivatingAssessment;
+		reference affectedEnd[*] : End oppositeOf judgingAssessment;
+		reference judgedInfluencer[1-*] : Influencer oppositeOf judgingAssessment;
+		reference assessingOrganizationUnit : OrganizationUnit oppositeOf madeAssessment;
+		reference affectedMeans[*] : Means oppositeOf judgingAssessment;
+		reference identifiedPotentialImpact[*] : PotentialImpact oppositeOf identifyingAssessment;
+		reference usedAssessment[*] : Assessment oppositeOf usingAssessment;
+		reference usingAssessment[*] : Assessment oppositeOf usedAssessment;
+		reference categorizingAssessmentCategory[*] : AssessmentCategory oppositeOf categorizedAssessment;
+	}
+
+	abstract class MotivationElement {
+		attribute name : String;
+		attribute description : String;
+	}
+
+	class Directive extends Means {
+		reference supportedDesiredResult[*] : DesiredResult oppositeOf supportingDirective;
+		reference governedCourseOfAction[*] : CourseOfAction oppositeOf governingDirective;
+		reference derivedCourseOfAction[*] : CourseOfAction oppositeOf baseDirective;
+		reference governedAsset[*] : Asset oppositeOf governingDirective;
+		reference motivatingPotentialImpact[*] : PotentialImpact oppositeOf motivatedDirective;
+		reference directiveRegulation[*] : Regulation oppositeOf regulatingDirective;
+		reference motivatingAssessment[*] : Assessment oppositeOf motivatedDirective;
+	}
+
+	class Means extends MotivationElement {
+		reference establishingOrganizationUnit[*] : OrganizationUnit oppositeOf establishedMeans;
+		reference judgingAssessment[*] : Assessment oppositeOf affectedMeans;
+	}
+
+	class OrganizationUnit extends MotivationElement {
+		reference definedEnd[*] : End oppositeOf definingOrganizationUnit;
+		reference managedBusinessProces[*] : BusinessProcess oppositeOf responsibleOrganizationUnit;
+		reference managedLiability[*] : Liability oppositeOf responsibleOrganizationUnit;
+		reference managedAsset[*] : Asset oppositeOf responsibleOrganizationUnit;
+		reference determiningStrategy[*] : Strategy oppositeOf determinedOrganizationUnit;
+		reference recognizedInfluencer[*] : Influencer oppositeOf recognizingOrganizationUnit;
+		reference internalInfluencingOrganization[*] : InfluencingOrganization oppositeOf influencingOrganizationUnit;
+		reference madeAssessment[*] : Assessment oppositeOf assessingOrganizationUnit;
+		reference establishedMeans[*] : Means oppositeOf establishingOrganizationUnit;
+	}
+
+	class End extends MotivationElement {
+		reference judgingAssessment[*] : Assessment oppositeOf affectedEnd;
+		reference definingOrganizationUnit[*] : OrganizationUnit oppositeOf definedEnd;
+	}
+
+	class BusinessProcess extends MotivationElement {
+		reference deliveredOffering[*] : Offering oppositeOf deliveringBusinessProcess;
+		reference realizedCourseOfAction[*] : CourseOfAction oppositeOf realizingBusinessProcess;
+		reference managedAsset[*] : Asset oppositeOf managingBusinessProcess;
+		reference governingBusinessPolicy[*] : BusinessPolicy oppositeOf governedBusinessProcess;
+		reference guidingBusinessRule : BusinessRule oppositeOf guidedBusinessProcess;
+		reference responsibleOrganizationUnit[*] : OrganizationUnit oppositeOf managedBusinessProces;
+	}
+
+	class Offering extends FixedAsset, Asset {
+		reference definingCourseOfAction[*] : CourseOfAction oppositeOf definedOffering;
+		reference usedAsset[*] : FixedAsset oppositeOf usingOffering;
+		reference requiredResource[*] : Resource oppositeOf requiringOffering;
+		reference deliveringBusinessProcess[*] : BusinessProcess oppositeOf deliveredOffering;
+	}
+
+	class Asset extends MotivationElement {
+		reference deployingCourseOfAction[*] : CourseOfAction oppositeOf deployedAsset;
+		reference governingDirective[*] : Directive oppositeOf governedAsset;
+		reference responsibleOrganizationUnit[*] : OrganizationUnit oppositeOf managedAsset;
+		reference managingBusinessProcess[*] : BusinessProcess oppositeOf managedAsset;
+	}
+
+	class CourseOfAction extends Means {
+		reference enabledCourseOfAction[*] : CourseOfAction oppositeOf enablingCourseOfAction;
+		reference enablingCourseOfAction[*] : CourseOfAction oppositeOf enabledCourseOfAction;
+		reference moreSpecficCourseOfAction[*] : CourseOfAction oppositeOf broaderCourseOfAction;
+		reference broaderCourseOfAction[*] : CourseOfAction oppositeOf moreSpecficCourseOfAction;
+		reference supportedDesiredResult[*] : DesiredResult oppositeOf supportingCourseOfAction;
+		reference definedOffering[*] : Offering oppositeOf definingCourseOfAction;
+		reference dischargedLiability[*] : Liability oppositeOf dischargingCourseOfAction;
+		reference realizingBusinessProcess : BusinessProcess oppositeOf realizedCourseOfAction;
+		reference governingDirective[*] : Directive oppositeOf governedCourseOfAction;
+		reference baseDirective[*] : Directive oppositeOf derivedCourseOfAction;
+		reference deployedAsset[*] : Asset oppositeOf deployingCourseOfAction;
+	}
+
+	class DesiredResult extends End {
+		reference moreSpecificDesiredResult[*] : DesiredResult oppositeOf broaderDesiredResult;
+		reference broaderDesiredResult[*] : DesiredResult oppositeOf moreSpecificDesiredResult;
+		reference supportingDirective[*] : Directive oppositeOf supportedDesiredResult;
+		reference supportingCourseOfAction[*] : CourseOfAction oppositeOf supportedDesiredResult;
+	}
+
+	class Liability extends MotivationElement {
+		reference claimedResource[*] : Resource oppositeOf claimingLiability;
+		reference responsibleOrganizationUnit[*] : OrganizationUnit oppositeOf managedLiability;
+		reference dischargingCourseOfAction[*] : CourseOfAction oppositeOf dischargedLiability;
+	}
+
+	class Resource extends Asset {
+		reference providingFixedAsset[*] : FixedAsset oppositeOf providedResource;
+		reference requiringOffering[*] : Offering oppositeOf requiredResource;
+		reference claimingLiability[*] : Liability oppositeOf claimedResource;
+	}
+
+	class FixedAsset extends Asset {
+		reference usingOffering[*] : Offering oppositeOf usedAsset;
+		reference providedResource[*] : Resource oppositeOf providingFixedAsset;
+	}
+
+	class BusinessPolicy extends Directive {
+		reference moreSpecificBusinessPolicy[*] : BusinessPolicy oppositeOf broaderBusinessPolicy;
+		reference broaderBusinessPolicy[*] : BusinessPolicy oppositeOf moreSpecificBusinessPolicy;
+		reference derivedBusinessRule[*] : BusinessRule oppositeOf baseBusinessPolicy;
+		reference governedBusinessProcess[*] : BusinessProcess oppositeOf governingBusinessPolicy;
+	}
+
+	class BusinessRule extends Directive {
+		reference effectingTactic[*] : Tactic oppositeOf enforcedBusinessRule;
+		reference guidedBusinessProcess[*] : BusinessProcess oppositeOf guidingBusinessRule;
+		reference baseBusinessPolicy[*] : BusinessPolicy oppositeOf derivedBusinessRule;
+	}
+
+	class Tactic extends CourseOfAction {
+		reference implementedStrategy[*] : Strategy oppositeOf implementingTactic;
+		reference enforcedBusinessRule[*] : BusinessRule oppositeOf effectingTactic;
+	}
+
+	class Strategy extends CourseOfAction {
+		reference determinedOrganizationUnit[*] : OrganizationUnit oppositeOf determiningStrategy;
+		reference plannedMission[*] : Mission oppositeOf componentStrategy;
+		reference implementingTactic[*] : Tactic oppositeOf implementedStrategy;
+	}
+
+	class Mission extends Means {
+		reference operativeVision[0-1] : Vision oppositeOf deliveringMission;
+		reference componentStrategy[*] : Strategy oppositeOf plannedMission;
+	}
+
+	class Vision extends End {
+		reference amplifyingGoal[*] : Goal oppositeOf amplifiedVision;
+		reference deliveringMission[*] : Mission oppositeOf operativeVision;
+	}
+
+	class Goal extends DesiredResult {
+		reference quantifyingObjective[*] : Objective oppositeOf quantifiedGoal;
+		reference amplifiedVision[0-1] : Vision oppositeOf amplifyingGoal;
+	}
+
+	class Objective extends DesiredResult {
+		reference quantifiedGoal[*] : Goal oppositeOf quantifyingObjective;
+	}
+
+	class Influencer extends MotivationElement {
+		reference categorizingInfluencerCategory[*] : InfluencerCategory oppositeOf categorizedInfluencer;
+		reference sourceInfluencingOrganization[*] : InfluencingOrganization oppositeOf providedInfluencer;
+		reference judgingAssessment[*] : Assessment oppositeOf judgedInfluencer;
+		reference recognizingOrganizationUnit[1-*] : OrganizationUnit oppositeOf recognizedInfluencer;
+	}
+
+	class InfluencerCategory extends MotivationElement {
+		reference categorizedInfluencer[*] : Influencer oppositeOf categorizingInfluencerCategory;
+	}
+
+	class InfluencingOrganization extends MotivationElement {
+		reference categorizingOrganizationCategory[*] : OrganizationCategory oppositeOf categorizedInfluencingOrganization;
+		reference influencingOrganizationUnit[0-1] : OrganizationUnit oppositeOf internalInfluencingOrganization;
+		reference providedInfluencer[*] : Influencer oppositeOf sourceInfluencingOrganization;
+	}
+
+	class OrganizationCategory extends MotivationElement {
+		reference categorizedInfluencingOrganization[*] : InfluencingOrganization oppositeOf categorizingOrganizationCategory;
+	}
+
+	class PotentialImpact extends MotivationElement {
+		reference identifyingAssessment[*] : Assessment oppositeOf identifiedPotentialImpact;
+		reference motivatedDirective[*] : Directive oppositeOf motivatingPotentialImpact;
+	}
+
+	class Regulation extends Influencer {
+		reference regulatingDirective[0-1] : Directive oppositeOf directiveRegulation;
+	}
+
+	class AssessmentCategory extends MotivationElement {
+		reference categorizedAssessment[*] : Assessment oppositeOf categorizingAssessmentCategory;
+	}
+
+	class PotentialReward extends PotentialImpact {
+		
+	}
+
+	class Risk extends PotentialImpact {
+		
+	}
+
+	datatype String;
+}
+

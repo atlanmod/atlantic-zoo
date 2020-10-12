@@ -1,0 +1,83 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_DSL"{
+labelloc=t
+color=black
+label=DSL
+ node[shape=record];
+NamedElement[label="{/NamedElement/|name : String\nidentity : String| }"]
+;
+ node[shape=record];
+LoadedElement[label="{/LoadedElement/|isLoaded : Boolean| }"]
+ LoadedElement->Namespace[arrowhead=onormal,group=Namespace,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Namespace[label="{/Namespace/|namespace : String| }"]
+ Namespace->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DomainModel[label="{DomainModel| | }"]
+ DomainModel->Type[arrowhead=vee,arrowtail=diamond,headlabel="types[*]",group=Type,minlen=2,constraint=true,]
+ DomainModel->LoadedElement[arrowhead=onormal,group=LoadedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Classifier[label="{/Classifier/|isAbstract : Boolean| }"]
+ Classifier->Classifier[arrowhead=none,arrowtail=none,headlabel="subTypes[*]",taillabel="superType[0-1]",group=Classifier,minlen=2,constraint=false,]
+ Classifier->DomainModel[arrowhead=diamond,arrowtail=none,headlabel="domainModel",taillabel="classifiers[*]",group=DomainModel,minlen=2,constraint=true,]
+ Classifier->LoadedElement[arrowhead=onormal,group=LoadedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Class[label="{Class|isSerializationRoot : Boolean| }"]
+ Class->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Relationship[label="{Relationship|isEmbedding : Boolean| }"]
+ Relationship->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Role[label="{Role|min : Integer\nmax : Integer\nisUnbounded : Boolean\naccepts : String\nisOrdered : Boolean\nisNavigableFrom : Boolean\nisPropertyGenerator : Boolean| }"]
+ Role->Classifier[arrowhead=vee,arrowtail=none,headlabel="source",group=Classifier,minlen=2,constraint=false,]
+ Role->Classifier[arrowhead=vee,arrowtail=none,headlabel="type",group=Classifier,minlen=2,constraint=false,]
+ Role->Relationship[arrowhead=diamond,arrowtail=none,headlabel="relation",taillabel="roles[22]",group=Relationship,minlen=2,constraint=true,]
+ Role->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ValueProperty[label="{ValueProperty| | }"]
+ ValueProperty->Classifier[arrowhead=diamond,arrowtail=none,headlabel="owner",taillabel="properties[*]",group=Classifier,minlen=2,constraint=true,]
+ ValueProperty->Type[arrowhead=vee,arrowtail=none,headlabel="type",group=Type,minlen=2,constraint=false,]
+ ValueProperty->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Type[label="{/Type/| | }"]
+ Type->Namespace[arrowhead=onormal,group=Namespace,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleType[label="{SimpleType| | }"]
+ SimpleType->Type[arrowhead=onormal,group=Type,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EnumerationLiteral[label="{EnumerationLiteral|value : Integer| }"]
+ EnumerationLiteral->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Enumeration[label="{Enumeration| | }"]
+ Enumeration->EnumerationLiteral[arrowhead=vee,arrowtail=diamond,headlabel="literals[*]",group=EnumerationLiteral,minlen=2,constraint=true,]
+ Enumeration->Type[arrowhead=onormal,group=Type,minlen=2,constraint=true,]
+;
+ subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}
+}

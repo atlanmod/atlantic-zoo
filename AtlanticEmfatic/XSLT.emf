@@ -1,0 +1,77 @@
+package Metamodel;
+
+package XSLT {
+  abstract class Node {
+    !unique !ordered attr String[1] name;
+    !ordered ref ElementNode#nodes parentNode;
+  }
+
+  class ElementNode extends Node {
+    val Node[*]#parentNode nodes;
+  }
+
+  class AttributeNode extends Node {
+  }
+
+  class RootNode extends ElementNode {
+    !ordered val Document[1]#document document;
+  }
+
+  class TextNode extends ElementNode {
+    !unique !ordered attr String[1] value;
+  }
+
+  abstract class XSLTNode extends ElementNode {
+  }
+
+  class XSLTRootNode extends RootNode {
+  }
+
+  class Document {
+    !unique !ordered attr String[1] documentName;
+    !ordered val RootNode[1]#document document;
+  }
+
+  class ApplyTemplates extends XSLTNode {
+    !unique !ordered attr String[1] select;
+  }
+
+  class If extends XSLTNode {
+    !unique !ordered attr String[1] test;
+  }
+
+  class Template extends XSLTNode {
+    !unique !ordered attr String[1] match;
+  }
+
+  class ValueOf extends XSLTNode {
+    !unique !ordered attr String[1] select;
+  }
+
+  class When extends XSLTNode {
+    !unique !ordered attr String[1] test;
+  }
+
+  class Choose extends XSLTNode {
+    !ordered val When[1] when;
+    !ordered val Otherwise[1] otherwise;
+  }
+
+  class Otherwise extends XSLTNode {
+  }
+
+  class Sort extends XSLTNode {
+    !unique !ordered attr String[1] select;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

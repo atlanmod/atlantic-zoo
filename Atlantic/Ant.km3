@@ -1,0 +1,331 @@
+-- @name		Ant
+-- @version		0.3
+-- @domains		Building tool
+-- @authors		Julien Ruchaud, Pauline Brunel (pabrunel@numericable.fr)
+-- @date		2005/07/06
+-- @description	A metamodel describing Ant: Apache Ant is a Java-based build tool. It is similar to make, without make s wrinkles. It is configured with a build file that is an XML document. The build files are generally platform independent.  It is extended using Java classes not scripts or shell-based commands. It can take care of archiving, compilation, execution, documentation, deployment, and much more.
+-- @see			http://ant.apache.org/
+
+package Ant{
+
+ -- @begin central element
+ class Project{
+  	attribute name [0-1] : String;
+  	attribute basedir [0-1] : String;
+  	attribute description [0-1] : String;
+  	reference "default" : Target;
+  	reference path [0-1] container : Path;
+  	reference properties [*] ordered container : Property;
+  	reference taskdef [*] container : TaskDef;
+  	reference targets [1-*] ordered container : Target;
+ }
+ -- @end central element
+
+
+ -- @begin property
+ -- @comments represents the properties for a project
+ abstract class Property {}
+ 
+ abstract class PropertyName extends Property{
+  	attribute name : String;
+ }
+ 
+ -- @comments represents a property to set a value
+ class PropertyValue extends PropertyName{
+   	attribute value : String;
+  }
+ 
+ -- @comments represents a property set to the absolute filename of the given file
+ class PropertyLocation extends PropertyName{
+   	attribute location : String;
+ } 
+  
+ -- @comments represents a property file to load
+ class PropertyFile extends Property{
+  	attribute file : String;
+ }
+
+ -- @comments represents a property retrieving environment variables
+ class PropertyEnv extends Property{
+  	attribute environment : String;
+ }
+ -- @end property 
+ 
+  
+ -- @begin target
+ -- @comments represents a set of tasks which must be executed
+ class Target{
+  	attribute name : String;
+  	attribute description[0-1] : String;
+  	attribute unless [0-1] : String;
+  	attribute ifCondition [0-1] : String;
+  	reference depends [*] : Target;
+  	reference tasks [*] ordered container : Task oppositeOf target;
+ }
+ -- @end target
+
+
+ -- @begin pattern
+ -- @comments represents complex parameters for some tasks
+ abstract class Pattern{}
+
+ 	-- @begin basicPattern 
+ -- @comments represents a basic parameter(no children)
+ abstract class Basic extends Pattern{}
+
+ -- @comments represents the tag 'mapper' (mapping file names)
+ class Mapper extends Basic{
+  	attribute type [0-1] : String;
+  	attribute classname [0-1] : String;
+  	attribute classpath [0-1] : String;
+  	attribute classpathref [0-1] : String;
+  	attribute from [0-1] : String;
+  	attribute to [0-1] : String;
+ }
+
+ -- @comments represents the tag 'include','exclude','includeFile' and 'excludeFile'(including or excluding files)
+ abstract class InExcludes extends Basic{
+  	attribute name : String;
+  	attribute ifCondition [0-1] : String;
+  	attribute unless [0-1] : String;
+ }
+ 
+ class Includes extends InExcludes{}
+ class Excludes extends InExcludes{}
+ class IncludesFile extends InExcludes{}
+ class ExcludesFile extends InExcludes{}
+ 
+ -- @comments represents lists of files
+ class FileList extends Basic{
+  	attribute dir : String;
+  	attribute files : String;
+ }
+ 
+ -- @comments represents a filter : to replace a token value
+ class Filter extends Basic{
+   	attribute token : String;
+   	attribute value : String;
+ }
+ 
+ -- @comments represents the tag filtersfile : to load a file containing name value pairs
+ class FiltersFile extends Basic{
+  	attribute file : String;
+ }
+
+ -- @comments represents the tag pathelement
+ class PathElement extends Basic{
+  	attribute path : String;
+  	attribute location : String;
+ }
+ 	-- @end basicPattern 
+ 
+ 	-- @begin setPattern 
+ -- @comments represents set parameters
+ abstract class Set extends Pattern{}
+
+ -- @comments represents the tag 'patternset'
+ class PatternSet extends Set{
+   	reference inexcludes [1-*] container : InExcludes;
+ }
+
+ -- @comments represents the tag 'fileset' representing a group of files
+ class FileSet extends Set{
+  	attribute dir : String;
+  	reference patternset [*] container : PatternSet;
+  	reference include [*] container : Includes;
+  	reference exclude [*] container : Excludes;
+  }
+ 
+ -- @comments represents the tag 'filterset' representing a group of filters
+ class FilterSet extends Set{
+   	attribute starttoken [0-1] : String;
+   	attribute endtoken [0-1] : String;
+   	reference filter [*] container : Filter;
+   	reference filtersfile [*] container : FiltersFile;
+ }
+ 
+ -- @comments represents the tag 'path' 
+ class Path extends Set{
+   	attribute id : String;
+   	attribute refid [0-1] : String;
+   	reference path [0-1] container : Path;
+   	reference pathElement [*] container : PathElement;
+   	reference fileset [*] container : FileSet;
+ } 
+ 
+ -- @comments represents the tag 'classpath'
+ class ClassPath extends Set{
+   	attribute refid : String;
+   	reference pathElement [*] container : PathElement;
+   	reference fileset [*] container : FileSet;
+ }
+ 	-- @begin setPattern 
+ -- @end pattern
+
+
+ -- @begin task
+ -- @comments represents a piece of code
+ abstract class Task{
+   	reference target : Target oppositeOf tasks; 
+ }
+
+ 	-- @begin newTask
+ -- @comments represents a task defined by the user
+ class TaskDef{
+  	attribute name : String;
+  	attribute classname : String;
+ }
+ 
+ -- @comments represents a call of a task created by the user
+ class NewTask extends Task {
+  	reference taskName : TaskDef;
+  	reference attributes[*] container : Attribut;
+  }
+  
+  -- @comments represents a attribute used in a new task
+ class Attribut{
+	attribute name : String;
+    attribute value : String;
+   }
+   
+ 	-- @end newTask
+
+ 	-- @begin predefinedTasks
+ -- @comments represents predefined tasks
+ abstract class PreDefinedTask extends Task{
+  	attribute id [0-1] : String;
+  	attribute taskname [0-1] : String;
+  	attribute description [0-1] : String;
+ }
+	-- @end predefinedTasks
+	-- @begin executionTasks
+ abstract class ExecutionTask extends PreDefinedTask{}
+
+ -- @comments represents the tag 'exec' : execute a system command
+ class Exec extends ExecutionTask{
+  	attribute executable : String;
+  	attribute dir : String;
+ }
+
+ -- @comments represents the tag 'java' : execute a java class
+ class Java extends ExecutionTask{
+  	attribute classname : String;
+  	attribute jar [0-1] : String;
+  	attribute fork [0-1] : String;
+  	reference classPath [0-1] container : ClassPath;
+ }
+	-- @end executionTasks
+ 
+ 
+ 	-- @begin miscellaneousTasks
+ abstract class MiscellaneousTask extends PreDefinedTask{}
+
+ -- @comments represents the tag 'echo' : echoes text to System.out or to a file
+ class Echo extends MiscellaneousTask{
+  	attribute message : String;
+  	attribute file [0-1] : String;
+  	attribute append [0-1] : String;
+ }
+
+ -- @comments represents the tag 'tstamp' : set the tstamp
+ class Tstamp extends MiscellaneousTask{
+   	reference format[*] container : FormatTstamp;
+ }
+ 
+ class FormatTstamp{
+  	attribute property : String;
+  	attribute pattern : String;
+  	attribute offset [0-1] : String;
+  	attribute unit [0-1] : String;
+  	attribute locale [0-1] : String;
+ }
+ 	-- @end miscellaneousTasks
+ 
+ 	-- @begin compileTasks
+ abstract class CompileTask extends PreDefinedTask{}
+
+ -- @comments represents the tag 'javac' : compiles the specified source file(s) 
+ class Javac extends CompileTask{
+  	attribute srcdir : String;
+  	attribute destdir [0-1]: String;
+  	attribute debug [0-1] : String;
+  	attribute fork [0-1] : String;
+  	attribute optimize [0-1] : String;
+  	attribute deprecation [0-1] : String;
+  	reference inExcludes[*] container : InExcludes;
+  	reference classPath [0-1] container : ClassPath;
+ }
+ 	-- @end compileTasks
+ 
+ 	-- @begin documentationTasks
+ abstract class DocumentationTask extends PreDefinedTask{}
+
+ class Javadoc extends DocumentationTask{
+  	attribute sourcepath : String;
+  	attribute destdir : String;
+  	attribute packagenames : String;
+  	attribute defaultexcludes : String;
+  	attribute author : String;
+  	attribute version : String;
+  	attribute use : String;
+  	attribute windowtitle : String;
+ }
+ 	-- @end documentationTasks
+
+ 	-- @begin archiveTasks 
+ abstract class ArchiveTask extends PreDefinedTask{}
+
+ -- @comments represents the tag 'jar" : jars a set of files
+ class Jar extends ArchiveTask{
+  	attribute jarfile : String;
+  	attribute basedir [0-1] : String;
+  	attribute compress [0-1] : String;
+  	attribute encoding [0-1] : String;
+  	attribute manifest [0-1] : String;
+ }
+ 	-- @end archiveTasks
+ 
+ 	-- @begin fileTasks 
+ abstract class FileTask extends PreDefinedTask{}
+
+ -- @comments represents the tag 'mkdir' : creates a directory
+ class Mkdir extends FileTask{
+   	attribute dir : String;
+ }
+ 
+ -- @comments represents the tag 'copy' : copies a file or Fileset to a new file or directory
+ class Copy extends FileTask{
+  	attribute file [0-1] : String;
+  	attribute presservelastmodified [0-1] : String;
+  	attribute tofile [0-1] : String;
+  	attribute todir [0-1] : String;
+  	attribute overwrite [0-1] : String;
+  	attribute filtering [0-1] : String;
+  	attribute flatten [0-1] : String;
+  	attribute includeEmptyDirs [0-1] : String;
+  	reference fileset [0-1] container : FileSet;
+  	reference filterset [0-1] container : FilterSet;
+  	reference mapper [0-1] container : Mapper;
+ }
+ 
+ -- @comments represents the tag 'delete' : deletes either a single file, all files and sub-directories in a specified directory, or a set of files specified by one or more FileSets
+ class Delete extends FileTask{
+  	attribute file [0-1] : String;
+  	attribute dir [0-1] : String;
+  	attribute verbose [0-1] : String;
+  	attribute quiet [0-1] : String;
+  	attribute failonerror [0-1] : String;
+  	attribute includeEmptyDirs [0-1] : String;
+  	attribute includes [0-1] : String;
+  	attribute includesfile [0-1] : String;
+  	attribute excludes [0-1] : String;
+  	attribute excludesfile [0-1] : String;
+  	attribute defaultexcludes [0-1] : String;
+ }
+ 	-- @end fileTasks
+ -- @end task
+}
+
+package PrimitiveTypes{
+ datatype String;
+}

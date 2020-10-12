@@ -1,0 +1,53 @@
+-- @name    PetriNet
+-- @version 5.0
+-- @authors Kelly Garces (kellygarce@gmail.com)
+-- @date    2007/11/19
+-- @description This metamodel is presented by Guido Wachsmut in the paper "Metamodel Adaptation and Model Co-adaption". The metamodel captures a Petri net. A Petri net is composed of several places and transitions (at least one place and one transition). Each transition has at least one input place and one output place. Arcs between places and transitions are explicit. PTArc and TPArc are respectively representing place-to-transition arcs and transition-to-place ones. Arcs are annotated with weight. In order to model dynamic aspects, places need to be marked with tokens.
+-- @see     http://metrik.informatik.hu-berlin.de/grk-wiki/images/8/8a/Metamodel_Adaptation_and_Model_Co-adaptation.pdf
+-- @nsURI PetriNetV5
+-- @nsPrefix PetriNet
+
+package PetriNet {
+
+	class Place {
+		reference net : Net oppositeOf place;
+		reference out[*] ordered : PTArc oppositeOf src;
+		reference in[*] ordered : TPArc oppositeOf dst;
+		reference token[*] ordered container : Token oppositeOf place;
+	}
+
+	class Transition {
+		reference net : Net oppositeOf transition;
+		reference in[1-*] ordered : PTArc oppositeOf dst;
+		reference out[1-*] ordered : TPArc oppositeOf src;
+	}
+
+	class Net {
+		reference place[1-*] ordered container : Place oppositeOf net;
+		reference transition[1-*] ordered container : Transition oppositeOf net;
+	}
+	
+	abstract class Arc {
+		attribute weight : Integer;
+	}
+	
+	class PTArc extends Arc {
+		reference dst : Transition oppositeOf in;
+		reference src : Place oppositeOf out;
+	}
+	
+	class TPArc extends Arc {
+		reference src : Transition oppositeOf out;
+		reference dst : Place oppositeOf in;
+	}
+	
+	class Token {
+		reference place : Place oppositeOf token;
+	}
+}
+
+package PrimitiveTypes {
+
+	datatype Integer;
+
+}

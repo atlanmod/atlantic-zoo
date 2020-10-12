@@ -1,0 +1,79 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_Mantis"{
+labelloc=t
+color=black
+label=Mantis
+ node[shape=record];
+MantisRoot[label="{MantisRoot| | }"]
+;
+ node[shape=record];
+IdentifiedElt[label="{/IdentifiedElt/|id : Integer| }"]
+;
+ node[shape=record];
+PrivateElt[label="{/PrivateElt/|private[0-1] : Boolean| }"]
+;
+ node[shape=record];
+Issue[label="{Issue|category : String\nsummary : String\ndescription : String\nversion[0-1] : String\nbuild[0-1] : String\nplatform[0-1] : String\nos[0-1] : String\nosVersion[0-1] : String\nstepsToReproduce[0-1] : String\nadditionalInfo[0-1] : String\ndateSubmitted : Integer\nfixedInVersion[0-1] : String\nlastUpdate : Integer| }"]
+ Issue->MantisRoot[arrowhead=diamond,arrowtail=none,headlabel="i_mantisRoot",taillabel="issues[*]{ordered}",group=MantisRoot,minlen=2,constraint=true,]
+ Issue->ValueWithId[arrowhead=vee,arrowtail=diamond,headlabel="project",group=ValueWithId,minlen=2,constraint=true,]
+ Issue->ValueWithId[arrowhead=vee,arrowtail=diamond,headlabel="priority",group=ValueWithId,minlen=2,constraint=true,]
+ Issue->ValueWithId[arrowhead=vee,arrowtail=diamond,headlabel="severity",group=ValueWithId,minlen=2,constraint=true,]
+ Issue->ValueWithId[arrowhead=vee,arrowtail=diamond,headlabel="status",group=ValueWithId,minlen=2,constraint=true,]
+ Issue->Person[arrowhead=vee,arrowtail=diamond,headlabel="reporter",group=Person,minlen=2,constraint=true,]
+ Issue->ValueWithId[arrowhead=vee,arrowtail=diamond,headlabel="reproducibility",group=ValueWithId,minlen=2,constraint=true,]
+ Issue->Person[arrowhead=vee,arrowtail=diamond,headlabel="assignedTo[0-1]",group=Person,minlen=2,constraint=true,]
+ Issue->ValueWithId[arrowhead=vee,arrowtail=diamond,headlabel="projection[0-1]",group=ValueWithId,minlen=2,constraint=true,]
+ Issue->ValueWithId[arrowhead=vee,arrowtail=diamond,headlabel="eta[0-1]",group=ValueWithId,minlen=2,constraint=true,]
+ Issue->ValueWithId[arrowhead=vee,arrowtail=diamond,headlabel="resolution[0-1]",group=ValueWithId,minlen=2,constraint=true,]
+ Issue->Attachment[arrowhead=vee,arrowtail=diamond,headlabel="attachments[*]{ordered}",group=Attachment,minlen=2,constraint=true,]
+ Issue->Relationship[arrowhead=vee,arrowtail=diamond,headlabel="relationships[*]{ordered}",group=Relationship,minlen=2,constraint=true,]
+ Issue->Note[arrowhead=vee,arrowtail=diamond,headlabel="notes[*]{ordered}",group=Note,minlen=2,constraint=true,]
+ Issue->IdentifiedElt[arrowhead=onormal,group=IdentifiedElt,minlen=2,constraint=true,]
+ Issue->PrivateElt[arrowhead=onormal,group=PrivateElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ValueWithId[label="{ValueWithId|value : String| }"]
+ ValueWithId->IdentifiedElt[arrowhead=onormal,group=IdentifiedElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Person[label="{Person|login : String| }"]
+ Person->ValueWithId[arrowhead=onormal,group=ValueWithId,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Relationship[label="{Relationship|type : RelationshipType| }"]
+ Relationship->IdentifiedElt[arrowhead=onormal,group=IdentifiedElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TimeStampedElt[label="{/TimeStampedElt/|timestamp : Integer| }"]
+;
+ node[shape=record];
+Note[label="{Note|text : String| }"]
+ Note->Person[arrowhead=vee,arrowtail=diamond,headlabel="author",group=Person,minlen=2,constraint=true,]
+ Note->TimeStampedElt[arrowhead=onormal,group=TimeStampedElt,minlen=2,constraint=true,]
+ Note->PrivateElt[arrowhead=onormal,group=PrivateElt,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Attachment[label="{Attachment|filename : String\nsize : Integer\ncontentType : String\ndownloadUrl : String| }"]
+ Attachment->TimeStampedElt[arrowhead=onormal,group=TimeStampedElt,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

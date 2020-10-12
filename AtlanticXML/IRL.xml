@@ -1,0 +1,168 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Double'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+  </Package>
+  <Package name = 'IRL'>
+    <Class name = 'Element' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'location' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsBefore' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsAfter' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'NamedElement' isAbstract = 'true' supertypes = 'IRL::Element'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ExtendedIdentifier' isAbstract = 'false' supertypes = 'IRL::NamedElement'>
+      <Reference name = 'parentIdentifier' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IRL::ExtendedIdentifier' opposite = ''/>
+      <Reference name = 'extendedIdentifierOwner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IRL::Extended' opposite = 'IRL::Extended::extendedIdentifier'/>
+    </Class>
+    <Class name = 'Extended' isAbstract = 'true' supertypes = 'IRL::Element'>
+      <Reference name = 'extendedIdentifier' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IRL::ExtendedIdentifier' opposite = 'IRL::ExtendedIdentifier::extendedIdentifierOwner'/>
+    </Class>
+    <Class name = 'Definition' isAbstract = 'true' supertypes = 'IRL::Extended'/>
+    <Class name = 'RuleSet' isAbstract = 'false' supertypes = 'IRL::NamedElement'>
+      <Reference name = 'importDefinitions' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'IRL::ImportDefinition' opposite = 'IRL::ImportDefinition::importDefinitionOwners'/>
+      <Reference name = 'propertyDefinitions' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IRLDeclarations::PropertyDefinition' opposite = 'IRLDeclarations::PropertyDefinition::propertyDefinitionOwner'/>
+      <Reference name = 'rulesetElementDefinitions' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'IRLRules::RulesetElementDefinition' opposite = 'IRLRules::RulesetElementDefinition::rulesetElementDefinitionOwner'/>
+    </Class>
+    <Class name = 'ImportDefinition' isAbstract = 'false' supertypes = 'IRL::Definition'>
+      <Reference name = 'importDefinitionOwners' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IRL::RuleSet' opposite = 'IRL::RuleSet::importDefinitions'/>
+      <Attribute name = 'dotStar' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Package name = 'IRLExpressions'>
+      <Class name = 'Expression' isAbstract = 'true' supertypes = 'IRLTypes::Typed'>
+        <Reference name = 'appliedProperty' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IRLExpressions::PropertyCallExpression' opposite = 'IRLExpressions::PropertyCallExpression::source'/>
+        <Reference name = 'expressionOwner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IRLDeclarations::RuleSetDeclaration' opposite = 'IRLDeclarations::RuleSetDeclaration::expression'/>
+        <Reference name = 'loopExpression' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IRLExpressions::LoopExpression' opposite = 'IRLExpressions::LoopExpression::body'/>
+        <Reference name = 'parentOperation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IRLExpressions::OperationCallExpression' opposite = 'IRLExpressions::OperationCallExpression::arguments'/>
+        <Reference name = 'ruleConditionExpression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IRLRules::RuleCondition' opposite = 'IRLRules::RuleCondition::conditionExpression'/>
+        <Reference name = 'parentInsert' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PRRActions::CreateAction' opposite = 'PRRActions::CreateAction::insertArguments'/>
+        <Reference name = 'parentModifying' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'PRRActions::ModifyAction' opposite = 'PRRActions::ModifyAction::modifiedArguments'/>
+      </Class>
+      <Class name = 'PropertyCallExpression' isAbstract = 'true' supertypes = 'IRLExpressions::Expression'>
+        <Reference name = 'source' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IRLExpressions::Expression' opposite = 'IRLExpressions::Expression::appliedProperty'/>
+      </Class>
+      <Class name = 'IteratorExp' isAbstract = 'false' supertypes = 'IRLExpressions::LoopExpression'>
+        <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+      <Class name = 'LoopExpression' isAbstract = 'false' supertypes = 'IRLExpressions::PropertyCallExpression'>
+        <Reference name = 'body' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IRLExpressions::Expression' opposite = 'IRLExpressions::Expression::loopExpression'/>
+        <Reference name = 'iterators' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'IRLExpressions::Iterator' opposite = 'IRLExpressions::Iterator::loopExpression'/>
+      </Class>
+      <Class name = 'OperatorCallExpression' isAbstract = 'false' supertypes = 'IRLExpressions::OperationCallExpression'/>
+      <Class name = 'OperationCallExpression' isAbstract = 'false' supertypes = 'IRLExpressions::PropertyCallExpression'>
+        <Reference name = 'arguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'IRLExpressions::Expression' opposite = 'IRLExpressions::Expression::parentOperation'/>
+        <Attribute name = 'operationName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        <Attribute name = 'signature' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+      <Class name = 'PrimitiveExpression' isAbstract = 'true' supertypes = 'IRLExpressions::Expression'/>
+      <Class name = 'Iterator' isAbstract = 'false' supertypes = 'IRLDeclarations::VariableDeclaration'>
+        <Reference name = 'loopExpression' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IRLExpressions::LoopExpression' opposite = 'IRLExpressions::LoopExpression::iterators'/>
+      </Class>
+      <Class name = 'NumericExpression' isAbstract = 'true' supertypes = 'IRLExpressions::PrimitiveExpression'/>
+      <Class name = 'IntegerExpression' isAbstract = 'false' supertypes = 'IRLExpressions::NumericExpression'>
+        <Attribute name = 'integerSymbol' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      </Class>
+      <Class name = 'RealExpression' isAbstract = 'false' supertypes = 'IRLExpressions::NumericExpression'>
+        <Attribute name = 'realSymbol' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+      </Class>
+      <Class name = 'BooleanExpression' isAbstract = 'false' supertypes = 'IRLExpressions::PrimitiveExpression'>
+        <Attribute name = 'booleanSymbol' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      </Class>
+      <Class name = 'NavigationOrAttributeCallExpression' isAbstract = 'false' supertypes = 'IRLExpressions::PropertyCallExpression'>
+        <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+      <Class name = 'VariableExpression' isAbstract = 'false' supertypes = 'IRLExpressions::Expression'>
+        <Reference name = 'referredVariable' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IRLDeclarations::VariableDeclaration' opposite = 'IRLDeclarations::VariableDeclaration::variableExp'/>
+        <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+      <Class name = 'StringExpression' isAbstract = 'false' supertypes = 'IRLExpressions::PrimitiveExpression'>
+        <Attribute name = 'stringSymbol' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      </Class>
+    </Package>
+    <Package name = 'IRLTypes'>
+      <Class name = 'Type' isAbstract = 'true' supertypes = 'IRL::NamedElement'>
+        <Reference name = 'typeOwner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IRLTypes::Typed' opposite = 'IRLTypes::Typed::type'/>
+      </Class>
+      <Class name = 'Typed' isAbstract = 'true' supertypes = 'IRL::Element'>
+        <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IRLTypes::Type' opposite = 'IRLTypes::Type::typeOwner'/>
+      </Class>
+      <Class name = 'Primitive' isAbstract = 'true' supertypes = 'IRLTypes::Type'/>
+      <Class name = 'StringType' isAbstract = 'false' supertypes = 'IRLTypes::Primitive'/>
+      <Class name = 'NumericType' isAbstract = 'true' supertypes = 'IRLTypes::Primitive'/>
+      <Class name = 'IntegerType' isAbstract = 'false' supertypes = 'IRLTypes::NumericType'/>
+      <Class name = 'RealType' isAbstract = 'false' supertypes = 'IRLTypes::NumericType'/>
+      <Class name = 'BooleanType' isAbstract = 'false' supertypes = 'IRLTypes::Primitive'/>
+      <Class name = 'ClassType' isAbstract = 'false' supertypes = 'IRLTypes::Type'/>
+    </Package>
+    <Package name = 'IRLDeclarations'>
+      <Class name = 'PropertyDefinition' isAbstract = 'false' supertypes = 'IRL::Definition'>
+        <Reference name = 'propertyDefinitionOwner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IRL::RuleSet' opposite = 'IRL::RuleSet::propertyDefinitions'/>
+        <Reference name = 'ruleSetDeclarations' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'IRLDeclarations::RuleSetDeclaration' opposite = 'IRLDeclarations::RuleSetDeclaration::ruleSetDeclarationOwner'/>
+        <Attribute name = 'semicoloneOpt' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      </Class>
+      <Class name = 'RuleSetDeclaration' isAbstract = 'true' supertypes = 'IRL::Element'>
+        <Reference name = 'ruleSetDeclarationOwner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IRLDeclarations::PropertyDefinition' opposite = 'IRLDeclarations::PropertyDefinition::ruleSetDeclarations'/>
+        <Reference name = 'expression' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IRLExpressions::Expression' opposite = 'IRLExpressions::Expression::expressionOwner'/>
+      </Class>
+      <Class name = 'ClassInstancesDeclaration' isAbstract = 'false' supertypes = 'IRLDeclarations::RuleSetDeclaration, IRL::Extended'/>
+      <Class name = 'PropertyDeclaration' isAbstract = 'false' supertypes = 'IRLDeclarations::RuleSetDeclaration'/>
+      <Class name = 'VariableDeclaration' isAbstract = 'false' supertypes = 'IRLTypes::Typed'>
+        <Attribute name = 'varName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        <Reference name = 'variableExp' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'IRLExpressions::VariableExpression' opposite = 'IRLExpressions::VariableExpression::referredVariable'/>
+      </Class>
+    </Package>
+    <Package name = 'IRLRules'>
+      <Class name = 'RulesetElementDefinition' isAbstract = 'true' supertypes = 'IRL::NamedElement'>
+        <Reference name = 'rulesetElementDefinitionOwner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IRL::RuleSet' opposite = 'IRL::RuleSet::rulesetElementDefinitions'/>
+      </Class>
+      <Class name = 'RuleDefinition' isAbstract = 'false' supertypes = 'IRLRules::RulesetElementDefinition'>
+        <Reference name = 'binding' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IRLRules::Binding' opposite = 'IRLRules::Binding::bindingOwner'/>
+        <Reference name = 'condition' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IRLRules::RuleCondition' opposite = 'IRLRules::RuleCondition::ruleDefinitionCondition'/>
+        <Reference name = 'actions' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'IRLRules::RuleAction' opposite = 'IRLRules::RuleAction::actionOwner'/>
+      </Class>
+      <Class name = 'Binding' isAbstract = 'false' supertypes = 'IRL::Element'>
+        <Reference name = 'bindingOwner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IRLRules::RuleDefinition' opposite = 'IRLRules::RuleDefinition::binding'/>
+        <Reference name = 'ruleVariable' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'IRLRules::RuleVariable' opposite = 'IRLRules::RuleVariable::ruleVariableOwner'/>
+      </Class>
+      <Class name = 'RuleVariable' isAbstract = 'true' supertypes = 'IRLDeclarations::VariableDeclaration'>
+        <Reference name = 'ruleVariableOwner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IRLRules::Binding' opposite = 'IRLRules::Binding::ruleVariable'/>
+        <Reference name = 'filter' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'IRLExpressions::Expression' opposite = ''/>
+        <Reference name = 'collectIn' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IRLExpressions::Expression' opposite = ''/>
+      </Class>
+      <Class name = 'CollectionOperationRuleVariable' isAbstract = 'false' supertypes = 'IRLRules::RuleVariable'>
+        <Attribute name = 'operationName' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+        <Reference name = 'collectWhere' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IRLExpressions::Expression' opposite = ''/>
+      </Class>
+      <Class name = 'SimpleRuleVariable' isAbstract = 'false' supertypes = 'IRLRules::RuleVariable'/>
+      <Class name = 'RuleCondition' isAbstract = 'false' supertypes = 'IRL::Element'>
+        <Reference name = 'conditionExpression' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IRLExpressions::Expression' opposite = 'IRLExpressions::Expression::ruleConditionExpression'/>
+        <Reference name = 'ruleDefinitionCondition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IRLRules::RuleDefinition' opposite = 'IRLRules::RuleDefinition::condition'/>
+      </Class>
+      <Class name = 'RuleAction' isAbstract = 'false' supertypes = 'IRL::Element'>
+        <Reference name = 'actionOwner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'IRLRules::RuleDefinition' opposite = 'IRLRules::RuleDefinition::actions'/>
+      </Class>
+      <Package name = 'PRRActions'>
+        <Class name = 'DeleteAction' isAbstract = 'false' supertypes = 'IRLRules::RuleAction'>
+          <Reference name = 'objValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IRLExpressions::Expression' opposite = ''/>
+        </Class>
+        <Class name = 'CreateAction' isAbstract = 'false' supertypes = 'IRLRules::RuleAction, IRLDeclarations::VariableDeclaration'>
+          <Reference name = 'insertArguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'IRLExpressions::Expression' opposite = 'IRLExpressions::Expression::parentInsert'/>
+        </Class>
+        <Class name = 'ModifyAction' isAbstract = 'false' supertypes = 'IRLRules::RuleAction'>
+          <Reference name = 'objValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IRLExpressions::Expression' opposite = ''/>
+          <Reference name = 'modifiedArguments' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'IRLExpressions::Expression' opposite = 'IRLExpressions::Expression::parentModifying'/>
+        </Class>
+        <Class name = 'UpdateAction' isAbstract = 'false' supertypes = 'IRLRules::RuleAction'>
+          <Reference name = 'objValue' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IRLExpressions::Expression' opposite = ''/>
+        </Class>
+        <Class name = 'InvokeAction' isAbstract = 'false' supertypes = 'IRLRules::RuleAction'>
+          <Reference name = 'invocation' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'IRLExpressions::Expression' opposite = ''/>
+        </Class>
+      </Package>
+    </Package>
+  </Package>
+</Metamodel>

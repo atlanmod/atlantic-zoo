@@ -1,0 +1,6 @@
+( defstruct LocatedElement :location )
+( defstruct Outline :extension :location )
+( defstruct Node :name :label :icon :location )
+( defstruct Label :label :methodCall :location )
+( defstruct LabelSuite :label :methodCall :location )
+( defstruct Map :mapString :location )

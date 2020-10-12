@@ -1,0 +1,446 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_UIML"{
+labelloc=t
+color=black
+label=UIML
+ node[shape=record];
+UIML[label="{UIML| | }"]
+ UIML->Header[arrowhead=vee,arrowtail=diamond,headlabel="head[0-1]",group=Header,minlen=2,constraint=true,]
+ UIML->Template[arrowhead=vee,arrowtail=diamond,headlabel="templates[*]",group=Template,minlen=2,constraint=true,]
+ UIML->Interface[arrowhead=vee,arrowtail=diamond,headlabel="interfaces[*]",group=Interface,minlen=2,constraint=true,]
+ UIML->Peer[arrowhead=vee,arrowtail=diamond,headlabel="peers[*]",group=Peer,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Header[label="{Header| | }"]
+ Header->MetaData[arrowhead=vee,arrowtail=diamond,headlabel="metas[*]",group=MetaData,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MetaData[label="{MetaData|name : String\ncontent : String| }"]
+;
+
+} subgraph "cluster_Interface"{
+labelloc=t
+color=black
+label=Interface
+ node[shape=record];
+ExtensibleElement[label="{/ExtensibleElement/| | }"]
+;
+ node[shape=record];
+Source[label="{/Source/| | }"]
+;
+ node[shape=record];
+LocalSource[label="{LocalSource| | }"]
+ LocalSource->ExtensibleElement[arrowhead=vee,arrowtail=none,headlabel="source",group=ExtensibleElement,minlen=2,constraint=false,]
+ LocalSource->Source[arrowhead=onormal,group=Source,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RemoteSource[label="{RemoteSource|location : String| }"]
+ RemoteSource->Source[arrowhead=onormal,group=Source,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Interface[label="{Interface|id[0-1] : String\nhow[0-1] : HowKind\nexport[0-1] : ExportKind| }"]
+ Interface->Source[arrowhead=vee,arrowtail=none,headlabel="source[0-1]",group=Source,minlen=2,constraint=false,]
+ Interface->Structure[arrowhead=vee,arrowtail=diamond,headlabel="structure[*]",group=Structure,minlen=2,constraint=true,]
+ Interface->Style[arrowhead=vee,arrowtail=diamond,headlabel="style[*]",group=Style,minlen=2,constraint=true,]
+ Interface->Content[arrowhead=vee,arrowtail=diamond,headlabel="content[*]",group=Content,minlen=2,constraint=true,]
+ Interface->Behavior[arrowhead=vee,arrowtail=diamond,headlabel="behavior[*]",group=Behavior,minlen=2,constraint=true,]
+ Interface->ExtensibleElement[arrowhead=onormal,group=ExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Structure[label="{Structure|id[0-1] : String\nhow[0-1] : HowKind\nexport[0-1] : ExportKind| }"]
+ Structure->Source[arrowhead=vee,arrowtail=none,headlabel="source[0-1]",group=Source,minlen=2,constraint=false,]
+ Structure->Part[arrowhead=vee,arrowtail=diamond,headlabel="parts[*]{ordered}",group=Part,minlen=2,constraint=true,]
+ Structure->ExtensibleElement[arrowhead=onormal,group=ExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Part[label="{Part|id[0-1] : String\nhow[0-1] : HowKind\nexport[0-1] : ExportKind\nclass[0-1] : String\nwherePart[0-1] : String| }"]
+ Part->Source[arrowhead=vee,arrowtail=none,headlabel="source[0-1]",group=Source,minlen=2,constraint=false,]
+ Part->Style[arrowhead=vee,arrowtail=diamond,headlabel="style[0-1]",group=Style,minlen=2,constraint=true,]
+ Part->Content[arrowhead=vee,arrowtail=diamond,headlabel="content[0-1]",group=Content,minlen=2,constraint=true,]
+ Part->Behavior[arrowhead=vee,arrowtail=diamond,headlabel="behavior[0-1]",group=Behavior,minlen=2,constraint=true,]
+ Part->Part[arrowhead=vee,arrowtail=diamond,headlabel="parts[*]",group=Part,minlen=2,constraint=true,]
+ Part->Repeat[arrowhead=vee,arrowtail=diamond,headlabel="repeats[*]",group=Repeat,minlen=2,constraint=true,]
+ Part->ExtensibleElement[arrowhead=onormal,group=ExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Style[label="{Style|id[0-1] : String\nhow[0-1] : HowKind\nexport[0-1] : ExportKind| }"]
+ Style->Source[arrowhead=vee,arrowtail=none,headlabel="source[0-1]",group=Source,minlen=2,constraint=false,]
+ Style->Property[arrowhead=vee,arrowtail=diamond,headlabel="properties[*]",group=Property,minlen=2,constraint=true,]
+ Style->ExtensibleElement[arrowhead=onormal,group=ExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Property[label="{Property|name[0-1] : String\nhow[0-1] : HowKind\nexport[0-1] : ExportKind\nvalues[*] : String| }"]
+ Property->Part[arrowhead=vee,arrowtail=none,headlabel="parts[*]",group=Part,minlen=2,constraint=false,]
+ Property->Event[arrowhead=vee,arrowtail=none,headlabel="events[*]",group=Event,minlen=2,constraint=false,]
+ Property->Source[arrowhead=vee,arrowtail=none,headlabel="source[0-1]",group=Source,minlen=2,constraint=false,]
+ Property->Constant[arrowhead=vee,arrowtail=diamond,headlabel="constants[*]",group=Constant,minlen=2,constraint=true,]
+ Property->Property[arrowhead=vee,arrowtail=diamond,headlabel="properties[*]",group=Property,minlen=2,constraint=true,]
+ Property->Reference[arrowhead=vee,arrowtail=diamond,headlabel="references[*]",group=Reference,minlen=2,constraint=true,]
+ Property->Call[arrowhead=vee,arrowtail=diamond,headlabel="calls[*]",group=Call,minlen=2,constraint=true,]
+ Property->Iterator[arrowhead=vee,arrowtail=diamond,headlabel="iterators[*]",group=Iterator,minlen=2,constraint=true,]
+ Property->ExtensibleElement[arrowhead=onormal,group=ExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Content[label="{Content|id[0-1] : String\nhow[0-1] : HowKind\nexport[0-1] : ExportKind| }"]
+ Content->Source[arrowhead=vee,arrowtail=none,headlabel="source[0-1]",group=Source,minlen=2,constraint=false,]
+ Content->Constant[arrowhead=vee,arrowtail=diamond,headlabel="constants[*]{ordered}",group=Constant,minlen=2,constraint=true,]
+ Content->ExtensibleElement[arrowhead=onormal,group=ExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Behavior[label="{Behavior|id[0-1] : String\nhow[0-1] : HowKind\nexport[0-1] : ExportKind| }"]
+ Behavior->Source[arrowhead=vee,arrowtail=none,headlabel="source[0-1]",group=Source,minlen=2,constraint=false,]
+ Behavior->Rule[arrowhead=vee,arrowtail=diamond,headlabel="rules[*]{ordered}",group=Rule,minlen=2,constraint=true,]
+ Behavior->ExtensibleElement[arrowhead=onormal,group=ExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Repeat[label="{Repeat| | }"]
+ Repeat->Iterator[arrowhead=vee,arrowtail=diamond,headlabel="iterator",group=Iterator,minlen=2,constraint=true,]
+ Repeat->Part[arrowhead=vee,arrowtail=diamond,headlabel="parts[1-*]",group=Part,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Constant[label="{Constant|id[0-1] : String\nhow[0-1] : HowKind\nexport[0-1] : ExportKind\nmodel[0-1] : String\nvalue[0-1] : String| }"]
+ Constant->Source[arrowhead=vee,arrowtail=none,headlabel="source[0-1]",group=Source,minlen=2,constraint=false,]
+ Constant->Constant[arrowhead=vee,arrowtail=diamond,headlabel="constants[*]{ordered}",group=Constant,minlen=2,constraint=true,]
+ Constant->ExtensibleElement[arrowhead=onormal,group=ExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Reference[label="{Reference| | }"]
+ Reference->Constant[arrowhead=vee,arrowtail=none,headlabel="constant[0-1]",group=Constant,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Rule[label="{Rule|id[0-1] : String\nhow[0-1] : HowKind\nexport[0-1] : ExportKind| }"]
+ Rule->Source[arrowhead=vee,arrowtail=none,headlabel="source[0-1]",group=Source,minlen=2,constraint=false,]
+ Rule->Condition[arrowhead=vee,arrowtail=diamond,headlabel="condition",group=Condition,minlen=2,constraint=true,]
+ Rule->Action[arrowhead=vee,arrowtail=diamond,headlabel="action",group=Action,minlen=2,constraint=true,]
+ Rule->ExtensibleElement[arrowhead=onormal,group=ExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Condition[label="{/Condition/| | }"]
+;
+ node[shape=record];
+EventCondition[label="{EventCondition| | }"]
+ EventCondition->Event[arrowhead=vee,arrowtail=diamond,headlabel="event",group=Event,minlen=2,constraint=true,]
+ EventCondition->Condition[arrowhead=onormal,group=Condition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EqualCondition[label="{EqualCondition| | }"]
+ EqualCondition->Equal[arrowhead=vee,arrowtail=diamond,headlabel="equal",group=Equal,minlen=2,constraint=true,]
+ EqualCondition->Condition[arrowhead=onormal,group=Condition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OpCondition[label="{OpCondition| | }"]
+ OpCondition->Operation[arrowhead=vee,arrowtail=diamond,headlabel="op",group=Operation,minlen=2,constraint=true,]
+ OpCondition->Condition[arrowhead=onormal,group=Condition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Action[label="{Action| | }"]
+;
+ node[shape=record];
+Action_1[label="{Action_1| | }"]
+ Action_1->Event[arrowhead=vee,arrowtail=none,headlabel="event[0-1]",group=Event,minlen=2,constraint=false,]
+ Action_1->Property[arrowhead=vee,arrowtail=diamond,headlabel="properties[*]",group=Property,minlen=2,constraint=true,]
+ Action_1->Call[arrowhead=vee,arrowtail=diamond,headlabel="calls[*]",group=Call,minlen=2,constraint=true,]
+ Action_1->Restructure[arrowhead=vee,arrowtail=diamond,headlabel="restructures[*]",group=Restructure,minlen=2,constraint=true,]
+ Action_1->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Action_2[label="{Action_2| | }"]
+ Action_2->WhenTrue[arrowhead=vee,arrowtail=none,headlabel="whenTrue[0-1]",group=WhenTrue,minlen=2,constraint=false,]
+ Action_2->WhenFalse[arrowhead=vee,arrowtail=none,headlabel="whenFalse[0-1]",group=WhenFalse,minlen=2,constraint=false,]
+ Action_2->ByDefault[arrowhead=vee,arrowtail=none,headlabel="byDefault[0-1]",group=ByDefault,minlen=2,constraint=false,]
+ Action_2->Action[arrowhead=onormal,group=Action,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Call[label="{Call|name[0-1] : String| }"]
+ Call->Parameter[arrowhead=vee,arrowtail=diamond,headlabel="params[*]{ordered}",group=Parameter,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parameter[label="{/Parameter/|name[0-1] : String| }"]
+;
+ node[shape=record];
+PropertyParameter[label="{PropertyParameter| | }"]
+ PropertyParameter->Property[arrowhead=vee,arrowtail=none,headlabel="property",group=Property,minlen=2,constraint=false,]
+ PropertyParameter->Parameter[arrowhead=onormal,group=Parameter,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ReferenceParameter[label="{ReferenceParameter| | }"]
+ ReferenceParameter->Reference[arrowhead=vee,arrowtail=none,headlabel="reference",group=Reference,minlen=2,constraint=false,]
+ ReferenceParameter->Parameter[arrowhead=onormal,group=Parameter,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CallParameter[label="{CallParameter| | }"]
+ CallParameter->Call[arrowhead=vee,arrowtail=none,headlabel="call",group=Call,minlen=2,constraint=false,]
+ CallParameter->Parameter[arrowhead=onormal,group=Parameter,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperationParameter[label="{OperationParameter| | }"]
+ OperationParameter->Operation[arrowhead=vee,arrowtail=none,headlabel="op",group=Operation,minlen=2,constraint=false,]
+ OperationParameter->Parameter[arrowhead=onormal,group=Parameter,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EventParameter[label="{EventParameter| | }"]
+ EventParameter->Event[arrowhead=vee,arrowtail=none,headlabel="event",group=Event,minlen=2,constraint=false,]
+ EventParameter->Parameter[arrowhead=onormal,group=Parameter,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConstantParameter[label="{ConstantParameter| | }"]
+ ConstantParameter->Constant[arrowhead=vee,arrowtail=none,headlabel="constant",group=Constant,minlen=2,constraint=false,]
+ ConstantParameter->Parameter[arrowhead=onormal,group=Parameter,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IteratorParameter[label="{IteratorParameter| | }"]
+ IteratorParameter->Iterator[arrowhead=vee,arrowtail=none,headlabel="iterator",group=Iterator,minlen=2,constraint=false,]
+ IteratorParameter->Parameter[arrowhead=onormal,group=Parameter,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Iterator[label="{/Iterator/|id : String| }"]
+;
+ node[shape=record];
+ConstantIterator[label="{ConstantIterator| | }"]
+ ConstantIterator->Constant[arrowhead=vee,arrowtail=diamond,headlabel="constant",group=Constant,minlen=2,constraint=true,]
+ ConstantIterator->Iterator[arrowhead=onormal,group=Iterator,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PropertyIterator[label="{PropertyIterator| | }"]
+ PropertyIterator->Property[arrowhead=vee,arrowtail=diamond,headlabel="property",group=Property,minlen=2,constraint=true,]
+ PropertyIterator->Iterator[arrowhead=onormal,group=Iterator,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CallIterator[label="{CallIterator| | }"]
+ CallIterator->Call[arrowhead=vee,arrowtail=diamond,headlabel="call",group=Call,minlen=2,constraint=true,]
+ CallIterator->Iterator[arrowhead=onormal,group=Iterator,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TextIterator[label="{TextIterator|value : Integer| }"]
+ TextIterator->Iterator[arrowhead=onormal,group=Iterator,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Event[label="{Event|class[0-1] : String| }"]
+ Event->Part[arrowhead=vee,arrowtail=none,headlabel="parts[*]",group=Part,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Equal[label="{/Equal/| | }"]
+ Equal->Event[arrowhead=vee,arrowtail=none,headlabel="event",group=Event,minlen=2,constraint=false,]
+;
+ node[shape=record];
+EqualToConstant[label="{EqualToConstant| | }"]
+ EqualToConstant->Constant[arrowhead=vee,arrowtail=none,headlabel="constant",group=Constant,minlen=2,constraint=false,]
+ EqualToConstant->Equal[arrowhead=onormal,group=Equal,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EqualToProperty[label="{EqualToProperty| | }"]
+ EqualToProperty->Property[arrowhead=vee,arrowtail=none,headlabel="property",group=Property,minlen=2,constraint=false,]
+ EqualToProperty->Equal[arrowhead=onormal,group=Equal,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EqualToReference[label="{EqualToReference| | }"]
+ EqualToReference->Reference[arrowhead=vee,arrowtail=none,headlabel="reference",group=Reference,minlen=2,constraint=false,]
+ EqualToReference->Equal[arrowhead=onormal,group=Equal,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EqualToOperation[label="{EqualToOperation| | }"]
+ EqualToOperation->Operation[arrowhead=vee,arrowtail=none,headlabel="op",group=Operation,minlen=2,constraint=false,]
+ EqualToOperation->Equal[arrowhead=onormal,group=Equal,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Operation[label="{Operation|name : String| }"]
+ Operation->Constant[arrowhead=vee,arrowtail=diamond,headlabel="constants[*]",group=Constant,minlen=2,constraint=true,]
+ Operation->Property[arrowhead=vee,arrowtail=diamond,headlabel="properties[*]",group=Property,minlen=2,constraint=true,]
+ Operation->Reference[arrowhead=vee,arrowtail=diamond,headlabel="references[*]",group=Reference,minlen=2,constraint=true,]
+ Operation->Call[arrowhead=vee,arrowtail=diamond,headlabel="calls[*]",group=Call,minlen=2,constraint=true,]
+ Operation->Operation[arrowhead=vee,arrowtail=diamond,headlabel="ops[*]",group=Operation,minlen=2,constraint=true,]
+ Operation->Event[arrowhead=vee,arrowtail=diamond,headlabel="events[*]",group=Event,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Restructure[label="{Restructure|how[0-1] : HowKind| }"]
+ Restructure->Part[arrowhead=vee,arrowtail=none,headlabel="atPart[0-1]",group=Part,minlen=2,constraint=false,]
+ Restructure->Part[arrowhead=vee,arrowtail=none,headlabel="wherePart[0-1]",group=Part,minlen=2,constraint=false,]
+ Restructure->Source[arrowhead=vee,arrowtail=none,headlabel="source[0-1]",group=Source,minlen=2,constraint=false,]
+ Restructure->Template[arrowhead=vee,arrowtail=diamond,headlabel="template[0-1]",group=Template,minlen=2,constraint=true,]
+ Restructure->ExtensibleElement[arrowhead=onormal,group=ExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Branch[label="{Branch| | }"]
+ Branch->Property[arrowhead=vee,arrowtail=diamond,headlabel="properties[*]",group=Property,minlen=2,constraint=true,]
+ Branch->Call[arrowhead=vee,arrowtail=diamond,headlabel="calls[*]",group=Call,minlen=2,constraint=true,]
+ Branch->Restructure[arrowhead=vee,arrowtail=diamond,headlabel="restructure[0-1]",group=Restructure,minlen=2,constraint=true,]
+ Branch->Operation[arrowhead=vee,arrowtail=diamond,headlabel="op[0-1]",group=Operation,minlen=2,constraint=true,]
+ Branch->Equal[arrowhead=vee,arrowtail=diamond,headlabel="equal[0-1]",group=Equal,minlen=2,constraint=true,]
+ Branch->Event[arrowhead=vee,arrowtail=diamond,headlabel="event[0-1]",group=Event,minlen=2,constraint=true,]
+;
+ node[shape=record];
+WhenTrue[label="{WhenTrue| | }"]
+ WhenTrue->Branch[arrowhead=onormal,group=Branch,minlen=2,constraint=true,]
+;
+ node[shape=record];
+WhenFalse[label="{WhenFalse| | }"]
+ WhenFalse->Branch[arrowhead=onormal,group=Branch,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ByDefault[label="{ByDefault| | }"]
+ ByDefault->Branch[arrowhead=onormal,group=Branch,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_Peer"{
+labelloc=t
+color=black
+label=Peer
+ node[shape=record];
+Peer[label="{Peer|id[0-1] : String\nhow[0-1] : HowKind\nexport[0-1] : ExportKind| }"]
+ Peer->Source[arrowhead=vee,arrowtail=none,headlabel="source[0-1]",group=Source,minlen=2,constraint=false,]
+ Peer->Presentation[arrowhead=vee,arrowtail=diamond,headlabel="presentations[*]",group=Presentation,minlen=2,constraint=true,]
+ Peer->Logic[arrowhead=vee,arrowtail=diamond,headlabel="logics[*]",group=Logic,minlen=2,constraint=true,]
+ Peer->ExtensibleElement[arrowhead=onormal,group=ExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Presentation[label="{Presentation|id[0-1] : String\nhow[0-1] : HowKind\nexport[0-1] : ExportKind\nbase : String| }"]
+ Presentation->Source[arrowhead=vee,arrowtail=none,headlabel="source[0-1]",group=Source,minlen=2,constraint=false,]
+ Presentation->DClass[arrowhead=vee,arrowtail=diamond,headlabel="dClasses[*]",group=DClass,minlen=2,constraint=true,]
+ Presentation->ExtensibleElement[arrowhead=onormal,group=ExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Logic[label="{Logic|id[0-1] : String\nhow[0-1] : HowKind\nexport[0-1] : ExportKind| }"]
+ Logic->Source[arrowhead=vee,arrowtail=none,headlabel="source[0-1]",group=Source,minlen=2,constraint=false,]
+ Logic->DComponent[arrowhead=vee,arrowtail=diamond,headlabel="dComponents[*]",group=DComponent,minlen=2,constraint=true,]
+ Logic->ExtensibleElement[arrowhead=onormal,group=ExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DComponent[label="{DComponent|id : String\nhow[0-1] : HowKind\nexport[0-1] : ExportKind\nmapsTo[0-1] : String\nlocation[0-1] : String| }"]
+ DComponent->Source[arrowhead=vee,arrowtail=none,headlabel="source[0-1]",group=Source,minlen=2,constraint=false,]
+ DComponent->DMethod[arrowhead=vee,arrowtail=diamond,headlabel="dMethods[*]",group=DMethod,minlen=2,constraint=true,]
+ DComponent->ExtensibleElement[arrowhead=onormal,group=ExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DClass[label="{DClass|id : String\nhow[0-1] : HowKind\nexport[0-1] : ExportKind\nmapsTo : String\nmapsType : String| }"]
+ DClass->Source[arrowhead=vee,arrowtail=none,headlabel="source[0-1]",group=Source,minlen=2,constraint=false,]
+ DClass->DMethod[arrowhead=vee,arrowtail=diamond,headlabel="dMethods[*]",group=DMethod,minlen=2,constraint=true,]
+ DClass->DProperty[arrowhead=vee,arrowtail=diamond,headlabel="dProperties[*]",group=DProperty,minlen=2,constraint=true,]
+ DClass->Event[arrowhead=vee,arrowtail=diamond,headlabel="events[*]",group=Event,minlen=2,constraint=true,]
+ DClass->Listener[arrowhead=vee,arrowtail=diamond,headlabel="listeners[*]",group=Listener,minlen=2,constraint=true,]
+ DClass->ExtensibleElement[arrowhead=onormal,group=ExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DProperty[label="{DProperty|id : String\nmapsType : MapsTypeKind\nmapsTo : String\nreturnType[0-1] : String| }"]
+ DProperty->DMethod[arrowhead=vee,arrowtail=diamond,headlabel="dMethods[*]",group=DMethod,minlen=2,constraint=true,]
+ DProperty->DParam[arrowhead=vee,arrowtail=diamond,headlabel="dParams[*]",group=DParam,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DMethod[label="{DMethod|id : String\nhow[0-1] : HowKind\nexport[0-1] : ExportKind\nmapsTo : String\nreturnType[0-1] : String| }"]
+ DMethod->Source[arrowhead=vee,arrowtail=none,headlabel="source[0-1]",group=Source,minlen=2,constraint=false,]
+ DMethod->DParam[arrowhead=vee,arrowtail=diamond,headlabel="dParams[*]{ordered}",group=DParam,minlen=2,constraint=true,]
+ DMethod->Script[arrowhead=vee,arrowtail=diamond,headlabel="script[0-1]",group=Script,minlen=2,constraint=true,]
+ DMethod->ExtensibleElement[arrowhead=onormal,group=ExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DParam[label="{DParam|id[0-1] : String\ntype[0-1] : String\nvalue : String| }"]
+;
+ node[shape=record];
+Script[label="{Script|id[0-1] : String\ntype[0-1] : String\nhow[0-1] : HowKind\nexport[0-1] : ExportKind\nvalue : String\nsource[0-1] : String| }"]
+ Script->ExtensibleElement[arrowhead=onormal,group=ExtensibleElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Listener[label="{Listener|class[0-1] : String\nattacher[0-1] : String| }"]
+;
+
+} subgraph "cluster_Template"{
+labelloc=t
+color=black
+label=Template
+ node[shape=record];
+Template[label="{/Template/|id[0-1] : String| }"]
+;
+ node[shape=record];
+BehaviorTemplate[label="{BehaviorTemplate| | }"]
+ BehaviorTemplate->Behavior[arrowhead=vee,arrowtail=diamond,headlabel="behavior",group=Behavior,minlen=2,constraint=true,]
+ BehaviorTemplate->Template[arrowhead=onormal,group=Template,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DClassTemplate[label="{DClassTemplate| | }"]
+ DClassTemplate->DClass[arrowhead=vee,arrowtail=diamond,headlabel="dClass",group=DClass,minlen=2,constraint=true,]
+ DClassTemplate->Template[arrowhead=onormal,group=Template,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DComponentTemplate[label="{DComponentTemplate| | }"]
+ DComponentTemplate->DComponent[arrowhead=vee,arrowtail=diamond,headlabel="dComponent",group=DComponent,minlen=2,constraint=true,]
+ DComponentTemplate->Template[arrowhead=onormal,group=Template,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConstantTemplate[label="{ConstantTemplate| | }"]
+ ConstantTemplate->Constant[arrowhead=vee,arrowtail=diamond,headlabel="constant",group=Constant,minlen=2,constraint=true,]
+ ConstantTemplate->Template[arrowhead=onormal,group=Template,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ContentTemplate[label="{ContentTemplate| | }"]
+ ContentTemplate->Content[arrowhead=vee,arrowtail=diamond,headlabel="content",group=Content,minlen=2,constraint=true,]
+ ContentTemplate->Template[arrowhead=onormal,group=Template,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InterfaceTemplate[label="{InterfaceTemplate| | }"]
+ InterfaceTemplate->Interface[arrowhead=vee,arrowtail=diamond,headlabel="interface",group=Interface,minlen=2,constraint=true,]
+ InterfaceTemplate->Template[arrowhead=onormal,group=Template,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LogicTemplate[label="{LogicTemplate| | }"]
+ LogicTemplate->Logic[arrowhead=vee,arrowtail=diamond,headlabel="logic",group=Logic,minlen=2,constraint=true,]
+ LogicTemplate->Template[arrowhead=onormal,group=Template,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PartTemplate[label="{PartTemplate| | }"]
+ PartTemplate->Part[arrowhead=vee,arrowtail=diamond,headlabel="part",group=Part,minlen=2,constraint=true,]
+ PartTemplate->Template[arrowhead=onormal,group=Template,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PeerTemplate[label="{PeerTemplate| | }"]
+ PeerTemplate->Peer[arrowhead=vee,arrowtail=diamond,headlabel="peer",group=Peer,minlen=2,constraint=true,]
+ PeerTemplate->Template[arrowhead=onormal,group=Template,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PresentationTemplate[label="{PresentationTemplate| | }"]
+ PresentationTemplate->Presentation[arrowhead=vee,arrowtail=diamond,headlabel="presentation",group=Presentation,minlen=2,constraint=true,]
+ PresentationTemplate->Template[arrowhead=onormal,group=Template,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PropertyTemplate[label="{PropertyTemplate| | }"]
+ PropertyTemplate->Property[arrowhead=vee,arrowtail=diamond,headlabel="property",group=Property,minlen=2,constraint=true,]
+ PropertyTemplate->Template[arrowhead=onormal,group=Template,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RestructureTemplate[label="{RestructureTemplate| | }"]
+ RestructureTemplate->Restructure[arrowhead=vee,arrowtail=diamond,headlabel="restructure",group=Restructure,minlen=2,constraint=true,]
+ RestructureTemplate->Template[arrowhead=onormal,group=Template,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RuleTemplate[label="{RuleTemplate| | }"]
+ RuleTemplate->Rule[arrowhead=vee,arrowtail=diamond,headlabel="rule",group=Rule,minlen=2,constraint=true,]
+ RuleTemplate->Template[arrowhead=onormal,group=Template,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ScriptTemplate[label="{ScriptTemplate| | }"]
+ ScriptTemplate->Script[arrowhead=vee,arrowtail=diamond,headlabel="script",group=Script,minlen=2,constraint=true,]
+ ScriptTemplate->Template[arrowhead=onormal,group=Template,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StructureTemplate[label="{StructureTemplate| | }"]
+ StructureTemplate->Structure[arrowhead=vee,arrowtail=diamond,headlabel="structure",group=Structure,minlen=2,constraint=true,]
+ StructureTemplate->Template[arrowhead=onormal,group=Template,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StyleTemplate[label="{StyleTemplate| | }"]
+ StyleTemplate->Style[arrowhead=vee,arrowtail=diamond,headlabel="style",group=Style,minlen=2,constraint=true,]
+ StyleTemplate->Template[arrowhead=onormal,group=Template,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

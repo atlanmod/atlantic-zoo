@@ -1,0 +1,241 @@
+package Metamodel;
+
+package PrimitiveTypes {
+  datatype Double : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+}
+
+package IRL {
+  class Element {
+    !unique !ordered attr String[1] location;
+    !unique attr String[*] commentsBefore;
+    !unique attr String[*] commentsAfter;
+  }
+
+  abstract class NamedElement extends Element {
+    !unique !ordered attr String[1] name;
+  }
+
+  class ExtendedIdentifier extends NamedElement {
+    !ordered ref ExtendedIdentifier parentIdentifier;
+    !ordered ref Extended[1]#extendedIdentifier extendedIdentifierOwner;
+  }
+
+  abstract class Extended extends Element {
+    !ordered val ExtendedIdentifier[1]#extendedIdentifierOwner extendedIdentifier;
+  }
+
+  abstract class Definition extends Extended {
+  }
+
+  class RuleSet extends NamedElement {
+    val ImportDefinition[*]#importDefinitionOwners importDefinitions;
+    !ordered val IRLDeclarations.PropertyDefinition#propertyDefinitionOwner propertyDefinitions;
+    !ordered val IRLRules.RulesetElementDefinition[*]#rulesetElementDefinitionOwner rulesetElementDefinitions;
+  }
+
+  class ImportDefinition extends Definition {
+    !ordered ref RuleSet[1]#importDefinitions importDefinitionOwners;
+    !unique !ordered attr Boolean[1] dotStar;
+  }
+
+  package IRLExpressions {
+    abstract class Expression extends IRLTypes.Typed {
+      !ordered ref PropertyCallExpression#source appliedProperty;
+      !ordered ref IRLDeclarations.RuleSetDeclaration[1]#expression expressionOwner;
+      !ordered ref LoopExpression#body loopExpression;
+      !ordered ref OperationCallExpression#arguments parentOperation;
+      !ordered ref IRLRules.RuleCondition[1]#conditionExpression ruleConditionExpression;
+      !ordered ref IRLRules.PRRActions.CreateAction#insertArguments parentInsert;
+      !ordered ref IRLRules.PRRActions.ModifyAction#modifiedArguments parentModifying;
+    }
+
+    abstract class PropertyCallExpression extends Expression {
+      !ordered val Expression#appliedProperty source;
+    }
+
+    class IteratorExp extends LoopExpression {
+      !unique !ordered attr String[1] name;
+    }
+
+    class LoopExpression extends PropertyCallExpression {
+      !ordered val Expression[1]#loopExpression body;
+      !ordered val Iterator[+]#loopExpression iterators;
+    }
+
+    class OperatorCallExpression extends OperationCallExpression {
+    }
+
+    class OperationCallExpression extends PropertyCallExpression {
+      val Expression[*]#parentOperation arguments;
+      !unique !ordered attr String[1] operationName;
+      !unique !ordered attr String signature;
+    }
+
+    abstract class PrimitiveExpression extends Expression {
+    }
+
+    class Iterator extends IRLDeclarations.VariableDeclaration {
+      !ordered ref LoopExpression#iterators loopExpression;
+    }
+
+    abstract class NumericExpression extends PrimitiveExpression {
+    }
+
+    class IntegerExpression extends NumericExpression {
+      !unique !ordered attr Integer[1] integerSymbol;
+    }
+
+    class RealExpression extends NumericExpression {
+      !unique !ordered attr PrimitiveTypes.Double[1] realSymbol;
+    }
+
+    class BooleanExpression extends PrimitiveExpression {
+      !unique !ordered attr Boolean[1] booleanSymbol;
+    }
+
+    class NavigationOrAttributeCallExpression extends PropertyCallExpression {
+      !unique !ordered attr String[1] name;
+    }
+
+    class VariableExpression extends Expression {
+      !ordered ref IRLDeclarations.VariableDeclaration[1]#variableExp referredVariable;
+      !unique !ordered attr String[1] name;
+    }
+
+    class StringExpression extends PrimitiveExpression {
+      !unique !ordered attr String[1] stringSymbol;
+    }
+
+  }
+
+  package IRLTypes {
+    abstract class Type extends NamedElement {
+      !ordered ref Typed[1]#type typeOwner;
+    }
+
+    abstract class Typed extends Element {
+      !ordered val Type[1]#typeOwner type;
+    }
+
+    abstract class Primitive extends Type {
+    }
+
+    class StringType extends Primitive {
+    }
+
+    abstract class NumericType extends Primitive {
+    }
+
+    class IntegerType extends NumericType {
+    }
+
+    class RealType extends NumericType {
+    }
+
+    class BooleanType extends Primitive {
+    }
+
+    class ClassType extends Type {
+    }
+
+  }
+
+  package IRLDeclarations {
+    class PropertyDefinition extends Definition {
+      !ordered ref RuleSet[1]#propertyDefinitions propertyDefinitionOwner;
+      val RuleSetDeclaration[*]#ruleSetDeclarationOwner ruleSetDeclarations;
+      !unique !ordered attr Boolean[1] semicoloneOpt;
+    }
+
+    abstract class RuleSetDeclaration extends Element {
+      !ordered ref PropertyDefinition[1]#ruleSetDeclarations ruleSetDeclarationOwner;
+      !ordered val IRLExpressions.Expression#expressionOwner expression;
+    }
+
+    class ClassInstancesDeclaration extends RuleSetDeclaration, Extended {
+    }
+
+    class PropertyDeclaration extends RuleSetDeclaration {
+    }
+
+    class VariableDeclaration extends IRLTypes.Typed {
+      !unique !ordered attr String[1] varName;
+      !ordered ref IRLExpressions.VariableExpression[*]#referredVariable variableExp;
+    }
+
+  }
+
+  package IRLRules {
+    abstract class RulesetElementDefinition extends NamedElement {
+      !ordered ref RuleSet[1]#rulesetElementDefinitions rulesetElementDefinitionOwner;
+    }
+
+    class RuleDefinition extends RulesetElementDefinition {
+      !ordered val Binding#bindingOwner binding;
+      !ordered val RuleCondition#ruleDefinitionCondition condition;
+      val RuleAction[*]#actionOwner actions;
+    }
+
+    class Binding extends Element {
+      !ordered ref RuleDefinition[1]#binding bindingOwner;
+      !ordered val RuleVariable[*]#ruleVariableOwner ruleVariable;
+    }
+
+    abstract class RuleVariable extends IRLDeclarations.VariableDeclaration {
+      !ordered ref Binding[1]#ruleVariable ruleVariableOwner;
+      val IRLExpressions.Expression[*] filter;
+      !ordered val IRLExpressions.Expression collectIn;
+    }
+
+    class CollectionOperationRuleVariable extends RuleVariable {
+      !unique !ordered attr String[1] operationName;
+      !ordered val IRLExpressions.Expression collectWhere;
+    }
+
+    class SimpleRuleVariable extends RuleVariable {
+    }
+
+    class RuleCondition extends Element {
+      !ordered val IRLExpressions.Expression#ruleConditionExpression conditionExpression;
+      !ordered ref RuleDefinition[1]#condition ruleDefinitionCondition;
+    }
+
+    class RuleAction extends Element {
+      !ordered ref RuleDefinition#actions actionOwner;
+    }
+
+    package PRRActions {
+      class DeleteAction extends RuleAction {
+        !ordered val IRLExpressions.Expression[1] objValue;
+      }
+
+      class CreateAction extends RuleAction, IRLDeclarations.VariableDeclaration {
+        val IRLExpressions.Expression[*]#parentInsert insertArguments;
+      }
+
+      class ModifyAction extends RuleAction {
+        !ordered val IRLExpressions.Expression[1] objValue;
+        val IRLExpressions.Expression[*]#parentModifying modifiedArguments;
+      }
+
+      class UpdateAction extends RuleAction {
+        !ordered val IRLExpressions.Expression[1] objValue;
+      }
+
+      class InvokeAction extends RuleAction {
+        !ordered val IRLExpressions.Expression[1] invocation;
+      }
+
+    }
+
+  }
+
+}
+

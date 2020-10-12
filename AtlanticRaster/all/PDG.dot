@@ -1,0 +1,41 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_PDG"{
+labelloc=t
+color=black
+label=PDG
+ node[shape=record];
+MProgramDependenceGraph[label="{MProgramDependenceGraph| | }"]
+ MProgramDependenceGraph->EnterNode[arrowhead=vee,arrowtail=diamond,headlabel="node",group=EnterNode,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EnterNode[label="{EnterNode|name : String| }"]
+ EnterNode->ExpressionNode[arrowhead=vee,arrowtail=diamond,headlabel="controlDependenceNodes[*]",group=ExpressionNode,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExpressionNode[label="{ExpressionNode|name : String| }"]
+ ExpressionNode->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expression",group=Expression,minlen=2,constraint=true,]
+ ExpressionNode->ExpressionNode[arrowhead=vee,arrowtail=none,headlabel="dataDependenceNodes[*]",group=ExpressionNode,minlen=2,constraint=false,]
+ ExpressionNode->ExpressionNode[arrowhead=vee,arrowtail=diamond,headlabel="controlDependenceNodes[*]",group=ExpressionNode,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Expression[label="{Expression|name : String\nisIdentifier : Boolean| }"]
+ Expression->Expression[arrowhead=vee,arrowtail=diamond,headlabel="innerExpressions[*]{ordered}",group=Expression,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

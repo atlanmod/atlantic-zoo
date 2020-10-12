@@ -1,0 +1,378 @@
+class ChangeEvent extends _Event
+  var changeExpression as Set of BooleanExpression
+
+class CallEvent extends _Event
+  var operation as Set of Operation
+
+class SubactivityState extends SubmachineState
+  var isDynamic as Set of Boolean
+  var dynamicArguments as Set of ArgListsExpression
+  var dynamicMultiplicity as Set of Multiplicity
+
+class Partition extends ModelElement
+  var contents as Set of ModelElement
+  var activityGraph as Set of ActivityGraph
+
+abstract class Relationship extends ModelElement
+
+class StateMachine extends ModelElement
+  var submachineState as Set of SubmachineState
+  // top IsContainer
+  var top as Set of State
+  // transitions IsContainer
+  var transitions as Set of Transition
+  var context as Set of ModelElement
+
+abstract class _Namespace extends ModelElement
+  // ownedElement IsContainer
+  var ownedElement as Set of ModelElement
+
+class Generalization extends Relationship
+  var discriminator as Set of String
+  var parent as Set of GeneralizableElement
+  var child as Set of GeneralizableElement
+  var powertype as Set of Classifier
+
+class TimeEvent extends _Event
+  var when as Set of TimeExpression
+
+class ActionState extends SimpleState
+  var isDynamic as Set of Boolean
+  var dynamicArguments as Set of ArgListsExpression
+  var dynamicMultiplicity as Set of Multiplicity
+
+class TimeExpression extends Expression
+
+class Signal extends Classifier
+
+class ObjectFlowState extends SimpleState
+  var isSynch as Set of Boolean
+  var parameter as Set of Parameter
+  var _type as Set of Classifier
+
+class ArgListsExpression extends Expression
+
+abstract class _Event extends ModelElement
+  // parameter IsContainer
+  var parameter as Set of Parameter
+
+class ReturnAction extends Action
+
+class Pseudostate extends StateVertex
+  var kind as Set of PseudostateKind
+
+class CompositeState extends State
+  var isConcurrent as Set of Boolean
+  // subvertex IsContainer
+  var subvertex as Set of StateVertex
+
+abstract class Element
+
+class SendAction extends Action
+  var signal as Set of Signal
+
+class DestroyAction extends Action
+
+class SignalEvent extends _Event
+  var signal as Set of Signal
+
+class FinalState extends State
+
+class CallAction extends Action
+  var operation as Set of Operation
+
+abstract class StateVertex extends ModelElement
+  var incoming as Set of Transition
+  var outgoing as Set of Transition
+  var container as Set of CompositeState
+
+class StubState extends StateVertex
+  var referenceState as Set of String
+
+class Guard extends ModelElement
+  var expression as Set of BooleanExpression
+  var transition as Set of Transition
+
+class UninterpretedAction extends Action
+
+class ObjectSetExpression extends Expression
+
+class Parameter extends ModelElement
+  var defaultValue as Set of Expression
+  var kind as Set of ParameterDirectionKind
+  var _type as Set of Classifier
+  var behavioralFeature as Set of BehavioralFeature
+
+abstract class State extends StateVertex
+  var deferrableEvent as Set of _Event
+  var stateMachine as Set of StateMachine
+  // entry IsContainer
+  var entry as Set of Action
+  // doActivity IsContainer
+  var doActivity as Set of Action
+  // exit IsContainer
+  var exit as Set of Action
+  // internalTransition IsContainer
+  var internalTransition as Set of Transition
+
+class CallState extends ActionState
+
+abstract class GeneralizableElement extends ModelElement
+  var isRoot as Set of Boolean
+  var isLeaf as Set of Boolean
+  var isAbstract as Set of Boolean
+  var generalization as Set of Generalization
+
+class IterationExpression extends Expression
+
+abstract class Classifier extends GeneralizableElement
+  var powertypeRange as Set of Generalization
+  // feature IsContainer
+  var feature as Set of Feature
+
+class Argument extends ModelElement
+  var value as Set of Expression
+  var action as Set of Action
+
+class Operation extends BehavioralFeature
+  var concurrency as Set of CallConcurrencyKind
+  var isRoot as Set of Boolean
+  var isLeaf as Set of Boolean
+  var isAbstract as Set of Boolean
+  var specification as Set of String
+
+class ClassifierInState extends Classifier
+  var _type as Set of Classifier
+  var inState as Set of State
+
+class TerminateAction extends Action
+
+abstract class Feature extends ModelElement
+  var ownerScope as Set of ScopeKind
+  var owner as Set of Classifier
+
+class CreateAction extends Action
+  var instantiation as Set of Classifier
+
+abstract class BehavioralFeature extends Feature
+  var isQuery as Set of Boolean
+  // parameter IsContainer
+  var parameter as Set of Parameter
+
+class ActionSequence extends Action
+  // action IsContainer
+  var action as Set of Action
+
+abstract class ModelElement extends Element
+  var name as Set of String
+  var visibility as Set of VisibilityKind
+  var isSpecification as Set of Boolean
+  var _namespace as Set of _Namespace
+
+class Transition extends ModelElement
+  // guard IsContainer
+  var guard as Set of Guard
+  // effect IsContainer
+  var effect as Set of Action
+  var source as Set of StateVertex
+  var target as Set of StateVertex
+  var trigger as Set of _Event
+  var stateMachine as Set of StateMachine
+
+class Multiplicity
+  // range IsContainer
+  var range as Set of MultiplicityRange
+
+class SimpleState extends State
+
+class SubmachineState extends CompositeState
+  var submachine as Set of StateMachine
+
+class ActionExpression extends Expression
+
+class _Exception extends Signal
+
+class ActivityGraph extends StateMachine
+  // partition IsContainer
+  var partition as Set of Partition
+
+class SynchState extends StateVertex
+  var bound as Set of Integer
+
+class MultiplicityRange
+  var lower as Set of Integer
+  var upper as Set of Integer
+  var multiplicity as Set of Multiplicity
+
+class Expression
+  var language as Set of String
+  var body as Set of String
+
+class BooleanExpression extends Expression
+
+abstract class Action extends ModelElement
+  var recurrence as Set of IterationExpression
+  var target as Set of ObjectSetExpression
+  var isAsynchronous as Set of Boolean
+  var script as Set of ActionExpression
+  // actualArgument IsContainer
+  var actualArgument as Set of Argument
+  var actionSequence as Set of ActionSequence
+
+enum PseudostateKind
+  pk_choice
+  pk_deepHistory
+  pk_fork
+  pk_initial
+  pk_join
+  pk_junction
+  pk_shallowHistory
+
+enum ChangeableKind
+  ck_changeable
+  ck_frozen
+  ck_addOnly
+
+enum ScopeKind
+  sk_instance
+  sk_classifier
+
+enum CallConcurrencyKind
+  cck_sequential
+  cck_guarded
+  cck_concurrent
+
+enum VisibilityKind
+  vk_public
+  vk_protected
+  vk_private
+  vk_package
+
+enum ParameterDirectionKind
+  pdk_in
+  pdk_inout
+  pdk_out
+  pdk_return
+
+enum AggregationKind
+  ak_none
+  ak_aggregate
+  ak_composite
+
+enum OrderingKind
+  ok_unordered
+  ok_ordered
+
+var ChangeEvent_Universe as Set of ChangeEvent
+
+var CallEvent_Universe as Set of CallEvent
+
+var SubactivityState_Universe as Set of SubactivityState
+
+var Partition_Universe as Set of Partition
+
+var Relationship_Universe as Set of Relationship
+
+var StateMachine_Universe as Set of StateMachine
+
+var _Namespace_Universe as Set of _Namespace
+
+var Generalization_Universe as Set of Generalization
+
+var TimeEvent_Universe as Set of TimeEvent
+
+var ActionState_Universe as Set of ActionState
+
+var TimeExpression_Universe as Set of TimeExpression
+
+var Signal_Universe as Set of Signal
+
+var ObjectFlowState_Universe as Set of ObjectFlowState
+
+var ArgListsExpression_Universe as Set of ArgListsExpression
+
+var _Event_Universe as Set of _Event
+
+var ReturnAction_Universe as Set of ReturnAction
+
+var Pseudostate_Universe as Set of Pseudostate
+
+var CompositeState_Universe as Set of CompositeState
+
+var Element_Universe as Set of Element
+
+var SendAction_Universe as Set of SendAction
+
+var DestroyAction_Universe as Set of DestroyAction
+
+var SignalEvent_Universe as Set of SignalEvent
+
+var FinalState_Universe as Set of FinalState
+
+var CallAction_Universe as Set of CallAction
+
+var StateVertex_Universe as Set of StateVertex
+
+var StubState_Universe as Set of StubState
+
+var Guard_Universe as Set of Guard
+
+var UninterpretedAction_Universe as Set of UninterpretedAction
+
+var ObjectSetExpression_Universe as Set of ObjectSetExpression
+
+var Parameter_Universe as Set of Parameter
+
+var State_Universe as Set of State
+
+var CallState_Universe as Set of CallState
+
+var GeneralizableElement_Universe as Set of GeneralizableElement
+
+var IterationExpression_Universe as Set of IterationExpression
+
+var Classifier_Universe as Set of Classifier
+
+var Argument_Universe as Set of Argument
+
+var Operation_Universe as Set of Operation
+
+var ClassifierInState_Universe as Set of ClassifierInState
+
+var TerminateAction_Universe as Set of TerminateAction
+
+var Feature_Universe as Set of Feature
+
+var CreateAction_Universe as Set of CreateAction
+
+var BehavioralFeature_Universe as Set of BehavioralFeature
+
+var ActionSequence_Universe as Set of ActionSequence
+
+var ModelElement_Universe as Set of ModelElement
+
+var Transition_Universe as Set of Transition
+
+var Multiplicity_Universe as Set of Multiplicity
+
+var SimpleState_Universe as Set of SimpleState
+
+var SubmachineState_Universe as Set of SubmachineState
+
+var ActionExpression_Universe as Set of ActionExpression
+
+var _Exception_Universe as Set of _Exception
+
+var ActivityGraph_Universe as Set of ActivityGraph
+
+var SynchState_Universe as Set of SynchState
+
+var MultiplicityRange_Universe as Set of MultiplicityRange
+
+var Expression_Universe as Set of Expression
+
+var BooleanExpression_Universe as Set of BooleanExpression
+
+var Action_Universe as Set of Action
+
+Main()

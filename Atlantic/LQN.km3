@@ -1,0 +1,180 @@
+-- @name			LQN
+-- @version			1.0
+-- @authors			Youssef Srour (Srour.youssef@gmail.com)
+-- @date			2006/07/19
+-- @description		This metamodel describes LQN (layered queueing networks). It is an extension of QN (as EQN) and it describes systems with software servers and logical resources.
+-- @see   			http://www.sce.carleton.ca/rads/
+
+package LQN {
+
+-- Begin class LQN
+	class LQN{
+		attribute name : String;
+		attribute comment : String;
+		attribute author : String;
+		attribute created_On : Date;
+		attribute modified_On : Date;
+		
+		reference task [1-*] container : Task oppositeOf lqn;
+		reference processor [1-*] container : Processor oppositeOf lqn;
+		
+	}-- End class LQN
+
+-- Begin class Task
+	class Task{
+		attribute name : String;
+		attribute type : TaskType;
+		attribute priority : Integer;
+		attribute mutliplicity : Integer;
+		attribute replicas : Integer;
+		
+		reference entry [1-*] container : Entry oppositeOf task;
+		reference processor : Processor oppositeOf task;
+		reference lqn : LQN oppositeOf task;
+		reference activity [1-*] : Activity oppositeOf task;
+	}-- End class Task
+
+-- Begin class Processor
+	class Processor{
+		attribute name : String;
+		attribute scheduling : SchedulingType;
+		attribute mutliplicity : Integer;
+		attribute replicas : Integer;
+		attribute spped : Integer;--"Double"
+		
+		reference task : Task oppositeOf processor;
+		reference lqn : LQN oppositeOf processor;
+	}-- End class Processor
+
+-- Begin class Entry
+	class Entry{
+		attribute name : String;
+		attribute num_Phase : Integer;
+		attribute arrival_Rate : Integer;--"Double"
+		attribute contained_In : Task;
+		attribute replay_To : Entry;
+		
+		reference callreceives : Call oppositeOf entryreceives;
+		reference callsends : Call oppositeOf entrysends;
+		reference phase[1-*] : Phase oppositeOf entry;
+		reference activity[0-1] container : Activity oppositeOf entry;
+		reference task : Task oppositeOf entry;
+	}-- End class Entry
+
+-- Begin class Phase
+	class Phase{
+		attribute number : Integer;
+		attribute type : PhaseType;
+		attribute think_Time : Integer;--"Double"
+		attribute execution_Demand : Integer;--"Double"
+		attribute COV : Integer;-- "Double" 
+		
+		reference entry : Entry oppositeOf phase;
+		reference activity : Activity oppositeOf phase;
+	}-- End class Phase
+
+-- Begin class Activity
+	class Activity{
+		attribute name : String;
+		attribute arrival_Rate : Integer;--"Double"		
+		attribute contained_In : Task;
+		attribute replay_To : Entry;
+		
+		reference linkPrecedes[1-*] : Link oppositeOf activityPrecedes;
+		reference linkfollows[1-*] : Link oppositeOf activityfollows;
+		reference call[*] : Call oppositeOf activity;
+		reference phase : Phase oppositeOf activity;
+		reference entry : Entry oppositeOf activity;
+		reference task : Task oppositeOf activity;
+	}-- End class Activity
+
+-- Begin class Link
+	class Link{
+		attribute type : LinkType;
+		attribute mean_Links : Integer;--"Double"		
+		attribute fromActivity : Activity;
+		attribute toActivity : Activity;
+		
+		reference activityPrecedes : Activity oppositeOf linkPrecedes;
+		reference activityfollows : Activity oppositeOf linkfollows;
+	}-- End class Link
+
+-- Begin class CallPhase
+	class CallPhase{
+		attribute mean_Calls : Integer;--"Double"
+		attribute refers_To : Phase;
+		
+		reference call[1-*] : Call oppositeOf callPhase;	
+	}-- End class CallPhase
+
+-- Begin class Call
+	class Call{
+		attribute toEntry : Entry;
+		attribute num_Phases : Integer;		
+		attribute type : CallType;
+		
+		reference callPhase[1-*] : CallPhase oppositeOf call;
+		reference activity : Activity oppositeOf call;
+		reference entryreceives[0-1] : Entry oppositeOf callreceives;
+		reference entrysends[0-1] : Entry oppositeOf callsends;
+		
+	}-- End class Call
+
+-- Begin class EntryCall
+	class EntryCall extends Call{
+		attribute from_Entry : Entry;
+	}-- End class EntryCall
+
+-- Begin class ActivityCall
+	class ActivityCall extends Call{
+		attribute fromActivity : Activity;
+	}-- End class ActivityCall
+
+-- Begin class Date
+	class Date {
+	 	attribute day : String;
+	 	attribute month : String;
+	 	attribute year :String;		
+	}-- End class Date
+
+-- Begin enumeration SchedulingTye
+	enumeration SchedulingType{
+		literal FCFS;
+		literal preemptive_Priority;
+		literal head_of_line;
+		literal random;
+	}-- End enumeration SchedulingTye
+
+-- Begin enumeration PhaseType
+	enumeration PhaseType{
+		literal stochastic;
+		literal deterministic;
+	}-- End enumeration PhaseType
+
+-- Begin enumeration CallType
+	enumeration CallType{
+		literal synchronous;
+		literal asynchronous;
+		literal forwording;
+	}-- End enumeration CallType
+
+-- Begin enumeration CallType
+	enumeration LinkType{
+		literal and_Fork;
+		literal and_join;
+		literal basic;
+		literal or_Fork;
+		literal or_join;
+	}-- End enumeration CallType
+
+-- Begin enumeration TaskType
+	enumeration TaskType{
+		literal a_reference;
+		literal non_reference;
+	}-- End enumeration TaskType
+}
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+	datatype Integer;
+} 

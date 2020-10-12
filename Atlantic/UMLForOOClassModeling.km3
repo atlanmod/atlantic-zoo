@@ -1,0 +1,96 @@
+-- @name		UML For Object Oriented Class Modeling
+-- @version		1.0
+-- @domains		UML, MOF, Object-Oriented modeling
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/09
+-- @description	This metamodel describes a subset of UML, third generation modeling and specification language. The UML represents a compilation of best engineering practices which have proven to be successful in modeling large, complex systems, especially at the architectural level. This metamodel exclusively focuses on object-oriented class modeling.
+-- @see			The OMG‘s UML Official Website, http://www.uml.org/
+
+
+package UMLForOOClassModeling {
+
+	-- @begin Special types 
+
+	enumeration VisibilityKind {
+		literal vk_public_vis;
+		literal vk_private_vis;
+		literal vk_protected_vis;
+	}
+	
+	enumeration ScopeKind {
+		literal sk_instance_level;
+		literal sk_classifier_level;
+	}
+	
+	class MultiplicityType {
+		attribute lower : Integer;
+		attribute upper : Integer;
+		attribute isOrdered : Boolean;
+		attribute isUnique : Boolean;
+	}
+	
+	-- @end Special types
+	
+	
+	-- @begin Global structure 
+
+	class ModelElement {
+		attribute name : String;
+	}
+	
+	class Feature extends ModelElement {
+		attribute ownerScope : ScopeKind;
+		attribute visibility : VisibilityKind;
+		reference owner[0-1] : Classifier oppositeOf feature; 
+	}
+	
+	class NameSpace extends ModelElement {}
+	
+	class GeneralizableElement extends ModelElement {
+		attribute isRoot : Boolean;
+		attribute isLeaf : Boolean;
+		attribute isAbstract : Boolean;
+	}
+	
+	class Classifier extends NameSpace, GeneralizableElement {
+		reference feature[*] ordered container : Feature oppositeOf owner;
+	}
+	
+	class Class extends Classifier {
+		attribute isActive : Boolean;
+	}
+	
+	class StructuralFeature extends Feature {
+		reference multiplicity : MultiplicityType;
+		attribute isChangeable : Boolean;
+		attribute targetScope : ScopeKind;
+	}
+	
+	class Attribute extends StructuralFeature {
+		attribute initialValue : String;
+	}	
+	
+	class BehavioralFeature extends Feature {
+		attribute isQuery : Boolean;
+	}
+	
+	class Operation extends BehavioralFeature {
+		attribute isRoot : Boolean;
+		attribute isLeaf : Boolean;
+		attribute isAbstract : Boolean;
+		attribute specification : String;
+	}
+	
+	-- @end Global structure
+	
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

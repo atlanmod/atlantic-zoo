@@ -1,0 +1,96 @@
+-- @name		GraphML
+-- @version		1.0
+-- @authors		Guillaume Doux (guillaume.doux <at> inria.fr)
+-- @date		2009/03/16
+-- @description	A metamodel for the graphML format.
+-- @see			http://graphml.graphdrawing.org/
+
+package GraphML {
+
+	-- Every class should extend LocatedElement, directly or indirectly.
+	-- This is a technical constraint to support text-to-model traceability.
+	abstract class LocatedElement {
+		attribute location[0-1] : String;
+		attribute commentsBefore[*] ordered : String;
+		attribute commentsAfter[*] ordered : String;
+	}
+
+
+	class Root extends LocatedElement{
+		reference keys[*] ordered container: Key;
+		reference graphs[*] ordered container: Graph;
+	}
+
+	class Element extends LocatedElement{
+		attribute id : String;
+		reference datas[*] ordered container: Data;
+	}
+
+	class Key extends Element{
+		attribute for : ElemType;
+		attribute attrName : String;
+		attribute type : AttrType;
+		attribute defValue : String;
+	}
+	
+	class Graph extends Element{
+		reference contents[*] ordered container : Element;
+		attribute edgeDefault : EdgeType;
+	}
+
+	class Edge extends Element{
+		reference source : Node;
+		reference target : Node;
+		reference sourceport : Port;
+		reference targetport : Port;
+	}
+	
+	class HyperEdge extends Element{
+		reference endpoints[*] ordered container : EndPoint;
+	}
+	
+	class Node extends Element{
+		reference subgraph container : Graph;
+		reference ports[*] ordered container : Port;
+	}
+
+	class Port extends LocatedElement{
+		attribute name : String;
+	}
+	
+	class EndPoint extends LocatedElement{
+		reference node : Node;
+		reference port : Port;
+	}
+
+	class Data extends LocatedElement{
+		attribute key: String;
+		attribute value: String;
+	}
+	
+	enumeration ElemType{
+		literal edge;
+		literal node;
+		literal graph;
+	}
+	
+	enumeration AttrType{
+		literal double;
+		literal string;
+		literal integer;
+		literal boolean;
+	}
+	
+	enumeration EdgeType{
+		literal directed;
+		literal undirected;
+	}
+}
+
+
+package PrimitiveTypes {
+  	datatype Boolean;
+  	datatype Integer;
+  	datatype double; --Real for CMR2
+  	datatype String;
+}

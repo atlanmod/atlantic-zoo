@@ -1,0 +1,549 @@
+package Metamodel;
+
+package JavaAbstractSyntax {
+  class AST {
+    !ordered val ASTNode[1] root;
+  }
+
+  abstract class ASTNode {
+  }
+
+  class AnonymousClassDeclaration extends ASTNode {
+    val BodyDeclaration[*] bodyDeclarations;
+  }
+
+  abstract class BodyDeclaration extends ASTNode {
+    val ExtendedModifier[*] modifiers;
+    !ordered val Javadoc[1] javadoc;
+  }
+
+  class CatchClause extends ASTNode {
+    !ordered val Block[1] body;
+    !ordered val SingleVariableDeclaration[1] exception;
+  }
+
+  abstract class Comment extends ASTNode {
+    !ordered ref ASTNode[1] alternateRoot;
+  }
+
+  class CompilationUnit extends ASTNode {
+    val Comment[*] comments;
+    !ordered val PackageDeclaration[1] ~package;
+    val ImportDeclaration[*] imports;
+    val AbstractTypeDeclaration[*] types;
+  }
+
+  abstract class Expression extends ASTNode {
+    !unique !ordered attr Boolean[1] resolveBoxing;
+    !unique !ordered attr Boolean[1] resolveUnboxing;
+  }
+
+  class ImportDeclaration extends ASTNode {
+    !unique !ordered attr Boolean[1] onDemand;
+    !unique !ordered attr Boolean[1] static;
+    !ordered val Name[1] name;
+  }
+
+  class MemberRef extends ASTNode {
+    !ordered val SimpleName[1] name;
+    !ordered val Name[1] qualifier;
+  }
+
+  class MemberValuePair extends ASTNode {
+    !ordered val SimpleName[1] name;
+    !ordered val Expression[1] value;
+  }
+
+  class MethodRef extends ASTNode {
+    !ordered val SimpleName[1] name;
+    !ordered val Name[1] qualifier;
+    val MethodRefParameter[*] parameters;
+  }
+
+  class MethodRefParameter extends ASTNode {
+    !ordered val SimpleName[1] name;
+    !ordered val Type[1] type;
+    !unique !ordered attr Boolean[1] varargs;
+  }
+
+  abstract class ExtendedModifier {
+  }
+
+  class Modifier extends ASTNode, ExtendedModifier {
+    !unique !ordered attr Boolean[1] ~abstract;
+    !unique !ordered attr Boolean[1] final;
+    !unique !ordered attr Boolean[1] native;
+    !unique !ordered attr Boolean[1] none;
+    !unique !ordered attr Boolean[1] private;
+    !unique !ordered attr Boolean[1] protected;
+    !unique !ordered attr Boolean[1] public;
+    !unique !ordered attr Boolean[1] static;
+    !unique !ordered attr Boolean[1] strictfp;
+    !unique !ordered attr Boolean[1] synchronized;
+    !unique !ordered attr Boolean[1] ~transient;
+    !unique !ordered attr Boolean[1] ~volatile;
+  }
+
+  class PackageDeclaration extends ASTNode {
+    val Annotation[*] annotations;
+    !ordered val Javadoc[1] javadoc;
+    !ordered val Name[1] name;
+  }
+
+  abstract class Statement extends ASTNode {
+  }
+
+  class TagElement extends ASTNode {
+    val ASTNode[*] fragments;
+    !unique !ordered attr String[1] tagName;
+    !unique !ordered attr Boolean[1] nested;
+  }
+
+  class TextElement extends ASTNode {
+    !unique !ordered attr String[1] text;
+  }
+
+  abstract class Type extends ASTNode {
+  }
+
+  class TypeParameter extends ASTNode {
+    !ordered val SimpleName[1] name;
+    val Type[*] typeBounds;
+  }
+
+  abstract class VariableDeclaration extends ASTNode {
+    !unique !ordered attr Integer[1] extraDimensions;
+    !ordered val Expression[1] initializer;
+    !ordered val SimpleName[1] name;
+  }
+
+  abstract class AbstractTypeDeclaration extends BodyDeclaration {
+    val BodyDeclaration[*] bodyDeclarations;
+    !ordered val SimpleName[1] name;
+    !unique !ordered attr Boolean[1] localTypeDeclaration;
+    !unique !ordered attr Boolean[1] memberTypeDeclaration;
+    !unique !ordered attr Boolean[1] packageMemberTypeDeclaration;
+  }
+
+  class AnnotationTypeMemberDeclaration extends BodyDeclaration {
+    !ordered val Expression[1] default;
+    !ordered val SimpleName[1] name;
+    !ordered val Type[1] type;
+  }
+
+  class EnumConstantDeclaration extends BodyDeclaration {
+    val Expression[*] arguments;
+    !ordered val AnonymousClassDeclaration[1] anonymousClassDeclaration;
+    !ordered val SimpleName[1] name;
+  }
+
+  class FieldDeclaration extends BodyDeclaration {
+    val VariableDeclarationFragment[*] fragments;
+    !ordered val Type[1] type;
+  }
+
+  class Initializer extends BodyDeclaration {
+    !ordered val Block[1] body;
+  }
+
+  class MethodDeclaration extends BodyDeclaration {
+    !ordered val Block[1] body;
+    !unique !ordered attr Integer[1] extraDimensions;
+    !ordered val SimpleName[1] name;
+    !ordered val Type[1] returnType;
+    !unique !ordered attr Boolean[1] constructor;
+    !unique !ordered attr Boolean[1] varargs;
+    val SingleVariableDeclaration[*] parameters;
+    val Name[*] thrownExceptions;
+    val TypeParameter[*] typeParameters;
+  }
+
+  class AnnotationTypeDeclaration extends AbstractTypeDeclaration {
+  }
+
+  class EnumDeclaration extends AbstractTypeDeclaration {
+    val Type[*] superInterfaceTypes;
+    val EnumConstantDeclaration[*] enumConstants;
+  }
+
+  class TypeDeclaration extends AbstractTypeDeclaration {
+    !ordered val Type[1] superclassType;
+    !unique !ordered attr Boolean[1] ~interface;
+    val Type[*] superInterfaceTypes;
+    val TypeParameter[*] typeParameters;
+  }
+
+  class BlockComment extends Comment {
+  }
+
+  class Javadoc extends Comment {
+    val TagElement[*] tags;
+  }
+
+  class LineComment extends Comment {
+  }
+
+  abstract class Annotation extends Expression, ExtendedModifier {
+    !ordered val Name[1] typeName;
+  }
+
+  class ArrayAccess extends Expression {
+    !ordered val Expression[1] array;
+    !ordered val Expression[1] index;
+  }
+
+  class ArrayCreation extends Expression {
+    val Expression[*] dimensions;
+    !ordered val ArrayInitializer[1] initializer;
+    !ordered val ArrayType[1] type;
+  }
+
+  class ArrayInitializer extends Expression {
+    val Expression[*] expressions;
+  }
+
+  class Assignment extends Expression {
+    !ordered val Expression[1] leftHandSide;
+    !unique !ordered attr AssignementOperatorKind[1] operator;
+    !ordered val Expression[1] rightHandSide;
+  }
+
+  enum AssignementOperatorKind {
+    RIGHT_SHIFT_SIGNED_ASSIGN = 0;
+    BIT_XOR_ASSIGN = 0;
+    TIMES_ASSIGN = 0;
+    LEFT_SHIFT_ASSIGN = 0;
+    MINUS_ASSIGN = 0;
+    BIT_OR_ASSIGN = 0;
+    PLUS_ASSIGN = 0;
+    ASSIGN = 0;
+    RIGHT_SHIFT_UNSIGNED_ASSIGN = 0;
+    REMAINDER_ASSIGN = 0;
+    DIVIDE_ASSIGN = 0;
+    BIT_AND_ASSIGN = 0;
+  }
+
+  class BooleanLiteral extends Expression {
+    !unique !ordered attr Boolean[1] booleanValue;
+  }
+
+  class CastExpression extends Expression {
+    !ordered val Expression[1] expression;
+    !ordered val Type[1] type;
+  }
+
+  class CharacterLiteral extends Expression {
+    !unique !ordered attr PrimitiveTypes.Character[1] charValue;
+    !unique !ordered attr String[1] escapedValue;
+  }
+
+  class ClassInstanceCreation extends Expression {
+    val Expression[*] arguments;
+    !ordered val AnonymousClassDeclaration[1] anonymousClassDeclaration;
+    !ordered val Expression[1] expression;
+    !ordered val Type[1] type;
+    val Type[*] typeArguments;
+  }
+
+  class ConditionalExpression extends Expression {
+    !ordered val Expression[1] elseExpression;
+    !ordered val Expression[1] expression;
+    !ordered val Expression[1] thenExpression;
+  }
+
+  class FieldAccess extends Expression {
+    !ordered val Expression[1] expression;
+    !ordered val SimpleName[1] name;
+  }
+
+  class InfixExpression extends Expression {
+    val Expression[*] extendedOperands;
+    !ordered val Expression[1] leftOperand;
+    !unique !ordered attr InfixExpressionOperatorKind[1] operator;
+    !ordered val Expression[1] rightOperand;
+  }
+
+  enum InfixExpressionOperatorKind {
+    GREATER_EQUALS = 0;
+    OR = 0;
+    RIGHT_SHIFT_SIGNED = 0;
+    MINUS = 0;
+    XOR = 0;
+    LESS_EQUALS = 0;
+    EQUALS = 0;
+    NOT_EQUALS = 0;
+    AND = 0;
+    PLUS = 0;
+    GREATER = 0;
+    CONDITIONAL_OR = 0;
+    REMAINDER = 0;
+    LESS = 0;
+    LEFT_SHIFT = 0;
+    RIGHT_SHIFT_UNSIGNED = 0;
+    CONDITIONAL_AND = 0;
+    TIMES = 0;
+    DIVIDE = 0;
+  }
+
+  class InstanceofExpression extends Expression {
+    !ordered val Expression[1] leftOperand;
+    !ordered val Type[1] rightOperand;
+  }
+
+  class MethodInvocation extends Expression {
+    val Expression[*] arguments;
+    !ordered val Expression[1] expression;
+    !ordered val SimpleName[1] name;
+    val Type[*] typeArguments;
+  }
+
+  abstract class Name extends Expression {
+    !unique !ordered attr String[1] fullyQualifiedName;
+  }
+
+  class NullLiteral extends Expression {
+  }
+
+  class NumberLiteral extends Expression {
+    !unique !ordered attr String[1] token;
+  }
+
+  class ParenthesizedExpression extends Expression {
+    !ordered val Expression[1] expression;
+  }
+
+  class PostfixExpression extends Expression {
+    !ordered val Expression[1] operand;
+    !unique !ordered attr PostfixExpresssionOperatorKind[1] operator;
+  }
+
+  enum PostfixExpresssionOperatorKind {
+    INCREMENT = 0;
+    DECREMENT = 0;
+  }
+
+  class PrefixExpression extends Expression {
+    !ordered val Expression[1] operand;
+    !unique !ordered attr PrefixExpresssionOperatorKind[1] operator;
+  }
+
+  enum PrefixExpresssionOperatorKind {
+    MINUS = 0;
+    NOT = 0;
+    DECREMENT = 0;
+    COMPLEMENT = 0;
+    INCREMENT = 0;
+    PLUS = 0;
+  }
+
+  class StringLiteral extends Expression {
+    !unique !ordered attr String[1] escapedValue;
+    !unique !ordered attr String[1] literalValue;
+  }
+
+  class SuperFieldAccess extends Expression {
+    !ordered val SimpleName[1] name;
+    !ordered val Name[1] qualifier;
+  }
+
+  class SuperMethodInvocation extends Expression {
+    val Expression[*] arguments;
+    !ordered val Name[1] name;
+    !ordered val Name[1] qualifier;
+    val Type[*] typeArguments;
+  }
+
+  class ThisExpression extends Expression {
+    !ordered val Name[1] qualifier;
+  }
+
+  class TypeLiteral extends Expression {
+    !ordered val Type[1] type;
+  }
+
+  class VariableDeclarationExpression extends Expression {
+    val VariableDeclarationFragment[*] fragments;
+    val ExtendedModifier[*] modifiers;
+    !ordered val Type[1] type;
+  }
+
+  class AssertStatement extends Statement {
+    !ordered val Expression[1] expression;
+    !ordered val Expression[1] message;
+  }
+
+  class Block extends Statement {
+    val Statement[*] statements;
+  }
+
+  class BreakStatement extends Statement {
+    !ordered val SimpleName[1] label;
+  }
+
+  class ConstructorInvocation extends Statement {
+    val Expression[*] arguments;
+    val Type[*] typeArguments;
+  }
+
+  class ContinueStatement extends Statement {
+    !ordered val SimpleName[1] label;
+  }
+
+  class DoStatement extends Statement {
+    !ordered val Statement[1] body;
+    !ordered val Expression[1] expression;
+  }
+
+  class EmptyStatement extends Statement {
+  }
+
+  class EnhancedForStatement extends Statement {
+    !ordered val Statement[1] body;
+    !ordered val Expression[1] expression;
+    !ordered val SingleVariableDeclaration[1] parameter;
+  }
+
+  class ExpressionStatement extends Statement {
+    !ordered val Expression[1] expression;
+  }
+
+  class ForStatement extends Statement {
+    !ordered val Statement[1] body;
+    !ordered val Expression[1] expression;
+    val Expression[*] initializers;
+    val Expression[*] updaters;
+  }
+
+  class IfStatement extends Statement {
+    !ordered val Statement[1] elseStatement;
+    !ordered val Expression[1] expression;
+    !ordered val Statement[1] thenStatement;
+  }
+
+  class LabeledStatement extends Statement {
+    !ordered val Statement[1] body;
+    !ordered val SimpleName[1] label;
+  }
+
+  class ReturnStatement extends Statement {
+    !ordered val Expression[1] expression;
+  }
+
+  class SuperConstructorInvocation extends Statement {
+    val Expression[*] arguments;
+    !ordered val Expression[1] expression;
+    val Type[*] typeArguments;
+  }
+
+  class SwitchCase extends Statement {
+    !ordered val Expression[1] expression;
+    !unique !ordered attr Boolean[1] default;
+  }
+
+  class SwitchStatement extends Statement {
+    !ordered val Expression[1] expression;
+    val Statement[*] statements;
+  }
+
+  class SynchronizedStatement extends Statement {
+    !ordered val Block[1] body;
+    !ordered val Expression[1] expression;
+  }
+
+  class ThrowStatement extends Statement {
+    !ordered val Expression[1] expression;
+  }
+
+  class TryStatement extends Statement {
+    val CatchClause[*] catchClauses;
+    !ordered val Block[1] body;
+    !ordered val Block[1] finally;
+  }
+
+  class TypeDeclarationStatement extends Statement {
+    !ordered val AbstractTypeDeclaration[1] declaration;
+  }
+
+  class VariableDeclarationStatement extends Statement {
+    val VariableDeclarationFragment[*] fragments;
+    val ExtendedModifier[*] modifiers;
+    !ordered val Type[1] type;
+  }
+
+  class WhileStatement extends Statement {
+    !ordered val Statement[1] body;
+    !ordered val Expression[1] expression;
+  }
+
+  class ArrayType extends Type {
+    !ordered val Type[1] componentType;
+    !unique !ordered attr Integer[1] dimensions;
+    !ordered val Type[1] elementType;
+  }
+
+  class ParameterizedType extends Type {
+    !ordered val Type[1] type;
+    val Type[*] typeArguments;
+  }
+
+  class PrimitiveType extends Type {
+    !unique !ordered attr String[1] code;
+  }
+
+  class QualifiedType extends Type {
+    !ordered val SimpleName[1] name;
+    !ordered val Type[1] qualifier;
+  }
+
+  class SimpleType extends Type {
+    !ordered val Name[1] name;
+  }
+
+  class WildcardType extends Type {
+    !ordered val Type[1] bound;
+    !unique !ordered attr Boolean[1] upperBound;
+  }
+
+  class SingleVariableDeclaration extends VariableDeclaration {
+    !ordered val Type[1] type;
+    !unique !ordered attr Boolean[1] varargs;
+    val ExtendedModifier[*] modifiers;
+  }
+
+  class VariableDeclarationFragment extends VariableDeclaration {
+  }
+
+  class QualifiedName extends Name {
+    !ordered val SimpleName[1] name;
+    !ordered val Name[1] qualifier;
+  }
+
+  class SimpleName extends Name {
+    !unique !ordered attr String[1] identifier;
+    !unique !ordered attr Boolean[1] declaration;
+  }
+
+  class MarkerAnnotation extends Annotation {
+  }
+
+  class NormalAnnotation extends Annotation {
+    val MemberValuePair[*] values;
+  }
+
+  class SingleMemberAnnotation extends Annotation {
+    !ordered val Expression[1] value;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype Character : "";
+
+}
+

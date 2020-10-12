@@ -1,0 +1,84 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_OCLOperations"{
+labelloc=t
+color=black
+label=OCLOperations
+ node[shape=record];
+OperationExp[label="{/OperationExp/| | }"]
+;
+ node[shape=record];
+PropertyOperation[label="{PropertyOperation|isMarkedPre : Boolean| }"]
+ PropertyOperation->OperationExp[arrowhead=onormal,group=OperationExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OclOperation[label="{OclOperation| | }"]
+ OclOperation->OperationExp[arrowhead=onormal,group=OperationExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConstExp[label="{ConstExp| | }"]
+ ConstExp->OperationExp[arrowhead=onormal,group=OperationExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IntegerConstExp[label="{IntegerConstExp|value : Integer| }"]
+ IntegerConstExp->ConstExp[arrowhead=onormal,group=ConstExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StringConstExp[label="{StringConstExp|value : String| }"]
+ StringConstExp->ConstExp[arrowhead=onormal,group=ConstExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RealConstExp[label="{RealConstExp|value : Double| }"]
+ RealConstExp->ConstExp[arrowhead=onormal,group=ConstExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AttributeExp[label="{AttributeExp| | }"]
+ AttributeExp->PropertyOperation[arrowhead=onormal,group=PropertyOperation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Attribute[label="{Attribute| | }"]
+ Attribute->AttributeExp[arrowhead=diamond,arrowtail=none,headlabel="attrExp[*]",taillabel="attr",group=AttributeExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NaviguationExp[label="{NaviguationExp| | }"]
+ NaviguationExp->PropertyOperation[arrowhead=onormal,group=PropertyOperation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AssocationEnd[label="{AssocationEnd| | }"]
+ AssocationEnd->NaviguationExp[arrowhead=diamond,arrowtail=none,headlabel="navExp[*]",taillabel="assEnd",group=NaviguationExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ClassifierOperation[label="{ClassifierOperation| | }"]
+ ClassifierOperation->PropertyOperation[arrowhead=onormal,group=PropertyOperation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Operation[label="{Operation| | }"]
+ Operation->ClassifierOperation[arrowhead=diamond,arrowtail=none,headlabel="classOp[*]",taillabel="op",group=ClassifierOperation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OclExpression[label="{/OclExpression/| | }"]
+ OclExpression->PropertyOperation[arrowhead=diamond,arrowtail=none,headlabel="propertyOperations[*]",taillabel="source",group=PropertyOperation,minlen=2,constraint=true,]
+ OclExpression->NaviguationExp[arrowhead=diamond,arrowtail=none,headlabel="naviguationExps[*]",taillabel="qualifierValues",group=NaviguationExp,minlen=2,constraint=true,]
+ OclExpression->ClassifierOperation[arrowhead=diamond,arrowtail=none,headlabel="classifierOperations[*]{ordered}",taillabel="arguments",group=ClassifierOperation,minlen=2,constraint=true,]
+ OclExpression->OclOperation[arrowhead=diamond,arrowtail=none,headlabel="oclOperations[*]{ordered}",taillabel="arguments",group=OclOperation,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

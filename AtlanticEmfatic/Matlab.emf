@@ -1,0 +1,315 @@
+package Metamodel;
+
+package Matlab {
+  class Matlab {
+    !ordered val Model[*] model;
+  }
+
+  class BlockDefaults {
+    !unique !ordered attr String[1] blockDefaults;
+    !ordered ref Model[1]#blockDefaults model;
+  }
+
+  class Model {
+    !unique !ordered attr String[1] name;
+    !ordered ref Matlab[1] matlab;
+    !ordered val AnnotationDefaults[*]#model annotationDefaults;
+    !ordered val System[*]#model system;
+    !ordered val BlockDefaults[*]#model blockDefaults;
+    !ordered val LineDefaults[*]#model lineDefaults;
+    !ordered ref Simulink[1]#models simulink;
+  }
+
+  class AnnotationDefaults {
+    !unique !ordered attr String[1] annotationDefaults;
+    !ordered ref Model[1]#annotationDefaults model;
+  }
+
+  class LineDefaults {
+    !unique !ordered attr String[1] lineDefaults;
+    !ordered ref Model[1]#lineDefaults model;
+  }
+
+  class System {
+    !unique !ordered attr String[1] name;
+    !ordered val Block[*]#mySystem blocks;
+    !ordered val Line[*]#system lines;
+    !ordered val Annotation[*]#system annotations;
+    !ordered ref Model[1]#system model;
+    !ordered ref Subsystem[1]#system parentSubsystem;
+  }
+
+  class Subsystem extends Block {
+    !ordered val System[1]#parentSubsystem system;
+  }
+
+  class Block extends BlockDefaults {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] blockType;
+    !unique !ordered attr String[1] description;
+    !unique !ordered attr String[1] priority;
+    !unique !ordered attr String[1] tag;
+    !unique !ordered attr String[1] position;
+    !ordered ref System[1]#blocks mySystem;
+    !ordered val Port[*]#portBlock ports;
+  }
+
+  class Annotation extends AnnotationDefaults {
+    !unique !ordered attr String[1] position;
+    !unique !ordered attr String[1] text;
+    !ordered ref System[1]#annotations system;
+  }
+
+  class Line extends LineDefaults {
+    !unique !ordered attr String[1] points;
+    !unique !ordered attr String ~id;
+    !ordered ref OutputPort#owningLine srcPort;
+    !ordered ref System[1]#lines system;
+  }
+
+  class DirectLine extends Line {
+    !ordered ref InputPort#owningDirectLine destPort1;
+  }
+
+  class InputPort extends Port {
+    !ordered ref DirectLine#destPort1 owningDirectLine;
+    !ordered ref DirectBranch#destPort owningDirectBranch;
+  }
+
+  class Branch {
+    !unique !ordered attr String[1] points;
+    !ordered ref BranchedLine[1]#branchs branchedLine;
+    !ordered ref NestedBranch[1]#branchs nestedBranch;
+  }
+
+  class BranchedLine extends Line {
+    !ordered val Branch[*]#branchedLine branchs;
+  }
+
+  class Primitive extends Block {
+    !unique !ordered attr String ~id;
+    !ordered val Parameter[*]#primitive parameters;
+    !ordered ref Port#primitive refPort;
+  }
+
+  class Port {
+    !unique !ordered attr String ~id;
+    !unique !ordered attr String[1] number;
+    !ordered ref Block[1]#ports portBlock;
+    !ordered ref Primitive#refPort primitive;
+  }
+
+  class Reference extends Block {
+    !unique !ordered attr String[1] sourceType;
+    !unique !ordered attr String[1] sourceBlock;
+    !ordered val Parameter[*]#le_reference parameters;
+  }
+
+  class Masked extends Subsystem {
+  }
+
+  class Normal extends Subsystem {
+  }
+
+  class Parameter {
+    !unique !ordered attr String[1] name;
+    !ordered ref Reference[1]#parameters le_reference;
+    !ordered ref Primitive[1]#parameters primitive;
+  }
+
+  class OutputPort extends Port {
+    !ordered ref Line#srcPort owningLine;
+  }
+
+  class Type extends Parameter {
+    !unique !ordered attr String[1] value;
+  }
+
+  class Double extends Parameter {
+    !unique !ordered attr String[1] value;
+  }
+
+  class INteger extends Parameter {
+    !unique !ordered attr String[1] value;
+  }
+
+  class Enumeration extends Parameter {
+    !unique !ordered attr String[1] value;
+  }
+
+  class BOolean extends Parameter {
+    !unique !ordered attr TrueFalse[1] value;
+  }
+
+  enum TrueFalse {
+    True = 0;
+    False = 0;
+  }
+
+  class Text extends Parameter {
+    !unique !ordered attr String[1] value;
+  }
+
+  class Vector extends Parameter {
+    !unique !ordered attr String[1] value;
+  }
+
+  class DirectBranch extends Branch {
+    !unique !ordered attr String ~id;
+    !ordered ref InputPort#owningDirectBranch destPort;
+  }
+
+  class NestedBranch extends Branch {
+    !ordered val Branch[*]#nestedBranch branchs;
+  }
+
+  class Machine {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] ~id;
+    !ordered val Event[*]#machine events;
+    !ordered val Data[*]#machine data;
+    !ordered val Instance[*]#machine instances;
+    !ordered val Target[*]#machine targets;
+    !ordered ref StateFlow[1]#machines stateFlow;
+  }
+
+  class Junction {
+    !unique !ordered attr String _id;
+    !unique !ordered attr String[1] ~id;
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr String[1] position;
+    !ordered ref State[1]#junctions state;
+    !ordered ref Chart[1]#junctions chart;
+  }
+
+  class Transition {
+    !unique !ordered attr String _id;
+    !unique !ordered attr String[1] dataLimites;
+    !unique !ordered attr String[1] ~id;
+    !unique !ordered attr String[1] trigger;
+    !unique !ordered attr String[1] condition;
+    !unique !ordered attr String[1] conditionAction;
+    !unique !ordered attr String[1] action;
+    !ordered ref Chart[1]#transitions chart;
+    !ordered ref State[1]#transitions state;
+  }
+
+  class Event {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] ~id;
+    !unique !ordered attr String[1] scope;
+    !unique !ordered attr String[1] description;
+    !unique !ordered attr String[1] trigger;
+    !ordered ref Machine[1]#events machine;
+    !ordered ref Chart[1]#events chart;
+    !ordered ref State[1]#events state;
+  }
+
+  class Data {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] ~id;
+    !unique !ordered attr String[1] scope;
+    !unique !ordered attr String[1] description;
+    !unique !ordered attr String[1] units;
+    !unique !ordered attr String[1] dataType;
+    !ordered val Props[*]#data props;
+    !ordered ref State[1]#data state;
+    !ordered ref Chart[1]#data chart;
+    !ordered ref Machine[1]#data machine;
+  }
+
+  class Instance {
+    !unique !ordered attr String _id;
+    !unique !ordered attr String[1] ~id;
+    !unique !ordered attr String[1] name;
+    !ordered ref Machine[1]#instances machine;
+  }
+
+  class Target {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] ~id;
+    !unique !ordered attr String[1] codeCommand;
+    !unique !ordered attr String[1] description;
+    !unique !ordered attr String[1] makeCommand;
+    !unique !ordered attr String[1] codeFlags;
+    !unique !ordered attr String[1] checksumOld;
+    !ordered ref Machine[1]#targets machine;
+  }
+
+  class Chart {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] ~id;
+    !unique !ordered attr String _id;
+    !unique !ordered attr String[1] decomposotion;
+    !unique !ordered attr String[1] updateMethode;
+    !unique !ordered attr String[1] sampleTime;
+    !ordered val Junction[*]#chart junctions;
+    !ordered val Event[*]#chart events;
+    !ordered val Transition[*]#chart transitions;
+    !ordered val Data[*]#chart data;
+    !ordered val State[*]#chart states;
+  }
+
+  class State {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] ~id;
+    !unique !ordered attr String _id;
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr String[1] entryAction;
+    !unique !ordered attr String[1] exitAction;
+    !unique !ordered attr String[1] duringAction;
+    !unique !ordered attr String[1] eventActions;
+    !unique !ordered attr String[1] decomposition;
+    !unique !ordered attr String[1] position;
+    !ordered val Junction[*]#state junctions;
+    !ordered val Event[*]#state events;
+    !ordered val Transition[*]#state transitions;
+    !ordered val Data[*]#state data;
+    !ordered ref Chart[1]#states chart;
+    !ordered val State[*] states;
+  }
+
+  class Props {
+    !unique !ordered attr String[1] initialValue;
+    !ordered val Array[*]#props arrays;
+    !ordered val Range[*]#props ranges;
+    !ordered ref Data[1]#props data;
+  }
+
+  class Range {
+    !unique !ordered attr String[1] maximum;
+    !unique !ordered attr String[1] minimum;
+    !ordered ref Props[1]#ranges props;
+  }
+
+  class Array {
+    !unique !ordered attr String[1] firstIndex;
+    !unique !ordered attr String[1] size;
+    !ordered ref Props[1]#arrays props;
+  }
+
+  class StateFlow {
+    !unique !ordered attr String[1] stateFlow;
+    !ordered val Machine[*]#stateFlow machines;
+    !ordered ref Simulink[1]#stateFlows simulink;
+  }
+
+  class TransitionTerminal {
+    !unique !ordered attr String _id;
+  }
+
+  class Simulink {
+    !unique !ordered attr String simulink;
+    !ordered val StateFlow[*]#simulink stateFlows;
+    !ordered val Model[*]#simulink models;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+}
+

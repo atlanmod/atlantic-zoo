@@ -1,0 +1,723 @@
+-- @name		SBVRvoc
+-- @version		1.0
+-- @authors		Guillaume Doux
+-- @date		2008 April 
+-- @description	SBVR vocabulary entries
+
+-- The different sections of a TCS model have been enclosed between BEGIN and END
+-- comments below. Additional information is provided below each BEGIN comment.
+-- The main sections of interest are "Class templates", and
+-- "Operator table" (the latter only for DSLs using operators).
+syntax SBVRvoc {
+
+-- BEGIN Primitive templates
+-- Specifies representation of primitive types.
+-- Only needs modification when default lexer is not satisfactory.
+-- Generally modified along with the lexer.
+	primitiveTemplate identifier for String default using NAME:
+		value = "%token%";
+
+	primitiveTemplate nameSymbol for String using CNAME:
+		value = "%token%";
+
+	primitiveTemplate stringSymbol for String using STRING:
+		value = "ei.unescapeString(%token%, 1)",
+		serializer="'\'' + %value%.toCString() + '\''";
+
+	primitiveTemplate integerSymbol for Integer default using INT:
+		value = "Integer.valueOf(%token%)";
+
+	primitiveTemplate floatSymbol for Double default using FLOAT:
+		value = "Double.valueOf(%token%)";
+-- END Primitive templates
+
+-- BEGIN Class templates
+-- Specifies representation of classes.
+-- This is the main section to work on.
+	template Root main context 
+		:	[ entries ] {indentIncr = 0, startNL = false}
+		;
+	
+	--BEGIN vocabulary classes	
+	template VocabularyEntry
+		:	primaryRep 
+			[ caption ]
+		;
+	
+	--BEGIN caption delinition
+	
+	template Caption abstract
+		;
+	
+	template DefCaption 
+		:	 "Definition" ":" definition  
+		;
+	
+	template DescCaption 
+		:	 "Description" ":" description 
+		;
+	
+	template SrcCaption 
+		:	 "Source" ":" source  
+		;
+	
+	template DBCaption 
+		:	 "Dictionary Basis" ":" dictionaryBasis  
+		;
+		
+	template GenCCaption 
+		:	 "General Concept" ":" generalConcept{separator=","}  
+		;
+	
+	template CTypCaption 
+		:	 "Concept Type" ":" conceptType 
+		;
+	
+	
+	template RefSCaption 
+		:	 "Reference Scheme" ":" referenceScheme 
+		;
+	
+	template NoteCaption 
+		:	 "Note" ":" note 
+		;
+	
+	template ExCaption 
+		:	 "Example" ":" example 
+		;
+	
+	template SynCaption 
+		:	 "Synonym" ":" synonym 
+		;
+	
+	template SynFCaption 
+		:	 "Synonymous Form" ":" synonymousForm 
+		;
+	
+	template SeeCaption 
+		:	 "See" ":" see 
+		;
+	
+	template SFCaption 
+		:	 "Subject Field" ":" subjectField 
+		;
+	
+	template NSURICaption 
+		:	"NamesPace URI" ":" namespaceURI  
+		;
+	
+	-- END caption declaration	
+	
+		
+	template PrimaryRepresentation abstract
+		;
+	
+	template NotFactTypeRepresentation abstract
+		;
+	
+
+	
+	template TermRepresentation 
+		:	term
+		;
+	
+	template NameRepresentation
+		:	(hasThe ? "The") name
+		;
+	
+	template FactTypeFormRepresentation 
+		:	"¤" primaryRep1 verbExp primaryRep2
+		;
+	
+	template ConceptDefinition
+		:	exp conjexp
+		;
+		
+	template ConceptSource
+		:	source
+		;
+	
+		
+	template Note
+		:	sentences
+		;		
+	
+	template Sentence
+		:	words "."
+		;
+	
+	template NameSpaceURI
+		:	URI
+		;
+		
+	template Necessity
+		:	"Necessity" ":" exp "§"
+		;
+	
+	template Possibility
+		:	"Possibility" ":" exp "§"
+		;
+	
+	template Word abstract
+		;
+		
+	template StringWord
+		:	val
+		;
+		
+	template QuotedStringWord
+		:	val {as = stringSymbol}
+		;
+		
+	template NameWord
+		:	val {as = nameSymbol}
+		;
+		
+
+	
+	-- BEGIN enumeration template
+		
+	enumerationTemplate Verb
+		:	#undefined	= "undefined",
+			#is	= "is",
+			#relevant = "relevant",
+			#to = "to",
+			#comprises = "comprises",
+			#work = "work",
+			#in = "in",
+			#trades = "trades",
+			#as = "as",
+			#are = "are",
+			#accepted = "accepted",
+			#generally = "generally",
+			#across = "across",
+			#important = "important",
+			#share = "share",
+			#sets = "sets",
+			#assigned = "assigned",
+			#by = "by",
+			#contains = "contains",
+			#for = "for",
+			#has = "has",
+			#specifies = "specifies",
+			#specified = "specified"
+		;
+	
+		-- this is a subset of the real used conjonctions
+	enumerationTemplate ConjonctionnalKeyWord
+		:	#undefined	= "undefine",
+			#and = "and",
+			#or = "or",
+			#if = "if",
+			#whether = "whether"
+		;
+			
+	enumerationTemplate ModalVerb
+		:	#undefined	= "undefin",
+			#must = "must",
+			#may = "may",
+			#never = "never",
+			#always = "always"
+		;
+		
+	enumerationTemplate Join --followed by a verb
+		:	#undefined	= "undefi",
+			#that = "that",
+			#who = "who"
+		;	
+		
+	enumerationTemplate Link --not followed by a verb
+		: 	#undefined	= "undef",
+			#of	= "of",
+			#quoteS = "\\u0027s" --'s
+		;
+				
+	--faire une structure particuliere pour if then
+		enumerationTemplate Qualif
+		:	#undefined	= "unde",
+			#the	= "the",
+			#The = "The",
+			#a = "a",
+			#A = "A",
+			#an = "an",
+			#An = "An",
+			#Each = "Each",
+			#each = "each",
+			#Some = "Some",
+			#some = "some",
+			#At = "At",
+			#at	= "at",
+			#Exactly = "Exactly",
+			#exactly = "exactly"
+		;
+		
+	-- END enumeration template	
+	
+	-- BEGIN SBVR expression "grammar"
+	
+	template SBVRExpression
+		:	firstProposition nextProposition (hasPoint ? ".")
+		;
+		
+	template SBVRPropWithKW
+		:	conjonction (conjonction = #whether and endConj = #ornot ? "or" "not") proposition
+		;
+		
+
+	
+	template ModalForm
+		:	modal (modal = #must and isNeg ? "not")
+		;
+		
+	template SimpleSBVRProp
+		:	(modal=#undefined ? : modal) concept1 (modalVerb=#undefined ? : modalVerb) verbs concept2
+		;
+		
+	template SubSBVRProp
+		:	join (modalVerb=#undefined ? : modalVerb) verbs concept2
+		;
+	
+	template LinkSBVRConcept
+		: 	link concept
+		;
+		
+	template Concept abstract
+		;
+	
+	template ConjConcept
+		:	conjonction concept
+		;
+		
+	template NameConcept
+		:	(the=#undefined ? : the) name (isDefined(subProp) ? subProp) (isDefined(linkedConcept) ? linkedConcept)
+		;
+
+	--need verification on this
+--	template NounConcept abstract --operatored(Operators, parens(off));
+--		;
+
+	template NounConcept
+		:	(qualif=#undefined ? :qualif) noun
+		;
+
+	template ObjectConcept
+		:	operatoredConcept (isDefined(qualify) ? qualify) (isDefined(subProp) ? subProp) (isDefined(linkedConcept) ? linkedConcept)
+		;
+	
+	template StringConcept
+		:	stringWord
+		;	
+	
+	template Qualification
+		:	"(" generalConcept{separator = ","} ")"
+		;
+		
+	template GeneralConcept abstract
+		;
+
+		
+	template NameGConcept
+		:	name
+		;
+		
+	template NounGConcept
+		:	noun
+		;
+		
+
+
+
+
+	template Qualifier
+		:	(op=#undefined ? : op) (isDefined(endOperator) ?
+				(endOperator = #given and op = #a ?
+					"given"
+				:(endOperator = #given and op = #A ?
+					"given"
+				:(endOperator = #thanone and op = #more ?
+					"than" "one" 
+				:(endOperator = #thanone and op = #More ?
+					"than" "one" 
+				:(endOperator = #least and op =#At ?
+					"least" min
+				:(endOperator = #leastone and op =#At ?
+					"least" "one"
+				:(endOperator = #most and op =#At ?
+					"most" max
+				:(endOperator = #mostone and op =#At ?
+					"most" "one"
+				:(endOperator = #leastnandatmostm and op = #At ?
+					"least" min "and" "at" "most" max
+				:(endOperator = #least and op = #at ?
+					"least" min
+				:(endOperator = #leastone and op = #at ?
+					"least" "one"
+				:(endOperator = #most and op = #at ?
+					"most" max
+				:(endOperator = #mostone and op = #at ?
+					"most" "one"
+				:(endOperator = #leastnandatmostm and op = #at ?
+					"least" min "and" "at" "most" max
+				:(endOperator = #one and op = #Exactly ?
+					"one"
+				:(endOperator = #one and op = #exactly ?
+					"one"
+				))))))))))))))))
+				:(op = #exactly ? 
+					min
+				:(op = #Exactly ?
+					min
+				)))
+		;
+
+
+
+
+	template ModalBeginC
+		: "It" (endOperator = #isobligatorythat ?
+					"is" "obligatory" "that"
+				:(endOperator = #ispermittedthat ?
+					"is" "permitted" "that"
+				:(endOperator = #isprohitbitedthat ?
+					"is" "prohibited" "that"
+				:(endOperator = #isnecessarythat ?
+					"is" "necessary" "that"
+				:(endOperator = #ispossiblethat ?
+					"is" "possible" "that"
+				:(endOperator = #isimpossiblethat ?
+					"is" "impossible" "that"
+				:(endOperator = #isnotthecasethat ?
+					"is" "not" "the" "case" "that" )
+				))))))
+		;
+		
+	template ModalBegin
+		: "it" (endOperator = #isobligatorythat ?
+					"is" "obligatory" "that"
+				:(endOperator = #ispermittedthat ?
+					"is" "permitted" "that"
+				:(endOperator = #isprohitbitedthat ?
+					"is" "prohibited" "that"
+				:(endOperator = #isnecessarythat ?
+					"is" "necessary" "that"
+				:(endOperator = #ispossiblethat ?
+					"is" "possible" "that"
+				:(endOperator = #isimpossiblethat ?
+					"is" "impossible" "that"
+				:(endOperator = #isnotthecasethat ?
+					"is" "not" "the" "case" "that" )
+				))))))
+		;
+
+
+--	operatorTemplate UnaryOperatorWithOneParam(operators =
+--			opexactly opExactly
+--		, source = operande, storeOpTo = op)
+--		:	(isDefined(endOperator) ?
+--				( endOperator = #one ?
+--					"one"
+--				:
+--			 		param
+--			 	)
+--			)	
+--		;
+		
+--	operatorTemplate UnaryOperatorWithTwoParam(operators =
+--			opat	opAt
+--		, source = operande, storeOpTo = op)
+--		:	(endOperator = #least ?
+--				"least" min
+--			:(endOperator = #leastone ?
+--				"least" "one"
+--			:(endOperator = #most ?
+--				"most" max
+--			:(endOperator = #mostone ?
+--				"most" "one"
+--			:(endOperator = #leastnandatmostm ?
+--				"least" min "and" "at" "most" max)
+--			))))
+--		;
+		
+--	operatorTemplate BinaryOperator(operators =
+--			opif	opthat2
+--			opwho	opwether
+--			oponly	opis
+--			opAnd	opOr
+--		, source = 'left', storeOpTo = op, storeRightTo = 'right')
+--		:	(endOperator = #andonlyif and op = "if" ?
+--				"and" "only" "if"
+--			:(endOperator = #ornot and op = "wether" ?
+--				"or" "not"
+--			:(endOperator = #not and op = "must" ?
+--				"not"
+--			:(endOperator = #of and op = "is" ?
+--				"of"
+--			))))
+--		;
+--					
+
+
+	
+	--END operator template for keywords
+	
+	--END vocabulary classes	
+		
+-- END Class templates
+
+-- BEGIN Special symbols
+-- Possible modifications:
+--	- Addition of new symbols.
+--	- Modification of spaces information.
+--	- Removal of unused symbols so that using these symbols results in lexical
+--	error rather than parsing error.
+	symbols {  -- add § to symbol and ¤
+		rcross		= "¤";
+		para		= "§";
+		lsquare		= "[";
+		rsquare		= "]"	: rightSpace;
+		excl		= "!";
+--		coma		= ","	: leftNone, rightSpace;
+		lparen		= "(";
+		rparen		= ")"	: leftNone, rightSpace;
+		lcurly		= "{"	: leftSpace;
+		rcurly		= "}"	: leftNone, rightSpace;
+		semi		= ";"	: leftNone, rightSpace;
+		colon		= ":"	: leftSpace, rightSpace;
+		pipe		= "|"	: leftSpace, rightSpace;
+		sharp		= "#"	: leftSpace;
+		qmark		= "?";
+		coloncolon	= "::"	: leftNone, rightNone;
+
+		-- operator symbols
+		point		= "."	: leftNone;
+		rarrow		= "->"	: leftNone;
+--		minus		= "-"	: leftSpace, rightSpace;
+		star		= "*"	: leftSpace, rightSpace;
+		slash		= "/"	: leftSpace, rightSpace;
+		plus		= "+"	: leftSpace, rightSpace;
+		eq			= "="	: leftSpace, rightSpace;
+		gt			= ">"	: leftSpace, rightSpace;
+		lt			= "<"	: leftSpace, rightSpace;
+		ge			= ">="	: leftSpace, rightSpace;
+		le			= "<="	: leftSpace, rightSpace;
+		ne			= "<>"	: leftSpace, rightSpace;
+		larrow		= "<-"	: leftSpace, rightSpace;
+	}
+-- END Special symbols
+
+-- BEGIN Operator table
+-- Defines all operators with their priority, arity, and associativity.
+-- All defined operators must be used in operator templates.
+
+-- Specify operator table(s) here if necessary.
+--	operators Operators {
+--		priority 0 {
+--			opeach	= "each", 1;
+--			opEach	= "Each", 1;
+--			opsome	= "some", 1;
+--			opSome	= "Some", 1;
+--			opat	= "at", 1;
+--			opAt	= "At", 1;
+--			opexactly = "exactly", 1;
+--			opExactly = "Exactly", 1;
+--			opmore	= "more", 1;
+--			opMore	= "More", 1;
+--			opa		= "a", 1;
+--			opA		= "A", 1;
+--			opan	= "an", 1;
+--			opAn	= "An", 1;
+--			opthe	= "the", 1;
+--			opThe	= "The", 1;
+--			opanother = "another", 1;
+--			opAnother = "Another", 1;
+--			opthat	= "that", 1;
+--			opThat	= "That", 1;
+--			opwhat	= "what", 1;
+--			opWhat	= "What", 1;	
+--		}
+
+--		priority 1 {
+--			opnot	= "not", 1;				-- this operator have 2 operandes but appears at the left of the first one, it's a composed operator
+--			opneither	= "neither", 1;			-- idem
+--			opift	= "if", 1;				-- if then operator but the if appears at the left of the first operand
+--			opIft	= "If", 1;				-- idem
+--			opif	= "if", 2;				-- p if q operator
+--			opwether = "wether", 2;
+--
+--			opthat2 = "that", 2;
+--			opwho = "who", 2;
+--		}
+
+--		priority 1 {
+--			opit	= "it", 1;
+--			opIt	= "It", 1;
+--		}
+
+--		priority 2 {
+--			oponly	= "only", 2;
+--		}
+--		
+--		priority 3 { -- need to verify priority for the following 
+--			opis	= "is", 2;
+--		}
+
+--		priority 5 {
+--			opAnd	= "and", 2;
+--			opOr	= "or", 2;
+--		}
+--	}
+	
+
+-- END Operator table
+
+
+-- BEGIN Lexer
+-- Specifies the lexical entities.
+-- Only needs modification when default lexer is not satisfactory.
+-- Generally modified along with Primitive templates.
+	token COMMENT	: endOfLine(start = "--");
+	token STRING	: multiLine(start = "\"", end = "\"", esc = "\\");
+
+	lexer = "
+%options testLiterals = false;
+
+NL
+	:	(	'\\r' '\\n'
+		|	'\\n' '\\r'	//Improbable
+		|	'\\r'
+		|	'\\n'
+		)
+	{newline();}
+	;
+
+WS
+	:	(	' '
+		|	'\\t'
+		)
+	;
+
+%protected
+DIGIT
+	:	'0'..'9'
+	;
+
+%protected
+//ALPHA
+//	:	'a'..'z'
+//	|	'A'..'Z'
+//	|	'_'
+//	//For Unicode compatibility (from 0000 to 00ff)
+//	|	'\\u00C0' .. '\\u00D6'
+//	|	'\\u00D8' .. '\\u00F6'
+//	|	'\\u00F8' .. '\\u00FF'
+//	;
+MINUS
+	:	'a'..'z' 
+//	|	'\\u0027'
+	;	
+
+%protected
+MAJ
+	:	'A'..'Z'
+	;
+
+%protected
+SNAME
+%v2	options {
+%v2		testLiterals = true;
+%v2	}
+	:	(MINUS) (MINUS | MAJ | DIGIT | '-' | ',')*
+;
+
+NAME
+	:	(
+%v3			SNAME
+%v2			s:SNAME {if(s.getType() != SNAME) $setType(s.getType());}
+		|	'\"'!
+			(	ESC
+			|	'\\n' {newline();}
+			|	~('\\\\'|'\\\"'|'\\n')
+			)*
+			'\"'!
+%v3			{setText(ei.unescapeString(getText(), 1));}
+		)
+	;
+
+%protected
+CAPNAME
+%v2	options {
+%v2		testLiterals = true;
+%v2	}
+	:	(MAJ) (MINUS | MAJ | '-')*
+	;
+
+CNAME
+	:	(
+%v3			CAPNAME
+%v2			s:CAPNAME {if(s.getType() != CAPNAME) $setType(s.getType());}
+		|	'\"'!
+			(	ESC
+			|	'\\n' {newline();}
+			|	~('\\\\'|'\\\"'|'\\n')
+			)*
+			'\"'!
+%v3			{setText(ei.unescapeString(getText(), 1));}
+		)
+	;
+
+INT
+	:	(DIGIT)+
+%v2		(('.' DIGIT)=> '.' (DIGIT)+ {$setType(FLOAT);})?
+	;
+
+%v3	FLOAT	:	DIGIT+ '.' DIGIT*	;
+
+%protected
+ESC
+	:	'\\\\'!
+		(	'n' %v2{%setText(\"\\n\");}
+		|	'r' %v2{%setText(\"\\r\");}
+		|	't' %v2{%setText(\"\\t\");}
+		|	'b' %v2{%setText(\"\\b\");}
+		|	'f' %v2{%setText(\"\\f\");}
+		|	'\"' %v2{%setText(\"\\\"\");}
+		|	'\\'' %v2{%setText(\"\\'\");}
+		|	'\\\\' %v2{%setText(\"\\\\\");}
+		|	(
+				('0'..'3')
+				(
+%v2					options {
+%v2						warnWhenFollowAmbig = false;
+%v2					}
+				:	('0'..'7')
+					(
+%v2						options {
+%v2							warnWhenFollowAmbig = false;
+%v2						}
+					:	'0'..'7'
+					)?
+				)?
+			|	('4'..'7')
+				(
+%v2					options {
+%v2						warnWhenFollowAmbig = false;
+%v2					}
+				:	('0'..'7')
+				)?
+			)
+				{
+%v2					String s = %getText;
+%v2					int i;
+%v2					int ret = 0;
+%v2					String ans;
+%v2					for (i=0; i<s.length(); ++i)
+%v2						ret = ret*8 + s.charAt(i) - '0';
+%v2					ans = String.valueOf((char) ret);
+%v2					%setText(ans);
+				}
+		)
+	;
+	";
+-- END Lexer
+
+}

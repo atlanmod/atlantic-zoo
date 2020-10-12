@@ -1,0 +1,153 @@
+package Metamodel;
+
+package ebXML {
+  class MultyPartyCollaboration {
+    !ordered val BusinessPartnerRole[*]#collaboration partners;
+  }
+
+  class BusinessPartnerRole {
+    !ordered ref MultyPartyCollaboration[1]#partners collaboration;
+    !ordered val Transaction transition;
+    !ordered val Performs[*]#performedBy performers;
+  }
+
+  class Performs {
+    !ordered ref BusinessPartnerRole[1]#performers performedBy;
+    !ordered ref BinaryCollaboration[1]#roles collaboration;
+    !ordered ref AuthorizedRole[1]#performers role;
+  }
+
+  class AuthorizedRole {
+    !unique !ordered attr Boolean[1] isInitiator;
+    !ordered ref Performs[*]#role performers;
+  }
+
+  class Transaction {
+    !unique !ordered attr String[1] onInitiation;
+    !unique !ordered attr String[1] conditionGuard;
+    !unique !ordered attr String[1] conditionExpression;
+    !ordered ref BusinessState[1] from;
+    !ordered ref BusinessState[1] to;
+  }
+
+  class BinaryCollaboration {
+    !unique !ordered attr String[1] pattern;
+    !unique !ordered attr String[1] timeToPerform;
+    !unique !ordered attr String[1] preCondition;
+    !unique !ordered attr String[1] postCondition;
+    !unique !ordered attr String[1] beginsWhen;
+    !unique !ordered attr String[1] endsWhen;
+    !ordered val Performs[*]#collaboration roles;
+    !ordered val Transaction[*] transitions;
+    !ordered val BusinessState[*]#collaboration states;
+  }
+
+  abstract class BusinessState {
+    !ordered ref BinaryCollaboration[1]#states collaboration;
+    !ordered ref AuthorizedRole[1] from;
+    !ordered ref AuthorizedRole[1] to;
+  }
+
+  class Start extends BusinessState {
+  }
+
+  class Fork extends BusinessState {
+    !unique !ordered attr String[1] waitForAll;
+  }
+
+  class Join extends BusinessState {
+  }
+
+  class CompletionState extends BusinessState {
+    !unique !ordered attr String[1] guardCondition;
+  }
+
+  class Failure extends CompletionState {
+  }
+
+  class Success extends CompletionState {
+  }
+
+  abstract class BusinessActivity extends BusinessState {
+  }
+
+  class BusinessTransactionActivity extends BusinessActivity {
+    !unique !ordered attr String[1] timeToPerform;
+    !unique !ordered attr Boolean[1] isConcurrent;
+    !unique !ordered attr Boolean[1] isLegallyBinding;
+    !ordered ref BusinessTransaction[1] use;
+  }
+
+  class CollaborationActivity extends BusinessActivity {
+    !ordered ref BinaryCollaboration[1] use;
+  }
+
+  class BusinessTransaction {
+    !unique !ordered attr String[1] pattern;
+    !unique !ordered attr Boolean[1] isGuaranteedDeliveryRequired;
+    !unique !ordered attr String[1] preCondition;
+    !unique !ordered attr String[1] postCondition;
+    !unique !ordered attr String[1] beginsWhen;
+    !unique !ordered attr String[1] endsWhen;
+    !ordered val RequestingBusinessActivity[1]#transaction requester;
+    !ordered val RespondingBusinessActivity[1]#transaction responder;
+  }
+
+  abstract class BusinessAction {
+    !unique !ordered attr Boolean[1] isIntelligiblecheckRequired;
+    !unique !ordered attr Boolean[1] isAuthorizationRequired;
+    !unique !ordered attr String[1] timeToAcknowledgeReceipt;
+    !unique !ordered attr Boolean[1] isNonRepudiationRequired;
+    !unique !ordered attr Boolean[1] isNonRepudiationOfRecipientRequired;
+  }
+
+  class RequestingBusinessActivity extends BusinessAction {
+    !unique !ordered attr String[1] timeToAcknowledgeAcceptance;
+    !ordered val BusinessTransaction[1]#requester transaction;
+    !ordered ref DocumentEnvelope[1]#requesting documentEnvelope;
+  }
+
+  class RespondingBusinessActivity extends BusinessAction {
+    !ordered val BusinessTransaction[1]#responder transaction;
+    !ordered ref DocumentEnvelope[1]#responding documentEnvelope;
+  }
+
+  abstract class DocumentSecurity {
+    !unique !ordered attr Boolean[1] isConfidential;
+    !unique !ordered attr Boolean[1] isTamperProof;
+    !unique !ordered attr Boolean[1] isAuthenticated;
+  }
+
+  class DocumentEnvelope extends DocumentSecurity {
+    !unique !ordered attr Boolean[1] isPositiveResponse;
+    !ordered ref RequestingBusinessActivity#documentEnvelope requesting;
+    !ordered ref RespondingBusinessActivity#documentEnvelope responding;
+    !ordered val Attachment[*]#envelope attachements;
+    !ordered ref BusinessDocument[1]#envelopes document;
+  }
+
+  class Attachment extends DocumentSecurity {
+    !unique !ordered attr String[1] mimeType;
+    !unique !ordered attr String[1] specification;
+    !unique !ordered attr String[1] version;
+    !ordered ref DocumentEnvelope[1]#attachements envelope;
+    !ordered ref BusinessDocument[1]#attachments document;
+  }
+
+  class BusinessDocument {
+    !unique !ordered attr String[1] specificationLocation;
+    !unique !ordered attr String[1] specificationElement;
+    !unique !ordered attr String[1] conditionExpression;
+    !ordered ref DocumentEnvelope[*]#document envelopes;
+    !ordered ref Attachment[*]#document attachments;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype String : "";
+
+}
+

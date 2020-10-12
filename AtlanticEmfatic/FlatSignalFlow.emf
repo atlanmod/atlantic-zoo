@@ -1,0 +1,86 @@
+package Metamodel;
+
+package FlatSignalFlow {
+  class RootFolder {
+    !ordered val RootContainer[*]#rootFolder rootContainer;
+  }
+
+  class RootContainer {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String position;
+    !ordered ref RootFolder[1]#rootContainer rootFolder;
+    !ordered val Actor[*]#rootContainer actor;
+    !ordered val InputSignal[*]#rootContainer inputSignal;
+    !ordered val OutputSignal[*]#rootContainer outputSignal;
+    !ordered val Queue[*]#rootContainer queue;
+  }
+
+  class Actor {
+    !unique !ordered attr String[1] memory;
+    !unique !ordered attr String[1] script;
+    !unique !ordered attr String[1] file;
+    !unique !ordered attr String[1] WCET;
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String position;
+    !ordered ref RootContainer[1]#actor rootContainer;
+    !ordered val Transmitter[*]#actor transmitter;
+    !ordered val Receiver[*]#actor receiver;
+  }
+
+  class Transmitter {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String position;
+    !ordered ref Actor[1]#transmitter actor;
+    !ordered ref AssociationQueueTransmitter[1]#srctransmitter associationQueueTransmitter;
+  }
+
+  class Receiver {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String position;
+    !ordered ref Actor[1]#receiver actor;
+    !ordered ref AssociationReceiverQueue[1]#dstreceiver associationReceiverQueue;
+  }
+
+  class InputSignal {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String position;
+    !ordered ref RootContainer[1]#inputSignal rootContainer;
+    !ordered ref AssociationReceiverQueue[1]#inputSignal associationReceiverQueue;
+  }
+
+  class OutputSignal {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String position;
+    !ordered ref RootContainer[1]#outputSignal rootContainer;
+    !ordered ref AssociationQueueTransmitter[1]#outputSignal associationQueueTransmitter;
+  }
+
+  class Queue {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String position;
+    !ordered ref RootContainer[1]#queue rootContainer;
+    !ordered ref AssociationReceiverQueue[1]#srcqueue associationReceiverQueue;
+    !ordered ref AssociationQueueTransmitter[1]#dstqueue associationQueueTransmitter;
+  }
+
+  class AssociationReceiverQueue {
+    !ordered ref Queue[+]#associationReceiverQueue srcqueue;
+    !ordered ref Receiver[+]#associationReceiverQueue dstreceiver;
+    !ordered ref InputSignal[1]#associationReceiverQueue inputSignal;
+  }
+
+  class AssociationQueueTransmitter {
+    !ordered ref Queue[+]#associationQueueTransmitter dstqueue;
+    !ordered ref Transmitter[+]#associationQueueTransmitter srctransmitter;
+    !ordered ref OutputSignal[1]#associationQueueTransmitter outputSignal;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+}
+

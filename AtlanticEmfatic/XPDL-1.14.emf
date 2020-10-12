@@ -1,0 +1,368 @@
+package Metamodel;
+
+package XPDL {
+  abstract class Element {
+    !unique !ordered attr String[1] ~id;
+    !unique !ordered attr String name;
+  }
+
+  class Package extends Element {
+    !ordered val Script script;
+    !ordered val ExternalPackage[*] externalPackages;
+    !ordered val TypeDeclaration[*] typeDeclarations;
+    !ordered val Participant[*] participants;
+    !ordered val Application[*] applications;
+    !ordered val DataField[*] dataFields;
+    !ordered val Pool[*] pools;
+    !ordered val MessageFlow[*] messageFlows;
+    !ordered val Association[*] associations;
+    !ordered val Artifact[*] artifacts;
+    !ordered val Process[*] workflowProcesses;
+  }
+
+  class MessageFlow extends Element {
+    !ordered ref Activity targetActivity;
+    !ordered ref Activity sourceActivity;
+    !ordered ref Pool targetPool;
+    !ordered ref Pool sourcePool;
+    !ordered val Object object;
+  }
+
+  class Association extends Element {
+    !unique !ordered attr DataTypes.AssociationDirectionKind associationDirection;
+    !ordered ref Artifact targetArtifact;
+    !ordered ref Artifact sourceArtifact;
+    !ordered ref Pool targetPool;
+    !ordered ref Pool sourcePool;
+    !ordered ref Activity targetActivity;
+    !ordered ref Activity sourceActivity;
+    !ordered val Object object;
+  }
+
+  class Pool extends Element {
+    !unique !ordered attr DataTypes.OrientationKind orientation;
+    !unique !ordered attr Boolean[1] boundaryVisible;
+    !ordered val Lane[*] lanes;
+    !ordered val Object object;
+    !ordered ref Participant participant;
+    !ordered ref Process process;
+  }
+
+  class Lane extends Element {
+    !ordered val Object object;
+    !ordered ref Lane parentLane;
+    !ordered ref Pool parentPool;
+  }
+
+  class Participant extends Element {
+  }
+
+  class Artifact extends Element {
+    !unique !ordered attr String textAnnotation;
+    !unique !ordered attr String group;
+    !ordered val Object object;
+    !ordered val DataObject dataObject;
+  }
+
+  class DataObject extends Artifact {
+    !unique !ordered attr String state;
+    !unique !ordered attr Boolean[1] requiredForStart;
+    !unique !ordered attr Boolean[1] producedAtCompletion;
+    !ordered val DataField[*] dataFields;
+  }
+
+  class Group extends Artifact {
+  }
+
+  class Annotation extends Artifact {
+  }
+
+  class TypeDeclaration extends Element {
+  }
+
+  class Application extends Element {
+  }
+
+  class ParametrizedApplication extends Application {
+  }
+
+  class ReferencedApplication extends Application {
+    !ordered val ExternalReference externalReference;
+  }
+
+  class Activity extends Element {
+    !unique !ordered attr Boolean isStartActivity;
+    !unique !ordered attr DataTypes.StatusKind status;
+    !unique !ordered attr DataTypes.ModeKind[1] startMode;
+    !unique !ordered attr DataTypes.ModeKind[1] finishMode;
+    !unique !ordered attr Integer startQuantity;
+    !unique !ordered attr Boolean isATransaction;
+    !ordered val DataField[*] dataFields;
+    !ordered val Object object;
+  }
+
+  abstract class Task extends Activity {
+  }
+
+  class TaskService extends Task {
+    !unique !ordered attr DataTypes.ImplementationKind implementation;
+  }
+
+  class TaskReceive extends Task {
+    !unique !ordered attr Boolean[1] instantiate;
+    !unique !ordered attr DataTypes.ImplementationKind implementation;
+  }
+
+  class TaskManual extends Task {
+  }
+
+  class TaskReference extends Task {
+    !ordered ref Task[1] taskRef;
+  }
+
+  class TaskScript extends Task {
+    !ordered val Script[1] script;
+  }
+
+  class TaskSend extends Task {
+    !unique !ordered attr DataTypes.ImplementationKind implementation;
+  }
+
+  class TaskUser extends Task {
+    !unique !ordered attr DataTypes.ImplementationKind implementation;
+  }
+
+  class TaskApplication extends Task {
+    !ordered ref Package packageRef;
+  }
+
+  class Route extends Activity {
+    !unique !ordered attr DataTypes.GatewayTypeKind gatewayType;
+    !unique !ordered attr Boolean instantiate;
+    !unique !ordered attr Boolean markerVisiable;
+  }
+
+  class SubFlow extends Activity {
+    !unique !ordered attr DataTypes.ExecutionKind execution;
+    !unique !ordered attr String instanceDataField;
+    !ordered ref Package packageRef;
+    !ordered ref ActivitySet startActivitySet;
+    !ordered ref Activity startActivity;
+  }
+
+  class BlockActivity extends Activity {
+    !ordered ref ActivitySet[1] activitySet;
+    !ordered ref Activity startActivity;
+  }
+
+  abstract class Event extends Activity {
+    !unique !ordered attr DataTypes.TriggerKind[1] triggerKind;
+    !unique !ordered attr DataTypes.ImplementationKind implementation;
+    !ordered val Trigger trigger;
+  }
+
+  abstract class Trigger {
+  }
+
+  class ResultCompensation extends Trigger {
+    !ordered ref Activity activity;
+  }
+
+  class ResultError extends Trigger {
+    !unique !ordered attr String[1] errorCode;
+  }
+
+  class ResultMultiple extends Trigger {
+  }
+
+  class TriggerResultLink extends Trigger {
+    !ordered ref Process[1] processRef;
+  }
+
+  class TriggerResultMessage extends Trigger {
+  }
+
+  class TriggerIntermediateMultiple extends Trigger {
+  }
+
+  class TriggerMultiple extends Trigger {
+  }
+
+  class TriggerRule extends Trigger {
+    !unique !ordered attr String[1] ruleName;
+  }
+
+  class TriggerTimer extends Trigger {
+    !unique !ordered attr String timeDate;
+    !unique !ordered attr String timeCycle;
+  }
+
+  class StartEvent extends Event {
+  }
+
+  class IntermediateEvent extends Event {
+    !ordered ref Activity target;
+  }
+
+  class EndEvent extends Event {
+  }
+
+  class Gateway extends Route {
+  }
+
+  class Process extends Element {
+    !unique !ordered attr DataTypes.AccessLevelKind accessLevel;
+    !unique !ordered attr DataTypes.ProcessTypeKind processType;
+    !unique !ordered attr DataTypes.StatusKind status;
+    !unique !ordered attr Boolean suppressJoinFailure;
+    !unique !ordered attr Boolean enableInstanceCompensation;
+    !unique !ordered attr Boolean adHoc;
+    !unique !ordered attr DataTypes.AdHocOrderingKind adHocOrdering;
+    !unique !ordered attr String adHocCompletionCondition;
+    !ordered val Participant[*] participant;
+    !ordered val Application[*] applications;
+    !ordered val DataField[1] dataField;
+    !ordered val ActivitySet[*] activitySets;
+    !ordered val Activity[*] activities;
+    !ordered val Transition[*] transitions;
+    !ordered val Object object;
+    !ordered ref ActivitySet defaultStartActivitySet;
+    !ordered ref Activity defaultStartActivity;
+  }
+
+  class Transition extends Element {
+    !unique !ordered attr Integer quantity;
+    !ordered val Object object;
+    !ordered ref Activity[1] to;
+    !ordered ref Activity[1] from;
+  }
+
+  class ActivitySet extends Element {
+    !unique !ordered attr Boolean adHoc;
+    !unique !ordered attr DataTypes.AdHocOrderingKind adHocOrdering;
+    !unique !ordered attr String adHocCompletionCondition;
+    !ordered ref Activity defaultStartActivity;
+    !ordered val Activity[*] activities;
+    !ordered val Transition[*] transitions;
+    !ordered val Object object;
+  }
+
+  class ExternalReference {
+    !unique !ordered attr String xref;
+    !unique !ordered attr String[1] location;
+    !unique !ordered attr String namespace;
+  }
+
+  class Object extends Element {
+    !ordered val Category[*] categories;
+  }
+
+  class ExternalPackage extends Element {
+    !unique !ordered attr String[1] href;
+  }
+
+  class Category extends Element {
+  }
+
+  class DataField extends Element {
+    !unique !ordered attr Boolean isArray;
+    !unique !ordered attr Boolean correlation;
+    !ordered val TypeDeclaration[1] dataType;
+  }
+
+  class Script {
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr String version;
+    !unique !ordered attr String grammar;
+  }
+
+}
+
+package DataTypes {
+  enum AssociationDirectionKind {
+    None = 0;
+    To = 0;
+    From = 0;
+    Both = 0;
+  }
+
+  enum OrientationKind {
+    Horizontal = 0;
+    Vertical = 0;
+  }
+
+  enum AccessLevelKind {
+    Public = 0;
+    Private = 0;
+  }
+
+  enum ProcessTypeKind {
+    None = 0;
+    Private = 0;
+    Abstract = 0;
+    Collaboration = 0;
+  }
+
+  enum StatusKind {
+    None = 0;
+    Ready = 0;
+    Active = 0;
+    Cancelled = 0;
+    Aborting = 0;
+    Aborted = 0;
+    Completing = 0;
+    Completed = 0;
+  }
+
+  enum AdHocOrderingKind {
+    Sequential = 0;
+    Parallel = 0;
+  }
+
+  enum ModeKind {
+    Automatic = 0;
+    Manual = 0;
+  }
+
+  enum GatewayTypeKind {
+    Xor = 0;
+    Or = 0;
+    Complex = 0;
+    And = 0;
+  }
+
+  enum ExecutionKind {
+    Asynchr = 0;
+    Synchr = 0;
+  }
+
+  enum TriggerKind {
+    None = 0;
+    Message = 0;
+    Timer = 0;
+    Rule = 0;
+    Link = 0;
+    Error = 0;
+    Cancel = 0;
+    Compensation = 0;
+    Terminate = 0;
+    Multiple = 0;
+  }
+
+  enum ImplementationKind {
+    WebService = 0;
+    Other = 0;
+    Unspecified = 0;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+  datatype Boolean : "";
+
+}
+

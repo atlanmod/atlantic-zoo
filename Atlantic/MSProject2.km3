@@ -1,0 +1,63 @@
+-- @name		MSProject2
+-- @version		0.1
+-- @domains		Microsoft, Project Management
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard@gmail.com)
+-- @date		2005/08/04
+-- @description	This metamodel is a simplified metamodel of Microsoft Project. Microsoft Project (or MSP) is project management software developed and sold by Microsoft.  It is designed to assist project managers in developing plans, assigning resources to tasks, tracking progress, managing budgets and analyzing workloads. Microsoft Project creates critical path schedules, schedules can be resource leveled. The chain is visualized in a gantt chart. Resource definitions (people, equipment and materials) can be shared between projects using a shared resource pool. Each resource can have its own calendar which defines what days and shifts a resource can work. Resource rates are used to calculate resource assignment costs which are rolled up and summarized the resource level. Each resource can be assigned to multiple tasks in multiple plans and each task can be assigned multiple resources. Microsoft Project schedules task work based on the resource availability as defined in the resource calendars. All resources can be defined in a enterprise resource pool. Microsoft Project creates budgets based on assignment work and resource rates. As resources are assigned to tasks and assignment work estimated, Microsoft Project calculates the cost equals the work times the rate. This rolls up to the task level, then to any summary tasks and finally to the project level.
+-- @see			http://uddi.org/
+
+package MSProject {
+
+	class MSPProject {
+		reference resource[*] container : MSPResource oppositeOf project;
+		reference link[*] container : MSPLink oppositeOf project;
+		reference task[*] container : MSPTask oppositeOf project;
+	}
+
+	class MSPTask {
+		attribute finishDate : Date;
+		attribute startDate : Date;
+		reference project : MSPProject oppositeOf task;
+		reference superTask[0-1] : MSPTask oppositeOf subTask;
+		reference subTask[*] : MSPTask oppositeOf superTask;
+		reference assignment[*] : MSPAssignment oppositeOf task;
+		reference inLink[*] : MSPLink oppositeOf succ;
+		reference outLink[*] : MSPLink oppositeOf pred;
+	}
+
+	class MSPLink {
+		reference project : MSPProject oppositeOf link;
+		reference succ : MSPTask oppositeOf inLink;
+		reference pred : MSPTask oppositeOf outLink;
+	}
+
+	class MSPAssignment {
+		reference task : MSPTask oppositeOf assignment;
+		reference resource : MSPResource oppositeOf assignment;
+	}
+
+	class MSPResource {
+		attribute cost : Double;
+		reference project : MSPProject oppositeOf resource;
+		reference assignment[*] : MSPAssignment oppositeOf resource;
+	}
+
+	class MSPHumanResource extends MSPResource {
+		attribute email : String;
+	}
+
+	class MSPMachine extends MSPResource {}
+
+	class Date {
+		attribute day : Integer;
+		attribute month : Integer;
+		attribute year : Integer;
+	}
+	
+}
+
+package PrimitiveTypes {
+	datatype Integer;	
+	datatype Double;
+	datatype String;
+}

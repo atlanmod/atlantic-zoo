@@ -1,0 +1,90 @@
+package Metamodel;
+
+package CWMRelationalData {
+  class QueryExpression {
+    !unique !ordered attr String[1] expresssion;
+  }
+
+  class CheckConstraint {
+    !ordered ref Column[*]#column_constraints constraintElements;
+    !ordered ref Table[*]#table_constraints constrainedElements;
+  }
+
+  class Column {
+    !unique !ordered attr Integer[1] precision;
+    !unique !ordered attr Integer[1] scale;
+    !unique !ordered attr Boolean[1] isNullable;
+    !unique !ordered attr Integer[1] length;
+    !unique !ordered attr String[1] collectionName;
+    !unique !ordered attr String[1] characterSetName;
+    !ordered ref CheckConstraint[*]#constraintElements column_constraints;
+    !ordered ref SQLDataType[1]#structuralFeatures type;
+    !ordered ref ColumnSet#features owner;
+    !ordered ref NamedColumnSet#optionScopeColumn optionScopeColumnSet;
+  }
+
+  class ColumnSet {
+    !ordered val Column[*]#owner features;
+  }
+
+  class NamedColumnSet extends ColumnSet {
+    !ordered ref Column[1]#optionScopeColumnSet optionScopeColumn;
+    !ordered ref Trigger[*]#namedColumnSet triggers;
+  }
+
+  class QueryColumnSet extends ColumnSet {
+    !ordered val QueryExpression[1] query;
+  }
+
+  class Table extends NamedColumnSet {
+    !unique !ordered attr Boolean[1] isTemporary;
+    !unique !ordered attr String[1] temporaryScope;
+    !unique !ordered attr Boolean[1] isSystem;
+    !ordered ref CheckConstraint[*]#constrainedElements table_constraints;
+  }
+
+  class View extends NamedColumnSet {
+    !unique !ordered attr Boolean[1] isReadOnly;
+    !unique !ordered attr Boolean[1] checkOption;
+    !ordered val QueryExpression[1] queryExpression;
+  }
+
+  class Trigger {
+    !ordered ref NamedColumnSet[1]#triggers namedColumnSet;
+  }
+
+  class SQLDataType {
+    !unique !ordered attr Integer[1] typeNumber;
+    !ordered ref Column[*]#type structuralFeatures;
+  }
+
+  class SQLDistinctType extends SQLDataType {
+    !unique !ordered attr Integer[1] length;
+    !unique !ordered attr Integer[1] precision;
+    !unique !ordered attr Integer[1] scale;
+    !ordered ref SQLSimpleType[1]#sqlDistinctTypes sqlSimpleType;
+  }
+
+  class SQLSimpleType extends SQLDataType {
+    !unique !ordered attr Integer[1] characterMaximumLength;
+    !unique !ordered attr Integer[1] characterOctetLength;
+    !unique !ordered attr Integer[1] numericPrecision;
+    !unique !ordered attr Integer[1] numericPrecisionRadix;
+    !unique !ordered attr Integer[1] numericScale;
+    !unique !ordered attr Integer[1] dateTimePrecision;
+    !ordered ref SQLDistinctType[*]#sqlSimpleType sqlDistinctTypes;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

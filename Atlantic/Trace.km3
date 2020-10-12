@@ -1,0 +1,39 @@
+-- @name	Trace 
+-- @version	1.0
+-- @domains	Execution trace
+-- @authors	Hugo Bruneliere (hugo.bruneliere <at> gmail.com)
+-- @date	2007/03/26	
+-- @description	This metamodel allows defining simple trace models storing different operation execution information related to database access and CPU runtime.
+
+package Trace {
+	
+	class Trace {
+		reference levels[*] ordered container: Level oppositeOf trace;		
+		attribute name : String;
+	}
+	
+	class Level {
+		reference trace : Trace oppositeOf levels;
+		reference calls[*] ordered container: Call oppositeOf level;
+	}
+	
+	class Call {
+		reference level : Level oppositeOf calls;
+		reference indexes[1-*] ordered container: Index;
+		attribute methodName: String;
+		attribute DBAccessesNumber: Integer;
+		attribute DBRowsNumber: Integer; 
+		attribute CPUTime: Integer;
+	}
+	
+	class Index {
+		attribute value: Integer;
+	}
+	
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

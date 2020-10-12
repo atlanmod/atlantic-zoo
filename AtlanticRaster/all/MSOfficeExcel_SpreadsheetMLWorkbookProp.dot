@@ -1,0 +1,134 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_SpreadsheetMLWorkbookProp"{
+labelloc=t
+color=black
+label=SpreadsheetMLWorkbookProp
+ node[shape=record];
+DateTimeType[label="{DateTimeType|year : Integer\nmonth : Integer\nday : Integer\nhour : Integer\nminute : Integer\nsecond : Integer| }"]
+;
+ node[shape=record];
+VersionType[label="{VersionType|n : Integer\nnn : Integer| }"]
+;
+ node[shape=record];
+ValueType[label="{/ValueType/| | }"]
+ ValueType->Data[arrowhead=diamond,arrowtail=none,headlabel="vt_data",taillabel="value",group=Data,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StringValue[label="{StringValue|value : String| }"]
+ StringValue->ValueType[arrowhead=onormal,group=ValueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NumberValue[label="{NumberValue|value : Double| }"]
+ NumberValue->ValueType[arrowhead=onormal,group=ValueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DateTimeTypeValue[label="{DateTimeTypeValue| | }"]
+ DateTimeTypeValue->DateTimeType[arrowhead=vee,arrowtail=diamond,headlabel="value",group=DateTimeType,minlen=2,constraint=true,]
+ DateTimeTypeValue->ValueType[arrowhead=onormal,group=ValueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BooleanValue[label="{BooleanValue|value : Boolean| }"]
+ BooleanValue->ValueType[arrowhead=onormal,group=ValueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ErrorValue[label="{ErrorValue| | }"]
+ ErrorValue->ValueType[arrowhead=onormal,group=ValueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DocumentPropertiesCollection[label="{DocumentPropertiesCollection|title[0-1] : String\nsubject[0-1] : String\nkeywords[0-1] : String\ndescription[0-1] : String\ncategory[0-1] : String\nauthor[0-1] : String\nlastAuthor[0-1] : String\nmanager[0-1] : String\ncompany[0-1] : String\nhyperlinkBase[0-1] : String\nrevision[0-1] : Integer\npresentationFormat[0-1] : String\nguid[0-1] : String\nappName[0-1] : String\ntotalTime[0-1] : Integer\npages[0-1] : Integer\nwords[0-1] : Integer\ncharacters[0-1] : Integer\ncharactersWithSpaces[0-1] : Integer\nbytes[0-1] : Integer\nlines[0-1] : Integer\nparagraphs[0-1] : Integer| }"]
+ DocumentPropertiesCollection->Workbook[arrowhead=diamond,arrowtail=none,headlabel="dp_workbook",taillabel="wb_docProperties[0-1]",group=Workbook,minlen=2,constraint=true,]
+ DocumentPropertiesCollection->VersionType[arrowhead=vee,arrowtail=diamond,headlabel="version[0-1]",group=VersionType,minlen=2,constraint=true,]
+ DocumentPropertiesCollection->DateTimeType[arrowhead=vee,arrowtail=diamond,headlabel="lastPrinted[0-1]",group=DateTimeType,minlen=2,constraint=true,]
+ DocumentPropertiesCollection->DateTimeType[arrowhead=vee,arrowtail=diamond,headlabel="created[0-1]",group=DateTimeType,minlen=2,constraint=true,]
+ DocumentPropertiesCollection->DateTimeType[arrowhead=vee,arrowtail=diamond,headlabel="lastSaved[0-1]",group=DateTimeType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CustomDocumentPropertiesCollection[label="{CustomDocumentPropertiesCollection| | }"]
+ CustomDocumentPropertiesCollection->Workbook[arrowhead=diamond,arrowtail=none,headlabel="cdp_workbook",taillabel="wb_customDocProperties[0-1]",group=Workbook,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CustomDocumentProperty[label="{CustomDocumentProperty|name : String| }"]
+ CustomDocumentProperty->CustomDocumentPropertiesCollection[arrowhead=diamond,arrowtail=none,headlabel="customDocumentProperty_cdpe",taillabel="customDocumentProperties[1-*]",group=CustomDocumentPropertiesCollection,minlen=2,constraint=true,]
+ CustomDocumentProperty->ValueType[arrowhead=vee,arrowtail=diamond,headlabel="value",group=ValueType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SmartTagType[label="{SmartTagType|namespaceuri : String\nname : String\nurl[0-1] : String| }"]
+ SmartTagType->SmartTagsCollection[arrowhead=diamond,arrowtail=none,headlabel="smartTagType_ste",taillabel="smartTagTypes[*]",group=SmartTagsCollection,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SmartTagsCollection[label="{SmartTagsCollection| | }"]
+ SmartTagsCollection->Workbook[arrowhead=diamond,arrowtail=none,headlabel="st_workbook",taillabel="wb_smartTags[0-1]",group=Workbook,minlen=2,constraint=true,]
+ SmartTagsCollection->Cell[arrowhead=diamond,arrowtail=none,headlabel="st_cell",taillabel="c_smartTags[*]",group=Cell,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Workbook[label="{Workbook| | }"]
+;
+ node[shape=record];
+Worksheet[label="{Worksheet|name : String| }"]
+ Worksheet->Workbook[arrowhead=diamond,arrowtail=none,headlabel="ws_workbook",taillabel="wb_worksheets[*]{ordered}",group=Workbook,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StyledElement[label="{/StyledElement/| | }"]
+;
+ node[shape=record];
+Table[label="{Table|defaultColumnWidth[0-1] : Double\ndefaultRowHeight[0-1] : Double\nexpandedColumnCount[0-1] : Integer\nexpandedRowCount[0-1] : Integer\nleftCell[0-1] : Integer\ntopCell[0-1] : Integer\nfullColumns[0-1] : Boolean\nfullRows[0-1] : Boolean| }"]
+ Table->Worksheet[arrowhead=diamond,arrowtail=none,headlabel="t_worksheet",taillabel="ws_table[0-1]",group=Worksheet,minlen=2,constraint=true,]
+ Table->StyledElement[arrowhead=onormal,group=StyledElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TableElement[label="{/TableElement/|index[0-1] : Integer| }"]
+ TableElement->StyledElement[arrowhead=onormal,group=StyledElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ColOrRowElement[label="{/ColOrRowElement/|hidden[0-1] : Boolean\nspan[0-1] : Integer| }"]
+ ColOrRowElement->TableElement[arrowhead=onormal,group=TableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Column[label="{Column|autoFitWidth[0-1] : Boolean\nwidth[0-1] : Double| }"]
+ Column->Table[arrowhead=diamond,arrowtail=none,headlabel="c_table",taillabel="t_cols[*]{ordered}",group=Table,minlen=2,constraint=true,]
+ Column->ColOrRowElement[arrowhead=onormal,group=ColOrRowElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Row[label="{Row|autoFitHeight[0-1] : Boolean\nheight[0-1] : Double| }"]
+ Row->Table[arrowhead=diamond,arrowtail=none,headlabel="r_table",taillabel="t_rows[*]{ordered}",group=Table,minlen=2,constraint=true,]
+ Row->ColOrRowElement[arrowhead=onormal,group=ColOrRowElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Cell[label="{Cell|arrayRange[0-1] : String\nformula[0-1] : String\nhRef[0-1] : String\nmergeAcross[0-1] : Double\nmergeDown[0-1] : Double| }"]
+ Cell->Row[arrowhead=diamond,arrowtail=none,headlabel="c_row",taillabel="r_cells[*]{ordered}",group=Row,minlen=2,constraint=true,]
+ Cell->TableElement[arrowhead=onormal,group=TableElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Comment[label="{Comment|author[0-1] : String\nshowAlways[0-1] : Boolean| }"]
+ Comment->Cell[arrowhead=diamond,arrowtail=none,headlabel="c_cell",taillabel="c_comment[0-1]",group=Cell,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Data[label="{Data| | }"]
+ Data->Cell[arrowhead=diamond,arrowtail=none,headlabel="d_cell",taillabel="c_data[0-1]",group=Cell,minlen=2,constraint=true,]
+ Data->Comment[arrowhead=diamond,arrowtail=none,headlabel="d_comment",taillabel="com_data",group=Comment,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExcelWorkbook[label="{ExcelWorkbook|selectedSheets[0-1] : Integer\nwindowHidden[0-1] : Boolean\nhideHorizontalScrollBar[0-1] : Boolean\nhideVerticalScrollBar[0-1] : Boolean\nhideWorkbookTabs[0-1] : Boolean\nwindowHeight[0-1] : Double\nwindowWidth[0-1] : Double\nwindowTopX[0-1] : Double\nwindowTopY[0-1] : Double\nactiveSheet[0-1] : Integer\nactiveChart[0-1] : String\nfirstVisibleSheet[0-1] : Integer\nhidePivotTableFieldList[0-1] : Boolean\nprotectStructure[0-1] : Boolean\nprotectWindows[0-1] : Boolean\ndisplayInkNotes[0-1] : Boolean\nembedSaveSmartTags[0-1] : Boolean\nfutureVer[0-1] : String\ntabRatio[0-1] : Integer\nwindowIconic[0-1] : Boolean\ndisplayDrawingObjects[0-1] : DisplayDrawingObjectsType\ncreateBackup[0-1] : Boolean\ncalculation[0-1] : CalculationWorkbookType\ndoNotCalculateBeforeSave[0-1] : Boolean\ndate1904[0-1] : Boolean\nrefModeR1C1[0-1] : Boolean\niteration[0-1] : Boolean\nmaxIterations[0-1] : Integer\nmaxChange[0-1] : Double\nprecisionAsDisplayed[0-1] : Boolean\ndoNotSaveLinkValues[0-1] : Boolean\nnoAutoRecover[0-1] : Boolean\nacceptLabelsInFormulas[0-1] : Boolean\nuncalced[0-1] : Boolean| }"]
+ ExcelWorkbook->Workbook[arrowhead=diamond,arrowtail=none,headlabel="ew_workbook",taillabel="wb_excelWorkbook[0-1]",group=Workbook,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

@@ -1,0 +1,629 @@
+-- @atlcompiler atl2006
+
+-- ******************************************************************************
+-- Copyright (c) 2006 INRIA. 
+-- All rights reserved. This program and the accompanying materials 
+-- are made available under the terms of the Eclipse Public License v1.0 
+-- which accompanies this distribution, and is available at
+-- http://www.eclipse.org/legal/epl-v10.html
+-- 
+-- Contributors: 
+-- 	INRIA - Initial implementation
+--  
+-- ******************************************************************************
+
+--@author Guillaume Doux (Guillaume.Doux <at> gmail.com)
+
+module KM32Sbvr;
+create OUT : SBVR from IN : KM3;
+
+
+
+rule Metamodel2Root{
+	from
+		s	:	KM3!Metamodel
+	to
+		t	:	SBVR!Root(
+			entries <- s.contents->union(KM3!Class.allInstancesFrom('IN'))
+				->union(KM3!DataType.allInstancesFrom('IN'))
+		)
+}
+
+rule Package{
+	from
+		s	:	KM3!Package
+	to
+		t	:	SBVR!VocabularyEntry(
+			primaryRep <- pr,
+			caption <- cp
+		),
+		pr	:	SBVR!NameRepresentation(
+			hasThe <- false,
+			name <- nword
+		),
+		nword	:	SBVR!NameWord(
+			val <- s.name
+		),
+		cp	:	SBVR!DefCaption(
+			definition <- df	
+		),
+		df	:	SBVR!ConceptDefinition(
+			exp <- concept--,
+--			conjexp
+		),
+		concept	:	SBVR!ObjectConcept(
+			operatoredConcept <- nc,
+			linkedConcept <- lsc
+		),
+		nc	:	SBVR!NounConcept(
+			qualif <- qua,
+			noun <- sw
+		),
+		qua	:	SBVR!Qualifier(
+			op <- #The	
+		),
+		lsc	:	SBVR!LinkSBVRConcept(
+			link <- #of,
+			concept <- c2
+		),
+		sw	:	SBVR!StringWord(
+			val <- 'set'	
+		),
+		c2	:	SBVR!ObjectConcept(
+			operatoredConcept <- nc1,
+			subProp <- sp
+		),
+		nc1 :	SBVR!NounConcept (
+			noun <- sw2
+		),
+		sw2	:	SBVR!StringWord(
+			val <- 'concepts'	
+		),
+		sp	:	SBVR!SubSBVRProp(
+			join <- #that,
+			modalVerb <- #undefined,
+			verbs <- Sequence{#are, #relevant, #"in"},
+			concept2 <- co2
+		),
+		co2	:	SBVR!NameConcept(
+			the <- #undefined,
+			name <- nw
+		),
+		nw	:	SBVR!NameWord(
+			val <- s.name
+		) 
+}
+
+rule DataType{
+	from
+		s	:	KM3!DataType
+	to
+		t	:	SBVR!VocabularyEntry(
+			primaryRep <- tr,
+			caption <- Sequence{cp}
+		),
+		tr	:	SBVR!TermRepresentation(
+			term <- swo
+		),
+		swo	:	SBVR!StringWord(
+			val <- s.name
+		),
+		cp	:	SBVR!DefCaption(
+			definition <- df	
+		),
+		df	:	SBVR!ConceptDefinition(
+			exp <- concept--,
+--			conjexp
+		),
+		concept	:	SBVR!ObjectConcept(
+			operatoredConcept <- nc,
+			linkedConcept <- lsc
+		),
+		nc	:	SBVR!NounConcept(
+			qualif <- qua,
+			noun <- sw
+		),
+		sw	:	SBVR!StringWord(
+			val <- 'concept'	
+		),
+		qua	:	SBVR!Qualifier(
+			op <- #The	
+		),
+		lsc	:	SBVR!LinkSBVRConcept(
+			link <- #of,
+			concept <- conc2
+		),
+		conc2	:	SBVR!ObjectConcept(
+			operatoredConcept <- ncon2,
+			subProp <- sp
+		),
+		ncon2	:	SBVR!NounConcept(
+			qualif <- qua2,
+			noun <- sw2
+		),
+		qua2	:	SBVR!Qualifier(
+			op <- #undefined	
+		),
+		sw2	:	SBVR!StringWord(
+			val <- s.name	
+		),
+		sp	:	SBVR!SubSBVRProp(
+			join <- #that,
+			modalVerb <- #undefined,
+			verbs <- Sequence{#is, #"in"},
+			concept2 <- c3
+		),
+		c3	:	SBVR!ObjectConcept(
+			operatoredConcept <- nc3
+		),
+		nc3	:	SBVR!NounConcept(
+			qualif <- qua3,
+			noun <- sw3
+		),
+		qua3	:	SBVR!Qualifier(
+			op <- #undefined	
+		),
+		sw3	:	SBVR!StringWord(
+			val <- s.package.name	
+		)		
+}
+
+rule Enumeration{
+	from
+		s	:	KM3!Enumeration
+	to
+		t	:	SBVR!VocabularyEntry(
+			primaryRep <- tr,
+			caption <- Sequence{cp}
+		),
+		tr	:	SBVR!TermRepresentation(
+			term <- swo
+		),
+		swo	:	SBVR!StringWord(
+			val <- s.name
+		),
+		cp	:	SBVR!DefCaption(
+			definition <- df	
+		),
+		df	:	SBVR!ConceptDefinition(
+			exp <- concept
+		),
+		concept	:	SBVR!ObjectConcept(
+			operatoredConcept <- nc,
+			linkedConcept <- lsc
+		),
+		nc	:	SBVR!NounConcept(
+			qualif <- qua,
+			noun <- sw
+		),
+		sw	:	SBVR!StringWord(
+			val <- 'concept'	
+		),
+		qua	:	SBVR!Qualifier(
+			op <- #The	
+		),
+		lsc	:	SBVR!LinkSBVRConcept(
+			link <- #of,
+			concept <- conc2
+		),
+		conc2	:	SBVR!ObjectConcept(
+			operatoredConcept <- ncon2,
+			subProp <- sp
+		),
+		ncon2	:	SBVR!NounConcept(
+			qualif <- qua2,
+			noun <- sw2
+		),
+		qua2	:	SBVR!Qualifier(
+			op <- #undefined	
+		),
+		sw2	:	SBVR!StringWord(
+			val <- s.name	
+		),
+		sp	:	SBVR!SubSBVRProp(
+			join <- #that,
+			modalVerb <- #undefined,
+			verbs <- Sequence{#is, #"in"},
+			concept2 <- c3
+		),
+		c3	:	SBVR!ObjectConcept(
+			operatoredConcept <- nc3
+		),
+		nc3	:	SBVR!NounConcept(
+			qualif <- qua3,
+			noun <- sw3
+		),
+		qua3	:	SBVR!Qualifier(
+			op <- #undefined	
+		),
+		sw3	:	SBVR!StringWord(
+			val <- s.package.name	
+		)		
+}
+
+
+rule EnumLiteral{
+	from
+		s	:	KM3!EnumLiteral
+	to
+		t	:	SBVR!VocabularyEntry(
+			primaryRep <- tr,
+			caption <- Sequence{cp}
+		),
+		tr	:	SBVR!TermRepresentation(
+			term <- swo
+		),
+		swo	:	SBVR!StringWord(
+			val <- s.name
+		),
+		cp	:	SBVR!DefCaption(
+			definition <- df	
+		),
+		df	:	SBVR!ConceptDefinition(
+			exp <- concept--,
+--			conjexp
+		),
+		concept	:	SBVR!ObjectConcept(
+			operatoredConcept <- nc,
+			linkedConcept <- lsc
+		),
+		nc	:	SBVR!NounConcept(
+			qualif <- qua,
+			noun <- sw
+		),
+		sw	:	SBVR!StringWord(
+			val <- 'concept'	
+		),
+		qua	:	SBVR!Qualifier(
+			op <- #The	
+		),
+		lsc	:	SBVR!LinkSBVRConcept(
+			link <- #of,
+			concept <- conc2
+		),
+		conc2	:	SBVR!ObjectConcept(
+			operatoredConcept <- ncon2,
+			subProp <- sp
+		),
+		ncon2	:	SBVR!NounConcept(
+			qualif <- qua2,
+			noun <- sw2
+		),
+		qua2	:	SBVR!Qualifier(
+			op <- #undefined	
+		),
+		sw2	:	SBVR!StringWord(
+			val <- s.name	
+		),
+		sp	:	SBVR!SubSBVRProp(
+			join <- #that,
+			modalVerb <- #undefined,
+			verbs <- Sequence{#is, #"in"},
+			concept2 <- c3
+		),
+		c3	:	SBVR!ObjectConcept(
+			operatoredConcept <- nc3
+		),
+		nc3	:	SBVR!NounConcept(
+			qualif <- qua3,
+			noun <- sw3
+		),
+		qua3	:	SBVR!Qualifier(
+			op <- #undefined	
+		),
+		sw3	:	SBVR!StringWord(
+			val <- s.refImmediateComposite().name	
+		)		
+}
+
+rule Class{
+	from
+		s	:	KM3!Class (s.supertypes->isEmpty())
+	to
+		t	:	SBVR!VocabularyEntry(
+			primaryRep <- tr,
+			caption <- Sequence{cp, s.structuralFeatures}->flatten()
+		),
+		tr	:	SBVR!TermRepresentation(
+			term <- swo
+		),
+		swo	:	SBVR!StringWord(
+			val <- s.name
+		),
+		cp	:	SBVR!DefCaption(
+			definition <- df	
+		),
+		df	:	SBVR!ConceptDefinition(
+			exp <- concept--,
+--			conjexp
+		),
+		concept	:	SBVR!ObjectConcept(
+			operatoredConcept <- nc,
+			linkedConcept <- lsc
+		),
+		nc	:	SBVR!NounConcept(
+			qualif <- qua,
+			noun <- sw
+		),
+		sw	:	SBVR!StringWord(
+			val <-  if s.isAbstract then 'abstract ' else '' endif + 'concept'	
+		),
+		qua	:	SBVR!Qualifier(
+			op <- #The	
+		),
+		lsc	:	SBVR!LinkSBVRConcept(
+			link <- #of,
+			concept <- conc2
+		),
+		conc2	:	SBVR!ObjectConcept(
+			operatoredConcept <- ncon2,
+			subProp <- sp
+		),
+		ncon2	:	SBVR!NounConcept(
+			qualif <- qua2,
+			noun <- sw2
+		),
+		qua2	:	SBVR!Qualifier(
+			op <- #undefined	
+		),
+		sw2	:	SBVR!StringWord(
+			val <- s.name	
+		),
+		sp	:	SBVR!SubSBVRProp(
+			join <- #that,
+			modalVerb <- #undefined,
+			verbs <- Sequence{#is, #"in"},
+			concept2 <- c3
+		),
+		c3	:	SBVR!ObjectConcept(
+			operatoredConcept <- nc3
+		),
+		nc3	:	SBVR!NounConcept(
+			qualif <- qua3,
+			noun <- sw3
+		),
+		qua3	:	SBVR!Qualifier(
+			op <- #undefined	
+		),
+		sw3	:	SBVR!StringWord(
+			val <- s.package.name	
+		)		
+}
+
+
+rule Class2{
+	from
+		s	:	KM3!Class (not s.supertypes->isEmpty())
+	to
+		t	:	SBVR!VocabularyEntry(
+			primaryRep <- tr,
+			caption <- Sequence{ cp, gcc, s.structuralFeatures }->flatten()
+		),
+		tr	:	SBVR!TermRepresentation(
+			term <- swo
+		),
+		swo	:	SBVR!StringWord(
+			val <- s.name --cheating there
+		),
+		cp	:	SBVR!DefCaption(
+			definition <- df	
+		),
+		df	:	SBVR!ConceptDefinition(
+			exp <- concept
+		),
+		concept	:	SBVR!ObjectConcept(
+			operatoredConcept <- nc,
+			linkedConcept <- lsc
+		),
+		nc	:	SBVR!NounConcept(
+			qualif <- qua,
+			noun <- sw
+		),
+		sw	:	SBVR!StringWord(
+			val <- if s.isAbstract then 'abstract ' else '' endif + 'concept'	
+		),
+		qua	:	SBVR!Qualifier(
+			op <- #The	
+		),
+		lsc	:	SBVR!LinkSBVRConcept(
+			link <- #of,
+			concept <- conc2
+		),
+		conc2	:	SBVR!ObjectConcept(
+			operatoredConcept <- ncon2,
+			subProp <- sp
+		),
+		ncon2	:	SBVR!NounConcept(
+			qualif <- qua2,
+			noun <- sw2
+		),
+		qua2	:	SBVR!Qualifier(
+			op <- #undefined	
+		),
+		sw2	:	SBVR!StringWord(
+			val <- s.name	
+		),
+		sp	:	SBVR!SubSBVRProp(
+			join <- #that,
+			modalVerb <- #undefined,
+			verbs <- Sequence{#is, #"in"},
+			concept2 <- c3
+		),
+		c3	:	SBVR!ObjectConcept(
+			operatoredConcept <- nc3
+		),
+		nc3	:	SBVR!NounConcept(
+			qualif <- qua3,
+			noun <- sw3
+		),
+		qua3	:	SBVR!Qualifier(
+			op <- #undefined	
+		),
+		sw3	:	SBVR!StringWord(
+			val <- s.package.name	
+		),
+		gcc	:	SBVR!GenCCaption(
+			generalConcept <- s.supertypes->collect(c | thisModule.createPR(c))	
+		)
+}
+
+lazy rule createPR{
+	from
+		s	:	KM3!Class
+	to
+		t	:	SBVR!NameRepresentation(
+			hasThe <- false,
+			name <- nword
+		),
+		nword	:	SBVR!NameWord(
+			val <- s.name
+		)
+}
+
+rule createNecessity{ --cf C.3.7 in the specification: multiple necessity and possibility are permitted
+	from
+		s	:	KM3!StructuralFeature (s.lower > 0)
+	to
+		t	:	SBVR!Necessity(
+			exp <- ex
+		),
+		ex	:	SBVR!SBVRExpression(
+			firstProposition <- fp
+--			nextProposition
+		),
+		fp	:	SBVR!SimpleSBVRProp(
+			modal<-modb,
+			concept1 <- concep1,
+			concept2 <- concep2,
+			verbs <- if(s.oclIsTypeOf(KM3!Reference))then
+						if(s.isContainer)then #contains
+							else #has endif else #has endif
+		),
+		modb	:	SBVR!ModalBeginC(
+			endOperator <- #isobligatorythat	
+		),
+		concep1	:	SBVR!ObjectConcept(
+			operatoredConcept <- nc	
+		),
+		nc	:	SBVR!NounConcept(
+			noun <- sw
+		),
+		sw	:	SBVR!StringWord(
+			val <- s.owner.name	
+		),
+		concep2 :	SBVR!ObjectConcept(
+			operatoredConcept <- nc2,
+			subProp <- sprop
+		),
+		nc2	:	SBVR!NounConcept(
+			noun <- sw2,
+			qualif <- qualifier
+		),
+		sw2	:	SBVR!StringWord(
+			val <- s.name	
+		),
+		qualifier	:	SBVR!Qualifier(
+			op <- if(s.upper=1)then #exactly else #at endif,
+			endOperator <- if(s.lower = 1)
+							then if (s.upper > 1)
+									then #leastone
+									else if (s.upper = 1)
+											then #one
+											else #leastnandatmostm
+										endif
+								endif
+							else #leastnandatmostm
+							endif,
+			min <- swmin,
+			max <- swmax
+		),
+		swmin	:	SBVR!StringWord(
+			val <- s.lower.toString()
+		),
+		swmax	:	SBVR!StringWord(
+			val <- if (s.upper = -1) then 'n' else s.upper.toString() endif		
+		),
+		sprop	:	SBVR!SubSBVRProp(
+			join <- #that,
+			verbs <- Sequence{ #is },
+			concept2 <- typ
+		),
+		typ :	SBVR!NameConcept (
+			the <- #a,
+			name <- Sequence{ nw }
+		),
+		nw	:	SBVR!NameWord (
+			val <- s.type.name	
+		)
+}
+
+rule createPossibility{
+	from
+		s	:	KM3!StructuralFeature (s.lower = 0)
+	to
+		t	:	SBVR!Possibility(
+			exp <- ex
+		),
+		ex	:	SBVR!SBVRExpression(
+			firstProposition <- fp
+--			nextProposition
+		),
+		fp	:	SBVR!SimpleSBVRProp(
+			modal<-modb,
+			concept1 <- concep1,
+			concept2 <- concep2,
+			verbs <- if(s.oclIsTypeOf(KM3!Reference))then
+						if(s.isContainer)then #contains
+							else #has endif else #has endif
+		),
+		modb	:	SBVR!ModalBeginC(
+			endOperator <- #ispossiblethat	
+		),
+		concep1	:	SBVR!ObjectConcept(
+			operatoredConcept <- nc	
+		),
+		nc	:	SBVR!NounConcept(
+			noun <- sw
+		),
+		sw	:	SBVR!StringWord(
+			val <- s.owner.name	
+		),
+		concep2 :	SBVR!ObjectConcept(
+			operatoredConcept <- nc2,
+			subProp <- sprop
+		),
+		nc2	:	SBVR!NounConcept(
+			noun <- sw2,
+			qualif <- qualifier
+		),
+		sw2	:	SBVR!StringWord(
+			val <- s.name	
+		),
+		qualifier	:	SBVR!Qualifier(
+			op <- #at,
+			endOperator <- if(s.upper = 1)
+							then #mostone
+							else #most
+							endif,
+			min <- swmin,
+			max <- swmax
+		),
+		swmin	:	SBVR!StringWord(
+			val <- s.lower.toString()
+		),
+		swmax	:	SBVR!StringWord(
+			val <- if (s.upper = -1) then 'n' else s.upper.toString() endif	
+		),
+		sprop	:	SBVR!SubSBVRProp(
+			join <- #that,
+			verbs <- Sequence{ #is },
+			concept2 <- typ
+		),
+		typ :	SBVR!NameConcept (
+			the <- #a,
+			name <- Sequence{ nw }
+		),
+		nw	:	SBVR!NameWord (
+			val <- s.type.name	
+		)
+}

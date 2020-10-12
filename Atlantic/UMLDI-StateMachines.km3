@@ -1,0 +1,270 @@
+-- @name		UMLDI State Machine
+-- @version		0.1
+-- @domains		UML
+-- @authors		David Touzet
+-- @date		2006/02/21	
+-- @description	This is a simplified metamodel of UML State Machines diagram according to the UML Diagram Interchange standard. The source metamodel of UML is well described by the OMG. It has been voluntarily simplified to be used more easily.
+-- @see			UML Diagram Interchange 2.0 Adopted specification, OMG, http://www.omg.org/cgibin/doc?ptc/20030901, Unified Modeling Language (UML), version 1.5. http://www.omg.org/technology/documents/formal/uml.htm.
+
+package Core {
+	abstract class Element {
+	}
+
+	abstract class ModelElement extends Element {
+		reference namespace[0-1] : Namespace oppositeOf ownedElement;
+		attribute name[0-1] : String;
+		attribute visibility[0-1] : VisibilityKind;
+		attribute isSpecification : Boolean;
+	}
+
+	abstract class GeneralizableElement extends ModelElement {
+		reference generalization[*] : Generalization oppositeOf child;
+		attribute isRoot : Boolean;
+		attribute isLeaf : Boolean;
+		attribute isAbstract : Boolean;
+	}
+
+	abstract class Namespace extends ModelElement {
+		reference ownedElement[*] container : ModelElement oppositeOf namespace;
+	}
+
+	abstract class Classifier extends GeneralizableElement, Namespace {
+		reference powertypeRange[*] : Generalization oppositeOf powertype;
+		reference feature[*] ordered container : Feature oppositeOf owner;
+	}
+
+	abstract class Feature extends ModelElement {
+		reference owner[0-1] : Classifier oppositeOf feature;
+		attribute ownerScope : ScopeKind;
+	}
+
+	abstract class Relationship extends ModelElement { }
+
+	abstract class BehavioralFeature extends Feature {
+		reference parameter[*] ordered container : Parameter oppositeOf behavioralFeature;
+		attribute isQuery : Boolean;
+	}
+
+	class Operation extends BehavioralFeature {
+		attribute concurrency[0-1] : CallConcurrencyKind;
+		attribute isRoot : Boolean;
+		attribute isLeaf : Boolean;
+		attribute isAbstract : Boolean;
+		attribute specification[0-1] : String;
+	}
+
+	class Parameter extends ModelElement {
+		reference type : Classifier;
+		reference behavioralFeature[0-1] : BehavioralFeature oppositeOf parameter;
+		attribute defaultValue[0-1] : Expression;
+		attribute kind : ParameterDirectionKind;
+	}
+
+	class Generalization extends Relationship {
+		reference parent : GeneralizableElement;
+		reference powertype[0-1] : Classifier oppositeOf powertypeRange;
+		reference child : GeneralizableElement oppositeOf generalization;
+		attribute discriminator[0-1] : String;
+	}
+
+}
+
+package Common_Behavior {
+
+	class Signal extends Classifier { }
+
+	abstract class Action extends ModelElement {
+		reference actualArgument[*] ordered container : Argument oppositeOf action;
+		reference actionSequence[0-1] : ActionSequence oppositeOf action;
+		attribute recurrence[0-1] : IterationExpression;
+		attribute target[0-1] : ObjectSetExpression;
+		attribute isAsynchronous : Boolean;
+		attribute script[0-1] : ActionExpression;
+	}
+
+	class CreateAction extends Action {
+		reference instantiation : Classifier;
+	}
+
+	class DestroyAction extends Action { }
+
+	class UninterpretedAction extends Action { }
+
+	class CallAction extends Action {
+		reference "operation" : Operation;
+	}
+
+	class SendAction extends Action {
+		reference signal : Signal;
+	}
+
+	class ActionSequence extends Action {
+		reference action[*] ordered container : Action oppositeOf actionSequence;
+	}
+
+	class Argument extends ModelElement {
+		reference action[0-1] : Action oppositeOf actualArgument;
+		attribute value : Expression;
+	}
+
+	class Reception extends BehavioralFeature {
+		reference signal : Signal;
+		attribute specification[0-1] : String;
+		attribute isRoot : Boolean;
+		attribute isLeaf : Boolean;
+		attribute isAbstract : Boolean;
+	}
+
+	class ReturnAction extends Action { }
+
+	class TerminateAction extends Action { }
+
+	class Exception extends Signal { }
+
+}
+
+package State_Machines {
+
+	class StateMachine extends ModelElement {
+		reference context[0-1] : ModelElement;
+		reference submachineState[*] : SubmachineState oppositeOf submachine;
+		reference top container : State oppositeOf stateMachine;
+		reference transitions[*] container : Transition oppositeOf stateMachine;
+	}
+
+	abstract class Event extends ModelElement {
+		reference parameter[*] ordered container : Parameter;
+	}
+
+	abstract class StateVertex extends ModelElement {
+		reference "container"[0-1] : CompositeState oppositeOf subvertex;
+		reference incoming[*] : Transition oppositeOf target;
+		reference outgoing[*] : Transition oppositeOf source;
+	}
+
+	abstract class State extends StateVertex {
+		reference deferrableEvent[*] : Event;
+		reference internalTransition[*] container : Transition;
+		reference exit[0-1] container : Action;
+		reference doActivity[0-1] container : Action;
+		reference entry[0-1] container : Action;
+		reference stateMachine[0-1] : StateMachine oppositeOf top;
+	}
+
+	class TimeEvent extends Event {
+		attribute when : TimeExpression;
+	}
+
+	class CallEvent extends Event {
+		reference "operation" : Operation;
+	}
+
+	class SignalEvent extends Event {
+		reference signal : Signal;
+	}
+
+	class Transition extends ModelElement {
+		reference target : StateVertex oppositeOf incoming;
+		reference trigger[0-1] : Event;
+		reference stateMachine[0-1] : StateMachine oppositeOf transitions;
+		reference source : StateVertex oppositeOf outgoing;
+		reference effect[0-1] container : Action;
+		reference guard[0-1] container : Guard oppositeOf transition;
+	}
+
+	class CompositeState extends State {
+		reference subvertex[*] container : StateVertex oppositeOf "container";
+		attribute isConcurrent : Boolean;
+	}
+
+	class ChangeEvent extends Event {
+		attribute changeExpression : BooleanExpression;
+	}
+
+	class Guard extends ModelElement {
+		reference transition : Transition oppositeOf guard;
+		attribute expression : BooleanExpression;
+	}
+
+	class Pseudostate extends StateVertex {
+		attribute kind : PseudostateKind;
+	}
+
+	class SimpleState extends State { }
+
+	class SubmachineState extends CompositeState {
+		reference submachine : StateMachine oppositeOf submachineState;
+	}
+
+	class SynchState extends StateVertex {
+		attribute bound : Integer;
+	}
+
+	class StubState extends StateVertex {
+		attribute referenceState : String;
+	}
+
+	class FinalState extends State { }
+}
+
+package Data_Types {
+
+	enumeration CallConcurrencyKind {
+		literal cck_sequential;
+		literal cck_guarded;
+		literal cck_concurrent;
+	}
+
+	enumeration ParameterDirectionKind {
+		literal pdk_in;
+		literal pdk_inout;
+		literal pdk_out;
+		literal pdk_return;
+	}
+
+	enumeration ScopeKind {
+		literal sk_instance;
+		literal sk_classifier;
+	}
+
+	enumeration VisibilityKind {
+		literal vk_public;
+		literal vk_protected;
+		literal vk_private;
+		literal vk_package;
+	}
+
+	class Expression {
+		attribute language[0-1] : String;
+		attribute body : String;
+	}
+
+	class BooleanExpression extends Expression { }
+
+	class ObjectSetExpression extends Expression { }
+
+	class ActionExpression extends Expression {	}
+
+	class IterationExpression extends Expression { }
+
+	class TimeExpression extends Expression { }
+
+	enumeration PseudostateKind {
+		literal pk_choice;
+		literal pk_deepHistory;
+		literal pk_fork;
+		literal pk_initial;
+		literal pk_join;
+		literal pk_junction;
+		literal pk_shallowHistory;
+	}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Float;
+	datatype Integer;
+	datatype Long;
+	datatype String;
+	datatype Double;
+}

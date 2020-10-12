@@ -1,0 +1,41 @@
+-- ******************************************************************************
+-- Copyright (c) 2009 INRIA. 
+-- All rights reserved. This program and the accompanying materials 
+-- are made available under the terms of the Eclipse Public License v1.0 
+-- which accompanies this distribution, and is available at
+-- http://www.eclipse.org/legal/epl-v10.html
+-- 
+-- Contributors: 
+-- 	INRIA - Initial implementation
+--  
+-- ******************************************************************************
+module BMeasureToTable; -- Module Template
+create OUT : Table from IN : BMeasure;
+
+rule ProjectToTable {
+	
+	from 
+		i : BMeasure!Measure
+	
+	to 
+		o : Table!Table(
+			rows<-Sequence{heading,value}),
+					
+		heading : Table!Row(
+			cells<-Sequence{c1,c2,c3,c4}),
+			
+		c1 : Table!Cell(content<-'Model'),
+		c2 : Table!Cell(content<-'NumberOfClasses'),
+		c3 : Table!Cell(content<-'NumberOfAttributes'),
+		c4 : Table!Cell(content<-'NumberOfReferences'),
+		
+		value : Table!Row(
+			cells<-Sequence{c11,c12,c13,c14}),
+			
+		c11 : Table!Cell(content<-i.modelName),
+		c12 : Table!Cell(content<-i.totalNumberOfClasses.toString()),
+		c13 : Table!Cell(content<-i.totalNumberOfAttributes.toString()),
+		c14 : Table!Cell(content<-i.totalNumberOfReferences.toString())
+					
+}
+

@@ -1,0 +1,133 @@
+-- @name			Simulink/Stateflow
+-- @version			1.0
+-- @authors			Youssef Srour (Srour.youssef@gmail.com)
+-- @date			2006/07/10
+-- @description		This metamodel describes Simulink/Stateflow.
+-- @see        	 	http://chess.eecs.berkeley.edu/conferences/04/05/chessslides/agarwalchessrevu04.ppt
+
+package SimulinkStateFlow {
+	
+-- Begin Class Simulink
+	class Simulink {
+		reference subSystem[*] container : System oppositeOf simulink;
+	}-- End Class Simulink
+	
+-- Begin Class System
+	class System {
+		attribute name : String;
+		
+		reference simulink : Simulink oppositeOf subSystem;
+		reference blocks : Block oppositeOf system;
+		reference lines : Line oppositeOf system;
+		reference subSystem[*] container : System;
+		
+	}-- End Class System
+	
+-- Begin Class Connector
+	class Connector {
+		
+	}	-- End Class Connector
+	
+-- Begin Class Line
+	class Line {
+		attribute name : String;
+		
+		reference block : Block oppositeOf lines;
+		reference system : System oppositeOf lines;
+	}	-- End Class Line
+	
+-- Begin Class BranchPoint
+	class BranchPoint extends Connector{
+		
+	}	-- End Class BranchPoint
+	
+-- Begin Class Port
+	class Port extends Connector{
+		attribute units : Units;
+	}-- End Class Port
+	
+-- Begin Class Block
+	class Block {
+		attribute description : String;
+		attribute name : String;
+		attribute priority : String;
+		attribute natagme : String;
+		attribute blockType : String;
+		
+		reference lines[*] container : Line oppositeOf block;
+		reference parameters[*] container : Parameter oppositeOf block;
+		reference annotations[*] container : Annotation oppositeOf block;
+		reference blockRefs[*] container : BlockRef;
+		reference system : System oppositeOf blocks;
+	}	-- End Class Block
+
+-- Begin Class BlockRef
+	class BlockRef{
+	
+	}-- End Class BlockRef
+
+-- Begin Class Primitive
+	class Primitive extends Block{
+		attribute deadLine : String;
+		attribute period : String;
+		attribute executionTime : String;
+	}-- End Class Primitive
+	
+-- Begin Class OutPut
+	class OutPut extends Port{
+		attribute number : Integer;
+	}-- End Class OutPut
+	
+-- Begin Class TriggerPort
+	class TriggerPort extends Port{
+		attribute triggerType : TriggerEnum;
+	}-- End Class TriggerPort
+
+-- Begin Class EnablePort
+	class EnablePort extends Port{
+		attribute statesWhenEnabling : EnableEnum;
+	}-- End Class EnablePort
+	
+-- Begin Class Reference
+	class Reference extends Block{
+		attribute sourceBlock : String;
+		attribute sourceType : String;
+	}-- End Class Reference
+	
+-- Begin Class Annotation
+	class Annotation{
+		attribute text : String;
+		
+		reference block : Block oppositeOf annotations;
+	}-- End Class Annotation
+	
+-- Begin Class Parameter
+	class Parameter{
+		attribute value : String;
+		
+		reference block : Block oppositeOf parameters;
+	}-- End Class Parameter
+
+-- Begin enumeration Units
+	enumeration Units {
+		literal alpha;
+		literal beta;
+	}-- End enumeration Reference
+
+-- Begin enumeration Units
+	enumeration TriggerEnum {
+		literal alpha;
+		literal beta;
+	}-- End enumeration Reference
+	
+-- Begin EnableEnum Units
+	enumeration EnableEnum {
+		literal alpha;
+		literal beta;
+	}-- End enumeration EnableEnum
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+}

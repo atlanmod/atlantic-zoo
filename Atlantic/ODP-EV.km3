@@ -1,0 +1,270 @@
+-- @name		ODP Enterprise Viewpoint
+-- @version		0.1
+-- @domains		
+-- @authors		José Raúl Romero Salguero (jrromero@uco.es)
+-- @date		2006/01/01
+-- @description	The Reference Model of Open Distributed Processing (RM-ODP) provides a general framework for the standardization of open distributed processing. RM-ODP defines five generic and complementary viewpoints on the system and its environment: enterprise, information, computational, engineering and technology. They divide the system design according to several areas of concerns, each one focusing on a specific aspect of the system, and allow different stakeholders to observe the system from different perspectives. In particular, the ODP enterprise viewpoint is concerned with the purpose, scope and policies governing the activities of the ODP system within the organization of which it is a part. The Enterprise Viewpoint Metamodel defines the ODP Enterprise Language, and conforms to ITU-T Rec. X.906 | ISO/IEC Committee Draft 19793 ("Use of UML for ODP systems specifications") a standard that defines how to use UML to represent the ODP viewpoint languages and concepts.
+-- @see			http://www.rm-odp.net/resources/UML4ODP_CD_v2.0/BAR-022_UML4ODP_CD_v2.0.pdf
+
+package ODPEV {
+	class EnterpriseObject {
+		--- EO can reference to Communities
+		reference eoConfigurations[*] : Community oppositeOf coMembers;
+		--- EO can reference to Roles
+		reference eoRoles[*] : Role oppositeOf rolefillers;
+		--- EO references to Actions
+		reference eoArtefactActions[1-*] : Action oppositeOf actArtefactRoleFillers;
+		--- EO references to Actions
+		reference eoResourceActions[1-*] : Action oppositeOf actResourceRoleFillers;
+		--- EO references to Actions
+		reference eoActorActions[1-*] : Action oppositeOf actActorRoleFillers;
+		--- EO can reference to Policies
+		reference eoPolicy[*] : Policy oppositeOf poEnterpriseObject;
+		--- EO participates in EO_A_R with multiplicity *
+		reference eoEOAR[*] : EO_A_R oppositeOf eoarSubject;
+		--- EO participates in EO_A_R with multiplicity 1
+		reference eoEOPD : EO_P_D oppositeOf eopdAgent;
+	}
+
+	class ODPSystem extends EnterpriseObject {
+		--- ODP references to one Scope
+		reference odpBehaviour : Scope oppositeOf scOdpSystem;
+		--- ODP references to Objectives
+		reference odpObjectives[1-*] : Objective oppositeOf objFulfiller;
+		--- ODP references to one EnterpriseSpecification
+		reference odpSpecifier : EnterpriseSpecification oppositeOf esDescribedSystems;
+	}
+
+	class Party extends EnterpriseObject {
+		--- PTY can reference to AccountableActions
+		reference ptyAccountableAction[*] : AccountableAction oppositeOf aaAccountableParty;
+		--- PTY participates in EO_P_D with multiplicity 1
+		reference ptyEOPD : EO_P_D oppositeOf eopdPrincipal;
+	}
+	
+	class Objective {
+		--- OBJ can reference to one ODPSystem
+		reference objFulfiller[0-1] : ODPSystem oppositeOf odpObjectives;
+		--- OBJ references to one Contract
+		reference objSpecifier : Contract oppositeOf ctObjective;
+		--- OBJ can reference to Objectives
+		reference objRefiners[*] : Objective oppositeOf objRefinement;
+		--- OBJ can reference to one Objective
+		reference objRefinement[0-1] : Objective oppositeOf objRefiners;
+		--- OBJ can reference to Processes
+		reference objAchievers[*] : Process oppositeOf prObjectives;
+		--- OBJ references to Behaviours
+		reference objFulfillers[1-*] : Behaviour oppositeOf beObjectives;
+	}
+
+	class Scope {
+		--- SC references to one ODPSystem
+		reference scOdpSystem : ODPSystem oppositeOf odpBehaviour;
+	}
+
+	class EnterpriseSpecification {
+		--- ES references to ODPSystems
+		reference esDescribedSystems[1-*] : ODPSystem oppositeOf odpSpecifier;
+		--- ES references to one FieldOfApplication
+		reference esContext : FieldOfApplication oppositeOf faEnterpriseSpecifications;
+	}
+
+	class FieldOfApplication {
+		--- FA references to one EnterpriseSpecification
+		reference faEnterpriseSpecifications : EnterpriseSpecification oppositeOf esContext;
+	}
+
+	class Policy {
+		--- PO references to one Contract
+		reference poSpecifier : Contract oppositeOf ctPolicies;
+		--- PO references to one Community
+		reference poOwner : Community oppositeOf coPolicy;
+		--- PO can reference to Processes
+		reference poProcess[*] : Process oppositeOf prConstrainer;
+		--- PO can reference to Behaviours
+		reference poBehaviour[*] : Behaviour oppositeOf bePolicyConstrainer;
+		--- PO can reference to Behaviours
+		reference poChanger[*] : Behaviour oppositeOf bePolicy;
+		--- PO can reference to Roles
+		reference poRole[*] : Role oppositeOf roleConstrainer;
+		--- PO can reference to EnterpriseObjects
+		reference poEnterpriseObject[*] : EnterpriseObject oppositeOf eoPolicy;
+	}
+
+	class PolicyEnvelope extends Policy {
+		--- PE references to one Behaviour
+		reference pePolicySetter : Behaviour oppositeOf bePolicyEnvelope;
+		--- PE can reference to one Behaviour
+		reference peBehaviour[0-1] : Behaviour oppositeOf beConstrainer;
+		--- PE aggregates PolicyValues
+		reference peValues[1-*] ordered container : PolicyValue;
+		--- PE references to one PolicyValue
+		reference peCurrentValue : PolicyValue oppositeOf pvValue;
+	}
+
+	class PolicyValue extends Policy {
+		--- PV references to one PolicyEnvelope
+		reference pvValue : PolicyEnvelope oppositeOf peCurrentValue;
+	}
+	
+	class AssigmentPolicy extends Policy {
+		--- AP participates in EO_A_R with multiplicity *
+		reference apEOAR[*] : EO_A_R oppositeOf eoarGovernor;
+	}
+
+	class Contract {
+		--- CT references to one Policy
+		reference ctPolicies : Policy oppositeOf poSpecifier;
+		--- CT references to one Objective
+		reference ctObjective : Objective oppositeOf objSpecifier;
+		--- CT references to Behaviours
+		reference ctBehaviours[1-*] : Behaviour oppositeOf beSpecifiers;
+	}
+
+	class Process {
+		--- PR references to Objectives
+		reference prObjectives[1-*] : Objective oppositeOf objAchievers;
+		--- PR references to Steps
+		reference prDetails[1-*] : Step oppositeOf stGraphs;
+		--- PR can reference to one Step
+		reference prRefinement[0-1] : Step oppositeOf stAbstraction;
+		--- PR can reference to Policies
+		reference prConstrainer[*] : Policy oppositeOf poProcess;
+	}
+
+	class Step {
+		--- ST references to Processes
+		reference stGraphs[1-*] : Process oppositeOf prDetails;
+		--- ST can reference to one Process
+		reference stAbstraction[0-1] : Process oppositeOf prRefinement;
+	}
+
+	class Action extends Step {
+		--- ACT references to Behaviours
+		reference actBehaviours[1-*] : Behaviour oppositeOf beActions;
+		--- ACT references to EnterpriseObjects
+		reference actArtefactRoleFillers[*] : EnterpriseObject oppositeOf eoArtefactActions;
+		--- ACT references to EnterpriseObjects
+		reference actResourceRoleFillers[*] : EnterpriseObject oppositeOf eoResourceActions;
+		--- ACT references to EnterpriseObjects
+		reference actActorRoleFillers[*] : EnterpriseObject oppositeOf eoActorActions;
+	}
+
+	abstract class AccountableAction extends Action {
+		--- AA references to Parties
+		reference aaAccountableParty[1-*] : Party oppositeOf ptyAccountableAction;
+	}
+
+	class Prescription extends AccountableAction {
+	}
+
+	class Commitment extends AccountableAction {
+	}
+
+	class Declaration extends AccountableAction {
+	}
+
+	class Evaluation extends AccountableAction {
+	}
+
+	class Delegation extends AccountableAction {
+		--- DLG participates in EO_P_D with multiplicity 1
+		reference dlgEOPD : EO_P_D oppositeOf eopdAction;
+	}
+
+	class Behaviour {
+		--- BE references to Objectives
+		reference beObjectives[1-*] : Objective oppositeOf objFulfillers;
+		--- BE references to Contracts
+		reference beSpecifiers[1-*] : Contract oppositeOf ctBehaviours;
+		--- BE references to Actions
+		reference beActions[1-*] : Action oppositeOf actBehaviours;
+		--- BE can reference to one Role
+		reference beIdentifier[0-1] : Role oppositeOf roleBehaviour;
+		--- BE can reference to one PolicyEnvelope
+		reference bePolicyEnvelope[0-1] : PolicyEnvelope oppositeOf pePolicySetter;
+		--- BE can reference to one PolicyEnvelope
+		reference beConstrainer[0-1] : PolicyEnvelope oppositeOf peBehaviour;
+		--- BE can reference to Policies
+		reference bePolicyConstrainer[*] : Policy oppositeOf poBehaviour;
+		--- BE can reference to Policies
+		reference bePolicy[*] : Policy oppositeOf poChanger;
+	}
+
+	class Community {
+		--- CO can reference to one CommunityObject
+		reference coAbstraction[0-1] : CommunityObject oppositeOf cobjRefinement;
+		--- CO can reference to EnterpriseObjects
+		reference coMembers[*] : EnterpriseObject oppositeOf eoConfigurations;
+		--- CO can reference to Roles
+		reference coCommunityRoles[*] : Role oppositeOf roleSpecifier;
+		--- CO can reference to Policies
+		reference coPolicy[*] : Policy oppositeOf poOwner;
+	}
+
+	class CommunityObject extends EnterpriseObject {
+		--- COBJ references to one Community
+		reference cobjRefinement : Community oppositeOf coAbstraction;
+	}
+
+	class Role {
+		--- ROLE references to one Behaviour
+		reference roleBehaviour : Behaviour oppositeOf beIdentifier;
+		--- ROLE references to one Community
+		reference roleSpecifier : Community oppositeOf coCommunityRoles;
+		--- ROLE can reference to EnterpriseObjects
+		reference rolefillers[*] : EnterpriseObject oppositeOf eoRoles;
+		--- ROLE can reference to Policies
+		reference roleConstrainer[*] : Policy oppositeOf poRole;
+		--- ROLE participates in EO_A_R with multiplicity *
+		reference roleEOAR[*] : EO_A_R oppositeOf eoarSubjectRole;
+	}
+
+	class InterfaceRole extends Role {	
+	}
+	
+	class Violation extends Behaviour {
+		--- VIO references to one Rule
+		reference vioProhibitor : Rule oppositeOf ruViolation;	
+	}
+	
+	abstract class Rule {
+		--- RU can reference to Violations
+		reference ruViolation[*] : Violation oppositeOf vioProhibitor;
+	}
+	
+	class Obligation extends Rule {
+	}
+	
+	class Authorisation extends Rule {
+	}
+
+	class Permission extends Rule {
+	}
+
+	class Prohibition extends Rule {
+	}
+		
+	--- The following class represents to the ternary relationship 
+	--- between EnterpriseObject, AssignmentPolicy and Role  (Fig. 7, Policy Concepts)
+	class EO_A_R {
+		--- EnterpriseObject participates with multiplicity *
+		reference eoarSubject[*] : EnterpriseObject oppositeOf eoEOAR;
+		--- Role participates with multiplicity 1-*
+		reference eoarSubjectRole[1-*] : Role oppositeOf roleEOAR;
+		--- AssigmentPolicy participates with multiplicity *
+		reference eoarGovernor[*] : AssigmentPolicy oppositeOf apEOAR;
+	}
+
+	--- The following class represents to the ternary relationship 
+	--- between EnterpriseObject, AssignmentPolicy and Role  (Fig. 7, Policy Concepts)
+	class EO_P_D {
+		--- EnterpriseObject participates with multiplicity 1
+		reference eopdAgent : EnterpriseObject oppositeOf eoEOPD;
+		--- Party participates with multiplicity 1
+		reference eopdPrincipal : Party oppositeOf ptyEOPD;
+		--- Delegation participates with multiplicity 1
+		reference eopdAction : Delegation oppositeOf dlgEOPD;
+	}
+
+}

@@ -1,0 +1,87 @@
+package Metamodel;
+
+package BibTeX {
+  class BibTeXFile {
+    !ordered val BibTeXEntry[*] entries;
+  }
+
+  class Author {
+    !unique !ordered attr String[1] author;
+  }
+
+  abstract class BibTeXEntry {
+    !unique !ordered attr String[1] ~id;
+  }
+
+  abstract class AuthoredEntry extends BibTeXEntry {
+    !ordered val Author[+] authors;
+  }
+
+  abstract class DatedEntry extends BibTeXEntry {
+    !unique !ordered attr String[1] year;
+  }
+
+  abstract class TitledEntry extends BibTeXEntry {
+    !unique !ordered attr String[1] title;
+  }
+
+  abstract class BookTitledEntry extends BibTeXEntry {
+    !unique !ordered attr String[1] booktitle;
+  }
+
+  class Article extends AuthoredEntry, DatedEntry, TitledEntry {
+    !unique !ordered attr String[1] journal;
+  }
+
+  class TechReport extends AuthoredEntry, DatedEntry, TitledEntry {
+  }
+
+  class Unpublished extends AuthoredEntry, TitledEntry {
+    !unique !ordered attr String[1] note;
+  }
+
+  class Manual extends TitledEntry {
+  }
+
+  class Proceedings extends DatedEntry, TitledEntry {
+  }
+
+  class InProceedings extends Proceedings, AuthoredEntry, BookTitledEntry {
+  }
+
+  class Booklet extends DatedEntry {
+  }
+
+  class Book extends AuthoredEntry, DatedEntry, TitledEntry {
+    !unique !ordered attr String[1] publisher;
+  }
+
+  class InCollection extends Book, BookTitledEntry {
+  }
+
+  class InBook extends Book {
+    !unique !ordered attr Integer[1] chapter;
+  }
+
+  class Misc extends BibTeXEntry {
+  }
+
+  abstract class ThesisEntry extends AuthoredEntry, DatedEntry, TitledEntry {
+    !unique !ordered attr String[1] school;
+  }
+
+  class PhDThesis extends ThesisEntry {
+  }
+
+  class MasterThesis extends ThesisEntry {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+}
+

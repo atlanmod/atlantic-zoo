@@ -1,0 +1,106 @@
+-- @name		PASSI
+-- @version		1.0
+-- @domains		Multi-Agent
+-- @authors		SIMON Eric(simon.eric3@gmail.com)
+-- @date		2006/07/13
+-- @description	PASSI (a Process for Agent Societies Specification and Implementation) is a step-by-step requirement-to-code methodology for designing and developing multi-agent societies integrating design models and concepts from both OO software engineering and artificial intelligence approaches using the UML notation.
+-- @see			A Study of some Multi-Agent Meta-Models
+-- @see 		Authors: Carole Bernon, Massimo Cossentino, Marie-Pierre Gleizes, Paola Turci, Franco Zambonelli
+-- @see 		http://www.jamesodell.com/AOSE04-proceedings/AOSE04-08.pdf, p9
+
+package PASSI {
+
+ -- @begin "Solution Domain"
+ package "Solution Domain"  {
+ 	
+ 	class "FIPA-Platform Agent" {
+ 		reference fipa_platform_Task[*] container 	: "FIPA-platform Task" 	oppositeOf fipa_platform_Agent;
+ 		reference agent								: Agent 				oppositeOf fipa_platform_AgentA;
+ 	}
+ 
+	class "FIPA-platform Task" {
+		reference fipa_platform_Agent				: "FIPA-Platform Agent" oppositeOf fipa_platform_Task;
+		reference task								: Task					oppositeOf fipa_platform_TaskT;
+	}
+ 
+ 	class Service {}
+ 
+ }
+ -- @end "Solution Domain"
+ 
+ -- @begin "Agency Domain"
+ package "Agency Domain" {
+	
+	class Agent {
+		attribute Name : String;
+		reference Knowledge 			: Ontology;
+		reference fipa_platform_AgentA	: "FIPA-Platform Agent" 	oppositeOf agent;
+		reference role		container	: Role						oppositeOf agentR;
+		reference resource[0-*]			: Ressource;
+		reference non_functionnal_Requirement[0-*] : "Non functionnal Requirement";
+		reference requirement[1-*]		: Requirement;
+	}
+ 	
+ 	class Role {
+ 		reference agentR			: Agent	oppositeOf role;
+ 		reference service[0-*]		: Service;
+ 		reference task[1-*]			: Task;
+ 		reference scenario[1-*]		: Scenario;
+ 		reference communication[*]	: Communication;
+ 	}
+ 	
+ 	class Task {
+ 		attribute Name : String;
+ 		reference fipa_platform_TaskT : "FIPA-platform Task" oppositeOf task;
+ 	}
+ 	
+ 	class Communication {
+ 		attribute Name 	: String;
+ 		reference "Exchanged Knowledge" : Ontology;
+ 		reference message container 	: Message oppositeOf communication;
+ 		reference aip					: AIP; 
+ 	}
+ 	
+ 	class Message {
+ 		reference  communication : Communication oppositeOf message;
+ 		reference Comm_Act : Performative;
+ 	}
+ 	
+ 	class AIP {
+ 		attribute Name : String;
+ 		reference performative container : Performative oppositeOf aip;
+ 	}
+ 	
+ 	class Performative {
+ 		reference aip : AIP oppositeOf performative;
+ 	}
+ }
+ -- @end "Agency Domain"
+
+ -- @begin "Problem Domain"
+ package "Problem Domain" {
+ 	
+ 	class Ressource {
+ 		attribute Name : String;
+ 	}
+ 
+ 	class "Non functionnal Requirement" {}
+ 	
+ 	class Requirement {}
+ 	
+ 	class Scenario {}
+ 	
+ 	class Ontology {}
+ 	
+ 	class Concept 	extends Ontology {}
+ 	class Action 	extends Ontology {}
+ 	class Predicate	extends Ontology {}
+ 	
+ }
+ -- @end "Problem Domain"
+}
+
+package PrimitiveTypes {
+	datatype String;
+}
+

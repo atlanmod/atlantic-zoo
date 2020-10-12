@@ -1,0 +1,342 @@
+package Metamodel;
+
+package MiningMart {
+  enum InOut {
+    Input = 0;
+    OutPut = 0;
+  }
+
+  class LinkPackage {
+    !unique !ordered attr InOut[1] type;
+    !ordered ref CaseRepresentation.DataObject[1]#linkPackageCaseRepresentation dataObject;
+    !ordered ref DataRepresentation.Value#linkPackage value;
+    !ordered ref DataRepresentation.Column#linkPackage column;
+    !ordered ref DataRepresentation.ColumnSet#linkPackage columnSet;
+  }
+
+  package SimplfiedMiningMart {
+    class ModelElement {
+    }
+
+    class Classifier extends ModelElement {
+    }
+
+    class StructuralFeature extends ModelElement {
+    }
+
+    class Class extends Classifier {
+      !unique !ordered attr String[1] name;
+      !ordered val Attribute[+]#~class attributes;
+    }
+
+    class DataType extends Classifier {
+      !ordered ref Attribute[1]#has attribute;
+    }
+
+    class Attribute extends StructuralFeature {
+      !ordered ref Class[1]#attributes ~class;
+      !ordered ref DataType[1]#attribute has;
+    }
+
+  }
+
+  package DataRepresentation {
+    class Column extends SimplfiedMiningMart.Attribute {
+      !unique !ordered attr String[1] name;
+      !ordered ref SimplfiedMiningMart.DataType[1] dataType;
+      !ordered ref Key[*]#hasColumn keys;
+      !ordered ref ColumnSet[1]#hasColumn belongsToColumnSet;
+      !ordered ref BaseAttribute[1] corespondsToBaseAttribute;
+      !ordered ref LinkPackage#column linkPackage;
+    }
+
+    class ColumnSet extends SimplfiedMiningMart.Class {
+      !unique !ordered attr Integer[1] number;
+      !unique !ordered attr String[1] file;
+      !unique !ordered attr String[1] dbConnectString;
+      !unique !ordered attr String[1] user;
+      !ordered ref Column[+]#belongsToColumnSet hasColumn;
+      !ordered ref Key[+]#isAssociatedToColumnSet hasKey;
+      !ordered ref Concept#correspondsToColumnSet correspondsToConcept;
+      !ordered ref RelationShip#correspondsToColumnSet correspondsToRelationShip;
+      !ordered ref LinkPackage#columnSet linkPackage;
+    }
+
+    class ColumnStatistics {
+      !unique !ordered attr Integer[1] ~unique;
+      !unique !ordered attr Integer[1] missing;
+      !unique !ordered attr Integer[1] min;
+      !unique !ordered attr Integer[1] max;
+      !unique !ordered attr Integer[1] average;
+      !unique !ordered attr Integer[1] standarDeviation;
+      !unique !ordered attr String[1] distributionValue;
+      !unique !ordered attr Integer[1] distributionCount;
+      !unique !ordered attr Integer[1] distributionMin;
+      !unique !ordered attr Integer[1] distributionMax;
+      !ordered ref Column[1] forColumn;
+    }
+
+    class ColumnSetStatistics extends SimplfiedMiningMart.ModelElement {
+      !unique !ordered attr Integer[1] allNumber;
+      !unique !ordered attr Integer[1] ordinalNumber;
+      !unique !ordered attr Integer[1] nominalNumber;
+      !unique !ordered attr Integer[1] timeNumber;
+      !ordered ref ColumnSet[1] forColumnSet;
+    }
+
+    class Snapshot extends ColumnSet {
+    }
+
+    class Table extends ColumnSet {
+    }
+
+    class View extends ColumnSet {
+    }
+
+    class Key extends SimplfiedMiningMart.ModelElement {
+      !unique !ordered attr Boolean[1] isUsedForIndex;
+      !ordered ref Column[+]#keys hasColumn;
+      !ordered ref ColumnSet[1]#hasKey isAssociatedToColumnSet;
+    }
+
+    class ForeignKey extends Key {
+      !ordered ref Table isConnectionTo;
+      !ordered ref RelationShip#correspondsToForeignKey correspondsToRelationShip;
+    }
+
+    class PrimaryKey extends Key {
+    }
+
+    class Concept extends SimplfiedMiningMart.Class, CaseRepresentation.Parameter {
+      !unique !ordered attr String[1] subConceptRestriction;
+      !ordered ref Concept[1] isA;
+      !ordered ref RelationShip[1]#FromConcept FromConcept;
+      !ordered ref RelationShip[1]#ToConcept ToConcept;
+      !ordered ref ColumnSet#correspondsToConcept correspondsToColumnSet;
+    }
+
+    class RelationShip extends SimplfiedMiningMart.ModelElement, CaseRepresentation.Parameter {
+      !unique !ordered attr String[1] subRelationShipRestriction;
+      !unique !ordered attr String[1] defined;
+      !ordered ref RelationShip[1] isA;
+      !ordered ref ForeignKey[+]#correspondsToRelationShip correspondsToForeignKey;
+      !ordered ref ColumnSet#correspondsToRelationShip correspondsToColumnSet;
+      !ordered ref Concept[1]#FromConcept FromConcept;
+      !ordered ref Concept[1]#ToConcept ToConcept;
+    }
+
+    class FeatureAttribute extends SimplfiedMiningMart.Attribute {
+      !unique !ordered attr String[1] name;
+      !unique !ordered attr Boolean[1] relevanceForMining;
+      !ordered ref SimplfiedMiningMart.DataType[1] attributeType;
+      !ordered val Concept[1] belongsToConcept;
+      !ordered ref Column[+] correspondsToColumns;
+    }
+
+    class BaseAttribute extends FeatureAttribute {
+      !ordered ref MultiColumnFeature#consitsOfBaseAttributes isPartMultiColumnFeature;
+      !ordered ref DomainDataType[1]#baseAttributeD domainDataType;
+    }
+
+    class MultiColumnFeature extends FeatureAttribute {
+      !ordered val BaseAttribute[*]#isPartMultiColumnFeature consitsOfBaseAttributes;
+    }
+
+    class Value extends SimplfiedMiningMart.Attribute, CaseRepresentation.Parameter {
+      !ordered ref DomainDataType[1] domainDataType;
+      !ordered val UserInput[+] belongsToUserInput;
+      !ordered ref LinkPackage#value linkPackage;
+    }
+
+    class UserInput extends SimplfiedMiningMart.Class {
+      !ordered ref Value[+] containsValues;
+    }
+
+    class Ordinal extends DomainDataType {
+    }
+
+    class Scalar extends Ordinal {
+    }
+
+    class Time extends Scalar {
+    }
+
+    class Binary extends Scalar, Nominal {
+    }
+
+    class Categorial extends Nominal {
+    }
+
+    class KeyAttribute extends Nominal {
+    }
+
+    class TimeGroup extends KeyAttribute {
+    }
+
+    class Spatial extends KeyAttribute {
+    }
+
+    class Constant extends Nominal {
+    }
+
+    class RoleRestriction extends SimplfiedMiningMart.Attribute {
+      !unique !ordered attr String[1] name;
+      !ordered ref RelationShip[1] restrictionForRelationShip;
+      !ordered ref Concept[1] restrictionForConcept;
+      !ordered ref Concept[1] restrictionToConcept;
+      !unique !ordered attr Integer[1] min;
+      !unique !ordered attr Integer[1] max;
+      !ordered ref Concept[1] belongsToConcept;
+    }
+
+    class DomainDataType extends SimplfiedMiningMart.DataType {
+      !ordered ref BaseAttribute[1]#domainDataType baseAttributeD;
+    }
+
+    class Nominal extends DomainDataType {
+    }
+
+  }
+
+  package CaseRepresentation {
+    class Case extends SimplfiedMiningMart.ModelElement {
+      !unique !ordered attr String[1] name;
+      !unique !ordered attr Boolean[1] caseMode;
+      !ordered ref Parameter[1] caseInput;
+      !ordered ref DataRepresentation.Concept[1] caseOutput;
+      !unique !ordered attr String[1] documentation;
+      !ordered val Step[+]#belongsToCase listOfStep;
+      !ordered ref DataRepresentation.Concept[1] population;
+      !ordered ref DataRepresentation.FeatureAttribute[1] targetAttributes;
+    }
+
+    class Step extends SimplfiedMiningMart.ModelElement {
+      !unique !ordered attr String[1] name;
+      !unique !ordered attr String[1] description;
+      !ordered ref Case[1]#listOfStep belongsToCase;
+      !ordered ref Operator[1] embedsOperator;
+      !ordered ref Step[*] predecessors;
+      !ordered ref Step[*] successors;
+    }
+
+    class LoopStep extends Step {
+      ref DataRepresentation.FeatureAttribute[*] iterationSet;
+      ref DataRepresentation.FeatureAttribute[*] outputSet;
+    }
+
+    class MultiStep extends Step {
+      !unique !ordered attr String[1] iterationCondition;
+    }
+
+    abstract class Operator extends SimplfiedMiningMart.ModelElement {
+      !unique !ordered attr Boolean[1] loopable;
+      !unique !ordered attr Integer[1] numberOfInputParameters;
+      !unique !ordered attr Integer[1] numberOfOutputParameters;
+      !unique !ordered attr Boolean[1] manual;
+      !unique !ordered attr String[1] tool;
+      ref Parameter[+] input;
+      ref Parameter[+] output;
+      !ordered ref ExecutionElement[1] realizes;
+    }
+
+    class Parameter {
+      !unique !ordered attr String[1] name;
+      !unique !ordered attr String[1] place;
+      !unique !ordered attr ParameterType[1] parameterType;
+      !ordered ref Operator[1] belongsToOperator;
+    }
+
+    enum ParameterType {
+      Value = 0;
+      Concept = 0;
+      RelationShip = 0;
+      FeatureAttribute = 0;
+    }
+
+    class FeatureConstruction extends Operator {
+      !unique !ordered attr Integer[1] scalingFactor;
+    }
+
+    class DataMinStep extends Operator {
+    }
+
+    class TimeOperator extends Operator {
+    }
+
+    class FeatureSelection extends Operator {
+    }
+
+    class MultiRelFeatureConstr extends Operator {
+    }
+
+    class RowSelection extends Operator {
+    }
+
+    class Agregation extends MultiRelFeatureConstr {
+    }
+
+    class Scaling extends FeatureConstruction {
+    }
+
+    class Discretization extends FeatureConstruction {
+    }
+
+    class Segmentation extends RowSelection {
+    }
+
+    class Sampling extends RowSelection {
+    }
+
+    class ExecutionElement {
+      !ordered ref DataObject[1]#source source;
+      !ordered ref DataObject[1]#target target;
+    }
+
+    class DataObject {
+      !ordered ref ExecutionElement[1]#source source;
+      !ordered ref ExecutionElement[1]#target target;
+      !ordered ref LinkPackage[1]#dataObject linkPackageCaseRepresentation;
+    }
+
+    class MSL-Tool extends ExecutionElement {
+    }
+
+    class TransformationGroup extends ExecutionElement {
+      !ordered val Transformation[*]#transformationGroup transformation;
+    }
+
+    class Transformation extends ExecutionElement {
+      !ordered ref TransformationGroup[1]#transformation transformationGroup;
+    }
+
+    class Function extends Transformation {
+      !unique !ordered attr String[1] nameOf;
+      !unique !ordered attr String[1] signature;
+    }
+
+    class StoredProcedure extends Transformation {
+      !unique !ordered attr String[1] nameOf;
+      !unique !ordered attr String[1] signature;
+    }
+
+    class SQLQuery extends Transformation {
+      !ordered ref DataRepresentation.Column[+] select;
+      !ordered ref DataRepresentation.ColumnSet[+] from;
+      !unique !ordered attr String[*] where;
+    }
+
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+  datatype Real : "";
+
+  datatype Boolean : "";
+
+}
+

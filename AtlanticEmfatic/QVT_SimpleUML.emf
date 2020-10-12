@@ -1,0 +1,48 @@
+package Metamodel;
+
+package SimpleUML {
+  abstract class UMLModelElement {
+    !unique !ordered attr String[1] kind;
+    !unique !ordered attr String[1] name;
+  }
+
+  class Attribute extends UMLModelElement {
+    !ordered ref Class[1]#attribute owner;
+    !ordered ref Classifier[1]#typeOpposite type;
+  }
+
+  class Package extends UMLModelElement {
+    !ordered val PackageElement[*]#namespace elements;
+  }
+
+  abstract class PackageElement extends UMLModelElement {
+    !ordered ref Package[1]#elements namespace;
+  }
+
+  abstract class Classifier extends PackageElement {
+    !ordered ref Attribute[*]#type typeOpposite;
+  }
+
+  class Class extends Classifier {
+    !ordered val Attribute[*]#owner attribute;
+    !ordered ref Class[*]#generalOpposite general;
+    !ordered ref Class[*]#general generalOpposite;
+    !ordered ref Association[*]#source reverse;
+    !ordered ref Association[*]#destination forward;
+  }
+
+  class PrimitiveDataType extends Classifier {
+  }
+
+  class Association extends PackageElement {
+    !ordered ref Class[1]#reverse source;
+    !ordered ref Class[1]#forward destination;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+}
+

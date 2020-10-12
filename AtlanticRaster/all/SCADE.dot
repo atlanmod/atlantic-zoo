@@ -1,0 +1,577 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_SCADE"{
+labelloc=t
+color=black
+label=SCADE
+ node[shape=record];
+ListString[label="{ListString|value : String| }"]
+;
+ node[shape=record];
+ListInteger[label="{ListInteger|value : Integer| }"]
+;
+ node[shape=record];
+Model[label="{Model|library : Boolean\npathname : String| }"]
+ Model->Descriptor[arrowhead=none,arrowtail=none,headlabel="descriptor[0-1]",taillabel="modelD",group=Descriptor,minlen=2,constraint=false,]
+ Model->Project[arrowhead=vee,arrowtail=none,headlabel="project[0-1]",group=Project,minlen=2,constraint=false,]
+ Model->FileRef[arrowhead=vee,arrowtail=none,headlabel="fileRef[0-1]",group=FileRef,minlen=2,constraint=false,]
+ Model->Operator[arrowhead=none,arrowtail=none,headlabel="importedOperator[*]",taillabel="modelO",group=Operator,minlen=2,constraint=false,]
+ Model->Model[arrowhead=none,arrowtail=none,headlabel="libraries[*]",taillabel="client[*]",group=Model,minlen=2,constraint=false,]
+ Model->Model[arrowhead=vee,arrowtail=none,headlabel="allLibry[*]",group=Model,minlen=2,constraint=false,]
+ Model->Model[arrowhead=vee,arrowtail=none,headlabel="model",group=Model,minlen=2,constraint=false,]
+ Model->CoverageFile[arrowhead=diamond,arrowtail=none,headlabel="coverageFileM",taillabel="modelCov",group=CoverageFile,minlen=2,constraint=true,]
+ Model->CriterionFile[arrowhead=diamond,arrowtail=none,headlabel="criterionFileM",taillabel="modelCri",group=CriterionFile,minlen=2,constraint=true,]
+ Model->MtcApplication[arrowhead=diamond,arrowtail=none,headlabel="application",taillabel="modelM",group=MtcApplication,minlen=2,constraint=true,]
+ Model->Reference[arrowhead=vee,arrowtail=diamond,headlabel="reference[*]",group=Reference,minlen=2,constraint=true,]
+ Model->Constant[arrowhead=vee,arrowtail=none,headlabel="constant[0-1]",group=Constant,minlen=2,constraint=false,]
+ Model->Constant[arrowhead=vee,arrowtail=none,headlabel="allConstant[0-1]",group=Constant,minlen=2,constraint=false,]
+ Model->GlobalVariable[arrowhead=vee,arrowtail=none,headlabel="allvariable[0-1]",group=GlobalVariable,minlen=2,constraint=false,]
+ Model->GlobalVariable[arrowhead=vee,arrowtail=none,headlabel="variable[0-1]",group=GlobalVariable,minlen=2,constraint=false,]
+ Model->ConstVar[arrowhead=vee,arrowtail=none,headlabel="allConstVar[0-1]",group=ConstVar,minlen=2,constraint=false,]
+ Model->ConstVar[arrowhead=vee,arrowtail=none,headlabel="constVar[0-1]",group=ConstVar,minlen=2,constraint=false,]
+ Model->NamedType[arrowhead=vee,arrowtail=diamond,headlabel="allNamedType[0-1]",group=NamedType,minlen=2,constraint=true,]
+ Model->NamedType[arrowhead=vee,arrowtail=diamond,headlabel="namedType[0-1]",group=NamedType,minlen=2,constraint=true,]
+ Model->Object[arrowhead=onormal,group=Object,minlen=2,constraint=true,]
+ Model->MtcEntity[arrowhead=onormal,group=MtcEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Implementation[label="{Implementation| | }"]
+ Implementation->Model[arrowhead=diamond,arrowtail=none,headlabel="key",taillabel="implementation[0-1]",group=Model,minlen=2,constraint=true,]
+ Implementation->NamedType[arrowhead=none,arrowtail=none,headlabel="namedTypeI[1-*]",taillabel="implementation[0-1]",group=NamedType,minlen=2,constraint=false,]
+ Implementation->Object[arrowhead=onormal,group=Object,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConstBlock[label="{ConstBlock| | }"]
+ ConstBlock->Model[arrowhead=diamond,arrowtail=none,headlabel="modelC",taillabel="enumsBlock",group=Model,minlen=2,constraint=true,]
+ ConstBlock->Model[arrowhead=diamond,arrowtail=none,headlabel="keyC",taillabel="constBlockK[0-1]",group=Model,minlen=2,constraint=true,]
+ ConstBlock->Model[arrowhead=diamond,arrowtail=none,headlabel="key",taillabel="constBlock[0-1]",group=Model,minlen=2,constraint=true,]
+ ConstBlock->ModelBlock[arrowhead=onormal,group=ModelBlock,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VarBlock[label="{VarBlock| | }"]
+ VarBlock->Model[arrowhead=diamond,arrowtail=none,headlabel="keyVB",taillabel="varBlockK[0-1]",group=Model,minlen=2,constraint=true,]
+ VarBlock->Model[arrowhead=diamond,arrowtail=none,headlabel="key",taillabel="varBlock[0-1]",group=Model,minlen=2,constraint=true,]
+ VarBlock->ModelBlock[arrowhead=onormal,group=ModelBlock,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GlobalVariable[label="{GlobalVariable| | }"]
+ GlobalVariable->VarBlock[arrowhead=diamond,arrowtail=none,headlabel="key[0-1]",taillabel="variable[0-1]",group=VarBlock,minlen=2,constraint=true,]
+ GlobalVariable->Variable[arrowhead=onormal,group=Variable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TypeBlock[label="{TypeBlock| | }"]
+ TypeBlock->Model[arrowhead=diamond,arrowtail=none,headlabel="key",taillabel="typeBlock[0-1]",group=Model,minlen=2,constraint=true,]
+ TypeBlock->ModelBlock[arrowhead=onormal,group=ModelBlock,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Session[label="{Session|DefinedIn : String| }"]
+ Session->Descriptor[arrowhead=vee,arrowtail=none,headlabel="descriptor",group=Descriptor,minlen=2,constraint=false,]
+ Session->Model[arrowhead=vee,arrowtail=none,headlabel="model[0-1]",group=Model,minlen=2,constraint=false,]
+ Session->Model[arrowhead=vee,arrowtail=none,headlabel="loadsModel[*]",group=Model,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Descriptor[label="{Descriptor|modelFileName : String\nsernFileName : String\nsernPersistAs : String\nrnetFileName : String\nrnetPersistAs : String\noccBase : Integer\nsize : Integer\nnameVerify : Boolean\nchecked : Boolean| }"]
+ Descriptor->ListString[arrowhead=vee,arrowtail=none,headlabel="libraryModels[*]",group=ListString,minlen=2,constraint=false,]
+ Descriptor->ListString[arrowhead=vee,arrowtail=none,headlabel="annTypeFiles[*]",group=ListString,minlen=2,constraint=false,]
+ Descriptor->Object[arrowhead=onormal,group=Object,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StorageUnit[label="{StorageUnit|saoFileName : String\nannFileName : String\npersistAs : String\nloaded : Boolean\nsaoModified : Boolean\nannModified : Boolean| }"]
+ StorageUnit->FileRef[arrowhead=vee,arrowtail=none,headlabel="fileRef",group=FileRef,minlen=2,constraint=false,]
+ StorageUnit->Model[arrowhead=diamond,arrowtail=none,headlabel="modelS",taillabel="storageUnitM[*]",group=Model,minlen=2,constraint=true,]
+ StorageUnit->Object[arrowhead=onormal,group=Object,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StorageElement[label="{/StorageElement/| | }"]
+ StorageElement->StorageUnit[arrowhead=none,arrowtail=none,headlabel="storageUnitE",taillabel="element[*]",group=StorageUnit,minlen=2,constraint=false,]
+ StorageElement->Annotable[arrowhead=onormal,group=Annotable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Object[label="{/Object/|name : String\nrunLine : Integer| }"]
+;
+ node[shape=record];
+Block[label="{/Block/|zoomCoeff : Integer\nfromat : String\nlanscape : Boolean\ndefaultPageFormat : Boolean| }"]
+ Block->StorageElement[arrowhead=onormal,group=StorageElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NodeBlock[label="{NodeBlock| | }"]
+ NodeBlock->Node[arrowhead=vee,arrowtail=none,headlabel="node",group=Node,minlen=2,constraint=false,]
+ NodeBlock->Block[arrowhead=onormal,group=Block,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ModelBlock[label="{/ModelBlock/| | }"]
+ ModelBlock->ListInteger[arrowhead=vee,arrowtail=diamond,headlabel="columnsSize[*]{ordered}",group=ListInteger,minlen=2,constraint=true,]
+ ModelBlock->Model[arrowhead=vee,arrowtail=none,headlabel="model",group=Model,minlen=2,constraint=false,]
+ ModelBlock->Block[arrowhead=onormal,group=Block,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Expression[label="{/Expression/| | }"]
+ Expression->ExprContact[arrowhead=diamond,arrowtail=none,headlabel="exprContactE",taillabel="initValue[*]{ordered}",group=ExprContact,minlen=2,constraint=true,]
+ Expression->ExprCall[arrowhead=diamond,arrowtail=none,headlabel="exprCallE[0-1]",taillabel="parameter[*]{ordered}",group=ExprCall,minlen=2,constraint=true,]
+ Expression->ConstVar[arrowhead=vee,arrowtail=none,headlabel="dependance[0-1]",group=ConstVar,minlen=2,constraint=false,]
+ Expression->ExprId[arrowhead=vee,arrowtail=none,headlabel="subExprId[*]",group=ExprId,minlen=2,constraint=false,]
+ Expression->ParamArray[arrowhead=diamond,arrowtail=none,headlabel="paramArray[0-1]",taillabel="value[*]{ordered}",group=ParamArray,minlen=2,constraint=true,]
+ Expression->Constant[arrowhead=diamond,arrowtail=none,headlabel="constant[0-1]",taillabel="value[0-1]",group=Constant,minlen=2,constraint=true,]
+ Expression->Equation[arrowhead=diamond,arrowtail=none,headlabel="equationE[0-1]",taillabel="right[0-1]",group=Equation,minlen=2,constraint=true,]
+ Expression->Assertion[arrowhead=diamond,arrowtail=none,headlabel="assertionE[0-1]",taillabel="expression",group=Assertion,minlen=2,constraint=true,]
+ Expression->Object[arrowhead=onormal,group=Object,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Label[label="{Label| | }"]
+ Label->Expression[arrowhead=diamond,arrowtail=none,headlabel="expression",taillabel="label[0-1]",group=Expression,minlen=2,constraint=true,]
+ Label->Object[arrowhead=onormal,group=Object,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExprNull[label="{ExprNull| | }"]
+ ExprNull->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConstValue[label="{ConstValue|value : String| }"]
+ ConstValue->Object[arrowhead=vee,arrowtail=none,headlabel="kind",group=Object,minlen=2,constraint=false,]
+ ConstValue->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExprContact[label="{ExprContact| | }"]
+ ExprContact->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExprCall[label="{ExprCall|numOcc : Integer\npredefOpr : Integer| }"]
+ ExprCall->ExprContact[arrowhead=diamond,arrowtail=none,headlabel="exprContactEC",taillabel="calledOpr",group=ExprContact,minlen=2,constraint=true,]
+ ExprCall->Operator[arrowhead=vee,arrowtail=none,headlabel="operator[0-1]",group=Operator,minlen=2,constraint=false,]
+ ExprCall->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Operator[label="{Operator|category : String\nconversion : Boolean\nstate : Boolean\nindex : Integer| }"]
+ Operator->LocalVariable[arrowhead=vee,arrowtail=none,headlabel="variable[0-1]",group=LocalVariable,minlen=2,constraint=false,]
+ Operator->EqBlock[arrowhead=none,arrowtail=none,headlabel="client[*]",taillabel="calledOperator[*]",group=EqBlock,minlen=2,constraint=false,]
+ Operator->Model[arrowhead=diamond,arrowtail=none,headlabel="modelOp",taillabel="all[*]",group=Model,minlen=2,constraint=true,]
+ Operator->Instance[arrowhead=none,arrowtail=none,headlabel="intanceO[*]",taillabel="operatorI",group=Instance,minlen=2,constraint=false,]
+ Operator->Operator[arrowhead=vee,arrowtail=none,headlabel="operator",group=Operator,minlen=2,constraint=false,]
+ Operator->StorageElement[arrowhead=onormal,group=StorageElement,minlen=2,constraint=true,]
+ Operator->MtcEntity[arrowhead=onormal,group=MtcEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExprId[label="{ExprId| | }"]
+ ExprId->ExprContact[arrowhead=diamond,arrowtail=none,headlabel="exprContactEI",taillabel="boolAct",group=ExprContact,minlen=2,constraint=true,]
+ ExprId->ConstVar[arrowhead=vee,arrowtail=none,headlabel="reference",group=ConstVar,minlen=2,constraint=false,]
+ ExprId->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LocalVariable[label="{LocalVariable|optional : Boolean\nconst : Boolean\nprobe : Boolean\npure : Boolean\ninitValue : String| }"]
+ LocalVariable->Operator[arrowhead=diamond,arrowtail=none,headlabel="operatorI[0-1]",taillabel="input[*]{ordered}",group=Operator,minlen=2,constraint=true,]
+ LocalVariable->Operator[arrowhead=diamond,arrowtail=none,headlabel="operatorO[0-1]",taillabel="output[*]{ordered}",group=Operator,minlen=2,constraint=true,]
+ LocalVariable->Operator[arrowhead=diamond,arrowtail=none,headlabel="operatorH[0-1]",taillabel="hidden[*]{ordered}",group=Operator,minlen=2,constraint=true,]
+ LocalVariable->Node[arrowhead=diamond,arrowtail=none,headlabel="nodeL[0-1]",taillabel="local[*]",group=Node,minlen=2,constraint=true,]
+ LocalVariable->Node[arrowhead=diamond,arrowtail=none,headlabel="nodeI[0-1]",taillabel="internal[*]",group=Node,minlen=2,constraint=true,]
+ LocalVariable->Variable[arrowhead=onormal,group=Variable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Node[label="{Node| | }"]
+ Node->Object[arrowhead=vee,arrowtail=none,headlabel="nodeKind",group=Object,minlen=2,constraint=false,]
+ Node->Model[arrowhead=diamond,arrowtail=none,headlabel="key",taillabel="node[0-1]",group=Model,minlen=2,constraint=true,]
+ Node->StateMachine[arrowhead=vee,arrowtail=none,headlabel="stateMachine[0-1]",group=StateMachine,minlen=2,constraint=false,]
+ Node->Model[arrowhead=diamond,arrowtail=none,headlabel="modelN",taillabel="tmpNode[*]",group=Model,minlen=2,constraint=true,]
+ Node->Operator[arrowhead=onormal,group=Operator,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ParamBlock[label="{ParamBlock| | }"]
+ ParamBlock->Node[arrowhead=diamond,arrowtail=none,headlabel="key",taillabel="paramBlock[0-1]",group=Node,minlen=2,constraint=true,]
+ ParamBlock->ListInteger[arrowhead=vee,arrowtail=diamond,headlabel="columnsSize[*]{ordered}",group=ListInteger,minlen=2,constraint=true,]
+ ParamBlock->NodeBlock[arrowhead=onormal,group=NodeBlock,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ParamArray[label="{ParamArray| | }"]
+ ParamArray->ListString[arrowhead=vee,arrowtail=diamond,headlabel="notes[*]{ordered}",group=ListString,minlen=2,constraint=true,]
+ ParamArray->ParamBlock[arrowhead=diamond,arrowtail=none,headlabel="paramBlock",taillabel="array[1-*]{ordered}",group=ParamBlock,minlen=2,constraint=true,]
+ ParamArray->Operator[arrowhead=vee,arrowtail=none,headlabel="operator",group=Operator,minlen=2,constraint=false,]
+ ParamArray->Annotable[arrowhead=onormal,group=Annotable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConstVar[label="{ConstVar| | }"]
+ ConstVar->Object[arrowhead=vee,arrowtail=none,headlabel="kind",group=Object,minlen=2,constraint=false,]
+ ConstVar->EqBlock[arrowhead=none,arrowtail=none,headlabel="client[*]",taillabel="referencedId[*]",group=EqBlock,minlen=2,constraint=false,]
+ ConstVar->Annotable[arrowhead=onormal,group=Annotable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Constant[label="{Constant|imported : Boolean| }"]
+ Constant->Enumeration[arrowhead=diamond,arrowtail=none,headlabel="enumeration[0-1]",taillabel="value[1-*]{ordered}",group=Enumeration,minlen=2,constraint=true,]
+ Constant->ConstBlock[arrowhead=diamond,arrowtail=none,headlabel="key[0-1]",taillabel="constant[0-1]",group=ConstBlock,minlen=2,constraint=true,]
+ Constant->ConstVar[arrowhead=onormal,group=ConstVar,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Variable[label="{Variable| | }"]
+ Variable->Variable[arrowhead=vee,arrowtail=none,headlabel="clock[0-1]",group=Variable,minlen=2,constraint=false,]
+ Variable->Equation[arrowhead=none,arrowtail=none,headlabel="definition[*]",taillabel="left[*]{ordered}",group=Equation,minlen=2,constraint=false,]
+ Variable->ConstVar[arrowhead=onormal,group=ConstVar,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Type[label="{/Type/| | }"]
+ Type->Type[arrowhead=vee,arrowtail=none,headlabel="usedType[*]",group=Type,minlen=2,constraint=false,]
+ Type->Model[arrowhead=diamond,arrowtail=none,headlabel="model",taillabel="typeM[*]",group=Model,minlen=2,constraint=true,]
+ Type->CompositeElement[arrowhead=none,arrowtail=none,headlabel="compositeElementT[*]",taillabel="typeC[0-1]",group=CompositeElement,minlen=2,constraint=false,]
+ Type->ConstVar[arrowhead=none,arrowtail=none,headlabel="constVar[*]",taillabel="type",group=ConstVar,minlen=2,constraint=false,]
+ Type->Annotable[arrowhead=onormal,group=Annotable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Table[label="{Table|size : Integer| }"]
+ Table->Type[arrowhead=none,arrowtail=none,headlabel="typeT[0-1]",taillabel="tableT[*]",group=Type,minlen=2,constraint=false,]
+ Table->Type[arrowhead=onormal,group=Type,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NamedType[label="{NamedType| | }"]
+ NamedType->Object[arrowhead=vee,arrowtail=none,headlabel="kind",group=Object,minlen=2,constraint=false,]
+ NamedType->NamedType[arrowhead=none,arrowtail=none,headlabel="refinement[*]",taillabel="refined[*]",group=NamedType,minlen=2,constraint=false,]
+ NamedType->Operator[arrowhead=vee,arrowtail=none,headlabel="to[0-1]",group=Operator,minlen=2,constraint=false,]
+ NamedType->Operator[arrowhead=vee,arrowtail=none,headlabel="from[0-1]",group=Operator,minlen=2,constraint=false,]
+ NamedType->Type[arrowhead=none,arrowtail=none,headlabel="definition[0-1]",taillabel="namedTypeT[*]",group=Type,minlen=2,constraint=false,]
+ NamedType->Model[arrowhead=diamond,arrowtail=none,headlabel="keyM",taillabel="refinement[0-1]",group=Model,minlen=2,constraint=true,]
+ NamedType->TypeBlock[arrowhead=diamond,arrowtail=none,headlabel="key",taillabel="type[0-1]",group=TypeBlock,minlen=2,constraint=true,]
+ NamedType->Type[arrowhead=onormal,group=Type,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Enumeration[label="{Enumeration| | }"]
+ Enumeration->Type[arrowhead=onormal,group=Type,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Composite[label="{/Composite/| | }"]
+ Composite->Type[arrowhead=onormal,group=Type,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompositeElement[label="{CompositeElement| | }"]
+ CompositeElement->Composite[arrowhead=diamond,arrowtail=none,headlabel="key",taillabel="element[0-1]",group=Composite,minlen=2,constraint=true,]
+ CompositeElement->Object[arrowhead=onormal,group=Object,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Structure[label="{Structure| | }"]
+ Structure->Composite[arrowhead=onormal,group=Composite,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Tuple[label="{Tuple| | }"]
+ Tuple->Composite[arrowhead=onormal,group=Composite,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EqBlock[label="{EqBlock| | }"]
+ EqBlock->Node[arrowhead=diamond,arrowtail=none,headlabel="key",taillabel="eqBlock[0-1]",group=Node,minlen=2,constraint=true,]
+ EqBlock->NodeBlock[arrowhead=onormal,group=NodeBlock,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Equation[label="{Equation|rotation : Integer\nsymetrical : Boolean\nterminator : Boolean| }"]
+ Equation->EqBlock[arrowhead=diamond,arrowtail=none,headlabel="eqBlock",taillabel="equation[1-*]",group=EqBlock,minlen=2,constraint=true,]
+ Equation->RPoint[arrowhead=vee,arrowtail=diamond,headlabel="position[0-1]",group=RPoint,minlen=2,constraint=true,]
+ Equation->RSize[arrowhead=vee,arrowtail=diamond,headlabel="size[0-1]",group=RSize,minlen=2,constraint=true,]
+ Equation->Annotable[arrowhead=onormal,group=Annotable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Assertion[label="{Assertion| | }"]
+ Assertion->EqBlock[arrowhead=diamond,arrowtail=none,headlabel="key[0-1]",taillabel="assertion[0-1]",group=EqBlock,minlen=2,constraint=true,]
+ Assertion->Edge[arrowhead=diamond,arrowtail=none,headlabel="edge[0-1]",taillabel="assertion[0-1]",group=Edge,minlen=2,constraint=true,]
+ Assertion->RPoint[arrowhead=vee,arrowtail=diamond,headlabel="position[0-1]",group=RPoint,minlen=2,constraint=true,]
+ Assertion->Annotable[arrowhead=onormal,group=Annotable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Annotable[label="{/Annotable/|DefinedIn : String| }"]
+ Annotable->Object[arrowhead=onormal,group=Object,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Prop[label="{Prop|name : String| }"]
+ Prop->ListString[arrowhead=vee,arrowtail=diamond,headlabel="values[*]{ordered}",group=ListString,minlen=2,constraint=true,]
+ Prop->Annotable[arrowhead=diamond,arrowtail=none,headlabel="entity",taillabel="propA[*]{ordered}",group=Annotable,minlen=2,constraint=true,]
+ Prop->Configuration[arrowhead=diamond,arrowtail=none,headlabel="configurationP[0-1]",taillabel="propC[*]{ordered}",group=Configuration,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Configuration[label="{Configuration|name : String| }"]
+ Configuration->Project[arrowhead=diamond,arrowtail=diamond,headlabel="projectC",taillabel="configuration[*]{ordered}",group=Project,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Project[label="{Project|pathname : String| }"]
+ Project->FileRef[arrowhead=vee,arrowtail=none,headlabel="fileRef[*]",group=FileRef,minlen=2,constraint=false,]
+ Project->Annotable[arrowhead=onormal,group=Annotable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Element[label="{/Element/|name : String\nderived : Boolean\nident : String\ndescription : String| }"]
+ Element->Project[arrowhead=diamond,arrowtail=none,headlabel="root[0-1]",taillabel="owner[*]{ordered}",group=Project,minlen=2,constraint=true,]
+ Element->Folder[arrowhead=diamond,arrowtail=none,headlabel="folder[0-1]",taillabel="element[*]{ordered}",group=Folder,minlen=2,constraint=true,]
+ Element->Criterion[arrowhead=diamond,arrowtail=none,headlabel="criterionE",taillabel="element[*]{ordered}",group=Criterion,minlen=2,constraint=true,]
+ Element->MtcEntity[arrowhead=onormal,group=MtcEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FileRef[label="{FileRef|pathname : String\npersistAs : String\nDefinedIn : String| }"]
+ FileRef->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Folder[label="{Folder|extensions : String| }"]
+ Folder->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Reference[label="{/Reference/| | }"]
+;
+ node[shape=record];
+TypeReference[label="{TypeReference| | }"]
+ TypeReference->Reference[arrowhead=onormal,group=Reference,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperatorReference[label="{OperatorReference| | }"]
+ OperatorReference->Reference[arrowhead=onormal,group=Reference,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VariableReference[label="{VariableReference| | }"]
+ VariableReference->Reference[arrowhead=onormal,group=Reference,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Error[label="{Error| | }"]
+;
+ node[shape=record];
+Edge[label="{Edge|leftVarIndex : Integer\nlabelOrientation : Integer| }"]
+ Edge->Variable[arrowhead=vee,arrowtail=none,headlabel="leftVar",group=Variable,minlen=2,constraint=false,]
+ Edge->ExprId[arrowhead=vee,arrowtail=none,headlabel="rightExpression",group=ExprId,minlen=2,constraint=false,]
+ Edge->Equation[arrowhead=vee,arrowtail=none,headlabel="srcEquation",group=Equation,minlen=2,constraint=false,]
+ Edge->RPoint[arrowhead=vee,arrowtail=diamond,headlabel="position[*]",group=RPoint,minlen=2,constraint=true,]
+ Edge->Equation[arrowhead=diamond,arrowtail=none,headlabel="dstEquation",taillabel="outEdge[*]",group=Equation,minlen=2,constraint=true,]
+ Edge->Object[arrowhead=onormal,group=Object,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RPoint[label="{RPoint| | }"]
+;
+ node[shape=record];
+RSize[label="{RSize| | }"]
+;
+ node[shape=record];
+Entity[label="{/Entity/|DefinedIn : String| }"]
+;
+ node[shape=record];
+StateObj[label="{/StateObj/| | }"]
+ StateObj->Entity[arrowhead=onormal,group=Entity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GraphicalObject[label="{/GraphicalObject/| | }"]
+ GraphicalObject->StateObj[arrowhead=onormal,group=StateObj,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StInputOutput[label="{/StInputOutput/|name : String\ntype : String\nclock : Boolean\nconst : Boolean\noptional : Boolean| }"]
+ StInputOutput->GraphicalObject[arrowhead=onormal,group=GraphicalObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StInitInput[label="{StInitInput| | }"]
+ StInitInput->StInputOutput[arrowhead=onormal,group=StInputOutput,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StInput[label="{StInput| | }"]
+ StInput->StInputOutput[arrowhead=onormal,group=StInputOutput,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StOutput[label="{StOutput| | }"]
+ StOutput->StInputOutput[arrowhead=onormal,group=StInputOutput,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Transition[label="{Transition|conditions : String\ntransKind : Integer| }"]
+ Transition->State[arrowhead=none,arrowtail=none,headlabel="state1",taillabel="transition1[*]{ordered}",group=State,minlen=2,constraint=false,]
+ Transition->GraphicalObject[arrowhead=onormal,group=GraphicalObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+State[label="{State|name : String\ncx : Double\ncy : Double| }"]
+ State->Transition[arrowhead=none,arrowtail=none,headlabel="transition2[*]",taillabel="state2",group=Transition,minlen=2,constraint=false,]
+ State->StOutput[arrowhead=vee,arrowtail=none,headlabel="stOutput",group=StOutput,minlen=2,constraint=false,]
+ State->GraphicalObject[arrowhead=onormal,group=GraphicalObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InitialStPtr[label="{InitialStPtr|cx : Double\ncy : Double| }"]
+ InitialStPtr->State[arrowhead=vee,arrowtail=none,headlabel="state",group=State,minlen=2,constraint=false,]
+ InitialStPtr->GraphicalObject[arrowhead=onormal,group=GraphicalObject,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StateMachine[label="{StateMachine| | }"]
+ StateMachine->InitialStPtr[arrowhead=vee,arrowtail=none,headlabel="initialStPtr",group=InitialStPtr,minlen=2,constraint=false,]
+ StateMachine->State[arrowhead=vee,arrowtail=none,headlabel="state[*]",group=State,minlen=2,constraint=false,]
+ StateMachine->Transition[arrowhead=vee,arrowtail=none,headlabel="transition[*]",group=Transition,minlen=2,constraint=false,]
+ StateMachine->Object[arrowhead=onormal,group=Object,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Base[label="{/Base/|DefineIn : String| }"]
+;
+ node[shape=record];
+StateBase[label="{StateBase| | }"]
+ StateBase->Base[arrowhead=onormal,group=Base,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnNote[label="{AnnNote|name : String\nmodified : Boolean| }"]
+ AnnNote->AnnNoteType[arrowhead=vee,arrowtail=none,headlabel="annNoteType",group=AnnNoteType,minlen=2,constraint=false,]
+ AnnNote->Annotable[arrowhead=vee,arrowtail=none,headlabel="annotable",group=Annotable,minlen=2,constraint=false,]
+;
+ node[shape=record];
+AnnAttValue[label="{/AnnAttValue/| | }"]
+ AnnAttValue->AnnNote[arrowhead=diamond,arrowtail=none,headlabel="annNote",taillabel="annAttValue[1-*]{ordered}",group=AnnNote,minlen=2,constraint=true,]
+ AnnAttValue->AnnAttDefinition[arrowhead=vee,arrowtail=none,headlabel="annAttDefinition",group=AnnAttDefinition,minlen=2,constraint=false,]
+;
+ node[shape=record];
+AnnNoteType[label="{AnnNoteType|name : String| }"]
+ AnnNoteType->AnnotSchema[arrowhead=diamond,arrowtail=none,headlabel="key",taillabel="annNoteType",group=AnnotSchema,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnAttDefinition[label="{AnnAttDefinition|name : String\ntype : Integer| }"]
+ AnnAttDefinition->AnnAttGroup[arrowhead=vee,arrowtail=none,headlabel="annAttGroup",group=AnnAttGroup,minlen=2,constraint=false,]
+ AnnAttDefinition->AnnNoteType[arrowhead=diamond,arrowtail=none,headlabel="key",taillabel="annAttDefinition[0-1]",group=AnnNoteType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnAttIntValue[label="{AnnAttIntValue|value : Integer| }"]
+ AnnAttIntValue->AnnAttValue[arrowhead=onormal,group=AnnAttValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnAttBoolValue[label="{AnnAttBoolValue|value : Boolean| }"]
+ AnnAttBoolValue->AnnAttValue[arrowhead=onormal,group=AnnAttValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnAttCharValue[label="{AnnAttCharValue|value : Char| }"]
+ AnnAttCharValue->AnnAttValue[arrowhead=onormal,group=AnnAttValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnAttRealValue[label="{AnnAttRealValue|value : Double| }"]
+ AnnAttRealValue->AnnAttValue[arrowhead=onormal,group=AnnAttValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnAttStringValue[label="{AnnAttStringValue|value : String| }"]
+ AnnAttStringValue->AnnAttValue[arrowhead=onormal,group=AnnAttValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnAttFileValue[label="{AnnAttFileValue| | }"]
+ AnnAttFileValue->AnnAttStringValue[arrowhead=onormal,group=AnnAttStringValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnAttDateValue[label="{AnnAttDateValue| | }"]
+ AnnAttDateValue->AnnAttStringValue[arrowhead=onormal,group=AnnAttStringValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnAttOidValue[label="{AnnAttOidValue| | }"]
+ AnnAttOidValue->AnnAttStringValue[arrowhead=onormal,group=AnnAttStringValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnAttEnumValue[label="{AnnAttEnumValue| | }"]
+ AnnAttEnumValue->AnnAttStringValue[arrowhead=onormal,group=AnnAttStringValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnProperty[label="{AnnProperty|name : String\ntype : Integer| }"]
+ AnnProperty->AnnAttDefinition[arrowhead=diamond,arrowtail=none,headlabel="key",taillabel="annProperty[0-1]",group=AnnAttDefinition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnPropertyInt[label="{AnnPropertyInt|value : Integer| }"]
+ AnnPropertyInt->AnnProperty[arrowhead=onormal,group=AnnProperty,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnPropertyBool[label="{AnnPropertyBool|value : Boolean| }"]
+ AnnPropertyBool->AnnProperty[arrowhead=onormal,group=AnnProperty,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnPropertyChar[label="{AnnPropertyChar|value : Char| }"]
+ AnnPropertyChar->AnnProperty[arrowhead=onormal,group=AnnProperty,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnPropertyReal[label="{AnnPropertyReal|value : Double| }"]
+ AnnPropertyReal->AnnProperty[arrowhead=onormal,group=AnnProperty,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnPropertyString[label="{AnnPropertyString|value : String| }"]
+ AnnPropertyString->AnnProperty[arrowhead=onormal,group=AnnProperty,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnPropertyEnum[label="{AnnPropertyEnum| | }"]
+ AnnPropertyEnum->Object[arrowhead=vee,arrowtail=none,headlabel="value",group=Object,minlen=2,constraint=false,]
+ AnnPropertyEnum->AnnProperty[arrowhead=onormal,group=AnnProperty,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AnnotSchema[label="{AnnotSchema|pathname : String| }"]
+;
+ node[shape=record];
+AnnCategory[label="{AnnCategory|name : String| }"]
+ AnnCategory->AnnotSchema[arrowhead=diamond,arrowtail=none,headlabel="key",taillabel="annCategory",group=AnnotSchema,minlen=2,constraint=true,]
+ AnnCategory->Annotability[arrowhead=vee,arrowtail=diamond,headlabel="anootability[*]",group=Annotability,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Annotability[label="{Annotability|minCardinality : Integer\nmaxCardinality : Integer\ndefaultNote : Boolean| }"]
+ Annotability->AnnNoteType[arrowhead=vee,arrowtail=none,headlabel="annNoteType",group=AnnNoteType,minlen=2,constraint=false,]
+;
+ node[shape=record];
+AnnAttGroup[label="{AnnAttGroup|name : String| }"]
+ AnnAttGroup->AnnNoteType[arrowhead=diamond,arrowtail=none,headlabel="key",taillabel="annAttGroup[0-1]",group=AnnNoteType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+File[label="{/File/| | }"]
+ File->MtcEntity[arrowhead=onormal,group=MtcEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MtcApplication[label="{MtcApplication| | }"]
+;
+ node[shape=record];
+CoverageFile[label="{CoverageFile| | }"]
+ CoverageFile->MtcApplication[arrowhead=diamond,arrowtail=none,headlabel="application",taillabel="coverageFileCov[*]",group=MtcApplication,minlen=2,constraint=true,]
+ CoverageFile->File[arrowhead=onormal,group=File,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CriterionFile[label="{CriterionFile| | }"]
+ CriterionFile->MtcApplication[arrowhead=diamond,arrowtail=none,headlabel="application",taillabel="criterionFileCri[*]",group=MtcApplication,minlen=2,constraint=true,]
+ CriterionFile->File[arrowhead=onormal,group=File,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MtcEntity[label="{/MtcEntity/| | }"]
+ MtcEntity->File[arrowhead=vee,arrowtail=none,headlabel="file[0-1]",group=File,minlen=2,constraint=false,]
+;
+ node[shape=record];
+HistoryEntry[label="{HistoryEntry| | }"]
+ HistoryEntry->MtcEntity[arrowhead=onormal,group=MtcEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Criterion[label="{Criterion|ident : String\nname : String\ndescription : String| }"]
+ Criterion->CriterionFile[arrowhead=diamond,arrowtail=none,headlabel="criterionFileC",taillabel="criterionC[*]",group=CriterionFile,minlen=2,constraint=true,]
+ Criterion->Operator[arrowhead=none,arrowtail=none,headlabel="operatorC",taillabel="criterionO[0-1]",group=Operator,minlen=2,constraint=false,]
+ Criterion->MtcEntity[arrowhead=onormal,group=MtcEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Instance[label="{Instance|index : Integer\nocc : String| }"]
+ Instance->Model[arrowhead=diamond,arrowtail=none,headlabel="modelI",taillabel="root",group=Model,minlen=2,constraint=true,]
+ Instance->Instance[arrowhead=diamond,arrowtail=none,headlabel="caller",taillabel="called[*]",group=Instance,minlen=2,constraint=true,]
+ Instance->Instance[arrowhead=none,arrowtail=none,headlabel="origin[0-1]",taillabel="related[*]",group=Instance,minlen=2,constraint=false,]
+ Instance->MtcEntity[arrowhead=onormal,group=MtcEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AssociationClass[label="{AssociationClass| | }"]
+ AssociationClass->Instance[arrowhead=none,arrowtail=none,headlabel="instanceA[*]",taillabel="associationClassI",group=Instance,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Result[label="{Result|elementCount : Integer| }"]
+ Result->AssociationClass[arrowhead=none,arrowtail=none,headlabel="associationClassRs",taillabel="resultA",group=AssociationClass,minlen=2,constraint=false,]
+ Result->Record[arrowhead=diamond,arrowtail=none,headlabel="record",taillabel="result[*]",group=Record,minlen=2,constraint=true,]
+ Result->MtcEntity[arrowhead=onormal,group=MtcEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Record[label="{Record|creator : String\nname : String\ndate : String\nauthor : String\ndescription : String| }"]
+ Record->CoverageFile[arrowhead=diamond,arrowtail=none,headlabel="key",taillabel="record[0-1]",group=CoverageFile,minlen=2,constraint=true,]
+ Record->AssociationClass[arrowhead=none,arrowtail=none,headlabel="associationClassRc",taillabel="recordA[*]",group=AssociationClass,minlen=2,constraint=false,]
+ Record->CoverageFile[arrowhead=diamond,arrowtail=none,headlabel="coverageFileR",taillabel="recordCov[0-1]",group=CoverageFile,minlen=2,constraint=true,]
+ Record->MtcEntity[arrowhead=onormal,group=MtcEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Loader[label="{Loader| | }"]
+ Loader->Descriptor[arrowhead=vee,arrowtail=diamond,headlabel="descriptor[0-1]",group=Descriptor,minlen=2,constraint=true,]
+ Loader->Session[arrowhead=diamond,arrowtail=none,headlabel="session",taillabel="loader",group=Session,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Char[label="{&#171;DataType&#187;\nChar|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

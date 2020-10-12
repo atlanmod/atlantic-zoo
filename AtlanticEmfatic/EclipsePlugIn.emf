@@ -1,0 +1,60 @@
+package Metamodel;
+
+package EclipsePlugIn {
+  class Application {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] version;
+    !unique !ordered attr String[1] author;
+    !ordered val ExtensionPoint[+]#application extensionPoints;
+  }
+
+  class ExtensionPoint {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] ~id;
+    !ordered ref Application[1]#extensionPoints application;
+    !ordered ref Description[*]#extensionPoints descriptions;
+    !ordered ref PlugIn[1]#extensionPoints plugIn;
+  }
+
+  class Description {
+    !unique !ordered attr String[1] xmlSchema;
+    !ordered ref ExtensionPoint[*]#descriptions extensionPoints;
+  }
+
+  class Extension {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] ~id;
+    !ordered ref ExtensionPoint[1] isConfiguredInto;
+  }
+
+  class PlugIn {
+    !unique !ordered attr String[1] ~id;
+    !unique !ordered attr String[1] displayableName;
+    !unique !ordered attr String[1] version;
+    !unique !ordered attr String[1] supplier;
+    !ordered ref Extension[+] configures;
+    !ordered val ExtensionPoint[*]#plugIn extensionPoints;
+    !ordered ref PlugIn[*] requires;
+    !ordered ref Librairy[*]#plugIn uses;
+  }
+
+  class Librairy {
+    !unique !ordered attr String[1] name;
+    !ordered ref PlugIn[1]#uses plugIn;
+    !ordered val Class[+]#librairy classes;
+  }
+
+  class Class {
+    !unique !ordered attr String[1] name;
+    !ordered ref Librairy[1]#classes librairy;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

@@ -1,0 +1,39 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'Make'>
+    <Class name = 'Makefile' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'comment' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Make::Comment' opposite = ''/>
+      <Reference name = 'elements' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Make::Element' opposite = ''/>
+    </Class>
+    <Class name = 'Element' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Rule' isAbstract = 'false' supertypes = 'Make::Element'>
+      <Reference name = 'dependencies' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Make::Dependency' opposite = ''/>
+      <Reference name = 'shellLines' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Make::ShellLine' opposite = 'Make::ShellLine::ruleShellLine'/>
+    </Class>
+    <Class name = 'Macro' isAbstract = 'false' supertypes = 'Make::Element'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ShellLine' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'command' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'display' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'ruleShellLine' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Make::Rule' opposite = 'Make::Rule::shellLines'/>
+    </Class>
+    <Class name = 'Comment' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'text' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Dependency' isAbstract = 'true' supertypes = ''/>
+    <Class name = 'RuleDep' isAbstract = 'false' supertypes = 'Make::Dependency'>
+      <Reference name = 'ruledep' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Make::Rule' opposite = ''/>
+    </Class>
+    <Class name = 'FileDep' isAbstract = 'false' supertypes = 'Make::Dependency'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+  </Package>
+</Metamodel>

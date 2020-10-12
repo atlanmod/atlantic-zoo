@@ -1,0 +1,107 @@
+-- @name		Flat Signal Flow
+-- @version		1.0
+-- @authors		Youssef Srour (srour.youssef@gmail.com)
+-- @date		15/07/2006
+-- @description	This metamodel describes Flat Signal Flow.
+-- @see			http://www.isis.vanderbilt.edu/publications/archive/Sprinkle_JM_11_4_2002_Domain_Evo.doc
+
+package FlatSignalFlow{
+
+-- Begin Class RootFolder
+	class RootFolder{
+		reference rootContainer[*] container: RootContainer oppositeOf rootFolder;
+	}-- End class RootFolder
+
+-- Begin Class RootContainer
+	class RootContainer{
+		attribute name : String;
+		attribute position[0-1] : String;
+		
+		reference rootFolder : RootFolder oppositeOf rootContainer;
+		reference actor[*] container: Actor oppositeOf rootContainer;
+		reference inputSignal[*] container: InputSignal oppositeOf rootContainer;
+		reference outputSignal[*] container: OutputSignal oppositeOf rootContainer;
+		reference queue[*] container: Queue oppositeOf rootContainer;
+	}-- End class RootContainer
+
+-- Begin Class Actor
+	class Actor{
+
+		attribute memory : String;
+		attribute script : String;
+		attribute file : String;
+		attribute WCET : String;
+		attribute name : String;
+		attribute position[0-1] : String;
+		
+		reference rootContainer : RootContainer oppositeOf actor;
+		reference transmitter[*] container: Transmitter oppositeOf actor;
+		reference receiver[*] container: Receiver oppositeOf actor;
+		
+	}-- End class Actor
+
+-- Begin Class Transmitter
+	class Transmitter{
+		attribute name : String;
+		attribute position[0-1] : String;
+		
+		reference actor : Actor oppositeOf transmitter;
+		reference associationQueueTransmitter : AssociationQueueTransmitter oppositeOf srctransmitter;
+	}-- End class Transmitter
+
+-- Begin Class Receiver
+	class Receiver{
+		attribute name : String;
+		attribute position[0-1] : String;
+		
+		reference actor : Actor oppositeOf receiver;		
+		reference associationReceiverQueue : AssociationReceiverQueue oppositeOf dstreceiver;
+	}-- End class Receiver
+
+-- Begin Class InputSignal
+	class InputSignal{
+		attribute name : String;
+		attribute position[0-1] : String;
+		
+		reference rootContainer : RootContainer oppositeOf inputSignal;
+		reference associationReceiverQueue : AssociationReceiverQueue oppositeOf inputSignal;
+	}-- End class InputSignal
+
+-- Begin Class OutputSignal
+	class OutputSignal{
+		attribute name : String;
+		attribute position[0-1] : String;
+		
+		reference rootContainer : RootContainer oppositeOf outputSignal;
+		reference associationQueueTransmitter : AssociationQueueTransmitter oppositeOf outputSignal;
+	}-- End class OutputSignal
+
+-- Begin Class Queue
+	class Queue{
+		attribute name : String;
+		attribute position[0-1] : String;
+		
+		reference rootContainer : RootContainer oppositeOf queue;
+		reference associationReceiverQueue : AssociationReceiverQueue oppositeOf srcqueue;
+		reference associationQueueTransmitter : AssociationQueueTransmitter oppositeOf dstqueue;
+	}-- End class Queue
+	
+-- Begin Class AssociationReceiverQueue
+	class AssociationReceiverQueue{
+		reference srcqueue[1-*] : Queue oppositeOf associationReceiverQueue;
+		reference dstreceiver[1-*] : Receiver oppositeOf associationReceiverQueue;
+		reference inputSignal : InputSignal oppositeOf associationReceiverQueue;
+	}-- End class AssociationReceiverQueue
+
+-- Begin Class AssociationQueueTransmitter
+	class AssociationQueueTransmitter{
+		reference dstqueue[1-*] : Queue oppositeOf associationQueueTransmitter;
+		reference srctransmitter[1-*] : Transmitter oppositeOf associationQueueTransmitter;
+		reference outputSignal : OutputSignal oppositeOf associationQueueTransmitter;
+	}-- End class AssociationQueueTransmitter
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+}

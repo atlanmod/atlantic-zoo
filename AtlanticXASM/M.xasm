@@ -1,0 +1,169 @@
+universe M_IdentifiedElement
+
+	function qualifiers(a : M_IdentifiedElement, b : String) -> Bool
+
+	function identifier(a : M_IdentifiedElement, b : String) -> Bool
+
+	function order(a : M_IdentifiedElement, b : String) -> Integer
+
+	universe M_MElement < M_IdentifiedElement
+
+	universe M_MElementReference
+
+	function alias(a : M_MElementReference, b : String) -> Bool
+
+	function referencedElement(a : M_MElementReference, b : M_MElement) -> Bool
+
+	universe M_Module < M_MElement
+
+	function imports(a : M_Module, b : M_ImportDirective) -> Bool
+
+	function exports(a : M_Module, b : M_ExportDirective) -> Bool
+
+	function moduleMembers(a : M_Module, b : M_ModuleMember) -> Bool
+
+	function order(a : M_Module, b : M_ImportDirective) -> Integer
+
+	function order(a : M_Module, b : M_ExportDirective) -> Integer
+
+	function order(a : M_Module, b : M_ModuleMember) -> Integer
+
+	universe M_ModuleMember < M_MElement
+
+	function module(a : M_ModuleMember, b : M_Module) -> Bool
+
+	universe M_ImportDirective
+
+	function module(a : M_ImportDirective, b : M_Module) -> Bool
+
+	function importedElements(a : M_ImportDirective, b : M_MElementReference) -> Bool
+
+	function order(a : M_ImportDirective, b : M_MElementReference) -> Integer
+
+	universe M_ExportDirective
+
+	function module(a : M_ExportDirective, b : M_Module) -> Bool
+
+	function exportedElements(a : M_ExportDirective, b : M_ModuleMember) -> Bool
+
+	function order(a : M_ExportDirective, b : M_ModuleMember) -> Integer
+
+	universe M_Value
+
+	universe M_NumericalValue < M_Value
+
+	universe M_StringValue < M_Value
+
+	function value(a : M_StringValue, b : String) -> Bool
+
+	universe M_IntegerValue < M_NumericalValue
+
+	function value(a : M_IntegerValue, b : Integer) -> Bool
+
+	universe M_DecimalValue < M_NumericalValue
+
+	function value(a : M_DecimalValue, b : Double) -> Bool
+
+	universe M_BooleanValue < M_Value
+
+	function value(a : M_BooleanValue, b : Boolean) -> Bool
+
+	universe M_DerivedType < M_ModuleMember
+
+		function supertypes(a : M_DerivedType, b : M_TypeReference) -> Bool
+
+		function fields(a : M_DerivedType, b : M_Field) -> Bool
+
+		function initializationExpression(a : M_DerivedType, b : M_InitializationExpression) -> Bool
+
+		function whereExpression(a : M_DerivedType, b : M_WhereExpression) -> Bool
+
+		function expression(a : M_DerivedType, b : M_Expression) -> Bool
+
+		function order(a : M_DerivedType, b : M_TypeReference) -> Integer
+
+		function order(a : M_DerivedType, b : M_Field) -> Integer
+
+		universe M_TypeReference
+
+		function subtype(a : M_TypeReference, b : M_DerivedType) -> Bool
+
+		function field(a : M_TypeReference, b : M_Field) -> Bool
+
+		function lowerBound(a : M_TypeReference, b : Integer) -> Bool
+
+		function upperBound(a : M_TypeReference, b : Integer) -> Bool
+
+		universe M_IntrinsicTypeReference < M_TypeReference
+
+		function typeIdentifier(a : M_IntrinsicTypeReference, b : String) -> Bool
+
+		universe M_DerivedTypeReference < M_TypeReference
+
+		function type(a : M_DerivedTypeReference, b : M_DerivedType) -> Bool
+
+		universe M_Field < M_IdentifiedElement
+
+		function owner(a : M_Field, b : M_DerivedType) -> Bool
+
+		function type(a : M_Field, b : M_TypeReference) -> Bool
+
+		universe M_Collection < M_IdentifiedElement
+
+		universe M_ComputedValue < M_IdentifiedElement
+	universe M_Expression
+
+		universe M_InitializationExpression < M_Expression
+
+		function type(a : M_InitializationExpression, b : M_DerivedType) -> Bool
+
+		function values(a : M_InitializationExpression, b : M_Value) -> Bool
+
+		function order(a : M_InitializationExpression, b : M_Value) -> Integer
+
+		universe M_WhereExpression < M_Expression
+
+		function type(a : M_WhereExpression, b : M_DerivedType) -> Bool
+
+		function queryExpressions(a : M_WhereExpression, b : M_QueryExpression) -> Bool
+
+		function order(a : M_WhereExpression, b : M_QueryExpression) -> Integer
+
+		universe M_IdentityExpression < M_WhereExpression
+
+		function identity(a : M_IdentityExpression, b : M_Field) -> Bool
+
+		universe M_QueryExpression < M_Expression
+
+		function whereExpression(a : M_QueryExpression, b : M_WhereExpression) -> Bool
+
+		universe M_EqualExpression < M_QueryExpression
+
+		function leftValue(a : M_EqualExpression, b : M_ValueExpression) -> Bool
+
+		function rightValue(a : M_EqualExpression, b : M_ValueExpression) -> Bool
+
+		universe M_InExpression < M_QueryExpression
+
+		function value(a : M_InExpression, b : M_ValueExpression) -> Bool
+
+		function collection(a : M_InExpression, b : M_CollectionExpression) -> Bool
+
+		universe M_CollectionExpression < M_Expression
+
+		function inExpression(a : M_CollectionExpression, b : M_InExpression) -> Bool
+
+		function collectionValue(a : M_CollectionExpression, b : M_ValueExpression) -> Bool
+
+		universe M_ValueExpression < M_Expression
+
+		universe M_DefaultValueExpression < M_ValueExpression
+
+		universe M_StandardValueExpression < M_ValueExpression
+
+		function context(a : M_StandardValueExpression, b : M_ValueExpression) -> Bool
+
+		function value(a : M_StandardValueExpression, b : String) -> Bool
+	universe M_Language < M_ModuleMember
+	universe M_Entity < M_ModuleMember
+	

@@ -1,0 +1,327 @@
+<!-- ******************************************************************************
+ Copyright (c) 2009 INRIA. 
+ All rights reserved. This program and the accompanying materials 
+ are made available under the terms of the Eclipse Public License v1.0 
+which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v10.html
+ 
+ Contributors: 
+ 	INRIA - Initial implementation
+  
+****************************************************************************** -->
+
+<project name="MeasurementKM3" default="transformAll">
+
+	<property name="sourcePath" value="../../../org.eclipse.am3.zoos.atlantic/"/>
+	<property name="targetPath" value="/org.eclipse.am3.zoos.atlantMeasurement/"/> 
+	<property name="lib.dir" value="/org.eclipse.am3.zoos.atlantMeasurement/build/lib/" />
+	<property name="namesPath" value="../Names/" />
+	<property name="km3.metamodel.uri" value="http://www.eclipse.org/gmt/2005/KM3" />
+	
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+	</taskdef>
+	
+	<target name="transformAll" depends="loadModels">
+		
+		<!-- initialize global table model with empty table -->
+		<echo message="Initializing global model with an empty table" />
+		<am3.loadModel name="emptyTable"  metamodel="Table" path="${targetPath}build/empty.xmi" />
+		<am3.saveModel model="emptyTable" path="${targetPath}global.xmi" />  
+		
+		<!-- create models from metamodels names -->
+		<for param="e">
+			<path>
+				<fileset dir="C:/atlantic-zoos/Atlantic/" includes="*.km3"/>	 <!--"${sourcePath}"-->  			
+			</path>
+			<sequential>
+				<antcall target="createName" inheritall="true" inheritrefs="true">
+						<param name="sample" value="@{e}"/>
+					</antcall>
+			 </sequential>
+		</for>	
+		
+		<!-- waiting for all name models files to be created -->
+		<sleep seconds="5"/>
+				
+		<for param="e">
+		  <path>
+		    <fileset dir="C:/atlantic-zoos/Atlantic/" includes="*.km3"/>	    
+		  </path>
+		  <sequential>
+			<antcall target="condition" inheritall="true" inheritrefs="true">
+				<param name="sample" value="@{e}"/>
+			</antcall>
+		  </sequential>
+		</for>		
+				
+		<!-- Generate the Excel file from the Table model -->
+		<echo message="Saving the Global Table as Excel file" />
+		
+		<am3.loadModel name="globalTableModel"  metamodel="Table" path="${targetPath}global.xmi" />
+		<!-- Generate the SpreadsheetMLSimplified model from the Table model -->
+		<am3.atl path="${targetPath}build/Transformations/Table2SpreadsheetMLSimplified.atl">
+			<inModel name="IN" model="globalTableModel"/>
+			<inModel name="Table" model="Table"/>
+			<inModel name="SpreadsheetMLSimplified" model="SpreadsheetMLSimplified"/>
+			<outModel name="OUT" model="excelModel" metamodel="SpreadsheetMLSimplified"/>
+		</am3.atl>
+		
+
+		<!-- Generate the XML model from the SpreadsheetMLSimplified model -->
+		<am3.atl path="${targetPath}build/Transformations/SpreadsheetMLSimplified2XML.atl">
+			<inModel name="IN" model="excelModel"/>
+			<inModel name="SpreadsheetMLSimplified" model="SpreadsheetMLSimplified"/>
+			<inModel name="XML" model="XML"/>
+			<outModel name="OUT" model="excelXmlModel" metamodel="XML"/>
+		</am3.atl>
+		
+
+		<!-- Extract the Excel file (XML format) from Excel XML model -->
+		<am3.saveModel model="excelXmlModel" path="${targetPath}/build/Global/global.xml">
+			<extractor name="xml"/>
+		</am3.saveModel>
+		
+		<!--Generating the WikiTable from the Table Model -->
+		<am3.atl path="${targetPath}build/Transformations/TableToWikiMediaTable.atl">
+		<inModel name="IN" model="globalTableModel"/>
+			<inModel name="Table" model="Table"/>
+			<inModel name="WMTable" model="WMTable"/>
+			<outModel name="OUT" model="wikiModel" metamodel="WMTable"/>
+		</am3.atl>
+		<!--<am3.saveModel model="wikiModel" path="${targetPath}build/Script/wikiModel.xmi" />-->
+		
+		<!-- Load the TCS metamodel -->
+		<am3.loadModel name="TCS" metamodel="MOF" path="${targetPath}build/Metamodels/TCS.ecore" />
+		
+		<!-- Load the Syntax model for Wiki Table -->
+		<am3.loadModel modelHandler="EMF" name="WikiMediaTable.tcs" metamodel="TCS" path="${targetPath}build/Syntax/WikiMediaTable.tcs">
+			<injector name="ebnf">
+				<classpath>
+					<pathelement location="/org.eclipse.am3.zoos.atlantMeasurement/build/lib/TCS-parser.jar" />
+				</classpath>
+				<param name="name" value="TCS"/>
+				<param name="parserGenerator" value="antlr3"/>				
+			</injector>
+		</am3.loadModel>
+		
+		
+		<!-- Saving WikiMediaTable model -->
+			<am3.saveModel model="wikiModel" path="${targetPath}build/Global/WikiTable.wtb">
+					<extractor name="ebnf">
+						<param name="format" value="WikiMediaTable.tcs"/>
+
+						<param name="indentString" value="&#9;"/>
+						<param name="identEsc" value=""/> <!-- &quot; -->
+						<param name="stringDelim" value="&apos;"/>
+						<param name="decimalFormat" value="0.##############"/>
+
+						<param name="serializeComments" value="true"/>
+					</extractor>
+			</am3.saveModel>
+			
+	</target>
+	
+	
+	<!-- Creates all the  measures names -->
+	<target name="createName">
+		
+	<basename property="namez" file="${sample}" suffix=".km3"/>
+					<echo message="Creating model name: ${namez}, parameter" />
+		
+					 <echo file="${namesPath}${namez}.xmi" append="false"><![CDATA[<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<Names:name xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Names="http://org.amma.names" xsi:schemaLocation="http://org.amma.names Names.ecore#/0" modelName="${namez}"/>]]>
+					 </echo> 
+	</target>
+		
+	<target name="condition">
+	  	<basename property="name" file="${sample}" suffix=".km3"/>
+		<property name="sourceModel" value="${sourcePath}${name}.km3"/>
+		<property name="targetModel" value="${targetPath}${name}.html"/>
+		
+		<uptodate property="isUpToDate" srcfile="${sourceModel}" targetfile="${targetModel}"/>
+		
+	  	<if>
+	  	 <not>
+			 <equals arg1="${isUpToDate}" arg2="true" />
+		 </not>
+		 <then>
+			<antcall target="transformOne" inheritall="true" inheritrefs="true">
+				<param name="name" value="${name}"/>
+				<param name="sourceModel" value="${sourceModel}"/>
+				<param name="targetModel" value="${targetModel}"/>
+			</antcall>
+		 </then>
+		</if>
+
+	</target>
+	
+	<!-- parameters: sample -->
+	<target name="transformOne">
+
+		<echo message="Transforming ${name}"/>
+		
+		<!-- Load a KM3 model -->
+		<echo message="Loading ${sourceModel}" />
+		<am3.loadModel name="${sample}" metamodel="KM3" path="${sourceModel}" >
+			<injector name="ebnf">
+				<param name="name" value="KM3" />
+				<classpath>
+					<pathelement location="/org.eclipse.am3.zoos.atlantMeasurement/build/lib/KM3-parser.jar" />
+				</classpath>
+			</injector>
+		</am3.loadModel>
+		
+		<!-- <am3.saveModel model="KM3"  path="${targetPath}KM3Metamodel.ecore"/> --> 
+		
+		<echo message="Creating individual measures for ${name}.km3" />
+		<am3.atl path="${targetPath}build/Transformations/KM32Measure.asm" vm="EMF-specific VM">
+			<inModel name="IN" model="${sample}"/>
+			<inModel name="KM3" model="KM3"/>
+			<library name="FLAME4KM3" path="/org.eclipse.am3.zoos.atlantMeasurement/build/lib/FLAME4KM3.asm" />
+			<library name="MOOD4KM3" path="/org.eclipse.am3.zoos.atlantMeasurement/build/lib/MOOD4KM3.asm" />
+			<library name="EMOOSE4KM3" path="/org.eclipse.am3.zoos.atlantMeasurement/build/lib/EMOOSE4KM3.asm" />
+			<library name="QMOOD4KM3" path="/org.eclipse.am3.zoos.atlantMeasurement/build/lib/QMOOD4KM3.asm" />
+			<inModel name="Measure" model="Measure"/>
+			<outModel name="OUT" model="mTarget" metamodel="Measure"/>
+		</am3.atl> 		
+		
+<!-- HTML part
+		<am3.atl path="${targetPath}build/Transformations/Measure2Table.asm" vm="EMF-specific VM">
+				<inModel name="IN" model="mTarget"/>
+				<inModel name="Measure" model="Measure"/>
+				<library name="MeasureHelpers" path="/org.eclipse.am3.zoos.atlantMeasurement/build/lib/MeasureHelpers.asm" />
+				<inModel name="Table" model="Table"/>
+				<outModel name="OUT" model="mTable" metamodel="Table"/>
+		</am3.atl>
+		
+
+		
+		<am3.atl path="${targetPath}build/Transformations/Table2TabularHTML.asm" vm="EMF-specific VM">
+			<inModel name="IN" model="mTable"/>
+			<inModel name="Table" model="Table"/>
+			<library name="TableHelpers" path="/org.eclipse.am3.zoos.atlantMeasurement/build/lib/TableHelpers.asm" />
+			<inModel name="HTML" model="HTML"/>
+			<outModel name="OUT" model="mHTML" metamodel="HTML"/>
+		</am3.atl>
+		
+		<am3.atl path="${targetPath}build/Transformations/HTML2XML.asm" vm="EMF-specific VM">
+			<inModel name="IN" model="mHTML"/>
+			<inModel name="HTML" model="HTML"/>
+			<inModel name="XML" model="XML"/>
+			<outModel name="OUT" model="mXML" metamodel="XML"/>
+		</am3.atl>
+		
+		<echo message="Saving HTML table for metamodel : ${name}" />
+		<am3.saveModel model="mXML" path="${targetModel}">
+			<extractor name="xml" />
+		</am3.saveModel>
+HTML -->
+<!--	XHTML metric generation	-->
+		<am3.atl path="${targetPath}build/Transformations/Measure2XHTML.asm" vm="EMF-specific VM">
+			<inModel name="IN" model="mTarget"/>
+			<inModel name="Measure" model="Measure"/>
+			<library name="MeasureHelpers" path="/org.eclipse.am3.zoos.atlantMeasurement/build/lib/MeasureHelpers.asm" />
+			<inModel name="XHTML" model="XHTML"/>
+			<outModel name="OUT" model="mXHTML" metamodel="XHTML"/>
+		</am3.atl>
+		
+		
+		<am3.atl path="${targetPath}build/Transformations/XHTML2XML.asm">
+			<inModel name="IN" model="mXHTML"/>
+			<inModel name="XHTML" model="XHTML"/>
+			<inModel name="XML" model="XML"/>
+			<outModel name="OUT" model="mXML" metamodel="XML"/>
+		</am3.atl>
+		
+		<am3.saveModel model="mXML" path="${targetModel}">
+			<extractor name="xml" />
+		</am3.saveModel>
+		
+		<dirname file="${ant.file}" property="cwd.dir" /> 
+		<echo message="C:/runtime-New_configuration(2)/org.eclipse.am3.zoos.atlantMeasurement/${name}.html" />
+		<java fork="true" jar="C:/runtime-New_configuration(2)/org.eclipse.am3.zoos.atlantMeasurement/build/lib/com.sodius.atl.xhtml.jar">
+			<arg value="C:/runtime-New_configuration(2)/org.eclipse.am3.zoos.atlantMeasurement/${name}.html" />
+		</java>
+		
+					
+		<echo message="Creating Basic measures for ${name}.km3 " />
+		<echo message="${namesPath}${name}.xmi"/>
+		<am3.loadModel name="name"  metamodel="Names" path="${namesPath}${name}.xmi" />
+		
+			<am3.atl path="${targetPath}build/Transformations/BasicMeasurement.asm" vm="EMF-specific VM">
+				<inModel name="IN" model="${sample}"/>
+				<inModel name="IN2" model="name"/>
+				<inModel name="KM3" model="KM3"/>
+				<inModel name="Names" model="Names" />
+				<inModel name="BMeasure" model="BMeasure"/>
+				<outModel name="OUT" model="target" metamodel="BMeasure"/>
+			</am3.atl>
+	
+	<!--	<am3.saveModel model="target" path="${targetModel}" /> --> 
+	
+		<echo message="Creating global table of Basic Measurements for ${name}.km3" />
+		<am3.atl path="${targetPath}build/Transformations/BMeasureToTable.asm" vm="EMF-specific VM">
+			<inModel name="IN" model="target"/>
+			<inModel name="BMeasure" model="BMeasure"/>
+			<inModel name="Table" model="Table"/>
+			<outModel name="OUT" model="tablet" metamodel="Table"/>
+		</am3.atl>
+		
+		<!-- <am3.saveModel model="tablet" path="${targetModel}" /> --> 
+		
+		<!-- global model has been initialized with an empty table -->
+		<am3.loadModel name="global"  metamodel="Table" path="${targetPath}global.xmi" />
+		
+		<!-- Refining all measurement in a global measurement table -->
+		<echo message="Refining basic measures in a summary Table" />
+		<am3.atl path="${targetPath}build/Transformations/GlobalTable.asm">
+				<option name="refining" value="true" />
+				<inModel name="IN" model="global"/>
+				<inModel name="toAdd" model="tablet"/>
+				<inModel name="Table" model="Table"/>
+				<outModel name="OUT" model="global2" metamodel="Table"/>
+		</am3.atl>
+		
+		<!-- Debug file (debug.xmi) is necessary to save for being able to update global.xmi. -->
+		<am3.saveModel model="global" path="${targetPath}debug.xmi" /> 
+		
+		<am3.saveModel model="global2" path="${targetPath}global.xmi" /> 
+		
+		
+	</target>
+	
+	<target name="loadModels">
+		
+		<!-- Load the KM3 metamodel -->
+		<am3.loadModel name="KM3" metamodel="MOF" nsUri="${km3.metamodel.uri}" />
+		
+		<!-- Load the Measurement metamodel-->
+		<am3.loadModel name="Measure" metamodel="MOF" path="${targetPath}build/Metamodels/Measure.ecore" />
+		
+		<!-- Load the BMeasurement metamodel-->
+		<am3.loadModel name="BMeasure" metamodel="MOF" path="${targetPath}build/Metamodels/BMeasure.ecore" />
+		
+		<!-- Load the Names metamodel-->
+		<am3.loadModel name="Names" metamodel="MOF" path="${targetPath}build/Metamodels/Names.ecore" />
+		
+		<!-- Load the Table metamodel-->
+		<am3.loadModel name="Table" metamodel="MOF" path="${targetPath}build/Metamodels/Table.ecore" />
+		
+		<!-- Load the HTML metamodel-->
+		<am3.loadModel name="HTML" metamodel="MOF" path="${targetPath}build/Metamodels/HTML.ecore" />
+		
+		<!-- Load the XHTML metamodel-->
+		<am3.loadModel name="XHTML" metamodel="MOF" path="${targetPath}build/Metamodels/XHTML.ecore" />
+		
+		<!-- Load The WikiTable metamodel-->
+		<am3.loadModel name="WMTable" metamodel="MOF" path="${targetPath}build/Metamodels/WikiTable.ecore" />
+		
+		<!-- Load XML metamodel -->
+		<am3.loadModel modelHandler="EMF" name="XML" metamodel="MOF" path="${targetPath}build/Metamodels/XML.ecore" />
+
+		<!-- Load SpreadsheetMLSimplified metamodel -->
+		<am3.loadModel modelHandler="EMF" name="SpreadsheetMLSimplified" metamodel="MOF" path="${targetPath}build/Metamodels/MSOfficeExcel_SpreadsheetMLSimplified.ecore" />
+	
+	</target>	
+
+</project>

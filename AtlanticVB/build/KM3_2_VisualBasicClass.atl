@@ -1,0 +1,173 @@
+module KM3_2_VisualBasicClass; 
+create OUT : VB from IN : KM3;
+
+
+helper context String def: toVBName() : String =
+	self
+		.regexReplaceAll('\\]', '__RSQUARE__')
+		.regexReplaceAll('\\[', '__LSQUARE__')
+		.regexReplaceAll(' ', '__SPACE__')
+		;
+
+
+-- uses "VisualBasic-Helpers";
+
+rule File {
+	from
+		mm_km3 : KM3!Metamodel
+	to	
+		mm_vb : VB!VBFile (
+			namespaces <- mm_km3.contents,
+			datatypes <- let ptype : Sequence(OclAny) = mm_km3.contents->select(p | 
+				p.name = 'PrimitiveTypes'
+			) in if ptype.isEmpty() then Sequence{} else ptype->first().contents -> select(dt |
+				dt.oclIsTypeOf(KM3!DataType)
+			)endif
+		)
+}
+
+rule Namespace {
+	from
+		p_km3 : KM3!Package (
+			p_km3.name <> 'PrimitiveTypes'	
+		)
+	to
+		p_vb : VB!Namespace (
+			name <- p_km3.name,
+			classes <- p_km3.contents -> select(c | c.oclIsTypeOf(KM3!Class)),
+			enumerations <- p_km3.contents -> select(e | e.oclIsTypeOf(KM3!Enumeration))
+		)
+}
+
+rule ClassWithSuperClass {
+	from
+		c_km3 : KM3!Class (
+			not c_km3.supertypes.isEmpty()
+		)
+	to
+		c_vb : VB!Class (
+			name <- if c_km3.name = '"Class"'
+					then 'Class'
+					else c_km3.name
+					endif,
+			isAbstract <- c_km3.isAbstract,
+			fields <- c_km3.structuralFeatures,
+			superclass <- c_km3.supertypes -> first()
+		)
+}
+
+rule ClassWithOutSuperClass {
+	from
+		c_km3 : KM3!Class (
+			c_km3.supertypes.isEmpty()
+		)
+	to
+		c_vb : VB!Class (
+			name <- if c_km3.name = '"Class"'
+					then 'Class'
+					else c_km3.name
+					endif,
+			isAbstract <- c_km3.isAbstract,
+			fields <- c_km3.structuralFeatures
+		)
+}
+
+rule Attribute {
+	from
+		a_km3 : KM3!Attribute
+	to
+		a_vb : VB!Field (
+			name <- a_km3.name,
+			type_name <- if a_km3.type.oclIsKindOf(KM3!DataType)
+							then
+								a_km3.type.name
+							else
+								'[' + a_km3.type.name + ']'
+							endif
+		)
+}
+
+rule ReferenceWithOpposite {
+	from
+		r_km3 : KM3!Reference (
+			not r_km3.opposite.oclIsUndefined()
+		)
+	
+	to
+		a_vb : VB!Field (
+			isMultiple <- not(r_km3.upper = 1),
+			commentsBefore <- 
+					Sequence {
+						'\'\'\' <summary>',
+				        '\'\'\' '+ r_km3.name + ' oppositeOf ' + r_km3.opposite.name +
+						if r_km3.isContainer 
+						then ' / container'
+						else ''
+						endif,
+						'\'\'\' </summary>'
+					},
+			name <- r_km3.name,
+			type_name <- if r_km3.type.oclIsKindOf(KM3!DataType)
+							then
+								r_km3.type.name
+							else
+								'[' + r_km3.type.name + ']'
+							endif
+		)
+}
+
+rule RefrenceWithOutOpposite {
+	from
+		r_km3 : KM3!Reference (
+			r_km3.opposite.oclIsUndefined()	
+		)
+	to
+		a_vb : VB!Field (
+			isMultiple <- not(r_km3.upper = 1),
+			commentsBefore <- 
+						if r_km3.isContainer then 
+							Sequence {
+							'\'\'\' <summary>',
+					        '\'\'\' Container',
+				        	'\'\'\' </summary>'
+							}
+							else Sequence {}
+						endif,
+			name <- r_km3.name,
+			type_name <- if r_km3.type.oclIsKindOf(KM3!DataType)
+							then
+								r_km3.type.name
+							else
+								'[' + r_km3.type.name + ']'
+							endif
+		)
+}
+
+rule Enumeration {
+	from
+		e_km3 : KM3!Enumeration
+	to
+		e_vb : VB!Enumeration (
+			name <- e_km3.name,
+			literals <- e_km3.literals
+		)
+}
+
+rule Literal {
+	from
+		l_km3 : KM3!EnumLiteral
+	to
+		l_vb : VB!Literal (
+			name <- l_km3.name.toVBName()
+		)
+}
+
+rule DataType {
+	from
+		dt_km3 : KM3!DataType
+	to
+		dt_vb : VB!DataType (
+			name <- dt_km3.name
+		)
+}
+

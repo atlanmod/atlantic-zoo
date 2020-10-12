@@ -1,0 +1,332 @@
+-- @name			µOCCAM
+-- @version			1.0
+-- @authors			Youssef Srour (Srour.youssef@gmail.com)
+-- @date			2006/07/24
+-- @description		This metamodel describes µOCCAM. It is essentially a subset of the OCCAM programming language.
+-- @see				http://homepages.inf.ed.ac.uk/stark/ipp/manuals/grammar.pdf#search=%22grammar%20%C2%B5occam%22
+
+package Perceptory{
+
+-- Begin class Process
+	abstract class Process {
+		
+	}-- End class Process
+
+-- Begin class StopProcess
+	class StopProcess extends Process {
+		
+	}-- End class StopProcess
+
+-- Begin class SkipProcess
+	class SkipProcess extends Process {
+		
+	}-- End class SkipProcess
+
+-- Begin class Action
+	abstract class Action extends Process {
+		
+	}-- End class Action
+
+-- Begin class Construction
+	class Construction extends Process {
+		
+	}-- End class Construction
+
+-- Begin class Instance
+	class Instance extends Process {
+		attribute name : String;
+		--actual ???
+	}-- End class Instance
+
+-- Begin class Assignment
+	class Assignment extends Action {
+		reference variable container : Variable;
+		reference expression container : Expression; 
+	}-- End class Assignment
+
+-- Begin class Input
+	class Input extends Action {
+		reference channel container : Channel;
+		reference variable container : Variable;
+	}-- End class Input
+
+-- Begin class Output
+	class Output extends Action {
+		reference channel container : Channel;
+		reference expression container : Expression;
+	}-- End class Output
+
+-- Begin class Sequence
+	abstract class Sequence extends Construction {
+		reference process container : Process;
+	}-- End class Sequence
+
+-- Begin class NormalSequence
+	class NormalSequence extends Sequence {
+		
+	}-- End class NormalSequence
+
+-- Begin class ReplicatorSequence
+	class ReplicatorSequence extends Sequence {
+		reference replicator container : Replicator;
+	}-- End class ReplicatorSequence
+
+-- Begin class Conditional
+	abstract class Conditional extends Construction {
+		reference choice container : Choice;
+	}-- End class Conditional
+
+-- Begin class NormalConditional
+	class NormalConditional extends Conditional {
+		
+	}-- End class NormalConditional
+
+-- Begin class ReplicatorConditional
+	class ReplicatorConditional extends Conditional {
+		reference replicator container : Replicator;
+	}-- End class ReplicatorConditional
+
+-- Begin class Loop
+	class Loop extends Construction {
+		reference boolean container : BooleanRef;
+		reference process container : Process;
+	}-- End class Loop
+
+-- Begin class Parallel
+	abstract class Parallel extends Construction {
+		reference process container : Process;
+	}-- End class Parallel
+
+-- Begin class NormalParallel
+	class NormalParallel extends Parallel {
+		
+	}-- End class NormalParallel
+
+-- Begin class ReplicatorParallel
+	class ReplicatorParallel extends Parallel {
+		reference replicator container : Replicator;
+	}-- End class ReplicatorParallel
+
+-- Begin class Alternation
+	class Alternation extends Construction {
+		reference alternative container : Alternative;
+	}-- End class Alternation
+
+-- Begin class NormalAlternation
+	class NormalAlternation extends Parallel {
+		
+	}-- End class NormalAlternation
+
+-- Begin class ReplicatorAlternation
+	class ReplicatorAlternation extends Parallel {
+		reference replicator container : Replicator;
+	}-- End class ReplicatorAlternation
+
+-- Begin class Choice
+	class Choice {
+		reference boolean container : BooleanRef;
+		reference process container : Process;
+	}-- End class Choice
+
+-- Begin class Choice
+	class BooleanRef {
+		reference expression container : Expression;
+	}-- End class Choice
+
+-- Begin class Alternative
+	class Alternative {
+		reference guard container : Guard;
+		reference process container : Process;
+	}-- End class Alternative
+
+-- Begin class Guard
+	abstract class Guard {
+		reference input container : Input; 
+	}-- End class Guard
+
+-- Begin class InputGuard
+	class InputGuard extends Guard {
+		
+	}-- End class InputGuard
+
+-- Begin class BooleanGuard
+	class BooleanGuard extends Guard {
+		reference boolean container : BooleanRef;
+	}-- End class BooleanGuard
+
+-- Begin class Replicator
+	class Replicator {
+		attribute name : String;
+		reference base container : Base;
+		reference count container : Count;
+	}-- End class Replicator
+
+-- Begin class Base
+	class Base {
+		reference expression container : Expression;
+	}-- End class Base
+
+-- Begin class Count
+	class Count {
+		reference expression container : Expression;
+	}-- End class Count
+
+-- Begin class Type
+	class Type {
+		reference primitiveType container : PrimitiveType;
+		reference expression [0-1] container : Expression;
+	}-- End class Type
+
+-- Begin class PrimitiveType
+	class PrimitiveType {
+		attribute isInt : Boolean;
+		attribute isChan : Boolean;
+	}-- End class PrimitiveType
+
+-- Begin class Literal
+	class Literal {
+		attribute integer : Integer;
+	}-- End class Literal
+	
+-- Begin class Element
+	class Element {
+		attribute name : String;
+		reference subscript [0-1] container : Subscript;
+	}-- End class Element
+
+-- Begin class Subscript
+	class Subscript {
+		reference expression container : Expression;
+	}-- End class Subscript
+
+-- Begin class Variable
+	class Variable {
+		reference element container : Element;
+	}-- End class Variable
+
+-- Begin class Channel
+	class Channel {
+		reference element container : Element;
+	}-- End class Channel
+
+-- Begin class Operand
+	abstract class Operand {
+		
+	}-- End class Operand
+
+-- Begin class VariableOPerand
+	class VariableOPerand extends Variable {
+		
+	}-- End class VariableOPerand
+
+-- Begin class LiteralOperand
+	class LiteralOperand extends Literal {
+		
+	}-- End class LiteralOperand
+
+-- Begin class ExpressionOperand
+	class ExpressionOperand extends Expression {
+		
+	}-- End class ExpressionOperand
+
+-- Begin class ExpressionOperand
+	abstract class Expression {
+		reference operand container : Operand;
+	}-- End class ExpressionOperand
+
+-- Begin class MonadicExpression
+	class MonadicExpression extends Expression{
+		reference monadicOperator container : MonadicOperator;
+	}-- End class MonadicExpression
+
+-- Begin class DyadicExpression
+	class DyadicExpression extends Expression {
+		reference operandRight container : Operand;
+		reference dyadicOperator container : DyadicOperator;
+	}-- End class DyadicExpression
+
+-- Begin class SimpleExpression
+	class SimpleExpression extends Expression {
+		
+	}-- End class SimpleExpression
+
+-- Begin class Specification
+	abstract class Specification extends Process {
+		
+	}-- End class Specification
+
+-- Begin class Declaration
+	abstract class Declaration extends Specification {
+		
+	}-- End class Declaration
+
+-- Begin class TypeDeclaration
+	class TypeDeclaration extends Declaration {
+		reference type container : Type;
+	}-- End class TypeDeclaration
+
+-- Begin class IntDeclaration
+	class IntDeclaration extends Declaration {
+		attribute name : String;
+		reference expression container : Expression;
+	}-- End class IntDeclaration
+
+-- Begin class ValDeclaration
+	class ValDeclaration extends Declaration {
+		attribute name : String;
+		reference expression container : Expression;
+	}-- End class ValDeclaration
+
+-- Begin class Definition
+	class Definition extends Specification {
+		attribute name : String;
+		--formal ???
+		reference procedureBody container : ProcedureBody;
+	}-- End class Definition
+
+-- Begin class Formal
+	class Formal {
+		attribute name : String;
+		reference primitiveType container : PrimitiveType;
+	}-- End class Formal
+
+-- Begin class ProcedureBody
+	class ProcedureBody {
+		attribute name : String;
+		reference process container : Process;
+	}-- End class ProcedureBody
+
+-- Begin class Actual
+	class Actual {
+		reference element container : Element;
+	}-- End class Actual
+
+-- Begin class MonadicOperator
+	class MonadicOperator {
+		attribute minus : Boolean;
+		attribute not : Boolean;
+	}-- End class MonadicOperator
+
+-- Begin class DyadicOperator
+	class DyadicOperator {
+		attribute plus : Boolean;--"+"
+		attribute minus : Boolean;--"-"
+		attribute star : Boolean;--"*"
+		attribute slash : Boolean;--"/"
+		attribute or : Boolean;--"OR"
+		attribute inverseSlash : Boolean;--"\"
+		attribute and : Boolean;--"AND"
+		attribute eq : Boolean;--"="
+		attribute ne : Boolean;--"<>"
+		attribute lt : Boolean;--"<"
+		attribute gt : Boolean;--">"
+		attribute le : Boolean;--"<="
+		attribute ge : Boolean;--">="
+	}-- End class DyadicOperator
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+	datatype Integer;
+}

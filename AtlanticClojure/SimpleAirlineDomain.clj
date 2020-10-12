@@ -1,0 +1,5 @@
+( defstruct Airport :name )
+( defstruct Flight :departTime :duration :maxnrPassengers :airline :origin :destination )
+( defstruct Airline :name :nationality )
+( defstruct Passenger :name :age :gender :needsAssistance :flight )
+( defstruct Time :year :month :day :hour :minute :second )

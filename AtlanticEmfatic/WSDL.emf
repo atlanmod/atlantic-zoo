@@ -1,0 +1,90 @@
+package Metamodel;
+
+package WSDL {
+  class Port {
+    !unique !ordered attr String[1] name;
+    !ordered ref Service[1]#ports service;
+    !ordered ref Binding[1]#ports binding;
+  }
+
+  class Service {
+    !unique !ordered attr String[1] name;
+    !ordered val Port[*]#service ports;
+  }
+
+  class Param {
+    !unique !ordered attr String[1] name;
+    !ordered ref Message[1]#params message;
+  }
+
+  class Input extends Param {
+    !ordered ref Operation[1]#input operation;
+  }
+
+  class Output extends Param {
+    !ordered ref Operation[1]#output operation;
+  }
+
+  class PortType {
+    !unique !ordered attr String[1] name;
+    !ordered val Operation[*]#type operations;
+    !ordered ref Binding[*]#type bindings;
+  }
+
+  class Operation {
+    !unique !ordered attr String[1] name;
+    !ordered val Input#operation input;
+    !ordered val Output#operation output;
+    !ordered ref PortType[1]#operations type;
+    !ordered val Fault[*]#operation faults;
+  }
+
+  class StartWithExtensions {
+  }
+
+  class Binding extends StartWithExtensions {
+    !unique !ordered attr String[1] name;
+    !ordered ref Port[*]#binding ports;
+    !ordered ref PortType[1]#bindings type;
+    !ordered val BindingOperation[*]#bind operations;
+  }
+
+  class BindingFault extends StartWithExtensions {
+    !ordered val BindingOperation[1]#faults operation;
+    !ordered ref Fault[1] binding;
+  }
+
+  class BindingOperation extends StartWithExtensions {
+    !unique !ordered attr String[1] name;
+    !ordered ref Binding[1]#operations bind;
+    !ordered ref Operation[1] binding;
+    !ordered ref StartWithExtensions input;
+    !ordered ref StartWithExtensions output;
+    !ordered val BindingFault[*]#operation faults;
+  }
+
+  class Fault {
+    !unique !ordered attr String[1] name;
+    !ordered ref Operation[1]#faults operation;
+    !ordered ref Message[1]#faults message;
+  }
+
+  class Message {
+    !unique !ordered attr String[1] name;
+    !ordered ref Param[*]#message params;
+    !ordered ref Fault[*]#message faults;
+    !ordered ref Part[*]#message parts;
+  }
+
+  class Part {
+    !unique !ordered attr String[1] name;
+    !ordered ref Message[1]#parts message;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+}
+

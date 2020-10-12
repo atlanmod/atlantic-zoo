@@ -1,0 +1,64 @@
+-- @name		CPR 
+-- @version		1.0
+-- @domains		Ontology
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/10
+-- @description	This metamodel describes a subset of the Core Plan Representation (CPR) which is an effort to construct a general plan ontology. It has been developed to support the common plan representation of military planning, workflow and simulation. CPR is a DARPA project that mainly focuses on planning (specifying an action list in order to deal with a set of objectives) as well as on foreseeing (specifying moments at which activities will be realized and resource quantities will be used). 
+-- @see			
+
+package CPR {
+
+	-- @begin CPR structure
+
+	class Plan {
+		reference sub_plans[*] container : Plan oppositeOf super_plan;
+		reference super_plan : Plan oppositeOf sub_plans;
+		reference objectives[*] container : Objective oppositeOf objective_plan;
+		reference actions[*] ordered container : Action oppositeOf action_plan;
+	}
+	
+	class Objective {
+		reference objective_plan : Plan oppositeOf objectives;
+		reference criterias[*] container : EvaluationCriteria oppositeOf criteria_objective;
+	}
+	
+	class EvaluationCriteria {
+		reference criteria_objective : Objective oppositeOf criterias;
+	}
+	
+	class Action {
+		reference action_plan : Plan oppositeOf actions;
+		reference sub_actions[*] ordered container : Action oppositeOf super_action;
+		reference super_action : Action oppositeOf sub_actions;
+		reference actor container : Actor oppositeOf actor_action;
+		reference resources[*] container : Resource oppositeOf resource_action;
+		reference timeSpecs[*] container : TimeSpec oppositeOf timeSpec_action;
+	}
+	
+	class Actor {
+		reference actor_action : Action oppositeOf actor;
+		reference sub_actors[*] container : Actor oppositeOf super_actor;
+		reference super_actor : Actor oppositeOf sub_actors;
+	}
+	
+	class Resource {
+		reference resource_action : Action oppositeOf resources;
+	}
+	
+	class TimeSpec {
+		reference timeSpec_action : Action oppositeOf timeSpecs;
+	}
+	
+	-- @end CPR structure
+
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

@@ -1,0 +1,60 @@
+-- @atlcompiler atl2006
+
+-- ******************************************************************************
+-- Copyright (c) 2006 INRIA. 
+-- All rights reserved. This program and the accompanying materials 
+-- are made available under the terms of the Eclipse Public License v1.0 
+-- which accompanies this distribution, and is available at
+-- http://www.eclipse.org/legal/epl-v10.html
+-- 
+-- Contributors: 
+-- 	INRIA - Initial implementation
+--  
+-- ******************************************************************************
+
+--@author Guillaume Doux (Guillaume.Doux <at> gmail.com)
+
+module KM32Clojure;
+create OUT : Clojure from IN : KM3;
+
+helper context KM3!Class def: getAllFeatures : Sequence(KM3!StructuralFeatures)=
+	if self.supertypes->isEmpty()
+		then self.structuralFeatures
+		else self.structuralFeatures->union(self.supertypes->collect(c | c.getAllFeatures)->flatten())
+	endif;
+
+helper def: allPackages : Sequence(KM3!Packages) =
+	KM3!Package.allInstancesFrom('IN');
+
+rule Package2Root{
+	from
+		s	:	KM3!Package (thisModule.allPackages->first()=s)
+	to
+		t	:	Clojure!Root(
+			expressions<-KM3!Class.allInstancesFrom('IN')	
+		)
+}
+
+rule Class2DefStruct {
+	from
+		s	:	KM3!Class
+	to
+		t	:	Clojure!FunctionDefn(
+			def <- #defStruct,
+			name <- symb,
+			corps <- s.getAllFeatures->select(b | b.lower>0)->collect(c | thisModule.StructuralFeature2Keyword(c))
+		),
+		symb	:	Clojure!Symbol(
+			value <- s.name	
+		)
+}
+
+lazy rule StructuralFeature2Keyword {
+	from
+		s	:	KM3!StructuralFeature
+	to
+		t	:	Clojure!Keyword(
+			value<- ':' + s.name
+		)
+}
+

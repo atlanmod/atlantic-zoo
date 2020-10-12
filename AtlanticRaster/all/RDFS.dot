@@ -1,0 +1,119 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_RDFS"{
+labelloc=t
+color=black
+label=RDFS
+ node[shape=record];
+Resource[label="{Resource| | }"]
+ Resource->Graph[arrowhead=diamond,arrowtail=none,headlabel="graph",taillabel="resources[*]",group=Graph,minlen=2,constraint=true,]
+ Resource->Statement[arrowhead=none,arrowtail=none,headlabel="subjectStatement[*]",taillabel="subject",group=Statement,minlen=2,constraint=false,]
+ Resource->Class[arrowhead=none,arrowtail=none,headlabel="type[1-*]",taillabel="typedResource[*]",group=Class,minlen=2,constraint=false,]
+ Resource->Resource[arrowhead=none,arrowtail=none,headlabel="referringResource[*]",taillabel="seeAlso[*]",group=Resource,minlen=2,constraint=false,]
+ Resource->Resource[arrowhead=none,arrowtail=none,headlabel="container[*]",taillabel="member[*]",group=Resource,minlen=2,constraint=false,]
+ Resource->List[arrowhead=none,arrowtail=none,headlabel="list[*]",taillabel="first[0-1]",group=List,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Graph[label="{Graph| | }"]
+ Graph->Resource[arrowhead=onormal,group=Resource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+List[label="{List| | }"]
+ List->List[arrowhead=none,arrowtail=none,headlabel="originalList[*]",taillabel="rest[0-1]",group=List,minlen=2,constraint=false,]
+ List->Resource[arrowhead=onormal,group=Resource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Container[label="{Container| | }"]
+ Container->Resource[arrowhead=onormal,group=Resource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Alt[label="{Alt| | }"]
+ Alt->Container[arrowhead=onormal,group=Container,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Bag[label="{Bag| | }"]
+ Bag->Container[arrowhead=onormal,group=Container,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Seq[label="{Seq| | }"]
+ Seq->Container[arrowhead=onormal,group=Container,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Property[label="{Property| | }"]
+ Property->Statement[arrowhead=none,arrowtail=none,headlabel="predicateStatement[*]",taillabel="predicate[0-1]",group=Statement,minlen=2,constraint=false,]
+ Property->Property[arrowhead=none,arrowtail=none,headlabel="superProperty[*]",taillabel="subPropertyOf[*]",group=Property,minlen=2,constraint=false,]
+ Property->Class[arrowhead=none,arrowtail=none,headlabel="domain[*]",taillabel="propertyForDomain[*]",group=Class,minlen=2,constraint=false,]
+ Property->Class[arrowhead=none,arrowtail=none,headlabel="range[*]",taillabel="propertyForRange[*]",group=Class,minlen=2,constraint=false,]
+ Property->Resource[arrowhead=onormal,group=Resource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ContainerMembershipProperty[label="{ContainerMembershipProperty| | }"]
+;
+ node[shape=record];
+Statement[label="{Statement|isReifiedOnly : Boolean\nisReified : Boolean| }"]
+ Statement->Resource[arrowhead=none,arrowtail=none,headlabel="object",taillabel="objectStatement[*]",group=Resource,minlen=2,constraint=false,]
+ Statement->Resource[arrowhead=onormal,group=Resource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+URIReferenceNode[label="{URIReferenceNode| | }"]
+ URIReferenceNode->Resource[arrowhead=onormal,group=Resource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BlankNode[label="{BlankNode|nodeId[0-1] : String| }"]
+ BlankNode->Resource[arrowhead=onormal,group=Resource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Class[label="{Class| | }"]
+ Class->Class[arrowhead=none,arrowtail=none,headlabel="superClass[*]",taillabel="subClassOf[*]",group=Class,minlen=2,constraint=false,]
+ Class->Resource[arrowhead=onormal,group=Resource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Datatype[label="{Datatype| | }"]
+ Datatype->Class[arrowhead=onormal,group=Class,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Literal[label="{Literal|lexicalForm : String| }"]
+ Literal->Resource[arrowhead=onormal,group=Resource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PlainLiteral[label="{PlainLiteral|language[0-1] : String| }"]
+ PlainLiteral->Resource[arrowhead=diamond,arrowtail=none,headlabel="labeledResource",taillabel="label[*]",group=Resource,minlen=2,constraint=true,]
+ PlainLiteral->Literal[arrowhead=onormal,group=Literal,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TypedLiteral[label="{TypedLiteral| | }"]
+ TypedLiteral->Literal[arrowhead=onormal,group=Literal,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RDFXMLLiteral[label="{RDFXMLLiteral| | }"]
+ RDFXMLLiteral->TypedLiteral[arrowhead=onormal,group=TypedLiteral,minlen=2,constraint=true,]
+;
+ node[shape=record];
+URIReference[label="{URIReference| | }"]
+ URIReference->UniformResourceIdentifier[arrowhead=none,arrowtail=none,headlabel="uri[0-1]",taillabel="uriRef[*]",group=UniformResourceIdentifier,minlen=2,constraint=false,]
+ URIReference->Resource[arrowhead=diamond,arrowtail=none,headlabel="resource[0-1]",taillabel="uriRef[*]",group=Resource,minlen=2,constraint=true,]
+ URIReference->TypedLiteral[arrowhead=none,arrowtail=none,headlabel="literal[0-1]",taillabel="datatypeURI",group=TypedLiteral,minlen=2,constraint=false,]
+ URIReference->Graph[arrowhead=diamond,arrowtail=none,headlabel="namedGraph[0-1]",taillabel="graphName[0-1]",group=Graph,minlen=2,constraint=true,]
+ URIReference->Statement[arrowhead=none,arrowtail=none,headlabel="reifiedStatement[*]",taillabel="nameForReification[*]",group=Statement,minlen=2,constraint=false,]
+;
+ node[shape=record];
+UniformResourceIdentifier[label="{UniformResourceIdentifier|name : String| }"]
+ UniformResourceIdentifier->URIReference[arrowhead=onormal,group=URIReference,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

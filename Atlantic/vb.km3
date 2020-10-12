@@ -1,0 +1,457 @@
+-- @name        Visual Basic 
+-- @version     0.1
+-- @domains     Visual Basic language
+-- @authors     Quentin Glineur (quentin.glineur_at_obeo.fr)
+-- @date        2007/10/30	
+-- @description This metamodel contains the concepts (abstract syntax) used for knowledge discovery inside Visual Basic source code. It is a lightweigh version of an Obeo Agility knowledge extractor. 
+-- @see         "Obeo Agility", http://www.obeo.fr/pages/mda-platform/en, "Visual Basic", http://msdn2.microsoft.com/en-us/vbrun/default.aspx
+
+package fr {
+
+	package obeo {
+
+		package psm {
+
+			package vb {
+
+				package resources {
+				
+					abstract class LocatedElement {
+						attribute location : String;
+						attribute commentsBefore[*] ordered : String;
+						attribute commentsAfter[*] ordered : String;
+					}
+
+					abstract class VB_LangElement extends LocatedElement {
+					}
+
+				}
+
+				package projects {
+
+					package VB_1 {
+
+						package core {
+
+							class VB_Content extends VB_LangElement {
+								attribute hasVersion : Boolean;
+								attribute version[0-1] : String;
+								attribute hasClass : Boolean;
+								attribute hasBeginEnd : Boolean;
+								reference beginEndGlobalVariables[*] ordered container : VB_GlobalVariable;
+								reference globalVariables[*] ordered container : VB_GlobalVariable;
+								reference elements[*] ordered container : VB_ContentElement;
+							}
+
+							class VB_GlobalVariable extends VB_LangElement {
+								attribute name : String;
+								reference value[1-*] ordered container : VB_Expression;
+							}
+							
+							abstract class VB_ContentElement extends VB_LangElement {
+								
+							}
+
+							class VB_FileAttribute extends VB_ContentElement {
+								attribute name : String;
+								reference initialValue[1-*] ordered container : VB_Expression;
+							}
+
+							class VB_Option extends VB_ContentElement {
+								attribute name : String;
+								attribute hasEnablement : Boolean;
+								attribute enablement[0-1] : EnablementEnum;
+							}
+
+							class VB_Imports extends VB_ContentElement {
+								reference imports container : VB_FullTypeRef;
+							}
+
+							class VB_Implements extends VB_ContentElement {
+								reference implements container : VB_FullTypeRef;
+							}
+
+							class VB_Assembly extends VB_ContentElement {
+								reference call container : VB_Call;
+							}
+
+							class VB_Class extends VB_ContentElement, VB_Type {
+								attribute isFriend : Boolean;
+								attribute hasVisibility : Boolean;
+								attribute visibility[0-1] : VisibilityEnum;
+								attribute name : String;
+								attribute hasInherits : Boolean;
+								reference inherits[0-1] container : VB_FullTypeRef;
+								reference features[*] ordered container : VB_Feature;
+							}
+
+							class VB_Module extends VB_ContentElement {
+								attribute name : String;
+								reference features[*] ordered container : VB_Feature;
+							}
+
+							abstract class VB_Type extends VB_LangElement {
+								
+							}
+							abstract class VB_Data extends VB_LangElement {
+								
+							}							
+
+							class VB_SimpleType extends VB_ContentElement {
+								attribute visibility[0-1] : VisibilityEnum;
+								attribute name : String;
+								reference features[*] ordered container : VB_Feature;
+							}
+
+							class VB_Enum extends VB_ContentElement {
+								attribute visibility : VisibilityEnum;
+								attribute name : String;
+								reference features[*] ordered container : VB_Feature;
+							}
+						}
+
+						package preprocessing {
+						
+							class VB_PreprocIf extends VB_ContentElement {
+								reference condition container : VB_Expression;
+								reference features[*] ordered container : VB_Feature;
+							}
+						}
+
+						package features {
+
+							abstract class VB_Feature extends VB_Data, VB_ContentElement {
+								
+							}
+
+							class VB_Region extends VB_Feature {
+								attribute name : String;
+								reference features[*] ordered container : VB_Feature;
+							}
+
+							class VB_Sub extends VB_Feature {
+								attribute hasAnnotation : Boolean;
+								reference annotation[0-1] container : VB_Call;
+								attribute isFriend : Boolean;
+								attribute hasVisibility : Boolean;
+								attribute visibility[0-1] : VisibilityEnum;
+								attribute isOverloads : Boolean;
+								attribute isOverrides : Boolean;
+								attribute name : String;
+								reference parameters[*] ordered container : VB_Parameter;
+								attribute hasHandles : Boolean;
+								reference handles[*] ordered container : VB_FullTypeRef;
+								reference statements[*] ordered container : VB_Statement;
+							}
+
+							class VB_Function extends VB_Feature {
+								attribute isFriend : Boolean;
+								attribute hasVisibility : Boolean;
+								attribute visibility[0-1] : VisibilityEnum;
+								attribute name : String;
+								reference parameters[*] ordered container : VB_Parameter;
+								reference return[0-1] container : VB_FullTypeRef;
+								reference statements[*] ordered container : VB_Statement;
+							}
+
+							class VB_DeclareFunction extends VB_Feature {
+								attribute hasVisibility : Boolean;
+								attribute visibility[0-1] : VisibilityEnum;
+								attribute isAuto : Boolean;
+								attribute name : String;
+								attribute lib : String;
+								attribute isAlias : Boolean;
+								attribute alias[0-1] : String;
+								reference parameters[*] ordered container : VB_Parameter;
+								reference return container : VB_FullTypeRef;
+							}
+
+							class VB_DeclareSub extends VB_Feature {
+								attribute hasVisibility : Boolean;
+								attribute visibility[0-1] : VisibilityEnum;
+								attribute isAuto : Boolean;
+								attribute name : String;
+								attribute lib : String;
+								attribute isAlias : Boolean;
+								attribute alias[0-1] : String;
+								reference parameters[*] ordered container : VB_Parameter;
+							}
+
+							class VB_Parameter extends VB_Data {
+								attribute isOptional : Boolean;
+								attribute hasQualifier : Boolean;
+								attribute qualifier[0-1] : QualifierEnum;
+								attribute name : String;
+								attribute isArray : Boolean;
+								reference arrayExpression[0-1] container : VB_Expression;
+								attribute hasType : Boolean;
+								reference type[0-1] container : VB_FullTypeRef;
+								attribute hasInitialValue : Boolean;
+								reference value[0-1] container : VB_Expression;
+							}
+
+							class VB_Property extends VB_Feature {
+								attribute visibility : VisibilityEnum;
+								attribute isShared : Boolean;
+								attribute isGetOnly : Boolean;
+								attribute isSet : Boolean;
+								attribute isLet : Boolean;
+								attribute name : String;
+								reference parameters[*] ordered container : VB_Parameter;
+								reference type[0-1] container : VB_FullTypeRef;
+								reference modifiers[*] ordered container : VB_Modifier;
+								reference statements[*] ordered container : VB_Statement;
+							}
+
+							abstract class VB_Modifier extends VB_LangElement {
+								
+							}
+
+							class VB_Set extends VB_Modifier {
+								attribute hasParameters : Boolean;
+								reference parameters[*] ordered container : VB_Parameter;
+								reference statements[*] ordered container : VB_Statement;
+							}
+
+							class VB_Get extends VB_Modifier {
+								attribute hasParameters : Boolean;
+								reference parameters[*] ordered container : VB_Parameter;
+								reference statements[*] ordered container : VB_Statement;
+							}
+
+							class VB_Attribute extends VB_Feature {
+								attribute hasVisibility : Boolean;
+								attribute visibility[0-1] : VisibilityEnum;
+								attribute hasQualifier : Boolean;
+								attribute qualifier[0-1] : Qualifier_2Enum;
+								attribute isFriend : Boolean;
+								attribute isWithEvents : Boolean;
+								attribute isShared : Boolean;
+								attribute name : String;
+								attribute isArray : Boolean;
+								reference arrayExpressions[*] ordered container : VB_Expression;
+								attribute hasType : Boolean;
+								reference type[0-1] container : VB_Expression;
+								attribute hasInitialValue : Boolean;
+								reference initialValue[0-1] container : VB_Expression;
+								attribute hasNext : Boolean;
+							}
+						}
+
+						package graphicals {
+
+							class VB_GraphicalElement extends VB_ContentElement, VB_Data {
+								reference type container : VB_FullTypeRef;
+								attribute name : String;
+								reference fields[*] ordered container : VB_GraphicalField;
+								reference children[*] ordered container : VB_GraphicalElement;
+							}
+
+							abstract class VB_GraphicalField extends VB_LangElement {
+								
+							}
+
+							class VB_GraphicalPropertySet extends VB_GraphicalField {
+								attribute name : String;
+								attribute hasArguments : Boolean;
+								reference arguments[*] ordered container : VB_Expression;
+								attribute hasBrackets : Boolean;
+								reference fields[*] ordered container : VB_GraphicalField;
+							}
+
+							class VB_GraphicalProperty extends VB_Data, VB_GraphicalField {
+								reference property container : VB_FullDataRef;
+								reference value container : VB_Expression;
+							}
+						}
+
+						package statements {
+
+							abstract class VB_Statement extends VB_Modifier {
+								
+							}
+
+							class VB_Call extends VB_Statement {
+								reference expression container : VB_FullDataRef;
+								reference arguments[*] ordered container : VB_CallArgument;
+							}
+
+							abstract class VB_CallArgument extends VB_LangElement {
+								
+							}
+
+							class VB_CallEmptyArgument extends VB_CallArgument {
+								
+							}
+
+							class VB_CallExpressionArgument extends VB_CallArgument {
+								reference expression container : VB_Expression;
+								attribute hasSeparator : Boolean;
+							}
+
+							class VB_Case extends VB_LangElement {
+								reference values[1-*] ordered container : VB_Expression;
+								attribute hasSeparator : Boolean;
+								reference statements[*] ordered container : VB_Statement;
+							}
+
+							class VB_RawBody extends VB_Statement {
+								attribute value[0-1] : String;
+							}
+						}
+
+						package expressions {
+
+							abstract class VB_Expression extends VB_LangElement {
+								
+							}
+
+							class VB_AssignmentExpression extends VB_Expression {
+								reference variable container : VB_FullDataRef;
+								reference expression container : VB_Expression;
+							}
+
+							class VB_TypeOfExpression extends VB_Expression {
+								reference variable container : VB_FullDataRef;
+								reference type container : VB_FullTypeRef;
+							}
+
+							class VB_OperatorExpression extends VB_Expression {
+								reference leftHand container : VB_Expression;
+								reference rightHand container : VB_Expression;
+								attribute operatorName[0-1] : String;
+							}
+
+							class VB_NewExpression extends VB_Expression {
+								reference type container : VB_FullTypeRef;
+								attribute hasArguments : Boolean;
+								reference arguments[*] ordered container : VB_Expression;
+								attribute hasInitialization : Boolean;
+								reference initializations[*] ordered container : VB_Expression;
+							}
+
+							class VB_NotExpression extends VB_Expression {
+								reference expression container : VB_Expression;
+							}
+
+							class VB_NegativeExpression extends VB_Expression {
+								reference expression container : VB_Expression;
+							}
+
+							class VB_ParenthesisExpression extends VB_Expression {
+								reference expression container : VB_Expression;
+							}
+
+							class VB_TabValuesExpression extends VB_Expression {
+								reference arguments[*] ordered container : VB_Expression;
+							}
+
+							class VB_ByValExpression extends VB_Expression {
+								reference value container : VB_Expression;
+							}
+
+							abstract class VB_Value extends VB_Expression {
+								
+							}
+
+							class VB_NegativeValue extends VB_Value {
+								reference value container : VB_Value;
+							}
+
+							class VB_VariableSystem extends VB_Value {
+								attribute name : NameEnum;
+							}
+
+							abstract class VB_Literal extends VB_Value {
+								attribute value : String;
+							}
+
+							class VB_Literal_Literal extends VB_Literal {
+							}
+							
+							class VB_Literal_Number extends VB_Literal {
+							}
+							
+							class VB_Literal_Value extends VB_Literal {
+							}
+						}
+
+						package references {
+
+							class VB_FullTypeRef extends VB_LangElement {
+								reference members[1-*] ordered container : VB_TypeRef;
+							}
+
+							class VB_TypeRef extends VB_LangElement {
+								reference type : VB_LangElement;
+								attribute typeValue : String;
+							}
+
+							class VB_FullDataRef extends VB_Expression {
+								attribute self : Boolean;
+								reference members[1-*] ordered container : VB_DataRef;
+								attribute hasRecSet : Boolean;
+								reference recSetMember[0-1] container : VB_DataRef;
+							}
+
+							class VB_DataRef extends VB_LangElement {
+								reference data : VB_LangElement;
+								attribute dataValue : String;
+								attribute hasArguments : Boolean;
+								reference arguments[*] ordered container : VB_CallArgument;
+								attribute hasRefMarker : Boolean;
+								attribute hasSubMarker : Boolean;
+							}
+
+							class VB_LabelRef extends VB_LangElement {
+								reference label : VB_LangElement;
+								attribute labelValue : String;
+							}
+						}
+
+						package enumerations {
+
+							enumeration EnablementEnum {
+								literal Off;
+								literal On;
+							}
+
+							enumeration VisibilityEnum {
+								literal private;
+								literal protected;
+								literal public;
+							}
+
+							enumeration QualifierEnum {
+								literal byRef;
+								literal byVal;
+							}
+
+							enumeration Qualifier_2Enum {
+								literal static;
+								literal const;
+								literal dim;
+							}
+
+							enumeration NameEnum {
+								literal trueLit;
+								literal falseLit;
+								literal nothing;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+package PrimitiveTypes {
+
+	datatype String;
+
+	datatype Boolean;
+
+	datatype Integer;
+}

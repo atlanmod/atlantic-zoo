@@ -1,0 +1,149 @@
+-- @name		LaTeX
+-- @version		1.0
+-- @domains		Documentation
+-- @authors		Pierrick Guyard (pierrick.guyard@gmail.com)
+-- @date		2005/06/17
+-- @description	This basic metamodel describes the structure of LaTeX document. This metamodel is based on Tayeb Lemlouma LaTeX DTD created on June 2001. LaTeX is a high-quality typesetting system, with features designed for the production of technical and scientific documentation. LaTeX is the de facto standard for the communication and publication of scientific documents.
+-- @see			http://opera.inrialpes.fr/people/Tayeb.Lemlouma/MULTIMEDIA/XSLT/LaTeXDTD.dtd
+
+package LaTeX {
+
+	abstract class ValuedElement {
+		attribute value : String;
+	}
+
+	class Type extends ValuedElement {
+	}
+
+	class Title extends ValuedElement {
+	}
+
+	class Name extends ValuedElement {
+		reference author[0-1] : Author oppositeOf names;
+		reference organisation[0-1] : Organisation oppositeOf names;
+	}
+	
+	class Date extends ValuedElement {
+	}
+	
+	class Author {
+		reference names[1-*] container : Name oppositeOf author;
+	}
+	
+	class Adress extends ValuedElement{
+	}
+	
+	class Organisation {
+		reference names[1-*] container : Name oppositeOf organisation;
+		reference adress container : Adress;
+		reference heading[1-1] : Heading oppositeOf organisations;
+	}
+	
+	class Phone extends ValuedElement {
+	}
+	
+	class Fax extends ValuedElement {
+	}
+	
+	class EMail extends ValuedElement {
+	}
+	
+	class Heading {
+		reference organisations[*] container : Organisation oppositeOf heading;
+		reference phone[0-1] container : Phone;
+		reference fax[0-1] container : Fax;
+		reference email[0-1] container : EMail;
+	}
+
+	class Abstract extends ValuedElement {
+	}
+	
+	class Keywords extends ValuedElement {
+	}
+	
+	class SectionBody {
+		reference corps[*] container : Corps oppositeOf sectionbody;
+		reference section[1-1] : Section oppositeOf sectionBody;
+	}
+	
+	
+	abstract class Corps {
+		reference sectionbody[1-1] : SectionBody oppositeOf corps;
+	}
+	
+	class Value extends Corps, ValuedElement {
+	}
+
+	class Cite extends Corps, ValuedElement {
+	}
+
+	class Path extends ValuedElement{
+	}
+	
+	class Label extends ValuedElement{
+	}
+
+	class Figure extends Corps {
+		reference path container : Path;
+		reference label container : Label;
+		reference title container : Title;
+	}
+
+	class Item extends ValuedElement {
+		reference itemscontainer[0-1] : Items oppositeOf item;	
+		reference enumeratecontainer[0-1] : Enumerate oppositeOf item;
+	}
+
+	class Items extends Corps {
+		reference item[1-*]	container : Item oppositeOf itemscontainer;
+	}
+
+	class Enumerate extends Corps {
+		reference item[1-*]	container : Item oppositeOf enumeratecontainer;
+	}
+					
+	class Section extends Corps {
+		reference title container : Title;
+		reference sectionBody[1-1] container : SectionBody oppositeOf section;
+	}	
+
+	class Description extends ValuedElement {
+		reference date container : Date;
+	}
+	
+	class Citation {
+		reference label container : Label;
+		reference author container : Author;
+		reference description container : Description;	
+		reference bibliography[1-1] : Bibliography oppositeOf citations;		
+	}	
+	
+	class Bibliography {
+		reference citations[1-*] container : Citation oppositeOf bibliography;
+		reference documentbody[1-1] : DocumentBody oppositeOf bibliography;
+	}
+	
+	class DocumentBody {
+		reference sections[1-*] container : Section;
+		reference bibliography[*] container : Bibliography oppositeOf documentbody;
+		reference document : Document oppositeOf documentbody;
+	}
+		
+	class Document {
+		reference type container : Type;
+		reference title container : Title;
+		reference author[0-1] container : Author;
+		reference date[0-1] container : Date;
+		reference heading[0-1] container : Heading;
+		reference "abstract"[0-1] container : Abstract;
+		reference keywords[0-1] container : Keywords;
+		reference documentbody container : DocumentBody oppositeOf document;	
+	}
+	
+
+}
+
+package PrimitiveTypes {
+	datatype Integer;
+	datatype String;
+}

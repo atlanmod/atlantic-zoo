@@ -1,0 +1,231 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_Maude"{
+labelloc=t
+color=black
+label=Maude
+ node[shape=record];
+MaudeSpec[label="{MaudeSpec| | }"]
+ MaudeSpec->MaudeTopEl[arrowhead=vee,arrowtail=diamond,headlabel="els[*]{ordered}",group=MaudeTopEl,minlen=2,constraint=true,]
+ MaudeSpec->MaudeTopEl[arrowhead=vee,arrowtail=none,headlabel="printableEls[*]{ordered}",group=MaudeTopEl,minlen=2,constraint=false,]
+;
+ node[shape=record];
+MaudeTopEl[label="{/MaudeTopEl/|name : String| }"]
+;
+ node[shape=record];
+ModExpression[label="{/ModExpression/| | }"]
+;
+ node[shape=record];
+InstModExp[label="{InstModExp| | }"]
+ InstModExp->ModExpression[arrowhead=vee,arrowtail=diamond,headlabel="modExp",group=ModExpression,minlen=2,constraint=true,]
+ InstModExp->View[arrowhead=vee,arrowtail=none,headlabel="views[1-*]{ordered}",group=View,minlen=2,constraint=false,]
+ InstModExp->ModExpression[arrowhead=onormal,group=ModExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RenModExp[label="{RenModExp| | }"]
+ RenModExp->ModExpression[arrowhead=vee,arrowtail=diamond,headlabel="modExp",group=ModExpression,minlen=2,constraint=true,]
+ RenModExp->RenMapping[arrowhead=vee,arrowtail=diamond,headlabel="renamings[1-*]",group=RenMapping,minlen=2,constraint=true,]
+ RenModExp->ModExpression[arrowhead=onormal,group=ModExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CompModExp[label="{CompModExp| | }"]
+ CompModExp->ModExpression[arrowhead=vee,arrowtail=diamond,headlabel="modExps[2-*]",group=ModExpression,minlen=2,constraint=true,]
+ CompModExp->ModExpression[arrowhead=onormal,group=ModExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ModuleIdModExp[label="{ModuleIdModExp| | }"]
+ ModuleIdModExp->Module[arrowhead=vee,arrowtail=none,headlabel="module",group=Module,minlen=2,constraint=false,]
+ ModuleIdModExp->ModExpression[arrowhead=onormal,group=ModExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TheoryIdModExp[label="{TheoryIdModExp| | }"]
+ TheoryIdModExp->Theory[arrowhead=vee,arrowtail=none,headlabel="theory",group=Theory,minlen=2,constraint=false,]
+ TheoryIdModExp->ModExpression[arrowhead=onormal,group=ModExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parameter[label="{Parameter|label : String| }"]
+ Parameter->ModExpression[arrowhead=vee,arrowtail=diamond,headlabel="modExp",group=ModExpression,minlen=2,constraint=true,]
+ Parameter->ModExpression[arrowhead=onormal,group=ModExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Theory[label="{/Theory/| | }"]
+ Theory->MaudeTopEl[arrowhead=onormal,group=MaudeTopEl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FTheory[label="{FTheory| | }"]
+ FTheory->Theory[arrowhead=onormal,group=Theory,minlen=2,constraint=true,]
+;
+ node[shape=record];
+STheory[label="{STheory| | }"]
+ STheory->Theory[arrowhead=onormal,group=Theory,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Module[label="{/Module/| | }"]
+ Module->Parameter[arrowhead=vee,arrowtail=diamond,headlabel="params[*]{ordered}",group=Parameter,minlen=2,constraint=true,]
+ Module->MaudeTopEl[arrowhead=onormal,group=MaudeTopEl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FModule[label="{FModule| | }"]
+ FModule->Module[arrowhead=onormal,group=Module,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SModule[label="{SModule| | }"]
+ SModule->Module[arrowhead=onormal,group=Module,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ModElement[label="{/ModElement/| | }"]
+ ModElement->Module[arrowhead=diamond,arrowtail=none,headlabel="module[0-1]",taillabel="els",group=Module,minlen=2,constraint=true,]
+ ModElement->Theory[arrowhead=diamond,arrowtail=none,headlabel="theory[0-1]",taillabel="els",group=Theory,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ModImportation[label="{ModImportation|mode : ImportationMode| }"]
+ ModImportation->ModExpression[arrowhead=vee,arrowtail=diamond,headlabel="imports",group=ModExpression,minlen=2,constraint=true,]
+ ModImportation->ModElement[arrowhead=onormal,group=ModElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Type[label="{/Type/|name : String| }"]
+;
+ node[shape=record];
+Sort[label="{Sort| | }"]
+ Sort->Type[arrowhead=onormal,group=Type,minlen=2,constraint=true,]
+ Sort->ModElement[arrowhead=onormal,group=ModElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Kind[label="{Kind| | }"]
+ Kind->Sort[arrowhead=none,arrowtail=none,headlabel="sorts[1-*]",taillabel="kind",group=Sort,minlen=2,constraint=false,]
+ Kind->Type[arrowhead=onormal,group=Type,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SubsortRel[label="{SubsortRel| | }"]
+ SubsortRel->Sort[arrowhead=none,arrowtail=none,headlabel="subsorts[1-*]",taillabel="supersortRels",group=Sort,minlen=2,constraint=false,]
+ SubsortRel->Sort[arrowhead=none,arrowtail=none,headlabel="supersorts[1-*]",taillabel="subsortRels",group=Sort,minlen=2,constraint=false,]
+ SubsortRel->ModElement[arrowhead=onormal,group=ModElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Operation[label="{Operation|name : String\natts[*] : String| }"]
+ Operation->Type[arrowhead=vee,arrowtail=none,headlabel="coarity",group=Type,minlen=2,constraint=false,]
+ Operation->Type[arrowhead=vee,arrowtail=none,headlabel="arity[*]{ordered}",group=Type,minlen=2,constraint=false,]
+ Operation->ModElement[arrowhead=onormal,group=ModElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Statement[label="{/Statement/|label[0-1] : String\natts[*] : String| }"]
+ Statement->Condition[arrowhead=vee,arrowtail=diamond,headlabel="conds[*]{ordered}",group=Condition,minlen=2,constraint=true,]
+ Statement->ModElement[arrowhead=onormal,group=ModElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Membership[label="{Membership| | }"]
+ Membership->Term[arrowhead=vee,arrowtail=diamond,headlabel="term",group=Term,minlen=2,constraint=true,]
+ Membership->Sort[arrowhead=vee,arrowtail=none,headlabel="sort",group=Sort,minlen=2,constraint=false,]
+ Membership->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Equation[label="{Equation| | }"]
+ Equation->Term[arrowhead=vee,arrowtail=diamond,headlabel="lhs",group=Term,minlen=2,constraint=true,]
+ Equation->Term[arrowhead=vee,arrowtail=diamond,headlabel="rhs",group=Term,minlen=2,constraint=true,]
+ Equation->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Rule[label="{Rule| | }"]
+ Rule->Term[arrowhead=vee,arrowtail=diamond,headlabel="lhs[0-1]",group=Term,minlen=2,constraint=true,]
+ Rule->Term[arrowhead=vee,arrowtail=diamond,headlabel="rhs[0-1]",group=Term,minlen=2,constraint=true,]
+ Rule->Statement[arrowhead=onormal,group=Statement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Condition[label="{/Condition/| | }"]
+ Condition->Term[arrowhead=vee,arrowtail=diamond,headlabel="lhs",group=Term,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EquationalCond[label="{/EquationalCond/| | }"]
+ EquationalCond->Condition[arrowhead=onormal,group=Condition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RewriteCond[label="{RewriteCond| | }"]
+ RewriteCond->Term[arrowhead=vee,arrowtail=diamond,headlabel="rhs",group=Term,minlen=2,constraint=true,]
+ RewriteCond->Condition[arrowhead=onormal,group=Condition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MembershipCond[label="{MembershipCond| | }"]
+ MembershipCond->Sort[arrowhead=vee,arrowtail=none,headlabel="rhs",group=Sort,minlen=2,constraint=false,]
+ MembershipCond->EquationalCond[arrowhead=onormal,group=EquationalCond,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BooleanCond[label="{BooleanCond| | }"]
+ BooleanCond->EquationalCond[arrowhead=onormal,group=EquationalCond,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MatchingCond[label="{MatchingCond| | }"]
+ MatchingCond->Term[arrowhead=vee,arrowtail=diamond,headlabel="rhs",group=Term,minlen=2,constraint=true,]
+ MatchingCond->EquationalCond[arrowhead=onormal,group=EquationalCond,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EqualCond[label="{EqualCond| | }"]
+ EqualCond->Term[arrowhead=vee,arrowtail=diamond,headlabel="rhs",group=Term,minlen=2,constraint=true,]
+ EqualCond->EquationalCond[arrowhead=onormal,group=EquationalCond,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Term[label="{/Term/| | }"]
+ Term->Type[arrowhead=vee,arrowtail=none,headlabel="type",group=Type,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Constant[label="{Constant|op : String| }"]
+ Constant->Term[arrowhead=onormal,group=Term,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RecTerm[label="{RecTerm|op : String| }"]
+ RecTerm->Term[arrowhead=vee,arrowtail=diamond,headlabel="args[1-*]{ordered}",group=Term,minlen=2,constraint=true,]
+ RecTerm->Term[arrowhead=onormal,group=Term,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Variable[label="{Variable|name : String| }"]
+ Variable->Term[arrowhead=onormal,group=Term,minlen=2,constraint=true,]
+;
+ node[shape=record];
+View[label="{View| | }"]
+ View->ModExpression[arrowhead=vee,arrowtail=diamond,headlabel="from",group=ModExpression,minlen=2,constraint=true,]
+ View->ModExpression[arrowhead=vee,arrowtail=diamond,headlabel="to",group=ModExpression,minlen=2,constraint=true,]
+ View->ViewMapping[arrowhead=vee,arrowtail=diamond,headlabel="els[*]",group=ViewMapping,minlen=2,constraint=true,]
+ View->MaudeTopEl[arrowhead=onormal,group=MaudeTopEl,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ViewMapping[label="{/ViewMapping/| | }"]
+;
+ node[shape=record];
+RenMapping[label="{/RenMapping/| | }"]
+ RenMapping->ViewMapping[arrowhead=onormal,group=ViewMapping,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TermMapping[label="{TermMapping| | }"]
+ TermMapping->Term[arrowhead=vee,arrowtail=diamond,headlabel="from",group=Term,minlen=2,constraint=true,]
+ TermMapping->Term[arrowhead=vee,arrowtail=diamond,headlabel="to",group=Term,minlen=2,constraint=true,]
+ TermMapping->ViewMapping[arrowhead=onormal,group=ViewMapping,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SortMapping[label="{SortMapping|to : String| }"]
+ SortMapping->Sort[arrowhead=vee,arrowtail=none,headlabel="from",group=Sort,minlen=2,constraint=false,]
+ SortMapping->RenMapping[arrowhead=onormal,group=RenMapping,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OpTypedMapping[label="{OpTypedMapping|to : String\natts[*] : String| }"]
+ OpTypedMapping->Operation[arrowhead=vee,arrowtail=none,headlabel="from",group=Operation,minlen=2,constraint=false,]
+ OpTypedMapping->RenMapping[arrowhead=onormal,group=RenMapping,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OpMapping[label="{OpMapping|to : String| }"]
+ OpMapping->Operation[arrowhead=vee,arrowtail=none,headlabel="from",group=Operation,minlen=2,constraint=false,]
+ OpMapping->RenMapping[arrowhead=onormal,group=RenMapping,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LabelMapping[label="{LabelMapping|from : String\nto : String| }"]
+ LabelMapping->RenMapping[arrowhead=onormal,group=RenMapping,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

@@ -1,0 +1,83 @@
+package Metamodel;
+
+package Pascal {
+  class Program {
+    !unique !ordered attr String[1] name;
+    !ordered val Variable[*]#program variables;
+    !ordered val Type[*]#program types;
+    !ordered val Procedure[*]#program procedures;
+  }
+
+  class Variable {
+    !unique !ordered attr String[1] name;
+    !ordered ref Program[1]#variables program;
+    !ordered ref Procedure[1]#variables procedure;
+    !ordered ref Type[1]#variables type;
+  }
+
+  class Type {
+    !unique !ordered attr String[1] name;
+    !ordered ref Program[1]#types program;
+    !ordered ref Variable[*]#type variables;
+  }
+
+  class Parameter extends Variable {
+    !ordered ref Procedure[1]#parameters procedure_parameter;
+  }
+
+  class Instruction {
+    !ordered ref Block[1]#instructions block;
+  }
+
+  class Calculation extends Instruction {
+  }
+
+  class Control extends Instruction {
+  }
+
+  class Assignment extends Instruction {
+  }
+
+  class Block extends Instruction {
+    val Instruction[*]#block instructions;
+    !ordered ref Procedure[1]#block_procedure procedure;
+    !ordered ref Loop[1]#block_loop loop;
+    !ordered ref Conditional[1]#blocks conditional;
+  }
+
+  class Conditional extends Control {
+    val Block[1..2]#conditional blocks;
+  }
+
+  class Loop extends Control {
+    !ordered val Block[1]#loop block_loop;
+  }
+
+  class Procedure extends Control {
+    !unique !ordered attr String[1] name;
+    !ordered ref Program[1]#procedures program;
+    !ordered val Variable[*]#procedure variables;
+    !ordered val Parameter[*]#procedure_parameter parameters;
+    !ordered val Block[1]#procedure block_procedure;
+  }
+
+  class Function extends Procedure {
+    !ordered ref Type[1] returnType;
+  }
+
+  class For extends Loop {
+  }
+
+  class While extends Loop {
+  }
+
+  class Repeat extends Loop {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+}
+

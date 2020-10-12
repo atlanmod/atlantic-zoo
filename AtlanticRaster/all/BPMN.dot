@@ -1,0 +1,78 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_bpmn"{
+labelloc=t
+color=black
+label=bpmn
+ node[shape=record];
+Activity[label="{Activity|activityType[0-1] : ActivityType\ndocumentation[0-1] : String\nlooping[0-1] : Boolean\nname[0-1] : String| }"]
+ Activity->Properties[arrowhead=vee,arrowtail=none,headlabel="properties",group=Properties,minlen=2,constraint=false,]
+ Activity->Message[arrowhead=none,arrowtail=none,headlabel="incomingMessages[*]{ordered}",taillabel="target[0-1]",group=Message,minlen=2,constraint=false,]
+ Activity->Message[arrowhead=vee,arrowtail=none,headlabel="orderedMessages[*]{ordered}",group=Message,minlen=2,constraint=false,]
+ Activity->SubProcess[arrowhead=diamond,arrowtail=none,headlabel="eventHandlerFor[0-1]",taillabel="eventHandlers[*]{ordered}",group=SubProcess,minlen=2,constraint=true,]
+ Activity->Lane[arrowhead=none,arrowtail=none,headlabel="lane[0-1]",taillabel="activities[*]{ordered}",group=Lane,minlen=2,constraint=false,]
+ Activity->Vertex[arrowhead=onormal,group=Vertex,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActivityTypeObject[label="{&#171;DataType&#187;\nActivityTypeObject|}"]
+;
+ node[shape=record];
+BpmnDiagram[label="{BpmnDiagram|author[0-1] : String\ndocumentation[0-1] : String\nname[0-1] : String\ntitle[0-1] : String| }"]
+;
+ node[shape=record];
+Edge[label="{Edge|documentation[0-1] : String\niD[0-1] : ID\nname[0-1] : String| }"]
+ Edge->Properties[arrowhead=vee,arrowtail=none,headlabel="properties",group=Properties,minlen=2,constraint=false,]
+ Edge->Graph[arrowhead=diamond,arrowtail=none,headlabel="graph[0-1]",taillabel="edges[*]{ordered}",group=Graph,minlen=2,constraint=true,]
+ Edge->Vertex[arrowhead=none,arrowtail=none,headlabel="target[0-1]",taillabel="outgoingEdges[*]{ordered}",group=Vertex,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Graph[label="{Graph| | }"]
+;
+ node[shape=record];
+Lane[label="{Lane|documentation[0-1] : String\niD[0-1] : ID\nname[0-1] : String| }"]
+ Lane->Properties[arrowhead=vee,arrowtail=none,headlabel="properties",group=Properties,minlen=2,constraint=false,]
+ Lane->Pool[arrowhead=diamond,arrowtail=none,headlabel="pool[0-1]",taillabel="lanes[*]{ordered}",group=Pool,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Message[label="{Message|documentation[0-1] : String\niD[0-1] : ID\nname[0-1] : String| }"]
+ Message->Properties[arrowhead=vee,arrowtail=none,headlabel="properties",group=Properties,minlen=2,constraint=false,]
+ Message->BpmnDiagram[arrowhead=diamond,arrowtail=none,headlabel="bpmnDiagram[0-1]",taillabel="messages[*]{ordered}",group=BpmnDiagram,minlen=2,constraint=true,]
+ Message->Activity[arrowhead=none,arrowtail=none,headlabel="source[0-1]",taillabel="outgoingMessages[*]{ordered}",group=Activity,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Pool[label="{Pool|documentation[0-1] : String\niD[0-1] : ID\nname[0-1] : String| }"]
+ Pool->BpmnDiagram[arrowhead=diamond,arrowtail=none,headlabel="bpmnDiagram[0-1]",taillabel="pools[*]{ordered}",group=BpmnDiagram,minlen=2,constraint=true,]
+ Pool->Graph[arrowhead=onormal,group=Graph,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Properties[label="{Properties| | }"]
+ Properties->PropertiesType[arrowhead=vee,arrowtail=diamond,headlabel="properties[*]{ordered}",group=PropertiesType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PropertiesType[label="{PropertiesType|key[0-1] : String\nvalue[0-1] : String| }"]
+;
+ node[shape=record];
+SubProcess[label="{SubProcess|isTransaction[0-1] : Boolean| }"]
+ SubProcess->Activity[arrowhead=onormal,group=Activity,minlen=2,constraint=true,]
+ SubProcess->Graph[arrowhead=onormal,group=Graph,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Vertex[label="{Vertex|iD[0-1] : ID| }"]
+ Vertex->Edge[arrowhead=none,arrowtail=none,headlabel="incomingEdges[*]{ordered}",taillabel="source[0-1]",group=Edge,minlen=2,constraint=false,]
+ Vertex->Graph[arrowhead=diamond,arrowtail=none,headlabel="graph[0-1]",taillabel="vertices[*]{ordered}",group=Graph,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+ID[label="{&#171;DataType&#187;\nID|}"]
+;
+
+}
+}

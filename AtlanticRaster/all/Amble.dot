@@ -1,0 +1,94 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_Amble"{
+labelloc=t
+color=black
+label=Amble
+ node[shape=record];
+Element[label="{/Element/|name : String| }"]
+;
+ node[shape=record];
+Program[label="{Program| | }"]
+ Program->Process[arrowhead=vee,arrowtail=diamond,headlabel="processes[*]",group=Process,minlen=2,constraint=true,]
+ Program->Network[arrowhead=vee,arrowtail=diamond,headlabel="networks[*]",group=Network,minlen=2,constraint=true,]
+ Program->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Process[label="{Process|minId : Integer\nmaxId : Integer\ninstancesNb : Integer| }"]
+ Process->State[arrowhead=vee,arrowtail=diamond,headlabel="states[*]",group=State,minlen=2,constraint=true,]
+ Process->Transition[arrowhead=vee,arrowtail=diamond,headlabel="transitions[*]",group=Transition,minlen=2,constraint=true,]
+ Process->Action[arrowhead=vee,arrowtail=diamond,headlabel="initial[0-1]",group=Action,minlen=2,constraint=true,]
+ Process->Variable[arrowhead=vee,arrowtail=diamond,headlabel="variables[*]",group=Variable,minlen=2,constraint=true,]
+ Process->Network[arrowhead=vee,arrowtail=none,headlabel="connectedTo[*]",group=Network,minlen=2,constraint=false,]
+ Process->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+State[label="{State|isInitial : Boolean| }"]
+ State->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Transition[label="{/Transition/| | }"]
+ Transition->Guard[arrowhead=vee,arrowtail=diamond,headlabel="guard[0-1]",group=Guard,minlen=2,constraint=true,]
+ Transition->Action[arrowhead=vee,arrowtail=diamond,headlabel="action[0-1]",group=Action,minlen=2,constraint=true,]
+ Transition->State[arrowhead=none,arrowtail=none,headlabel="source",taillabel="outgoing[*]",group=State,minlen=2,constraint=false,]
+ Transition->State[arrowhead=none,arrowtail=none,headlabel="target",taillabel="incoming[*]",group=State,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Trans[label="{Trans| | }"]
+ Trans->Message[arrowhead=vee,arrowtail=none,headlabel="waitFor",group=Message,minlen=2,constraint=false,]
+ Trans->Transition[arrowhead=onormal,group=Transition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Strans[label="{Strans| | }"]
+ Strans->Transition[arrowhead=onormal,group=Transition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Transall[label="{Transall| | }"]
+ Transall->Message[arrowhead=vee,arrowtail=none,headlabel="waitFor",group=Message,minlen=2,constraint=false,]
+ Transall->Transition[arrowhead=onormal,group=Transition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Guard[label="{Guard| | }"]
+ Guard->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Action[label="{Action| | }"]
+ Action->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Network[label="{Network| | }"]
+ Network->Channel[arrowhead=vee,arrowtail=diamond,headlabel="channels[*]",group=Channel,minlen=2,constraint=true,]
+ Network->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Channel[label="{Channel| | }"]
+ Channel->Message[arrowhead=vee,arrowtail=diamond,headlabel="messages[*]",group=Message,minlen=2,constraint=true,]
+ Channel->Process[arrowhead=vee,arrowtail=none,headlabel="source",group=Process,minlen=2,constraint=false,]
+ Channel->Process[arrowhead=vee,arrowtail=none,headlabel="target",group=Process,minlen=2,constraint=false,]
+ Channel->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Message[label="{Message| | }"]
+ Message->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Variable[label="{Variable|type : String\ninitValue : String| }"]
+ Variable->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

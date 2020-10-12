@@ -1,0 +1,184 @@
+-- @name		M
+-- @version		1.0
+-- @domains		Microsoft SQL Server Modeling
+-- @authors		Hugo Brunelière
+-- @date		2009
+-- @description	a metamodel for the Microsoft SQL Server Modeling M language (oslo)
+
+package M {
+
+	abstract class IdentifiedElement {
+		attribute qualifiers[*] ordered : String;
+		attribute identifier : String;
+	}
+
+	abstract class MElement extends IdentifiedElement {
+		
+	}
+
+	class MElementReference {
+		attribute alias[0-1] : String;
+		reference referencedElement : MElement;
+	}
+
+	class Module extends MElement {
+		reference imports[*] ordered container : ImportDirective oppositeOf module;
+		reference exports[*] ordered container : ExportDirective oppositeOf module;
+		reference moduleMembers[*] ordered container : ModuleMember oppositeOf module;
+	}
+
+	abstract class ModuleMember extends MElement {
+		reference module : Module oppositeOf moduleMembers;
+	}
+
+	class ImportDirective {
+		reference module : Module oppositeOf imports;
+		reference importedElements[1-*] ordered container : MElementReference;
+	}
+
+	class ExportDirective {
+		reference module : Module oppositeOf exports;
+		reference exportedElements[1-*] ordered : ModuleMember;
+	}
+
+	abstract class Value {
+		
+	}
+
+	abstract class NumericalValue extends Value {
+		
+	}
+
+	class StringValue extends Value {
+		attribute value : String;
+	}
+
+	class IntegerValue extends NumericalValue {
+		attribute value : Integer;
+	}
+
+	class DecimalValue extends NumericalValue {
+		attribute value : Double;
+	}
+
+	class BooleanValue extends Value {
+		attribute value : Boolean;
+	}
+
+	package Types {
+
+		class DerivedType extends ModuleMember {
+			reference supertypes[*] ordered container : TypeReference oppositeOf subtype;
+			reference fields[*] ordered container : Field oppositeOf owner;
+			reference initializationExpression[0-1] container : InitializationExpression oppositeOf type;
+			reference whereExpression[0-1] container : WhereExpression oppositeOf type;
+			reference expression[0-1] container : Expression;
+		}
+
+		class TypeReference {
+			reference subtype[0-1] : DerivedType oppositeOf supertypes;
+			reference field[0-1] : Field oppositeOf type;
+			attribute lowerBound[0-1] : Integer;
+			attribute upperBound[0-1] : Integer;
+		}
+
+		class IntrinsicTypeReference extends TypeReference {
+			attribute typeIdentifier : String;
+		}
+
+		class DerivedTypeReference extends TypeReference {
+			reference type : DerivedType;
+		}
+
+		class Field extends IdentifiedElement {
+			reference owner : DerivedType oppositeOf fields;
+			reference type container : TypeReference oppositeOf field;
+		}
+
+		class Collection extends IdentifiedElement {
+			
+		}
+
+		class ComputedValue extends IdentifiedElement {
+			
+		}
+	}
+
+	package Expressions {
+
+		abstract class Expression {
+			
+		}
+
+		class InitializationExpression extends Expression {
+			reference type : DerivedType oppositeOf initializationExpression;
+			reference values[*] ordered container : Value;
+		}
+
+		class WhereExpression extends Expression {
+			reference type : DerivedType oppositeOf whereExpression;
+			reference queryExpressions[*] ordered container : QueryExpression oppositeOf whereExpression;
+		}
+
+		class IdentityExpression extends WhereExpression {
+			reference identity : Field;
+		}
+
+		abstract class QueryExpression extends Expression {
+			reference whereExpression : WhereExpression oppositeOf queryExpressions;
+		}
+
+		class EqualExpression extends QueryExpression {
+			reference leftValue container : ValueExpression;
+			reference rightValue container : ValueExpression;
+		}
+
+		class InExpression extends QueryExpression {
+			reference value container : ValueExpression;
+			reference collection container : CollectionExpression oppositeOf inExpression;
+		}
+
+		class CollectionExpression extends Expression {
+			reference inExpression : InExpression oppositeOf collection;
+			reference collectionValue container : ValueExpression;
+		}
+
+		abstract class ValueExpression extends Expression {
+			
+		}
+
+		class DefaultValueExpression extends ValueExpression {
+			
+		}
+
+		class StandardValueExpression extends ValueExpression {
+			reference context[0-1] container : ValueExpression;
+			attribute value : String;
+		}
+	}
+
+	package Languages {
+
+		class Language extends ModuleMember {
+			
+		}
+	}
+
+	package ObjectModel {
+
+		class Entity extends ModuleMember {
+			
+		}
+	}
+}
+
+package PrimitiveTypes {
+
+	datatype Boolean;
+
+	datatype Integer;
+
+	datatype Double;
+
+	datatype String;
+}

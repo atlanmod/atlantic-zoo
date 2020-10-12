@@ -1,0 +1,82 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'CompleteWebApplication'>
+    <Package name = 'Client'>
+      <Class name = 'ClientPage' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'hyperlink' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'CompleteWebApplication::HyperLink' opposite = ''/>
+      </Class>
+      <Class name = 'ClientPageModule' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'consistsOf' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Client::ClientPage' opposite = ''/>
+        <Reference name = 'representsSMP' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Server::ServerPageModule' opposite = ''/>
+      </Class>
+      <Class name = 'LogicInterface' isAbstract = 'false' supertypes = 'Client::ClientPageModule'>
+        <Reference name = 'represents' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Server::LogicModule' opposite = ''/>
+        <Reference name = 'generatedBy' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Server::Renderer' opposite = ''/>
+      </Class>
+      <Class name = 'DesignElement' isAbstract = 'false' supertypes = 'Client::ClientPageModule'>
+        <Reference name = 'represents' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Server::DesignModule' opposite = ''/>
+      </Class>
+    </Package>
+    <Class name = 'HyperLink' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'server' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Server::ServerPage' opposite = 'Server::ServerPage::link'/>
+    </Class>
+    <Package name = 'Server'>
+      <Class name = 'ServerPage' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'link' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'CompleteWebApplication::HyperLink' opposite = 'CompleteWebApplication::HyperLink::server'/>
+        <Reference name = 'generates' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Client::ClientPage' opposite = ''/>
+        <Reference name = 'module' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Server::ServerPageModule' opposite = 'Server::ServerPageModule::contains'/>
+      </Class>
+      <Class name = 'ServerPageModule' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'contains' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Server::ServerPage' opposite = 'Server::ServerPage::module'/>
+        <Reference name = 'link' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Server::Link' opposite = ''/>
+        <Reference name = 'containsModule' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Server::DesignModule' opposite = ''/>
+      </Class>
+      <Class name = 'DesignModule' isAbstract = 'false' supertypes = 'Server::ServerPageModule'/>
+      <Class name = 'LogicModule' isAbstract = 'false' supertypes = 'Server::ServerPageModule'>
+        <Reference name = 'useCase' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Server::UseCase' opposite = ''/>
+        <Reference name = 'logicElement' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Server::LogicElement' opposite = ''/>
+      </Class>
+      <Class name = 'Link' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'page' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Server::ServerPage' opposite = ''/>
+        <Reference name = 'posts' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Server::Data' opposite = ''/>
+      </Class>
+      <Class name = 'BeginUseCase' isAbstract = 'false' supertypes = 'Server::Link'>
+        <Reference name = 'useCase' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Server::UseCase' opposite = ''/>
+      </Class>
+      <Class name = 'UseCase' isAbstract = 'false' supertypes = 'Server::Link'>
+        <Reference name = 'logicElem' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Server::LogicElement' opposite = 'Server::LogicElement::uses'/>
+      </Class>
+      <Class name = 'LogicElement' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'uses' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Server::UseCase' opposite = 'Server::UseCase::logicElem'/>
+        <Reference name = 'generatedBy' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Server::LogicElement' opposite = 'Server::LogicElement::next'/>
+        <Reference name = 'next' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Server::LogicElement' opposite = 'Server::LogicElement::generatedBy'/>
+      </Class>
+      <Class name = 'Alternative' isAbstract = 'false' supertypes = 'Server::LogicElement'/>
+      <Class name = 'UserDecision' isAbstract = 'false' supertypes = 'Server::LogicElement'>
+        <Reference name = 'allows' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Server::Alternative' opposite = ''/>
+      </Class>
+      <Class name = 'ServerDecision' isAbstract = 'false' supertypes = 'Server::LogicElement'>
+        <Reference name = 'evaluatesResultOf' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'Server::Processor' opposite = ''/>
+      </Class>
+      <Class name = 'Processor' isAbstract = 'false' supertypes = 'Server::LogicElement'>
+        <Reference name = 'persistentData' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Server::Data' opposite = 'Server::Data::persist'/>
+        <Reference name = 'inputData' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Server::Data' opposite = 'Server::Data::uses'/>
+        <Reference name = 'outputData' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Server::Data' opposite = 'Server::Data::computes'/>
+      </Class>
+      <Class name = 'Renderer' isAbstract = 'false' supertypes = 'Server::LogicElement'>
+        <Reference name = 'renders' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Server::Data' opposite = 'Server::Data::renderer'/>
+      </Class>
+      <Class name = 'Data' isAbstract = 'false' supertypes = ''>
+        <Reference name = 'renderer' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Server::Renderer' opposite = 'Server::Renderer::renders'/>
+        <Reference name = 'persist' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Server::Processor' opposite = 'Server::Processor::persistentData'/>
+        <Reference name = 'uses' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Server::Processor' opposite = 'Server::Processor::inputData'/>
+        <Reference name = 'computes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'Server::Processor' opposite = 'Server::Processor::outputData'/>
+      </Class>
+    </Package>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

@@ -1,0 +1,109 @@
+-- @name		USECASE1
+-- @version		1.0
+-- @authors		Youssef Srour (Srour.youssef@gmail.com)
+-- @date		2006/07/19
+-- @description	This metamodel describes USE CASE concepts. It allows "to define several categories of use case refactoring that help us discover and organize use case refactorings".
+-- @see      	http://delivery.acm.org/10.1145/790000/783140/p301-rui.pdf?key1=783140&key2=8211095511&coll=&dl=ACM&CFID=15151515&CFTOKEN=6184618
+
+package USECASE1{
+
+-- Begin class Task
+	class Task{
+		reference service[1-*] : Service oppositeOf task;
+	}--End class Task
+
+-- Begin class User
+	class User{
+		reference useCase[1-*] : UseCase oppositeOf user;
+		reference actor[*] : Actor oppositeOf user;
+	}--End class User
+
+-- Begin class Actor
+	class Actor{
+		reference useCase[1-*] : UseCase oppositeOf actor;
+		reference goal[*] : Goal oppositeOf actor;
+		reference user[*] : User oppositeOf actor;
+	}--End class Actor
+
+-- Begin class UseCase
+	class Goal{
+		reference service[1-*] : Service oppositeOf goal;
+		reference actor[1-*] : Actor oppositeOf goal;
+	}--End class UseCase
+
+-- Begin class UseCase
+	class UseCase{
+		reference context[0-1] container: Context oppositeOf useCase;
+		reference service[*] : Service oppositeOf useCase;
+		reference user[*] : User oppositeOf useCase;
+		reference actor[*] : Actor oppositeOf useCase;
+	}--End class UseCase
+
+-- Begin class Service
+	class Service{
+		reference useCase[1-*] : UseCase oppositeOf service;
+		reference goal[1-*] : Goal oppositeOf service;
+		reference task[1-*] : Task oppositeOf service;
+	}--End class Service
+
+-- Begin class Scenario
+	class Scenario{
+	
+	}--End class Scenario
+
+-- Begin class Context
+	class Context{
+		reference preCondition[1-*] : PreCondition oppositeOf context;
+		reference postCondition[1-*] : PostCondition oppositeOf context;
+		reference useCase[1-*] : UseCase oppositeOf context;
+	}--End class Context
+
+-- Begin class Precondition
+	class PreCondition{
+		reference context[0-*] : Context oppositeOf preCondition;
+	}--End class Precondition
+
+-- Begin class PostCondition
+	class PostCondition {
+		reference context[0-*] : Context oppositeOf postCondition;
+	}--End class PostCondition
+
+-- Begin class Episode
+	class Episode{
+		reference event[0-*] : Event oppositeOf episode;
+	}--End class Episode
+
+-- Begin class Event
+	class Event{
+		reference episode[1-*] : Episode oppositeOf event;
+	}--End class Event
+
+-- Begin class Action
+	class Action extends Event{
+	
+	}--End class Action
+
+-- Begin class Responce
+	class Responce extends Event{
+		reference parameter[0-*] container: Parameter oppositeOf responce;
+	}--End class Responce
+
+-- Begin class Stimilus
+	class Stimilus extends Event{
+		reference parameter[0-*] container: Parameter oppositeOf stimilus;
+	}--End class Stimilus
+
+-- Begin class Parameter
+	class Parameter{
+		reference stimilus[1-*] : Stimilus oppositeOf parameter;
+		reference responce[1-*] : Responce oppositeOf parameter;
+	}--End class Parameter
+
+
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+	datatype Integer;
+}

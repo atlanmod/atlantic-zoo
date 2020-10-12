@@ -1,0 +1,82 @@
+package Metamodel;
+
+package OCLExpression {
+  abstract class ModelElement {
+    !ordered ref SyncChart[*]#context behavior;
+  }
+
+  class SyncChart {
+    !ordered ref ModelElement#behavior context;
+    !ordered ref ReferenceState[*]#subSyncChart referenceState;
+  }
+
+  class ReferenceState {
+    !ordered ref SyncChart[1]#referenceState subSyncChart;
+    !ordered ref Stg#referenceState containers;
+  }
+
+  abstract class Arc extends ModelElement {
+    !unique !ordered attr Boolean[1] isImmediate;
+    !unique !ordered attr Integer[1] priority;
+    !ordered ref Vertex[1]#incoming target;
+    !ordered ref Vertex[1]#outcoming source;
+    !ordered ref Stg#arc stg;
+  }
+
+  abstract class Vertex extends ModelElement {
+    !ordered ref Arc[*]#target incoming;
+    !ordered ref Arc[*]#source outcoming;
+  }
+
+  class PseudoState extends Vertex {
+    !ordered ref PseudoStateKind[1] kind;
+  }
+
+  class PseudoStateKind {
+  }
+
+  class State extends Vertex {
+    !unique !ordered attr Boolean[1] isFinal;
+  }
+
+  class SimpleState extends State {
+  }
+
+  class CompositeState extends State, ReferenceState {
+    !unique !ordered attr Boolean[1] canTerminate;
+    !unique !ordered attr Boolean[1] isSuspendable;
+    !ordered ref Stg[+]#compositeState stg;
+  }
+
+  class Stg {
+    !unique !ordered attr Boolean[1] withFinal;
+    !ordered ref CompositeState[1]#stg compositeState;
+    !ordered val Arc[*]#stg arc;
+    !ordered val ReferenceState[*]#containers referenceState;
+  }
+
+  class Transition extends Arc {
+    !ordered ref TransitionKind[1] kind;
+  }
+
+  class TransitionKind {
+  }
+
+  class PseudoTransition extends Arc {
+    !ordered ref PseudoTransitionKind[1] kind;
+  }
+
+  class PseudoTransitionKind {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

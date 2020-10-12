@@ -1,0 +1,106 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<rdf:RDF xmlns:rdf = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:rdfs = 'http://www.w3.org/2000/01/rdf-schema#' xmlns:xsd = 'http://www.w3.org/2001/XMLSchema#' xmlns:owl = 'http://www.w3.org/2002/07/owl#' xmlns = 'http://example.org/WebApplication#' xml:base = 'http://example.org/WebApplication'>
+  <owl:Ontology rdf:about = 'WebApplication'/>
+  <owl:Class rdf:ID = 'DesignTemplate'>
+    <rdfs:label>DesignTemplate</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID = 'ServerPage'>
+    <rdfs:label>ServerPage</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ServerPage.link'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ServerPage.generates'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ServerPage.useBusinessLogic'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ServerPage.useDesignTemplate'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'ClientPageModule'>
+    <rdfs:label>ClientPageModule</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ClientPageModule.consistsOf'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'ClientPage'>
+    <rdfs:label>ClientPage</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ClientPage.hyperlink'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'BusinessLogic'>
+    <rdfs:label>BusinessLogic</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID = 'LogicInterface'>
+    <rdfs:label>LogicInterface</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#ClientPageModule'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'HyperLink'>
+    <rdfs:label>HyperLink</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#HyperLink.server'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'DesignElement'>
+    <rdfs:label>DesignElement</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#ClientPageModule'/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID = 'ServerPage.useBusinessLogic'>
+    <rdfs:domain rdf:resource = '#ServerPage'/>
+    <rdfs:range rdf:resource = '#BusinessLogic'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ClientPageModule.consistsOf'>
+    <rdfs:domain rdf:resource = '#ClientPageModule'/>
+    <rdfs:range rdf:resource = '#ClientPage'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ServerPage.link'>
+    <rdfs:domain rdf:resource = '#ServerPage'/>
+    <rdfs:range rdf:resource = '#HyperLink'/>
+    <owl:inverseOf rdf:resource = '#HyperLink.server'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ServerPage.generates'>
+    <rdfs:domain rdf:resource = '#ServerPage'/>
+    <rdfs:range rdf:resource = '#ClientPage'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ServerPage.useDesignTemplate'>
+    <rdfs:domain rdf:resource = '#ServerPage'/>
+    <rdfs:range rdf:resource = '#DesignTemplate'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ClientPage.hyperlink'>
+    <rdfs:domain rdf:resource = '#ClientPage'/>
+    <rdfs:range rdf:resource = '#HyperLink'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'HyperLink.server'>
+    <rdfs:domain rdf:resource = '#HyperLink'/>
+    <rdfs:range rdf:resource = '#ServerPage'/>
+    <owl:inverseOf rdf:resource = '#ServerPage.link'/>
+  </owl:ObjectProperty>
+  <owl:FunctionalProperty rdf:about = '#ServerPage.useBusinessLogic'/>
+  <owl:FunctionalProperty rdf:about = '#ClientPage.hyperlink'/>
+  <owl:FunctionalProperty rdf:about = '#ClientPageModule.consistsOf'/>
+  <owl:FunctionalProperty rdf:about = '#ServerPage.useDesignTemplate'/>
+</rdf:RDF>

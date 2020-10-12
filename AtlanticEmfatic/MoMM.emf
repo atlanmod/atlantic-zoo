@@ -1,0 +1,45 @@
+package Metamodel;
+
+package MoMM {
+  class ModelElement {
+    !unique !ordered attr Integer[1] level;
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] potency;
+    !ordered ref ModelElement[1]#classElement hasClass;
+    !ordered ref ModelElement[*]#hasClass classElement;
+    !ordered ref Relationship[1]#target elementTarget;
+    !ordered ref Relationship[1]#source elementSource;
+    !ordered ref Attribute[*] attributes;
+    !ordered ref Attribute[1]#type attType;
+  }
+
+  class Attribute extends ModelElement {
+    !ordered ref ModelElement[1]#attType type;
+  }
+
+  abstract class Relationship extends ModelElement {
+    !ordered ref ModelElement[1]#elementTarget target;
+    !ordered ref ModelElement[1]#elementSource source;
+  }
+
+  class Generalization extends Relationship {
+  }
+
+  class Association extends Relationship {
+    !unique !ordered attr String[1] maxSource;
+    !unique !ordered attr String[1] maxTarget;
+    !unique !ordered attr String[1] minSource;
+    !unique !ordered attr String[1] minTarget;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

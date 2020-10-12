@@ -1,0 +1,166 @@
+-- @name		Case representation
+-- @version		1.0
+-- @domains		Mining Mart
+-- @authors		SIMON Eric(simon.eric3<at>gmail.com)
+-- @date		2006/07/21
+-- @description	This metamodel represents the concepts "Case representation" of Mining Mart.
+-- @see			M4 - The Mining Mart MetaModel
+-- @see 		Authors: Anca Vaduva, Jörg-Uwe Kietz, Regina Zücker and Klaus R. Dittrich
+-- @see 		ftp://ftp.ifi.unizh.ch/pub/techreports/TR-2001/ifi-2001.02.pdf, page 20
+
+-- @begin SimplfiedMiningMart
+package SimplfiedMiningMart {
+
+-- @comment "ModelElement is hte base for all modeling metaclass in the UML. All other modeling metaclass are either directly or indirectly specialized from ModelElement." 
+ class ModelElement {}
+ 
+ -- @comment "Classifier is a general element that describes behavioral and structural features; it appears in several specific forms; that means, the class Classifier may be specialized as Class, DataType, Interface, Component, aso."
+ class Classifier extends ModelElement {}
+ class StructuralFeature extends ModelElement {}
+ 
+ --@comment "A Class is a description of a set of objects that share the same attributes operations, methods, relationships, and semantics. Specializations in M4 of the UML class Class are ColumnSet and Concept"
+ class Class extends Classifier {
+ 	attribute name : String;
+ 	reference attributes[1-*] container : Attribute oppositeOf "class"; 
+ }
+
+ class DataType extends Classifier {
+ 	reference "attribute" : Attribute oppositeOf has;
+ } 
+ 
+ class Attribute extends StructuralFeature {
+ 	reference "class" : Class oppositeOf attributes;
+ 	reference has : DataType oppositeOf "attribute";
+ }
+
+ -- .... the other Type
+}
+-- @end SimplfiedMiningMart
+
+-- @begin CaseRepresentation
+package CaseRepresentation {
+
+ -- @comment "A Case consits of many steps."
+ class Case extends ModelElement {
+ 	attribute name : String;
+ 	attribute caseMode : Boolean;
+ 	reference caseInput : Parameter;
+ --	reference caseOutput : Concept;
+ 	attribute documentation : String;
+ 	reference listOfStep[1-*] container : Step oppositeOf belongsToCase;
+ --	reference population : Concept;
+ --	reference targetAttributes : FeatureAttribute;
+ }
+ 
+ -- @comment "Steps are parts of cases."
+ class Step extends ModelElement {
+ 	attribute name : String;
+ 	attribute description : String;
+ 	reference belongsToCase : Case oppositeOf listOfStep;
+ 	reference embedsOperator : Operator;
+ 	reference predecessors[*] : Step;
+ 	reference successors[*] : Step;
+ }
+
+ -- @comment "LoopStep is a special kind of Step. It allows the iteration along more than one inpute element."
+ class LoopStep extends Step {
+ --	reference iterationSet[*] ordered : FeatureAttribute;
+ --	reference outputSet[*] ordered : FeatureAttribute;
+ }
+ 
+ -- @comment "MultiStep is anoter special kind of Step. While LoopStep is an iteration over input elements, MultiStep is an iteration over output elements."
+ class MultiStep extends Step {
+ 	attribute iterationCondition : String;
+ }
+ 
+ -- @comment "It is the superclass of all operators of Mining Mart."
+ abstract class Operator extends ModelElement {
+	attribute loopable :Boolean;
+	attribute numberOfInputParameters : Integer;
+	attribute numberOfOutputParameters : Integer;
+	attribute manual : Boolean;
+	attribute tool : String;
+	reference input[1-*] ordered : Parameter;
+	reference output[1-*] ordered : Parameter;
+ 	reference realizes : ExecutionElement;
+ }
+ 
+ -- @comment "Parameters are input or output values of Operators and thus may be instances of Value, Concept, RelationShip, FeatureElement."
+ class Parameter {
+ 	attribute name : String;
+ 	attribute place : String;
+ 	reference parameterType : ParameterType;
+ 	reference belongsToOperator : Operator;
+ }
+ 
+ -- @comment "Parameters are input or output values of Operators and thus may be instances of Value, Concept, RelationShip, FeatureElement."
+ enumeration ParameterType {
+ 	literal Value;
+ 	literal Concept;
+ 	literal RelationShip;
+ 	literal FeatureAttribute;
+  }
+ 
+ -- @comment "The operator FeatureConstructuion creates a new feature for concept; on the implementation level that means a new attribute in a table or view."
+ class FeatureConstruction extends Operator {
+ 	attribute scalingFactor : Integer;
+ }
+ 
+ class DataMinStep extends Operator {}
+ class TimeOperator extends Operator {}
+ class FeatureSelection extends Operator {}
+ class MultiRelFeatureConstr extends Operator {}
+ 
+ class RowSelection extends Operator {}
+ class Agregation extends MultiRelFeatureConstr {}
+ class Scaling extends FeatureConstruction {}
+ class Discretization extends FeatureConstruction {}
+ class Segmentation extends RowSelection {}
+ class Sampling extends RowSelection {}
+ 
+ 
+ class ExecutionElement {
+ 	reference source : DataObject oppositeOf source;
+ 	reference target : DataObject oppositeOf target;
+ }
+ 
+ class DataObject {
+ 	reference source : ExecutionElement oppositeOf source;
+ 	reference target : ExecutionElement oppositeOf target;
+ }
+ 
+ class "MSL-Tool" extends ExecutionElement {}
+ 
+ class TransformationGroup extends ExecutionElement {
+ 	reference transformation[*] container : Transformation oppositeOf transformationGroup;
+ }
+ 
+ -- @comment "A Transformation may be either a Function, a StoredProcedure or the definition of SQL-Query."
+ class Transformation extends ExecutionElement {
+ 	reference transformationGroup : TransformationGroup oppositeOf transformation;
+ }
+ 
+ class Function extends Transformation {
+	attribute nameOf : String;
+	attribute signature : String;
+ }
+ 
+ class StoredProcedure extends Transformation {
+ 	attribute nameOf : String;
+  	attribute signature : String;
+ }
+ 
+ class SQLQuery extends Transformation {
+ 	--reference select[1-*] : Column;  
+ 	--reference from[1-*] : ColumnSet;
+ 	--reference where[*] : "String";
+ }
+ 
+}
+-- @end CaseRepresentation
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+	datatype Integer;
+}

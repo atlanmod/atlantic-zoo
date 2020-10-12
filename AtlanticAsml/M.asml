@@ -1,0 +1,154 @@
+abstract class IdentifiedElement
+  var qualifiers as Set of String
+  var identifier as Set of String
+
+abstract class MElement extends IdentifiedElement
+
+class MElementReference
+  var alias as Set of String
+  var referencedElement as Set of MElement
+
+class Module extends MElement
+  // imports IsContainer
+  var imports as Set of ImportDirective
+  // exports IsContainer
+  var exports as Set of ExportDirective
+  // moduleMembers IsContainer
+  var moduleMembers as Set of ModuleMember
+
+abstract class ModuleMember extends MElement
+  var module as Set of Module
+
+class ImportDirective
+  var module as Set of Module
+  // importedElements IsContainer
+  var importedElements as Set of MElementReference
+
+class ExportDirective
+  var module as Set of Module
+  var exportedElements as Set of ModuleMember
+
+abstract class Value
+
+abstract class NumericalValue extends Value
+
+class StringValue extends Value
+  var value as Set of String
+
+class IntegerValue extends NumericalValue
+  var value as Set of Integer
+
+class DecimalValue extends NumericalValue
+  var value as Set of Double
+
+class BooleanValue extends Value
+  var value as Set of Boolean
+
+class DerivedType extends ModuleMember
+  // supertypes IsContainer
+  var supertypes as Set of TypeReference
+  // fields IsContainer
+  var fields as Set of Field
+  // initializationExpression IsContainer
+  var initializationExpression as Set of InitializationExpression
+  // whereExpression IsContainer
+  var whereExpression as Set of WhereExpression
+  // expression IsContainer
+  var expression as Set of Expression
+
+class TypeReference
+  var lowerBound as Set of Integer
+  var upperBound as Set of Integer
+  var subtype as Set of DerivedType
+  var field as Set of Field
+
+class IntrinsicTypeReference extends TypeReference
+  var typeIdentifier as Set of String
+
+class DerivedTypeReference extends TypeReference
+  var _type as Set of DerivedType
+
+class Field extends IdentifiedElement
+  var owner as Set of DerivedType
+  // _type IsContainer
+  var _type as Set of TypeReference
+
+class Collection extends IdentifiedElement
+
+class ComputedValue extends IdentifiedElement
+
+abstract class Expression
+
+class InitializationExpression extends Expression
+  var _type as Set of DerivedType
+  // values IsContainer
+  var values as Set of Value
+
+class WhereExpression extends Expression
+  var _type as Set of DerivedType
+  // queryExpressions IsContainer
+  var queryExpressions as Set of QueryExpression
+
+class IdentityExpression extends WhereExpression
+  var identity as Set of Field
+
+abstract class QueryExpression extends Expression
+  var whereExpression as Set of WhereExpression
+
+class EqualExpression extends QueryExpression
+  // leftValue IsContainer
+  var leftValue as Set of ValueExpression
+  // rightValue IsContainer
+  var rightValue as Set of ValueExpression
+
+class InExpression extends QueryExpression
+  // value IsContainer
+  var value as Set of ValueExpression
+  // collection IsContainer
+  var collection as Set of CollectionExpression
+
+class CollectionExpression extends Expression
+  var inExpression as Set of InExpression
+  // collectionValue IsContainer
+  var collectionValue as Set of ValueExpression
+
+abstract class ValueExpression extends Expression
+
+class DefaultValueExpression extends ValueExpression
+
+class StandardValueExpression extends ValueExpression
+  var value as Set of String
+  // context IsContainer
+  var context as Set of ValueExpression
+
+class Language extends ModuleMember
+
+class Entity extends ModuleMember
+
+var IdentifiedElement_Universe as Set of IdentifiedElement
+
+var MElement_Universe as Set of MElement
+
+var MElementReference_Universe as Set of MElementReference
+
+var Module_Universe as Set of Module
+
+var ModuleMember_Universe as Set of ModuleMember
+
+var ImportDirective_Universe as Set of ImportDirective
+
+var ExportDirective_Universe as Set of ExportDirective
+
+var Value_Universe as Set of Value
+
+var NumericalValue_Universe as Set of NumericalValue
+
+var StringValue_Universe as Set of StringValue
+
+var IntegerValue_Universe as Set of IntegerValue
+
+var DecimalValue_Universe as Set of DecimalValue
+
+var BooleanValue_Universe as Set of BooleanValue
+
+Main()

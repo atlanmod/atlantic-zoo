@@ -1,0 +1,97 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'WordprocessingMLBasicDef'>
+    <Class name = 'StringProperty' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::StringType'/>
+    <Class name = 'StringType' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'val' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Enumeration name = 'BreakType'>
+      <EnumLiteral name = 'bt_page'/>
+      <EnumLiteral name = 'bt_column'/>
+      <EnumLiteral name = 'bt_text_wrapping'/>
+    </Enumeration>
+    <Enumeration name = 'NoteValue'>
+      <EnumLiteral name = 'ftn_normal'/>
+      <EnumLiteral name = 'ftn_separator'/>
+      <EnumLiteral name = 'ftn_continuation_separator'/>
+      <EnumLiteral name = 'ftn_continuation_notice'/>
+    </Enumeration>
+    <Enumeration name = 'OnOffType'>
+      <EnumLiteral name = 'oot_on'/>
+      <EnumLiteral name = 'oot_off'/>
+    </Enumeration>
+    <Enumeration name = 'FldCharTypeProperty'>
+      <EnumLiteral name = 'fctp_begin'/>
+      <EnumLiteral name = 'fctp_separate'/>
+      <EnumLiteral name = 'fctp_end'/>
+    </Enumeration>
+    <Class name = 'WordDocument' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'ignoreSubtree' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'WordprocessingMLBasicDef::StringProperty' opposite = ''/>
+      <Reference name = 'ignoreElements' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'WordprocessingMLBasicDef::StringProperty' opposite = ''/>
+      <Reference name = 'body' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'WordprocessingMLBasicDef::BodyElt' opposite = 'WordprocessingMLBasicDef::BodyElt::be_wordDocument'/>
+    </Class>
+    <Class name = 'BodyElt' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'be_wordDocument' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WordprocessingMLBasicDef::WordDocument' opposite = 'WordprocessingMLBasicDef::WordDocument::body'/>
+      <Reference name = 'blockLevelElts' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'WordprocessingMLBasicDef::BlockLevelElt' opposite = 'WordprocessingMLBasicDef::BlockLevelElt::ble_bodyElt'/>
+    </Class>
+    <Class name = 'BlockLevelElt' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'ble_bodyElt' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WordprocessingMLBasicDef::BodyElt' opposite = 'WordprocessingMLBasicDef::BodyElt::blockLevelElts'/>
+      <Reference name = 'ble_note' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WordprocessingMLBasicDef::NoteElt' opposite = 'WordprocessingMLBasicDef::NoteElt::n_blockLevelElts'/>
+    </Class>
+    <Class name = 'BlockLevelChunkElt' isAbstract = 'true' supertypes = 'WordprocessingMLBasicDef::BlockLevelElt'/>
+    <Class name = 'ParaElt' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::BlockLevelChunkElt'>
+      <Reference name = 'pContentElts' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'WordprocessingMLBasicDef::ParaContentElt' opposite = 'WordprocessingMLBasicDef::ParaContentElt::pce_pElt'/>
+    </Class>
+    <Class name = 'ParaContentElt' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'pce_pElt' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WordprocessingMLBasicDef::ParaElt' opposite = 'WordprocessingMLBasicDef::ParaElt::pContentElts'/>
+    </Class>
+    <Class name = 'RunElt' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::ParaContentElt'>
+      <Reference name = 'rContentElts' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'WordprocessingMLBasicDef::RunContentElt' opposite = 'WordprocessingMLBasicDef::RunContentElt::rce_rElt'/>
+    </Class>
+    <Class name = 'RunContentElt' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'rce_rElt' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'WordprocessingMLBasicDef::RunElt' opposite = 'WordprocessingMLBasicDef::RunElt::rContentElts'/>
+    </Class>
+    <Class name = 'BreakElt' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::RunContentElt'>
+      <Attribute name = 'type' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'WordprocessingMLBasicDef::BreakType'/>
+    </Class>
+    <Class name = 'Text' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::RunContentElt, WordprocessingMLBasicDef::StringType'/>
+    <Class name = 'DelText' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::RunContentElt, WordprocessingMLBasicDef::StringType'/>
+    <Class name = 'InstrText' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::RunContentElt, WordprocessingMLBasicDef::StringType'/>
+    <Class name = 'DelInstrText' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::RunContentElt, WordprocessingMLBasicDef::StringType'/>
+    <Class name = 'NoBreakHyphen' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::RunContentElt'/>
+    <Class name = 'SoftHyphen' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::RunContentElt'/>
+    <Class name = 'AnnotationRef' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::RunContentElt'/>
+    <Class name = 'FootnoteRef' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::RunContentElt'/>
+    <Class name = 'EndnoteRef' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::RunContentElt'/>
+    <Class name = 'Separator' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::RunContentElt'/>
+    <Class name = 'ContinuationSeparator' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::RunContentElt'/>
+    <Class name = 'PgNum' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::RunContentElt'/>
+    <Class name = 'Cr' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::RunContentElt'/>
+    <Class name = 'Footnote' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::RunContentElt, WordprocessingMLBasicDef::NoteElt'/>
+    <Class name = 'Endnote' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::RunContentElt, WordprocessingMLBasicDef::NoteElt'/>
+    <Class name = 'NoteElt' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'n_blockLevelElts' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'WordprocessingMLBasicDef::BlockLevelElt' opposite = 'WordprocessingMLBasicDef::BlockLevelElt::ble_note'/>
+      <Attribute name = 'type' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'WordprocessingMLBasicDef::NoteValue'/>
+      <Attribute name = 'suppressRef' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'WordprocessingMLBasicDef::OnOffType'/>
+    </Class>
+    <Class name = 'Picture' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::RunContentElt'/>
+    <Class name = 'Symbol' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::RunContentElt, WordprocessingMLBasicDef::SymElt'/>
+    <Class name = 'SymElt' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'font' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'WordprocessingMLBasicDef::StringType' opposite = ''/>
+      <Reference name = 'char' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'WordprocessingMLBasicDef::StringType' opposite = ''/>
+    </Class>
+    <Class name = 'Tab' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::RunContentElt'/>
+    <Class name = 'FldChar' isAbstract = 'false' supertypes = 'WordprocessingMLBasicDef::RunContentElt, WordprocessingMLBasicDef::FldCharElt'/>
+    <Class name = 'FldCharElt' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'fldData' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'WordprocessingMLBasicDef::StringType' opposite = ''/>
+      <Attribute name = 'fldCharType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'WordprocessingMLBasicDef::FldCharTypeProperty'/>
+      <Attribute name = 'fldLock' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'WordprocessingMLBasicDef::OnOffType'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Double'/>
+  </Package>
+</Metamodel>

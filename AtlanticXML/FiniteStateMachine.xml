@@ -1,0 +1,37 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'FSM'>
+    <Class name = 'MgaObject' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'position' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Transition' isAbstract = 'false' supertypes = 'FSM::MgaObject'>
+      <Reference name = 'stateMachine' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'FSM::StateMachine' opposite = 'FSM::StateMachine::transition'/>
+      <Reference name = 'associationStateState' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'FSM::AssociationStateState' opposite = 'FSM::AssociationStateState::transition'/>
+    </Class>
+    <Class name = 'State' isAbstract = 'false' supertypes = 'FSM::MgaObject'>
+      <Reference name = 'stateMachine' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'FSM::StateMachine' opposite = 'FSM::StateMachine::state'/>
+      <Reference name = 'associationStateStatedst' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'FSM::AssociationStateState' opposite = 'FSM::AssociationStateState::dstTransition'/>
+      <Reference name = 'associationStateStatesrc' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'FSM::AssociationStateState' opposite = 'FSM::AssociationStateState::srcTransition'/>
+    </Class>
+    <Class name = 'StateMachine' isAbstract = 'false' supertypes = 'FSM::MgaObject'>
+      <Reference name = 'rootFolder' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'FSM::RootFolder' opposite = 'FSM::RootFolder::stateMachine'/>
+      <Reference name = 'state' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'FSM::State' opposite = 'FSM::State::stateMachine'/>
+      <Reference name = 'transition' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'FSM::Transition' opposite = 'FSM::Transition::stateMachine'/>
+    </Class>
+    <Class name = 'RootFolder' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'rootFolders' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'FSM::RootFolder' opposite = ''/>
+      <Reference name = 'stateMachine' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'FSM::StateMachine' opposite = 'FSM::StateMachine::rootFolder'/>
+    </Class>
+    <Class name = 'AssociationStateState' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'transition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'FSM::Transition' opposite = 'FSM::Transition::associationStateState'/>
+      <Reference name = 'dstTransition' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'FSM::State' opposite = 'FSM::State::associationStateStatedst'/>
+      <Reference name = 'srcTransition' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'FSM::State' opposite = 'FSM::State::associationStateStatesrc'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Integer'/>
+  </Package>
+</Metamodel>

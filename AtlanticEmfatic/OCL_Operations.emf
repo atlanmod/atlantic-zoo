@@ -1,0 +1,76 @@
+package Metamodel;
+
+package OCLOperations {
+  abstract class OperationExp {
+  }
+
+  class PropertyOperation extends OperationExp {
+    !unique !ordered attr Boolean[1] isMarkedPre;
+    !ordered val OclExpression[1]#propertyOperations source;
+  }
+
+  class OclOperation extends OperationExp {
+    !ordered val OclExpression[1]#oclOperations arguments;
+  }
+
+  class ConstExp extends OperationExp {
+  }
+
+  class IntegerConstExp extends ConstExp {
+    !unique !ordered attr Integer[1] value;
+  }
+
+  class StringConstExp extends ConstExp {
+    !unique !ordered attr String[1] value;
+  }
+
+  class RealConstExp extends ConstExp {
+    !unique !ordered attr PrimitiveTypes.Double[1] value;
+  }
+
+  class AttributeExp extends PropertyOperation {
+    !ordered val Attribute[1]#attrExp ~attr;
+  }
+
+  class Attribute {
+    !ordered ref AttributeExp[*]#~attr attrExp;
+  }
+
+  class NaviguationExp extends PropertyOperation {
+    !ordered val AssocationEnd[1]#navExp assEnd;
+    !ordered val OclExpression[1]#naviguationExps qualifierValues;
+  }
+
+  class AssocationEnd {
+    !ordered ref NaviguationExp[*]#assEnd navExp;
+  }
+
+  class ClassifierOperation extends PropertyOperation {
+    !ordered val Operation[1]#classOp ~op;
+    !ordered val OclExpression[1]#classifierOperations arguments;
+  }
+
+  class Operation {
+    !ordered ref ClassifierOperation[*]#~op classOp;
+  }
+
+  abstract class OclExpression {
+    !ordered ref PropertyOperation[*]#source propertyOperations;
+    !ordered ref NaviguationExp[*]#qualifierValues naviguationExps;
+    ref ClassifierOperation[*]#arguments classifierOperations;
+    ref OclOperation[*]#arguments oclOperations;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Double : "";
+
+}
+

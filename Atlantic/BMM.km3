@@ -1,0 +1,157 @@
+-- @name		BMM
+-- @version		1.0
+-- @domains		Business Motivation Model
+-- @authors		OMG, translated by Guillaume Doux
+-- @date		January 2010 
+-- @description	The Business Motivation Model from the OMG, written from the OMG BMM specification 
+-- @see			http://www.omg.org/spec/BMM/
+
+package BMM {
+
+	class MotivationElement {
+		attribute name : String;
+		attribute description : String;
+	}
+
+	class Assessment extends MotivationElement {
+		reference usingAssessmentUsesUsedAssessment[*]: Assessment;
+		reference assessmentProvidesImpetusForDirective[*]: Directive;
+		reference assessmentIdentifiesPotentialImpact[*]: PotentialImpact;
+		reference assessmentJudgmentOfInfluencer[1-*]: Influencer;
+	}
+	
+	class End extends MotivationElement {}
+
+	class Influencer extends MotivationElement {
+	}
+	
+	class InfluencingOrganization extends MotivationElement {
+		reference influencingOrganizationIsSourceOfInfluencer[*]: Influencer;
+	}
+
+	class Means extends MotivationElement {}
+	
+	class PotentialImpact extends MotivationElement {
+		reference potentialImpactProvidesImpetusForDirective[*]: Directive;
+	}
+
+	class AssessmentCategory extends MotivationElement {
+		reference assessmentCategoryCategoriesAssessment[*]: Assessment;
+	}
+	
+	class InfluencerCategory extends MotivationElement {
+		reference influencerCategoryCategorizesInfluencer[*]: Influencer; 
+	}
+
+	class OrganizationCategory extends MotivationElement {
+		reference organizationCategoryCategorizesInfluencingOrganization[*]: InfluencingOrganization; 
+	}
+	
+	class OrganizationUnit extends MotivationElement {
+		reference organizationUnitDefinesEnd[*]: End;
+		reference organizationUnitEstablishesMeans[*]: Means;
+		reference organizationUnitIsResponsibleForAsset[*]: Asset;
+		reference organizationUnitIsResponsibleForLiability[*]: Liability;
+		reference organizationUnitRecognizesInfluencer[*]: Influencer;
+		reference organizationUnitActAsInfluencingOrganization[*]: InfluencingOrganization;
+		reference organizationUnitMakesAssessment[*]: Assessment;
+		reference organizationUnitIsResponsibleForBusinessProcess[*]: BusinessProcess;
+	}
+
+	class BusinessProcess extends MotivationElement {
+		reference businessProcessRealizesCourseOfAction[*]: CourseOfAction;
+		reference businessProcessManagerAsset[*]: Asset;
+		reference businessProcessDeliversOfeering[*]: Offering;
+	}
+	
+	class Asset extends MotivationElement {}
+	
+	class Liability extends MotivationElement {
+		reference liabilityClaimsResource[*]: Resource;
+	}
+	
+	class Resource extends Asset {	}
+	
+	class Mission extends Means {
+		reference missionMakesOperativeVision[0-1]: Vision; 
+	}
+	
+	class CourseOfAction extends Means {
+		reference enablingCourseofActionEnablesEnabledCourseOfAction[*]: CourseOfAction;
+		reference broaderCourseofActionIncludesMoreSpecificCourseOfAction[*]: CourseOfAction;
+		reference courseOfActionChanneIsEffortsTowardsDesiredResult[0-1]: DesiredResult;
+		
+		reference courseOfActionDeployAsset[*]: Asset;
+		reference courseOfActionDefiensOffering[*]: Offering;
+	}
+	
+	class FixedAsset extends Asset{
+		reference fixedAssetProvidesResource[*]: Resource;
+	}
+	
+	class Offering extends FixedAsset{
+		reference offeringRequiresResource[*]: Resource;
+		reference offeringUsesFixedAsset[*]: FixedAsset;
+	}
+	
+	class Directive extends Means {
+		reference directiveGovernsCourseOfAction[*]: CourseOfAction;
+		reference directiveIsSourceOfCourseOfAction[*]: CourseOfAction;
+		reference directiveActAsRegulation[*]: Regulation;
+		reference directiveSupportsAchievementOfDesiredResult[*]: DesiredResult;
+		
+		reference directiveGovernsUseOfAsset[*]: Asset;
+	}
+	
+	class Strategy extends Mission {
+		reference strategyIsAComponentOfThePlanForMission[*]: Mission;
+		
+		reference strategyDeterminesOrganizationUnit[*]: OrganizationUnit;
+	}
+	
+	class Tactic extends CourseOfAction {
+		reference tacticImplementsStrategy[*]: Strategy;
+		reference tacticEffectsEnforcementLevelOfBusinessRule[*]: BusinessRule;
+	}
+	
+	class BusinessRule extends Directive {
+		reference businessRuleGuidesBusinessProcess[*]: BusinessProcess;
+	}
+	
+	class BusinessPolicy extends Directive {
+		reference businessPolicyIsBasisForBusinessRule[*]: BusinessRule;
+		reference broaderBusinessPolicyIncludesMoreSpecificBusinessPolicy[*]: BusinessPolicy;
+		
+		reference businessPolicyGovernsBusinessProcess[*]: BusinessProcess;
+	}
+	
+	class Regulation extends Influencer{}
+	
+	class Vision extends End {}
+	
+	class DesiredResult extends End {
+		reference broaderDesiredResultIncludesMoreSpecificDesiredResult[*]: DesiredResult;
+	}
+	
+	class Goal extends DesiredResult {
+		reference goalAmplidfiesVision[0-1]: Vision;
+	}
+	
+	class Objective extends DesiredResult {
+		reference objectiveQuantifiesGoal[*] : Goal;
+	}
+	
+	class PotentialReward extends PotentialImpact {}
+	
+	class Risk extends PotentialImpact {}
+	
+	
+	
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+	datatype Double;
+}

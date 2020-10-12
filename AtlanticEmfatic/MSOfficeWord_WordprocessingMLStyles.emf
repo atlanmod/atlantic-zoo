@@ -1,0 +1,521 @@
+package Metamodel;
+
+package WordprocessingMLStyles {
+  class DateTimeType {
+    !unique !ordered attr Integer[1] year;
+    !unique !ordered attr Integer[1] month;
+    !unique !ordered attr Integer[1] day;
+    !unique !ordered attr Integer[1] hour;
+    !unique !ordered attr Integer[1] minute;
+    !unique !ordered attr Integer[1] second;
+  }
+
+  class VersionType {
+    !unique !ordered attr Integer[1] n;
+    !unique !ordered attr Integer[1] nn;
+  }
+
+  abstract class ValueType {
+  }
+
+  class StringValue extends ValueType {
+    !unique !ordered attr String[1] value;
+  }
+
+  class FloatValue extends ValueType {
+    !unique !ordered attr PrimitiveTypes.Double[1] value;
+  }
+
+  class DateTimeTypeValue extends ValueType {
+    !ordered ref DateTimeType[1] value;
+  }
+
+  class BooleanValue extends ValueType {
+    !unique !ordered attr Boolean[1] value;
+  }
+
+  class DocumentPropertiesCollection {
+    !ordered ref WordDocument[1]#wd_docProperties dp_wordDocument;
+    !unique !ordered attr String title;
+    !unique !ordered attr String subject;
+    !unique !ordered attr String keywords;
+    !unique !ordered attr String description;
+    !unique !ordered attr String category;
+    !unique !ordered attr String author;
+    !unique !ordered attr String lastAuthor;
+    !unique !ordered attr String manager;
+    !unique !ordered attr String company;
+    !unique !ordered attr String hyperlinkBase;
+    !unique !ordered attr Integer revision;
+    !unique !ordered attr String presentationFormat;
+    !unique !ordered attr String guid;
+    !unique !ordered attr String appName;
+    !ordered val VersionType version;
+    !unique !ordered attr Integer totalTime;
+    !ordered val DateTimeType lastPrinted;
+    !ordered val DateTimeType created;
+    !ordered val DateTimeType lastSaved;
+    !unique !ordered attr Integer pages;
+    !unique !ordered attr Integer words;
+    !unique !ordered attr Integer characters;
+    !unique !ordered attr Integer charactersWithSpaces;
+    !unique !ordered attr Integer bytes;
+    !unique !ordered attr Integer lines;
+    !unique !ordered attr Integer paragraphs;
+  }
+
+  class CustomDocumentPropertiesCollection {
+    !ordered ref WordDocument[1]#wd_customDocProperties cdp_wordDocument;
+    !ordered val CustomDocumentProperty[+]#customDocumentProperty_cdpe customDocumentProperties;
+  }
+
+  class CustomDocumentProperty {
+    !ordered ref CustomDocumentPropertiesCollection[1]#customDocumentProperties customDocumentProperty_cdpe;
+    !unique !ordered attr String[1] name;
+    !ordered val ValueType[1] value;
+  }
+
+  class SmartTagType {
+    !ordered ref SmartTagsCollection[1]#smartTagTypes smartTagType_ste;
+    !unique !ordered attr String[1] namespaceuri;
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String url;
+  }
+
+  class SmartTagsCollection {
+    !ordered ref WordDocument[1]#wd_smartTags st_wordDocument;
+    !ordered val SmartTagType[*]#smartTagType_ste smartTagTypes;
+  }
+
+  class StringProperty extends StringType {
+  }
+
+  class StringType {
+    !unique !ordered attr String[1] ~val;
+  }
+
+  enum BreakType {
+    bt_page = 0;
+    bt_column = 0;
+    bt_text_wrapping = 0;
+  }
+
+  enum NoteValue {
+    ftn_normal = 0;
+    ftn_separator = 0;
+    ftn_continuation_separator = 0;
+    ftn_continuation_notice = 0;
+  }
+
+  enum OnOffType {
+    oot_on = 0;
+    oot_off = 0;
+  }
+
+  enum FldCharTypeProperty {
+    fctp_begin = 0;
+    fctp_separate = 0;
+    fctp_end = 0;
+  }
+
+  enum HintType {
+    ht_default = 0;
+    ht_fareast = 0;
+    ht_cs = 0;
+  }
+
+  enum StyleKindValue {
+    skv_paragraph = 0;
+    skv_character = 0;
+    skv_table = 0;
+    skv_list = 0;
+  }
+
+  class UnderlineProperty {
+    !unique !ordered attr UnderlineValues ~val;
+    !unique !ordered attr String color;
+  }
+
+  enum UnderlineValues {
+    uv_single = 0;
+    uv_words = 0;
+    uv_double = 0;
+    uv_thick = 0;
+    uv_dotted = 0;
+    uv_dotted_heavy = 0;
+    uv_dash = 0;
+    uv_dashed_heavy = 0;
+    uv_dash_long = 0;
+    uv_dash_long_heavy = 0;
+    uv_dot_dash = 0;
+    uv_dash_dot_heavy = 0;
+    uv_dot_dot_dash = 0;
+    uv_dash_dot_dot_heavy = 0;
+    uv_wave = 0;
+    uv_wavy_heavy = 0;
+    uv_wavy_double = 0;
+    uv_none = 0;
+  }
+
+  enum HighlightColorValues {
+    hcv_black = 0;
+    hcv_blue = 0;
+    hcv_cyan = 0;
+    hcv_green = 0;
+    hcv_magenta = 0;
+    hcv_red = 0;
+    hcv_yellow = 0;
+    hcv_white = 0;
+    hcv_dark_blue = 0;
+    hcv_dark_cyan = 0;
+    hcv_dark_green = 0;
+    hcv_dark_magenta = 0;
+    hcv_dark_red = 0;
+    hcv_dark_yellow = 0;
+    hcv_dark_gray = 0;
+    hcv_light_gray = 0;
+    hcv_none = 0;
+  }
+
+  enum VerticalAlignRunType {
+    vart_baseline = 0;
+    vart_superscript = 0;
+    vart_subscript = 0;
+  }
+
+  enum JustificationValue {
+    jv_left = 0;
+    jv_center = 0;
+    jv_right = 0;
+    jv_both = 0;
+  }
+
+  class WordDocument {
+    !ordered val SmartTagsCollection#st_wordDocument wd_smartTags;
+    !ordered val DocumentPropertiesCollection#dp_wordDocument wd_docProperties;
+    !ordered val CustomDocumentPropertiesCollection#cdp_wordDocument wd_customDocProperties;
+    !ordered val StringProperty ignoreSubtree;
+    !ordered val StringProperty ignoreElements;
+    !ordered val FontsListElt#fle_wordDocument fonts;
+    !ordered val ListsElt#le_wordDocument lists;
+    !ordered val StylesElt#se_wordDocument styles;
+    !ordered val DocPrElt#dpe_wordDocument docPr;
+    !ordered val BodyElt[1]#be_wordDocument body;
+  }
+
+  class DocPrElt {
+    !ordered ref WordDocument[1]#docPr dpe_wordDocument;
+  }
+
+  class BodyElt {
+    !ordered ref WordDocument[1]#body be_wordDocument;
+    val BlockLevelElt[*]#ble_bodyElt blockLevelElts;
+    !ordered val SectPrElt#spe_bodyElt sectPr;
+  }
+
+  abstract class BlockLevelElt {
+    !ordered ref BodyElt[1]#blockLevelElts ble_bodyElt;
+    !ordered ref NoteElt[1]#n_blockLevelElts ble_note;
+    !ordered ref TableCellElt[1]#tce_content ble_tableCellElt;
+  }
+
+  abstract class BlockLevelChunkElt extends BlockLevelElt {
+  }
+
+  class ParaElt extends BlockLevelChunkElt {
+    !ordered val ParaPrElt#ppe_pElt pPr;
+    val ParaContentElt[*]#pce_pElt pContentElts;
+  }
+
+  class ParaPrElt {
+    !ordered ref ParaElt[1]#pPr ppe_pElt;
+    !ordered ref StyleElt[1]#se_pPr ppe_styleElt;
+    !ordered val StringProperty pStyle;
+    !unique !ordered attr OnOffType keepNext;
+    !unique !ordered attr OnOffType keepLines;
+    !unique !ordered attr OnOffType pageBreakBefore;
+    !unique !ordered attr OnOffType supressLineNumbers;
+    !unique !ordered attr OnOffType suppressAutoHyphens;
+    !unique !ordered attr OnOffType contextualSpacing;
+    !unique !ordered attr OnOffType bidi;
+    !unique !ordered attr JustificationValue justification;
+  }
+
+  abstract class ParaContentElt {
+    !ordered ref ParaElt[1]#pContentElts pce_pElt;
+  }
+
+  class RunElt extends ParaContentElt {
+    !ordered val RunPrElt#rpe_rElt rPr;
+    val RunContentElt[*]#rce_rElt rContentElts;
+  }
+
+  class RunPrElt {
+    !ordered ref RunElt[1]#rPr rpe_rElt;
+    !ordered ref StyleElt[1]#se_rPr rpe_styleElt;
+    !ordered val StringProperty rStyle;
+    !ordered val FontsElt#fse_runPrElt rFonts;
+    !unique !ordered attr OnOffType bold;
+    !unique !ordered attr OnOffType bold_cs;
+    !unique !ordered attr OnOffType italic;
+    !unique !ordered attr OnOffType italic_cs;
+    !unique !ordered attr OnOffType capitals;
+    !unique !ordered attr OnOffType smallCapitals;
+    !unique !ordered attr OnOffType strike;
+    !unique !ordered attr OnOffType doubleStrike;
+    !unique !ordered attr OnOffType outline;
+    !unique !ordered attr OnOffType shadow;
+    !unique !ordered attr OnOffType emboss;
+    !unique !ordered attr OnOffType imprint;
+    !unique !ordered attr OnOffType noProof;
+    !unique !ordered attr OnOffType vanish;
+    !unique !ordered attr OnOffType specVanish;
+    !unique !ordered attr OnOffType rtl;
+    !unique !ordered attr OnOffType cs;
+    !ordered ref UnderlineProperty underline;
+    !unique !ordered attr String color;
+    !unique !ordered attr HighlightColorValues highlight;
+    !unique !ordered attr VerticalAlignRunType verticalAlign;
+    !ordered ref LangElt#le_runPrElt language;
+  }
+
+  class LangElt {
+    !ordered ref RunPrElt[1]#language le_runPrElt;
+    !unique !ordered attr String ~val;
+    !unique !ordered attr String bidi;
+  }
+
+  abstract class RunContentElt {
+    !ordered ref RunElt[1]#rContentElts rce_rElt;
+  }
+
+  class BreakElt extends RunContentElt {
+    !unique !ordered attr BreakType type;
+  }
+
+  class Text extends RunContentElt, StringType {
+  }
+
+  class DelText extends RunContentElt, StringType {
+  }
+
+  class InstrText extends RunContentElt, StringType {
+  }
+
+  class DelInstrText extends RunContentElt, StringType {
+  }
+
+  class NoBreakHyphen extends RunContentElt {
+  }
+
+  class SoftHyphen extends RunContentElt {
+  }
+
+  class AnnotationRef extends RunContentElt {
+  }
+
+  class FootnoteRef extends RunContentElt {
+  }
+
+  class EndnoteRef extends RunContentElt {
+  }
+
+  class Separator extends RunContentElt {
+  }
+
+  class ContinuationSeparator extends RunContentElt {
+  }
+
+  class PgNum extends RunContentElt {
+  }
+
+  class Cr extends RunContentElt {
+  }
+
+  class Footnote extends RunContentElt, NoteElt {
+  }
+
+  class Endnote extends RunContentElt, NoteElt {
+  }
+
+  abstract class NoteElt {
+    val BlockLevelElt[+]#ble_note n_blockLevelElts;
+    !unique !ordered attr NoteValue type;
+    !unique !ordered attr OnOffType suppressRef;
+  }
+
+  class Picture extends RunContentElt, PictureType {
+  }
+
+  class Symbol extends RunContentElt, SymElt {
+  }
+
+  class SymElt {
+    !ordered val StringType[1] font;
+    !ordered val StringType[1] char;
+  }
+
+  class Tab extends RunContentElt, TabElt {
+  }
+
+  class FldChar extends RunContentElt, FldCharElt {
+  }
+
+  class FldCharElt {
+    !ordered val StringType fldData;
+    !unique !ordered attr FldCharTypeProperty[1] fldCharType;
+    !unique !ordered attr OnOffType[1] fldLock;
+  }
+
+  class TableElt extends BlockLevelChunkElt {
+    !ordered val TablePrElt[1]#tpe_tblElt tblPr;
+    !ordered val TableGridElt[1]#tge_tblElt tblGrid;
+    val TableContentElt[+]#tce_tblElt tblContent;
+  }
+
+  class TablePrElt {
+    !ordered ref TableElt[1]#tblPr tpe_tblElt;
+    !ordered ref StyleElt[1]#se_tblPr tpe_styleElt;
+  }
+
+  class TableGridElt {
+    !ordered ref TableElt[1]#tblGrid tge_tblElt;
+  }
+
+  class TableContentElt {
+    !ordered ref TableElt[1]#tblContent tce_tblElt;
+    val RowElt[*]#re_tblContentElt tr;
+    !ordered val RunLevelElt#rle_tblContentElt tce_runLevelElts;
+  }
+
+  class RowElt {
+    !ordered ref TableContentElt[1]#tr re_tblContentElt;
+    !ordered val TablePrExElt#tpee_rowElt tblPrEx;
+    !ordered val TableRowPrElt#tpe_rowElt trPr;
+    val RowContentElt[+]#rce_rowElt rowContent;
+  }
+
+  class TablePrExElt {
+    !ordered ref RowElt[1]#tblPrEx tpee_rowElt;
+  }
+
+  class TableRowPrElt {
+    !ordered ref RowElt[1]#trPr tpe_rowElt;
+    !ordered ref StyleElt[1]#se_trPr trpe_styleElt;
+  }
+
+  class RowContentElt {
+    !ordered ref RowElt[1]#rowContent rce_rowElt;
+    val TableCellElt[*]#tce_rowContentElt tc;
+    !ordered val RunLevelElt#rle_rowContentElt rce_runLevelElts;
+  }
+
+  class TableCellElt {
+    !ordered ref RowContentElt[1]#tc tce_rowContentElt;
+    !ordered val TableCellPrElt#tcpe_tableCellElt tcPr;
+    val BlockLevelElt[+]#ble_tableCellElt tce_content;
+  }
+
+  class TableCellPrElt {
+    !ordered ref TableCellElt[1]#tcPr tcpe_tableCellElt;
+    !ordered ref StyleElt[1]#se_tcPr tcpe_styleElt;
+  }
+
+  class FontsListElt {
+    !ordered ref WordDocument[1]#fonts fle_wordDocument;
+    !ordered val FontsElt#fse_fontsListElt defaultFonts;
+    val FontElt[*]#fe_fontsListElt fonts;
+  }
+
+  class FontsElt {
+    !ordered ref FontsListElt[1]#defaultFonts fse_fontsListElt;
+    !ordered ref RunPrElt[1]#rFonts fse_runPrElt;
+    !unique !ordered attr HintType[1] hint;
+    !ordered val StringType[1] ascii;
+    !ordered val StringType[1] h_ansi;
+    !ordered val StringType[1] fareast;
+    !ordered val StringType[1] cs;
+  }
+
+  class FontElt {
+    !ordered ref FontsListElt[1]#fonts fe_fontsListElt;
+    !ordered val StringType[1] name;
+    !ordered val StringProperty altName;
+  }
+
+  class StylesElt {
+    !ordered ref WordDocument[1]#styles se_wordDocument;
+    !unique !ordered attr PrimitiveTypes.Double versionOfBuiltInStylenames;
+    !ordered ref StyleElt[*]#se_stylesElt styles;
+  }
+
+  class StyleElt {
+    !ordered ref StylesElt[1]#styles se_stylesElt;
+    !unique !ordered attr StyleKindValue type;
+    !ordered val StringType styleId;
+    !unique !ordered attr OnOffType default;
+    !ordered val StringProperty name;
+    !ordered val StringProperty aliases;
+    !unique !ordered attr PrimitiveTypes.Double sti;
+    !ordered val StringProperty basedOn;
+    !ordered val StringProperty next;
+    !ordered val StringProperty link;
+    !unique !ordered attr OnOffType autoRedefine;
+    !unique !ordered attr OnOffType hidden;
+    !unique !ordered attr OnOffType semiHidden;
+    !unique !ordered attr OnOffType locked;
+    !unique !ordered attr OnOffType personal;
+    !unique !ordered attr OnOffType personalCompose;
+    !unique !ordered attr OnOffType personalReply;
+    !ordered val StringType rsid;
+    !ordered ref ParaPrElt#ppe_styleElt se_pPr;
+    !ordered ref RunPrElt#rpe_styleElt se_rPr;
+    !ordered ref TablePrElt#tpe_styleElt se_tblPr;
+    !ordered ref TableRowPrElt#trpe_styleElt se_trPr;
+    !ordered ref TableCellPrElt#tcpe_styleElt se_tcPr;
+  }
+
+  class ListsElt {
+    !ordered ref WordDocument[1]#lists le_wordDocument;
+  }
+
+  class SectPrElt {
+    !ordered ref BodyElt[1]#sectPr spe_bodyElt;
+  }
+
+  class RunLevelElt extends BlockLevelChunkElt {
+    !ordered ref TableContentElt[1]#tce_runLevelElts rle_tblContentElt;
+    !ordered ref RowContentElt[1]#rce_runLevelElts rle_rowContentElt;
+  }
+
+  class CfChunk extends BlockLevelElt {
+  }
+
+  class SimpleFieldElt extends ParaContentElt {
+  }
+
+  class HLinkElt extends ParaContentElt {
+  }
+
+  class SubDocElt extends ParaContentElt {
+  }
+
+  class PictureType {
+  }
+
+  class TabElt {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

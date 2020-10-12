@@ -1,0 +1,8 @@
+( defstruct UMLModelElement :kind :name )
+( defstruct Attribute :owner :type :kind :name )
+( defstruct Package :kind :name )
+( defstruct PackageElement :namespace :kind :name )
+( defstruct Classifier :namespace :kind :name )
+( defstruct Class :namespace :kind :name )
+( defstruct PrimitiveDataType :namespace :kind :name )
+( defstruct Association :source :destination :namespace :kind :name )

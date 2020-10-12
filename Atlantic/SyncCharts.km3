@@ -1,0 +1,84 @@
+-- @name 		Sync Charts
+-- @domains 	Sync Chart
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/07/10
+-- @description This metamodel fragment describes SyncCharts
+-- @see 		This metamodel fragment has been extracted from information available in the following article :
+-- @see 		Article "Integrating the Synchronous Paradigm into UML : Application to Control-Dominated Systems"
+-- @see 		by Charles André, Marie-Agnès Peraldi-Frati, Jean-paul Rigault
+-- @see 		Page 173, Section 3.3, Fig. 2. A UML meta-model for SyncCharts
+-- @see 		Lecture Notes in Computer Science 2460
+-- @see 		Jean Marc Jézéquel, Heinrich Hussman, Stephen Cook 
+-- @see 		UML 2002 - The Unified Modeling Language
+
+package OCLExpression {
+	abstract class ModelElement {
+		reference behavior [*] : SyncChart oppositeOf context;
+	}
+	
+	class SyncChart {
+		reference context [0-1] : ModelElement oppositeOf behavior;
+		reference referenceState [*] : ReferenceState oppositeOf subSyncChart;
+	}
+	
+	class ReferenceState {
+		reference subSyncChart : SyncChart oppositeOf referenceState;
+		reference containers [0-1] : Stg oppositeOf referenceState;
+	}
+	
+	abstract class Arc extends ModelElement { 
+		attribute isImmediate : Boolean;
+		attribute priority : Integer;
+		reference target : Vertex oppositeOf incoming;
+		reference source : Vertex oppositeOf outcoming;
+		reference stg [0-1] : Stg oppositeOf arc;
+	}
+	
+	abstract class Vertex extends ModelElement {
+		reference incoming [*] : Arc oppositeOf target;
+		reference outcoming [*] : Arc oppositeOf source;
+	}
+
+	class PseudoState extends Vertex {
+		reference kind : PseudoStateKind;
+	}
+
+	class PseudoStateKind {}
+	
+	class State extends Vertex {
+		attribute isFinal : Boolean;
+	}
+	
+	class SimpleState extends State {}
+	
+	class CompositeState extends State, ReferenceState {
+		attribute canTerminate : Boolean;
+		attribute isSuspendable : Boolean;
+		reference stg [1-*]: Stg oppositeOf compositeState;
+	}
+	
+	class Stg {
+		attribute withFinal : Boolean;
+		reference compositeState : CompositeState oppositeOf stg;
+		reference arc [*] container : Arc oppositeOf stg;
+		reference referenceState [*] container : ReferenceState oppositeOf containers;
+	}
+	
+	class Transition extends Arc {
+		reference kind : TransitionKind;
+	}
+	
+	class TransitionKind {}
+	
+	class PseudoTransition extends Arc {
+		reference kind : PseudoTransitionKind;
+	}
+
+	class PseudoTransitionKind {}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

@@ -1,0 +1,110 @@
+package Metamodel;
+
+package Klaper {
+  class Resource {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr Integer[1] capacity;
+    !unique !ordered attr String[1] schedulingPolicy;
+    !unique !ordered attr String[1] description;
+    !ordered ref Acquire[1]#resource acquire;
+    !ordered ref Release[1]#resource release;
+  }
+
+  class Service {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] formalParams;
+    !unique !ordered attr String[1] speedAttr;
+    !unique !ordered attr String[1] failAttr;
+    !unique !ordered attr String[1] description;
+    !ordered ref Behavior[+]#service behavior;
+    !ordered ref Behavior[*]#usedService behaviorUsed;
+    !ordered ref ServiceCall[*]#calledService serviceCall;
+  }
+
+  class Behavior {
+    !ordered ref Step[1]#nestedBehavior stepn;
+    !ordered val Step[+]#behavior stepb;
+    !ordered ref Service[1]#behavior service;
+    !ordered ref Service[*]#behaviorUsed usedService;
+    !ordered ref WorkLoad#behavior workLoad;
+  }
+
+  class WorkLoad {
+    !unique !ordered attr String[1] workLoadType;
+    !unique !ordered attr String[1] arrivalProcess;
+    !unique !ordered attr String[1] population;
+    !unique !ordered attr String[1] initialResource;
+    !ordered ref Behavior[1]#workLoad behavior;
+  }
+
+  class Step extends Behavior {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] repetition;
+    !unique !ordered attr String[1] internalExecTime;
+    !unique !ordered attr String[1] internalFailProb;
+    !unique !ordered attr String[1] completionModel;
+    !ordered val ServiceCall[*]#step serviceCall;
+    !ordered ref Step[*]#successor predecessor;
+    !ordered ref Step[*]#predecessor successor;
+    !ordered ref Behavior[1]#stepb behavior;
+    !ordered ref Behavior#stepn nestedBehavior;
+  }
+
+  class Start extends Step {
+  }
+
+  class End extends Step {
+  }
+
+  class Control extends Step {
+  }
+
+  class InternalActivity extends Step {
+  }
+
+  class ServiceCall extends Step {
+    !unique !ordered attr String[1] resourceType;
+    !unique !ordered attr String[1] serviceName;
+    !unique !ordered attr Boolean[1] isSynch;
+    ref ActualParam[*]#serviceCall actualParam;
+    !ordered ref Step[1]#serviceCall step;
+    !ordered ref Service#serviceCall calledService;
+  }
+
+  class ActualParam {
+    !unique !ordered attr String[1] value;
+    !ordered ref ServiceCall[1]#actualParam serviceCall;
+  }
+
+  class Branch extends Control {
+    !unique !ordered attr String[1] branchProbs;
+  }
+
+  class Fork extends Control {
+  }
+
+  class Join extends Control {
+  }
+
+  class Acquire extends Control {
+    !unique !ordered attr String[1] resourceUnits;
+    !ordered ref Resource[1]#acquire resource;
+  }
+
+  class Release extends Control {
+    !unique !ordered attr String[1] resourceUnits;
+    !ordered ref Resource[1]#release resource;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+}
+

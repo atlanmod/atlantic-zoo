@@ -1,0 +1,198 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'DoDAF'>
+    <Class name = 'Element' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'content' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'System' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'decomposes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::System' opposite = ''/>
+      <Reference name = 'fulfills' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemRole' opposite = ''/>
+    </Class>
+    <Class name = 'SystemRole' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'decomposes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::SystemRole' opposite = ''/>
+      <Reference name = 'performs' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemFunction' opposite = ''/>
+      <Reference name = 'terminatesAt' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemRoleInterface' opposite = 'DoDAF::SystemRoleInterface::originatesFrom'/>
+    </Class>
+    <Class name = 'SystemFunction' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'decomposes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::SystemFunction' opposite = ''/>
+      <Reference name = 'consumes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::Product' opposite = ''/>
+      <Reference name = 'produces' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::Product' opposite = ''/>
+      <Reference name = 'terminatesAt' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemProductFlow' opposite = 'DoDAF::SystemProductFlow::originatesFrom'/>
+      <Reference name = 'mesuredBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::ConstraintOrRequirement' opposite = ''/>
+    </Class>
+    <Class name = 'Service' isAbstract = 'false' supertypes = 'DoDAF::SystemFunction'/>
+    <Class name = 'SystemRoleInterface' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'originatesFrom' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemRole' opposite = 'DoDAF::SystemRole::terminatesAt'/>
+    </Class>
+    <Class name = 'ServiceDependency' isAbstract = 'false' supertypes = 'DoDAF::SystemRoleInterface'/>
+    <Class name = 'ServiceProvider' isAbstract = 'false' supertypes = 'DoDAF::SystemRole'/>
+    <Class name = 'ServiceMediator' isAbstract = 'false' supertypes = 'DoDAF::ServiceProvider'/>
+    <Class name = 'ServiceRegistry' isAbstract = 'false' supertypes = 'DoDAF::ServiceMediator'/>
+    <Class name = 'ServiceLocator' isAbstract = 'false' supertypes = 'DoDAF::ServiceMediator'/>
+    <Class name = 'ServiceBroker' isAbstract = 'false' supertypes = 'DoDAF::ServiceMediator'/>
+    <Class name = 'SystemAtNode' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'references' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::System' opposite = ''/>
+      <Reference name = 'terminatesAt' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemAtNodeInterface' opposite = 'DoDAF::SystemAtNodeInterface::originatesFrom'/>
+    </Class>
+    <Class name = 'SystemAtNodeInterface' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'originatesFrom' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemAtNode' opposite = 'DoDAF::SystemAtNode::terminatesAt'/>
+    </Class>
+    <Class name = 'SystemsNode' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'groups' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemAtNode' opposite = ''/>
+    </Class>
+    <Class name = 'COI' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'comprises' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::Performer' opposite = ''/>
+      <Reference name = 'defines' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::Vocabulary' opposite = ''/>
+    </Class>
+    <Class name = 'Vocabulary' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'comprises' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::DataReference' opposite = ''/>
+    </Class>
+    <Class name = 'DataReference' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'defineBy' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::Data' opposite = ''/>
+    </Class>
+    <Class name = 'Performer' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'decomposes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::Performer' opposite = ''/>
+      <Reference name = 'fulfills' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::OperationalRole' opposite = ''/>
+    </Class>
+    <Class name = 'OperationalRole' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'decomposes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::OperationalRole' opposite = ''/>
+      <Reference name = 'accomplishes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::OperationalActivity' opposite = ''/>
+    </Class>
+    <Class name = 'OperationalActivity' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'decomposes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::OperationalRole' opposite = ''/>
+      <Reference name = 'supports' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemFunction' opposite = ''/>
+    </Class>
+    <Class name = 'Product' isAbstract = 'false' supertypes = 'DoDAF::Element'/>
+    <Class name = 'Material' isAbstract = 'false' supertypes = 'DoDAF::Product'/>
+    <Class name = 'Data' isAbstract = 'false' supertypes = 'DoDAF::Product'/>
+    <Class name = 'SystemProductFlow' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'transports' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::Product' opposite = ''/>
+      <Reference name = 'originatesFrom' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SystemFunction' opposite = 'DoDAF::SystemFunction::terminatesAt'/>
+    </Class>
+    <Class name = 'ConstraintOrRequirement' isAbstract = 'true' supertypes = 'DoDAF::Element'/>
+    <Class name = 'Constraint' isAbstract = 'false' supertypes = 'DoDAF::ConstraintOrRequirement'/>
+    <Class name = 'QualityRequirement' isAbstract = 'false' supertypes = 'DoDAF::ConstraintOrRequirement'/>
+    <Class name = 'DIA' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'nmjic' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::NMJIC' opposite = 'DoDAF::NMJIC::dia'/>
+      <Reference name = 'higherEchelon' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::HigherEchelon' opposite = 'DoDAF::HigherEchelon::dia'/>
+    </Class>
+    <Class name = 'NMJIC' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'dia' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::DIA' opposite = 'DoDAF::DIA::nmjic'/>
+    </Class>
+    <Class name = 'HigherEchelon' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'dia' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::DIA' opposite = 'DoDAF::DIA::higherEchelon'/>
+      <Reference name = 'jfc' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::JFC' opposite = 'DoDAF::JFC::higherEchelon'/>
+    </Class>
+    <Class name = 'JFC' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'higherEchelon' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::HigherEchelon' opposite = 'DoDAF::HigherEchelon::jfc'/>
+      <Reference name = 'f2c2' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::F2C2' opposite = 'DoDAF::F2C2::jfc'/>
+      <Reference name = 'componentComand' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::ComponentCommand' opposite = 'DoDAF::ComponentCommand::jfc'/>
+    </Class>
+    <Class name = 'F2C2' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'jfc' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::JFC' opposite = 'DoDAF::JFC::f2c2'/>
+    </Class>
+    <Class name = 'ComponentCommand' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'jfc' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::JFC' opposite = 'DoDAF::JFC::componentComand'/>
+    </Class>
+    <Class name = 'DJFLCC' isAbstract = 'false' supertypes = 'DoDAF::ComponentCommand'/>
+    <Class name = 'JFACC' isAbstract = 'false' supertypes = 'DoDAF::ComponentCommand'>
+      <Reference name = 'subordinateAirCommand' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::SubordinateAirCommand' opposite = 'DoDAF::SubordinateAirCommand::jfacc'/>
+      <Reference name = 'aoccid' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::AOCCID' opposite = ''/>
+      <Reference name = 'aoccpsc' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::AOCCombatPlanStrategyCells' opposite = ''/>
+    </Class>
+    <Class name = 'JFMCC' isAbstract = 'false' supertypes = 'DoDAF::ComponentCommand'/>
+    <Class name = 'JFSOCC' isAbstract = 'false' supertypes = 'DoDAF::ComponentCommand'/>
+    <Class name = 'SubordinateAirCommand' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'jfacc' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::JFACC' opposite = 'DoDAF::JFACC::subordinateAirCommand'/>
+    </Class>
+    <Class name = 'MAW' isAbstract = 'false' supertypes = 'DoDAF::SubordinateAirCommand'/>
+    <Class name = 'WOC' isAbstract = 'false' supertypes = 'DoDAF::SubordinateAirCommand'/>
+    <Class name = 'AOCCID' isAbstract = 'false' supertypes = 'DoDAF::Element'/>
+    <Class name = 'AOCCombatPlanStrategyCells' isAbstract = 'false' supertypes = 'DoDAF::Element'/>
+    <Class name = 'ResultData' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'sourceID' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'timeStamp' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'cr' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::CollectionRequirement' opposite = 'DoDAF::CollectionRequirement::rd'/>
+      <Reference name = 'bdaReport' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::BDAReport' opposite = 'DoDAF::BDAReport::rd'/>
+    </Class>
+    <Class name = 'CombatReport' isAbstract = 'false' supertypes = 'DoDAF::ResultData'>
+      <Attribute name = 'friendlyUnitsInvolved' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'combatLocation' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'resultsAssessment' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'duration' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'WSV' isAbstract = 'false' supertypes = 'DoDAF::ResultData'>
+      <Attribute name = 'missionID' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'weaponfSystemID' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'videoType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'MISREP' isAbstract = 'false' supertypes = 'DoDAF::ResultData'>
+      <Attribute name = 'missionID' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'missionObjectives' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'missionAssesments' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Imagery' isAbstract = 'false' supertypes = 'DoDAF::ResultData'>
+      <Attribute name = 'imageType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'spectralData' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'geospacialLocation' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'imageSize' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'CollectionRequirement' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'sourceID' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'collectionTargetID' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'toBeDoneByTime' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'specialNeeds' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'rd' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::ResultData' opposite = 'DoDAF::ResultData::cr'/>
+      <Reference name = 'ato' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::ATO' opposite = 'DoDAF::ATO::cr'/>
+      <Reference name = 'isContainedIn' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::Target' opposite = 'DoDAF::Target::cr'/>
+    </Class>
+    <Class name = 'BDAReport' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'targetID' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'reportSourceID' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'assesmentSumart' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'validityDuration' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'rd' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::ResultData' opposite = 'DoDAF::ResultData::bdaReport'/>
+      <Reference name = 'mea' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::MunitionsEffectsAssesment' opposite = 'DoDAF::MunitionsEffectsAssesment::bdaReport'/>
+    </Class>
+    <Class name = 'MunitionsEffectsAssesment' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'bdaReport' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::BDAReport' opposite = 'DoDAF::BDAReport::mea'/>
+      <Reference name = 'ato' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::ATO' opposite = 'DoDAF::ATO::mea'/>
+      <Reference name = 'tn' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::TargetNomination' opposite = 'DoDAF::TargetNomination::mea'/>
+    </Class>
+    <Class name = 'ATO' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'timePeriod' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'cr' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::CollectionRequirement' opposite = 'DoDAF::CollectionRequirement::ato'/>
+      <Reference name = 'mea' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::MunitionsEffectsAssesment' opposite = 'DoDAF::MunitionsEffectsAssesment::ato'/>
+      <Reference name = 'tn' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::TargetNomination' opposite = 'DoDAF::TargetNomination::ato'/>
+      <Reference name = 'rr' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::RestrikeRecommendation' opposite = 'DoDAF::RestrikeRecommendation::ato'/>
+    </Class>
+    <Class name = 'RestrikeRecommendation' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'ato' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::ATO' opposite = 'DoDAF::ATO::rr'/>
+      <Reference name = 'tn' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::TargetNomination' opposite = 'DoDAF::TargetNomination::rr'/>
+    </Class>
+    <Class name = 'TargetNomination' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'ato' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::ATO' opposite = 'DoDAF::ATO::tn'/>
+      <Reference name = 'mea' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::MunitionsEffectsAssesment' opposite = 'DoDAF::MunitionsEffectsAssesment::tn'/>
+      <Reference name = 'rr' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::RestrikeRecommendation' opposite = 'DoDAF::RestrikeRecommendation::tn'/>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::Target' opposite = 'DoDAF::Target::tn'/>
+    </Class>
+    <Class name = 'TargetMaterialsAnalysis' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'targetID' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::Target' opposite = 'DoDAF::Target::describes'/>
+    </Class>
+    <Class name = 'Target' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'cr' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::CollectionRequirement' opposite = 'DoDAF::CollectionRequirement::isContainedIn'/>
+      <Reference name = 'tn' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::TargetNomination' opposite = 'DoDAF::TargetNomination::target'/>
+      <Reference name = 'holds' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::MIDB' opposite = 'DoDAF::MIDB::target'/>
+      <Reference name = 'describes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::TargetMaterialsAnalysis' opposite = 'DoDAF::TargetMaterialsAnalysis::target'/>
+    </Class>
+    <Class name = 'MIDB' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'target' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::Target' opposite = 'DoDAF::Target::holds'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Integer'/>
+  </Package>
+</Metamodel>

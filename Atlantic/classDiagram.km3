@@ -1,0 +1,97 @@
+-- @name		Class Diagram
+-- @version		1.0
+-- @authors		Brahim Loukil (Brahim-Khalil.Loukil <at> univ-nantes.fr)
+-- @date		2008
+-- @description	A metamodel for representing class diagrams.
+
+package ClassDiagram {
+
+	class Class extends Classifier {
+		reference nestedClassifier[*] ordered container : Classifier;
+	}
+
+	class Property extends TypedElement, MultiplicityElement, NamedElement {
+		attribute aggregation[0-1] : AggregationKind;
+	}
+
+	class Operation extends NamedElement {
+		reference ownedParmeter[*] ordered container : Parameter;
+	}
+
+	class Interface extends Classifier {
+		reference nestedClassifier[*] ordered container : Classifier;
+	}
+
+	abstract class Classifier extends PackagedElement, type {
+		reference ownedProperty[*] ordered container : Property;
+		reference ownedOperation[*] ordered container : Operation;
+		reference ownedElement[*] ordered container : Generalization;
+	}
+
+	class Package extends PackagedElement {
+		reference ownedPackagedElement[*] ordered container : PackagedElement;
+	}
+
+	class Association extends PackagedElement {
+		reference ownedEnd[*] ordered container : Property;
+		reference memberEnd[*] ordered : Property;
+	}
+
+	abstract class PackagedElement extends NamedElement {
+		
+	}
+
+	class Parameter extends TypedElement, MultiplicityElement, NamedElement {
+		attribute direction[0-1] : ParameterDirectionKind;
+	}
+
+	class DataType extends Classifier {
+		
+	}
+
+	class Enumeration extends DataType {
+		reference ownedLiteral[*] ordered container : EnumerationLiteral;
+	}
+
+	enumeration AggregationKind {
+		literal none;
+		literal shared;
+		literal composite;
+	}
+
+	abstract class type extends PackagedElement {
+		
+	}
+
+	abstract class TypedElement {
+		reference type[0-1] : type;
+	}
+
+	enumeration ParameterDirectionKind {
+		literal IN;
+		literal INOUT;
+		literal OUT;
+		literal RETURN;
+	}
+
+	abstract class MultiplicityElement {
+		attribute upper[0-1] : Int ;
+		attribute lower[0-1] : Int ;
+	}
+
+	class EnumerationLiteral extends NamedElement {
+		
+	}
+
+	abstract class NamedElement {
+		attribute name[0-1] : String ;
+	}
+
+	class Generalization {
+		reference general[0-1] : Classifier;
+	}
+}
+package PrimitiveTypes {
+    datatype String;
+    datatype Int;
+}

@@ -1,0 +1,50 @@
+-- @name		EclipseLaunchConfigurations
+-- @version		1.0
+-- @domains		Eclipse, Launch configuration 
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Freddy Allilaire (freddy.allilaire <at> gmail.com)
+-- @date		2007/11/13
+-- @description	This generic metamodel simply describes Eclipse launch configurations (i.e. ".launch" files). 
+-- @see			http://www.eclipse.org
+
+package EclipseLaunchConfigurations {
+
+	class LaunchConfiguration {
+		attribute type : String;
+		reference attributes[0-*] ordered container : Attribute;
+	}
+
+	abstract class Attribute {
+		attribute key : String;
+	}
+	
+	class StringAttribute extends Attribute {
+		attribute value : String;
+	}
+	
+	class BooleanAttribute extends Attribute {
+		attribute value : Boolean;
+	}
+	
+	class MapAttribute extends Attribute {
+		reference entries[0-*] ordered container : MapEntry oppositeOf mapAttribute;
+	}
+
+	class MapEntry extends StringAttribute {
+		reference mapAttribute : MapAttribute oppositeOf entries;
+	}
+
+	class ListAttribute extends Attribute {
+		reference entries[0-*] ordered container : ListEntry oppositeOf listAttribute;
+	}
+
+	class ListEntry {
+		reference listAttribute : ListAttribute oppositeOf entries;
+		attribute value : String;
+	}
+
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+}

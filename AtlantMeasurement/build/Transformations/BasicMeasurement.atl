@@ -1,0 +1,33 @@
+-- ******************************************************************************
+-- Copyright (c) 2009 INRIA. 
+-- All rights reserved. This program and the accompanying materials 
+-- are made available under the terms of the Eclipse Public License v1.0 
+-- which accompanies this distribution, and is available at
+-- http://www.eclipse.org/legal/epl-v10.html
+-- 
+-- Contributors: 
+-- 	INRIA - Initial implementation
+--  
+-- ******************************************************************************
+module BasicMeasurement; -- Module Template
+create OUT : BMeasure from IN : KM3, IN2 : Names;
+
+helper def : getModelName() : String = Names!name.allInstancesFrom('IN2')->first().modelName;
+
+helper def : getClasses() : Integer = KM3!Class.allInstancesFrom('IN')->size();
+	
+helper def : getAttributes() : Integer = KM3!Attribute.allInstancesFrom('IN')->size();
+	
+helper def : getReferences() : Integer = KM3!Reference.allInstancesFrom('IN')->size();
+
+entrypoint rule BToMeasure() {
+				
+	to 
+		root : BMeasure!Measure(
+			modelName<-thisModule.getModelName(),
+			totalNumberOfClasses<-thisModule.getClasses(),
+			totalNumberOfAttributes<-thisModule.getAttributes(),
+			totalNumberOfReferences<-thisModule.getReferences())
+	
+	
+}

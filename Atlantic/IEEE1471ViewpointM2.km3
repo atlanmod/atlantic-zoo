@@ -1,0 +1,83 @@
+-- @name		Based Viewpoint Metamodel 
+-- @version		0.1	
+-- @domains		SoS
+-- @authors		Albin Jossic (jossic.albin@gmail.com) 
+-- @date		2006/05/6	
+-- @description	Metamodel of IEEE 1471-2000  
+-- @see			IEEE1471ConceptualModel.km3
+-- @see 		"IEEE Std 1471 and Beyond" Rich Hilliard, ConsentCache, January 1 2001
+-- @see			"ANSI/IEEE 1471 and Systems Engineering", Mark W. Maier David, Emery Rich Hilliard
+-- @see			"Recommended Practice for Architectural description of Softwrare-Intensive Systems", IEEE Std 1471-2000, IEEE, 2000.
+
+--@begin package IEEE1471 Based Viewpoint M2
+package IEEE1471 {
+
+	--@begin Viewpoint
+	
+	--@begin Viewpoint concept core
+	class Viewpoint {
+		reference source[1-*] : ViewpointImport;
+		reference covers[1-*] : Concern;
+		reference supplierDependency[*] : ViewpointDependency oppositeOf supplier;
+		reference clientDependency[*] : ViewpointDependency oppositeOf client;
+		reference isImportTo[0-1] : Stakeholder;
+		reference architecturalConstruct[*] container : ArchitecturalConstruct;
+		reference process container : Process;		
+	}
+	
+	class Concern {}
+	
+	class Stakeholder {
+		reference concerns[0-1] : Concern;
+	}
+	--@end Viewpoint concept core
+	
+	class ViewpointImport {}
+	
+	class ViewpointDependency {
+		reference supplier : Viewpoint oppositeOf supplierDependency;
+		reference client : Viewpoint oppositeOf clientDependency;
+	}
+	--@end Viewpoint
+		
+	--@begin Process	
+	class Process {
+		reference methodology[1-*]  : Technique; 
+	}
+	
+	class Technique {
+		reference methods[*] : AnalysisMethod;
+		reference applies[1-*] : Rule oppositeOf techniques;
+	}
+	
+	class AnalysisMethod {
+		reference analysis : Language;
+	}
+	--@end Process	
+	
+	--@begin ArchitecturalConstruct
+	class ArchitecturalConstruct {}
+	
+	--@begin Rule
+	class Rule extends ArchitecturalConstruct {
+		reference techniques[1-*] : Technique oppositeOf applies;
+		reference guidance : Language;
+	}
+	
+	class ModelOrganization extends Rule {}
+	
+	class ModellingRule {}
+	--@end Rule
+	
+	class Language extends ArchitecturalConstruct {}
+	
+	class Mapping extends ArchitecturalConstruct  {
+		reference input : Language;
+		reference ouput : Language;
+	}
+	
+	class Pattern extends ArchitecturalConstruct {}
+	--@begin ArchitecturalConstruct
+	
+}
+--@end package IEEE1471 Based Viewpoint M2

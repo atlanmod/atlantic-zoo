@@ -1,0 +1,135 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'DoDAF'>
+    <Class name = 'Element' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'description' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'view' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'DoDAFModel' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'document' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::Document' opposite = ''/>
+      <Reference name = 'am' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::AM' opposite = ''/>
+      <Reference name = 'task' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::Task' opposite = ''/>
+      <Reference name = 'iaDocument' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::InformationAssetDocument' opposite = ''/>
+      <Reference name = 'amSpecification' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::AMSpecification' opposite = ''/>
+      <Reference name = 'doscr' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::DOSCR' opposite = ''/>
+      <Reference name = 'organizationType' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::OrganizationType' opposite = ''/>
+    </Class>
+    <Class name = 'Document' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'cites' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::InformationAssetDocument' opposite = ''/>
+      <Reference name = 'records' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::ArchitectureDocument' opposite = ''/>
+      <Reference name = 'isTheReferenceFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::IE' opposite = ''/>
+      <Reference name = 'isThePrimaryReferenceFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::PA' opposite = ''/>
+    </Class>
+    <Class name = 'AMSpecification' isAbstract = 'false' supertypes = 'DoDAF::Document'>
+      <Reference name = 'isSpecifiedUsing' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::AMSpecificationElement' opposite = ''/>
+    </Class>
+    <Class name = 'AMSpecificationElement' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'subject' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::PAExchangeRequirement' opposite = 'DoDAF::PAExchangeRequirement::isTheSubjectOf'/>
+    </Class>
+    <Class name = 'PAExchangeRequirement' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'isTheSubjectOf' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::AMSpecificationElement' opposite = 'DoDAF::AMSpecificationElement::subject'/>
+    </Class>
+    <Class name = 'ArchitectureDocument' isAbstract = 'false' supertypes = 'DoDAF::Element'/>
+    <Class name = 'IE' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'isAssociatedWith' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::AMIERole' opposite = ''/>
+      <Reference name = 'isOrdinateOf' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::IE' opposite = 'DoDAF::IE::isSubordinateOf'/>
+      <Reference name = 'isSubordinateOf' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::IE' opposite = 'DoDAF::IE::isOrdinateOf'/>
+    </Class>
+    <Class name = 'AMIERole' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'defines' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::AMPA' opposite = ''/>
+    </Class>
+    <Class name = 'Control' isAbstract = 'false' supertypes = 'DoDAF::AMIERole'>
+      <Attribute name = 'source' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'destination' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Input' isAbstract = 'false' supertypes = 'DoDAF::AMIERole'>
+      <Reference name = 'isTheInputThatIsDefinedBy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::Output' opposite = ''/>
+      <Attribute name = 'source' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'destination' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'information' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Output' isAbstract = 'false' supertypes = 'DoDAF::AMIERole'>
+      <Attribute name = 'source' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'destination' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'information' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Mechanism' isAbstract = 'false' supertypes = 'DoDAF::AMIERole'>
+      <Attribute name = 'source' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'destination' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'resourceType' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'MechanismSystem' isAbstract = 'false' supertypes = 'DoDAF::Mechanism'/>
+    <Class name = 'MechanismReference' isAbstract = 'false' supertypes = 'DoDAF::Mechanism'/>
+    <Class name = 'MechanismFacility' isAbstract = 'false' supertypes = 'DoDAF::Mechanism'/>
+    <Class name = 'InformationAssetDocument' isAbstract = 'false' supertypes = 'DoDAF::Element'/>
+    <Class name = 'AMPA' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'isOrdinateOf' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::AMPA' opposite = 'DoDAF::AMPA::isSubordinateOf'/>
+      <Reference name = 'isSubordinateOf' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::AMPA' opposite = 'DoDAF::AMPA::isOrdinateOf'/>
+      <Reference name = 'defines' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::AMIERole' opposite = ''/>
+    </Class>
+    <Class name = 'PACapability' isAbstract = 'false' supertypes = 'DoDAF::Element'/>
+    <Class name = 'PA' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'isTheProducerFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::PAExchangeRequirement' opposite = ''/>
+      <Reference name = 'isTheConsumerFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::PAExchangeRequirement' opposite = ''/>
+      <Reference name = 'isParentFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::PA' opposite = 'DoDAF::PA::isChildFor'/>
+      <Reference name = 'isChildFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::PA' opposite = 'DoDAF::PA::isParentFor'/>
+      <Reference name = 'has' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::PACapability' opposite = ''/>
+      <Reference name = 'isIncludedIn' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::AMPA' opposite = ''/>
+      <Reference name = 'correspondsTo' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::PATask' opposite = ''/>
+    </Class>
+    <Class name = 'AM' isAbstract = 'false' supertypes = 'DoDAF::InformationAsset'>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'specifies' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::AMSpecification' opposite = ''/>
+      <Reference name = 'includes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::AMPA' opposite = ''/>
+      <Reference name = 'paTask' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::PATask' opposite = ''/>
+    </Class>
+    <Class name = 'InformationAsset' isAbstract = 'true' supertypes = 'DoDAF::Element'>
+      <Reference name = 'isDescribedUsing' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::PACapability' opposite = ''/>
+      <Reference name = 'isCitedIn' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::InformationAssetDocument' opposite = ''/>
+    </Class>
+    <Class name = 'Task' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Attribute name = 'levelIdentifier' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'references' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'cost' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'PATask' isAbstract = 'false' supertypes = 'DoDAF::Task'>
+      <Reference name = 'isCitedBy' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::InformationAsset' opposite = ''/>
+    </Class>
+    <Class name = 'Organization' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::OrganizationType' opposite = 'DoDAF::OrganizationType::isTheTypeOf'/>
+      <Reference name = 'supplies' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::InformationAsset' opposite = ''/>
+      <Reference name = 'providesStewardshipFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::InformationAsset' opposite = ''/>
+      <Reference name = 'owns' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::InformationAsset' opposite = ''/>
+      <Reference name = 'develops' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::IE' opposite = ''/>
+      <Reference name = 'isCitedAs' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'DoDAF::MechanismReference' opposite = ''/>
+    </Class>
+    <Class name = 'OrganizationType' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'isTheTypeOf' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::Organization' opposite = 'DoDAF::Organization::type'/>
+      <Reference name = 'isCitedAs' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::MechanismReference' opposite = ''/>
+    </Class>
+    <Class name = 'OperationalRole' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'isCitedAs' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::MechanismReference' opposite = ''/>
+    </Class>
+    <Class name = 'Occupation' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'mayBeCitedForOR' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::OperationalRole' opposite = ''/>
+      <Reference name = 'mayBeCitedForPT' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::PersonType' opposite = ''/>
+    </Class>
+    <Class name = 'PersonType' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'mayBeCitedFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::OperationalRole' opposite = ''/>
+      <Reference name = 'can' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::Skill' opposite = ''/>
+    </Class>
+    <Class name = 'Skill' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'mayBeCitedFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::OperationalRole' opposite = ''/>
+    </Class>
+    <Class name = 'DOSCR' isAbstract = 'false' supertypes = 'DoDAF::Element'>
+      <Reference name = 'mayBeAn' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::Occupation' opposite = ''/>
+      <Reference name = 'appliesTo' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::PersonType' opposite = ''/>
+      <Reference name = 'mayBeCitedFor' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'DoDAF::OperationalRole' opposite = ''/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

@@ -1,0 +1,92 @@
+-- @name		PtolemyII 
+-- @version		1.0
+-- @domains		Java, modeling, design
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/03
+-- @description	This metamodel describes a substet of the Ptolemy II Java packages set which supports heterogeneous, concurrent modeling and design. It belongs to the Ptolemy project whose aim is to study modeling, simulation, and design of concurrent, real-time, embedded systems by focusing on assembly of concurrent components. 
+-- @see			PtolemyII official site, http://ptolemy.eecs.berkeley.edu/ptolemyII/	
+
+package PtolemyII {
+
+	-- @begin Special types
+	
+	class EDataType {
+		attribute value : String;
+	}
+	
+	-- @end Special types
+	
+	
+	-- @begin Global structure
+	
+	class NamedObject {
+		attribute name : String;
+	}
+	
+	class Attribute extends NamedObject {
+		reference att_container : Entity oppositeOf attributes;
+		attribute value :  String;
+	}
+
+	class Entity extends NamedObject {
+		reference attributes[*] ordered container : Attribute oppositeOf att_container;
+		reference parameters[*] ordered container : Parameter oppositeOf pa_container;
+		reference ports[*] ordered container : Port oppositeOf po_container;
+	}
+	
+	class Port extends NamedObject {
+		reference po_container : Entity oppositeOf ports;
+		reference links[*] : Relation oppositeOf ports;
+	}
+	
+	class Relation extends NamedObject {
+		reference ports[*] : Port oppositeOf links;
+	}
+	
+	class Director extends NamedObject {
+		reference ca_container : CompositeActor oppositeOf directors;
+	}
+	
+	class Parameter extends Attribute {
+		reference pa_container : Entity oppositeOf parameters;	
+		reference dataType : EDataType;
+	}
+	
+	class ComponentPort extends Port {}
+	
+	class ComponentRelation extends Relation {
+		reference re_container : CompositeEntity oppositeOf relations;
+	}
+	
+	class ComponentEntity extends Attribute {
+		reference ce_container : CompositeEntity oppositeOf containees;
+	}
+	
+	-- @comment Container is instance of CompositeActor
+	class AtomicActor extends ComponentEntity {}
+	
+	class CompositeEntity extends ComponentEntity {
+		reference  containees[*] ordered container : ComponentEntity oppositeOf ce_container;
+		reference  relations[*] ordered container : ComponentRelation oppositeOf re_container;
+	}
+	
+	-- @comment Only one instance in the model
+	class WorkSpace extends CompositeEntity {}
+	
+	class CompositeActor extends CompositeEntity {
+		reference directors[0-2] : Director oppositeOf ca_container;
+	}
+	 
+	-- @end Global structure
+	
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

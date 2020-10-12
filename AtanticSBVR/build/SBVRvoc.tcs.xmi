@@ -1,0 +1,1545 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tcs="http://www.eclipse.org/gmt/tcs/2007/TCS">
+  <tcs:ConcreteSyntax location="11:1-723:2" name="SBVRvoc" lexer="&#xD;&#xA;%options testLiterals = false;&#xD;&#xA;&#xD;&#xA;NL&#xD;&#xA;&#x9;:&#x9;(&#x9;'\r' '\n'&#xD;&#xA;&#x9;&#x9;|&#x9;'\n' '\r'&#x9;//Improbable&#xD;&#xA;&#x9;&#x9;|&#x9;'\r'&#xD;&#xA;&#x9;&#x9;|&#x9;'\n'&#xD;&#xA;&#x9;&#x9;)&#xD;&#xA;&#x9;{newline();}&#xD;&#xA;&#x9;;&#xD;&#xA;&#xD;&#xA;WS&#xD;&#xA;&#x9;:&#x9;(&#x9;' '&#xD;&#xA;&#x9;&#x9;|&#x9;'\t'&#xD;&#xA;&#x9;&#x9;)&#xD;&#xA;&#x9;;&#xD;&#xA;&#xD;&#xA;%protected&#xD;&#xA;DIGIT&#xD;&#xA;&#x9;:&#x9;'0'..'9'&#xD;&#xA;&#x9;;&#xD;&#xA;&#xD;&#xA;%protected&#xD;&#xA;//ALPHA&#xD;&#xA;//&#x9;:&#x9;'a'..'z'&#xD;&#xA;//&#x9;|&#x9;'A'..'Z'&#xD;&#xA;//&#x9;|&#x9;'_'&#xD;&#xA;//&#x9;//For Unicode compatibility (from 0000 to 00ff)&#xD;&#xA;//&#x9;|&#x9;'\u00C0' .. '\u00D6'&#xD;&#xA;//&#x9;|&#x9;'\u00D8' .. '\u00F6'&#xD;&#xA;//&#x9;|&#x9;'\u00F8' .. '\u00FF'&#xD;&#xA;//&#x9;;&#xD;&#xA;MINUS&#xD;&#xA;&#x9;:&#x9;'a'..'z' &#xD;&#xA;//&#x9;|&#x9;'\u0027'&#xD;&#xA;&#x9;;&#x9;&#xD;&#xA;&#xD;&#xA;%protected&#xD;&#xA;MAJ&#xD;&#xA;&#x9;:&#x9;'A'..'Z'&#xD;&#xA;&#x9;;&#xD;&#xA;&#xD;&#xA;%protected&#xD;&#xA;SNAME&#xD;&#xA;%v2&#x9;options {&#xD;&#xA;%v2&#x9;&#x9;testLiterals = true;&#xD;&#xA;%v2&#x9;}&#xD;&#xA;&#x9;:&#x9;(MINUS) (MINUS | MAJ | DIGIT | '-' | ',')*&#xD;&#xA;;&#xD;&#xA;&#xD;&#xA;NAME&#xD;&#xA;&#x9;:&#x9;(&#xD;&#xA;%v3&#x9;&#x9;&#x9;SNAME&#xD;&#xA;%v2&#x9;&#x9;&#x9;s:SNAME {if(s.getType() != SNAME) $setType(s.getType());}&#xD;&#xA;&#x9;&#x9;|&#x9;'&quot;'!&#xD;&#xA;&#x9;&#x9;&#x9;(&#x9;ESC&#xD;&#xA;&#x9;&#x9;&#x9;|&#x9;'\n' {newline();}&#xD;&#xA;&#x9;&#x9;&#x9;|&#x9;~('\\'|'\&quot;'|'\n')&#xD;&#xA;&#x9;&#x9;&#x9;)*&#xD;&#xA;&#x9;&#x9;&#x9;'&quot;'!&#xD;&#xA;%v3&#x9;&#x9;&#x9;{setText(ei.unescapeString(getText(), 1));}&#xD;&#xA;&#x9;&#x9;)&#xD;&#xA;&#x9;;&#xD;&#xA;&#xD;&#xA;%protected&#xD;&#xA;CAPNAME&#xD;&#xA;%v2&#x9;options {&#xD;&#xA;%v2&#x9;&#x9;testLiterals = true;&#xD;&#xA;%v2&#x9;}&#xD;&#xA;&#x9;:&#x9;(MAJ) (MINUS | MAJ | '-')*&#xD;&#xA;&#x9;;&#xD;&#xA;&#xD;&#xA;CNAME&#xD;&#xA;&#x9;:&#x9;(&#xD;&#xA;%v3&#x9;&#x9;&#x9;CAPNAME&#xD;&#xA;%v2&#x9;&#x9;&#x9;s:CAPNAME {if(s.getType() != CAPNAME) $setType(s.getType());}&#xD;&#xA;&#x9;&#x9;|&#x9;'&quot;'!&#xD;&#xA;&#x9;&#x9;&#x9;(&#x9;ESC&#xD;&#xA;&#x9;&#x9;&#x9;|&#x9;'\n' {newline();}&#xD;&#xA;&#x9;&#x9;&#x9;|&#x9;~('\\'|'\&quot;'|'\n')&#xD;&#xA;&#x9;&#x9;&#x9;)*&#xD;&#xA;&#x9;&#x9;&#x9;'&quot;'!&#xD;&#xA;%v3&#x9;&#x9;&#x9;{setText(ei.unescapeString(getText(), 1));}&#xD;&#xA;&#x9;&#x9;)&#xD;&#xA;&#x9;;&#xD;&#xA;&#xD;&#xA;INT&#xD;&#xA;&#x9;:&#x9;(DIGIT)+&#xD;&#xA;%v2&#x9;&#x9;(('.' DIGIT)=> '.' (DIGIT)+ {$setType(FLOAT);})?&#xD;&#xA;&#x9;;&#xD;&#xA;&#xD;&#xA;%v3&#x9;FLOAT&#x9;:&#x9;DIGIT+ '.' DIGIT*&#x9;;&#xD;&#xA;&#xD;&#xA;%protected&#xD;&#xA;ESC&#xD;&#xA;&#x9;:&#x9;'\\'!&#xD;&#xA;&#x9;&#x9;(&#x9;'n' %v2{%setText(&quot;\n&quot;);}&#xD;&#xA;&#x9;&#x9;|&#x9;'r' %v2{%setText(&quot;\r&quot;);}&#xD;&#xA;&#x9;&#x9;|&#x9;'t' %v2{%setText(&quot;\t&quot;);}&#xD;&#xA;&#x9;&#x9;|&#x9;'b' %v2{%setText(&quot;\b&quot;);}&#xD;&#xA;&#x9;&#x9;|&#x9;'f' %v2{%setText(&quot;\f&quot;);}&#xD;&#xA;&#x9;&#x9;|&#x9;'&quot;' %v2{%setText(&quot;\&quot;&quot;);}&#xD;&#xA;&#x9;&#x9;|&#x9;'\'' %v2{%setText(&quot;\'&quot;);}&#xD;&#xA;&#x9;&#x9;|&#x9;'\\' %v2{%setText(&quot;\\&quot;);}&#xD;&#xA;&#x9;&#x9;|&#x9;(&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;('0'..'3')&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;(&#xD;&#xA;%v2&#x9;&#x9;&#x9;&#x9;&#x9;options {&#xD;&#xA;%v2&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;warnWhenFollowAmbig = false;&#xD;&#xA;%v2&#x9;&#x9;&#x9;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;:&#x9;('0'..'7')&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;(&#xD;&#xA;%v2&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;options {&#xD;&#xA;%v2&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;warnWhenFollowAmbig = false;&#xD;&#xA;%v2&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;:&#x9;'0'..'7'&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;)?&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;)?&#xD;&#xA;&#x9;&#x9;&#x9;|&#x9;('4'..'7')&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;(&#xD;&#xA;%v2&#x9;&#x9;&#x9;&#x9;&#x9;options {&#xD;&#xA;%v2&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;warnWhenFollowAmbig = false;&#xD;&#xA;%v2&#x9;&#x9;&#x9;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;:&#x9;('0'..'7')&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;)?&#xD;&#xA;&#x9;&#x9;&#x9;)&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;{&#xD;&#xA;%v2&#x9;&#x9;&#x9;&#x9;&#x9;String s = %getText;&#xD;&#xA;%v2&#x9;&#x9;&#x9;&#x9;&#x9;int i;&#xD;&#xA;%v2&#x9;&#x9;&#x9;&#x9;&#x9;int ret = 0;&#xD;&#xA;%v2&#x9;&#x9;&#x9;&#x9;&#x9;String ans;&#xD;&#xA;%v2&#x9;&#x9;&#x9;&#x9;&#x9;for (i=0; i&lt;s.length(); ++i)&#xD;&#xA;%v2&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ret = ret*8 + s.charAt(i) - '0';&#xD;&#xA;%v2&#x9;&#x9;&#x9;&#x9;&#x9;ans = String.valueOf((char) ret);&#xD;&#xA;%v2&#x9;&#x9;&#x9;&#x9;&#x9;%setText(ans);&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;)&#xD;&#xA;&#x9;;&#xD;&#xA;&#x9;">
+    <commentsBefore>-- @version&#x9;&#x9;1.0</commentsBefore>
+    <commentsBefore>-- @authors&#x9;&#x9;Guillaume Doux</commentsBefore>
+    <commentsBefore>-- @date&#x9;&#x9;2008 April </commentsBefore>
+    <commentsBefore>-- @description&#x9;SBVR vocabulary entries</commentsBefore>
+    <commentsBefore>-- The different sections of a TCS model have been enclosed between BEGIN and END</commentsBefore>
+    <commentsBefore>-- comments below. Additional information is provided below each BEGIN comment.</commentsBefore>
+    <commentsBefore>-- The main sections of interest are &quot;Class templates&quot;, and</commentsBefore>
+    <commentsBefore>-- &quot;Operator table&quot; (the latter only for DSLs using operators).</commentsBefore>
+    <templates xsi:type="tcs:PrimitiveTemplate" location="17:2-18:21" name="identifier" typeName="String" isDefault="true" tokenName="NAME" value="%token%">
+      <commentsBefore>-- BEGIN Primitive templates</commentsBefore>
+      <commentsBefore>-- Specifies representation of primitive types.</commentsBefore>
+      <commentsBefore>-- Only needs modification when default lexer is not satisfactory.</commentsBefore>
+      <commentsBefore>-- Generally modified along with the lexer.</commentsBefore>
+    </templates>
+    <templates xsi:type="tcs:PrimitiveTemplate" location="20:2-21:21" name="nameSymbol" typeName="String" tokenName="CNAME" value="%token%"/>
+    <templates xsi:type="tcs:PrimitiveTemplate" location="23:2-25:50" name="stringSymbol" typeName="String" tokenName="STRING" value="ei.unescapeString(%token%, 1)" serializer="''' + %value%.toCString() + '''"/>
+    <templates xsi:type="tcs:PrimitiveTemplate" location="27:2-28:38" name="integerSymbol" typeName="Integer" isDefault="true" tokenName="INT" value="Integer.valueOf(%token%)"/>
+    <templates xsi:type="tcs:PrimitiveTemplate" location="30:2-31:37" name="floatSymbol" typeName="Double" isDefault="true" tokenName="FLOAT" value="Double.valueOf(%token%)">
+      <commentsAfter>-- END Primitive templates</commentsAfter>
+      <commentsAfter>-- BEGIN Class templates</commentsAfter>
+      <commentsAfter>-- Specifies representation of classes.</commentsAfter>
+      <commentsAfter>-- This is the main section to work on.</commentsAfter>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="37:2-39:4" name="Root" isMain="true" isContext="true">
+      <commentsBefore>-- END Primitive templates</commentsBefore>
+      <commentsBefore>-- BEGIN Class templates</commentsBefore>
+      <commentsBefore>-- Specifies representation of classes.</commentsBefore>
+      <commentsBefore>-- This is the main section to work on.</commentsBefore>
+      <commentsAfter>--BEGIN vocabulary classes&#x9;</commentsAfter>
+      <templateSequence location="38:5-38:50">
+        <elements xsi:type="tcs:Block" location="38:5-38:50">
+          <blockSequence location="38:7-38:14">
+            <elements xsi:type="tcs:Property" location="38:7-38:14" name="entries"/>
+          </blockSequence>
+          <blockArgs xsi:type="tcs:IndentIncrBArg" location="38:18-38:32" value="0"/>
+          <blockArgs xsi:type="tcs:StartNLBArg" location="38:34-38:49"/>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="42:2-45:4" name="VocabularyEntry">
+      <commentsBefore>--BEGIN vocabulary classes&#x9;</commentsBefore>
+      <commentsAfter>--BEGIN caption delinition</commentsAfter>
+      <templateSequence location="43:5-44:15">
+        <elements xsi:type="tcs:Property" location="43:5-43:15" name="primaryRep"/>
+        <elements xsi:type="tcs:Block" location="44:4-44:15">
+          <blockSequence location="44:6-44:13">
+            <elements xsi:type="tcs:Property" location="44:6-44:13" name="caption"/>
+          </blockSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="49:2-50:4" name="Caption" isAbstract="true">
+      <commentsBefore>--BEGIN caption delinition</commentsBefore>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="52:2-54:4" name="DefCaption">
+      <templateSequence location="53:6-53:33">
+        <elements xsi:type="tcs:LiteralRef" location="53:6-53:18" referredLiteral="/1"/>
+        <elements xsi:type="tcs:LiteralRef" location="53:19-53:22" referredLiteral="/0/@symbols.10"/>
+        <elements xsi:type="tcs:Property" location="53:23-53:33" name="definition"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="56:2-58:4" name="DescCaption">
+      <templateSequence location="57:6-57:35">
+        <elements xsi:type="tcs:LiteralRef" location="57:6-57:19" referredLiteral="/2"/>
+        <elements xsi:type="tcs:LiteralRef" location="57:20-57:23" referredLiteral="/0/@symbols.10"/>
+        <elements xsi:type="tcs:Property" location="57:24-57:35" name="description"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="60:2-62:4" name="SrcCaption">
+      <templateSequence location="61:6-61:25">
+        <elements xsi:type="tcs:LiteralRef" location="61:6-61:14" referredLiteral="/3"/>
+        <elements xsi:type="tcs:LiteralRef" location="61:15-61:18" referredLiteral="/0/@symbols.10"/>
+        <elements xsi:type="tcs:Property" location="61:19-61:25" name="source"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="64:2-66:4" name="DBCaption">
+      <templateSequence location="65:6-65:44">
+        <elements xsi:type="tcs:LiteralRef" location="65:6-65:24" referredLiteral="/4"/>
+        <elements xsi:type="tcs:LiteralRef" location="65:25-65:28" referredLiteral="/0/@symbols.10"/>
+        <elements xsi:type="tcs:Property" location="65:29-65:44" name="dictionaryBasis"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="68:2-70:4" name="GenCCaption">
+      <templateSequence location="69:6-69:57">
+        <elements xsi:type="tcs:LiteralRef" location="69:6-69:23" referredLiteral="/5"/>
+        <elements xsi:type="tcs:LiteralRef" location="69:24-69:27" referredLiteral="/0/@symbols.10"/>
+        <elements xsi:type="tcs:Property" location="69:28-69:57" name="generalConcept">
+          <propertyArgs xsi:type="tcs:SeparatorPArg" location="69:43-69:56">
+            <separatorSequence location="69:53-69:56">
+              <elements xsi:type="tcs:LiteralRef" location="69:53-69:56" referredLiteral="/6"/>
+            </separatorSequence>
+          </propertyArgs>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="72:2-74:4" name="CTypCaption">
+      <templateSequence location="73:6-73:36">
+        <elements xsi:type="tcs:LiteralRef" location="73:6-73:20" referredLiteral="/7"/>
+        <elements xsi:type="tcs:LiteralRef" location="73:21-73:24" referredLiteral="/0/@symbols.10"/>
+        <elements xsi:type="tcs:Property" location="73:25-73:36" name="conceptType"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="77:2-79:4" name="RefSCaption">
+      <templateSequence location="78:6-78:44">
+        <elements xsi:type="tcs:LiteralRef" location="78:6-78:24" referredLiteral="/8"/>
+        <elements xsi:type="tcs:LiteralRef" location="78:25-78:28" referredLiteral="/0/@symbols.10"/>
+        <elements xsi:type="tcs:Property" location="78:29-78:44" name="referenceScheme"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="81:2-83:4" name="NoteCaption">
+      <templateSequence location="82:6-82:21">
+        <elements xsi:type="tcs:LiteralRef" location="82:6-82:12" referredLiteral="/9"/>
+        <elements xsi:type="tcs:LiteralRef" location="82:13-82:16" referredLiteral="/0/@symbols.10"/>
+        <elements xsi:type="tcs:Property" location="82:17-82:21" name="note"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="85:2-87:4" name="ExCaption">
+      <templateSequence location="86:6-86:27">
+        <elements xsi:type="tcs:LiteralRef" location="86:6-86:15" referredLiteral="/10"/>
+        <elements xsi:type="tcs:LiteralRef" location="86:16-86:19" referredLiteral="/0/@symbols.10"/>
+        <elements xsi:type="tcs:Property" location="86:20-86:27" name="example"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="89:2-91:4" name="SynCaption">
+      <templateSequence location="90:6-90:27">
+        <elements xsi:type="tcs:LiteralRef" location="90:6-90:15" referredLiteral="/11"/>
+        <elements xsi:type="tcs:LiteralRef" location="90:16-90:19" referredLiteral="/0/@symbols.10"/>
+        <elements xsi:type="tcs:Property" location="90:20-90:27" name="synonym"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="93:2-95:4" name="SynFCaption">
+      <templateSequence location="94:6-94:42">
+        <elements xsi:type="tcs:LiteralRef" location="94:6-94:23" referredLiteral="/12"/>
+        <elements xsi:type="tcs:LiteralRef" location="94:24-94:27" referredLiteral="/0/@symbols.10"/>
+        <elements xsi:type="tcs:Property" location="94:28-94:42" name="synonymousForm"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="97:2-99:4" name="SeeCaption">
+      <templateSequence location="98:6-98:19">
+        <elements xsi:type="tcs:LiteralRef" location="98:6-98:11" referredLiteral="/13"/>
+        <elements xsi:type="tcs:LiteralRef" location="98:12-98:15" referredLiteral="/0/@symbols.10"/>
+        <elements xsi:type="tcs:Property" location="98:16-98:19" name="see"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="101:2-103:4" name="SFCaption">
+      <templateSequence location="102:6-102:38">
+        <elements xsi:type="tcs:LiteralRef" location="102:6-102:21" referredLiteral="/14"/>
+        <elements xsi:type="tcs:LiteralRef" location="102:22-102:25" referredLiteral="/0/@symbols.10"/>
+        <elements xsi:type="tcs:Property" location="102:26-102:38" name="subjectField"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="105:2-107:4" name="NSURICaption">
+      <commentsAfter>-- END caption declaration&#x9;</commentsAfter>
+      <templateSequence location="106:5-106:37">
+        <elements xsi:type="tcs:LiteralRef" location="106:5-106:20" referredLiteral="/15"/>
+        <elements xsi:type="tcs:LiteralRef" location="106:21-106:24" referredLiteral="/0/@symbols.10"/>
+        <elements xsi:type="tcs:Property" location="106:25-106:37" name="namespaceURI"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="112:2-113:4" name="PrimaryRepresentation" isAbstract="true">
+      <commentsBefore>-- END caption declaration&#x9;</commentsBefore>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="115:2-116:4" name="NotFactTypeRepresentation" isAbstract="true"/>
+    <templates xsi:type="tcs:ClassTemplate" location="120:2-122:4" name="TermRepresentation">
+      <templateSequence location="121:5-121:9">
+        <elements xsi:type="tcs:Property" location="121:5-121:9" name="term"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="124:2-126:4" name="NameRepresentation">
+      <templateSequence location="125:5-125:26">
+        <elements xsi:type="tcs:ConditionalElement" location="125:5-125:21">
+          <condition xsi:type="tcs:AndExp" location="125:6-125:12">
+            <expressions xsi:type="tcs:BooleanPropertyExp" location="125:6-125:12" propertyName="hasThe"/>
+          </condition>
+          <thenSequence location="125:15-125:20">
+            <elements xsi:type="tcs:LiteralRef" location="125:15-125:20" referredLiteral="/16"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="tcs:Property" location="125:22-125:26" name="name"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="128:2-130:4" name="FactTypeFormRepresentation">
+      <templateSequence location="129:5-129:40">
+        <elements xsi:type="tcs:LiteralRef" location="129:5-129:8" referredLiteral="/0/@symbols.0"/>
+        <elements xsi:type="tcs:Property" location="129:9-129:20" name="primaryRep1"/>
+        <elements xsi:type="tcs:Property" location="129:21-129:28" name="verbExp"/>
+        <elements xsi:type="tcs:Property" location="129:29-129:40" name="primaryRep2"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="132:2-134:4" name="ConceptDefinition">
+      <templateSequence location="133:5-133:16">
+        <elements xsi:type="tcs:Property" location="133:5-133:8" name="exp"/>
+        <elements xsi:type="tcs:Property" location="133:9-133:16" name="conjexp"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="136:2-138:4" name="ConceptSource">
+      <templateSequence location="137:5-137:11">
+        <elements xsi:type="tcs:Property" location="137:5-137:11" name="source"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="141:2-143:4" name="Note">
+      <templateSequence location="142:5-142:14">
+        <elements xsi:type="tcs:Property" location="142:5-142:14" name="sentences"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="145:2-147:4" name="Sentence">
+      <templateSequence location="146:5-146:14">
+        <elements xsi:type="tcs:Property" location="146:5-146:10" name="words"/>
+        <elements xsi:type="tcs:LiteralRef" location="146:11-146:14" referredLiteral="/0/@symbols.15"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="149:2-151:4" name="NameSpaceURI">
+      <templateSequence location="150:5-150:8">
+        <elements xsi:type="tcs:Property" location="150:5-150:8" name="URI"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="153:2-155:4" name="Necessity">
+      <templateSequence location="154:5-154:28">
+        <elements xsi:type="tcs:LiteralRef" location="154:5-154:16" referredLiteral="/17"/>
+        <elements xsi:type="tcs:LiteralRef" location="154:17-154:20" referredLiteral="/0/@symbols.10"/>
+        <elements xsi:type="tcs:Property" location="154:21-154:24" name="exp"/>
+        <elements xsi:type="tcs:LiteralRef" location="154:25-154:28" referredLiteral="/0/@symbols.1"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="157:2-159:4" name="Possibility">
+      <templateSequence location="158:5-158:30">
+        <elements xsi:type="tcs:LiteralRef" location="158:5-158:18" referredLiteral="/18"/>
+        <elements xsi:type="tcs:LiteralRef" location="158:19-158:22" referredLiteral="/0/@symbols.10"/>
+        <elements xsi:type="tcs:Property" location="158:23-158:26" name="exp"/>
+        <elements xsi:type="tcs:LiteralRef" location="158:27-158:30" referredLiteral="/0/@symbols.1"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="161:2-162:4" name="Word" isAbstract="true"/>
+    <templates xsi:type="tcs:ClassTemplate" location="164:2-166:4" name="StringWord">
+      <templateSequence location="165:5-165:8">
+        <elements xsi:type="tcs:Property" location="165:5-165:8" name="val"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="168:2-170:4" name="QuotedStringWord">
+      <templateSequence location="169:5-169:28">
+        <elements xsi:type="tcs:Property" location="169:5-169:28" name="val">
+          <propertyArgs xsi:type="tcs:AsPArg" location="169:10-169:27" value="stringSymbol"/>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="172:2-174:4" name="NameWord">
+      <commentsAfter>-- BEGIN enumeration template</commentsAfter>
+      <templateSequence location="173:5-173:26">
+        <elements xsi:type="tcs:Property" location="173:5-173:26" name="val">
+          <propertyArgs xsi:type="tcs:AsPArg" location="173:10-173:25" value="nameSymbol"/>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:EnumerationTemplate" location="180:2-204:4" name="Verb">
+      <commentsBefore>-- BEGIN enumeration template</commentsBefore>
+      <commentsAfter>-- this is a subset of the real used conjonctions</commentsAfter>
+      <mappings location="181:5-181:29">
+        <literal location="181:5-181:15" name="undefined"/>
+        <element xsi:type="tcs:LiteralRef" location="181:18-181:29" referredLiteral="/19"/>
+      </mappings>
+      <mappings location="182:4-182:14">
+        <literal location="182:4-182:7" name="is"/>
+        <element xsi:type="tcs:LiteralRef" location="182:10-182:14" referredLiteral="/20"/>
+      </mappings>
+      <mappings location="183:4-183:26">
+        <literal location="183:4-183:13" name="relevant"/>
+        <element xsi:type="tcs:LiteralRef" location="183:16-183:26" referredLiteral="/21"/>
+      </mappings>
+      <mappings location="184:4-184:14">
+        <literal location="184:4-184:7" name="to"/>
+        <element xsi:type="tcs:LiteralRef" location="184:10-184:14" referredLiteral="/22"/>
+      </mappings>
+      <mappings location="185:4-185:28">
+        <literal location="185:4-185:14" name="comprises"/>
+        <element xsi:type="tcs:LiteralRef" location="185:17-185:28" referredLiteral="/23"/>
+      </mappings>
+      <mappings location="186:4-186:18">
+        <literal location="186:4-186:9" name="work"/>
+        <element xsi:type="tcs:LiteralRef" location="186:12-186:18" referredLiteral="/24"/>
+      </mappings>
+      <mappings location="187:4-187:14">
+        <literal location="187:4-187:7" name="in"/>
+        <element xsi:type="tcs:LiteralRef" location="187:10-187:14" referredLiteral="/25"/>
+      </mappings>
+      <mappings location="188:4-188:22">
+        <literal location="188:4-188:11" name="trades"/>
+        <element xsi:type="tcs:LiteralRef" location="188:14-188:22" referredLiteral="/26"/>
+      </mappings>
+      <mappings location="189:4-189:14">
+        <literal location="189:4-189:7" name="as"/>
+        <element xsi:type="tcs:LiteralRef" location="189:10-189:14" referredLiteral="/27"/>
+      </mappings>
+      <mappings location="190:4-190:16">
+        <literal location="190:4-190:8" name="are"/>
+        <element xsi:type="tcs:LiteralRef" location="190:11-190:16" referredLiteral="/28"/>
+      </mappings>
+      <mappings location="191:4-191:26">
+        <literal location="191:4-191:13" name="accepted"/>
+        <element xsi:type="tcs:LiteralRef" location="191:16-191:26" referredLiteral="/29"/>
+      </mappings>
+      <mappings location="192:4-192:28">
+        <literal location="192:4-192:14" name="generally"/>
+        <element xsi:type="tcs:LiteralRef" location="192:17-192:28" referredLiteral="/30"/>
+      </mappings>
+      <mappings location="193:4-193:22">
+        <literal location="193:4-193:11" name="across"/>
+        <element xsi:type="tcs:LiteralRef" location="193:14-193:22" referredLiteral="/31"/>
+      </mappings>
+      <mappings location="194:4-194:28">
+        <literal location="194:4-194:14" name="important"/>
+        <element xsi:type="tcs:LiteralRef" location="194:17-194:28" referredLiteral="/32"/>
+      </mappings>
+      <mappings location="195:4-195:20">
+        <literal location="195:4-195:10" name="share"/>
+        <element xsi:type="tcs:LiteralRef" location="195:13-195:20" referredLiteral="/33"/>
+      </mappings>
+      <mappings location="196:4-196:18">
+        <literal location="196:4-196:9" name="sets"/>
+        <element xsi:type="tcs:LiteralRef" location="196:12-196:18" referredLiteral="/34"/>
+      </mappings>
+      <mappings location="197:4-197:26">
+        <literal location="197:4-197:13" name="assigned"/>
+        <element xsi:type="tcs:LiteralRef" location="197:16-197:26" referredLiteral="/35"/>
+      </mappings>
+      <mappings location="198:4-198:14">
+        <literal location="198:4-198:7" name="by"/>
+        <element xsi:type="tcs:LiteralRef" location="198:10-198:14" referredLiteral="/36"/>
+      </mappings>
+      <mappings location="199:4-199:26">
+        <literal location="199:4-199:13" name="contains"/>
+        <element xsi:type="tcs:LiteralRef" location="199:16-199:26" referredLiteral="/37"/>
+      </mappings>
+      <mappings location="200:4-200:16">
+        <literal location="200:4-200:8" name="for"/>
+        <element xsi:type="tcs:LiteralRef" location="200:11-200:16" referredLiteral="/38"/>
+      </mappings>
+      <mappings location="201:4-201:16">
+        <literal location="201:4-201:8" name="has"/>
+        <element xsi:type="tcs:LiteralRef" location="201:11-201:16" referredLiteral="/39"/>
+      </mappings>
+      <mappings location="202:4-202:28">
+        <literal location="202:4-202:14" name="specifies"/>
+        <element xsi:type="tcs:LiteralRef" location="202:17-202:28" referredLiteral="/40"/>
+      </mappings>
+      <mappings location="203:4-203:28">
+        <literal location="203:4-203:14" name="specified"/>
+        <element xsi:type="tcs:LiteralRef" location="203:17-203:28" referredLiteral="/41"/>
+      </mappings>
+    </templates>
+    <templates xsi:type="tcs:EnumerationTemplate" location="207:2-213:4" name="ConjonctionnalKeyWord">
+      <commentsBefore>-- this is a subset of the real used conjonctions</commentsBefore>
+      <mappings location="208:5-208:28">
+        <literal location="208:5-208:15" name="undefined"/>
+        <element xsi:type="tcs:LiteralRef" location="208:18-208:28" referredLiteral="/42"/>
+      </mappings>
+      <mappings location="209:4-209:16">
+        <literal location="209:4-209:8" name="and"/>
+        <element xsi:type="tcs:LiteralRef" location="209:11-209:16" referredLiteral="/43"/>
+      </mappings>
+      <mappings location="210:4-210:14">
+        <literal location="210:4-210:7" name="or"/>
+        <element xsi:type="tcs:LiteralRef" location="210:10-210:14" referredLiteral="/44"/>
+      </mappings>
+      <mappings location="211:4-211:14">
+        <literal location="211:4-211:7" name="if"/>
+        <element xsi:type="tcs:LiteralRef" location="211:10-211:14" referredLiteral="/45"/>
+      </mappings>
+      <mappings location="212:4-212:24">
+        <literal location="212:4-212:12" name="whether"/>
+        <element xsi:type="tcs:LiteralRef" location="212:15-212:24" referredLiteral="/46"/>
+      </mappings>
+    </templates>
+    <templates xsi:type="tcs:EnumerationTemplate" location="215:2-221:4" name="ModalVerb">
+      <mappings location="216:5-216:27">
+        <literal location="216:5-216:15" name="undefined"/>
+        <element xsi:type="tcs:LiteralRef" location="216:18-216:27" referredLiteral="/47"/>
+      </mappings>
+      <mappings location="217:4-217:18">
+        <literal location="217:4-217:9" name="must"/>
+        <element xsi:type="tcs:LiteralRef" location="217:12-217:18" referredLiteral="/48"/>
+      </mappings>
+      <mappings location="218:4-218:16">
+        <literal location="218:4-218:8" name="may"/>
+        <element xsi:type="tcs:LiteralRef" location="218:11-218:16" referredLiteral="/49"/>
+      </mappings>
+      <mappings location="219:4-219:20">
+        <literal location="219:4-219:10" name="never"/>
+        <element xsi:type="tcs:LiteralRef" location="219:13-219:20" referredLiteral="/50"/>
+      </mappings>
+      <mappings location="220:4-220:22">
+        <literal location="220:4-220:11" name="always"/>
+        <element xsi:type="tcs:LiteralRef" location="220:14-220:22" referredLiteral="/51"/>
+      </mappings>
+    </templates>
+    <templates xsi:type="tcs:EnumerationTemplate" location="223:2-227:4" name="Join">
+      <mappings location="224:5-224:26">
+        <literal location="224:5-224:15" name="undefined"/>
+        <element xsi:type="tcs:LiteralRef" location="224:18-224:26" referredLiteral="/52"/>
+      </mappings>
+      <mappings location="225:4-225:18">
+        <literal location="225:4-225:9" name="that"/>
+        <element xsi:type="tcs:LiteralRef" location="225:12-225:18" referredLiteral="/53"/>
+      </mappings>
+      <mappings location="226:4-226:16">
+        <literal location="226:4-226:8" name="who"/>
+        <element xsi:type="tcs:LiteralRef" location="226:11-226:16" referredLiteral="/54"/>
+      </mappings>
+    </templates>
+    <templates xsi:type="tcs:EnumerationTemplate" location="229:2-233:4" name="Link">
+      <commentsAfter>--faire une structure particuliere pour if then</commentsAfter>
+      <mappings location="230:6-230:26">
+        <literal location="230:6-230:16" name="undefined"/>
+        <element xsi:type="tcs:LiteralRef" location="230:19-230:26" referredLiteral="/55"/>
+      </mappings>
+      <mappings location="231:4-231:14">
+        <literal location="231:4-231:7" name="of"/>
+        <element xsi:type="tcs:LiteralRef" location="231:10-231:14" referredLiteral="/56"/>
+      </mappings>
+      <mappings location="232:4-232:24">
+        <commentsAfter>--'s</commentsAfter>
+        <literal location="232:4-232:11" name="quoteS"/>
+        <element xsi:type="tcs:LiteralRef" location="232:14-232:24" referredLiteral="/57">
+          <commentsAfter>--'s</commentsAfter>
+        </element>
+      </mappings>
+    </templates>
+    <templates xsi:type="tcs:EnumerationTemplate" location="236:3-252:4" name="Qualif">
+      <commentsBefore>--faire une structure particuliere pour if then</commentsBefore>
+      <commentsAfter>-- END enumeration template&#x9;</commentsAfter>
+      <commentsAfter>-- BEGIN SBVR expression &quot;grammar&quot;</commentsAfter>
+      <mappings location="237:5-237:24">
+        <literal location="237:5-237:15" name="undefined"/>
+        <element xsi:type="tcs:LiteralRef" location="237:18-237:24" referredLiteral="/58"/>
+      </mappings>
+      <mappings location="238:4-238:16">
+        <literal location="238:4-238:8" name="the"/>
+        <element xsi:type="tcs:LiteralRef" location="238:11-238:16" referredLiteral="/59"/>
+      </mappings>
+      <mappings location="239:4-239:16">
+        <literal location="239:4-239:8" name="The"/>
+        <element xsi:type="tcs:LiteralRef" location="239:11-239:16" referredLiteral="/16"/>
+      </mappings>
+      <mappings location="240:4-240:12">
+        <literal location="240:4-240:6" name="a"/>
+        <element xsi:type="tcs:LiteralRef" location="240:9-240:12" referredLiteral="/60"/>
+      </mappings>
+      <mappings location="241:4-241:12">
+        <literal location="241:4-241:6" name="A"/>
+        <element xsi:type="tcs:LiteralRef" location="241:9-241:12" referredLiteral="/61"/>
+      </mappings>
+      <mappings location="242:4-242:14">
+        <literal location="242:4-242:7" name="an"/>
+        <element xsi:type="tcs:LiteralRef" location="242:10-242:14" referredLiteral="/62"/>
+      </mappings>
+      <mappings location="243:4-243:14">
+        <literal location="243:4-243:7" name="An"/>
+        <element xsi:type="tcs:LiteralRef" location="243:10-243:14" referredLiteral="/63"/>
+      </mappings>
+      <mappings location="244:4-244:18">
+        <literal location="244:4-244:9" name="Each"/>
+        <element xsi:type="tcs:LiteralRef" location="244:12-244:18" referredLiteral="/64"/>
+      </mappings>
+      <mappings location="245:4-245:18">
+        <literal location="245:4-245:9" name="each"/>
+        <element xsi:type="tcs:LiteralRef" location="245:12-245:18" referredLiteral="/65"/>
+      </mappings>
+      <mappings location="246:4-246:18">
+        <literal location="246:4-246:9" name="Some"/>
+        <element xsi:type="tcs:LiteralRef" location="246:12-246:18" referredLiteral="/66"/>
+      </mappings>
+      <mappings location="247:4-247:18">
+        <literal location="247:4-247:9" name="some"/>
+        <element xsi:type="tcs:LiteralRef" location="247:12-247:18" referredLiteral="/67"/>
+      </mappings>
+      <mappings location="248:4-248:14">
+        <literal location="248:4-248:7" name="At"/>
+        <element xsi:type="tcs:LiteralRef" location="248:10-248:14" referredLiteral="/68"/>
+      </mappings>
+      <mappings location="249:4-249:14">
+        <literal location="249:4-249:7" name="at"/>
+        <element xsi:type="tcs:LiteralRef" location="249:10-249:14" referredLiteral="/69"/>
+      </mappings>
+      <mappings location="250:4-250:24">
+        <literal location="250:4-250:12" name="Exactly"/>
+        <element xsi:type="tcs:LiteralRef" location="250:15-250:24" referredLiteral="/70"/>
+      </mappings>
+      <mappings location="251:4-251:24">
+        <literal location="251:4-251:12" name="exactly"/>
+        <element xsi:type="tcs:LiteralRef" location="251:15-251:24" referredLiteral="/71"/>
+      </mappings>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="258:2-260:4" name="SBVRExpression">
+      <commentsBefore>-- END enumeration template&#x9;</commentsBefore>
+      <commentsBefore>-- BEGIN SBVR expression &quot;grammar&quot;</commentsBefore>
+      <templateSequence location="259:5-259:54">
+        <elements xsi:type="tcs:Property" location="259:5-259:21" name="firstProposition"/>
+        <elements xsi:type="tcs:Property" location="259:22-259:37" name="nextProposition"/>
+        <elements xsi:type="tcs:ConditionalElement" location="259:38-259:54">
+          <condition xsi:type="tcs:AndExp" location="259:39-259:47">
+            <expressions xsi:type="tcs:BooleanPropertyExp" location="259:39-259:47" propertyName="hasPoint"/>
+          </condition>
+          <thenSequence location="259:50-259:53">
+            <elements xsi:type="tcs:LiteralRef" location="259:50-259:53" referredLiteral="/0/@symbols.15"/>
+          </thenSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="262:2-264:4" name="SBVRPropWithKW">
+      <templateSequence location="263:5-263:87">
+        <elements xsi:type="tcs:Property" location="263:5-263:16" name="conjonction"/>
+        <elements xsi:type="tcs:ConditionalElement" location="263:17-263:75">
+          <condition xsi:type="tcs:AndExp" location="263:18-263:61">
+            <expressions xsi:type="tcs:EqualsExp" location="263:18-263:40" propertyName="conjonction">
+              <value xsi:type="tcs:EnumLiteralVal" location="263:32-263:40" name="whether"/>
+            </expressions>
+            <expressions xsi:type="tcs:EqualsExp" location="263:45-263:61" propertyName="endConj">
+              <value xsi:type="tcs:EnumLiteralVal" location="263:55-263:61" name="ornot"/>
+            </expressions>
+          </condition>
+          <thenSequence location="263:64-263:74">
+            <elements xsi:type="tcs:LiteralRef" location="263:64-263:68" referredLiteral="/44"/>
+            <elements xsi:type="tcs:LiteralRef" location="263:69-263:74" referredLiteral="/72"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="tcs:Property" location="263:76-263:87" name="proposition"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="268:2-270:4" name="ModalForm">
+      <templateSequence location="269:5-269:44">
+        <elements xsi:type="tcs:Property" location="269:5-269:10" name="modal"/>
+        <elements xsi:type="tcs:ConditionalElement" location="269:11-269:44">
+          <condition xsi:type="tcs:AndExp" location="269:12-269:35">
+            <expressions xsi:type="tcs:EqualsExp" location="269:12-269:25" propertyName="modal">
+              <value xsi:type="tcs:EnumLiteralVal" location="269:20-269:25" name="must"/>
+            </expressions>
+            <expressions xsi:type="tcs:BooleanPropertyExp" location="269:30-269:35" propertyName="isNeg"/>
+          </condition>
+          <thenSequence location="269:38-269:43">
+            <elements xsi:type="tcs:LiteralRef" location="269:38-269:43" referredLiteral="/72"/>
+          </thenSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="272:2-274:4" name="SimpleSBVRProp">
+      <templateSequence location="273:5-273:94">
+        <elements xsi:type="tcs:ConditionalElement" location="273:5-273:33">
+          <condition xsi:type="tcs:AndExp" location="273:6-273:22">
+            <expressions xsi:type="tcs:EqualsExp" location="273:6-273:22" propertyName="modal">
+              <value xsi:type="tcs:EnumLiteralVal" location="273:12-273:22" name="undefined"/>
+            </expressions>
+          </condition>
+          <thenSequence location="273:25-273:24"/>
+          <elseSequence location="273:27-273:32">
+            <elements xsi:type="tcs:Property" location="273:27-273:32" name="modal"/>
+          </elseSequence>
+        </elements>
+        <elements xsi:type="tcs:Property" location="273:34-273:42" name="concept1"/>
+        <elements xsi:type="tcs:ConditionalElement" location="273:43-273:79">
+          <condition xsi:type="tcs:AndExp" location="273:44-273:64">
+            <expressions xsi:type="tcs:EqualsExp" location="273:44-273:64" propertyName="modalVerb">
+              <value xsi:type="tcs:EnumLiteralVal" location="273:54-273:64" name="undefined"/>
+            </expressions>
+          </condition>
+          <thenSequence location="273:67-273:66"/>
+          <elseSequence location="273:69-273:78">
+            <elements xsi:type="tcs:Property" location="273:69-273:78" name="modalVerb"/>
+          </elseSequence>
+        </elements>
+        <elements xsi:type="tcs:Property" location="273:80-273:85" name="verbs"/>
+        <elements xsi:type="tcs:Property" location="273:86-273:94" name="concept2"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="276:2-278:4" name="SubSBVRProp">
+      <templateSequence location="277:5-277:61">
+        <elements xsi:type="tcs:Property" location="277:5-277:9" name="join"/>
+        <elements xsi:type="tcs:ConditionalElement" location="277:10-277:46">
+          <condition xsi:type="tcs:AndExp" location="277:11-277:31">
+            <expressions xsi:type="tcs:EqualsExp" location="277:11-277:31" propertyName="modalVerb">
+              <value xsi:type="tcs:EnumLiteralVal" location="277:21-277:31" name="undefined"/>
+            </expressions>
+          </condition>
+          <thenSequence location="277:34-277:33"/>
+          <elseSequence location="277:36-277:45">
+            <elements xsi:type="tcs:Property" location="277:36-277:45" name="modalVerb"/>
+          </elseSequence>
+        </elements>
+        <elements xsi:type="tcs:Property" location="277:47-277:52" name="verbs"/>
+        <elements xsi:type="tcs:Property" location="277:53-277:61" name="concept2"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="280:2-282:4" name="LinkSBVRConcept">
+      <templateSequence location="281:6-281:18">
+        <elements xsi:type="tcs:Property" location="281:6-281:10" name="link"/>
+        <elements xsi:type="tcs:Property" location="281:11-281:18" name="concept"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="284:2-285:4" name="Concept" isAbstract="true"/>
+    <templates xsi:type="tcs:ClassTemplate" location="287:2-289:4" name="ConjConcept">
+      <templateSequence location="288:5-288:24">
+        <elements xsi:type="tcs:Property" location="288:5-288:16" name="conjonction"/>
+        <elements xsi:type="tcs:Property" location="288:17-288:24" name="concept"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="291:2-293:4" name="NameConcept">
+      <commentsAfter>--need verification on this</commentsAfter>
+      <commentsAfter>--&#x9;template NounConcept abstract --operatored(Operators, parens(off));</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <templateSequence location="292:5-292:108">
+        <elements xsi:type="tcs:ConditionalElement" location="292:5-292:29">
+          <condition xsi:type="tcs:AndExp" location="292:6-292:20">
+            <expressions xsi:type="tcs:EqualsExp" location="292:6-292:20" propertyName="the">
+              <value xsi:type="tcs:EnumLiteralVal" location="292:10-292:20" name="undefined"/>
+            </expressions>
+          </condition>
+          <thenSequence location="292:23-292:22"/>
+          <elseSequence location="292:25-292:28">
+            <elements xsi:type="tcs:Property" location="292:25-292:28" name="the"/>
+          </elseSequence>
+        </elements>
+        <elements xsi:type="tcs:Property" location="292:30-292:34" name="name"/>
+        <elements xsi:type="tcs:ConditionalElement" location="292:35-292:65">
+          <condition xsi:type="tcs:AndExp" location="292:36-292:54">
+            <expressions xsi:type="tcs:IsDefinedExp" location="292:36-292:54" propertyName="subProp"/>
+          </condition>
+          <thenSequence location="292:57-292:64">
+            <elements xsi:type="tcs:Property" location="292:57-292:64" name="subProp"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="tcs:ConditionalElement" location="292:66-292:108">
+          <condition xsi:type="tcs:AndExp" location="292:67-292:91">
+            <expressions xsi:type="tcs:IsDefinedExp" location="292:67-292:91" propertyName="linkedConcept"/>
+          </condition>
+          <thenSequence location="292:94-292:107">
+            <elements xsi:type="tcs:Property" location="292:94-292:107" name="linkedConcept"/>
+          </thenSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="299:2-301:4" name="NounConcept">
+      <commentsBefore>--need verification on this</commentsBefore>
+      <commentsBefore>--&#x9;template NounConcept abstract --operatored(Operators, parens(off));</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;;</commentsBefore>
+      <templateSequence location="300:5-300:39">
+        <elements xsi:type="tcs:ConditionalElement" location="300:5-300:34">
+          <condition xsi:type="tcs:AndExp" location="300:6-300:23">
+            <expressions xsi:type="tcs:EqualsExp" location="300:6-300:23" propertyName="qualif">
+              <value xsi:type="tcs:EnumLiteralVal" location="300:13-300:23" name="undefined"/>
+            </expressions>
+          </condition>
+          <thenSequence location="300:26-300:25"/>
+          <elseSequence location="300:27-300:33">
+            <elements xsi:type="tcs:Property" location="300:27-300:33" name="qualif"/>
+          </elseSequence>
+        </elements>
+        <elements xsi:type="tcs:Property" location="300:35-300:39" name="noun"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="303:2-305:4" name="ObjectConcept">
+      <templateSequence location="304:5-304:127">
+        <elements xsi:type="tcs:Property" location="304:5-304:22" name="operatoredConcept"/>
+        <elements xsi:type="tcs:ConditionalElement" location="304:23-304:53">
+          <condition xsi:type="tcs:AndExp" location="304:24-304:42">
+            <expressions xsi:type="tcs:IsDefinedExp" location="304:24-304:42" propertyName="qualify"/>
+          </condition>
+          <thenSequence location="304:45-304:52">
+            <elements xsi:type="tcs:Property" location="304:45-304:52" name="qualify"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="tcs:ConditionalElement" location="304:54-304:84">
+          <condition xsi:type="tcs:AndExp" location="304:55-304:73">
+            <expressions xsi:type="tcs:IsDefinedExp" location="304:55-304:73" propertyName="subProp"/>
+          </condition>
+          <thenSequence location="304:76-304:83">
+            <elements xsi:type="tcs:Property" location="304:76-304:83" name="subProp"/>
+          </thenSequence>
+        </elements>
+        <elements xsi:type="tcs:ConditionalElement" location="304:85-304:127">
+          <condition xsi:type="tcs:AndExp" location="304:86-304:110">
+            <expressions xsi:type="tcs:IsDefinedExp" location="304:86-304:110" propertyName="linkedConcept"/>
+          </condition>
+          <thenSequence location="304:113-304:126">
+            <elements xsi:type="tcs:Property" location="304:113-304:126" name="linkedConcept"/>
+          </thenSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="307:2-309:4" name="StringConcept">
+      <templateSequence location="308:5-308:15">
+        <elements xsi:type="tcs:Property" location="308:5-308:15" name="stringWord"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="311:2-313:4" name="Qualification">
+      <templateSequence location="312:5-312:44">
+        <elements xsi:type="tcs:LiteralRef" location="312:5-312:8" referredLiteral="/0/@symbols.5"/>
+        <elements xsi:type="tcs:Property" location="312:9-312:40" name="generalConcept">
+          <propertyArgs xsi:type="tcs:SeparatorPArg" location="312:24-312:39">
+            <separatorSequence location="312:36-312:39">
+              <elements xsi:type="tcs:LiteralRef" location="312:36-312:39" referredLiteral="/6"/>
+            </separatorSequence>
+          </propertyArgs>
+        </elements>
+        <elements xsi:type="tcs:LiteralRef" location="312:41-312:44" referredLiteral="/0/@symbols.6"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="315:2-316:4" name="GeneralConcept" isAbstract="true"/>
+    <templates xsi:type="tcs:ClassTemplate" location="319:2-321:4" name="NameGConcept">
+      <templateSequence location="320:5-320:9">
+        <elements xsi:type="tcs:Property" location="320:5-320:9" name="name"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="323:2-325:4" name="NounGConcept">
+      <templateSequence location="324:5-324:9">
+        <elements xsi:type="tcs:Property" location="324:5-324:9" name="noun"/>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="331:2-371:4" name="Qualifier">
+      <templateSequence location="332:5-370:8">
+        <elements xsi:type="tcs:ConditionalElement" location="332:5-332:27">
+          <condition xsi:type="tcs:AndExp" location="332:6-332:19">
+            <expressions xsi:type="tcs:EqualsExp" location="332:6-332:19" propertyName="op">
+              <value xsi:type="tcs:EnumLiteralVal" location="332:9-332:19" name="undefined"/>
+            </expressions>
+          </condition>
+          <thenSequence location="332:22-332:21"/>
+          <elseSequence location="332:24-332:26">
+            <elements xsi:type="tcs:Property" location="332:24-332:26" name="op"/>
+          </elseSequence>
+        </elements>
+        <elements xsi:type="tcs:ConditionalElement" location="332:28-370:8">
+          <condition xsi:type="tcs:AndExp" location="332:29-332:51">
+            <expressions xsi:type="tcs:IsDefinedExp" location="332:29-332:51" propertyName="endOperator"/>
+          </condition>
+          <thenSequence location="333:5-365:21">
+            <elements xsi:type="tcs:ConditionalElement" location="333:5-365:21">
+              <condition xsi:type="tcs:AndExp" location="333:6-333:38">
+                <expressions xsi:type="tcs:EqualsExp" location="333:6-333:26" propertyName="endOperator">
+                  <value xsi:type="tcs:EnumLiteralVal" location="333:20-333:26" name="given"/>
+                </expressions>
+                <expressions xsi:type="tcs:EqualsExp" location="333:31-333:38" propertyName="op">
+                  <value xsi:type="tcs:EnumLiteralVal" location="333:36-333:38" name="a"/>
+                </expressions>
+              </condition>
+              <thenSequence location="334:6-334:13">
+                <elements xsi:type="tcs:LiteralRef" location="334:6-334:13" referredLiteral="/73"/>
+              </thenSequence>
+              <elseSequence location="335:6-365:20">
+                <elements xsi:type="tcs:ConditionalElement" location="335:6-365:20">
+                  <condition xsi:type="tcs:AndExp" location="335:7-335:39">
+                    <expressions xsi:type="tcs:EqualsExp" location="335:7-335:27" propertyName="endOperator">
+                      <value xsi:type="tcs:EnumLiteralVal" location="335:21-335:27" name="given"/>
+                    </expressions>
+                    <expressions xsi:type="tcs:EqualsExp" location="335:32-335:39" propertyName="op">
+                      <value xsi:type="tcs:EnumLiteralVal" location="335:37-335:39" name="A"/>
+                    </expressions>
+                  </condition>
+                  <thenSequence location="336:6-336:13">
+                    <elements xsi:type="tcs:LiteralRef" location="336:6-336:13" referredLiteral="/73"/>
+                  </thenSequence>
+                  <elseSequence location="337:6-365:19">
+                    <elements xsi:type="tcs:ConditionalElement" location="337:6-365:19">
+                      <condition xsi:type="tcs:AndExp" location="337:7-337:44">
+                        <expressions xsi:type="tcs:EqualsExp" location="337:7-337:29" propertyName="endOperator">
+                          <value xsi:type="tcs:EnumLiteralVal" location="337:21-337:29" name="thanone"/>
+                        </expressions>
+                        <expressions xsi:type="tcs:EqualsExp" location="337:34-337:44" propertyName="op">
+                          <value xsi:type="tcs:EnumLiteralVal" location="337:39-337:44" name="more"/>
+                        </expressions>
+                      </condition>
+                      <thenSequence location="338:6-338:18">
+                        <elements xsi:type="tcs:LiteralRef" location="338:6-338:12" referredLiteral="/74"/>
+                        <elements xsi:type="tcs:LiteralRef" location="338:13-338:18" referredLiteral="/75"/>
+                      </thenSequence>
+                      <elseSequence location="339:6-365:18">
+                        <elements xsi:type="tcs:ConditionalElement" location="339:6-365:18">
+                          <condition xsi:type="tcs:AndExp" location="339:7-339:44">
+                            <expressions xsi:type="tcs:EqualsExp" location="339:7-339:29" propertyName="endOperator">
+                              <value xsi:type="tcs:EnumLiteralVal" location="339:21-339:29" name="thanone"/>
+                            </expressions>
+                            <expressions xsi:type="tcs:EqualsExp" location="339:34-339:44" propertyName="op">
+                              <value xsi:type="tcs:EnumLiteralVal" location="339:39-339:44" name="More"/>
+                            </expressions>
+                          </condition>
+                          <thenSequence location="340:6-340:18">
+                            <elements xsi:type="tcs:LiteralRef" location="340:6-340:12" referredLiteral="/74"/>
+                            <elements xsi:type="tcs:LiteralRef" location="340:13-340:18" referredLiteral="/75"/>
+                          </thenSequence>
+                          <elseSequence location="341:6-365:17">
+                            <elements xsi:type="tcs:ConditionalElement" location="341:6-365:17">
+                              <condition xsi:type="tcs:AndExp" location="341:7-341:39">
+                                <expressions xsi:type="tcs:EqualsExp" location="341:7-341:27" propertyName="endOperator">
+                                  <value xsi:type="tcs:EnumLiteralVal" location="341:21-341:27" name="least"/>
+                                </expressions>
+                                <expressions xsi:type="tcs:EqualsExp" location="341:32-341:39" propertyName="op">
+                                  <value xsi:type="tcs:EnumLiteralVal" location="341:36-341:39" name="At"/>
+                                </expressions>
+                              </condition>
+                              <thenSequence location="342:6-342:17">
+                                <elements xsi:type="tcs:LiteralRef" location="342:6-342:13" referredLiteral="/76"/>
+                                <elements xsi:type="tcs:Property" location="342:14-342:17" name="min"/>
+                              </thenSequence>
+                              <elseSequence location="343:6-365:16">
+                                <elements xsi:type="tcs:ConditionalElement" location="343:6-365:16">
+                                  <condition xsi:type="tcs:AndExp" location="343:7-343:42">
+                                    <expressions xsi:type="tcs:EqualsExp" location="343:7-343:30" propertyName="endOperator">
+                                      <value xsi:type="tcs:EnumLiteralVal" location="343:21-343:30" name="leastone"/>
+                                    </expressions>
+                                    <expressions xsi:type="tcs:EqualsExp" location="343:35-343:42" propertyName="op">
+                                      <value xsi:type="tcs:EnumLiteralVal" location="343:39-343:42" name="At"/>
+                                    </expressions>
+                                  </condition>
+                                  <thenSequence location="344:6-344:19">
+                                    <elements xsi:type="tcs:LiteralRef" location="344:6-344:13" referredLiteral="/76"/>
+                                    <elements xsi:type="tcs:LiteralRef" location="344:14-344:19" referredLiteral="/75"/>
+                                  </thenSequence>
+                                  <elseSequence location="345:6-365:15">
+                                    <elements xsi:type="tcs:ConditionalElement" location="345:6-365:15">
+                                      <condition xsi:type="tcs:AndExp" location="345:7-345:38">
+                                        <expressions xsi:type="tcs:EqualsExp" location="345:7-345:26" propertyName="endOperator">
+                                          <value xsi:type="tcs:EnumLiteralVal" location="345:21-345:26" name="most"/>
+                                        </expressions>
+                                        <expressions xsi:type="tcs:EqualsExp" location="345:31-345:38" propertyName="op">
+                                          <value xsi:type="tcs:EnumLiteralVal" location="345:35-345:38" name="At"/>
+                                        </expressions>
+                                      </condition>
+                                      <thenSequence location="346:6-346:16">
+                                        <elements xsi:type="tcs:LiteralRef" location="346:6-346:12" referredLiteral="/77"/>
+                                        <elements xsi:type="tcs:Property" location="346:13-346:16" name="max"/>
+                                      </thenSequence>
+                                      <elseSequence location="347:6-365:14">
+                                        <elements xsi:type="tcs:ConditionalElement" location="347:6-365:14">
+                                          <condition xsi:type="tcs:AndExp" location="347:7-347:41">
+                                            <expressions xsi:type="tcs:EqualsExp" location="347:7-347:29" propertyName="endOperator">
+                                              <value xsi:type="tcs:EnumLiteralVal" location="347:21-347:29" name="mostone"/>
+                                            </expressions>
+                                            <expressions xsi:type="tcs:EqualsExp" location="347:34-347:41" propertyName="op">
+                                              <value xsi:type="tcs:EnumLiteralVal" location="347:38-347:41" name="At"/>
+                                            </expressions>
+                                          </condition>
+                                          <thenSequence location="348:6-348:18">
+                                            <elements xsi:type="tcs:LiteralRef" location="348:6-348:12" referredLiteral="/77"/>
+                                            <elements xsi:type="tcs:LiteralRef" location="348:13-348:18" referredLiteral="/75"/>
+                                          </thenSequence>
+                                          <elseSequence location="349:6-365:13">
+                                            <elements xsi:type="tcs:ConditionalElement" location="349:6-365:13">
+                                              <condition xsi:type="tcs:AndExp" location="349:7-349:51">
+                                                <expressions xsi:type="tcs:EqualsExp" location="349:7-349:38" propertyName="endOperator">
+                                                  <value xsi:type="tcs:EnumLiteralVal" location="349:21-349:38" name="leastnandatmostm"/>
+                                                </expressions>
+                                                <expressions xsi:type="tcs:EqualsExp" location="349:43-349:51" propertyName="op">
+                                                  <value xsi:type="tcs:EnumLiteralVal" location="349:48-349:51" name="At"/>
+                                                </expressions>
+                                              </condition>
+                                              <thenSequence location="350:6-350:39">
+                                                <elements xsi:type="tcs:LiteralRef" location="350:6-350:13" referredLiteral="/76"/>
+                                                <elements xsi:type="tcs:Property" location="350:14-350:17" name="min"/>
+                                                <elements xsi:type="tcs:LiteralRef" location="350:18-350:23" referredLiteral="/43"/>
+                                                <elements xsi:type="tcs:LiteralRef" location="350:24-350:28" referredLiteral="/69"/>
+                                                <elements xsi:type="tcs:LiteralRef" location="350:29-350:35" referredLiteral="/77"/>
+                                                <elements xsi:type="tcs:Property" location="350:36-350:39" name="max"/>
+                                              </thenSequence>
+                                              <elseSequence location="351:6-365:12">
+                                                <elements xsi:type="tcs:ConditionalElement" location="351:6-365:12">
+                                                  <condition xsi:type="tcs:AndExp" location="351:7-351:40">
+                                                    <expressions xsi:type="tcs:EqualsExp" location="351:7-351:27" propertyName="endOperator">
+                                                      <value xsi:type="tcs:EnumLiteralVal" location="351:21-351:27" name="least"/>
+                                                    </expressions>
+                                                    <expressions xsi:type="tcs:EqualsExp" location="351:32-351:40" propertyName="op">
+                                                      <value xsi:type="tcs:EnumLiteralVal" location="351:37-351:40" name="at"/>
+                                                    </expressions>
+                                                  </condition>
+                                                  <thenSequence location="352:6-352:17">
+                                                    <elements xsi:type="tcs:LiteralRef" location="352:6-352:13" referredLiteral="/76"/>
+                                                    <elements xsi:type="tcs:Property" location="352:14-352:17" name="min"/>
+                                                  </thenSequence>
+                                                  <elseSequence location="353:6-365:11">
+                                                    <elements xsi:type="tcs:ConditionalElement" location="353:6-365:11">
+                                                      <condition xsi:type="tcs:AndExp" location="353:7-353:43">
+                                                        <expressions xsi:type="tcs:EqualsExp" location="353:7-353:30" propertyName="endOperator">
+                                                          <value xsi:type="tcs:EnumLiteralVal" location="353:21-353:30" name="leastone"/>
+                                                        </expressions>
+                                                        <expressions xsi:type="tcs:EqualsExp" location="353:35-353:43" propertyName="op">
+                                                          <value xsi:type="tcs:EnumLiteralVal" location="353:40-353:43" name="at"/>
+                                                        </expressions>
+                                                      </condition>
+                                                      <thenSequence location="354:6-354:19">
+                                                        <elements xsi:type="tcs:LiteralRef" location="354:6-354:13" referredLiteral="/76"/>
+                                                        <elements xsi:type="tcs:LiteralRef" location="354:14-354:19" referredLiteral="/75"/>
+                                                      </thenSequence>
+                                                      <elseSequence location="355:6-365:10">
+                                                        <elements xsi:type="tcs:ConditionalElement" location="355:6-365:10">
+                                                          <condition xsi:type="tcs:AndExp" location="355:7-355:39">
+                                                            <expressions xsi:type="tcs:EqualsExp" location="355:7-355:26" propertyName="endOperator">
+                                                              <value xsi:type="tcs:EnumLiteralVal" location="355:21-355:26" name="most"/>
+                                                            </expressions>
+                                                            <expressions xsi:type="tcs:EqualsExp" location="355:31-355:39" propertyName="op">
+                                                              <value xsi:type="tcs:EnumLiteralVal" location="355:36-355:39" name="at"/>
+                                                            </expressions>
+                                                          </condition>
+                                                          <thenSequence location="356:6-356:16">
+                                                            <elements xsi:type="tcs:LiteralRef" location="356:6-356:12" referredLiteral="/77"/>
+                                                            <elements xsi:type="tcs:Property" location="356:13-356:16" name="max"/>
+                                                          </thenSequence>
+                                                          <elseSequence location="357:6-365:9">
+                                                            <elements xsi:type="tcs:ConditionalElement" location="357:6-365:9">
+                                                              <condition xsi:type="tcs:AndExp" location="357:7-357:42">
+                                                                <expressions xsi:type="tcs:EqualsExp" location="357:7-357:29" propertyName="endOperator">
+                                                                  <value xsi:type="tcs:EnumLiteralVal" location="357:21-357:29" name="mostone"/>
+                                                                </expressions>
+                                                                <expressions xsi:type="tcs:EqualsExp" location="357:34-357:42" propertyName="op">
+                                                                  <value xsi:type="tcs:EnumLiteralVal" location="357:39-357:42" name="at"/>
+                                                                </expressions>
+                                                              </condition>
+                                                              <thenSequence location="358:6-358:18">
+                                                                <elements xsi:type="tcs:LiteralRef" location="358:6-358:12" referredLiteral="/77"/>
+                                                                <elements xsi:type="tcs:LiteralRef" location="358:13-358:18" referredLiteral="/75"/>
+                                                              </thenSequence>
+                                                              <elseSequence location="359:6-365:8">
+                                                                <elements xsi:type="tcs:ConditionalElement" location="359:6-365:8">
+                                                                  <condition xsi:type="tcs:AndExp" location="359:7-359:51">
+                                                                    <expressions xsi:type="tcs:EqualsExp" location="359:7-359:38" propertyName="endOperator">
+                                                                      <value xsi:type="tcs:EnumLiteralVal" location="359:21-359:38" name="leastnandatmostm"/>
+                                                                    </expressions>
+                                                                    <expressions xsi:type="tcs:EqualsExp" location="359:43-359:51" propertyName="op">
+                                                                      <value xsi:type="tcs:EnumLiteralVal" location="359:48-359:51" name="at"/>
+                                                                    </expressions>
+                                                                  </condition>
+                                                                  <thenSequence location="360:6-360:39">
+                                                                    <elements xsi:type="tcs:LiteralRef" location="360:6-360:13" referredLiteral="/76"/>
+                                                                    <elements xsi:type="tcs:Property" location="360:14-360:17" name="min"/>
+                                                                    <elements xsi:type="tcs:LiteralRef" location="360:18-360:23" referredLiteral="/43"/>
+                                                                    <elements xsi:type="tcs:LiteralRef" location="360:24-360:28" referredLiteral="/69"/>
+                                                                    <elements xsi:type="tcs:LiteralRef" location="360:29-360:35" referredLiteral="/77"/>
+                                                                    <elements xsi:type="tcs:Property" location="360:36-360:39" name="max"/>
+                                                                  </thenSequence>
+                                                                  <elseSequence location="361:6-365:7">
+                                                                    <elements xsi:type="tcs:ConditionalElement" location="361:6-365:7">
+                                                                      <condition xsi:type="tcs:AndExp" location="361:7-361:43">
+                                                                        <expressions xsi:type="tcs:EqualsExp" location="361:7-361:25" propertyName="endOperator">
+                                                                          <value xsi:type="tcs:EnumLiteralVal" location="361:21-361:25" name="one"/>
+                                                                        </expressions>
+                                                                        <expressions xsi:type="tcs:EqualsExp" location="361:30-361:43" propertyName="op">
+                                                                          <value xsi:type="tcs:EnumLiteralVal" location="361:35-361:43" name="Exactly"/>
+                                                                        </expressions>
+                                                                      </condition>
+                                                                      <thenSequence location="362:6-362:11">
+                                                                        <elements xsi:type="tcs:LiteralRef" location="362:6-362:11" referredLiteral="/75"/>
+                                                                      </thenSequence>
+                                                                      <elseSequence location="363:6-365:6">
+                                                                        <elements xsi:type="tcs:ConditionalElement" location="363:6-365:6">
+                                                                          <condition xsi:type="tcs:AndExp" location="363:7-363:43">
+                                                                            <expressions xsi:type="tcs:EqualsExp" location="363:7-363:25" propertyName="endOperator">
+                                                                              <value xsi:type="tcs:EnumLiteralVal" location="363:21-363:25" name="one"/>
+                                                                            </expressions>
+                                                                            <expressions xsi:type="tcs:EqualsExp" location="363:30-363:43" propertyName="op">
+                                                                              <value xsi:type="tcs:EnumLiteralVal" location="363:35-363:43" name="exactly"/>
+                                                                            </expressions>
+                                                                          </condition>
+                                                                          <thenSequence location="364:6-364:11">
+                                                                            <elements xsi:type="tcs:LiteralRef" location="364:6-364:11" referredLiteral="/75"/>
+                                                                          </thenSequence>
+                                                                        </elements>
+                                                                      </elseSequence>
+                                                                    </elements>
+                                                                  </elseSequence>
+                                                                </elements>
+                                                              </elseSequence>
+                                                            </elements>
+                                                          </elseSequence>
+                                                        </elements>
+                                                      </elseSequence>
+                                                    </elements>
+                                                  </elseSequence>
+                                                </elements>
+                                              </elseSequence>
+                                            </elements>
+                                          </elseSequence>
+                                        </elements>
+                                      </elseSequence>
+                                    </elements>
+                                  </elseSequence>
+                                </elements>
+                              </elseSequence>
+                            </elements>
+                          </elseSequence>
+                        </elements>
+                      </elseSequence>
+                    </elements>
+                  </elseSequence>
+                </elements>
+              </elseSequence>
+            </elements>
+          </thenSequence>
+          <elseSequence location="366:6-370:7">
+            <elements xsi:type="tcs:ConditionalElement" location="366:6-370:7">
+              <condition xsi:type="tcs:AndExp" location="366:7-366:20">
+                <expressions xsi:type="tcs:EqualsExp" location="366:7-366:20" propertyName="op">
+                  <value xsi:type="tcs:EnumLiteralVal" location="366:12-366:20" name="exactly"/>
+                </expressions>
+              </condition>
+              <thenSequence location="367:6-367:9">
+                <elements xsi:type="tcs:Property" location="367:6-367:9" name="min"/>
+              </thenSequence>
+              <elseSequence location="368:6-370:6">
+                <elements xsi:type="tcs:ConditionalElement" location="368:6-370:6">
+                  <condition xsi:type="tcs:AndExp" location="368:7-368:20">
+                    <expressions xsi:type="tcs:EqualsExp" location="368:7-368:20" propertyName="op">
+                      <value xsi:type="tcs:EnumLiteralVal" location="368:12-368:20" name="Exactly"/>
+                    </expressions>
+                  </condition>
+                  <thenSequence location="369:6-369:9">
+                    <elements xsi:type="tcs:Property" location="369:6-369:9" name="min"/>
+                  </thenSequence>
+                </elements>
+              </elseSequence>
+            </elements>
+          </elseSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="376:2-392:4" name="ModalBeginC">
+      <templateSequence location="377:5-391:11">
+        <elements xsi:type="tcs:LiteralRef" location="377:5-377:9" referredLiteral="/78"/>
+        <elements xsi:type="tcs:ConditionalElement" location="377:10-391:11">
+          <condition xsi:type="tcs:AndExp" location="377:11-377:42">
+            <expressions xsi:type="tcs:EqualsExp" location="377:11-377:42" propertyName="endOperator">
+              <value xsi:type="tcs:EnumLiteralVal" location="377:25-377:42" name="isobligatorythat"/>
+            </expressions>
+          </condition>
+          <thenSequence location="378:6-378:30">
+            <elements xsi:type="tcs:LiteralRef" location="378:6-378:10" referredLiteral="/20"/>
+            <elements xsi:type="tcs:LiteralRef" location="378:11-378:23" referredLiteral="/79"/>
+            <elements xsi:type="tcs:LiteralRef" location="378:24-378:30" referredLiteral="/53"/>
+          </thenSequence>
+          <elseSequence location="379:6-391:10">
+            <elements xsi:type="tcs:ConditionalElement" location="379:6-391:10">
+              <condition xsi:type="tcs:AndExp" location="379:7-379:37">
+                <expressions xsi:type="tcs:EqualsExp" location="379:7-379:37" propertyName="endOperator">
+                  <value xsi:type="tcs:EnumLiteralVal" location="379:21-379:37" name="ispermittedthat"/>
+                </expressions>
+              </condition>
+              <thenSequence location="380:6-380:29">
+                <elements xsi:type="tcs:LiteralRef" location="380:6-380:10" referredLiteral="/20"/>
+                <elements xsi:type="tcs:LiteralRef" location="380:11-380:22" referredLiteral="/80"/>
+                <elements xsi:type="tcs:LiteralRef" location="380:23-380:29" referredLiteral="/53"/>
+              </thenSequence>
+              <elseSequence location="381:6-391:9">
+                <elements xsi:type="tcs:ConditionalElement" location="381:6-391:9">
+                  <condition xsi:type="tcs:AndExp" location="381:7-381:39">
+                    <expressions xsi:type="tcs:EqualsExp" location="381:7-381:39" propertyName="endOperator">
+                      <value xsi:type="tcs:EnumLiteralVal" location="381:21-381:39" name="isprohitbitedthat"/>
+                    </expressions>
+                  </condition>
+                  <thenSequence location="382:6-382:30">
+                    <elements xsi:type="tcs:LiteralRef" location="382:6-382:10" referredLiteral="/20"/>
+                    <elements xsi:type="tcs:LiteralRef" location="382:11-382:23" referredLiteral="/81"/>
+                    <elements xsi:type="tcs:LiteralRef" location="382:24-382:30" referredLiteral="/53"/>
+                  </thenSequence>
+                  <elseSequence location="383:6-391:8">
+                    <elements xsi:type="tcs:ConditionalElement" location="383:6-391:8">
+                      <condition xsi:type="tcs:AndExp" location="383:7-383:37">
+                        <expressions xsi:type="tcs:EqualsExp" location="383:7-383:37" propertyName="endOperator">
+                          <value xsi:type="tcs:EnumLiteralVal" location="383:21-383:37" name="isnecessarythat"/>
+                        </expressions>
+                      </condition>
+                      <thenSequence location="384:6-384:29">
+                        <elements xsi:type="tcs:LiteralRef" location="384:6-384:10" referredLiteral="/20"/>
+                        <elements xsi:type="tcs:LiteralRef" location="384:11-384:22" referredLiteral="/82"/>
+                        <elements xsi:type="tcs:LiteralRef" location="384:23-384:29" referredLiteral="/53"/>
+                      </thenSequence>
+                      <elseSequence location="385:6-391:7">
+                        <elements xsi:type="tcs:ConditionalElement" location="385:6-391:7">
+                          <condition xsi:type="tcs:AndExp" location="385:7-385:36">
+                            <expressions xsi:type="tcs:EqualsExp" location="385:7-385:36" propertyName="endOperator">
+                              <value xsi:type="tcs:EnumLiteralVal" location="385:21-385:36" name="ispossiblethat"/>
+                            </expressions>
+                          </condition>
+                          <thenSequence location="386:6-386:28">
+                            <elements xsi:type="tcs:LiteralRef" location="386:6-386:10" referredLiteral="/20"/>
+                            <elements xsi:type="tcs:LiteralRef" location="386:11-386:21" referredLiteral="/83"/>
+                            <elements xsi:type="tcs:LiteralRef" location="386:22-386:28" referredLiteral="/53"/>
+                          </thenSequence>
+                          <elseSequence location="387:6-391:6">
+                            <elements xsi:type="tcs:ConditionalElement" location="387:6-391:6">
+                              <condition xsi:type="tcs:AndExp" location="387:7-387:38">
+                                <expressions xsi:type="tcs:EqualsExp" location="387:7-387:38" propertyName="endOperator">
+                                  <value xsi:type="tcs:EnumLiteralVal" location="387:21-387:38" name="isimpossiblethat"/>
+                                </expressions>
+                              </condition>
+                              <thenSequence location="388:6-388:30">
+                                <elements xsi:type="tcs:LiteralRef" location="388:6-388:10" referredLiteral="/20"/>
+                                <elements xsi:type="tcs:LiteralRef" location="388:11-388:23" referredLiteral="/84"/>
+                                <elements xsi:type="tcs:LiteralRef" location="388:24-388:30" referredLiteral="/53"/>
+                              </thenSequence>
+                              <elseSequence location="389:6-390:38">
+                                <elements xsi:type="tcs:ConditionalElement" location="389:6-390:38">
+                                  <condition xsi:type="tcs:AndExp" location="389:7-389:38">
+                                    <expressions xsi:type="tcs:EqualsExp" location="389:7-389:38" propertyName="endOperator">
+                                      <value xsi:type="tcs:EnumLiteralVal" location="389:21-389:38" name="isnotthecasethat"/>
+                                    </expressions>
+                                  </condition>
+                                  <thenSequence location="390:6-390:36">
+                                    <elements xsi:type="tcs:LiteralRef" location="390:6-390:10" referredLiteral="/20"/>
+                                    <elements xsi:type="tcs:LiteralRef" location="390:11-390:16" referredLiteral="/72"/>
+                                    <elements xsi:type="tcs:LiteralRef" location="390:17-390:22" referredLiteral="/59"/>
+                                    <elements xsi:type="tcs:LiteralRef" location="390:23-390:29" referredLiteral="/85"/>
+                                    <elements xsi:type="tcs:LiteralRef" location="390:30-390:36" referredLiteral="/53"/>
+                                  </thenSequence>
+                                </elements>
+                              </elseSequence>
+                            </elements>
+                          </elseSequence>
+                        </elements>
+                      </elseSequence>
+                    </elements>
+                  </elseSequence>
+                </elements>
+              </elseSequence>
+            </elements>
+          </elseSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <templates xsi:type="tcs:ClassTemplate" location="394:2-410:4" name="ModalBegin">
+      <commentsAfter>--&#x9;operatorTemplate UnaryOperatorWithOneParam(operators =</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;opexactly opExactly</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;, source = operande, storeOpTo = op)</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;:&#x9;(isDefined(endOperator) ?</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;&#x9;( endOperator = #one ?</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;&#x9;&#x9;&quot;one&quot;</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;&#x9;:</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9; &#x9;&#x9;param</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9; &#x9;)</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;)&#x9;</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--&#x9;operatorTemplate UnaryOperatorWithTwoParam(operators =</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;opat&#x9;opAt</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;, source = operande, storeOpTo = op)</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;:&#x9;(endOperator = #least ?</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;&#x9;&quot;least&quot; min</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;:(endOperator = #leastone ?</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;&#x9;&quot;least&quot; &quot;one&quot;</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;:(endOperator = #most ?</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;&#x9;&quot;most&quot; max</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;:(endOperator = #mostone ?</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;&#x9;&quot;most&quot; &quot;one&quot;</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;:(endOperator = #leastnandatmostm ?</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;&#x9;&quot;least&quot; min &quot;and&quot; &quot;at&quot; &quot;most&quot; max)</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;))))</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--&#x9;operatorTemplate BinaryOperator(operators =</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;opif&#x9;opthat2</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;opwho&#x9;opwether</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;oponly&#x9;opis</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;opAnd&#x9;opOr</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;, source = 'left', storeOpTo = op, storeRightTo = 'right')</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;:&#x9;(endOperator = #andonlyif and op = &quot;if&quot; ?</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;&#x9;&quot;and&quot; &quot;only&quot; &quot;if&quot;</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;:(endOperator = #ornot and op = &quot;wether&quot; ?</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;&#x9;&quot;or&quot; &quot;not&quot;</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;:(endOperator = #not and op = &quot;must&quot; ?</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;&#x9;&quot;not&quot;</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;:(endOperator = #of and op = &quot;is&quot; ?</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;&#x9;&quot;of&quot;</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;))))</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;;</commentsAfter>
+      <commentsAfter>--&#x9;&#x9;&#x9;&#x9;&#x9;</commentsAfter>
+      <commentsAfter>--END operator template for keywords</commentsAfter>
+      <commentsAfter>--END vocabulary classes&#x9;</commentsAfter>
+      <commentsAfter>-- END Class templates</commentsAfter>
+      <commentsAfter>-- BEGIN Special symbols</commentsAfter>
+      <commentsAfter>-- Possible modifications:</commentsAfter>
+      <commentsAfter>--&#x9;- Addition of new symbols.</commentsAfter>
+      <commentsAfter>--&#x9;- Modification of spaces information.</commentsAfter>
+      <commentsAfter>--&#x9;- Removal of unused symbols so that using these symbols results in lexical</commentsAfter>
+      <commentsAfter>--&#x9;error rather than parsing error.</commentsAfter>
+      <templateSequence location="395:5-409:11">
+        <elements xsi:type="tcs:LiteralRef" location="395:5-395:9" referredLiteral="/86"/>
+        <elements xsi:type="tcs:ConditionalElement" location="395:10-409:11">
+          <condition xsi:type="tcs:AndExp" location="395:11-395:42">
+            <expressions xsi:type="tcs:EqualsExp" location="395:11-395:42" propertyName="endOperator">
+              <value xsi:type="tcs:EnumLiteralVal" location="395:25-395:42" name="isobligatorythat"/>
+            </expressions>
+          </condition>
+          <thenSequence location="396:6-396:30">
+            <elements xsi:type="tcs:LiteralRef" location="396:6-396:10" referredLiteral="/20"/>
+            <elements xsi:type="tcs:LiteralRef" location="396:11-396:23" referredLiteral="/79"/>
+            <elements xsi:type="tcs:LiteralRef" location="396:24-396:30" referredLiteral="/53"/>
+          </thenSequence>
+          <elseSequence location="397:6-409:10">
+            <elements xsi:type="tcs:ConditionalElement" location="397:6-409:10">
+              <condition xsi:type="tcs:AndExp" location="397:7-397:37">
+                <expressions xsi:type="tcs:EqualsExp" location="397:7-397:37" propertyName="endOperator">
+                  <value xsi:type="tcs:EnumLiteralVal" location="397:21-397:37" name="ispermittedthat"/>
+                </expressions>
+              </condition>
+              <thenSequence location="398:6-398:29">
+                <elements xsi:type="tcs:LiteralRef" location="398:6-398:10" referredLiteral="/20"/>
+                <elements xsi:type="tcs:LiteralRef" location="398:11-398:22" referredLiteral="/80"/>
+                <elements xsi:type="tcs:LiteralRef" location="398:23-398:29" referredLiteral="/53"/>
+              </thenSequence>
+              <elseSequence location="399:6-409:9">
+                <elements xsi:type="tcs:ConditionalElement" location="399:6-409:9">
+                  <condition xsi:type="tcs:AndExp" location="399:7-399:39">
+                    <expressions xsi:type="tcs:EqualsExp" location="399:7-399:39" propertyName="endOperator">
+                      <value xsi:type="tcs:EnumLiteralVal" location="399:21-399:39" name="isprohitbitedthat"/>
+                    </expressions>
+                  </condition>
+                  <thenSequence location="400:6-400:30">
+                    <elements xsi:type="tcs:LiteralRef" location="400:6-400:10" referredLiteral="/20"/>
+                    <elements xsi:type="tcs:LiteralRef" location="400:11-400:23" referredLiteral="/81"/>
+                    <elements xsi:type="tcs:LiteralRef" location="400:24-400:30" referredLiteral="/53"/>
+                  </thenSequence>
+                  <elseSequence location="401:6-409:8">
+                    <elements xsi:type="tcs:ConditionalElement" location="401:6-409:8">
+                      <condition xsi:type="tcs:AndExp" location="401:7-401:37">
+                        <expressions xsi:type="tcs:EqualsExp" location="401:7-401:37" propertyName="endOperator">
+                          <value xsi:type="tcs:EnumLiteralVal" location="401:21-401:37" name="isnecessarythat"/>
+                        </expressions>
+                      </condition>
+                      <thenSequence location="402:6-402:29">
+                        <elements xsi:type="tcs:LiteralRef" location="402:6-402:10" referredLiteral="/20"/>
+                        <elements xsi:type="tcs:LiteralRef" location="402:11-402:22" referredLiteral="/82"/>
+                        <elements xsi:type="tcs:LiteralRef" location="402:23-402:29" referredLiteral="/53"/>
+                      </thenSequence>
+                      <elseSequence location="403:6-409:7">
+                        <elements xsi:type="tcs:ConditionalElement" location="403:6-409:7">
+                          <condition xsi:type="tcs:AndExp" location="403:7-403:36">
+                            <expressions xsi:type="tcs:EqualsExp" location="403:7-403:36" propertyName="endOperator">
+                              <value xsi:type="tcs:EnumLiteralVal" location="403:21-403:36" name="ispossiblethat"/>
+                            </expressions>
+                          </condition>
+                          <thenSequence location="404:6-404:28">
+                            <elements xsi:type="tcs:LiteralRef" location="404:6-404:10" referredLiteral="/20"/>
+                            <elements xsi:type="tcs:LiteralRef" location="404:11-404:21" referredLiteral="/83"/>
+                            <elements xsi:type="tcs:LiteralRef" location="404:22-404:28" referredLiteral="/53"/>
+                          </thenSequence>
+                          <elseSequence location="405:6-409:6">
+                            <elements xsi:type="tcs:ConditionalElement" location="405:6-409:6">
+                              <condition xsi:type="tcs:AndExp" location="405:7-405:38">
+                                <expressions xsi:type="tcs:EqualsExp" location="405:7-405:38" propertyName="endOperator">
+                                  <value xsi:type="tcs:EnumLiteralVal" location="405:21-405:38" name="isimpossiblethat"/>
+                                </expressions>
+                              </condition>
+                              <thenSequence location="406:6-406:30">
+                                <elements xsi:type="tcs:LiteralRef" location="406:6-406:10" referredLiteral="/20"/>
+                                <elements xsi:type="tcs:LiteralRef" location="406:11-406:23" referredLiteral="/84"/>
+                                <elements xsi:type="tcs:LiteralRef" location="406:24-406:30" referredLiteral="/53"/>
+                              </thenSequence>
+                              <elseSequence location="407:6-408:38">
+                                <elements xsi:type="tcs:ConditionalElement" location="407:6-408:38">
+                                  <condition xsi:type="tcs:AndExp" location="407:7-407:38">
+                                    <expressions xsi:type="tcs:EqualsExp" location="407:7-407:38" propertyName="endOperator">
+                                      <value xsi:type="tcs:EnumLiteralVal" location="407:21-407:38" name="isnotthecasethat"/>
+                                    </expressions>
+                                  </condition>
+                                  <thenSequence location="408:6-408:36">
+                                    <elements xsi:type="tcs:LiteralRef" location="408:6-408:10" referredLiteral="/20"/>
+                                    <elements xsi:type="tcs:LiteralRef" location="408:11-408:16" referredLiteral="/72"/>
+                                    <elements xsi:type="tcs:LiteralRef" location="408:17-408:22" referredLiteral="/59"/>
+                                    <elements xsi:type="tcs:LiteralRef" location="408:23-408:29" referredLiteral="/85"/>
+                                    <elements xsi:type="tcs:LiteralRef" location="408:30-408:36" referredLiteral="/53"/>
+                                  </thenSequence>
+                                </elements>
+                              </elseSequence>
+                            </elements>
+                          </elseSequence>
+                        </elements>
+                      </elseSequence>
+                    </elements>
+                  </elseSequence>
+                </elements>
+              </elseSequence>
+            </elements>
+          </elseSequence>
+        </elements>
+      </templateSequence>
+    </templates>
+    <symbols location="474:3-474:17" name="rcross" literalRefs="/0/@templates.26/@templateSequence/@elements.0" value="¤">
+      <commentsBefore>-- add § to symbol and ¤</commentsBefore>
+    </symbols>
+    <symbols location="475:3-475:15" name="para" literalRefs="/0/@templates.32/@templateSequence/@elements.3 /0/@templates.33/@templateSequence/@elements.3" value="§"/>
+    <symbols location="476:3-476:18" name="lsquare" value="["/>
+    <symbols location="477:3-477:31" name="rsquare" value="]">
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="478:3-478:15" name="excl" value="!">
+      <commentsAfter>--&#x9;&#x9;coma&#x9;&#x9;= &quot;,&quot;&#x9;: leftNone, rightSpace;</commentsAfter>
+    </symbols>
+    <symbols location="480:3-480:17" name="lparen" literalRefs="/0/@templates.56/@templateSequence/@elements.0" value="(">
+      <commentsBefore>--&#x9;&#x9;coma&#x9;&#x9;= &quot;,&quot;&#x9;: leftNone, rightSpace;</commentsBefore>
+    </symbols>
+    <symbols location="481:3-481:40" name="rparen" literalRefs="/0/@templates.56/@templateSequence/@elements.2" value=")">
+      <spaces>leftNone</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="482:3-482:29" name="lcurly" value="{">
+      <spaces>leftSpace</spaces>
+    </symbols>
+    <symbols location="483:3-483:40" name="rcurly" value="}">
+      <spaces>leftNone</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="484:3-484:38" name="semi" value=";">
+      <spaces>leftNone</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="485:3-485:40" name="colon" literalRefs="/0/@templates.8/@templateSequence/@elements.1 /0/@templates.9/@templateSequence/@elements.1 /0/@templates.10/@templateSequence/@elements.1 /0/@templates.11/@templateSequence/@elements.1 /0/@templates.12/@templateSequence/@elements.1 /0/@templates.13/@templateSequence/@elements.1 /0/@templates.14/@templateSequence/@elements.1 /0/@templates.15/@templateSequence/@elements.1 /0/@templates.16/@templateSequence/@elements.1 /0/@templates.17/@templateSequence/@elements.1 /0/@templates.18/@templateSequence/@elements.1 /0/@templates.19/@templateSequence/@elements.1 /0/@templates.20/@templateSequence/@elements.1 /0/@templates.21/@templateSequence/@elements.1 /0/@templates.32/@templateSequence/@elements.1 /0/@templates.33/@templateSequence/@elements.1" value=":">
+      <spaces>leftSpace</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="486:3-486:39" name="pipe" value="|">
+      <spaces>leftSpace</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="487:3-487:28" name="sharp" value="#">
+      <spaces>leftSpace</spaces>
+    </symbols>
+    <symbols location="488:3-488:16" name="qmark" value="?"/>
+    <symbols location="489:3-489:43" name="coloncolon" value="::">
+      <commentsAfter>-- operator symbols</commentsAfter>
+      <spaces>leftNone</spaces>
+      <spaces>rightNone</spaces>
+    </symbols>
+    <symbols location="492:3-492:27" name="point" literalRefs="/0/@templates.30/@templateSequence/@elements.1 /0/@templates.44/@templateSequence/@elements.2/@thenSequence/@elements.0" value=".">
+      <commentsBefore>-- operator symbols</commentsBefore>
+      <spaces>leftNone</spaces>
+    </symbols>
+    <symbols location="493:3-493:29" name="rarrow" value="->">
+      <commentsAfter>--&#x9;&#x9;minus&#x9;&#x9;= &quot;-&quot;&#x9;: leftSpace, rightSpace;</commentsAfter>
+      <spaces>leftNone</spaces>
+    </symbols>
+    <symbols location="495:3-495:39" name="star" value="*">
+      <commentsBefore>--&#x9;&#x9;minus&#x9;&#x9;= &quot;-&quot;&#x9;: leftSpace, rightSpace;</commentsBefore>
+      <spaces>leftSpace</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="496:3-496:40" name="slash" value="/">
+      <spaces>leftSpace</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="497:3-497:39" name="plus" value="+">
+      <spaces>leftSpace</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="498:3-498:38" name="eq" value="=">
+      <spaces>leftSpace</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="499:3-499:38" name="gt" value=">">
+      <spaces>leftSpace</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="500:3-500:38" name="lt" value="&lt;">
+      <spaces>leftSpace</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="501:3-501:39" name="ge" value=">=">
+      <spaces>leftSpace</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="502:3-502:39" name="le" value="&lt;=">
+      <spaces>leftSpace</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="503:3-503:39" name="ne" value="&lt;>">
+      <spaces>leftSpace</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <symbols location="504:3-504:42" name="larrow" value="&lt;-">
+      <spaces>leftSpace</spaces>
+      <spaces>rightSpace</spaces>
+    </symbols>
+    <tokens location="578:2-578:42" name="COMMENT">
+      <commentsBefore>-- END Special symbols</commentsBefore>
+      <commentsBefore>-- BEGIN Operator table</commentsBefore>
+      <commentsBefore>-- Defines all operators with their priority, arity, and associativity.</commentsBefore>
+      <commentsBefore>-- All defined operators must be used in operator templates.</commentsBefore>
+      <commentsBefore>-- Specify operator table(s) here if necessary.</commentsBefore>
+      <commentsBefore>--&#x9;operators Operators {</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;priority 0 {</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opeach&#x9;= &quot;each&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opEach&#x9;= &quot;Each&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opsome&#x9;= &quot;some&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opSome&#x9;= &quot;Some&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opat&#x9;= &quot;at&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opAt&#x9;= &quot;At&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opexactly = &quot;exactly&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opExactly = &quot;Exactly&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opmore&#x9;= &quot;more&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opMore&#x9;= &quot;More&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opa&#x9;&#x9;= &quot;a&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opA&#x9;&#x9;= &quot;A&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opan&#x9;= &quot;an&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opAn&#x9;= &quot;An&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opthe&#x9;= &quot;the&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opThe&#x9;= &quot;The&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opanother = &quot;another&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opAnother = &quot;Another&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opthat&#x9;= &quot;that&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opThat&#x9;= &quot;That&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opwhat&#x9;= &quot;what&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opWhat&#x9;= &quot;What&quot;, 1;&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;}</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;priority 1 {</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opnot&#x9;= &quot;not&quot;, 1;&#x9;&#x9;&#x9;&#x9;-- this operator have 2 operandes but appears at the left of the first one, it's a composed operator</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opneither&#x9;= &quot;neither&quot;, 1;&#x9;&#x9;&#x9;-- idem</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opift&#x9;= &quot;if&quot;, 1;&#x9;&#x9;&#x9;&#x9;-- if then operator but the if appears at the left of the first operand</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opIft&#x9;= &quot;If&quot;, 1;&#x9;&#x9;&#x9;&#x9;-- idem</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opif&#x9;= &quot;if&quot;, 2;&#x9;&#x9;&#x9;&#x9;-- p if q operator</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opwether = &quot;wether&quot;, 2;</commentsBefore>
+      <commentsBefore>--</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opthat2 = &quot;that&quot;, 2;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opwho = &quot;who&quot;, 2;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;}</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;priority 1 {</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opit&#x9;= &quot;it&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opIt&#x9;= &quot;It&quot;, 1;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;}</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;priority 2 {</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;oponly&#x9;= &quot;only&quot;, 2;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;}</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;priority 3 { -- need to verify priority for the following </commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opis&#x9;= &quot;is&quot;, 2;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;}</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;priority 5 {</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opAnd&#x9;= &quot;and&quot;, 2;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;&#x9;opOr&#x9;= &quot;or&quot;, 2;</commentsBefore>
+      <commentsBefore>--&#x9;&#x9;}</commentsBefore>
+      <commentsBefore>--&#x9;}</commentsBefore>
+      <commentsBefore>-- END Operator table</commentsBefore>
+      <commentsBefore>-- BEGIN Lexer</commentsBefore>
+      <commentsBefore>-- Specifies the lexical entities.</commentsBefore>
+      <commentsBefore>-- Only needs modification when default lexer is not satisfactory.</commentsBefore>
+      <commentsBefore>-- Generally modified along with Primitive templates.</commentsBefore>
+      <pattern location="578:18-578:41">
+        <simplePatterns xsi:type="tcs:RulePattern" location="578:18-578:41">
+          <rule xsi:type="tcs:EndOfLineRule" location="578:18-578:41">
+            <start location="578:36-578:40" name="--"/>
+          </rule>
+        </simplePatterns>
+      </pattern>
+    </tokens>
+    <tokens location="579:2-579:65" name="STRING">
+      <pattern location="579:17-579:64">
+        <simplePatterns xsi:type="tcs:RulePattern" location="579:17-579:64">
+          <rule xsi:type="tcs:MultiLineRule" location="579:17-579:64">
+            <start location="579:35-579:39" name="&quot;"/>
+            <end location="579:47-579:51" name="&quot;"/>
+            <esc location="579:59-579:63" name="\"/>
+          </rule>
+        </simplePatterns>
+      </pattern>
+    </tokens>
+  </tcs:ConcreteSyntax>
+  <tcs:Keyword location="53:6-53:18" literalRefs="/0/@templates.8/@templateSequence/@elements.0" value="Definition"/>
+  <tcs:Keyword location="57:6-57:19" literalRefs="/0/@templates.9/@templateSequence/@elements.0" value="Description"/>
+  <tcs:Keyword location="61:6-61:14" literalRefs="/0/@templates.10/@templateSequence/@elements.0" value="Source"/>
+  <tcs:Keyword location="65:6-65:24" literalRefs="/0/@templates.11/@templateSequence/@elements.0" value="Dictionary Basis"/>
+  <tcs:Keyword location="69:6-69:23" literalRefs="/0/@templates.12/@templateSequence/@elements.0" value="General Concept"/>
+  <tcs:Keyword location="69:53-69:56" literalRefs="/0/@templates.12/@templateSequence/@elements.2/@propertyArgs.0/@separatorSequence/@elements.0 /0/@templates.56/@templateSequence/@elements.1/@propertyArgs.0/@separatorSequence/@elements.0" value=","/>
+  <tcs:Keyword location="73:6-73:20" literalRefs="/0/@templates.13/@templateSequence/@elements.0" value="Concept Type"/>
+  <tcs:Keyword location="78:6-78:24" literalRefs="/0/@templates.14/@templateSequence/@elements.0" value="Reference Scheme"/>
+  <tcs:Keyword location="82:6-82:12" literalRefs="/0/@templates.15/@templateSequence/@elements.0" value="Note"/>
+  <tcs:Keyword location="86:6-86:15" literalRefs="/0/@templates.16/@templateSequence/@elements.0" value="Example"/>
+  <tcs:Keyword location="90:6-90:15" literalRefs="/0/@templates.17/@templateSequence/@elements.0" value="Synonym"/>
+  <tcs:Keyword location="94:6-94:23" literalRefs="/0/@templates.18/@templateSequence/@elements.0" value="Synonymous Form"/>
+  <tcs:Keyword location="98:6-98:11" literalRefs="/0/@templates.19/@templateSequence/@elements.0" value="See"/>
+  <tcs:Keyword location="102:6-102:21" literalRefs="/0/@templates.20/@templateSequence/@elements.0" value="Subject Field"/>
+  <tcs:Keyword location="106:5-106:20" literalRefs="/0/@templates.21/@templateSequence/@elements.0" value="NamesPace URI"/>
+  <tcs:Keyword location="125:15-125:20" literalRefs="/0/@templates.25/@templateSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.43/@mappings.2/@element" value="The"/>
+  <tcs:Keyword location="154:5-154:16" literalRefs="/0/@templates.32/@templateSequence/@elements.0" value="Necessity"/>
+  <tcs:Keyword location="158:5-158:18" literalRefs="/0/@templates.33/@templateSequence/@elements.0" value="Possibility"/>
+  <tcs:Keyword location="181:18-181:29" literalRefs="/0/@templates.38/@mappings.0/@element" value="undefined"/>
+  <tcs:Keyword location="182:10-182:14" literalRefs="/0/@templates.38/@mappings.1/@element /0/@templates.61/@templateSequence/@elements.1/@thenSequence/@elements.0 /0/@templates.61/@templateSequence/@elements.1/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.61/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.61/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.61/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.61/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.61/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.62/@templateSequence/@elements.1/@thenSequence/@elements.0 /0/@templates.62/@templateSequence/@elements.1/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.62/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.62/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.62/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.62/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.62/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0" value="is"/>
+  <tcs:Keyword location="183:16-183:26" literalRefs="/0/@templates.38/@mappings.2/@element" value="relevant"/>
+  <tcs:Keyword location="184:10-184:14" literalRefs="/0/@templates.38/@mappings.3/@element" value="to"/>
+  <tcs:Keyword location="185:17-185:28" literalRefs="/0/@templates.38/@mappings.4/@element" value="comprises"/>
+  <tcs:Keyword location="186:12-186:18" literalRefs="/0/@templates.38/@mappings.5/@element" value="work"/>
+  <tcs:Keyword location="187:10-187:14" literalRefs="/0/@templates.38/@mappings.6/@element" value="in"/>
+  <tcs:Keyword location="188:14-188:22" literalRefs="/0/@templates.38/@mappings.7/@element" value="trades"/>
+  <tcs:Keyword location="189:10-189:14" literalRefs="/0/@templates.38/@mappings.8/@element" value="as"/>
+  <tcs:Keyword location="190:11-190:16" literalRefs="/0/@templates.38/@mappings.9/@element" value="are"/>
+  <tcs:Keyword location="191:16-191:26" literalRefs="/0/@templates.38/@mappings.10/@element" value="accepted"/>
+  <tcs:Keyword location="192:17-192:28" literalRefs="/0/@templates.38/@mappings.11/@element" value="generally"/>
+  <tcs:Keyword location="193:14-193:22" literalRefs="/0/@templates.38/@mappings.12/@element" value="across"/>
+  <tcs:Keyword location="194:17-194:28" literalRefs="/0/@templates.38/@mappings.13/@element" value="important"/>
+  <tcs:Keyword location="195:13-195:20" literalRefs="/0/@templates.38/@mappings.14/@element" value="share"/>
+  <tcs:Keyword location="196:12-196:18" literalRefs="/0/@templates.38/@mappings.15/@element" value="sets"/>
+  <tcs:Keyword location="197:16-197:26" literalRefs="/0/@templates.38/@mappings.16/@element" value="assigned"/>
+  <tcs:Keyword location="198:10-198:14" literalRefs="/0/@templates.38/@mappings.17/@element" value="by"/>
+  <tcs:Keyword location="199:16-199:26" literalRefs="/0/@templates.38/@mappings.18/@element" value="contains"/>
+  <tcs:Keyword location="200:11-200:16" literalRefs="/0/@templates.38/@mappings.19/@element" value="for"/>
+  <tcs:Keyword location="201:11-201:16" literalRefs="/0/@templates.38/@mappings.20/@element" value="has"/>
+  <tcs:Keyword location="202:17-202:28" literalRefs="/0/@templates.38/@mappings.21/@element" value="specifies"/>
+  <tcs:Keyword location="203:17-203:28" literalRefs="/0/@templates.38/@mappings.22/@element" value="specified"/>
+  <tcs:Keyword location="208:18-208:28" literalRefs="/0/@templates.39/@mappings.0/@element" value="undefine"/>
+  <tcs:Keyword location="209:11-209:16" literalRefs="/0/@templates.39/@mappings.1/@element /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.2 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.2" value="and"/>
+  <tcs:Keyword location="210:10-210:14" literalRefs="/0/@templates.39/@mappings.2/@element /0/@templates.45/@templateSequence/@elements.1/@thenSequence/@elements.0" value="or"/>
+  <tcs:Keyword location="211:10-211:14" literalRefs="/0/@templates.39/@mappings.3/@element" value="if"/>
+  <tcs:Keyword location="212:15-212:24" literalRefs="/0/@templates.39/@mappings.4/@element" value="whether"/>
+  <tcs:Keyword location="216:18-216:27" literalRefs="/0/@templates.40/@mappings.0/@element" value="undefin"/>
+  <tcs:Keyword location="217:12-217:18" literalRefs="/0/@templates.40/@mappings.1/@element" value="must"/>
+  <tcs:Keyword location="218:11-218:16" literalRefs="/0/@templates.40/@mappings.2/@element" value="may"/>
+  <tcs:Keyword location="219:13-219:20" literalRefs="/0/@templates.40/@mappings.3/@element" value="never"/>
+  <tcs:Keyword location="220:14-220:22" literalRefs="/0/@templates.40/@mappings.4/@element" value="always"/>
+  <tcs:Keyword location="224:18-224:26" literalRefs="/0/@templates.41/@mappings.0/@element" value="undefi"/>
+  <tcs:Keyword location="225:12-225:18" literalRefs="/0/@templates.41/@mappings.1/@element /0/@templates.61/@templateSequence/@elements.1/@thenSequence/@elements.2 /0/@templates.61/@templateSequence/@elements.1/@elseSequence/@elements.0/@thenSequence/@elements.2 /0/@templates.61/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.2 /0/@templates.61/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.2 /0/@templates.61/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.2 /0/@templates.61/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.2 /0/@templates.61/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.4 /0/@templates.62/@templateSequence/@elements.1/@thenSequence/@elements.2 /0/@templates.62/@templateSequence/@elements.1/@elseSequence/@elements.0/@thenSequence/@elements.2 /0/@templates.62/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.2 /0/@templates.62/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.2 /0/@templates.62/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.2 /0/@templates.62/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.2 /0/@templates.62/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.4" value="that"/>
+  <tcs:Keyword location="226:11-226:16" literalRefs="/0/@templates.41/@mappings.2/@element" value="who"/>
+  <tcs:Keyword location="230:19-230:26" literalRefs="/0/@templates.42/@mappings.0/@element" value="undef"/>
+  <tcs:Keyword location="231:10-231:14" literalRefs="/0/@templates.42/@mappings.1/@element" value="of"/>
+  <tcs:Keyword location="232:14-232:24" literalRefs="/0/@templates.42/@mappings.2/@element" value="\u0027s"/>
+  <tcs:Keyword location="237:18-237:24" literalRefs="/0/@templates.43/@mappings.0/@element" value="unde"/>
+  <tcs:Keyword location="238:11-238:16" literalRefs="/0/@templates.43/@mappings.1/@element /0/@templates.61/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.2 /0/@templates.62/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.2" value="the"/>
+  <tcs:Keyword location="240:9-240:12" literalRefs="/0/@templates.43/@mappings.3/@element" value="a"/>
+  <tcs:Keyword location="241:9-241:12" literalRefs="/0/@templates.43/@mappings.4/@element" value="A"/>
+  <tcs:Keyword location="242:10-242:14" literalRefs="/0/@templates.43/@mappings.5/@element" value="an"/>
+  <tcs:Keyword location="243:10-243:14" literalRefs="/0/@templates.43/@mappings.6/@element" value="An"/>
+  <tcs:Keyword location="244:12-244:18" literalRefs="/0/@templates.43/@mappings.7/@element" value="Each"/>
+  <tcs:Keyword location="245:12-245:18" literalRefs="/0/@templates.43/@mappings.8/@element" value="each"/>
+  <tcs:Keyword location="246:12-246:18" literalRefs="/0/@templates.43/@mappings.9/@element" value="Some"/>
+  <tcs:Keyword location="247:12-247:18" literalRefs="/0/@templates.43/@mappings.10/@element" value="some"/>
+  <tcs:Keyword location="248:10-248:14" literalRefs="/0/@templates.43/@mappings.11/@element" value="At"/>
+  <tcs:Keyword location="249:10-249:14" literalRefs="/0/@templates.43/@mappings.12/@element /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.3 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.3" value="at"/>
+  <tcs:Keyword location="250:15-250:24" literalRefs="/0/@templates.43/@mappings.13/@element" value="Exactly"/>
+  <tcs:Keyword location="251:15-251:24" literalRefs="/0/@templates.43/@mappings.14/@element" value="exactly"/>
+  <tcs:Keyword location="263:69-263:74" literalRefs="/0/@templates.45/@templateSequence/@elements.1/@thenSequence/@elements.1 /0/@templates.46/@templateSequence/@elements.1/@thenSequence/@elements.0 /0/@templates.61/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.1 /0/@templates.62/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.1" value="not"/>
+  <tcs:Keyword location="334:6-334:13" literalRefs="/0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0" value="given"/>
+  <tcs:Keyword location="338:6-338:12" literalRefs="/0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0" value="than"/>
+  <tcs:Keyword location="338:13-338:18" literalRefs="/0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.1 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.1 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.1 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.1 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.1 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.1 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0" value="one"/>
+  <tcs:Keyword location="342:6-342:13" literalRefs="/0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0" value="least"/>
+  <tcs:Keyword location="346:6-346:12" literalRefs="/0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.4 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.0 /0/@templates.60/@templateSequence/@elements.1/@thenSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.4" value="most"/>
+  <tcs:Keyword location="377:5-377:9" literalRefs="/0/@templates.61/@templateSequence/@elements.0" value="It"/>
+  <tcs:Keyword location="378:11-378:23" literalRefs="/0/@templates.61/@templateSequence/@elements.1/@thenSequence/@elements.1 /0/@templates.62/@templateSequence/@elements.1/@thenSequence/@elements.1" value="obligatory"/>
+  <tcs:Keyword location="380:11-380:22" literalRefs="/0/@templates.61/@templateSequence/@elements.1/@elseSequence/@elements.0/@thenSequence/@elements.1 /0/@templates.62/@templateSequence/@elements.1/@elseSequence/@elements.0/@thenSequence/@elements.1" value="permitted"/>
+  <tcs:Keyword location="382:11-382:23" literalRefs="/0/@templates.61/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.1 /0/@templates.62/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.1" value="prohibited"/>
+  <tcs:Keyword location="384:11-384:22" literalRefs="/0/@templates.61/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.1 /0/@templates.62/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.1" value="necessary"/>
+  <tcs:Keyword location="386:11-386:21" literalRefs="/0/@templates.61/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.1 /0/@templates.62/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.1" value="possible"/>
+  <tcs:Keyword location="388:11-388:23" literalRefs="/0/@templates.61/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.1 /0/@templates.62/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.1" value="impossible"/>
+  <tcs:Keyword location="390:23-390:29" literalRefs="/0/@templates.61/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.3 /0/@templates.62/@templateSequence/@elements.1/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@elseSequence/@elements.0/@thenSequence/@elements.3" value="case"/>
+  <tcs:Keyword location="395:5-395:9" literalRefs="/0/@templates.62/@templateSequence/@elements.0" value="it"/>
+</xmi:XMI>

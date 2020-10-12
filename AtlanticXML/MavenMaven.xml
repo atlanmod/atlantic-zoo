@@ -1,0 +1,234 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'MavenMaven'>
+    <Class name = 'Project' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'xmlns' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::Xmlns' opposite = ''/>
+      <Reference name = 'default' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MavenMaven::Goal' opposite = ''/>
+      <Reference name = 'path' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::Path' opposite = ''/>
+      <Reference name = 'properties' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'MavenMaven::AntProperty' opposite = ''/>
+      <Reference name = 'taskdefs' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::AntTaskDef' opposite = ''/>
+      <Reference name = 'prePostGoals' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::PrePostGoal' opposite = ''/>
+      <Reference name = 'goals' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::Goal' opposite = ''/>
+    </Class>
+    <Class name = 'Xmlns' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'AntProperty' isAbstract = 'true' supertypes = 'MavenMaven::ContentsGoal'/>
+    <Class name = 'AntPropertyName' isAbstract = 'true' supertypes = 'MavenMaven::AntProperty'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'AntPropertyValue' isAbstract = 'false' supertypes = 'MavenMaven::AntPropertyName'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'AntPropertyLocation' isAbstract = 'false' supertypes = 'MavenMaven::AntPropertyName'>
+      <Attribute name = 'location' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'AntPropertyFile' isAbstract = 'false' supertypes = 'MavenMaven::AntProperty'>
+      <Attribute name = 'file' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'AntPropertyEnv' isAbstract = 'false' supertypes = 'MavenMaven::AntProperty'>
+      <Attribute name = 'environment' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'JellyCommand' isAbstract = 'true' supertypes = 'MavenMaven::ContentsGoal'/>
+    <Class name = 'JellySet' isAbstract = 'false' supertypes = 'MavenMaven::JellyCommand'>
+      <Attribute name = 'var' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'JellyForEach' isAbstract = 'false' supertypes = 'MavenMaven::JellyCommand'>
+      <Attribute name = 'items' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'var' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'indexVar' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'contents' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::ContentsGoal' opposite = ''/>
+    </Class>
+    <Class name = 'AbstractGoal' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'contentsGoal' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'MavenMaven::ContentsGoal' opposite = ''/>
+    </Class>
+    <Class name = 'ContentsGoal' isAbstract = 'true' supertypes = ''/>
+    <Class name = 'AttainGoal' isAbstract = 'false' supertypes = 'MavenMaven::ContentsGoal'>
+      <Reference name = 'attainGoal' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MavenMaven::Goal' opposite = ''/>
+    </Class>
+    <Class name = 'PrePostGoal' isAbstract = 'true' supertypes = 'MavenMaven::AbstractGoal'/>
+    <Class name = 'PreGoal' isAbstract = 'false' supertypes = 'MavenMaven::PrePostGoal'>
+      <Reference name = 'centralGoal' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MavenMaven::Goal' opposite = 'MavenMaven::Goal::preGoal'/>
+    </Class>
+    <Class name = 'PostGoal' isAbstract = 'false' supertypes = 'MavenMaven::PrePostGoal'>
+      <Reference name = 'centralGoal' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MavenMaven::Goal' opposite = 'MavenMaven::Goal::postGoal'/>
+    </Class>
+    <Class name = 'Goal' isAbstract = 'false' supertypes = 'MavenMaven::AbstractGoal'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'preGoal' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MavenMaven::PreGoal' opposite = 'MavenMaven::PreGoal::centralGoal'/>
+      <Reference name = 'postGoal' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MavenMaven::PostGoal' opposite = 'MavenMaven::PostGoal::centralGoal'/>
+    </Class>
+    <Class name = 'Pattern' isAbstract = 'true' supertypes = ''/>
+    <Class name = 'Basic' isAbstract = 'true' supertypes = 'MavenMaven::Pattern'/>
+    <Class name = 'Mapper' isAbstract = 'false' supertypes = 'MavenMaven::Basic'>
+      <Attribute name = 'type' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'classname' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'classpath' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'classpathref' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'from' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'to' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'InExcludes' isAbstract = 'true' supertypes = 'MavenMaven::Basic'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'ifCondition' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'unless' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Includes' isAbstract = 'false' supertypes = 'MavenMaven::InExcludes'/>
+    <Class name = 'Excludes' isAbstract = 'false' supertypes = 'MavenMaven::InExcludes'/>
+    <Class name = 'IncludesFile' isAbstract = 'false' supertypes = 'MavenMaven::InExcludes'/>
+    <Class name = 'ExcludesFile' isAbstract = 'false' supertypes = 'MavenMaven::InExcludes'/>
+    <Class name = 'FileList' isAbstract = 'false' supertypes = 'MavenMaven::Basic'>
+      <Attribute name = 'dir' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'files' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Filter' isAbstract = 'false' supertypes = 'MavenMaven::Basic'>
+      <Attribute name = 'token' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'FiltersFile' isAbstract = 'false' supertypes = 'MavenMaven::Basic'>
+      <Attribute name = 'file' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'PathElement' isAbstract = 'false' supertypes = 'MavenMaven::Basic'>
+      <Attribute name = 'path' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'location' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Set' isAbstract = 'true' supertypes = 'MavenMaven::Pattern'/>
+    <Class name = 'PatternSet' isAbstract = 'false' supertypes = 'MavenMaven::Set'>
+      <Reference name = 'inexcludes' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::InExcludes' opposite = ''/>
+    </Class>
+    <Class name = 'FileSet' isAbstract = 'false' supertypes = 'MavenMaven::Set'>
+      <Attribute name = 'dir' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'patternset' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::PatternSet' opposite = ''/>
+      <Reference name = 'include' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::Includes' opposite = ''/>
+      <Reference name = 'exclude' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::Excludes' opposite = ''/>
+    </Class>
+    <Class name = 'FilterSet' isAbstract = 'false' supertypes = 'MavenMaven::Set'>
+      <Attribute name = 'starttoken' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'endtoken' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'filter' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::Filter' opposite = ''/>
+      <Reference name = 'filtersfile' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::FiltersFile' opposite = ''/>
+    </Class>
+    <Class name = 'Path' isAbstract = 'false' supertypes = 'MavenMaven::Set'>
+      <Attribute name = 'id' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'refid' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'path' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::Path' opposite = ''/>
+      <Reference name = 'pathElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::PathElement' opposite = ''/>
+      <Reference name = 'fileset' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::FileSet' opposite = ''/>
+    </Class>
+    <Class name = 'ClassPath' isAbstract = 'false' supertypes = 'MavenMaven::Set'>
+      <Attribute name = 'refid' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'pathElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::PathElement' opposite = ''/>
+      <Reference name = 'fileset' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::FileSet' opposite = ''/>
+    </Class>
+    <Class name = 'Task' isAbstract = 'true' supertypes = 'MavenMaven::ContentsGoal'/>
+    <Class name = 'AntTaskDef' isAbstract = 'false' supertypes = 'MavenMaven::ContentsGoal'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'classname' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'NewTask' isAbstract = 'false' supertypes = 'MavenMaven::Task'>
+      <Reference name = 'taskName' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'MavenMaven::AntTaskDef' opposite = ''/>
+      <Reference name = 'attributes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::Attribut' opposite = ''/>
+    </Class>
+    <Class name = 'Attribut' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'PreDefinedTask' isAbstract = 'true' supertypes = 'MavenMaven::Task'>
+      <Attribute name = 'id' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'taskname' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'description' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ExecutionTask' isAbstract = 'true' supertypes = 'MavenMaven::PreDefinedTask'/>
+    <Class name = 'Exec' isAbstract = 'false' supertypes = 'MavenMaven::ExecutionTask'>
+      <Attribute name = 'executable' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'dir' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Java' isAbstract = 'false' supertypes = 'MavenMaven::ExecutionTask'>
+      <Attribute name = 'classname' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'jar' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'fork' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'classPath' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::ClassPath' opposite = ''/>
+    </Class>
+    <Class name = 'MiscellaneousTask' isAbstract = 'true' supertypes = 'MavenMaven::PreDefinedTask'/>
+    <Class name = 'Echo' isAbstract = 'false' supertypes = 'MavenMaven::MiscellaneousTask'>
+      <Attribute name = 'message' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'file' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'append' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Tstamp' isAbstract = 'false' supertypes = 'MavenMaven::MiscellaneousTask'>
+      <Reference name = 'format' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::FormatTstamp' opposite = ''/>
+    </Class>
+    <Class name = 'FormatTstamp' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'property' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'pattern' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'offset' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'unit' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'locale' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'CompileTask' isAbstract = 'true' supertypes = 'MavenMaven::PreDefinedTask'/>
+    <Class name = 'Javac' isAbstract = 'false' supertypes = 'MavenMaven::CompileTask'>
+      <Attribute name = 'srcdir' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'destdir' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'debug' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'fork' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'optimize' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'deprecation' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'inExcludes' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::InExcludes' opposite = ''/>
+      <Reference name = 'classPath' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::ClassPath' opposite = ''/>
+    </Class>
+    <Class name = 'DocumentationTask' isAbstract = 'true' supertypes = 'MavenMaven::PreDefinedTask'/>
+    <Class name = 'Javadoc' isAbstract = 'false' supertypes = 'MavenMaven::DocumentationTask'>
+      <Attribute name = 'sourcepath' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'destdir' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'packagenames' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'defaultexcludes' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'author' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'version' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'use' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'windowtitle' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'ArchiveTask' isAbstract = 'true' supertypes = 'MavenMaven::PreDefinedTask'/>
+    <Class name = 'Jar' isAbstract = 'false' supertypes = 'MavenMaven::ArchiveTask'>
+      <Attribute name = 'jarfile' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'basedir' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'compress' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'encoding' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'manifest' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'FileTask' isAbstract = 'true' supertypes = 'MavenMaven::PreDefinedTask'/>
+    <Class name = 'Mkdir' isAbstract = 'false' supertypes = 'MavenMaven::FileTask'>
+      <Attribute name = 'dir' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Copy' isAbstract = 'false' supertypes = 'MavenMaven::FileTask'>
+      <Attribute name = 'file' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'presservelastmodified' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'tofile' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'todir' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'overwrite' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'filtering' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'flatten' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'includeEmptyDirs' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'fileset' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::FileSet' opposite = ''/>
+      <Reference name = 'filterset' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::FilterSet' opposite = ''/>
+      <Reference name = 'mapper' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'MavenMaven::Mapper' opposite = ''/>
+    </Class>
+    <Class name = 'Delete' isAbstract = 'false' supertypes = 'MavenMaven::FileTask'>
+      <Attribute name = 'file' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'dir' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'verbose' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'quiet' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'failonerror' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'includeEmptyDirs' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'includes' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'includesfile' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'excludes' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'excludesfile' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'defaultexcludes' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

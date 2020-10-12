@@ -1,0 +1,194 @@
+-- @name		DOT
+-- @version		1.0
+-- @domains		Graphviz Tools
+-- @authors		Jean Paliès
+-- @date		2005/06/30	
+-- @description	Dot is an automatic graph layout program from Graphviz. It can be used to create graphical files, such as PS, PNG... out of its layout.
+-- @see			http://www.graphviz.org
+
+
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+	datatype Double;
+}
+
+package DOT {
+
+-- Labels
+	abstract class Label {
+		reference element : GraphElement oppositeOf label;
+	}
+	
+	class SimpleLabel extends Label {
+		attribute content : String;
+	}
+	
+	class ComplexLabel extends Label {
+		reference compartments[1-*] ordered container : Compartment oppositeOf complexLabel;
+	}
+	
+	abstract class Compartment {
+		reference complexLabel : ComplexLabel oppositeOf compartments;
+		reference compartments[0-1] container : Compartment;
+		reference anchor[0-1] : Anchor oppositeOf source;
+	}
+	
+	class VerticalCompartment extends Compartment {
+	}
+	
+	class HorizontalCompartment extends Compartment {
+	}
+	
+	class SimpleCompartment extends Compartment {
+		attribute content : String;
+	}
+	
+	class Anchor {
+		attribute name : String;
+		reference source[0-1] : Compartment oppositeOf anchor;
+	}
+-- End Labels
+
+-- GraphElements
+	abstract class GraphElement {
+		attribute name : String;
+		reference label[0-1] container : Label oppositeOf element;
+		attribute style[0-1] : String; -- invis | filled | rounded | diagonals | dashed | dotted | none
+		attribute color[0-1] : String;
+	}
+
+	class Graph extends GraphElement {
+		attribute type : String; -- digraph | graph
+		attribute rankDir[0-1] : String;
+		attribute labeljust[0-1] : String;
+		attribute labelloc[0-1] : String;
+		attribute concentrate[0-1] : Boolean;
+		reference nodes[*] ordered container : Nodelike oppositeOf graph;
+		attribute boundingBox[0-1] : String;
+		attribute compound[0-1] : Boolean;
+		reference layers[*] container : Layer oppositeOf graph;
+		attribute nodeSeparation[0-1] : Double;
+		attribute ordering[0-1] : String;
+		attribute size[0-1] : String;
+		attribute ratio[0-1] : String;
+		attribute center[0-1] : Boolean;
+	}
+	
+	class Layer extends GraphElement {
+		reference nodes[*] : Nodelike oppositeOf layers;
+		reference arcs[*] : Arc oppositeOf layers;
+		reference graph : Graph oppositeOf layers;
+		attribute layerSeparator[0-1] : String;
+	}
+	-- Nodelikes
+	abstract class Nodelike extends GraphElement {
+		reference owner[0-1] : SubGraph oppositeOf nodes;
+		reference refers[*] : Arc oppositeOf fromNode;
+		reference referredBy[*] : Arc oppositeOf toNode;
+		reference graph[0-1] : Graph oppositeOf nodes;
+		reference layers[*] : Layer oppositeOf nodes;
+	}
+	
+	class SubGraph extends Nodelike {
+		reference nodes[*] ordered container : Nodelike oppositeOf owner;
+		attribute labelloc[0-1] : String;
+	}
+
+	class Node extends Nodelike {
+		attribute fixedSize[0-1] : Boolean;
+		attribute fontname[0-1] : String;
+		attribute fontsize[0-1] : Integer;
+		attribute height[0-1] : Integer;
+		attribute width[0-1] : Integer;
+		reference shape[0-1] container : NodeShape;
+	}
+	-- End Nodelikes
+	
+	-- Arcs
+	abstract class Arc extends GraphElement {
+		reference fromNode : Nodelike oppositeOf refers;
+		reference toNode : Nodelike oppositeOf referredBy;
+		reference layers[*] : Layer oppositeOf arcs;
+		attribute constraint[0-1] : Boolean;
+		attribute group[0-1] : String;
+		attribute minlen[0-1] : Integer;
+		attribute sameHead[0-1] : String;
+		attribute sameTail[0-1] : String;
+		reference lhead[0-1] : Nodelike; -- if self.lhead.oclIsKindOf(DOT!SubGraph) or self.ltail.oclIsKindOf(DOT!SubGraph) then
+		reference ltail[0-1] : Nodelike; -- self.getEnclosingGraph().compound else false endif
+		attribute decorate[0-1] : Boolean;
+	}
+	
+	class DirectedArc extends Arc {
+		reference arrowHead[0-1] container : ArrowShape;
+		reference headlabel[0-1] : Label;
+		reference taillabel[0-1] : Label;
+		reference arrowTail[0-1] container : ArrowShape;
+		attribute tail_lp[0-1] : Double;
+		attribute head_lp[0-1] : Double;
+	}
+	
+	class UndirectedArc extends Arc {
+	}
+	-- End Arcs
+	
+	-- Shapes
+	abstract class Shape extends GraphElement {
+		attribute width : Integer;
+		attribute height : Integer;
+		attribute peripheries : Integer;
+	}
+	
+	abstract class NodeShape extends Shape {
+	}
+	
+	
+	-- name may be : box | ellipse | circle | egg | triangle | plaintext | none
+	-- 	diamond | trapezium | parallelogram | house | pentagon | hexagon | septagon |
+	-- 	octagon | doublecircle | doubleoctagon | tripleoctagon | invtriangle |
+	-- 	invtrapezium | invhouse | rect | rectangle
+	-- These shapes have not been used, as for a class diagram they are not needed.
+	class SimpleNodeShape extends NodeShape {
+	}
+	
+	class PointNodeShape extends NodeShape {
+	}
+
+	abstract class ComplexNodeShape extends NodeShape {
+	}
+	
+	-- name = polygon
+	class PolygonNodeShape extends ComplexNodeShape {
+		attribute sides : Integer;
+		attribute skew : Integer;
+		attribute distortion : Integer;
+		attribute isRegular : Boolean;
+		attribute orientation : Integer;
+	}
+	
+	-- name may be  : Mdiamond | Msquare | Mcircle
+	class MNodeShape extends ComplexNodeShape {
+		reference toplabel[0-1] container : Label;
+		reference bottomlabel[0-1] container : Label;
+	}
+	
+	-- name may be  : record | Mrecord
+	class RecordNodeShape extends ComplexNodeShape {
+	}
+
+	-- Arrow Shape  :
+		-- Name may be : box | crow | diamond | dot | inv | none | normal | tee | vee
+		-- Clipping : left | right | none
+		-- Clipping other than none has no sense with arrowShapes  : dot | none
+		-- isPlain = false has no sense with arrowShapes  : crow | none | tee | vee
+	class ArrowShape extends Shape {
+		attribute clipping : String;
+		attribute isPlain : Boolean;
+		attribute size : Integer;
+	}
+	-- End Shapes
+-- End GraphElements
+}

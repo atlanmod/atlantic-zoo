@@ -1,0 +1,185 @@
+universe ebXML_MultyPartyCollaboration
+
+	function partners(a : ebXML_MultyPartyCollaboration, b : ebXML_BusinessPartnerRole) -> Bool
+
+	universe ebXML_BusinessPartnerRole
+
+	function collaboration(a : ebXML_BusinessPartnerRole, b : ebXML_MultyPartyCollaboration) -> Bool
+
+	function transition(a : ebXML_BusinessPartnerRole, b : ebXML_Transaction) -> Bool
+
+	function performers(a : ebXML_BusinessPartnerRole, b : ebXML_Performs) -> Bool
+
+	universe ebXML_Performs
+
+	function performedBy(a : ebXML_Performs, b : ebXML_BusinessPartnerRole) -> Bool
+
+	function collaboration(a : ebXML_Performs, b : ebXML_BinaryCollaboration) -> Bool
+
+	function role(a : ebXML_Performs, b : ebXML_AuthorizedRole) -> Bool
+
+	universe ebXML_AuthorizedRole
+
+	function isInitiator(a : ebXML_AuthorizedRole, b : Boolean) -> Bool
+
+	function performers(a : ebXML_AuthorizedRole, b : ebXML_Performs) -> Bool
+
+	universe ebXML_Transaction
+
+	function onInitiation(a : ebXML_Transaction, b : String) -> Bool
+
+	function conditionGuard(a : ebXML_Transaction, b : String) -> Bool
+
+	function conditionExpression(a : ebXML_Transaction, b : String) -> Bool
+
+	function from(a : ebXML_Transaction, b : ebXML_BusinessState) -> Bool
+
+	function to(a : ebXML_Transaction, b : ebXML_BusinessState) -> Bool
+
+	universe ebXML_BinaryCollaboration
+
+	function pattern(a : ebXML_BinaryCollaboration, b : String) -> Bool
+
+	function timeToPerform(a : ebXML_BinaryCollaboration, b : String) -> Bool
+
+	function preCondition(a : ebXML_BinaryCollaboration, b : String) -> Bool
+
+	function postCondition(a : ebXML_BinaryCollaboration, b : String) -> Bool
+
+	function beginsWhen(a : ebXML_BinaryCollaboration, b : String) -> Bool
+
+	function endsWhen(a : ebXML_BinaryCollaboration, b : String) -> Bool
+
+	function roles(a : ebXML_BinaryCollaboration, b : ebXML_Performs) -> Bool
+
+	function transitions(a : ebXML_BinaryCollaboration, b : ebXML_Transaction) -> Bool
+
+	function states(a : ebXML_BinaryCollaboration, b : ebXML_BusinessState) -> Bool
+
+	universe ebXML_BusinessState
+
+	function collaboration(a : ebXML_BusinessState, b : ebXML_BinaryCollaboration) -> Bool
+
+	function from(a : ebXML_BusinessState, b : ebXML_AuthorizedRole) -> Bool
+
+	function to(a : ebXML_BusinessState, b : ebXML_AuthorizedRole) -> Bool
+
+	universe ebXML_Start < ebXML_BusinessState
+
+	universe ebXML_Fork < ebXML_BusinessState
+
+	function waitForAll(a : ebXML_Fork, b : String) -> Bool
+
+	universe ebXML_Join < ebXML_BusinessState
+
+	universe ebXML_CompletionState < ebXML_BusinessState
+
+	function guardCondition(a : ebXML_CompletionState, b : String) -> Bool
+
+	universe ebXML_Failure < ebXML_CompletionState
+
+	universe ebXML_Success < ebXML_CompletionState
+
+	universe ebXML_BusinessActivity < ebXML_BusinessState
+
+	universe ebXML_BusinessTransactionActivity < ebXML_BusinessActivity
+
+	function timeToPerform(a : ebXML_BusinessTransactionActivity, b : String) -> Bool
+
+	function isConcurrent(a : ebXML_BusinessTransactionActivity, b : Boolean) -> Bool
+
+	function isLegallyBinding(a : ebXML_BusinessTransactionActivity, b : Boolean) -> Bool
+
+	function use(a : ebXML_BusinessTransactionActivity, b : ebXML_BusinessTransaction) -> Bool
+
+	universe ebXML_CollaborationActivity < ebXML_BusinessActivity
+
+	function use(a : ebXML_CollaborationActivity, b : ebXML_BinaryCollaboration) -> Bool
+
+	universe ebXML_BusinessTransaction
+
+	function pattern(a : ebXML_BusinessTransaction, b : String) -> Bool
+
+	function isGuaranteedDeliveryRequired(a : ebXML_BusinessTransaction, b : Boolean) -> Bool
+
+	function preCondition(a : ebXML_BusinessTransaction, b : String) -> Bool
+
+	function postCondition(a : ebXML_BusinessTransaction, b : String) -> Bool
+
+	function beginsWhen(a : ebXML_BusinessTransaction, b : String) -> Bool
+
+	function endsWhen(a : ebXML_BusinessTransaction, b : String) -> Bool
+
+	function requester(a : ebXML_BusinessTransaction, b : ebXML_RequestingBusinessActivity) -> Bool
+
+	function responder(a : ebXML_BusinessTransaction, b : ebXML_RespondingBusinessActivity) -> Bool
+
+	universe ebXML_BusinessAction
+
+	function isIntelligiblecheckRequired(a : ebXML_BusinessAction, b : Boolean) -> Bool
+
+	function isAuthorizationRequired(a : ebXML_BusinessAction, b : Boolean) -> Bool
+
+	function timeToAcknowledgeReceipt(a : ebXML_BusinessAction, b : String) -> Bool
+
+	function isNonRepudiationRequired(a : ebXML_BusinessAction, b : Boolean) -> Bool
+
+	function isNonRepudiationOfRecipientRequired(a : ebXML_BusinessAction, b : Boolean) -> Bool
+
+	universe ebXML_RequestingBusinessActivity < ebXML_BusinessAction
+
+	function timeToAcknowledgeAcceptance(a : ebXML_RequestingBusinessActivity, b : String) -> Bool
+
+	function transaction(a : ebXML_RequestingBusinessActivity, b : ebXML_BusinessTransaction) -> Bool
+
+	function documentEnvelope(a : ebXML_RequestingBusinessActivity, b : ebXML_DocumentEnvelope) -> Bool
+
+	universe ebXML_RespondingBusinessActivity < ebXML_BusinessAction
+
+	function transaction(a : ebXML_RespondingBusinessActivity, b : ebXML_BusinessTransaction) -> Bool
+
+	function documentEnvelope(a : ebXML_RespondingBusinessActivity, b : ebXML_DocumentEnvelope) -> Bool
+
+	universe ebXML_DocumentSecurity
+
+	function isConfidential(a : ebXML_DocumentSecurity, b : Boolean) -> Bool
+
+	function isTamperProof(a : ebXML_DocumentSecurity, b : Boolean) -> Bool
+
+	function isAuthenticated(a : ebXML_DocumentSecurity, b : Boolean) -> Bool
+
+	universe ebXML_DocumentEnvelope < ebXML_DocumentSecurity
+
+	function isPositiveResponse(a : ebXML_DocumentEnvelope, b : Boolean) -> Bool
+
+	function requesting(a : ebXML_DocumentEnvelope, b : ebXML_RequestingBusinessActivity) -> Bool
+
+	function responding(a : ebXML_DocumentEnvelope, b : ebXML_RespondingBusinessActivity) -> Bool
+
+	function attachements(a : ebXML_DocumentEnvelope, b : ebXML_Attachment) -> Bool
+
+	function document(a : ebXML_DocumentEnvelope, b : ebXML_BusinessDocument) -> Bool
+
+	universe ebXML_Attachment < ebXML_DocumentSecurity
+
+	function mimeType(a : ebXML_Attachment, b : String) -> Bool
+
+	function specification(a : ebXML_Attachment, b : String) -> Bool
+
+	function version(a : ebXML_Attachment, b : String) -> Bool
+
+	function envelope(a : ebXML_Attachment, b : ebXML_DocumentEnvelope) -> Bool
+
+	function document(a : ebXML_Attachment, b : ebXML_BusinessDocument) -> Bool
+
+	universe ebXML_BusinessDocument
+
+	function specificationLocation(a : ebXML_BusinessDocument, b : String) -> Bool
+
+	function specificationElement(a : ebXML_BusinessDocument, b : String) -> Bool
+
+	function conditionExpression(a : ebXML_BusinessDocument, b : String) -> Bool
+
+	function envelopes(a : ebXML_BusinessDocument, b : ebXML_DocumentEnvelope) -> Bool
+
+	function attachments(a : ebXML_BusinessDocument, b : ebXML_Attachment) -> Bool

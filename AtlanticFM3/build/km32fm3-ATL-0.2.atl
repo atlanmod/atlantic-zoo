@@ -1,0 +1,261 @@
+-- @atlcompiler atl2006
+-- ******************************************************************************
+-- Copyright (c) 2006 INRIA. 
+-- All rights reserved. This program and the accompanying materials 
+-- are made available under the terms of the Eclipse Public License v1.0 
+-- which accompanies this distribution, and is available at
+-- http://www.eclipse.org/legal/epl-v10.html
+-- 
+-- Contributors: 
+-- 	INRIA - Initial implementation
+--  
+-- ******************************************************************************
+--@author Guillaume Doux (Guillaume.Doux <at> gmail.com)
+module KM32FM3;
+create OUT : FM3 from IN : KM3;
+
+helper context KM3!Class def: getAllFeatures : Sequence(KM3!StructuralFeatures) =
+  if self.supertypes->isEmpty() then
+    self.structuralFeatures
+  else
+    self.structuralFeatures->union(self.supertypes->collect(c |
+      c.getAllFeatures
+    )->flatten())
+  endif;
+
+helper def: allPackages : Sequence(KM3!Package) =
+  KM3!Package.allInstancesFrom('IN');
+
+helper def: allClasses : Sequence(KM3!Class) =
+  KM3!ModelElement.allInstancesFrom('IN');
+
+helper def: IDMap : Map(KM3!Class, Integer) =
+  thisModule.allClasses->iterate(c; acc : Map(KM3!Class, Integer) = Map {} |
+    acc->including(c, acc->getKeys()->size() + 1)
+  );
+
+helper context KM3!ModelElement def: getID : Integer =
+  thisModule.IDMap->get(self);
+
+helper context KM3!Package def: getFullName : String =
+  if self.package.oclIsUndefined() then
+    self.name
+  else
+    self.package.getFullName + '.' + self.name
+  endif;
+
+helper def: getMetamodel : KM3!Metamodel =
+  KM3!Metamodel.allInstancesFrom('IN')->first();
+
+helper def: stringTypeList : Sequence(String) =
+  Sequence {'ESTRING', 'STRING'};
+
+helper def: numberTypeList : Sequence(String) =
+  Sequence {'NUMBER', 'INTEGER', 'EINTEGER', 'DOUBLE', 'EDOUBLE', 'FLOAT', 'EFLOAT'};
+
+rule Metamodel2Root {
+  from
+    s : KM3!Metamodel
+  to
+    t : FM3!Root (
+      elements <- thisModule.allPackages -->including(rc).debug('here')	
+      -->including(rc).debug('here')	
+      
+    ),
+    rc : FM3!Class (
+      abstract <- false,
+      primitive <- false,
+      name <- 'Object',
+      fullName <- 'Object',
+      root <- true,
+      attributes <- Sequence {},
+      allAttributes <- Sequence {},
+      ID <- 0,
+      owner <- OclUndefined
+    )
+}
+
+rule Package2Package {
+  from
+    s : KM3!Package
+    (
+      not s.name.toUpper().startsWith('PRIMITIVETYPE')
+    )
+  to
+    t : FM3!Package (
+      name <- s.name,
+      fullName <- s.name,
+      --no sub-package in FM3 ?
+      owner <- OclUndefined,
+      classes <- s.contents->select(c |
+        not c.oclIsKindOf(KM3!Package)
+      ),
+      --maybe KM3!Class / probably no Datatype definition in FM3 ??
+      extensions <- Sequence {},
+      -- no support in KM3
+      ID <- s.getID
+    )
+}
+
+rule Class2Class {
+  from
+    s : KM3!Class
+    (
+      not s.supertypes->isEmpty()
+    )
+  to
+    t : FM3!Class (
+      name <- s.name,
+      fullName <- s.package.getFullName + '.' + s.name,
+      owner <- s.package,
+      abstract <- s.isAbstract,
+      primitive <- false,
+      root <- false,
+      superclass <- s.supertypes->collect(c |
+        thisModule.createFullClassRef(c)
+      ),
+      package <- s.package,
+      attributes <- s.structuralFeatures,
+      allAttributes <- s.getAllFeatures,
+      ID <- s.getID
+    )
+}
+
+rule Class2Classbis {
+  from
+    s : KM3!Class
+    (
+      s.supertypes->isEmpty()
+    )
+  to
+    t : FM3!Class (
+      name <- s.name,
+      fullName <- s.package.getFullName + '.' + s.name,
+      owner <- s.package,
+      abstract <- s.isAbstract,
+      primitive <- false,
+      root <- false,
+      superclass <- rc,
+      package <- s.package,
+      attributes <- s.structuralFeatures,
+      allAttributes <- s.getAllFeatures,
+      ID <- s.getID
+    ),
+    rc : FM3!PTClassRef (
+      name <- 'Object'
+    )
+}
+
+rule DataType2Class {
+  from
+    s : KM3!DataType
+    (
+      not(thisModule.numberTypeList->includes(s.name.toUpper()) or thisModule.stringTypeList->includes(s.name.toUpper()))
+    )
+  to
+    t : FM3!Class (
+      name <- s.name,
+      fullName <- s.package.getFullName + '.' + s.name,
+      owner <- s.package,
+      abstract <- false,
+      primitive <- true,
+      root <- false,
+      superclass <- rc,
+      package <- s.package,
+      ID <- s.getID
+    ),
+    rc : FM3!PTClassRef (
+      name <- 'Object'
+    )
+}
+
+rule Enumeration2Class {
+  from
+    s : KM3!Enumeration
+  to
+    t : FM3!Class (
+      name <- s.name,
+      fullName <- s.package.getFullName + '.' + s.name,
+      owner <- s.package,
+      abstract <- false,
+      primitive <- true,
+      root <- false,
+      superclass <- rc,
+      package <- s.package,
+      ID <- s.getID
+    ),
+    rc : FM3!PTClassRef (
+      name <- 'Object'
+    )
+}
+
+rule Attribute2Property {
+  from
+    s : KM3!Attribute
+  to
+    t : FM3!Property (
+      name <- s.name,
+      fullName <- s.owner.package.getFullName + '.' + s.owner.name + '.' + s.name,
+      owner <- s.owner,
+      composite <- false,
+      container <- false,
+      derived <- false,
+      multivaluated <- not(s.upper = 0),
+      class <- s.owner,
+      type <- tp,
+      package <- s.package,
+      opposite <- OclUndefined,
+      ID <- s.getID
+    ),
+    tp : FM3!PTClassRef (
+      name <- if thisModule.numberTypeList->includes(s.type.name.toUpper()) then
+        'Number'
+      else
+        if thisModule.stringTypeList->includes(s.type.name.toUpper()) then
+          'String'
+        else
+          s.type.name
+        endif
+      endif
+    )
+}
+
+rule Reference2Property {
+  from
+    s : KM3!Reference
+  to
+    t : FM3!Property (
+      name <- s.name,
+      fullName <- s.owner.package.getFullName + '.' + s.owner.name + '.' + s.name,
+      owner <- s.owner,
+      composite <- s.isContainer,
+      container <- if s.opposite.oclIsUndefined() then
+        false
+      else
+        s.opposite.isContainer
+      endif,
+      derived <- false,
+      multivaluated <- not(s.upper = 0),
+      class <- s.owner,
+      type <- tp,
+      package <- s.package,
+      opposite <- if s.opposite.oclIsUndefined() then
+        OclUndefined
+      else
+        thisModule.createFullClassRef(s.opposite)
+      endif,
+      ID <- s.getID
+    ),
+    tp : FM3!FullClassRef (
+      class <- s.type
+    )
+}
+
+lazy rule createFullClassRef {
+  from
+    s : KM3!ModelElement
+  to
+    tp : FM3!FullClassRef (
+      class <- s
+    )
+}

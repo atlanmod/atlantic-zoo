@@ -1,0 +1,82 @@
+package Metamodel;
+
+package CWMCore {
+  enum VisibilityKind {
+    vk_public_vis = 0;
+    vk_private_vis = 0;
+    vk_protected_vis = 0;
+  }
+
+  class BooleanExpression {
+    !unique !ordered attr String[1] expresssion;
+  }
+
+  class ModelElement {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr VisibilityKind[1] visibility;
+    !ordered ref Constraint[*]#constrainedElements contraints;
+    !ordered ref Dependency[*]#clients clientDependencies;
+    !ordered ref Dependency[*]#suppliers supplierDependencies;
+    !ordered ref NameSpace#ownedElements namespace;
+    !ordered ref Package[*]#importedElements importers;
+  }
+
+  class Dependency extends ModelElement {
+    !unique !ordered attr String[1] kind;
+    !ordered ref ModelElement[+]#clientDependencies clients;
+    !ordered ref ModelElement[+]#supplierDependencies suppliers;
+  }
+
+  class Constraint extends ModelElement {
+    !ordered val BooleanExpression[1] body;
+    !ordered ref ModelElement[*]#contraints constrainedElements;
+  }
+
+  class Feature extends ModelElement {
+    !ordered ref Classifier#features owner;
+  }
+
+  class StructuralFeature extends Feature {
+    !ordered ref Classifier[1] type;
+  }
+
+  class Attribute extends StructuralFeature {
+  }
+
+  class NameSpace extends ModelElement {
+    !ordered val ModelElement[*]#namespace ownedElements;
+  }
+
+  class Classifier extends NameSpace {
+    val Feature[*]#owner features;
+  }
+
+  class Package extends NameSpace {
+    !ordered ref ModelElement[*]#importers importedElements;
+  }
+
+  class Class extends Classifier {
+  }
+
+  class Datatype extends Classifier {
+  }
+
+  class Subsystem extends Classifier, Package {
+  }
+
+  class Model extends Package {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

@@ -1,0 +1,69 @@
+-- @name		JAVA3
+-- @version		0.1
+-- @domains		Object-oriented programming, Java
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/11
+-- @description	This basic metamodel describes JAVA. The Java language is an object-oriented programming language created by James Gosling and other engineers at Sun Microsystems. It was developed in 1991, as part of the Green Project, and officially announced on May 23 1995, at SunWorld; being released in November. Gosling and friends initially designed Java, which was called Oak at first (in honor of a tree outside Gosling s office), to replace C++ (although the feature set better resembles that of Objective C). The Java specifications are community-maintained through the Sun-managed Java Community Process. Sun holds a trademark on the Java name. The Java software plays three crucial roles or identities in the field of software: as a programming language, as middleware, as a platform. A crucial component of Java is the Java Virtual Machine (JVM). The availability of the JVM on almost all types of device, chips and software package enables Java to function both as middleware and a computing platform. The JVM enables Java to be "platform independent" since the JVM on each device/chip interprets the standard Java bytecode. This means you can develop code on your PC and expect it to run on Java-enabled phones as well as on mainframes equipped with Java without any adjustments. Hence the expression "Write once, run anywhere." This also represents a huge amount of savings for software developers as code can be developed locally and cheaply.
+
+package JAVA {
+
+	abstract class Modifier {
+		attribute visibility : String;
+		attribute state : String;
+		attribute name : String;
+	}
+	
+	class Class extends Modifier {
+		reference superClass[0-1] : Class;
+		reference implement[*] : Interface oppositeOf implementedBy;
+		reference methods[*] container : Method oppositeOf "class";
+		reference fields[*] container : Field oppositeOf "class";
+	}
+	
+	class Interface extends Modifier {
+		reference superInterface[*] : Interface;
+		reference implementedBy[*] : Class oppositeOf implement;
+		reference abstractMethods[*] container : Method oppositeOf interface;
+		reference constants[*] container : Field oppositeOf interface;
+	}
+	
+	class Method extends Modifier {
+		attribute share : Boolean;
+		reference "class" : Class oppositeOf methods;
+		reference interface : Interface oppositeOf abstractMethods;
+		reference resultOf[0-1] : Type;
+		reference parameters[*] container : Parameter oppositeOf owner;
+	}
+	
+	class Field extends Modifier {
+		attribute share : Boolean;
+		reference "class" : Class oppositeOf fields;
+		reference interface : Interface oppositeOf constants;
+		reference value container : Value;
+		reference typeOf : Type;
+	}
+	
+	class Value {}
+	
+	class Parameter {
+		attribute name : String;
+		reference typeOf[0-1] : Type;
+		reference owner : Method oppositeOf parameters;
+	}
+	
+	class Type {}
+	
+	class ReferenceType extends Type {
+		reference "reference" : Class;
+	}
+	
+	class PrimitiveType extends Type {}
+	
+	class Int extends PrimitiveType {}
+
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+}

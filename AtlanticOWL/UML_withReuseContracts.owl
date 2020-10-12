@@ -1,0 +1,111 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<rdf:RDF xmlns:rdf = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:rdfs = 'http://www.w3.org/2000/01/rdf-schema#' xmlns:xsd = 'http://www.w3.org/2001/XMLSchema#' xmlns:owl = 'http://www.w3.org/2002/07/owl#' xmlns = 'http://example.org/UMLWithReuseContrats#' xml:base = 'http://example.org/UMLWithReuseContrats'>
+  <owl:Ontology rdf:about = 'UMLWithReuseContrats'/>
+  <owl:Class rdf:ID = 'BasicReuser'>
+    <rdfs:label>BasicReuser</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#ReuserClause'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Dependency'>
+    <rdfs:label>Dependency</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Dependency.subDependency'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Dependency.owningDependency'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#Dependency.owningDependency'/>
+        <owl:maxCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:maxCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'ReuserClause'>
+    <rdfs:label>ReuserClause</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Package'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'CompositeReuser'>
+    <rdfs:label>CompositeReuser</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#ReuserClause'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#CompositeReuser.subreuser'/>
+        <owl:minCardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>0</owl:minCardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'Package'>
+    <rdfs:label>Package</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID = 'BasicProvider'>
+    <rdfs:label>BasicProvider</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#ProviderClause'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'ReuseContract'>
+    <rdfs:label>ReuseContract</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Dependency'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ReuseContract.supplier'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#ReuseContract.client'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID = 'ProviderClause'>
+    <rdfs:label>ProviderClause</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#Package'/>
+  </owl:Class>
+  <owl:Class rdf:ID = 'CompositeProvider'>
+    <rdfs:label>CompositeProvider</rdfs:label>
+    <rdfs:subClassOf rdf:resource = '#ProviderClause'/>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource = '#CompositeProvider.subcontract'/>
+        <owl:cardinality  rdf:datatype = 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger'>1</owl:cardinality >
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID = 'ReuseContract.supplier'>
+    <rdfs:domain rdf:resource = '#ReuseContract'/>
+    <rdfs:range rdf:resource = '#ProviderClause'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'ReuseContract.client'>
+    <rdfs:domain rdf:resource = '#ReuseContract'/>
+    <rdfs:range rdf:resource = '#ReuserClause'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Dependency.owningDependency'>
+    <rdfs:domain rdf:resource = '#Dependency'/>
+    <rdfs:range rdf:resource = '#Dependency'/>
+    <owl:inverseOf rdf:resource = '#Dependency.subDependency'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'Dependency.subDependency'>
+    <rdfs:domain rdf:resource = '#Dependency'/>
+    <rdfs:range rdf:resource = '#Dependency'/>
+    <owl:inverseOf rdf:resource = '#Dependency.owningDependency'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'CompositeProvider.subcontract'>
+    <rdfs:domain rdf:resource = '#CompositeProvider'/>
+    <rdfs:range rdf:resource = '#ReuseContract'/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID = 'CompositeReuser.subreuser'>
+    <rdfs:domain rdf:resource = '#CompositeReuser'/>
+    <rdfs:range rdf:resource = '#ReuserClause'/>
+  </owl:ObjectProperty>
+  <owl:FunctionalProperty rdf:about = '#CompositeProvider.subcontract'/>
+  <owl:FunctionalProperty rdf:about = '#ReuseContract.supplier'/>
+  <owl:FunctionalProperty rdf:about = '#ReuseContract.client'/>
+  <owl:SymmetricProperty rdf:about = '#Dependency.owningDependency'/>
+  <owl:SymmetricProperty rdf:about = '#Dependency.subDependency'/>
+</rdf:RDF>

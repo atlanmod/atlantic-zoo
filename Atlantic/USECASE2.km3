@@ -1,0 +1,96 @@
+-- @name		USECASE2
+-- @version		1.0
+-- @authors		Youssef Srour (Srour.youssef@gmail.com)
+-- @date		2006/07/19
+-- @description	This KM3 file shows the requirements metamodel, which is an extension to the use case concept of UML. It relates a use case with interacting roles, scenarios that detail the use case, conditions for the use case, goals for the use case, and the requirements represented by the use case.
+-- @see  		http://www.modelbased.net/comet/requirements_modelling/3c_Requirements_metamodel_html.html
+
+package USECASEUML{
+
+-- Begin class Requirement
+	class Requirement{
+	
+	}--End class Requirement
+
+-- Begin class NonFunctionnelRequirement
+	class NonFunctionnelRequirement extends Requirement {
+		reference scopes [*] : UseCase oppositeOf scoped_by;
+	}--End class NonFunctionnelRequirement
+
+-- Begin class FunctionnelRequirement
+	class FunctionnelRequirement extends Requirement {
+		reference specifies [*] : UseCase oppositeOf specified_by;
+	}--End class FunctionnelRequirement
+
+-- Begin class UseCase
+	class UseCase{
+		reference scenario [*] : ScenarioDescription oppositeOf useCase;
+		reference condition [*] : Condition oppositeOf constrained_with;
+		reference interacter [*] : Role oppositeOf interacted_with;
+		reference specified_by [*] : FunctionnelRequirement oppositeOf specifies;
+		reference scoped_by [*] : NonFunctionnelRequirement oppositeOf scopes;
+		reference meet_by [1-*] : Goal oppositeOf to_meet;
+	}--End class UseCase
+	
+-- Begin class Goal
+	class Goal{
+		reference to_meet [1-*] : UseCase oppositeOf meet_by;
+	}--End class Goal
+
+-- Begin class Role
+	class Role{
+		reference interacted_with [*] : UseCase oppositeOf interacter;
+	}--End class Role
+
+-- Begin class HumanRole
+	class HumanRole extends Role {
+	
+	}--End class HumanRole
+
+-- Begin class SystemRole
+	class SystemRole  extends Role {
+	
+	}--End class SystemRole
+
+-- Begin class EventRole
+	class EventRole extends Role {
+	
+	}--End class EventRole
+
+-- Begin class Manage
+	class Manage extends UseCase {
+		reference managed_Resource [*] : Resource;
+	}--End class Manage
+
+-- Begin class Resouce
+	class Resource{
+	
+	}--End class Resouce
+
+-- Begin class ScenarioDescription
+	class ScenarioDescription{
+		reference useCase : UseCase oppositeOf scenario;
+	}--End class ScenarioDescription
+
+-- Begin class Condition
+	class Condition{
+		reference constrained_with [*] : UseCase oppositeOf condition;
+	}--End class Condition
+
+-- Begin class Pre
+	class Pre extends Condition {
+	
+	}--End class Pre
+
+-- Begin class Post
+	class Post extends Condition {
+	
+	}--End class Post
+
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+	datatype Integer;
+}

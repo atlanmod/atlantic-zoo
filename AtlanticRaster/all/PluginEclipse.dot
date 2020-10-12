@@ -1,0 +1,100 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_PluginEclipse"{
+labelloc=t
+color=black
+label=PluginEclipse
+ node[shape=record];
+LocatedElement[label="{/LocatedElement/|location[0-1] : String\ncommentsBefore[*] : String\ncommentsAfter[*] : String| }"]
+;
+ node[shape=record];
+Eclipse[label="{Eclipse| | }"]
+ Eclipse->Bundle[arrowhead=vee,arrowtail=diamond,headlabel="bundles[1-*]",group=Bundle,minlen=2,constraint=true,]
+ Eclipse->Package[arrowhead=vee,arrowtail=diamond,headlabel="packages[*]",group=Package,minlen=2,constraint=true,]
+ Eclipse->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Bundle[label="{Bundle|symbolicName : String\nsingleton : Boolean\nmanifestVersion : Integer| }"]
+ Bundle->RequiredBundle[arrowhead=vee,arrowtail=diamond,headlabel="require[*]",group=RequiredBundle,minlen=2,constraint=true,]
+ Bundle->Version[arrowhead=vee,arrowtail=diamond,headlabel="version",group=Version,minlen=2,constraint=true,]
+ Bundle->ExportedPackage[arrowhead=vee,arrowtail=diamond,headlabel="export[*]",group=ExportedPackage,minlen=2,constraint=true,]
+ Bundle->ImportedPackage[arrowhead=vee,arrowtail=diamond,headlabel="import[*]",group=ImportedPackage,minlen=2,constraint=true,]
+ Bundle->Package[arrowhead=vee,arrowtail=diamond,headlabel="packages[*]",group=Package,minlen=2,constraint=true,]
+ Bundle->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RequireBundleAttribute[label="{/RequireBundleAttribute/| | }"]
+ RequireBundleAttribute->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AttResolution[label="{AttResolution|value : Resolution| }"]
+ AttResolution->RequireBundleAttribute[arrowhead=onormal,group=RequireBundleAttribute,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AttVisibility[label="{AttVisibility|value : Visibility| }"]
+ AttVisibility->RequireBundleAttribute[arrowhead=onormal,group=RequireBundleAttribute,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Range[label="{Range|isLeftInclusive : Boolean\nisRightInclusive : Boolean| }"]
+ Range->Version[arrowhead=vee,arrowtail=diamond,headlabel="lowerBound",group=Version,minlen=2,constraint=true,]
+ Range->Version[arrowhead=vee,arrowtail=diamond,headlabel="upperBound",group=Version,minlen=2,constraint=true,]
+ Range->RequireBundleAttribute[arrowhead=onormal,group=RequireBundleAttribute,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Version[label="{Version|major : Integer\nminor : Integer\nmicro : Integer\nqualification : String| }"]
+ Version->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RequiredBundle[label="{RequiredBundle| | }"]
+ RequiredBundle->RequireBundleAttribute[arrowhead=vee,arrowtail=diamond,headlabel="requireBundleAttribute[*]",group=RequireBundleAttribute,minlen=2,constraint=true,]
+ RequiredBundle->Bundle[arrowhead=vee,arrowtail=none,headlabel="bundle",group=Bundle,minlen=2,constraint=false,]
+ RequiredBundle->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ImportedPackage[label="{ImportedPackage|resolution : Resolution| }"]
+ ImportedPackage->Range[arrowhead=vee,arrowtail=diamond,headlabel="range[0-1]",group=Range,minlen=2,constraint=true,]
+ ImportedPackage->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExportedPackage[label="{ExportedPackage| | }"]
+ ExportedPackage->Version[arrowhead=vee,arrowtail=diamond,headlabel="version",group=Version,minlen=2,constraint=true,]
+ ExportedPackage->Xfriends[arrowhead=vee,arrowtail=diamond,headlabel="xFriends",group=Xfriends,minlen=2,constraint=true,]
+ ExportedPackage->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Package[label="{Package|fqn : String| }"]
+ Package->ImportedPackage[arrowhead=none,arrowtail=none,headlabel="importedBy[*]",taillabel="package",group=ImportedPackage,minlen=2,constraint=false,]
+ Package->ExportedPackage[arrowhead=none,arrowtail=none,headlabel="exportedBy[0-1]",taillabel="package",group=ExportedPackage,minlen=2,constraint=false,]
+ Package->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+
+
+labelloc=t
+color=black
+label=PluginsEclipse
+ node[shape=record];
+Xfriends[label="{Xfriends| | }"]
+ Xfriends->Bundle[arrowhead=vee,arrowtail=none,headlabel="bundles[1-*]",group=Bundle,minlen=2,constraint=false,]
+ Xfriends->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Xinternal[label="{Xinternal|value : Boolean| }"]
+ Xinternal->ExportedPackage[arrowhead=onormal,group=ExportedPackage,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

@@ -1,0 +1,256 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_Jess"{
+labelloc=t
+color=black
+label=Jess
+ node[shape=record];
+LocatedElement[label="{/LocatedElement/|location[0-1] : String\ncommentsBefore[*] : String\ncommentsAfter[*] : String| }"]
+;
+ node[shape=record];
+Root[label="{Root| | }"]
+ Root->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expressions[*]{ordered}",group=Expression,minlen=2,constraint=true,]
+ Root->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Expression[label="{/Expression/| | }"]
+ Expression->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Integ[label="{Integ|val : Integer| }"]
+ Integ->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Floa[label="{Floa|val : Double| }"]
+ Floa->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Str[label="{Str|val : String| }"]
+ Str->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Ident[label="{/Ident/| | }"]
+ Ident->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ValidIdentifier[label="{ValidIdentifier|val : String| }"]
+ ValidIdentifier->Ident[arrowhead=onormal,group=Ident,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SlotName[label="{SlotName|val : String| }"]
+ SlotName->Ident[arrowhead=onormal,group=Ident,minlen=2,constraint=true,]
+;
+ node[shape=record];
+JessVariable[label="{JessVariable|val : String| }"]
+ JessVariable->Ident[arrowhead=onormal,group=Ident,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TemplateExpression[label="{TemplateExpression| | }"]
+ TemplateExpression->ValidIdentifier[arrowhead=vee,arrowtail=diamond,headlabel="templateName",group=ValidIdentifier,minlen=2,constraint=true,]
+ TemplateExpression->SlotOp[arrowhead=vee,arrowtail=diamond,headlabel="firstSlot",group=SlotOp,minlen=2,constraint=true,]
+ TemplateExpression->SlotOp[arrowhead=vee,arrowtail=diamond,headlabel="slotOp[*]{ordered}",group=SlotOp,minlen=2,constraint=true,]
+ TemplateExpression->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SlotOp[label="{SlotOp| | }"]
+ SlotOp->SlotName[arrowhead=vee,arrowtail=diamond,headlabel="slotIdent",group=SlotName,minlen=2,constraint=true,]
+ SlotOp->ValidIdentifier[arrowhead=vee,arrowtail=diamond,headlabel="operator",group=ValidIdentifier,minlen=2,constraint=true,]
+ SlotOp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="exp",group=Expression,minlen=2,constraint=true,]
+ SlotOp->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DefinitionExp[label="{/DefinitionExp/| | }"]
+ DefinitionExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GlobalDefinition[label="{GlobalDefinition| | }"]
+ GlobalDefinition->VarDefinition[arrowhead=vee,arrowtail=diamond,headlabel="varDef[*]{ordered}",group=VarDefinition,minlen=2,constraint=true,]
+ GlobalDefinition->DefinitionExp[arrowhead=onormal,group=DefinitionExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+VarDefinition[label="{VarDefinition| | }"]
+ VarDefinition->JessVariable[arrowhead=vee,arrowtail=diamond,headlabel="jessVar",group=JessVariable,minlen=2,constraint=true,]
+ VarDefinition->ValidIdentifier[arrowhead=vee,arrowtail=diamond,headlabel="eq",group=ValidIdentifier,minlen=2,constraint=true,]
+ VarDefinition->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expression",group=Expression,minlen=2,constraint=true,]
+ VarDefinition->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FunctionDefinition[label="{FunctionDefinition| | }"]
+ FunctionDefinition->ValidIdentifier[arrowhead=vee,arrowtail=diamond,headlabel="funcName",group=ValidIdentifier,minlen=2,constraint=true,]
+ FunctionDefinition->JessVariable[arrowhead=vee,arrowtail=diamond,headlabel="parameters[*]{ordered}",group=JessVariable,minlen=2,constraint=true,]
+ FunctionDefinition->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expressions[*]{ordered}",group=Expression,minlen=2,constraint=true,]
+ FunctionDefinition->DefinitionExp[arrowhead=onormal,group=DefinitionExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AdviceDefinition[label="{AdviceDefinition|direction : Advice| }"]
+ AdviceDefinition->Ident[arrowhead=vee,arrowtail=diamond,headlabel="op",group=Ident,minlen=2,constraint=true,]
+ AdviceDefinition->Expression[arrowhead=vee,arrowtail=diamond,headlabel="advice[*]{ordered}",group=Expression,minlen=2,constraint=true,]
+ AdviceDefinition->DefinitionExp[arrowhead=onormal,group=DefinitionExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UnDefAdvice[label="{UnDefAdvice| | }"]
+ UnDefAdvice->Expression[arrowhead=vee,arrowtail=diamond,headlabel="op",group=Expression,minlen=2,constraint=true,]
+ UnDefAdvice->DefinitionExp[arrowhead=onormal,group=DefinitionExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FactDefinition[label="{FactDefinition| | }"]
+ FactDefinition->ValidIdentifier[arrowhead=vee,arrowtail=diamond,headlabel="factName",group=ValidIdentifier,minlen=2,constraint=true,]
+ FactDefinition->Str[arrowhead=vee,arrowtail=diamond,headlabel="documentation[0-1]",group=Str,minlen=2,constraint=true,]
+ FactDefinition->Expression[arrowhead=vee,arrowtail=diamond,headlabel="fact[*]{ordered}",group=Expression,minlen=2,constraint=true,]
+ FactDefinition->DefinitionExp[arrowhead=onormal,group=DefinitionExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RuleDefinition[label="{RuleDefinition| | }"]
+ RuleDefinition->ValidIdentifier[arrowhead=vee,arrowtail=diamond,headlabel="ruleName",group=ValidIdentifier,minlen=2,constraint=true,]
+ RuleDefinition->Str[arrowhead=vee,arrowtail=diamond,headlabel="documentation[0-1]",group=Str,minlen=2,constraint=true,]
+ RuleDefinition->DeclareRule[arrowhead=vee,arrowtail=diamond,headlabel="declare[0-1]",group=DeclareRule,minlen=2,constraint=true,]
+ RuleDefinition->Expression[arrowhead=vee,arrowtail=diamond,headlabel="conditions[*]{ordered}",group=Expression,minlen=2,constraint=true,]
+ RuleDefinition->UseFuncExp[arrowhead=vee,arrowtail=diamond,headlabel="functionCall[*]{ordered}",group=UseFuncExp,minlen=2,constraint=true,]
+ RuleDefinition->DefinitionExp[arrowhead=onormal,group=DefinitionExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DeclareRule[label="{DeclareRule| | }"]
+ DeclareRule->Expression[arrowhead=vee,arrowtail=diamond,headlabel="salience[0-1]",group=Expression,minlen=2,constraint=true,]
+ DeclareRule->Expression[arrowhead=vee,arrowtail=diamond,headlabel="nodeIndexHash[0-1]",group=Expression,minlen=2,constraint=true,]
+ DeclareRule->ValidIdentifier[arrowhead=vee,arrowtail=diamond,headlabel="autoFocus[0-1]",group=ValidIdentifier,minlen=2,constraint=true,]
+ DeclareRule->ValidIdentifier[arrowhead=vee,arrowtail=diamond,headlabel="noLoop[0-1]",group=ValidIdentifier,minlen=2,constraint=true,]
+ DeclareRule->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ModuleDefinition[label="{ModuleDefinition| | }"]
+ ModuleDefinition->ValidIdentifier[arrowhead=vee,arrowtail=diamond,headlabel="moduleName",group=ValidIdentifier,minlen=2,constraint=true,]
+ ModuleDefinition->Str[arrowhead=vee,arrowtail=diamond,headlabel="documentation[0-1]",group=Str,minlen=2,constraint=true,]
+ ModuleDefinition->DefinitionExp[arrowhead=onormal,group=DefinitionExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+QueryDefinition[label="{QueryDefinition| | }"]
+ QueryDefinition->ValidIdentifier[arrowhead=vee,arrowtail=diamond,headlabel="queryName",group=ValidIdentifier,minlen=2,constraint=true,]
+ QueryDefinition->Str[arrowhead=vee,arrowtail=diamond,headlabel="documentation[0-1]",group=Str,minlen=2,constraint=true,]
+ QueryDefinition->DeclareVar[arrowhead=vee,arrowtail=diamond,headlabel="declare[0-1]",group=DeclareVar,minlen=2,constraint=true,]
+ QueryDefinition->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expressions[*]{ordered}",group=Expression,minlen=2,constraint=true,]
+ QueryDefinition->DefinitionExp[arrowhead=onormal,group=DefinitionExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DeclareVar[label="{DeclareVar| | }"]
+ DeclareVar->JessVariable[arrowhead=vee,arrowtail=diamond,headlabel="var[*]{ordered}",group=JessVariable,minlen=2,constraint=true,]
+ DeclareVar->Expression[arrowhead=vee,arrowtail=diamond,headlabel="node",group=Expression,minlen=2,constraint=true,]
+ DeclareVar->Expression[arrowhead=vee,arrowtail=diamond,headlabel="max",group=Expression,minlen=2,constraint=true,]
+ DeclareVar->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TemplateDefinition[label="{TemplateDefinition| | }"]
+ TemplateDefinition->ValidIdentifier[arrowhead=vee,arrowtail=diamond,headlabel="templateName",group=ValidIdentifier,minlen=2,constraint=true,]
+ TemplateDefinition->ValidIdentifier[arrowhead=vee,arrowtail=diamond,headlabel="inherits[*]{ordered}",group=ValidIdentifier,minlen=2,constraint=true,]
+ TemplateDefinition->Str[arrowhead=vee,arrowtail=diamond,headlabel="documentation[0-1]",group=Str,minlen=2,constraint=true,]
+ TemplateDefinition->DeclareBloc[arrowhead=vee,arrowtail=diamond,headlabel="declareBloc[0-1]",group=DeclareBloc,minlen=2,constraint=true,]
+ TemplateDefinition->ASlotDef[arrowhead=vee,arrowtail=diamond,headlabel="slotDef[*]",group=ASlotDef,minlen=2,constraint=true,]
+ TemplateDefinition->DefinitionExp[arrowhead=onormal,group=DefinitionExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DeclareBloc[label="{DeclareBloc| | }"]
+ DeclareBloc->ValidIdentifier[arrowhead=vee,arrowtail=diamond,headlabel="slotSpecific[0-1]",group=ValidIdentifier,minlen=2,constraint=true,]
+ DeclareBloc->ValidIdentifier[arrowhead=vee,arrowtail=diamond,headlabel="backchainReaction[0-1]",group=ValidIdentifier,minlen=2,constraint=true,]
+ DeclareBloc->ValidIdentifier[arrowhead=vee,arrowtail=diamond,headlabel="fromClass[0-1]",group=ValidIdentifier,minlen=2,constraint=true,]
+ DeclareBloc->ValidIdentifier[arrowhead=vee,arrowtail=diamond,headlabel="includeVariable[0-1]",group=ValidIdentifier,minlen=2,constraint=true,]
+ DeclareBloc->ValidIdentifier[arrowhead=vee,arrowtail=diamond,headlabel="order[0-1]",group=ValidIdentifier,minlen=2,constraint=true,]
+ DeclareBloc->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ASlotDef[label="{ASlotDef| | }"]
+ ASlotDef->SlotName[arrowhead=vee,arrowtail=diamond,headlabel="slotName",group=SlotName,minlen=2,constraint=true,]
+ ASlotDef->SlotOptions[arrowhead=vee,arrowtail=diamond,headlabel="optionals[*]{ordered}",group=SlotOptions,minlen=2,constraint=true,]
+ ASlotDef->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SlotDef[label="{SlotDef| | }"]
+ SlotDef->ASlotDef[arrowhead=onormal,group=ASlotDef,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MultiSlotDef[label="{MultiSlotDef| | }"]
+ MultiSlotDef->ASlotDef[arrowhead=onormal,group=ASlotDef,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SlotOptions[label="{SlotOptions| | }"]
+ SlotOptions->ValidIdentifier[arrowhead=vee,arrowtail=diamond,headlabel="type",group=ValidIdentifier,minlen=2,constraint=true,]
+ SlotOptions->Expression[arrowhead=vee,arrowtail=diamond,headlabel="def",group=Expression,minlen=2,constraint=true,]
+ SlotOptions->Expression[arrowhead=vee,arrowtail=diamond,headlabel="defaultDyn",group=Expression,minlen=2,constraint=true,]
+ SlotOptions->Expression[arrowhead=vee,arrowtail=diamond,headlabel="allowedValues[*]{ordered}",group=Expression,minlen=2,constraint=true,]
+ SlotOptions->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+UseFuncExp[label="{/UseFuncExp/| | }"]
+ UseFuncExp->Expression[arrowhead=onormal,group=Expression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+WhileExp[label="{WhileExp|hasDo : Boolean| }"]
+ WhileExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="boolExp",group=Expression,minlen=2,constraint=true,]
+ WhileExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="actions[*]{ordered}",group=Expression,minlen=2,constraint=true,]
+ WhileExp->UseFuncExp[arrowhead=onormal,group=UseFuncExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ForExp[label="{ForExp| | }"]
+ ForExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="initializer",group=Expression,minlen=2,constraint=true,]
+ ForExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="condition",group=Expression,minlen=2,constraint=true,]
+ ForExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="increment",group=Expression,minlen=2,constraint=true,]
+ ForExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expressions[*]{ordered}",group=Expression,minlen=2,constraint=true,]
+ ForExp->UseFuncExp[arrowhead=onormal,group=UseFuncExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ForeachExp[label="{ForeachExp| | }"]
+ ForeachExp->JessVariable[arrowhead=vee,arrowtail=diamond,headlabel="var",group=JessVariable,minlen=2,constraint=true,]
+ ForeachExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="list",group=Expression,minlen=2,constraint=true,]
+ ForeachExp->Expression[arrowhead=vee,arrowtail=diamond,headlabel="expressions[*]{ordered}",group=Expression,minlen=2,constraint=true,]
+ ForeachExp->UseFuncExp[arrowhead=onormal,group=UseFuncExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+FuncCall[label="{FuncCall| | }"]
+ FuncCall->ValidIdentifier[arrowhead=vee,arrowtail=diamond,headlabel="funcName",group=ValidIdentifier,minlen=2,constraint=true,]
+ FuncCall->Expression[arrowhead=vee,arrowtail=diamond,headlabel="funcParam[*]{ordered}",group=Expression,minlen=2,constraint=true,]
+ FuncCall->UseFuncExp[arrowhead=onormal,group=UseFuncExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EngineExp[label="{EngineExp| | }"]
+ EngineExp->UseFuncExp[arrowhead=onormal,group=UseFuncExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExitExp[label="{ExitExp| | }"]
+ ExitExp->UseFuncExp[arrowhead=onormal,group=UseFuncExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+IfExpression[label="{IfExpression| | }"]
+ IfExpression->ConditionAction[arrowhead=vee,arrowtail=diamond,headlabel="ifthen",group=ConditionAction,minlen=2,constraint=true,]
+ IfExpression->ElifConditionAction[arrowhead=vee,arrowtail=diamond,headlabel="elifthen[*]{ordered}",group=ElifConditionAction,minlen=2,constraint=true,]
+ IfExpression->Expression[arrowhead=vee,arrowtail=diamond,headlabel="else[*]",group=Expression,minlen=2,constraint=true,]
+ IfExpression->UseFuncExp[arrowhead=onormal,group=UseFuncExp,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConditionAction[label="{ConditionAction| | }"]
+ ConditionAction->Expression[arrowhead=vee,arrowtail=diamond,headlabel="condition",group=Expression,minlen=2,constraint=true,]
+ ConditionAction->Expression[arrowhead=vee,arrowtail=diamond,headlabel="actions[*]{ordered}",group=Expression,minlen=2,constraint=true,]
+ ConditionAction->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ElifConditionAction[label="{ElifConditionAction| | }"]
+ ElifConditionAction->ConditionAction[arrowhead=vee,arrowtail=diamond,headlabel="condAct",group=ConditionAction,minlen=2,constraint=true,]
+ ElifConditionAction->LocatedElement[arrowhead=onormal,group=LocatedElement,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

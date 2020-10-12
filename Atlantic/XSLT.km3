@@ -1,0 +1,93 @@
+-- @name		XSLT
+-- @version		1.1
+-- @domains		XML
+-- @authors		Peter Rosendal (peter.rosenthal@univ-nantes.fr)
+-- @date		2005/06/13
+-- @extends		XML	
+-- @description	This metamodel describes XSLT which is a language for transforming XML documents into other XML documents. It is an extension of the XML metamodel. The main class is called XSLTNode and inherits from ElementNode. The XSLTNode class has sub classes representing XSLT elements, namely xsl:apply-templates, xsl:template, xsl:if, xsl:value-of. For reasons of simplification, several features such as xsl:for-each, xsl:choose, xsl:sort, xsl:copy-of elements have been ignored; this is why these are neither in the metamodel nor in the transformation code.
+-- @see			www.w3.org/TR/xslt
+ 
+package XSLT {
+
+	abstract class Node {
+	   	attribute name : String;
+		reference parentNode[0-1] : ElementNode oppositeOf nodes;
+	}
+
+-- 
+ 
+	class ElementNode extends Node {
+		reference nodes[*] ordered container : Node oppositeOf parentNode;
+
+	}
+
+	class AttributeNode extends Node {
+	}
+
+-- 
+
+	class RootNode extends ElementNode {
+		reference document container : Document oppositeOf document;
+	}
+
+	class TextNode extends ElementNode {
+	   	attribute value : String;
+	}
+
+	abstract class XSLTNode extends ElementNode {
+	}
+
+-- 
+
+	class XSLTRootNode extends RootNode {
+	}
+
+	class Document {
+	   	attribute documentName : String;
+		reference document container : RootNode oppositeOf document;
+	}
+
+--
+
+	class ApplyTemplates extends XSLTNode {
+	   	attribute select : String;
+	}
+
+	class If extends XSLTNode {
+	   	attribute test : String;
+	}
+
+	class Template extends  XSLTNode {
+	   	attribute match : String;
+	}
+
+	class ValueOf extends XSLTNode {
+	   	attribute select : String;
+	}
+
+	class When extends XSLTNode {
+	   	attribute test : String;
+--		reference choose : Choose oppositeOf when; 
+	}
+
+	class Choose extends XSLTNode {
+		reference when container : When;-- oppositeOf choose;
+		reference otherwise container : Otherwise;-- oppositeOf choose;	   	
+	}
+
+	class Otherwise	extends XSLTNode {
+--		reference choose : Choose oppositeOf otherwise; 
+		
+	}
+
+	class Sort extends XSLTNode {
+	   	attribute select: String;
+	}
+
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

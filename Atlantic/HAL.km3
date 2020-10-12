@@ -1,0 +1,254 @@
+-- @name		HAL
+-- @version		1
+-- @domains		Bibliography
+-- @authors		Guillaume Hillairet (g.hillairet@gmail.com)
+-- @date		2006/05/12
+-- @description	This is HAL import metamodel. This metamodel is used to import bibliography into HAL (Hyper Article en Ligne). HAL is a tool for direct scientific communication between researchers. Documents deposited in HAL are not subjected to any peer evaluation; but they should, however, be of sufficient quality to rate submission for publication in a specialized scientific journal. They should be uploaded either by one of the co-authors with the permission of the others or by an authorized person (e.g. librarian) who takes responsibility.The free access to these documents is intended to provide the widest possible diffusion of research work, but the intellectual property remains that of the authors. The users should conform to the usual standards of good academic usage, in the same way as in paper publications: respect of original work, citation of previous work, no plagiarism, etc. 
+-- @see			http://hal.ccsd.cnrs.fr/, http://import.ccsd.cnrs.fr/doc/
+
+package HAL {
+
+	class HAL {
+		reference connexion container : Connexion;
+		reference contents[*] container : Entry;
+	}
+	
+	class Connexion {
+		attribute login : String;
+		attribute password : String;
+	}
+	
+	--@begin Entries
+	abstract class Entry {
+		reference autLab container : AutLabType;
+		reference tampons[*] container : TamponType;	
+	}
+	
+	abstract class Article extends Entry {
+		reference metaArt container : MetaArtType;
+	}
+		
+	--@comment Document recent with integral text dowloaded on HAL
+	class ArticleRecent extends Article {
+		reference fichiers container : DepotsType;
+	}
+	
+	--@comment Old document with integral text downloaded on HAL or the link to integral text available on TEL or ArXiv
+	class ArticleRetro extends Article {
+		attribute dateRedaction : String; --@comment constraint : yyyy | yyyy-mm | yyyy-mm-dd
+		reference fichiers container : AbstractDepot;
+	}
+	
+	--@comment Bibliographical notice
+	class Notice extends Entry {
+		reference metaArtNotice container : MetaArtNoticeType;
+	}
+	--@end Entries
+	--@begin Documents Type
+	
+	--@comment Type 'REFERENCE BIBLIOGRAPHIQUE'
+	abstract class ReferenceBiblioType {}
+	
+	abstract class ArtRevueType extends ReferenceBiblioType {
+		attribute urldoi[0-1] : String;
+		attribute journal : String;
+		attribute volume : String;
+		attribute page : String;
+		attribute annee : String; --@comment Format Date
+	}
+	
+	abstract class WorkshopType extends ReferenceBiblioType {
+		attribute urldoi[0-1] : String;
+		attribute titconf : String;
+		attribute ville[0-1] : String;
+		attribute pays : String;
+		attribute edcom[0-1] : String;
+		attribute annee : String; --@comment Format Date
+		attribute page[0-1] : String;
+		attribute edsci[0-1] : String;
+		attribute serie[0-1] : String;
+	}
+	
+	abstract class ArtOuvrageType extends ReferenceBiblioType {
+		attribute urldoi[0-1] : String;
+		attribute titouv : String;
+		attribute edcom[0-1] : String;
+		attribute annee : String; --@comment Format Date
+		attribute edsci[0-1] : String;
+		attribute serie[0-1] : String;	
+	}
+	
+	abstract class OuvrageType extends ReferenceBiblioType {
+		attribute urldoi[0-1] : String;
+		attribute edcom[0-1] : String;
+		attribute annee : String; --@comment Format Date
+		attribute page : String;
+	}
+	
+	abstract class TheseType extends ReferenceBiblioType {
+		attribute orgthe : String;
+		attribute niveau : String;
+		attribute defencedate : String; --@comment Format Date
+		attribute directeur : String;
+		attribute codirecteur[0-1] : String;
+	}
+	
+	abstract class BrevetType extends ReferenceBiblioType {
+		attribute datebrevet : String; --@comment Format Date
+		attribute numbrevet : String;
+		attribute page : String;
+		attribute pays : String;
+	}
+	
+	abstract class AutreType extends ReferenceBiblioType {
+		attribute urldoi[0-1] : String;
+		attribute annee[0-1] : String;
+		attribute description : String;
+	}
+	
+	class ArtRevue extends ArtRevueType {}
+	class ArtJournal extends ArtRevueType {}
+	class Workshop extends WorkshopType {}
+	class Communication extends WorkshopType {}
+	class Conference extends WorkshopType {}
+	class ArtOuvrage extends ArtOuvrageType {}
+	class Ouvrage extends OuvrageType {}
+	class Brevet extends BrevetType {}
+	class Autre extends AutreType {}
+	class These extends TheseType {}
+	
+	--@end Documents Type
+	--@begin Metadata Article
+	abstract class MetaType {
+		attribute langue : String;
+		attribute title : String;
+		attribute comment[0-1] : String;
+		attribute refInterne[0-1] : String;
+		attribute idext[0-1] : String;	
+		attribute isEpj[0-1] : Integer;
+		attribute isEpl[0-1] : String;
+		attribute classification[0-1] : String;
+		attribute collaboration[0-1] : String;		
+		attribute keyword[0-1] : String;
+		attribute datevisible[0-1] : DateVisibleEnum;
+		attribute financement[0-1] : String;
+		attribute researchteam[0-1] : String;
+	}
+	
+	class MetaArtType extends MetaType {
+		attribute domain : String; --@comment constraint
+		attribute "abstract" : String;
+		reference referenceBiblio[0-1] container : ReferenceBiblioType;  --@comment Si le document est publi?
+	}
+	
+	class MetaArtNoticeType extends MetaType {
+		attribute domain[0-1] : String; --@comment constraint
+		attribute "abstract"[0-1] : String;
+		reference referenceBiblio container : ReferenceBiblioType;	
+	}
+	--@end Metadata Article
+
+	--@begin AutLabType
+	class AutLabType {
+		reference auteurs[1-*] : Auteur;
+		reference laboratoires[1-*] : Laboratoire;
+	}
+	
+	class Auteur {
+		attribute nom : String;
+		attribute prenom : String;
+		attribute autrePrenom[0-1] : String;
+		attribute email[0-1] : String;
+		attribute urlPerso[0-1] : String;
+		reference lab[0-1] : Laboratoire;
+	}
+	
+	class Laboratoire {
+		attribute id : Integer;
+		reference metas container : AbstractMetaLab;
+	}
+	
+	abstract class AbstractMetaLab {}
+	
+	class MetaLab extends AbstractMetaLab {
+		attribute id :String;
+	}
+	
+	class AffiliationType {
+		attribute institution[*] : String;
+		attribute prive[*] : String;
+		attribute ecole[*] : String;
+		attribute universite[*] : String;
+	}
+	--@end AutLabType
+	
+	--@begin Tampons
+	class TamponType {
+		attribute id : String;
+	}
+	--@end Tampons
+	
+	--@begin DateVisible
+	enumeration DateVisibleEnum {
+		literal "15J";
+		literal "1M";
+		literal "3M";
+		literal "1A";
+		literal "2A";
+		literal "JAMAIS";
+	}
+	--@end DateVisible
+	
+	--@begin Depots
+	abstract class AbstractDepot {
+		attribute nom : String;
+	}
+	
+	--@comment File: TEX, PS, PDF, RTF, TXT, DOC ...
+	class Depot extends AbstractDepot {
+		attribute format : FormatEnum;
+	}
+	
+	enumeration FormatEnum {
+		literal "PDF";
+		literal "TEX";
+		literal "DOC";
+		literal "RTF";
+		literal "TXT";
+		literal "PS";
+		literal "ANNEX";
+	}
+	
+	--@comment File: HTML or XML with precision of the main file
+	class DepotWeb extends AbstractDepot {
+		attribute format : FormatWebEnum;
+	}
+	
+	enumeration FormatWebEnum {
+		literal "XML";
+		literal "HTML";
+		literal "HTM";
+	}
+	
+	abstract class AbstractDepotType {}
+	
+	--@comment This type aggregates the files (= integral text) downloaded on HAL
+	class DepotsType extends AbstractDepotType {
+		reference depots[1-*] container : AbstractDepot;
+	}
+	
+	--@comment Link to arXiv or TEL
+	class WebLink extends AbstractDepotType {
+		attribute identifiant : String;
+		reference server container : Server;
+	}
+	
+	class Server {	}
+	--@end Depots
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

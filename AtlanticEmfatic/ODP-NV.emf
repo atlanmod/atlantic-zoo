@@ -1,0 +1,144 @@
+package Metamodel;
+
+package ODPNV {
+  class Node {
+    !unique !ordered attr String[1] location;
+    !ordered val Nucleus[1] manager;
+    !ordered val Capsule[*] capsules;
+  }
+
+  class Nucleus extends EngineeringObject {
+    !ordered ref EngineeringObject[*]#nodeManager otherEngObjects;
+    !ordered ref BEO[*]#beoNodeManager beos;
+  }
+
+  class Capsule {
+    !ordered val EngineeringObject[*] otherEngObjects;
+    !ordered val CapsuleManager[1] capsuleManager;
+    !ordered val ClusterManager[*] clusterManagers;
+    !ordered val Cluster[*] clusters;
+  }
+
+  class EngineeringObject {
+    !ordered ref Nucleus[1]#otherEngObjects nodeManager;
+  }
+
+  class CapsuleManager extends EngineeringObject {
+    !ordered ref ClusterManager[*]#capsuleManager cmClusterManagers;
+  }
+
+  class Cluster {
+    !ordered ref ClusterManager[1]#clusters clusterManager;
+    !ordered val BEO[*] clusterBeos;
+  }
+
+  class ClusterManager extends EngineeringObject {
+    !ordered ref Cluster[+]#clusterManager clusters;
+    !ordered ref BEO[*]#beoManager clustermanagerBeos;
+    !ordered ref CapsuleManager[1]#cmClusterManagers capsuleManager;
+  }
+
+  class BEO extends EngineeringObject {
+    !ordered ref Nucleus[1]#beos beoNodeManager;
+    !ordered ref BEO[*]#localbinds locallyBoundObjects;
+    !ordered ref BEO[*]#locallyBoundObjects localbinds;
+    !ordered ref ClusterManager[1]#clustermanagerBeos beoManager;
+    !ordered ref Channel[*]#chEndPoint beoChannel;
+    !ordered ref Stub[*]#stBeo beoStub;
+  }
+
+  class Stub extends EngineeringObject {
+    !ordered ref Channel[1]#chStub stChannel;
+    !ordered ref Binder[1]#chBinder stBinder;
+    !ordered ref BEO[1]#beoStub stBeo;
+  }
+
+  class Binder extends EngineeringObject {
+    !ordered ref Channel[1]#chBinder bdChannel;
+    !ordered ref Stub[1]#stBinder chBinder;
+    !ordered ref ProtocolObject[+]#poBinder bdProtocolObject;
+  }
+
+  class ProtocolObject extends EngineeringObject {
+    !unique !ordered attr String[1] type;
+    !ordered ref Channel[1]#chPObject poChannel;
+    !ordered ref Binder[1]#bdProtocolObject poBinder;
+    !ordered ref Interceptor[*]#intProtocolObject poInterceptor;
+    !ordered ref ProtocolObject[*] poBoundProtocolObject;
+  }
+
+  class Interceptor extends EngineeringObject {
+    !ordered ref Channel[1]#chInterceptor intChannel;
+    !ordered ref ProtocolObject[2]#poInterceptor intProtocolObject;
+  }
+
+  class Channel {
+    !ordered val Stub[2..*]#stChannel chStub;
+    !ordered val Binder[2..*]#bdChannel chBinder;
+    !ordered val ProtocolObject[2..*]#poChannel chPObject;
+    !ordered val Interceptor[*]#intChannel chInterceptor;
+    !ordered ref BEO[2..*]#beoChannel chEndPoint;
+  }
+
+  class ClientServerChannel extends Channel {
+  }
+
+  class ControllingObject extends EngineeringObject {
+    !ordered ref Domain[*]#domControllingObject coDomain;
+  }
+
+  class SecurityAuthority extends ControllingObject {
+  }
+
+  class ManagementAuthority extends ControllingObject {
+  }
+
+  class AddressingAuthority extends ControllingObject {
+  }
+
+  class NamingAuthority extends ControllingObject {
+  }
+
+  class ControlledObject extends EngineeringObject {
+    !ordered ref Domain[*]#domMember cdoDomain;
+  }
+
+  class Domain {
+    !ordered ref Domain[1]#subDomain parentDomain;
+    !ordered ref Domain[*]#parentDomain subDomain;
+    !ordered ref ControllingObject[1]#coDomain domControllingObject;
+    !ordered ref ControlledObject[*]#cdoDomain domMember;
+  }
+
+  class SecurityDomain extends Domain {
+  }
+
+  class ManagementDomain extends Domain {
+  }
+
+  class AddressingDomain extends Domain {
+  }
+
+  class NamingDomain extends Domain {
+  }
+
+  class EngineeringInterfaceReferenceManagementDomain extends NamingDomain {
+    !ordered ref EngineeringInterfaceReference[*]#eirManagementDomain eirmdReference;
+    !ordered ref EngineeringInterfaceReferenceManagementPolicy[1]#eirmpManagementDomain eirmdManagementPolicy;
+  }
+
+  class EngineeringInterfaceReferenceManagementPolicy {
+    !ordered ref EngineeringInterfaceReferenceManagementDomain[*]#eirmdManagementPolicy eirmpManagementDomain;
+  }
+
+  class EngineeringInterfaceReference {
+    !ordered ref EngineeringInterfaceReferenceManagementDomain[1]#eirmdReference eirManagementDomain;
+  }
+
+}
+
+package datatypes {
+  datatype String : "";
+
+}
+

@@ -1,0 +1,400 @@
+-- @name		DoDAF
+-- @version		0.1	
+-- @domains		Architecture Description, SoS (System of System), View, Viewpoint
+-- @authors		Albin Jossic (jossic.albin <at> gmail.com) 
+-- @date		2006/06/06	
+-- @description	A Metamodel of DoDAF (Department of Defense Architecture Framework). In the metamodel, we have included SV-1, SV-4, OV-4, OV-7 and SV-11.
+-- @see			http://www.defenselink.mil/nii/global_Info_grid.html
+-- @see			Tailoring DODAF to Support a Service Oriented Architecture, Fatma Dandashi, Huei-Wan Ang, Christopher Bashioum Mitre Corp. 12-7-2004
+-- @see 		"Recommended Practice for Architectural description of Softwrare-Intensive Systems", IEEE Std 1471-2000, IEEE, 2000.
+-- @see			IEEE1471ConceptualModel.km3 and IEEE1471ViewpointM2.km3
+-- @see			MoSAF-AV.km3
+
+--@begin package DoDAF
+package DoDAF {
+	--@begin class Element
+	--@comments this class is not a part of DoDAF
+	abstract class Element {
+		attribute name : String;
+		attribute content : String;
+	}	
+	--@end class Element
+	
+	--@begin Node Transparent Version of SV-1
+	--@begin class System
+	class System extends Element {
+		reference decomposes[*] container : System;
+		reference fulfills[*] : SystemRole;
+	}
+	--@end class System
+	
+	--@begin class SystemRole
+	class SystemRole extends Element {
+		reference decomposes[*] container : SystemRole;
+		reference performs[*] : SystemFunction;
+		reference terminatesAt : SystemRoleInterface oppositeOf originatesFrom;		
+	}
+	--@end class SystemRole
+	
+	--@begin class SystemFunction
+	class SystemFunction extends Element {
+		reference decomposes[*] container : SystemFunction;
+		reference consumes[*] : Product;
+		reference produces[*] : Product;
+		reference terminatesAt : SystemProductFlow oppositeOf originatesFrom;
+		reference mesuredBy[*] : ConstraintOrRequirement;
+	}
+	--@end class SystemFunction
+	
+	--@begin class Service
+	class Service extends SystemFunction {}
+	--@end class Service
+	
+	--@begin class SystemRoleInterface
+	class SystemRoleInterface extends Element {
+		reference originatesFrom : SystemRole oppositeOf terminatesAt;	
+	}
+	--@end class SystemRoleInterface
+	
+	--@begin class ServiceDependency
+	class ServiceDependency extends SystemRoleInterface {}
+	--@end class ServiceDependency
+	
+	--@begin class ServiceProvider
+	class ServiceProvider extends SystemRole {
+	}
+	--@end class ServiceProvider
+	
+	--@begin class ServiceMediator
+	class ServiceMediator extends ServiceProvider {
+	}
+	--@end class ServiceMediator
+	
+	--@begin class ServiceRegistry
+	class ServiceRegistry extends ServiceMediator {
+	}
+	--@end class ServiceRegistry
+	
+	--@begin class ServiceLocator
+	class ServiceLocator extends ServiceMediator {
+	}
+	--@end class ServiceLocator
+
+	--@begin class ServiceBroker
+	class ServiceBroker extends ServiceMediator {
+	}
+	--@end class ServiceBroker
+	--@end Node Transparent Version of SV-1
+	
+	--@begin Internodal Version of SV-1
+	--@begin class SystemAtNode
+	class SystemAtNode extends Element {
+		reference references : System;
+		reference terminatesAt : SystemAtNodeInterface oppositeOf originatesFrom;
+	}
+	--@end class SystemAtNode
+	
+	--@begin class SystemAtNodeInterface
+	class SystemAtNodeInterface extends Element {
+		reference originatesFrom : SystemAtNode oppositeOf terminatesAt;
+	}
+	--@end class SystemAtNodeInterface
+	
+	--@begin class SystemsNode
+	class SystemsNode extends Element {
+		reference groups[*] : SystemAtNode;
+	}
+	--@end class SystemsNode	
+	--@end Internodal Version of SV-1
+	
+	--@begin SV-4
+	--@begin class COI
+	class COI extends Element {
+		reference comprises[*] container : Performer;
+		reference defines : Vocabulary;
+	}
+	--@end class COI
+	
+	--@begin class Vocabulary
+	class Vocabulary extends Element {
+		reference comprises[*] container : DataReference;
+	}
+	--@end class Vocabulary
+	
+	--@begin class DataReference
+	class DataReference extends Element {
+		reference defineBy : Data;
+	}
+	--@end class DataReference
+	
+	--@begin class Performer
+	class Performer extends Element {
+		reference decomposes[*] container : Performer;
+		reference fulfills[*] : OperationalRole;
+	}
+	--@end class Performer
+
+	--@begin class OperationalRole
+	class OperationalRole extends Element {
+		reference decomposes[*] container : OperationalRole;
+		reference accomplishes[*] : OperationalActivity;
+	}
+	--@end class OperationalRole
+	
+	--@begin class OperationalActivity
+	class OperationalActivity extends Element {
+		reference decomposes[*] container : OperationalRole;
+		reference supports[*] : SystemFunction;
+	}
+	--@end class OperationalActivity
+	
+	--@begin class Product
+	class Product extends Element {}
+	--@end class Product
+	
+	--@begin class Material
+	class Material extends Product {}
+	--@end class Material
+	
+	--@begin class Data
+	class Data extends Product {}
+	--@end class Data
+	
+	--@begin class SystemProductFlow
+	class SystemProductFlow extends Element {
+		reference transports[*] : Product;
+		reference originatesFrom : SystemFunction oppositeOf terminatesAt;
+	}
+	--@end class SystemProductFlow
+	
+	--@begin class ConstraintOrRequirement
+	--@comments this class is not a part of DoDAF
+	abstract class ConstraintOrRequirement extends Element {}
+	--@end class ConstraintOrRequirement
+	
+	--@begin class Constraint
+	class Constraint extends ConstraintOrRequirement {}
+	--@end class Constraint
+	
+	--@begin class QualityRequirement
+	class QualityRequirement extends ConstraintOrRequirement{}
+	--@end class QualityRequirement
+	--@end SV-4
+	
+	--@begin OV-4 Organizational Relationships Chart
+	--@begin class DIA
+	class DIA extends Element {
+		reference nmjic : NMJIC oppositeOf dia;
+		reference higherEchelon : HigherEchelon oppositeOf dia;
+	}
+	--@end class DIA
+	
+	--@begin class NMJIC
+	class NMJIC extends Element {
+		reference dia : DIA oppositeOf nmjic;
+	}
+	--@end class NMJIC
+	
+	--@begin class HigherEchelon
+	class HigherEchelon extends Element {
+		reference dia : DIA oppositeOf higherEchelon;
+		reference jfc : JFC oppositeOf higherEchelon;
+	}
+	--@end class HigherEchelon
+	
+	--@begin class JFC
+	class JFC extends Element {
+		reference higherEchelon : HigherEchelon oppositeOf jfc;
+		reference f2c2 : F2C2 oppositeOf jfc;
+		reference componentComand : ComponentCommand oppositeOf jfc;
+	}
+	--@end class JFC
+	
+	--@begin class F2C2
+	class F2C2 extends Element {
+		reference jfc : JFC oppositeOf f2c2;
+	}
+	--@end class F2C2
+	
+	--@begin class ComponentCommand
+	class ComponentCommand extends Element {
+		reference jfc : JFC oppositeOf componentComand;
+	}
+	--@end class ComponentCommand
+	
+	--@begin class DJFLCC
+	class DJFLCC extends ComponentCommand {}
+	--@end class DJFLCC
+	
+	--@begin class JFACC
+	class JFACC extends ComponentCommand {
+		reference subordinateAirCommand : SubordinateAirCommand oppositeOf jfacc;
+		reference aoccid[*] container : AOCCID;
+		reference aoccpsc[*] container : AOCCombatPlanStrategyCells;
+	}
+	--@end class JFACC
+	
+	--@begin class JFMCC
+	class JFMCC extends ComponentCommand {}
+	--@end class JFMCC
+	
+	--@begin class JFSOCC
+	class JFSOCC extends ComponentCommand {}
+	--@end class JFSOCC
+	
+	--@begin class SubordinateAirCommand
+	class SubordinateAirCommand extends Element {
+		reference jfacc : JFACC oppositeOf subordinateAirCommand;
+	}
+	--@end class SubordinateAirCommand
+	
+	--@begin class MAW
+	class MAW extends SubordinateAirCommand {}
+	--@end class MAW
+	
+	--@begin class WOC
+	class WOC extends SubordinateAirCommand {}
+	--@end class WOC
+	
+	--@begin class AOC-CID
+	class AOCCID extends Element {}
+	--@end class AOC-CID
+	
+	--@begin class AOC-CombatPlanStrategyCells
+	class AOCCombatPlanStrategyCells extends Element {}
+	--@end class AOC-CombatPlanStrategyCells
+	--@end OV-4 Organizational Relationships Chart
+	
+	--@begin OV-7 Logical Data Model and SV-11 Physical Data Model
+	--@begin class ResultData
+	class ResultData {
+		attribute sourceID : String;
+		attribute timeStamp : String;
+		reference cr[*] : CollectionRequirement oppositeOf rd;
+		reference bdaReport[*] : BDAReport oppositeOf rd;
+	}
+	--@end class ResultData
+	
+	--@begin class ComnbatReport
+	class CombatReport extends ResultData {
+		attribute friendlyUnitsInvolved : String;
+		attribute combatLocation : String;
+		attribute resultsAssessment : String;
+		attribute duration : String;
+	}
+	--@end class ComnbatReport
+	
+	--@begin class WSV
+	class WSV extends ResultData {
+		attribute missionID : String;
+		attribute weaponfSystemID : String;
+		attribute videoType : String;
+	}
+	--@end class WSV
+	
+	--@begin class MISREP
+	class MISREP extends ResultData {
+		attribute missionID : String;
+		attribute missionObjectives : String;
+		attribute missionAssesments : String;
+	}
+	--@end class MISREP
+	
+	--@begin class Imagery
+	class Imagery extends ResultData {
+		attribute imageType : String;
+		attribute spectralData : String;
+		attribute geospacialLocation : String;
+		attribute imageSize : Integer;
+	}
+	--@end class Imagery
+	
+	--@begin class CollectionRequirement
+	class CollectionRequirement {
+		attribute sourceID : String;
+		attribute collectionTargetID : String;
+		attribute toBeDoneByTime : String;
+		attribute specialNeeds : String;
+		reference rd[*] : ResultData oppositeOf cr;
+		reference ato[*] : ATO oppositeOf cr;
+		reference isContainedIn[*] : Target oppositeOf cr;
+	}
+	--@end class CollectionRequirement
+	
+	--@begin class BDAREport
+	class BDAReport {
+		attribute targetID : String;
+		attribute reportSourceID : String;
+		attribute assesmentSumart : String;
+		attribute validityDuration : String;
+		reference rd[1-*] : ResultData oppositeOf bdaReport;
+		reference mea[0-1] : MunitionsEffectsAssesment oppositeOf bdaReport;
+	}
+	--@end class BDAREport
+	
+	--@begin class MunitionsEffectsAssesment
+	class MunitionsEffectsAssesment {
+		reference bdaReport[0-1] : BDAReport oppositeOf mea;
+		reference ato : ATO oppositeOf mea;
+		reference tn : TargetNomination oppositeOf mea;
+	}
+	--@end class MunitionsEffectsAssesment
+	
+	--@begin class ATO
+	class ATO {
+		attribute timePeriod : String;
+		reference cr[*] : CollectionRequirement oppositeOf ato;
+		reference mea : MunitionsEffectsAssesment oppositeOf ato;
+		reference tn[*] : TargetNomination oppositeOf ato;
+		reference rr[0-1] : RestrikeRecommendation oppositeOf ato;
+	}
+	--@end class ATO
+	
+	--@begin class RestrikeRecommendation
+	class RestrikeRecommendation {
+		reference ato[0-1] : ATO oppositeOf rr;
+		reference tn : TargetNomination oppositeOf rr;	
+	}
+	--@end class RestrikeRecommendation
+	
+	--@begin class TargetNomination
+	class TargetNomination {
+		reference ato[*] : ATO oppositeOf tn;
+		reference mea[*] : MunitionsEffectsAssesment oppositeOf tn;
+		reference rr[0-1] : RestrikeRecommendation oppositeOf tn;
+		reference target : Target oppositeOf tn;		
+	}
+	--@end class TargetNomination
+	
+	--@begin class TargetMaterialsAnalysis
+	class TargetMaterialsAnalysis {
+		attribute targetID : String;
+		reference target : Target oppositeOf describes;
+	}
+	--@end class TargetMaterialsAnalysis
+	
+	--@begin class Target
+	class Target {
+		reference cr[*] : CollectionRequirement oppositeOf isContainedIn;
+		reference tn[0-1] : TargetNomination oppositeOf target;
+		reference holds[0-1] : MIDB oppositeOf target;
+		reference describes[0-*] : TargetMaterialsAnalysis oppositeOf target;
+	}
+	--@end class Target
+	
+	--@begin class MIDB
+	class MIDB {
+		reference target[*] : Target oppositeOf holds;
+	}
+	--@end class MIDB
+	--@end OV-7 Logical Data Model and SV-11 Physical Data Model
+	
+}
+--@end package DoDAF
+
+--@begin package PrimitiveTypes
+package PrimitiveTypes {
+	datatype String;
+	datatype Integer;
+}
+--@end package PrimitiveTypes

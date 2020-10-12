@@ -1,0 +1,184 @@
+-- @name		Perceptory
+-- @version		1.0
+-- @authors		Youssef Srour (Srour.youssef@gmail.com)
+-- @date		2006/07/24
+-- @description	This metamodel describes Perceptory. Perceptory is a CASE tool that comprises a UML based conceptual schema building tool for geospatial conceptual models and an object dictionary database.
+-- @see 		http://delivery.acm.org/10.1145/360000/355280/p39-brodeur.pdf?key1=355280&key2=5650095511&coll=&dl=GUIDE&CFID=15151515&CFTOKEN=6184618
+
+package Perceptory {
+
+-- Begin class RelationSchip
+	class RelationSchip {
+		reference  affectCharacteristic [*] container : Characteristic oppositeOf relationSchip;
+		reference constraint [0-1] : Constraint oppositeOf relationSchip;
+		reference steriotype [*] : Steriotype oppositeOf relationSchip;
+		reference packages [*] : Package oppositeOf relationSchip;
+		reference associatePackages [2-2] : Package oppositeOf connectedRelationSchip;
+	}-- End class RelationSchip
+
+-- Begin class ConstrainedRelationSchip
+	class ConstrainedRelationSchip {
+	
+	}-- End class ConstrainedRelationSchip
+
+-- Begin class Aggregation
+	class Aggregation extends Association {
+	
+	}-- End class Aggregation
+
+-- Begin class Composition
+	class Composition extends Association {
+	
+	}-- End class Composition
+
+-- Begin class Association
+	class Association extends RelationSchip {
+	
+	}-- End class Association
+
+-- Begin class Generalisation
+	class Generalisation extends RelationSchip {
+	
+	}-- End class Generalisation
+
+-- Begin class Dependency
+	class Dependency extends RelationSchip {
+	
+	}-- End class Dependency
+
+-- Begin class AssociationEnd
+	class AssociationEnd {
+	
+	}-- End class AssociationEnd
+
+-- Begin class Package
+	class Package {
+		reference steriotype [0-1] : Steriotype oppositeOf thePackage;
+		reference children [*] container : Package oppositeOf parent;
+		reference parent : Package oppositeOf children;
+		reference classes [*] container : Class oppositeOf packages;
+		reference relationSchip [*] container : RelationSchip oppositeOf packages;
+		reference connectedRelationSchip [*] : RelationSchip oppositeOf associatePackages;
+	}-- End class Package
+
+-- Begin class Steriotype
+	class Steriotype {
+		reference  descriptiveAttribute[*] : DescriptiveAttribute oppositeOf steriotype;
+		reference operations[*] : Operation oppositeOf steriotype;
+		reference relationSchip[*] : RelationSchip oppositeOf steriotype;
+		reference theClass [*] : Class oppositeOf steriotype;
+		reference thePackage [*] : Package oppositeOf steriotype;
+	}-- End class Steriotype
+
+-- Begin class Class
+	class Class {
+		reference characteristic[*] container : Characteristic oppositeOf theClass;
+		reference details[0-1] container : MetaData oppositeOf theClass;
+		reference operations : Operation oppositeOf affectFeature;
+		reference myOperations[*] container : Operation oppositeOf behaviour;
+		reference constraint[*] : Constraint oppositeOf theClass;
+		reference steriotype[0-1] : Steriotype oppositeOf theClass;
+		reference packages [*] : Package oppositeOf classes;
+	}-- End class Class
+
+-- Begin class Constraint
+	class Constraint {
+		reference caracteristic : Characteristic oppositeOf constraint;
+		reference theClass : Class oppositeOf constraint;
+		reference relationSchip[*] : RelationSchip oppositeOf constraint;
+	}-- End class Constraint
+
+-- Begin class Operation
+	class Operation {
+		reference detail[0-1] container : MetaData oppositeOf operations;
+		reference inCharacteristic[1-*] container : Characteristic oppositeOf operations;
+		reference affectFeature[*] container : Class oppositeOf operations;
+		reference steriotype[0-1] : Steriotype oppositeOf operations;
+		reference behaviour : Class oppositeOf myOperations;
+		
+	}-- End class Operation
+
+-- Begin class Characteristic
+	class Characteristic {
+		reference details[0-1] container : MetaData oppositeOf characteristic;
+		reference rule[0-1] container : BusnissRule oppositeOf characteristic;
+		reference operations : Operation oppositeOf inCharacteristic;
+		reference theClass : Class oppositeOf characteristic;
+		reference relationSchip : RelationSchip oppositeOf affectCharacteristic;
+		reference constraint [0-1] : Constraint oppositeOf caracteristic;
+	}-- End class Characteristic
+
+-- Begin class BusnissRule
+	class BusnissRule {
+		reference characteristic : Characteristic oppositeOf rule;
+	}-- End class BusnissRule
+
+-- Begin class MetaData
+	class MetaData {
+		reference source[0-1] container : Source oppositeOf metaData;
+		reference characteristic : Characteristic oppositeOf details;
+		reference  operations : Operation oppositeOf detail;
+		reference theClass : Class oppositeOf details;
+	}-- End class MetaData
+
+-- Begin class Source
+	class Source {
+		reference metaData : MetaData oppositeOf source;
+	}-- End class Source
+
+-- Begin class Domain
+	class Domain {
+		reference descriptiveAttribute [1-*] : DescriptiveAttribute oppositeOf domain;
+	}-- End class Domain
+
+-- Begin class DescriptiveAttribute
+	class DescriptiveAttribute extends Characteristic{
+		reference tempsDef [0-1] container : Temporality oppositeOf descriptiveAttributet;
+		reference specialDef [0-1] container : Geometry oppositeOf descriptiveAttributeg;
+		reference steriotype [0-1] : Steriotype oppositeOf descriptiveAttribute;
+		reference domain [0-1] : Domain oppositeOf descriptiveAttribute;
+	}-- End class DescriptiveAttribute
+
+-- Begin class Geometry
+	class Geometry extends PerceptorySteriotype, Characteristic {
+		reference tempsDef [0-1] : Temporality oppositeOf geometry;
+		reference descriptiveAttributeg : DescriptiveAttribute oppositeOf specialDef;
+	}-- End class Geometry
+
+-- Begin class Temporality
+	class Temporality extends PerceptorySteriotype, Characteristic {
+		reference  geometry [0-1] : Geometry oppositeOf tempsDef;
+		reference descriptiveAttributet : DescriptiveAttribute oppositeOf tempsDef;
+	}-- End class Temporality
+
+-- Begin class VisualInfo
+	class VisualInfo extends PerceptorySteriotype, Characteristic{
+	
+	}-- End class VisualInfo
+
+-- Begin class Value
+	class Value {
+		reference enumeratedDomain : EnumeratedDomain oppositeOf value;
+	}-- End class Value
+
+-- Begin class RangeDomain
+	class RangeDomain extends Domain {
+	
+	}-- End class RangeDomain
+
+-- Begin class EnumeratedDomain
+	class EnumeratedDomain extends Domain {
+		reference value [1-*] container : Value oppositeOf enumeratedDomain;
+	}-- End class EnumeratedDomain
+
+-- Begin class PerceptorySteriotype
+	class PerceptorySteriotype extends Steriotype{
+	
+	}-- End class PerceptorySteriotype
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+	datatype Integer;
+}

@@ -1,0 +1,668 @@
+syntax ATL {
+
+	primitiveTemplate identifier for String default using NAME:
+		value = "%token%";
+
+	primitiveTemplate stringSymbol for String using STRING:
+		value = "%token%",
+		serializer="'\'' + %value%.toCString() + '\''";
+
+	primitiveTemplate integerSymbol for Integer default using INT:
+		value = "Integer.valueOf(%token%)";
+
+	primitiveTemplate floatSymbol for Double default using FLOAT:
+		value = "Double.valueOf(%token%)";
+
+	primitiveTemplate booleanSymbol for Boolean default using BOOLEAN:
+		value = "Boolean.valueOf(%token%)";
+
+-- Units
+	template Unit main abstract;
+
+	template Module context
+		:	"module" name ";"
+			"create" outModels{separator = ","} "from" inModels{separator = ","} ";"
+
+			[
+				libraries
+				elements
+			] {nbNL = 2, indentIncr = 0}
+		;
+
+	template Library context
+		:	"library" name ";"
+
+			[
+				libraries
+				helpers
+			] {nbNL = 2, indentIncr = 0}
+		;
+	
+	template Query context
+		:	"query" name "=" body ";"
+			[
+				libraries
+				helpers
+			] {nbNL = 2, indentIncr = 0}
+		;
+-- End Units
+
+	template LibraryRef
+		:	"uses" name ";"
+		;
+
+	template ModuleElement abstract;
+
+-- Helpers
+	template Helper
+		:	"helper" definition ";"
+		;
+
+	template OclFeatureDefinition
+		:	(isDefined(context_) ? context_) "def" <no_space> ":" feature
+		;
+
+	template OclContextDefinition	-- TODO: extends VariableDeclaration + [name = 'self']
+		:	"context" context_
+		;
+
+	template OclFeature abstract;
+
+	template Operation
+		:	name "(" parameters{separator = ","} ")" ":" returnType "="
+			[ body ] {endNL = false}
+		;
+
+	template Parameter
+		:	varName ":" type
+		;
+
+	template Attribute
+		:	name ":" type "="
+			[ initExpression ] {endNL = false}
+		;
+-- End Helpers
+
+-- Rules
+	template Rule abstract;
+
+	template MatchedRule context addToContext
+		:	(isAbstract ? "abstract") "rule" name (isDefined(superRule) ? "extends" superRule{refersTo = name}) "{" [
+				inPattern
+				(isDefined(variables) ?
+					"using" "{" [
+						variables
+					] "}"
+				)
+				(isDefined(outPattern) ? outPattern)
+				(isDefined(actionBlock) ? actionBlock)
+			] "}"
+		;
+	
+	template LazyMatchedRule context addToContext
+		:	(isUnique ? "unique") "lazy" "rule" name (isDefined(superRule) ? "extends" superRule{refersTo = name}) "{" [
+				inPattern
+				(isDefined(variables) ?
+					"using" "{" [
+						variables
+					] "}"
+				)
+				(isDefined(outPattern) ? outPattern)
+				(isDefined(actionBlock) ? actionBlock)
+			] "}"
+		;
+	
+
+	template RuleVariableDeclaration
+		:	varName ":" type "=" initExpression ";"
+		;
+
+	template CalledRule
+		:	"rule" name "(" parameters{separator = ","} ")" "{"
+				outPattern
+				actionBlock
+			"}"
+		;
+-- End Rules
+
+-- InPattern
+	template InPattern
+		:	"from" [
+				elements{separator = ","}
+				(isDefined(filter) ? "(" [ filter ] ")")
+			]
+		;
+
+	template InPatternElement abstract addToContext;
+
+	template SimpleInPatternElement
+		:	varName ":" type
+		;
+
+	template DerivedInPatternElement
+		:	"derived" varName ":" type "=" 'value'
+		;
+-- End InPattern
+
+-- OutPattern
+	template OutPattern
+		:	"to" [ elements{separator = ","} ] {endNL = false}
+		;
+
+	template OutPatternElement abstract;
+
+	template SimpleOutPatternElement
+		:	varName ":" type
+			(isDefined(sourceElement) ? "mapsTo" sourceElement{refersTo = varName})
+			(isDefined(bindings) ?
+				"(" [
+					bindings{separator = ","}
+				] ")"
+			)
+		;
+
+	template ForEachOutPatternElement
+		:	varName ":" "distinct" type "foreach" "(" iterator "in" collection ")"
+			(isDefined(sourceElement) ? "mapsTo" sourceElement{refersTo = varName})
+			(isDefined(bindings) ?
+				"(" [
+					bindings{separator = ","}
+				] ")"
+			)
+		;
+
+	template Binding
+		:	propertyName "<-" 'value'
+		;
+-- End OutPattern
+
+	template ActionBlock
+		:	"do" "{" [
+				statements
+			] "}"
+		;
+
+-- Statements
+	template Statement abstract;	-- factoring OclExpression for BindingStat, ExpressionStat
+
+	template BindingStat		-- factor 'source'{actualType = VariableExp NavigationOrAttributeCallExp}
+						-- note that this property can have parameters but not all
+--		:	'source' "#" propertyName "<-" 'value' ";"
+		-- or better (with 'source' renamed to target and propertyName removed):
+		--	target{actualType = VariableExp NavigationOrAttributeCallExp} "<-" 'value' ";"
+		:	'source' "<-" 'value' ";"
+		;
+
+	template ExpressionStat (disambiguate = "oclExpression SEMI")		-- factor expression
+		:	expression ";"
+		;
+
+	template IfStat(disambiguate = "\"if\" LPAREN oclExpression RPAREN LCURLY")
+		:	"if" "(" condition ")" "{"
+				thenStatements
+			"}"
+			(isDefined(elseStatements) ?
+				"else" "{"
+					elseStatements
+				"}"
+			)
+		;
+
+	template ForStat
+		:	"for" "(" iterator "in" collection ")"  "{"
+				statements
+			"}"
+		;
+-- End Statements
+
+-- Models
+	template OclModel
+		:	name ":" metamodel{refersTo = name, lookIn = #all, autoCreate = ifmissing}
+		;
+
+	template OclModelElement
+		:	model{refersTo = name, lookIn = #all, autoCreate = ifmissing} "!" name
+		;
+-- End Models
+
+
+-- OCL
+	template OclExpression abstract operatored;
+
+--	operatored
+--	operatorTemplate IteratorExp(operators = opRarrow, source = 'source', disambiguate = "NAME LPAREN NAME (PIPE | ((COMA NAME)+ PIPE))")
+--		:	name "(" iterators{separator = ","} "|" body ")"
+--		;
+--
+--	operatorTemplate IterateExp(operators = opRarrow, source = 'source')
+--		:	"iterate" "(" iterators{separator = ","} ";" result "|" body ")"
+--		;
+--
+--	operatorTemplate CollectionOperationCallExp(operators = opRarrow, source = 'source')
+--		:	operationName "(" arguments{separator = ","} ")"
+--		;
+--
+--	operatorTemplate OperationCallExp(operators = opPoint, source = 'source', disambiguate = "NAME LPAREN")
+--		:	operationName "(" arguments{separator = ","} ")"
+--		;
+--
+--	operatorTemplate NavigationOrAttributeCallExp(operators = opPoint, source = 'source')
+--		:	name
+--		;
+--
+--	operatorTemplate OperatorCallExp(operators = opStar opSlash opDiv opMod opPlus opNot opMinus1 opMinus2 opEq opGt opLt opGe opLe opNe opAnd opOr opXor opImplies, source = 'source', storeOpTo = operationName, storeRightTo = arguments);
+--	end operatored
+
+	template Iterator
+		:	varName
+		;
+
+--	values
+	template PrimitiveExp abstract;
+	template NumericExp abstract;
+
+	template BooleanExp
+		:	booleanSymbol
+		;
+
+	template IntegerExp
+		:	integerSymbol
+		;
+
+	template RealExp
+		:	realSymbol
+		;
+
+	template StringExp
+		:	stringSymbol{as = stringSymbol}
+		;
+--	end values
+
+	template IfExp
+		:	"if" condition "then" thenExpression "else" elseExpression "endif"
+		;
+
+	template VariableExp(disambiguate = "NAME ~(EXCL)")
+		:	name
+		;
+
+	template LetExp nonPrimary
+		:	"let" variable "in" in_
+		;
+
+	template VariableDeclaration
+		:	varName ":" type "=" initExpression
+		;
+
+
+	template EnumLiteralExp
+		:	"#" name
+		;
+
+--	collections
+	template CollectionExp abstract;
+
+	template BagExp
+		:	"Bag" "{" elements{separator = ","} "}"
+		;
+
+	template SetExp
+		:	"Set" "{" elements{separator = ","} "}"
+		;
+
+	template OrderedSetExp
+		:	"OrderedSet" "{" elements{separator = ","} "}"
+		;
+
+	template SequenceExp
+		:	"Sequence" "{" elements{separator = ","} "}"
+		;
+--	end collections
+
+--	template EmptyMapExp
+--		:	"Map" "{" "}"
+--		;
+
+	template TupleExp
+		:	"Tuple" "{" tuplePart{separator= ","} "}"
+		;
+
+	template TuplePart
+		:	varName (isDefined(type) ? ":" type) "=" initExpression
+		;
+
+
+--	types
+	template OclType abstract
+		:	"OclType"
+		;
+
+	template TupleType
+		:	"TupleType" "(" attributes{separator = ","} ")"
+		;
+
+	template TupleTypeAttribute
+		:	name ":" type
+		;
+
+	template MapType
+		:	"Map" "(" keyType "," valueType ")"
+		;
+
+	template Primitive abstract;
+
+	template NumericType abstract;
+
+	template IntegerType
+		:	"Integer"
+		;
+
+	template RealType
+		:	"Real"
+		;
+
+	template BooleanType
+		:	"Boolean"
+		;
+
+	template StringType
+		:	"String"
+		;
+
+	template CollectionType abstract
+		:	"Collection" "(" elementType ")"
+		;
+
+	template BagType
+		:	"Bag" "(" elementType ")"
+		;
+
+	template SetType
+		:	"Set" "(" elementType ")"
+		;
+
+	template OrderedSetType
+		:	"OrderedSet" "(" elementType ")"
+		;
+
+	template SequenceType
+		:	"Sequence" "(" elementType ")"
+		;
+
+--	end types
+
+-- End OCL
+
+	keywords {
+		kwAbstract	= "abstract";
+		kwAnd		= "and";
+		kwBag		= "Bag";
+		kwBoolean	= "Boolean";
+		kwContext	= "context";
+		kwCreate	= "create";
+		kwDef		= "def";
+		kwDerived	= "derived";
+		kwDistinct	= "distinct";
+		kwDiv		= "div";
+		kwDo		= "do";
+		kwElse		= "else";
+		kwEndif		= "endif";
+		kwExtends	= "extends";
+		kwForeach	= "foreach";
+		kwFrom		= "from";
+		kwHelper	= "helper";
+		kwIf		= "if";
+		kwImplies	= "implies";
+		kwInteger	= "Integer";
+		kwIn		= "in";
+		kwIterate	= "iterate";
+		kwLet		= "let";
+		kwLibrary	= "library";
+		kwMap		= "Map";
+		kwMapsTo	= "mapsTo";
+		kwMod		= "mod";
+		kwModule	= "module";
+		kwNot		= "not";
+		kwOr		= "or";
+		kwOrderedSet	= "OrderedSet";
+		kwQuery		= "query";
+		kwReal		= "Real";
+		kwRule		= "rule";
+		kwSequence	= "Sequence";
+		kwSet		= "Set";
+		kwString	= "String";
+		kwThen		= "then";
+		kwTo		= "to";
+		kwTuple		= "Tuple";
+		kwTupleType	= "TupleType";
+		kwUses		= "uses";
+		kwUsing		= "using";
+		kwXor		= "xor";
+	}
+	
+	symbols {
+		lsquare		= "[";
+		rsquare		= "]"	: rightSpace;
+		excl		= "!";
+		coma		= ","	: leftNone, rightSpace;
+		lparen		= "(";
+		rparen		= ")"	: leftNone, rightSpace;
+		lcurly		= "{"	: leftSpace;
+		rcurly		= "}"	: leftNone, rightSpace;
+		semi		= ";"	: leftNone, rightSpace;
+		colon		= ":"	: leftSpace, rightSpace;	-- except after def where it is leftNone, rightSpace
+		pipe		= "|"	: leftSpace, rightSpace;
+		sharp		= "#";
+		qmark		= "?";
+
+		-- operator symbols
+		point		= "."	: leftNone;
+		rarrow		= "->"	: leftNone;
+		minus		= "-"	: leftSpace, rightSpace;
+		star		= "*"	: leftSpace, rightSpace;
+		slash		= "/"	: leftSpace, rightSpace;
+		plus		= "+"	: leftSpace, rightSpace;
+		eq		= "="	: leftSpace, rightSpace;
+		gt		= ">"	: leftSpace, rightSpace;
+		lt		= "<"	: leftSpace, rightSpace;
+		ge		= ">="	: leftSpace, rightSpace;
+		le		= "<="	: leftSpace, rightSpace;
+		ne		= "<>"	: leftSpace, rightSpace;
+		larrow		= "<-"	: leftSpace, rightSpace;
+	}
+
+	operators {
+		priority 0 {	-- 0 is highest
+			opPoint = point, 2;
+			opRarrow = rarrow, 2;
+		}
+
+		priority 1 {
+			opNot = kwNot, 1;		-- no corresponding symbol => symbol is the keyword defined by the quoted string (which is also the name)
+			opMinus1 = minus, 1;
+		}
+
+		priority 2 {
+			opStar = star, 2;
+			opSlash = slash, 2;
+			opDiv = kwDiv, 2;
+			opMod = kwMod, 2;
+		}
+
+		priority 3 {
+			opPlus = plus, 2;
+			opMinus2 = minus, 2;
+		}
+
+		priority 4 {
+			opEq = eq, 2;
+			opGt = gt, 2;
+			opLt = lt, 2;
+			opGe = ge, 2;
+			opLe = le, 2;
+			opNe = ne, 2;
+		}
+
+		priority 5 {
+			opAnd = kwAnd, 2;
+			opOr = kwOr, 2;
+			opXor = kwXor, 2;
+			opImplies = kwImplies, 2;
+		}
+	}
+
+	lexer = "
+class ATLLexer extends Lexer;
+
+options {
+	k = 2;
+	charVocabulary = '\\0' .. '\\u00FF';
+	testLiterals = false;
+}
+
+{
+
+	protected Token makeToken(int t) {
+		org.atl.engine.injectors.ebnf.LocationToken ret = null;
+
+		tokenObjectClass = org.atl.engine.injectors.ebnf.LocationToken.class;
+		ret = (org.atl.engine.injectors.ebnf.LocationToken)super.makeToken(t);
+		ret.setEndLine(getLine());
+		ret.setEndColumn(getColumn());
+
+		return ret;
+	}
+
+}
+
+
+protected
+NL
+	:	(	'\\r' '\\n'
+		|	'\\n' '\\r'	//Improbable
+		|	'\\r'
+		|	'\\n'
+		)
+	{newline();}
+	;
+
+WS
+	:	(	' '
+		|	'\\t'
+		|	NL
+		)
+	{ $setType(Token.SKIP); }
+	;
+
+COMMENT
+	:	\"--\"
+		(~(	'\\r'
+		|	'\\n'
+		))*
+		({LA(1) != EOF_CHAR}? NL)?
+	{ $setType(Token.SKIP); }
+	;
+
+protected
+DIGIT
+	:	'0'..'9'
+	;
+
+protected
+ALPHA
+	:	'a'..'z'
+	|	'A'..'Z'
+	|	'_'
+	//For Unicode compatibility (from 0000 to 00ff)
+	|	'\\u00C0' .. '\\u00D6'
+	|	'\\u00D8' .. '\\u00F6'
+	|	'\\u00F8' .. '\\u00FF'
+	;
+
+protected
+SNAME
+options {
+	testLiterals = true;
+}
+	:	(ALPHA) (ALPHA | DIGIT)*
+;
+
+NAME
+	:	(	s:SNAME {if(s.getType() != SNAME) $setType(s.getType());}
+		|	'\"'!
+			(	ESC
+			|	'\\n' {newline();}
+			|	~('\\\\'|'\\\"'|'\\n')
+			)*
+			'\"'!
+		)
+	{
+	if($getText.equals(\"true\")) $setType(BOOLEAN);
+	if($getText.equals(\"false\")) $setType(BOOLEAN);
+	}
+	;
+
+INT
+	:	(DIGIT)+
+		(('.' DIGIT)=> '.' (DIGIT)+ {$setType(FLOAT);})?
+	;
+
+protected
+ESC
+	:	'\\\\'!
+		(	'n' {$setText(\"\\n\");}
+		|	'r' {$setText(\"\\r\");}
+		|	't' {$setText(\"\\t\");}
+		|	'b' {$setText(\"\\b\");}
+		|	'f' {$setText(\"\\f\");}
+		|	'\"' {$setText(\"\\\"\");}
+		|	'\\'' {$setText(\"\\'\");}
+		|	'\\\\' {$setText(\"\\\\\");}
+		|	(
+				('0'..'3')
+				(
+					options {
+						warnWhenFollowAmbig = false;
+					}
+				:	('0'..'7')
+					(
+						options {
+							warnWhenFollowAmbig = false;
+						}
+					:	'0'..'7'
+					)?
+				)?
+			|	('4'..'7')
+				(
+					options {
+						warnWhenFollowAmbig = false;
+					}
+				:	('0'..'7')
+				)?
+			)
+				{
+					String s = $getText;
+					int i;
+					int ret = 0;
+					String ans;
+					for (i=0; i<s.length(); ++i)
+						ret = ret*8 + s.charAt(i) - '0';
+					ans = String.valueOf((char) ret);
+					$setText(ans);
+				}
+		)
+	;
+
+STRING
+	:	'\\''!
+		(	ESC
+		|	'\\n' {newline();}
+		|	~('\\\\'|'\\''|'\\n')
+		)*
+		'\\''!
+	;
+
+	";
+
+}
+

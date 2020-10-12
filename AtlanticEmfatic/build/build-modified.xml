@@ -1,0 +1,87 @@
+<project name="atlanticEmfatic" default="atlanticEmfatic">
+
+	<property name="sourcePath" value="../../New metamodels/km3/" />
+	<property name="targetPath" value="C:/Workspaces/MetamodelZoo_wkspace/New metamodels/Emfatic/" />
+	<property name="projectPath" value="" />
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+	</taskdef>
+	
+	<target name="atlanticEmfatic" depends="loadModels_AtlanticEmfatic">
+		
+		<for param="e">
+		  <path>
+		    <fileset dir="C:/Workspaces/MetamodelZoo_wkspace/New metamodels/km3" includes="*.km3"/>
+		  </path>
+		  <sequential>
+			<antcall target="condition" inheritall="true" inheritrefs="true">
+				<param name="sample" value="@{e}"/>
+			</antcall>
+		  </sequential>
+		</for>
+
+	</target>
+
+	<target name="condition">
+	  	<basename property="name" file="${sample}" suffix=".km3"/>
+		<property name="sourceModel" value="C:/Workspaces/MetamodelZoo_wkspace/New metamodels/km3/${name}.km3"/>
+		<property name="targetModel" value="${targetPath}/Ecore/${name}.ecore"/>
+		
+		<uptodate property="isUpToDate" srcfile="${sourceModel}" targetfile="${targetModel}"/>
+		
+	  	<if>
+	  	 <not>
+			 <equals arg1="${isUpToDate}" arg2="true" />
+		 </not>
+		 <then>
+			<antcall target="transformOne_AtlanticEcore" inheritall="true" inheritrefs="true">
+				<param name="name" value="${name}"/>
+				<param name="sourceModel" value="/New metamodels/km3/${name}.km3"/>
+				<param name="targetModel" value="${targetModel}"/>
+			</antcall>
+		 </then>
+		</if>
+
+	</target>
+	
+	<!-- parameters: sample -->
+	<target name="transformOne_AtlanticEcore">
+
+		<echo message="Transforming ${name}"/>
+					
+		<echo message="Extracting ${sourceModel}" />
+		<!-- Inject KM3 file into KM3 model -->
+		<am3.loadModel modelHandler="EMF" name="source" metamodel="KM3" path="${sourceModel}">
+			<injector name="ebnf">
+				<param name="name" value="KM3"/>
+			</injector>
+		 </am3.loadModel>
+		
+		
+		<echo message="Transforming ${name}-KM3.ecore to ${name}.ecore" />
+		<!-- Transform KM3 metamodel into Ecore model -->
+		<am3.atl path="/org.eclipse.am3.zoos.atlanticEmfatic/build/KM32Ecore.asm">
+			<inModel name="IN" model="source"/>
+			<inModel name="KM3" model="KM3"/>
+			<inModel name="IN-Ecore" model="Ecore2"/>
+			<inModel name="EcoreModel" model="Ecore2"/>
+			<inModel name="Ecore" model="%EMF"/>
+			<outModel name="OUT" model="target" metamodel="%EMF"/>
+		</am3.atl>
+
+		<echo message="Saving ${targetModel}" />
+		<!-- Save target model -->
+		<am3.saveModel model="target" path="${targetModel}" />
+		<!--Generate Emfatic-->
+		<echo message="Generate Emfatic from ${name}.ecore to ${name}.emf"/>
+		<ext.ecore2emfatic sourcepath="${targetModel}" targetpath="${targetPath}${name}.emf"/>
+	</target>
+
+	<target name="loadModels_AtlanticEmfatic">
+		<!-- Load KM3 metamodel -->
+		<am3.loadModel modelHandler="EMF" name="KM3" metamodel="MOF" nsUri="http://www.eclipse.org/gmt/2005/KM3" />
+		<!--Load EMF metamodel-->
+		<am3.loadModel modelHandler="EMF" name="IN-Ecore" metamodel="MOF" nsUri="http://www.eclipse.org/emf/2002/Ecore" />
+		<am3.loadModel modelHandler="EMF" name="Ecore2" metamodel="MOF" nsUri="http://www.eclipse.org/emf/2002/Ecore" />
+	</target>	
+</project>

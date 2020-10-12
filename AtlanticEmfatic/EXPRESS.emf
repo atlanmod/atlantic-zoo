@@ -1,0 +1,990 @@
+package Metamodel;
+
+package Express_metamodel {
+  class Express_metamodel::java::lang::void {
+  }
+
+  class Express_metamodel::java::lang::int {
+  }
+
+  package Rules {
+    class Express_metamodel::Rules::ONEOFConstraint extends Express_metamodel::Rules::SubtypeConstraint {
+    }
+
+    class Express_metamodel::Rules::SupertypeRule extends Core.Express_metamodel::Core::CommonElement {
+      !ordered ref Core.Express_metamodel::Core::EntityType[1] Express_metamodel::Rules::SupertypeRule::named-supertype;
+      !ordered val Express_metamodel::Rules::SubtypeConstraint[*]#Express_metamodel::Rules::SubtypeConstraint::collection Express_metamodel::Rules::SupertypeRule::constraints;
+      !unique !ordered attr Boolean[1] assertsAbstract;
+    }
+
+    class Express_metamodel::Rules::SubtypeConstraint {
+      !ordered ref Express_metamodel::Rules::Extent[+]#Express_metamodel::Rules::Extent::constraints Express_metamodel::Rules::SubtypeConstraint::constrained-subtypes;
+      !ordered val Core.Express_metamodel::Core::Expression[1] Express_metamodel::Rules::SubtypeConstraint::equivalent-rule;
+      !ordered ref Express_metamodel::Rules::SupertypeRule[1]#Express_metamodel::Rules::SupertypeRule::constraints Express_metamodel::Rules::SubtypeConstraint::collection;
+    }
+
+    class Express_metamodel::Rules::Extent extends Instances.Express_metamodel::Instances::SETValue {
+      !ordered ref Express_metamodel::Rules::SubtypeConstraint[*]#Express_metamodel::Rules::SubtypeConstraint::constrained-subtypes Express_metamodel::Rules::Extent::constraints;
+      !ordered ref Instances.Express_metamodel::Instances::EntityInstance[*] Express_metamodel::Rules::Extent::content;
+      !ordered ref Instances.Express_metamodel::Instances::Population[1] Express_metamodel::Rules::Extent::within-population;
+      !ordered ref Express_metamodel::Rules::GlobalRule[*]#Express_metamodel::Rules::GlobalRule::constrained-extents Express_metamodel::Rules::Extent::constraint-rules;
+      !ordered ref Core.Express_metamodel::Core::EntityType[1]#Express_metamodel::Core::EntityType::extension Express_metamodel::Rules::Extent::for-type;
+      !unique !ordered attr Core.Express_metamodel::Core::ScopedId[1] ~id;
+    }
+
+    class Express_metamodel::Rules::TOTAL_OVERConstraint extends Express_metamodel::Rules::SubtypeConstraint {
+    }
+
+    class Express_metamodel::Rules::ANDConstraint extends Express_metamodel::Rules::SubtypeConstraint {
+    }
+
+    class Express_metamodel::Rules::GlobalRule extends Core.Express_metamodel::Core::SchemaElement, Core.Express_metamodel::Core::AlgorithmScope {
+      !ordered val Algorithms.Express_metamodel::Algorithms::Statement Express_metamodel::Rules::GlobalRule::supporting-body;
+      !ordered ref Express_metamodel::Rules::Extent[+]#Express_metamodel::Rules::Extent::constraint-rules Express_metamodel::Rules::GlobalRule::constrained-extents;
+      !ordered val Express_metamodel::Rules::NamedRule[+]#Express_metamodel::Rules::NamedRule::namespace Express_metamodel::Rules::GlobalRule::contains-rules;
+    }
+
+    class Express_metamodel::Rules::NamedRule extends Core.Express_metamodel::Core::LocalElement {
+      !ordered ref Express_metamodel::Rules::GlobalRule[1]#Express_metamodel::Rules::GlobalRule::contains-rules Express_metamodel::Rules::NamedRule::namespace;
+      !ordered val Core.Express_metamodel::Core::Expression[1] Express_metamodel::Rules::NamedRule::asserts-expression;
+      !unique !ordered attr Integer[1] position;
+    }
+
+  }
+
+  package Statements {
+    class Express_metamodel::Statements::ProcedureCall extends Algorithms.Express_metamodel::Algorithms::Statement {
+      !ordered ref Algorithms.Express_metamodel::Algorithms::Procedure[1] Express_metamodel::Statements::ProcedureCall::invokes;
+      !ordered val Expressions.Express_metamodel::Expressions::ActualParameter[*]#Express_metamodel::Expressions::ActualParameter::in-ProcedureCall Express_metamodel::Statements::ProcedureCall::actual-parameters;
+    }
+
+    class Express_metamodel::Statements::SkipStatement extends Express_metamodel::Statements::ControlStatement {
+      !ordered ref Algorithms.Express_metamodel::Algorithms::Statement[1]#Express_metamodel::Algorithms::Statement::body-statements_SkipStatement Express_metamodel::Statements::SkipStatement::in-block;
+    }
+
+    class Express_metamodel::Statements::AliasStatement extends Algorithms.Express_metamodel::Algorithms::Statement, Core.Express_metamodel::Core::LocalScope {
+      !ordered ref Express_metamodel::Statements::VARExpression[1] Express_metamodel::Statements::AliasStatement::binds-to-reference;
+      !ordered val Algorithms.Express_metamodel::Algorithms::Statement[1] Express_metamodel::Statements::AliasStatement::body;
+      !ordered val Express_metamodel::Statements::AliasVariable[1]#Express_metamodel::Statements::AliasVariable::namespace Express_metamodel::Statements::AliasStatement::alias-variable;
+    }
+
+    class Express_metamodel::Statements::ControlVariable extends Algorithms.Express_metamodel::Algorithms::NamedVariable {
+      !ordered ref Core.Express_metamodel::Core::Expression[1] Express_metamodel::Statements::ControlVariable::bound-value;
+      !ordered ref Core.Express_metamodel::Core::Expression[1] Express_metamodel::Statements::ControlVariable::initial-value;
+      !ordered ref Express_metamodel::Statements::RepeatStatement[1]#Express_metamodel::Statements::RepeatStatement::control-variable Express_metamodel::Statements::ControlVariable::namespace;
+      !ordered ref Core.Express_metamodel::Core::Expression[1] Express_metamodel::Statements::ControlVariable::increment;
+    }
+
+    class Express_metamodel::Statements::AliasVariable extends Algorithms.Express_metamodel::Algorithms::NamedVariable, Algorithms.Express_metamodel::Algorithms::VARVariable {
+      !ordered ref Express_metamodel::Statements::AliasStatement#Express_metamodel::Statements::AliasStatement::alias-variable Express_metamodel::Statements::AliasVariable::namespace;
+      !ordered ref Express_metamodel::Statements::VARExpression Express_metamodel::Statements::AliasVariable::referent;
+    }
+
+    abstract class Express_metamodel::Statements::ControlStatement extends Algorithms.Express_metamodel::Algorithms::Statement {
+    }
+
+    class Express_metamodel::Statements::VARCell extends Express_metamodel::Statements::VARExpression {
+      !ordered ref Algorithms.Express_metamodel::Algorithms::VARVariable[1] Express_metamodel::Statements::VARCell::refers-to;
+      !unique !ordered attr Core.Identifier[1] ~id;
+    }
+
+    class Express_metamodel::Statements::NullStatement extends Express_metamodel::Statements::ControlStatement {
+    }
+
+    abstract class Express_metamodel::Statements::VARExpression {
+      !unique !ordered attr Core.ExpressText text;
+    }
+
+    class Express_metamodel::Statements::AttributeCell extends Express_metamodel::Statements::VARExpression {
+      !ordered ref Core.Express_metamodel::Core::ExplicitAttribute[1] Express_metamodel::Statements::AttributeCell::refers-to;
+      !ordered val Express_metamodel::Statements::VARExpression[1] Express_metamodel::Statements::AttributeCell::base-entity;
+      !unique !ordered attr Core.Identifier[1] ~id;
+    }
+
+    class Express_metamodel::Statements::StatementBlock extends Algorithms.Express_metamodel::Algorithms::Statement {
+      !ordered val Algorithms.Express_metamodel::Algorithms::Statement[*]#Express_metamodel::Algorithms::Statement::in-block Express_metamodel::Statements::StatementBlock::body-statements_Statement;
+      !unique !ordered attr Boolean[1] delimited;
+    }
+
+    class Express_metamodel::Statements::CaseAction {
+      !ordered ref Core.Express_metamodel::Core::Expression[*] Express_metamodel::Statements::CaseAction::label-value;
+      !ordered val Algorithms.Express_metamodel::Algorithms::Statement Express_metamodel::Statements::CaseAction::action;
+      !unique !ordered attr Boolean[1] isDefault;
+    }
+
+    class Express_metamodel::Statements::MemberCell extends Express_metamodel::Statements::VARExpression {
+      !ordered ref Core.Express_metamodel::Core::Expression[1] Express_metamodel::Statements::MemberCell::index-value;
+      !ordered val Express_metamodel::Statements::VARExpression[1] Express_metamodel::Statements::MemberCell::base-aggregate;
+    }
+
+    class Express_metamodel::Statements::RepeatStatement extends Algorithms.Express_metamodel::Algorithms::Statement, Core.Express_metamodel::Core::LocalScope {
+      !ordered ref Core.Express_metamodel::Core::Expression Express_metamodel::Statements::RepeatStatement::while-expression;
+      !ordered val Algorithms.Express_metamodel::Algorithms::Statement[1]#Express_metamodel::Algorithms::Statement::controlled-by Express_metamodel::Statements::RepeatStatement::body;
+      !ordered val Express_metamodel::Statements::ControlVariable#Express_metamodel::Statements::ControlVariable::namespace Express_metamodel::Statements::RepeatStatement::control-variable;
+      !ordered ref Core.Express_metamodel::Core::Expression Express_metamodel::Statements::RepeatStatement::until-expression;
+    }
+
+    class Express_metamodel::Statements::GroupCell extends Express_metamodel::Statements::VARExpression {
+      !ordered val Express_metamodel::Statements::VARExpression[1] Express_metamodel::Statements::GroupCell::base-entity;
+      !ordered ref Core.Express_metamodel::Core::SingleEntityType[1] Express_metamodel::Statements::GroupCell::refers-to;
+      !unique !ordered attr Core.Identifier[1] ~id;
+    }
+
+    class Express_metamodel::Statements::VariableCell extends Express_metamodel::Statements::VARExpression {
+      !ordered ref Algorithms.Express_metamodel::Algorithms::Variable[1] Express_metamodel::Statements::VariableCell::refers-to;
+      !unique !ordered attr Core.Identifier[1] ~id;
+    }
+
+    class Express_metamodel::Statements::CaseStatement extends Algorithms.Express_metamodel::Algorithms::Statement {
+      !ordered val Express_metamodel::Statements::CaseAction[+] Express_metamodel::Statements::CaseStatement::cases;
+      !ordered ref Core.Express_metamodel::Core::Expression[1] Express_metamodel::Statements::CaseStatement::selection-expression;
+    }
+
+    class Express_metamodel::Statements::IfStatement extends Algorithms.Express_metamodel::Algorithms::Statement {
+      !ordered val Core.Express_metamodel::Core::Expression[1] Express_metamodel::Statements::IfStatement::if-condition;
+      !ordered val Algorithms.Express_metamodel::Algorithms::Statement Express_metamodel::Statements::IfStatement::else-actions;
+      !ordered val Algorithms.Express_metamodel::Algorithms::Statement[1] Express_metamodel::Statements::IfStatement::then-actions;
+    }
+
+    class Express_metamodel::Statements::EscapeStatement extends Express_metamodel::Statements::ControlStatement {
+      !ordered ref Algorithms.Express_metamodel::Algorithms::Statement[1]#Express_metamodel::Algorithms::Statement::body-statements_EscapeStatement Express_metamodel::Statements::EscapeStatement::in-block;
+    }
+
+    class Express_metamodel::Statements::ReturnStatement extends Express_metamodel::Statements::ControlStatement {
+      !ordered ref Core.Express_metamodel::Core::Expression Express_metamodel::Statements::ReturnStatement::return-value;
+    }
+
+    class Express_metamodel::Statements::Assignment extends Algorithms.Express_metamodel::Algorithms::Statement {
+      !ordered ref Core.Express_metamodel::Core::Expression[1] Express_metamodel::Statements::Assignment::assigned-value;
+      !ordered ref Express_metamodel::Statements::VARExpression[1] Express_metamodel::Statements::Assignment::variable;
+    }
+
+  }
+
+  package MOF {
+    datatype String : "";
+
+    datatype Integer : "";
+
+    datatype Boolean : "";
+
+  }
+
+  package Expressions {
+    abstract class Express_metamodel::Expressions::Selector extends Core.Express_metamodel::Core::Expression {
+      !ordered ref Core.Express_metamodel::Core::Expression[1] Express_metamodel::Expressions::Selector::entity-instance;
+    }
+
+    class Express_metamodel::Expressions::RepeatCount {
+      !ordered ref Core.Express_metamodel::Core::Expression Express_metamodel::Expressions::RepeatCount::derivation;
+    }
+
+    class Express_metamodel::Expressions::EnumItemRef extends Express_metamodel::Expressions::Primary {
+      !ordered ref Instances.Express_metamodel::Instances::EnumerationItem[1] Express_metamodel::Expressions::EnumItemRef::refers-to;
+      !unique !ordered attr Core.Identifier[1] ~id;
+    }
+
+    class Express_metamodel::Expressions::Literal extends Express_metamodel::Expressions::Primary {
+      !ordered ref Instances.Express_metamodel::Instances::SimpleValue[1] Express_metamodel::Expressions::Literal::refers-to;
+    }
+
+    class Express_metamodel::Expressions::BinaryIndex extends Express_metamodel::Expressions::IndexOperation {
+      !ordered ref Core.Express_metamodel::Core::Expression[1] Express_metamodel::Expressions::BinaryIndex::first-bit;
+      !ordered ref Core.Express_metamodel::Core::Expression Express_metamodel::Expressions::BinaryIndex::last-bit;
+    }
+
+    class Express_metamodel::Expressions::IndeterminateRef extends Express_metamodel::Expressions::Primary {
+      !ordered ref Instances.Express_metamodel::Instances::Indeterminate[1] Express_metamodel::Expressions::IndeterminateRef::refers-to;
+    }
+
+    class Express_metamodel::Expressions::SELFRef extends Express_metamodel::Expressions::Primary {
+    }
+
+    abstract class Express_metamodel::Expressions::IndexOperation extends Core.Express_metamodel::Core::Expression {
+      !ordered ref Core.Express_metamodel::Core::Expression[1] Express_metamodel::Expressions::IndexOperation::base-value;
+    }
+
+    class Express_metamodel::Expressions::BinaryOperation extends Express_metamodel::Expressions::Operation {
+      !ordered ref Core.Express_metamodel::Core::Expression[1] Express_metamodel::Expressions::BinaryOperation::left-operand;
+      !ordered ref Core.Express_metamodel::Core::Expression[1] Express_metamodel::Expressions::BinaryOperation::right-operand;
+      !unique !ordered attr BinaryOperator[1] operator;
+    }
+
+    class Express_metamodel::Expressions::AggregateInitializer extends Core.Express_metamodel::Core::Expression {
+      !ordered ref Instances.Express_metamodel::Instances::GenericAggregate Express_metamodel::Expressions::AggregateInitializer::result-value;
+      !ordered val Express_metamodel::Expressions::MemberBinding[*] Express_metamodel::Expressions::AggregateInitializer::bindings;
+    }
+
+    class Express_metamodel::Expressions::StringIndex extends Express_metamodel::Expressions::IndexOperation {
+      !ordered ref Core.Express_metamodel::Core::Expression[1] Express_metamodel::Expressions::StringIndex::first-code;
+      !ordered ref Core.Express_metamodel::Core::Expression Express_metamodel::Expressions::StringIndex::last-code;
+    }
+
+    class Express_metamodel::Expressions::PartialEntityConstructor extends Core.Express_metamodel::Core::Expression {
+      !ordered ref Instances.Express_metamodel::Instances::PartialEntityValue Express_metamodel::Expressions::PartialEntityConstructor::result-value;
+      !ordered ref Core.Express_metamodel::Core::SingleEntityType[1] Express_metamodel::Expressions::PartialEntityConstructor::attribute-group;
+      !ordered val Express_metamodel::Expressions::AttributeBinding[*] Express_metamodel::Expressions::PartialEntityConstructor::bindings;
+      !unique !ordered attr Core.Identifier[1] ~id;
+    }
+
+    class Express_metamodel::Expressions::Coercion extends Express_metamodel::Expressions::Operation {
+      !ordered ref Core.Express_metamodel::Core::Expression[1] Express_metamodel::Expressions::Coercion::operand;
+      !ordered ref Core.Express_metamodel::Core::VariableType[1] Express_metamodel::Expressions::Coercion::target-type;
+    }
+
+    abstract class Express_metamodel::Expressions::Primary extends Core.Express_metamodel::Core::Expression {
+    }
+
+    class Express_metamodel::Expressions::ActualParameter {
+      !ordered ref Statements.Express_metamodel::Statements::ProcedureCall#Express_metamodel::Statements::ProcedureCall::actual-parameters Express_metamodel::Expressions::ActualParameter::in-ProcedureCall;
+      !ordered ref Express_metamodel::Expressions::FunctionCall#Express_metamodel::Expressions::FunctionCall::actual-parameters Express_metamodel::Expressions::ActualParameter::in-FunctionCall;
+      !ordered ref Algorithms.Express_metamodel::Algorithms::Parameter[1] Express_metamodel::Expressions::ActualParameter::formal-parameter;
+      !ordered ref Statements.Express_metamodel::Statements::VARExpression Express_metamodel::Expressions::ActualParameter::actual-referent;
+      !ordered ref Core.Express_metamodel::Core::Expression Express_metamodel::Expressions::ActualParameter::actual-value;
+      !unique !ordered attr Integer[1] position;
+    }
+
+    class Express_metamodel::Expressions::ParameterRef extends Express_metamodel::Expressions::Primary {
+      !ordered ref Algorithms.Express_metamodel::Algorithms::Parameter[1] Express_metamodel::Expressions::ParameterRef::refers-to;
+      !unique !ordered attr Core.Identifier[1] ~id;
+    }
+
+    class Express_metamodel::Expressions::AttributeRef extends Express_metamodel::Expressions::Selector {
+      !ordered ref Core.Express_metamodel::Core::Attribute[1] Express_metamodel::Expressions::AttributeRef::refers-to;
+      !unique !ordered attr Core.Identifier[1] ~id;
+    }
+
+    class Express_metamodel::Expressions::AggregateIndex extends Express_metamodel::Expressions::IndexOperation {
+      !ordered val Core.Express_metamodel::Core::Expression[1] Express_metamodel::Expressions::AggregateIndex::index-value;
+    }
+
+    class Express_metamodel::Expressions::GroupRef extends Express_metamodel::Expressions::Selector {
+      !ordered ref Core.Express_metamodel::Core::SingleEntityType[1] Express_metamodel::Expressions::GroupRef::refers-to;
+      !unique !ordered attr Core.Identifier[1] ~id;
+    }
+
+    class Express_metamodel::Expressions::UnaryOperation extends Express_metamodel::Expressions::Operation {
+      !ordered ref Core.Express_metamodel::Core::Expression[1] Express_metamodel::Expressions::UnaryOperation::unary-operand;
+      !unique !ordered attr UnaryOperator[1] operator;
+    }
+
+    class Express_metamodel::Expressions::UsedInRef extends Express_metamodel::Expressions::Selector {
+      !ordered ref Core.Express_metamodel::Core::Attribute[1] Express_metamodel::Expressions::UsedInRef::inverse-of;
+    }
+
+    class Express_metamodel::Expressions::ConstantRef extends Express_metamodel::Expressions::Primary {
+      !ordered ref Instances.Express_metamodel::Instances::Constant[1] Express_metamodel::Expressions::ConstantRef::refers-to;
+      !unique !ordered attr Core.Identifier[1] ~id;
+    }
+
+    class Express_metamodel::Expressions::QueryExpression extends Core.Express_metamodel::Core::LocalScope, Core.Express_metamodel::Core::Expression {
+      !ordered val Core.Express_metamodel::Core::Expression[1] Express_metamodel::Expressions::QueryExpression::select-condition;
+      !ordered ref Express_metamodel::Expressions::QueryVariable[1]#Express_metamodel::Expressions::QueryVariable::namespace Express_metamodel::Expressions::QueryExpression::query-variable;
+      !ordered ref Core.Express_metamodel::Core::Expression[1] Express_metamodel::Expressions::QueryExpression::aggregate-operand;
+    }
+
+    class Express_metamodel::Expressions::QueryVariable extends Algorithms.Express_metamodel::Algorithms::NamedVariable {
+      !ordered ref Express_metamodel::Expressions::QueryExpression[1]#Express_metamodel::Expressions::QueryExpression::query-variable Express_metamodel::Expressions::QueryVariable::namespace;
+    }
+
+    abstract class Express_metamodel::Expressions::Operation extends Core.Express_metamodel::Core::Expression {
+    }
+
+    class Express_metamodel::Expressions::AttributeBinding {
+      !ordered ref Core.Express_metamodel::Core::Expression[1] Express_metamodel::Expressions::AttributeBinding::attribute-value;
+      !ordered ref Instances.Express_metamodel::Instances::AttributeValue Express_metamodel::Expressions::AttributeBinding::to-value;
+      !ordered ref Core.Express_metamodel::Core::ExplicitAttribute[1] Express_metamodel::Expressions::AttributeBinding::attribute;
+      !unique !ordered attr Integer[1] position;
+    }
+
+    class Express_metamodel::Expressions::FunctionCall extends Core.Express_metamodel::Core::Expression {
+      !ordered val Express_metamodel::Expressions::ActualParameter[*]#Express_metamodel::Expressions::ActualParameter::in-FunctionCall Express_metamodel::Expressions::FunctionCall::actual-parameters;
+      !ordered ref Algorithms.Express_metamodel::Algorithms::Function[1] Express_metamodel::Expressions::FunctionCall::invokes-function;
+      !ordered ref Algorithms.Express_metamodel::Algorithms::FunctionResult[1] Express_metamodel::Expressions::FunctionCall::/returns-result;
+    }
+
+    class Express_metamodel::Expressions::MemberBinding {
+      !ordered val Express_metamodel::Expressions::RepeatCount Express_metamodel::Expressions::MemberBinding::repetition;
+      !ordered ref Instances.Express_metamodel::Instances::ListMember[*] Express_metamodel::Expressions::MemberBinding::to-slot;
+      !ordered ref Core.Express_metamodel::Core::Expression[1] Express_metamodel::Expressions::MemberBinding::member-value;
+      !unique !ordered attr Integer[1] position;
+    }
+
+    class Express_metamodel::Expressions::ExtentRef extends Express_metamodel::Expressions::Primary {
+      !ordered ref Core.Express_metamodel::Core::NamedType[1] Express_metamodel::Expressions::ExtentRef::refers-to;
+      !unique !ordered attr Core.Identifier[1] ~id;
+    }
+
+    class Express_metamodel::Expressions::VariableRef extends Express_metamodel::Expressions::Primary {
+      !ordered ref Algorithms.Express_metamodel::Algorithms::NamedVariable[1] Express_metamodel::Expressions::VariableRef::refers-to;
+      !unique !ordered attr Core.Identifier[1] ~id;
+    }
+
+    datatype UnaryOperator : "";
+
+    datatype BinaryOperator : "";
+
+    package BuiltInConstants {
+    }
+
+  }
+
+  package Core {
+    abstract class Express_metamodel::Core::TypeElement extends Express_metamodel::Core::NamedElement {
+      !ordered ref Express_metamodel::Core::NamedType[1]#Express_metamodel::Core::NamedType::named-elements Express_metamodel::Core::TypeElement::namespace;
+    }
+
+    class Express_metamodel::Core::SingleEntityType {
+      !ordered ref Express_metamodel::Core::ExplicitAttribute[*]#Express_metamodel::Core::ExplicitAttribute::of-entity Express_metamodel::Core::SingleEntityType::declares_ExplicitAttribute;
+      !ordered val Express_metamodel::Core::Attribute[*]#Express_metamodel::Core::Attribute::of-entity Express_metamodel::Core::SingleEntityType::declares_Attribute;
+      !ordered ref Express_metamodel::Core::EntityType[1]#Express_metamodel::Core::EntityType::declares Express_metamodel::Core::SingleEntityType::declared-in;
+      !ordered ref Express_metamodel::Core::PartialEntityType[1] Express_metamodel::Core::SingleEntityType::equivalent;
+      !unique !ordered attr Express_metamodel::Core::ScopedId[1] ~id;
+    }
+
+    class Express_metamodel::Core::AGGREGATEType extends Express_metamodel::Core::GeneralizedType {
+      !ordered val Express_metamodel::Core::SizeConstraint Express_metamodel::Core::AGGREGATEType::upper-bound;
+      !ordered ref Express_metamodel::Core::ParameterType[1] Express_metamodel::Core::AGGREGATEType::member-type;
+      !ordered ref Algorithms.Express_metamodel::Algorithms::ActualStructureConstraint#Express_metamodel::Algorithms::ActualStructureConstraint::matching-structure Express_metamodel::Core::AGGREGATEType::constraint;
+      !ordered val Express_metamodel::Core::SizeConstraint Express_metamodel::Core::AGGREGATEType::lower-bound;
+    }
+
+    class Express_metamodel::Core::GeneralBAGType extends Express_metamodel::Core::GeneralAggregationType {
+    }
+
+    class Express_metamodel::Core::DomainRule extends Express_metamodel::Core::DomainConstraint, Express_metamodel::Core::TypeElement {
+      !ordered ref Express_metamodel::Core::NamedType[1]#Express_metamodel::Core::NamedType::domain-rules Express_metamodel::Core::DomainRule::domain;
+      !unique !ordered attr Integer[1] position;
+    }
+
+    abstract class Express_metamodel::Core::GeneralAggregationType extends Express_metamodel::Core::GeneralizedType, Express_metamodel::Core::AggregationType {
+      !ordered ref Express_metamodel::Core::GeneralizedType[1] Express_metamodel::Core::GeneralAggregationType::member-type;
+    }
+
+    abstract class Express_metamodel::Core::ConcreteType extends Express_metamodel::Core::InstantiableType {
+    }
+
+    class Express_metamodel::Core::Expression {
+      !ordered ref Express_metamodel::Core::Instance Express_metamodel::Core::Expression::evaluation;
+      !ordered ref Express_metamodel::Core::Scope Express_metamodel::Core::Expression::interpretation-context;
+      !ordered ref Express_metamodel::Core::DataType Express_metamodel::Core::Expression::data-type;
+      !unique !ordered attr ExpressText text;
+    }
+
+    class Express_metamodel::Core::InverseAttribute extends Express_metamodel::Core::Attribute {
+      !ordered ref Express_metamodel::Core::DomainRole[1]#Express_metamodel::Core::DomainRole::range-view Express_metamodel::Core::InverseAttribute::models-role;
+      !ordered ref Express_metamodel::Core::InvertibleAttribute[1]#Express_metamodel::Core::InvertibleAttribute::inverse Express_metamodel::Core::InverseAttribute::explicit;
+      !unique !ordered attr Boolean[1] isUnique;
+    }
+
+    class Express_metamodel::Core::EnumerationType extends Express_metamodel::Core::DefinedType {
+      !ordered ref Instances.Express_metamodel::Instances::EnumerationItem[*]#Express_metamodel::Instances::EnumerationItem::of-type Express_metamodel::Core::EnumerationType::values;
+      !ordered ref Instances.Express_metamodel::Instances::EnumerationItem[*]#Express_metamodel::Instances::EnumerationItem::declared-in Express_metamodel::Core::EnumerationType::declared-items;
+      !ordered ref Express_metamodel::Core::EnumerationType[*]#Express_metamodel::Core::EnumerationType::base Express_metamodel::Core::EnumerationType::extension;
+      !ordered ref Express_metamodel::Core::EnumerationType[1]#Express_metamodel::Core::EnumerationType::extension Express_metamodel::Core::EnumerationType::base;
+      !unique !ordered attr Boolean[1] isExtensible;
+    }
+
+    abstract class Express_metamodel::Core::VariableType extends Express_metamodel::Core::DataType, Express_metamodel::Core::AttributeType {
+    }
+
+    class Express_metamodel::Core::ArrayBound {
+      !ordered ref Express_metamodel::Core::Expression[1] Express_metamodel::Core::ArrayBound::bound-expression;
+      !unique !ordered attr Integer bound;
+    }
+
+    class Express_metamodel::Core::GeneralSETType extends Express_metamodel::Core::GeneralAggregationType {
+    }
+
+    class Express_metamodel::Core::LISTType extends Express_metamodel::Core::ConcreteAggregationType {
+    }
+
+    class Express_metamodel::Core::Redeclaration {
+      !ordered ref Express_metamodel::Core::Expression Express_metamodel::Core::Redeclaration::derivation;
+      !ordered ref Express_metamodel::Core::AttributeType[1] Express_metamodel::Core::Redeclaration::restricted-type;
+      !ordered ref Express_metamodel::Core::Redeclaration Express_metamodel::Core::Redeclaration::refines;
+      !ordered val Express_metamodel::Core::SizeConstraint Express_metamodel::Core::Redeclaration::upper-bound;
+      !ordered val Express_metamodel::Core::SizeConstraint Express_metamodel::Core::Redeclaration::lower-bound;
+      !ordered ref Express_metamodel::Core::EntityType[1]#Express_metamodel::Core::EntityType::redeclarations Express_metamodel::Core::Redeclaration::scope;
+      !ordered ref Express_metamodel::Core::Attribute[1] Express_metamodel::Core::Redeclaration::original-attribute;
+      !ordered ref Express_metamodel::Core::Role Express_metamodel::Core::Redeclaration::refined-role;
+      !unique !ordered attr Integer[1] position;
+      !unique !ordered attr Boolean isMandatory;
+      !unique !ordered attr Express_metamodel::Core::ScopedId alias;
+    }
+
+    class Express_metamodel::Core::EntityType extends Express_metamodel::Core::NamedType, Express_metamodel::Core::InstantiableType {
+      !ordered ref Express_metamodel::Core::Role[*]#Express_metamodel::Core::Role::of-entity Express_metamodel::Core::EntityType::plays-role;
+      !ordered val Express_metamodel::Core::Redeclaration[*]#Express_metamodel::Core::Redeclaration::scope Express_metamodel::Core::EntityType::redeclarations;
+      !ordered ref Express_metamodel::Core::Attribute[*] Express_metamodel::Core::EntityType::attributes;
+      !ordered ref Express_metamodel::Core::RangeRole[*]#Express_metamodel::Core::RangeRole::range Express_metamodel::Core::EntityType::plays-range-role;
+      !ordered ref Express_metamodel::Core::SingleEntityType[1]#Express_metamodel::Core::SingleEntityType::declared-in Express_metamodel::Core::EntityType::declares;
+      !ordered ref Rules.Express_metamodel::Rules::Extent[*]#Express_metamodel::Rules::Extent::for-type Express_metamodel::Core::EntityType::extension;
+      !ordered ref Express_metamodel::Core::InvertibleAttribute[*]#Express_metamodel::Core::InvertibleAttribute::referencing-type Express_metamodel::Core::EntityType::invertible_attributes;
+      !ordered ref Express_metamodel::Core::DomainRole[*]#Express_metamodel::Core::DomainRole::domain Express_metamodel::Core::EntityType::plays-domain-role;
+      !ordered ref Instances.Express_metamodel::Instances::EntityInstance[*]#Express_metamodel::Instances::EntityInstance::instance-of Express_metamodel::Core::EntityType::instances;
+      !ordered ref Express_metamodel::Core::UniqueRule[*]#Express_metamodel::Core::UniqueRule::domain Express_metamodel::Core::EntityType::unique-rules;
+      !ordered ref Express_metamodel::Core::InvertibleAttribute[*]#Express_metamodel::Core::InvertibleAttribute::range-type Express_metamodel::Core::EntityType::used-in;
+      !ordered ref Express_metamodel::Core::EntityType[*] Express_metamodel::Core::EntityType::subtype-of;
+      !unique !ordered attr Boolean[1] isAbstract;
+    }
+
+    abstract class Express_metamodel::Core::DataType {
+      !ordered ref Express_metamodel::Core::Instance[*]#Express_metamodel::Core::Instance::of-type Express_metamodel::Core::DataType::instances;
+    }
+
+    class Express_metamodel::Core::PartialEntityType extends Express_metamodel::Core::DataType {
+      !ordered ref Express_metamodel::Core::SingleEntityType[+] Express_metamodel::Core::PartialEntityType::components;
+    }
+
+    class Express_metamodel::Core::Schema extends Express_metamodel::Core::Scope {
+      !ordered ref Express_metamodel::Core::Remark[*]#Express_metamodel::Core::Remark::describes-schema Express_metamodel::Core::Schema::documentation;
+      !ordered val Express_metamodel::Core::InterfacedElement[*]#Express_metamodel::Core::InterfacedElement::interfacing-schema Express_metamodel::Core::Schema::interfaces;
+      !ordered ref Express_metamodel::Core::SchemaElement[*]#Express_metamodel::Core::SchemaElement::defined-in Express_metamodel::Core::Schema::schema-elements;
+      !ordered ref Express_metamodel::Core::SchemaElement[*]#Express_metamodel::Core::SchemaElement::referenced-in Express_metamodel::Core::Schema::interfaced-elements;
+      !unique !ordered attr Identifier[1] name;
+      !unique !ordered attr Identifier version;
+    }
+
+    class Express_metamodel::Core::InvertibleAttribute extends Express_metamodel::Core::ExplicitAttribute {
+      !ordered ref Express_metamodel::Core::InverseAttribute[*]#Express_metamodel::Core::InverseAttribute::explicit Express_metamodel::Core::InvertibleAttribute::inverse;
+      !ordered ref Express_metamodel::Core::EntityType[+]#Express_metamodel::Core::EntityType::used-in Express_metamodel::Core::InvertibleAttribute::range-type;
+      !ordered ref Express_metamodel::Core::Relationship[1]#Express_metamodel::Core::Relationship::based-on Express_metamodel::Core::InvertibleAttribute::creates-relationship;
+      !ordered ref Express_metamodel::Core::EntityType[+]#Express_metamodel::Core::EntityType::attributes Express_metamodel::Core::InvertibleAttribute::referencing-type;
+      !ordered ref Express_metamodel::Core::RangeRole[1]#Express_metamodel::Core::RangeRole::domain-view Express_metamodel::Core::InvertibleAttribute::models-role;
+    }
+
+    abstract class Express_metamodel::Core::GeneralizedType extends Express_metamodel::Core::ParameterType, Express_metamodel::Core::AttributeType {
+      !ordered ref Express_metamodel::Core::ParameterType[+]#Express_metamodel::Core::ParameterType::contains Express_metamodel::Core::GeneralizedType::occurs-in;
+    }
+
+    class Express_metamodel::Core::InterfacedElement {
+      !ordered ref Express_metamodel::Core::Schema[1]#Express_metamodel::Core::Schema::interfaces Express_metamodel::Core::InterfacedElement::interfacing-schema;
+      !ordered ref Express_metamodel::Core::SchemaElement[1]#Express_metamodel::Core::SchemaElement::referenced-as Express_metamodel::Core::InterfacedElement::refers-to;
+      !unique !ordered attr Boolean[1] isUSE;
+      !unique !ordered attr Express_metamodel::Core::ScopedId interfacedId;
+    }
+
+    class Express_metamodel::Core::NumericType extends Express_metamodel::Core::SimpleType {
+    }
+
+    abstract class Express_metamodel::Core::DefinedType extends Express_metamodel::Core::NamedType, Express_metamodel::Core::ConcreteType {
+    }
+
+    class Express_metamodel::Core::UniqueRule extends Express_metamodel::Core::TypeElement {
+      !ordered ref Express_metamodel::Core::EntityType[1]#Express_metamodel::Core::EntityType::unique-rules Express_metamodel::Core::UniqueRule::domain;
+      !ordered ref Express_metamodel::Core::Attribute[+] Express_metamodel::Core::UniqueRule::key-component;
+      !unique !ordered attr Integer[1] position;
+    }
+
+    class Express_metamodel::Core::DomainRole extends Express_metamodel::Core::Role {
+      !ordered ref Express_metamodel::Core::InverseAttribute#Express_metamodel::Core::InverseAttribute::models-role Express_metamodel::Core::DomainRole::range-view;
+      !ordered ref Express_metamodel::Core::EntityType[1]#Express_metamodel::Core::EntityType::plays-domain-role Express_metamodel::Core::DomainRole::domain;
+      !ordered ref Express_metamodel::Core::Relationship[1]#Express_metamodel::Core::Relationship::domain Express_metamodel::Core::DomainRole::in-relationship;
+      !unique !ordered attr Express_metamodel::Core::ScopedId ~id;
+    }
+
+    abstract class Express_metamodel::Core::DomainConstraint {
+      !ordered ref Express_metamodel::Core::AttributeType[1]#Express_metamodel::Core::AttributeType::constraints Express_metamodel::Core::DomainConstraint::domain;
+      !ordered val Express_metamodel::Core::Expression Express_metamodel::Core::DomainConstraint::asserts;
+    }
+
+    abstract class Express_metamodel::Core::InstantiableType extends Express_metamodel::Core::ParameterType, Express_metamodel::Core::VariableType {
+      !ordered ref Express_metamodel::Core::InstantiableType[1] Express_metamodel::Core::InstantiableType::fundamental-type;
+    }
+
+    class Express_metamodel::Core::GeneralLISTType extends Express_metamodel::Core::GeneralAggregationType {
+    }
+
+    abstract class Express_metamodel::Core::NamedElement {
+      !ordered ref Express_metamodel::Core::Scope[1]#Express_metamodel::Core::Scope::named-elements Express_metamodel::Core::NamedElement::namespace;
+      !ordered ref Express_metamodel::Core::Remark[*]#Express_metamodel::Core::Remark::describes-element Express_metamodel::Core::NamedElement::documentation;
+      !unique !ordered attr Express_metamodel::Core::ScopedId ~id;
+    }
+
+    abstract class Express_metamodel::Core::Attribute extends Express_metamodel::Core::TypeElement {
+      !ordered ref Express_metamodel::Core::AttributeType[1]#Express_metamodel::Core::AttributeType::role Express_metamodel::Core::Attribute::attribute-type;
+      !ordered ref Express_metamodel::Core::SingleEntityType[1]#Express_metamodel::Core::SingleEntityType::declares_Attribute Express_metamodel::Core::Attribute::of-entity;
+      !unique !ordered attr Boolean[1] isAbstract;
+      !unique !ordered attr Integer[1] position;
+    }
+
+    class Express_metamodel::Core::BAGType extends Express_metamodel::Core::ConcreteAggregationType {
+    }
+
+    class Express_metamodel::Core::RealType extends Express_metamodel::Core::NumericType {
+      !unique !ordered attr Integer precision;
+    }
+
+    class Express_metamodel::Core::LogicType extends Express_metamodel::Core::SimpleType {
+    }
+
+    class Express_metamodel::Core::GenericType extends Express_metamodel::Core::GeneralizedType {
+      !ordered ref Algorithms.Express_metamodel::Algorithms::ActualTypeConstraint#Express_metamodel::Algorithms::ActualTypeConstraint::matching-type Express_metamodel::Core::GenericType::constraint;
+      !unique !ordered attr Boolean[1] isEntity;
+    }
+
+    class Express_metamodel::Core::StringType extends Express_metamodel::Core::SimpleType {
+      !ordered val Express_metamodel::Core::LengthConstraint Express_metamodel::Core::StringType::string-length-constraint;
+    }
+
+    abstract class Express_metamodel::Core::AnonymousType extends Express_metamodel::Core::ConcreteType, Express_metamodel::Core::InstantiableType {
+      !ordered ref Express_metamodel::Core::AnonymousType[*] Express_metamodel::Core::AnonymousType::specializes;
+    }
+
+    abstract class Express_metamodel::Core::AlgorithmScope extends Express_metamodel::Core::LocalScope {
+      !ordered ref Express_metamodel::Core::CommonElement[*]#Express_metamodel::Core::CommonElement::local-scope Express_metamodel::Core::AlgorithmScope::common-elements;
+      !ordered ref Algorithms.Express_metamodel::Algorithms::Variable[*]#Express_metamodel::Algorithms::Variable::namespace Express_metamodel::Core::AlgorithmScope::variables;
+    }
+
+    abstract class Express_metamodel::Core::Instance {
+      !ordered ref Instances.Express_metamodel::Instances::Population[*]#Express_metamodel::Instances::Population::composition_Instance Express_metamodel::Core::Instance::appears-in-population;
+      !ordered ref Express_metamodel::Core::DataType[+]#Express_metamodel::Core::DataType::instances Express_metamodel::Core::Instance::of-type;
+    }
+
+    abstract class Express_metamodel::Core::AttributeType {
+      !ordered ref Express_metamodel::Core::Attribute[*]#Express_metamodel::Core::Attribute::attribute-type Express_metamodel::Core::AttributeType::role;
+      !ordered ref Express_metamodel::Core::DomainConstraint[*]#Express_metamodel::Core::DomainConstraint::domain Express_metamodel::Core::AttributeType::constraints;
+    }
+
+    class Express_metamodel::Core::DerivedAttribute extends Express_metamodel::Core::Attribute {
+      !ordered ref Express_metamodel::Core::Expression[1] Express_metamodel::Core::DerivedAttribute::derivation;
+    }
+
+    class Express_metamodel::Core::RangeRole extends Express_metamodel::Core::Role {
+      !ordered ref Express_metamodel::Core::InvertibleAttribute[1]#Express_metamodel::Core::InvertibleAttribute::models-role Express_metamodel::Core::RangeRole::domain-view;
+      !ordered ref Express_metamodel::Core::Relationship[1]#Express_metamodel::Core::Relationship::range Express_metamodel::Core::RangeRole::in-relationship;
+      !ordered ref Express_metamodel::Core::EntityType[1]#Express_metamodel::Core::EntityType::plays-range-role Express_metamodel::Core::RangeRole::range;
+      !unique !ordered attr Express_metamodel::Core::ScopedId[1] ~id;
+    }
+
+    abstract class Express_metamodel::Core::LocalElement extends Express_metamodel::Core::NamedElement {
+      !ordered ref Express_metamodel::Core::LocalScope[1]#Express_metamodel::Core::LocalScope::local-elements Express_metamodel::Core::LocalElement::namespace;
+    }
+
+    class Express_metamodel::Core::Remark {
+      !ordered ref Express_metamodel::Core::Schema[*]#Express_metamodel::Core::Schema::documentation Express_metamodel::Core::Remark::describes-schema;
+      !ordered ref Express_metamodel::Core::Scope[1]#Express_metamodel::Core::Scope::includes-remarks Express_metamodel::Core::Remark::appears-in;
+      !ordered ref Express_metamodel::Core::NamedElement[*]#Express_metamodel::Core::NamedElement::documentation Express_metamodel::Core::Remark::describes-element;
+      !unique !ordered attr Boolean[1] isTagged;
+      !unique !ordered attr Boolean[1] isTail;
+      !unique !ordered attr ExpressText[1] text;
+    }
+
+    class Express_metamodel::Core::SizeConstraint extends Express_metamodel::Core::DomainConstraint {
+      !ordered val Express_metamodel::Core::Expression Express_metamodel::Core::SizeConstraint::asserts;
+      !unique !ordered attr Integer bound;
+    }
+
+    abstract class Express_metamodel::Core::Role {
+      !ordered ref Express_metamodel::Core::Relationship[1]#Express_metamodel::Core::Relationship::roles Express_metamodel::Core::Role::in-relationship;
+      !ordered ref Express_metamodel::Core::EntityType[+]#Express_metamodel::Core::EntityType::plays-role Express_metamodel::Core::Role::of-entity;
+      !ordered ref Express_metamodel::Core::SizeConstraint Express_metamodel::Core::Role::upper-bound;
+      !ordered ref Express_metamodel::Core::SizeConstraint Express_metamodel::Core::Role::lower-bound;
+    }
+
+    class Express_metamodel::Core::SETType extends Express_metamodel::Core::ConcreteAggregationType {
+    }
+
+    class Express_metamodel::Core::SpecializedType extends Express_metamodel::Core::DefinedType {
+      !ordered ref Express_metamodel::Core::ConcreteType[1] Express_metamodel::Core::SpecializedType::underlying-type;
+    }
+
+    class Express_metamodel::Core::GeneralARRAYType extends Express_metamodel::Core::GeneralAggregationType {
+      !ordered val Express_metamodel::Core::ArrayBound Express_metamodel::Core::GeneralARRAYType::hi-index;
+      !ordered val Express_metamodel::Core::ArrayBound Express_metamodel::Core::GeneralARRAYType::lo-index;
+      !unique !ordered attr Boolean[1] isOptional;
+    }
+
+    class Express_metamodel::Core::Relationship {
+      !ordered ref Express_metamodel::Core::DomainRole[1]#Express_metamodel::Core::DomainRole::in-relationship Express_metamodel::Core::Relationship::domain;
+      !ordered ref Express_metamodel::Core::Role[2]#Express_metamodel::Core::Role::in-relationship Express_metamodel::Core::Relationship::roles;
+      !ordered ref Express_metamodel::Core::InvertibleAttribute[1]#Express_metamodel::Core::InvertibleAttribute::creates-relationship Express_metamodel::Core::Relationship::based-on;
+      !ordered ref Express_metamodel::Core::RangeRole[1]#Express_metamodel::Core::RangeRole::in-relationship Express_metamodel::Core::Relationship::range;
+    }
+
+    class Express_metamodel::Core::LengthConstraint extends Express_metamodel::Core::DomainConstraint {
+      !unique !ordered attr Integer maxLength;
+      !unique !ordered attr Boolean[1] isFixed;
+    }
+
+    abstract class Express_metamodel::Core::LocalScope extends Express_metamodel::Core::Scope {
+      !ordered ref Express_metamodel::Core::LocalElement[*]#Express_metamodel::Core::LocalElement::namespace Express_metamodel::Core::LocalScope::local-elements;
+    }
+
+    abstract class Express_metamodel::Core::NamedType extends Express_metamodel::Core::InstantiableType, Express_metamodel::Core::Scope, Express_metamodel::Core::CommonElement, Express_metamodel::Core::AttributeType {
+      !ordered ref Express_metamodel::Core::TypeElement[*]#Express_metamodel::Core::TypeElement::namespace Express_metamodel::Core::NamedType::named-elements;
+      !ordered ref Express_metamodel::Core::SelectType[*]#Express_metamodel::Core::SelectType::allowed-types Express_metamodel::Core::NamedType::instantiates;
+      !ordered ref Express_metamodel::Core::DomainRule[*]#Express_metamodel::Core::DomainRule::domain Express_metamodel::Core::NamedType::domain-rules;
+    }
+
+    class Express_metamodel::Core::BinaryType extends Express_metamodel::Core::SimpleType {
+      !ordered val Express_metamodel::Core::LengthConstraint Express_metamodel::Core::BinaryType::binary-length-constraint;
+    }
+
+    class Express_metamodel::Core::ScopedId {
+      !unique !ordered attr Identifier[1] localName;
+      !unique !ordered attr Express_metamodel::Core::Scope[1] definingScope;
+    }
+
+    abstract class Express_metamodel::Core::AggregationType {
+      !ordered val Express_metamodel::Core::SizeConstraint Express_metamodel::Core::AggregationType::lower-bound;
+      !ordered val Express_metamodel::Core::SizeConstraint Express_metamodel::Core::AggregationType::upper-bound;
+      !unique !ordered attr Boolean[1] isUnique;
+      !unique !ordered attr OrderingKind[1] ordering;
+    }
+
+    abstract class Express_metamodel::Core::Scope {
+      !ordered ref Express_metamodel::Core::NamedElement[*]#Express_metamodel::Core::NamedElement::namespace Express_metamodel::Core::Scope::named-elements;
+      !ordered ref Express_metamodel::Core::Remark[*]#Express_metamodel::Core::Remark::appears-in Express_metamodel::Core::Scope::includes-remarks;
+    }
+
+    abstract class Express_metamodel::Core::ParameterType {
+      !ordered ref Express_metamodel::Core::GeneralizedType[*]#Express_metamodel::Core::GeneralizedType::occurs-in Express_metamodel::Core::ParameterType::contains;
+    }
+
+    class Express_metamodel::Core::SelectType extends Express_metamodel::Core::DefinedType {
+      !ordered ref Express_metamodel::Core::NamedType[*]#Express_metamodel::Core::NamedType::instantiates Express_metamodel::Core::SelectType::allowed-types;
+      !ordered ref Express_metamodel::Core::SelectType[*]#Express_metamodel::Core::SelectType::base Express_metamodel::Core::SelectType::extension;
+      !ordered ref Express_metamodel::Core::SelectType[1]#Express_metamodel::Core::SelectType::extension Express_metamodel::Core::SelectType::base;
+      !ordered ref Express_metamodel::Core::NamedType[*] Express_metamodel::Core::SelectType::select-list;
+      !unique !ordered attr Boolean[1] isExtensible;
+      !unique !ordered attr Boolean[1] isEntity;
+    }
+
+    abstract class Express_metamodel::Core::ActualType extends Express_metamodel::Core::VariableType {
+      !ordered ref Algorithms.Express_metamodel::Algorithms::Algorithm[1] Express_metamodel::Core::ActualType::scope;
+    }
+
+    class Express_metamodel::Core::ExplicitAttribute extends Express_metamodel::Core::Attribute {
+      !ordered ref Express_metamodel::Core::SingleEntityType[1]#Express_metamodel::Core::SingleEntityType::declares_ExplicitAttribute Express_metamodel::Core::ExplicitAttribute::of-entity;
+      !unique !ordered attr Boolean[1] isOptional;
+    }
+
+    abstract class Express_metamodel::Core::SimpleType extends Express_metamodel::Core::AnonymousType {
+      !unique !ordered attr Keyword[1] ~id;
+    }
+
+    abstract class Express_metamodel::Core::CommonElement extends Express_metamodel::Core::SchemaElement {
+      !ordered ref Express_metamodel::Core::AlgorithmScope#Express_metamodel::Core::AlgorithmScope::common-elements Express_metamodel::Core::CommonElement::local-scope;
+    }
+
+    abstract class Express_metamodel::Core::SchemaElement extends Express_metamodel::Core::NamedElement {
+      !ordered ref Express_metamodel::Core::InterfacedElement[*]#Express_metamodel::Core::InterfacedElement::refers-to Express_metamodel::Core::SchemaElement::referenced-as;
+      !ordered ref Express_metamodel::Core::Schema[*]#Express_metamodel::Core::Schema::interfaced-elements Express_metamodel::Core::SchemaElement::referenced-in;
+      !ordered ref Express_metamodel::Core::Schema#Express_metamodel::Core::Schema::schema-elements Express_metamodel::Core::SchemaElement::defined-in;
+    }
+
+    abstract class Express_metamodel::Core::ConcreteAggregationType extends Express_metamodel::Core::AnonymousType, Express_metamodel::Core::AggregationType {
+      !ordered ref Express_metamodel::Core::InstantiableType[1] Express_metamodel::Core::ConcreteAggregationType::member-type;
+    }
+
+    class Express_metamodel::Core::ARRAYType extends Express_metamodel::Core::ConcreteAggregationType {
+      !ordered val Express_metamodel::Core::ArrayBound[1] Express_metamodel::Core::ARRAYType::lo-index;
+      !ordered val Express_metamodel::Core::ArrayBound[1] Express_metamodel::Core::ARRAYType::hi-index;
+      !unique !ordered attr Boolean[1] isOptional;
+    }
+
+    datatype Keyword : "";
+
+    datatype ExpressText : "";
+
+    datatype Identifier : "";
+
+    datatype OrderingKind : "";
+
+    package GenericTypes {
+    }
+
+    package BuiltInTypes {
+    }
+
+  }
+
+  package java {
+    package lang {
+      datatype int : "";
+
+      datatype ~void : "";
+
+    }
+
+  }
+
+  package Algorithms {
+    class Express_metamodel::Algorithms::ActualTypeConstraint {
+      !ordered ref Core.Express_metamodel::Core::GenericType[1]#Express_metamodel::Core::GenericType::constraint Express_metamodel::Algorithms::ActualTypeConstraint::matching-type;
+      !ordered ref Express_metamodel::Algorithms::ActualDataType[1] Express_metamodel::Algorithms::ActualTypeConstraint::required-type;
+      !unique !ordered attr Core.Identifier[1] label;
+    }
+
+    class Express_metamodel::Algorithms::FunctionResult extends Express_metamodel::Algorithms::Variable {
+      !ordered ref Express_metamodel::Algorithms::Function[1]#Express_metamodel::Algorithms::Function::result Express_metamodel::Algorithms::FunctionResult::namespace;
+    }
+
+    class Express_metamodel::Algorithms::Function extends Express_metamodel::Algorithms::Algorithm {
+      !ordered val Express_metamodel::Algorithms::FunctionResult[1]#Express_metamodel::Algorithms::FunctionResult::namespace Express_metamodel::Algorithms::Function::result;
+    }
+
+    class Express_metamodel::Algorithms::InParameter extends Express_metamodel::Algorithms::Parameter {
+      !ordered ref Express_metamodel::Algorithms::InVariable[1]#Express_metamodel::Algorithms::InVariable::source Express_metamodel::Algorithms::InParameter::variable;
+    }
+
+    class Express_metamodel::Algorithms::LocalVariable extends Express_metamodel::Algorithms::Variable {
+      !ordered ref Core.Express_metamodel::Core::Expression Express_metamodel::Algorithms::LocalVariable::initial-value;
+    }
+
+    class Express_metamodel::Algorithms::ActualStructure extends Express_metamodel::Algorithms::GenericElement, Core.Express_metamodel::Core::AGGREGATEType {
+    }
+
+    class Express_metamodel::Algorithms::ActualGenericType extends Core.Express_metamodel::Core::ActualType {
+      !ordered ref Express_metamodel::Algorithms::ActualDataType[1] Express_metamodel::Algorithms::ActualGenericType::refers-to;
+      !unique !ordered attr Boolean[1] isEntity;
+      !unique !ordered attr Core.Identifier[1] label;
+    }
+
+    class Express_metamodel::Algorithms::Statement {
+      !ordered ref Statements.Express_metamodel::Statements::StatementBlock#Express_metamodel::Statements::StatementBlock::body-statements_Statement Express_metamodel::Algorithms::Statement::in-block;
+      !ordered val Statements.Express_metamodel::Statements::SkipStatement[*]#Express_metamodel::Statements::SkipStatement::in-block Express_metamodel::Algorithms::Statement::body-statements_SkipStatement;
+      !ordered val Statements.Express_metamodel::Statements::EscapeStatement[*]#Express_metamodel::Statements::EscapeStatement::in-block Express_metamodel::Algorithms::Statement::body-statements_EscapeStatement;
+      !ordered ref Statements.Express_metamodel::Statements::RepeatStatement#Express_metamodel::Statements::RepeatStatement::body Express_metamodel::Algorithms::Statement::controlled-by;
+      !ordered ref Express_metamodel::Algorithms::Algorithm#Express_metamodel::Algorithms::Algorithm::body Express_metamodel::Algorithms::Statement::implements;
+      !unique !ordered attr Core.ExpressText text;
+    }
+
+    abstract class Express_metamodel::Algorithms::NamedVariable extends Core.Express_metamodel::Core::LocalElement {
+      !ordered ref Core.Express_metamodel::Core::VariableType[1] Express_metamodel::Algorithms::NamedVariable::variable-type;
+    }
+
+    class Express_metamodel::Algorithms::InVariable extends Express_metamodel::Algorithms::Variable {
+      !ordered ref Express_metamodel::Algorithms::InParameter[1]#Express_metamodel::Algorithms::InParameter::variable Express_metamodel::Algorithms::InVariable::source;
+    }
+
+    class Express_metamodel::Algorithms::Procedure extends Express_metamodel::Algorithms::Algorithm {
+    }
+
+    class Express_metamodel::Algorithms::ActualARRAYType extends Express_metamodel::Algorithms::ActualAggregationType {
+      !ordered val Core.Express_metamodel::Core::ArrayBound[1] Express_metamodel::Algorithms::ActualARRAYType::hi-index;
+      !ordered val Core.Express_metamodel::Core::ArrayBound[1] Express_metamodel::Algorithms::ActualARRAYType::lo-index;
+      !unique !ordered attr Boolean[1] isOptional;
+    }
+
+    class Express_metamodel::Algorithms::ActualSETType extends Express_metamodel::Algorithms::ActualAggregationType {
+    }
+
+    class Express_metamodel::Algorithms::ActualAGGREGATEType extends Core.Express_metamodel::Core::ActualType {
+      !ordered val Core.Express_metamodel::Core::SizeConstraint Express_metamodel::Algorithms::ActualAGGREGATEType::upper-bound;
+      !ordered ref Express_metamodel::Algorithms::ActualStructure[1] Express_metamodel::Algorithms::ActualAGGREGATEType::refers-to;
+      !ordered ref Core.Express_metamodel::Core::VariableType[1] Express_metamodel::Algorithms::ActualAGGREGATEType::member-type;
+      !ordered val Core.Express_metamodel::Core::SizeConstraint Express_metamodel::Algorithms::ActualAGGREGATEType::lower-bound;
+      !unique !ordered attr Core.Identifier[1] label;
+    }
+
+    abstract class Express_metamodel::Algorithms::Parameter extends Core.Express_metamodel::Core::LocalElement {
+      !ordered ref Express_metamodel::Algorithms::Algorithm[1]#Express_metamodel::Algorithms::Algorithm::formal-parameters Express_metamodel::Algorithms::Parameter::namespace;
+      !ordered val Express_metamodel::Algorithms::ActualStructureConstraint[*] Express_metamodel::Algorithms::Parameter::structure-constraints;
+      !ordered val Express_metamodel::Algorithms::ActualTypeConstraint[*] Express_metamodel::Algorithms::Parameter::type-constraints;
+      !ordered ref Core.Express_metamodel::Core::ParameterType[1] Express_metamodel::Algorithms::Parameter::formal-parameter-type;
+      !unique !ordered attr Boolean[1] inout;
+      !unique !ordered attr Integer[1] position;
+    }
+
+    class Express_metamodel::Algorithms::ActualStructureConstraint {
+      !ordered ref Core.Express_metamodel::Core::AGGREGATEType[1]#Express_metamodel::Core::AGGREGATEType::constraint Express_metamodel::Algorithms::ActualStructureConstraint::matching-structure;
+      !ordered ref Express_metamodel::Algorithms::ActualStructure[1] Express_metamodel::Algorithms::ActualStructureConstraint::required-structure;
+      !unique !ordered attr Core.Identifier[1] label;
+    }
+
+    abstract class Express_metamodel::Algorithms::Algorithm extends Core.Express_metamodel::Core::AlgorithmScope, Core.Express_metamodel::Core::CommonElement {
+      !ordered val Express_metamodel::Algorithms::Statement#Express_metamodel::Algorithms::Statement::implements Express_metamodel::Algorithms::Algorithm::body;
+      !ordered ref Express_metamodel::Algorithms::Parameter[*]#Express_metamodel::Algorithms::Parameter::namespace Express_metamodel::Algorithms::Algorithm::formal-parameters;
+    }
+
+    abstract class Express_metamodel::Algorithms::ActualAggregationType extends Core.Express_metamodel::Core::ActualType, Core.Express_metamodel::Core::AggregationType {
+      !ordered ref Core.Express_metamodel::Core::ActualType[1] Express_metamodel::Algorithms::ActualAggregationType::member-type;
+    }
+
+    abstract class Express_metamodel::Algorithms::VARVariable {
+    }
+
+    class Express_metamodel::Algorithms::ActualLISTType extends Express_metamodel::Algorithms::ActualAggregationType {
+    }
+
+    abstract class Express_metamodel::Algorithms::Variable extends Express_metamodel::Algorithms::NamedVariable {
+      !ordered ref Core.Express_metamodel::Core::AlgorithmScope[1]#Express_metamodel::Core::AlgorithmScope::variables Express_metamodel::Algorithms::Variable::namespace;
+    }
+
+    abstract class Express_metamodel::Algorithms::GenericElement extends Core.Express_metamodel::Core::LocalElement {
+      !ordered ref Core.Express_metamodel::Core::ParameterType[1] Express_metamodel::Algorithms::GenericElement::occurs-in;
+      !ordered ref Express_metamodel::Algorithms::Parameter[1] Express_metamodel::Algorithms::GenericElement::source;
+      !ordered ref Express_metamodel::Algorithms::Algorithm[1] Express_metamodel::Algorithms::GenericElement::namespace;
+      !unique !ordered attr Core.Express_metamodel::Core::ScopedId[1] label;
+    }
+
+    class Express_metamodel::Algorithms::VARParameter extends Express_metamodel::Algorithms::Parameter, Express_metamodel::Algorithms::VARVariable {
+    }
+
+    class Express_metamodel::Algorithms::ActualDataType extends Core.Express_metamodel::Core::GenericType, Express_metamodel::Algorithms::GenericElement {
+    }
+
+    class Express_metamodel::Algorithms::ActualBAGType extends Express_metamodel::Algorithms::ActualAggregationType {
+    }
+
+  }
+
+  package Instances {
+    class Express_metamodel::Instances::AttributeValue {
+      !ordered ref Core.Express_metamodel::Core::Instance Express_metamodel::Instances::AttributeValue::actual-value;
+      !ordered ref Core.Express_metamodel::Core::ExplicitAttribute[1] Express_metamodel::Instances::AttributeValue::attribute;
+    }
+
+    class Express_metamodel::Instances::ARRAYValue extends Express_metamodel::Instances::AggregateValue {
+      !ordered ref Core.Express_metamodel::Core::ARRAYType[+] Express_metamodel::Instances::ARRAYValue::of-type;
+      !ordered val Express_metamodel::Instances::ArrayMember[+] Express_metamodel::Instances::ARRAYValue::member-slot;
+    }
+
+    class Express_metamodel::Instances::RoleName extends Express_metamodel::Instances::StringValue {
+      !ordered ref Core.Express_metamodel::Core::Attribute[1] Express_metamodel::Instances::RoleName::refers-to;
+      !unique !ordered attr Core.Express_metamodel::Core::ScopedId[1] represents;
+    }
+
+    class Express_metamodel::Instances::EntityInstance extends Express_metamodel::Instances::TypedInstance {
+      !ordered ref Express_metamodel::Instances::EntityValue[1]#Express_metamodel::Instances::EntityValue::describes Express_metamodel::Instances::EntityInstance::state;
+      !ordered ref Core.Express_metamodel::Core::EntityType[+]#Express_metamodel::Core::EntityType::instances Express_metamodel::Instances::EntityInstance::instance-of;
+      !ordered ref Express_metamodel::Instances::Population[+]#Express_metamodel::Instances::Population::composition_EntityInstance Express_metamodel::Instances::EntityInstance::appears-in-population;
+      !unique !ordered attr EntityName[1] ~id;
+    }
+
+    class Express_metamodel::Instances::IntegerValue extends Express_metamodel::Instances::RealValue {
+    }
+
+    abstract class Express_metamodel::Instances::AggregateValue extends Express_metamodel::Instances::ConcreteValue {
+      !ordered ref Core.Express_metamodel::Core::AggregationType[+] Express_metamodel::Instances::AggregateValue::of-type;
+    }
+
+    class Express_metamodel::Instances::Constant extends Core.Express_metamodel::Core::CommonElement {
+      !ordered ref Core.Express_metamodel::Core::Expression[1] Express_metamodel::Instances::Constant::value-expression;
+      !ordered ref Core.Express_metamodel::Core::Instance Express_metamodel::Instances::Constant::actual-value;
+      !ordered ref Core.Express_metamodel::Core::InstantiableType[1] Express_metamodel::Instances::Constant::data-type;
+    }
+
+    class Express_metamodel::Instances::LogicalValue extends Express_metamodel::Instances::SimpleValue {
+    }
+
+    abstract class Express_metamodel::Instances::TypedInstance extends Core.Express_metamodel::Core::Instance {
+      !ordered ref Core.Express_metamodel::Core::SelectType[*] Express_metamodel::Instances::TypedInstance::satisfies-type;
+    }
+
+    class Express_metamodel::Instances::ListMember {
+      !ordered ref Core.Express_metamodel::Core::Instance[1] Express_metamodel::Instances::ListMember::member-value;
+      !unique !ordered attr Integer[1] position;
+    }
+
+    class Express_metamodel::Instances::BagMember {
+      !ordered ref Core.Express_metamodel::Core::Instance[1] Express_metamodel::Instances::BagMember::member-value;
+      !unique !ordered attr Integer[1] count;
+    }
+
+    class Express_metamodel::Instances::SingleEntityValue {
+      !ordered ref Express_metamodel::Instances::PartialEntityValue[1] Express_metamodel::Instances::SingleEntityValue::equivalent;
+      !ordered ref Core.Express_metamodel::Core::SingleEntityType[1] Express_metamodel::Instances::SingleEntityValue::of-type;
+      !ordered val Express_metamodel::Instances::AttributeValue[*] Express_metamodel::Instances::SingleEntityValue::properties;
+    }
+
+    class Express_metamodel::Instances::Indeterminate extends Core.Express_metamodel::Core::Instance {
+    }
+
+    class Express_metamodel::Instances::SingleLeafInstance extends Express_metamodel::Instances::EntityInstance {
+      !ordered ref Core.Express_metamodel::Core::EntityType[1] Express_metamodel::Instances::SingleLeafInstance::characterizing-type;
+    }
+
+    class Express_metamodel::Instances::GenericAggregate extends Express_metamodel::Instances::LISTValue {
+    }
+
+    class Express_metamodel::Instances::BinaryValue extends Express_metamodel::Instances::SimpleValue {
+    }
+
+    class Express_metamodel::Instances::SpecializedValue extends Express_metamodel::Instances::TypedInstance {
+      !ordered ref Core.Express_metamodel::Core::SpecializedType[1] Express_metamodel::Instances::SpecializedValue::of-type;
+      !ordered ref Express_metamodel::Instances::ConcreteValue[1] Express_metamodel::Instances::SpecializedValue::fundamental-value;
+    }
+
+    class Express_metamodel::Instances::BAGValue extends Express_metamodel::Instances::AggregateValue {
+      !ordered val Express_metamodel::Instances::BagMember[*] Express_metamodel::Instances::BAGValue::member-slot;
+      !ordered ref Core.Express_metamodel::Core::BAGType[+] Express_metamodel::Instances::BAGValue::of-type;
+    }
+
+    class Express_metamodel::Instances::EnumerationItem extends Core.Express_metamodel::Core::TypeElement, Express_metamodel::Instances::TypedInstance, Express_metamodel::Instances::ConcreteValue {
+      !ordered ref Core.Express_metamodel::Core::EnumerationType[+]#Express_metamodel::Core::EnumerationType::values Express_metamodel::Instances::EnumerationItem::of-type;
+      !ordered ref Core.Express_metamodel::Core::EnumerationType[1]#Express_metamodel::Core::EnumerationType::declared-items Express_metamodel::Instances::EnumerationItem::declared-in;
+      !unique !ordered attr Integer[1] position;
+    }
+
+    class Express_metamodel::Instances::EntityValue extends Express_metamodel::Instances::PartialEntityValue {
+      !ordered ref Core.Express_metamodel::Core::EntityType[+] Express_metamodel::Instances::EntityValue::corresponds to;
+      !ordered ref Express_metamodel::Instances::EntityInstance[*]#Express_metamodel::Instances::EntityInstance::state Express_metamodel::Instances::EntityValue::describes;
+    }
+
+    class Express_metamodel::Instances::SETValue extends Express_metamodel::Instances::AggregateValue {
+      !ordered ref Core.Express_metamodel::Core::Instance[*] Express_metamodel::Instances::SETValue::member-value;
+      !ordered ref Core.Express_metamodel::Core::SETType[+] Express_metamodel::Instances::SETValue::of-type;
+    }
+
+    class Express_metamodel::Instances::ArrayMember {
+      !ordered ref Core.Express_metamodel::Core::Instance Express_metamodel::Instances::ArrayMember::member-value;
+      !unique !ordered attr Integer[1] index;
+    }
+
+    class Express_metamodel::Instances::Population {
+      !ordered ref Express_metamodel::Instances::EntityInstance[*]#Express_metamodel::Instances::EntityInstance::appears-in-population Express_metamodel::Instances::Population::composition_EntityInstance;
+      !ordered ref Core.Express_metamodel::Core::Instance[*]#Express_metamodel::Core::Instance::appears-in-population Express_metamodel::Instances::Population::composition_Instance;
+      !ordered ref Core.Express_metamodel::Core::Schema[*] Express_metamodel::Instances::Population::governing-schema;
+    }
+
+    class Express_metamodel::Instances::RealValue extends Express_metamodel::Instances::NumberValue {
+    }
+
+    class Express_metamodel::Instances::BooleanValue extends Express_metamodel::Instances::LogicalValue {
+    }
+
+    class Express_metamodel::Instances::LISTValue extends Core.Express_metamodel::Core::Instance, Express_metamodel::Instances::AggregateValue {
+      !ordered ref Core.Express_metamodel::Core::LISTType[+] Express_metamodel::Instances::LISTValue::of-type;
+      !ordered val Express_metamodel::Instances::ListMember[*] Express_metamodel::Instances::LISTValue::member-slot;
+    }
+
+    class Express_metamodel::Instances::StringValue extends Express_metamodel::Instances::SimpleValue {
+    }
+
+    class Express_metamodel::Instances::TypeName extends Express_metamodel::Instances::StringValue {
+      !ordered ref Core.Express_metamodel::Core::NamedType[1] Express_metamodel::Instances::TypeName::refers-to;
+      !unique !ordered attr Core.Express_metamodel::Core::ScopedId[1] represents;
+    }
+
+    class Express_metamodel::Instances::PartialEntityValue extends Core.Express_metamodel::Core::Instance {
+      !ordered ref Core.Express_metamodel::Core::PartialEntityType[1] Express_metamodel::Instances::PartialEntityValue::of-type;
+      !ordered val Express_metamodel::Instances::SingleEntityValue[+] Express_metamodel::Instances::PartialEntityValue::components;
+    }
+
+    class Express_metamodel::Instances::NumberValue extends Express_metamodel::Instances::SimpleValue {
+    }
+
+    class Express_metamodel::Instances::MultiLeafInstance extends Express_metamodel::Instances::EntityInstance {
+    }
+
+    abstract class Express_metamodel::Instances::SimpleValue extends Express_metamodel::Instances::ConcreteValue {
+      !ordered ref Core.Express_metamodel::Core::SimpleType[+] Express_metamodel::Instances::SimpleValue::of-type;
+      !unique !ordered attr String[1] name;
+    }
+
+    abstract class Express_metamodel::Instances::ConcreteValue extends Core.Express_metamodel::Core::Instance {
+    }
+
+    datatype EntityName : "";
+
+  }
+
+  package Express2 {
+  }
+
+}
+

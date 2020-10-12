@@ -1,0 +1,53 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_PetriNet"{
+labelloc=t
+color=black
+label=PetriNet
+ node[shape=record];
+Element[label="{/Element/|name : String| }"]
+;
+ node[shape=record];
+PetriNet[label="{PetriNet| | }"]
+ PetriNet->Place[arrowhead=vee,arrowtail=diamond,headlabel="places[1-*]",group=Place,minlen=2,constraint=true,]
+ PetriNet->Transition[arrowhead=vee,arrowtail=diamond,headlabel="transitions[*]",group=Transition,minlen=2,constraint=true,]
+ PetriNet->Arc[arrowhead=vee,arrowtail=diamond,headlabel="arcs[*]",group=Arc,minlen=2,constraint=true,]
+ PetriNet->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Place[label="{Place| | }"]
+ Place->TransToPlaceArc[arrowhead=none,arrowtail=none,headlabel="incoming[*]",taillabel="target",group=TransToPlaceArc,minlen=2,constraint=false,]
+ Place->PlaceToTransArc[arrowhead=none,arrowtail=none,headlabel="outgoing[*]",taillabel="source",group=PlaceToTransArc,minlen=2,constraint=false,]
+ Place->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Transition[label="{Transition| | }"]
+ Transition->PlaceToTransArc[arrowhead=none,arrowtail=none,headlabel="incoming[1-*]",taillabel="target",group=PlaceToTransArc,minlen=2,constraint=false,]
+ Transition->TransToPlaceArc[arrowhead=none,arrowtail=none,headlabel="outgoing[1-*]",taillabel="source",group=TransToPlaceArc,minlen=2,constraint=false,]
+ Transition->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Arc[label="{/Arc/|weight : Integer| }"]
+;
+ node[shape=record];
+PlaceToTransArc[label="{PlaceToTransArc| | }"]
+ PlaceToTransArc->Arc[arrowhead=onormal,group=Arc,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TransToPlaceArc[label="{TransToPlaceArc| | }"]
+ TransToPlaceArc->Arc[arrowhead=onormal,group=Arc,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

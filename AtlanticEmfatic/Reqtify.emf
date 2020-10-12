@@ -1,0 +1,61 @@
+package Metamodel;
+
+package Reqtify {
+  class Project {
+    !ordered val Document[+]#project documents;
+  }
+
+  abstract class TypedElement {
+    !unique !ordered attr String[1] type;
+  }
+
+  abstract class ElementWithIL extends TypedElement {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] label;
+  }
+
+  class Document extends ElementWithIL {
+    !ordered ref Project[1]#documents project;
+    !ordered val Section[*]#document sections;
+  }
+
+  abstract class TextElement extends ElementWithIL {
+    !unique !ordered attr String[1] description;
+  }
+
+  class Section extends TextElement {
+    !ordered ref Document#sections document;
+    !ordered val Section[*]#sectionParent sectionChildren;
+    !ordered ref Section#sectionChildren sectionParent;
+    !ordered val AbstractRequirement[*]#section requirements;
+  }
+
+  abstract class AbstractRequirement extends TextElement {
+    !ordered ref Section#requirements section;
+    !ordered ref MacroRequirement#contains isContained;
+    !ordered val CoverLink[*] coverLinks;
+    !ordered val Attribute[*] attribute;
+  }
+
+  class Requirement extends AbstractRequirement {
+  }
+
+  class MacroRequirement extends AbstractRequirement {
+    !ordered val AbstractRequirement[*]#isContained contains;
+  }
+
+  class CoverLink extends TypedElement {
+    !ordered ref AbstractRequirement[1] linkWith;
+  }
+
+  class Attribute extends TypedElement {
+    !unique !ordered attr String[1] value;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+}
+

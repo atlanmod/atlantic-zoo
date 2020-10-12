@@ -1,0 +1,184 @@
+package Metamodel;
+
+package ODPEV {
+  class EnterpriseObject {
+    !ordered ref Community[*]#coMembers eoConfigurations;
+    !ordered ref Role[*]#rolefillers eoRoles;
+    !ordered ref Action[+]#actArtefactRoleFillers eoArtefactActions;
+    !ordered ref Action[+]#actResourceRoleFillers eoResourceActions;
+    !ordered ref Action[+]#actActorRoleFillers eoActorActions;
+    !ordered ref Policy[*]#poEnterpriseObject eoPolicy;
+    !ordered ref EO_A_R[*]#eoarSubject eoEOAR;
+    !ordered ref EO_P_D[1]#eopdAgent eoEOPD;
+  }
+
+  class ODPSystem extends EnterpriseObject {
+    !ordered ref Scope[1]#scOdpSystem odpBehaviour;
+    !ordered ref Objective[+]#objFulfiller odpObjectives;
+    !ordered ref EnterpriseSpecification[1]#esDescribedSystems odpSpecifier;
+  }
+
+  class Party extends EnterpriseObject {
+    !ordered ref AccountableAction[*]#aaAccountableParty ptyAccountableAction;
+    !ordered ref EO_P_D[1]#eopdPrincipal ptyEOPD;
+  }
+
+  class Objective {
+    !ordered ref ODPSystem#odpObjectives objFulfiller;
+    !ordered ref Contract[1]#ctObjective objSpecifier;
+    !ordered ref Objective[*]#objRefinement objRefiners;
+    !ordered ref Objective#objRefiners objRefinement;
+    !ordered ref Process[*]#prObjectives objAchievers;
+    !ordered ref Behaviour[+]#beObjectives objFulfillers;
+  }
+
+  class Scope {
+    !ordered ref ODPSystem[1]#odpBehaviour scOdpSystem;
+  }
+
+  class EnterpriseSpecification {
+    !ordered ref ODPSystem[+]#odpSpecifier esDescribedSystems;
+    !ordered ref FieldOfApplication[1]#faEnterpriseSpecifications esContext;
+  }
+
+  class FieldOfApplication {
+    !ordered ref EnterpriseSpecification[1]#esContext faEnterpriseSpecifications;
+  }
+
+  class Policy {
+    !ordered ref Contract[1]#ctPolicies poSpecifier;
+    !ordered ref Community[1]#coPolicy poOwner;
+    !ordered ref Process[*]#prConstrainer poProcess;
+    !ordered ref Behaviour[*]#bePolicyConstrainer poBehaviour;
+    !ordered ref Behaviour[*]#bePolicy poChanger;
+    !ordered ref Role[*]#roleConstrainer poRole;
+    !ordered ref EnterpriseObject[*]#eoPolicy poEnterpriseObject;
+  }
+
+  class PolicyEnvelope extends Policy {
+    !ordered ref Behaviour[1]#bePolicyEnvelope pePolicySetter;
+    !ordered ref Behaviour#beConstrainer peBehaviour;
+    val PolicyValue[+] peValues;
+    !ordered ref PolicyValue[1]#pvValue peCurrentValue;
+  }
+
+  class PolicyValue extends Policy {
+    !ordered ref PolicyEnvelope[1]#peCurrentValue pvValue;
+  }
+
+  class AssigmentPolicy extends Policy {
+    !ordered ref EO_A_R[*]#eoarGovernor apEOAR;
+  }
+
+  class Contract {
+    !ordered ref Policy[1]#poSpecifier ctPolicies;
+    !ordered ref Objective[1]#objSpecifier ctObjective;
+    !ordered ref Behaviour[+]#beSpecifiers ctBehaviours;
+  }
+
+  class Process {
+    !ordered ref Objective[+]#objAchievers prObjectives;
+    !ordered ref Step[+]#stGraphs prDetails;
+    !ordered ref Step#stAbstraction prRefinement;
+    !ordered ref Policy[*]#poProcess prConstrainer;
+  }
+
+  class Step {
+    !ordered ref Process[+]#prDetails stGraphs;
+    !ordered ref Process#prRefinement stAbstraction;
+  }
+
+  class Action extends Step {
+    !ordered ref Behaviour[+]#beActions actBehaviours;
+    !ordered ref EnterpriseObject[*]#eoArtefactActions actArtefactRoleFillers;
+    !ordered ref EnterpriseObject[*]#eoResourceActions actResourceRoleFillers;
+    !ordered ref EnterpriseObject[*]#eoActorActions actActorRoleFillers;
+  }
+
+  abstract class AccountableAction extends Action {
+    !ordered ref Party[+]#ptyAccountableAction aaAccountableParty;
+  }
+
+  class Prescription extends AccountableAction {
+  }
+
+  class Commitment extends AccountableAction {
+  }
+
+  class Declaration extends AccountableAction {
+  }
+
+  class Evaluation extends AccountableAction {
+  }
+
+  class Delegation extends AccountableAction {
+    !ordered ref EO_P_D[1]#eopdAction dlgEOPD;
+  }
+
+  class Behaviour {
+    !ordered ref Objective[+]#objFulfillers beObjectives;
+    !ordered ref Contract[+]#ctBehaviours beSpecifiers;
+    !ordered ref Action[+]#actBehaviours beActions;
+    !ordered ref Role#roleBehaviour beIdentifier;
+    !ordered ref PolicyEnvelope#pePolicySetter bePolicyEnvelope;
+    !ordered ref PolicyEnvelope#peBehaviour beConstrainer;
+    !ordered ref Policy[*]#poBehaviour bePolicyConstrainer;
+    !ordered ref Policy[*]#poChanger bePolicy;
+  }
+
+  class Community {
+    !ordered ref CommunityObject#cobjRefinement coAbstraction;
+    !ordered ref EnterpriseObject[*]#eoConfigurations coMembers;
+    !ordered ref Role[*]#roleSpecifier coCommunityRoles;
+    !ordered ref Policy[*]#poOwner coPolicy;
+  }
+
+  class CommunityObject extends EnterpriseObject {
+    !ordered ref Community[1]#coAbstraction cobjRefinement;
+  }
+
+  class Role {
+    !ordered ref Behaviour[1]#beIdentifier roleBehaviour;
+    !ordered ref Community[1]#coCommunityRoles roleSpecifier;
+    !ordered ref EnterpriseObject[*]#eoRoles rolefillers;
+    !ordered ref Policy[*]#poRole roleConstrainer;
+    !ordered ref EO_A_R[*]#eoarSubjectRole roleEOAR;
+  }
+
+  class InterfaceRole extends Role {
+  }
+
+  class Violation extends Behaviour {
+    !ordered ref Rule[1]#ruViolation vioProhibitor;
+  }
+
+  abstract class Rule {
+    !ordered ref Violation[*]#vioProhibitor ruViolation;
+  }
+
+  class Obligation extends Rule {
+  }
+
+  class Authorisation extends Rule {
+  }
+
+  class Permission extends Rule {
+  }
+
+  class Prohibition extends Rule {
+  }
+
+  class EO_A_R {
+    !ordered ref EnterpriseObject[*]#eoEOAR eoarSubject;
+    !ordered ref Role[+]#roleEOAR eoarSubjectRole;
+    !ordered ref AssigmentPolicy[*]#apEOAR eoarGovernor;
+  }
+
+  class EO_P_D {
+    !ordered ref EnterpriseObject[1]#eoEOPD eopdAgent;
+    !ordered ref Party[1]#ptyEOPD eopdPrincipal;
+    !ordered ref Delegation[1]#dlgEOPD eopdAction;
+  }
+
+}
+

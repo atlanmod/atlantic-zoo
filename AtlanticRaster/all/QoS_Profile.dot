@@ -1,0 +1,55 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_QoSProfile"{
+labelloc=t
+color=black
+label=QoSProfile
+ node[shape=record];
+QoSComponent[label="{QoSComponent| | }"]
+ QoSComponent->Operation[arrowhead=vee,arrowtail=diamond,headlabel="operations",group=Operation,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Operation[label="{Operation| | }"]
+;
+ node[shape=record];
+QoSProfile[label="{/QoSProfile/| | }"]
+ QoSProfile->QoSComponent[arrowhead=none,arrowtail=none,headlabel="for",taillabel="profile[*]",group=QoSComponent,minlen=2,constraint=false,]
+;
+ node[shape=record];
+CompoundProfile[label="{CompoundProfile| | }"]
+ CompoundProfile->ProfileTransition[arrowhead=diamond,arrowtail=none,headlabel="profileTransition[*]",taillabel="compoundProfile",group=ProfileTransition,minlen=2,constraint=true,]
+ CompoundProfile->QoSProfile[arrowhead=onormal,group=QoSProfile,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleProfile[label="{SimpleProfile| | }"]
+ SimpleProfile->CompoundProfile[arrowhead=diamond,arrowtail=none,headlabel="compoundProfile",taillabel="simpleProfile[1-*]{ordered}",group=CompoundProfile,minlen=2,constraint=true,]
+ SimpleProfile->QoSStatement[arrowhead=vee,arrowtail=none,headlabel="uses",group=QoSStatement,minlen=2,constraint=false,]
+ SimpleProfile->QoSStatement[arrowhead=vee,arrowtail=none,headlabel="provides",group=QoSStatement,minlen=2,constraint=false,]
+ SimpleProfile->QoSProfile[arrowhead=onormal,group=QoSProfile,minlen=2,constraint=true,]
+;
+ node[shape=record];
+QoSStatement[label="{QoSStatement| | }"]
+;
+ node[shape=record];
+ProfileTransition[label="{ProfileTransition| | }"]
+ ProfileTransition->Operation[arrowhead=vee,arrowtail=none,headlabel="operations[*]{ordered}",group=Operation,minlen=2,constraint=false,]
+ ProfileTransition->SimpleProfile[arrowhead=vee,arrowtail=none,headlabel="from",group=SimpleProfile,minlen=2,constraint=false,]
+ ProfileTransition->SimpleProfile[arrowhead=vee,arrowtail=none,headlabel="to",group=SimpleProfile,minlen=2,constraint=false,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

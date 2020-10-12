@@ -1,0 +1,78 @@
+-- @name		Maven (project.xml)
+-- @version		0.3
+-- @domains		build tool
+-- @authors		Pauline Brunel (pabrunel@numericable.fr)
+-- @date		2005/07/06
+-- @description	A metamodel describing the file project.xml of the build tool Maven: Apache Maven is a project management and build tool that is becoming more common in organisations. It continues on from where Ant left off and provides for modularisation of functionality into plugins, the use of a central repository for storing dependent JAR s, as well as many other convenience functionality. This file represents project.xml, it contains the basic project configuration for maven (project name, developers, urls, dependencies, etc).
+-- @see			http://maven.apache.org/
+
+package MavenProject {
+-- @begin mavenProject
+
+  -- @comments represents the current project
+   class Project{
+   attribute id [0-1] : String;
+   attribute groupId [0-1] : String;
+   attribute artifactId [0-1] : String;
+   attribute name [0-1] : String;
+   attribute description [0-1] : String;
+   reference mailingLists [*] container : MailingList;
+   reference developersAndContributors [*] container : Person;
+   reference build [0-1] container : Build;
+   reference dependencies [*] ordered container : Project;
+  }
+
+  -- @comments represents the tag 'build' containing the informations required to build the project
+  class Build{
+   attribute defaultGoal [0-1] : String;
+   attribute sourceDirectory : String;
+   attribute unitTestSourceDirectory [0-1] : String;
+   reference uniTest [*] : Resource;
+   reference resources [*] : Resource;
+  }
+
+ -- @comments represents the tag 'resource' : it is used to complete the jar file or to run unit test
+ class Resource{
+ 	attribute targetPath [0-1] : String;
+ 	attribute filtering [0-1] : String;
+ 	attribute directory [0-1] : String;
+ 	attribute includes [0-1] : String;
+ 	attribute excludes [0-1] : String;
+ }
+ 
+ 
+ -- @comments represents the tag 'mailingList' : it contains information about a project's mailing lists
+ class MailingList{
+     attribute name : String;
+     attribute subscribe : String;
+     attribute unsubscribe : String;
+     attribute post : String;
+     attribute archive : String;
+     attribute otherArchives : String;
+  }
+  
+  abstract class Person{
+    attribute name : String;
+    attribute email : String;
+    attribute url : String;
+    attribute organization : String;
+    attribute organizationUrl : String;
+    attribute roles : String;
+    attribute timezone : String;
+    attribute properties : String;
+  }
+ 
+ -- @comments represents the tag 'developer' : it describes the committers to a project
+ class Developer extends Person{
+    attribute id : String;
+   }
+   
+   -- @comments represents the tag 'contributor' : it describes the contributors to a project
+   class Contributor extends Person{}
+
+-- @end mavenProject
+ }
+ 
+package PrimitiveTypes{
+    datatype String;
+  }

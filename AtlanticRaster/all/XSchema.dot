@@ -1,0 +1,158 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_XSchema"{
+labelloc=t
+color=black
+label=XSchema
+ node[shape=record];
+AnnotedElement[label="{/AnnotedElement/| | }"]
+;
+ node[shape=record];
+Annotation[label="{Annotation| | }"]
+ Annotation->Documentation[arrowhead=vee,arrowtail=diamond,headlabel="documentations[*]{ordered}",group=Documentation,minlen=2,constraint=true,]
+ Annotation->ApplicationInfo[arrowhead=vee,arrowtail=diamond,headlabel="applicationInfos[*]{ordered}",group=ApplicationInfo,minlen=2,constraint=true,]
+ Annotation->AnnotedElement[arrowhead=diamond,arrowtail=none,headlabel="annotedElement",taillabel="annotations[*]",group=AnnotedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Documentation[label="{Documentation|text : String| }"]
+;
+ node[shape=record];
+ApplicationInfo[label="{ApplicationInfo|text : String| }"]
+;
+ node[shape=record];
+NamedElement[label="{/NamedElement/|name : String| }"]
+ NamedElement->AnnotedElement[arrowhead=onormal,group=AnnotedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSchema[label="{XSchema|namespace : String| }"]
+ XSchema->AnnotedElement[arrowhead=onormal,group=AnnotedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+XSchemaContentElement[label="{/XSchemaContentElement/| | }"]
+ XSchemaContentElement->XSchema[arrowhead=diamond,arrowtail=none,headlabel="schema[0-1]",taillabel="contents[*]",group=XSchema,minlen=2,constraint=true,]
+ XSchemaContentElement->NamedElement[arrowhead=onormal,group=NamedElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Parameters[label="{/Parameters/|fixed[0-1] : String\ndefault[0-1] : String| }"]
+ Parameters->AbstractType[arrowhead=vee,arrowtail=none,headlabel="typeRef[0-1]",group=AbstractType,minlen=2,constraint=false,]
+ Parameters->XSchemaContentElement[arrowhead=onormal,group=XSchemaContentElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Element[label="{Element| | }"]
+ Element->ElementRef[arrowhead=none,arrowtail=none,headlabel="references[*]",taillabel="referencedElement",group=ElementRef,minlen=2,constraint=false,]
+ Element->Parameters[arrowhead=onormal,group=Parameters,minlen=2,constraint=true,]
+ Element->AtomicContent[arrowhead=onormal,group=AtomicContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Occurable[label="{/Occurable/|minOccurs : String\nmaxOccurs : String| }"]
+;
+ node[shape=record];
+AbstractContent[label="{/AbstractContent/| | }"]
+ AbstractContent->Container[arrowhead=diamond,arrowtail=none,headlabel="container",taillabel="contents[*]{ordered}",group=Container,minlen=2,constraint=true,]
+ AbstractContent->ComplexType[arrowhead=diamond,arrowtail=none,headlabel="complexType",taillabel="content[0-1]",group=ComplexType,minlen=2,constraint=true,]
+ AbstractContent->Occurable[arrowhead=onormal,group=Occurable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Container[label="{/Container/| | }"]
+ Container->AbstractContent[arrowhead=onormal,group=AbstractContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AtomicContent[label="{/AtomicContent/| | }"]
+ AtomicContent->AbstractContent[arrowhead=onormal,group=AbstractContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ElementRef[label="{ElementRef| | }"]
+ ElementRef->AtomicContent[arrowhead=onormal,group=AtomicContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GroupRef[label="{GroupRef| | }"]
+ GroupRef->AtomicContent[arrowhead=onormal,group=AtomicContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+All[label="{All| | }"]
+ All->Container[arrowhead=onormal,group=Container,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Group[label="{Group| | }"]
+ Group->GroupRef[arrowhead=none,arrowtail=none,headlabel="references[*]",taillabel="referencedGroup",group=GroupRef,minlen=2,constraint=false,]
+ Group->XSchemaContentElement[arrowhead=onormal,group=XSchemaContentElement,minlen=2,constraint=true,]
+ Group->Container[arrowhead=onormal,group=Container,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Choice[label="{Choice| | }"]
+ Choice->Container[arrowhead=onormal,group=Container,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Sequence[label="{Sequence| | }"]
+ Sequence->Container[arrowhead=onormal,group=Container,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AbstractAttributeGroupContent[label="{/AbstractAttributeGroupContent/| | }"]
+ AbstractAttributeGroupContent->AttributeGroup[arrowhead=diamond,arrowtail=none,headlabel="container",taillabel="contents[*]{ordered}",group=AttributeGroup,minlen=2,constraint=true,]
+ AbstractAttributeGroupContent->ComplexType[arrowhead=diamond,arrowtail=none,headlabel="complexType",taillabel="attributes[*]",group=ComplexType,minlen=2,constraint=true,]
+ AbstractAttributeGroupContent->Occurable[arrowhead=onormal,group=Occurable,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AttributeGroup[label="{AttributeGroup| | }"]
+ AttributeGroup->AttributeGroupRef[arrowhead=none,arrowtail=none,headlabel="references[*]",taillabel="referencedAttributeGroup",group=AttributeGroupRef,minlen=2,constraint=false,]
+ AttributeGroup->AbstractAttributeGroupContent[arrowhead=onormal,group=AbstractAttributeGroupContent,minlen=2,constraint=true,]
+ AttributeGroup->XSchemaContentElement[arrowhead=onormal,group=XSchemaContentElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AttributeGroupRef[label="{AttributeGroupRef| | }"]
+ AttributeGroupRef->AtomicAttributeGroupContent[arrowhead=onormal,group=AtomicAttributeGroupContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AtomicAttributeGroupContent[label="{/AtomicAttributeGroupContent/| | }"]
+ AtomicAttributeGroupContent->AbstractAttributeGroupContent[arrowhead=onormal,group=AbstractAttributeGroupContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Attribute[label="{Attribute|use[0-1] : AttributeUseType| }"]
+ Attribute->AttributeRef[arrowhead=none,arrowtail=none,headlabel="references[*]",taillabel="referencedAttribute",group=AttributeRef,minlen=2,constraint=false,]
+ Attribute->Parameters[arrowhead=onormal,group=Parameters,minlen=2,constraint=true,]
+ Attribute->AtomicAttributeGroupContent[arrowhead=onormal,group=AtomicAttributeGroupContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AttributeRef[label="{AttributeRef| | }"]
+ AttributeRef->AtomicAttributeGroupContent[arrowhead=onormal,group=AtomicAttributeGroupContent,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AbstractType[label="{/AbstractType/| | }"]
+ AbstractType->Parameters[arrowhead=diamond,arrowtail=none,headlabel="container",taillabel="typeContain[0-1]",group=Parameters,minlen=2,constraint=true,]
+ AbstractType->XSchemaContentElement[arrowhead=onormal,group=XSchemaContentElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimpleType[label="{SimpleType| | }"]
+ SimpleType->ComplexTypeSimpleContent[arrowhead=none,arrowtail=none,headlabel="extensions[*]",taillabel="base",group=ComplexTypeSimpleContent,minlen=2,constraint=false,]
+ SimpleType->AbstractType[arrowhead=onormal,group=AbstractType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ComplexType[label="{ComplexType| | }"]
+ ComplexType->ComplexTypeComplexContent[arrowhead=none,arrowtail=none,headlabel="extensions[*]",taillabel="base",group=ComplexTypeComplexContent,minlen=2,constraint=false,]
+ ComplexType->AbstractType[arrowhead=onormal,group=AbstractType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ComplexTypeSimpleContent[label="{ComplexTypeSimpleContent| | }"]
+ ComplexTypeSimpleContent->ComplexType[arrowhead=onormal,group=ComplexType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ComplexTypeComplexContent[label="{ComplexTypeComplexContent| | }"]
+ ComplexTypeComplexContent->ComplexType[arrowhead=onormal,group=ComplexType,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+
+}
+}

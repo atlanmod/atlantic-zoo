@@ -1,0 +1,124 @@
+-- @name		KDMSimplified
+-- @version		1.0
+-- @domains		Object Management Group (OMG), Architecture-Driven Modernization (ADM), Model-Driven Reverse Engineering
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com)
+-- @date		2006/05/18
+-- @description	This metamodel describes the main concepts of the Core and Kdm packages of the Knowledge Discovery Meta-Model (KDM) by the OMG Architecture-Driven Modernization (ADM) Task Force. KDM specifies the core concepts required for understanding existing software in preparation for its modernization and provides infrastructure to support more detailed definitions of Knowledge Discovery. This metamodel defines the basic abstractions of KDM and so was designed to be extended.
+-- @see			http://www.kdmanalytics.com/kdm/
+
+package KDMSimplified {
+
+	-- @begin Core package's concepts
+	
+	-- @comment Defines an atomic constituent of a model.
+	abstract class Element {
+		reference annotation[*] container : Annotation; 
+		reference "attribute"[*] container : Attribute;
+	}
+	
+	-- @comment Defines an element that is an abstraction drawn from the system being modeled.
+	abstract class ModelElement extends Element {
+		reference taggedValue[*] container : TaggedValue; 
+		reference stereotype[0-1] : Stereotype oppositeOf extendedElement;
+	}
+	
+	-- @comment Defines a named model element that represents an artifact of existing software system.
+	abstract class KDMEntity extends ModelElement {
+		attribute name: String;
+		reference inbound[*] : KDMRelationship oppositeOf to;
+		reference outbound[*] : KDMRelationship oppositeOf from;
+		reference owner[0-1] : KDMContainer oppositeOf ownedElement;
+		reference group[*] : KDMGroup oppositeOf groupedElement;
+		reference model : KDMModel oppositeOf ownedElement;
+	}
+	
+	-- @comment Defines a part of a model that contains a set of KDMEntities.
+	abstract class KDMContainer extends KDMEntity {
+		reference ownedElement[*] container : KDMEntity oppositeOf owner;
+	}
+	
+	-- @comment Defines a part of a model that gathers a set of KDMEntities.
+	abstract class KDMGroup extends KDMEntity {
+		reference groupedElement[*] : KDMEntity oppositeOf group;
+	} 
+	
+	-- @comment Defines a model element that represents primitive semantic association between two entities.
+	abstract class KDMRelationship extends ModelElement {
+		reference to : KDMEntity oppositeOf inbound;
+		reference from : KDMEntity oppositeOf outbound;
+		reference model : KDMModel oppositeOf ownedRelation;
+	}
+	
+		-- @begin Concepts for defining elements' metadata 
+		 
+	-- @comment Defines an element that allows textual descriptions to be attached to any instance of a model element.
+	class Annotation extends Element {
+		attribute note: String;
+	}
+	
+	-- @comment Defines an element that allows information to be attached to any instance of a model element in the form of a “tagged value” pair, (i.e., name=value).
+	class Attribute extends Element {
+		attribute tag: String;
+		attribute value: String;
+	}
+			
+			-- @end Concepts for defining elements' metadata
+			
+			-- @begin Concepts for defining model elements' extensions
+	
+	-- @comment Defines a container for a set of related stereotypes and the corresponding tag definitions.				
+	class KDMExtensionFamily extends Element {
+		attribute name: String;
+		reference stereotype[*] container : Stereotype oppositeOf family; 
+	}
+	
+	-- @comment Defines a way of branding (classifying) model elements so that they behave as if they were the instances of new virtual meta-model constructs.
+	class Stereotype extends Element {
+		attribute baseClass: String;
+		attribute name: String;
+		reference family : KDMExtensionFamily oppositeOf stereotype;
+		reference extendedElement : ModelElement oppositeOf stereotype;
+		reference tag[*] container : TagDefinition;
+	}
+	
+	-- @comment Defines an element that allows information to be attached to any model element in the form of a “tagged value” pair, (i.e., name=value).
+	class TagDefinition extends Element {
+		attribute tag: String;
+		attribute type: String;
+	}
+	
+	-- @comment Defines an element that allows information to be attached to any model element in the form of a “tagged value” pair, (i.e., name=value).
+	class TaggedValue extends Element {
+		attribute value: String;
+		reference tag : TagDefinition;
+	}
+				
+				-- @begin Concepts for defining model elements' extensions		
+	
+	-- @end Core package's concepts
+	
+	
+	-- @begin Kdm package's concepts
+	
+	-- @comment Defines the common parent for the KDM framework classes.
+	abstract class KDMFramework extends Element {
+		attribute name: String;
+		reference extension[*] container : KDMExtensionFamily;
+	}
+	
+	-- @comment Defines a certain architecture view of software systems. This is a minimal unit of exchanging information between tools.
+	abstract class KDMModel extends KDMFramework {
+		reference ownedElement[*] container : KDMEntity oppositeOf model;
+		reference ownedRelation[*] container : KDMRelationship oppositeOf model;
+	}
+	
+	-- @end Kdm package's concepts
+	
+}
+
+package PrimitiveTypes {	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+}

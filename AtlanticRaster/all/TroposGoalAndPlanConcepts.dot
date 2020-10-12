@@ -1,0 +1,67 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_GoalAndPlanConcepts"{
+labelloc=t
+color=black
+label=GoalAndPlanConcepts
+ node[shape=record];
+Actor[label="{Actor| | }"]
+ Actor->Contribution[arrowhead=none,arrowtail=none,headlabel="contribution[*]",taillabel="PointOfView",group=Contribution,minlen=2,constraint=false,]
+ Actor->MeansEnd[arrowhead=none,arrowtail=none,headlabel="meansEnd[*]",taillabel="PointOfView",group=MeansEnd,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Decomposition[label="{Decomposition| | }"]
+ Decomposition->Actor[arrowhead=none,arrowtail=none,headlabel="PointOfView",taillabel="decomposition[*]",group=Actor,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Contribution[label="{Contribution|metric : String| }"]
+ Contribution->Goal[arrowhead=none,arrowtail=none,headlabel="contributer",taillabel="contributionR[*]",group=Goal,minlen=2,constraint=false,]
+ Contribution->Goal[arrowhead=none,arrowtail=none,headlabel="contributed",taillabel="contributionD[*]",group=Goal,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Goal[label="{Goal| | }"]
+ Goal->MeansEnd[arrowhead=none,arrowtail=none,headlabel="meansEndS[*]",taillabel="means[0-1]",group=MeansEnd,minlen=2,constraint=false,]
+ Goal->BooleanDecomposition[arrowhead=none,arrowtail=none,headlabel="booleanDecomposition[0-1]",taillabel="root[0-1]",group=BooleanDecomposition,minlen=2,constraint=false,]
+;
+ node[shape=record];
+MeansEnd[label="{MeansEnd| | }"]
+ MeansEnd->Goal[arrowhead=none,arrowtail=none,headlabel="end",taillabel="meansEndD[*]",group=Goal,minlen=2,constraint=false,]
+ MeansEnd->Plan[arrowhead=none,arrowtail=none,headlabel="meansP[0-1]",taillabel="meansEndP[*]",group=Plan,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Resource[label="{Resource| | }"]
+ Resource->MeansEnd[arrowhead=none,arrowtail=none,headlabel="meansEndR[*]",taillabel="meansR[0-1]",group=MeansEnd,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Plan[label="{Plan| | }"]
+;
+ node[shape=record];
+BooleanDecomposition[label="{BooleanDecomposition|type : String| }"]
+ BooleanDecomposition->Plan[arrowhead=none,arrowtail=none,headlabel="rootP[0-1]",taillabel="booleanDecompositionP[0-1]",group=Plan,minlen=2,constraint=false,]
+ BooleanDecomposition->Decomposition[arrowhead=onormal,group=Decomposition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BooleanDecLink[label="{BooleanDecLink| | }"]
+ BooleanDecLink->BooleanDecomposition[arrowhead=diamond,arrowtail=none,headlabel="booleanDecompositionB",taillabel="booleanDecLinkD[1-*]",group=BooleanDecomposition,minlen=2,constraint=true,]
+ BooleanDecLink->Goal[arrowhead=none,arrowtail=none,headlabel="target[0-1]",taillabel="booleanDecLink[*]",group=Goal,minlen=2,constraint=false,]
+ BooleanDecLink->Plan[arrowhead=none,arrowtail=none,headlabel="targetP[0-1]",taillabel="booleanDecLinkP[*]",group=Plan,minlen=2,constraint=false,]
+;
+ node[shape=record];
+AndDecLink[label="{AndDecLink| | }"]
+ AndDecLink->BooleanDecLink[arrowhead=onormal,group=BooleanDecLink,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OrDecLink[label="{OrDecLink| | }"]
+ OrDecLink->BooleanDecLink[arrowhead=onormal,group=BooleanDecLink,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

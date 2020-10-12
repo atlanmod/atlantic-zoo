@@ -1,0 +1,43 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'SecureUML'>
+    <Class name = 'Group' isAbstract = 'false' supertypes = 'SecureUML::Subject'>
+      <Reference name = 'subjectGroup' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SecureUML::Subject' opposite = 'SecureUML::Subject::group'/>
+    </Class>
+    <Class name = 'User' isAbstract = 'false' supertypes = 'SecureUML::Subject'/>
+    <Class name = 'Subject' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'group' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SecureUML::Group' opposite = 'SecureUML::Group::subjectGroup'/>
+      <Reference name = 'role' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SecureUML::Role' opposite = 'SecureUML::Role::subjectAssignment'/>
+    </Class>
+    <Class name = 'Role' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'roleHierarchy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SecureUML::Role' opposite = ''/>
+      <Reference name = 'subjectAssignment' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SecureUML::Subject' opposite = 'SecureUML::Subject::role'/>
+      <Reference name = 'permissionAssignment' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SecureUML::Permission' opposite = 'SecureUML::Permission::role'/>
+    </Class>
+    <Class name = 'Permission' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'role' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SecureUML::Role' opposite = 'SecureUML::Role::permissionAssignment'/>
+      <Reference name = 'constraintAssignment' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SecureUML::AuthorizationConstraint' opposite = 'SecureUML::AuthorizationConstraint::permission'/>
+      <Reference name = 'actionAssignment' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SecureUML::Action' opposite = 'SecureUML::Action::permission'/>
+    </Class>
+    <Class name = 'AuthorizationConstraint' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'permission' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SecureUML::Permission' opposite = 'SecureUML::Permission::constraintAssignment'/>
+    </Class>
+    <Class name = 'AtomicAction' isAbstract = 'false' supertypes = 'SecureUML::Action'/>
+    <Class name = 'CompositeAction' isAbstract = 'false' supertypes = 'SecureUML::Action'>
+      <Reference name = 'subordinatedAction' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SecureUML::Action' opposite = 'SecureUML::Action::actionHyerarchy'/>
+    </Class>
+    <Class name = 'Action' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'permission' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SecureUML::Permission' opposite = 'SecureUML::Permission::actionAssignment'/>
+      <Reference name = 'resource' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SecureUML::Resource' opposite = 'SecureUML::Resource::resourceAction'/>
+      <Reference name = 'actionHyerarchy' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SecureUML::CompositeAction' opposite = 'SecureUML::CompositeAction::subordinatedAction'/>
+    </Class>
+    <Class name = 'Resource' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'resourceAction' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SecureUML::Action' opposite = 'SecureUML::Action::resource'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+  </Package>
+</Metamodel>

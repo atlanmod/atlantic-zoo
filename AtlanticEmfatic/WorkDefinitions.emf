@@ -1,0 +1,50 @@
+package Metamodel;
+
+package WorkDefinitions {
+  class WorkDefinition {
+    !ordered ref WorkDefinition[*]#subWorks parentWorks;
+    !ordered ref WorkDefinition[*]#parentWorks subWorks;
+    !ordered ref ProcessPerformer[1]#features owner;
+  }
+
+  class ProcessPerformer {
+    !ordered val WorkDefinition[*]#owner features;
+  }
+
+  class Role extends ProcessPerformer {
+    !ordered ref WorkProduct[*]#responsible products;
+  }
+
+  class WorkProduct {
+    !ordered ref Role[1]#products responsible;
+  }
+
+  class Lifecycle extends WorkDefinition {
+    !ordered val Phase[+]#lifeCycle phases;
+  }
+
+  class Phase extends WorkDefinition {
+    !ordered ref Lifecycle[1]#phases lifeCycle;
+    !ordered val Iteration[+]#phase iterations;
+  }
+
+  class Iteration extends WorkDefinition {
+    !ordered ref Phase[1]#iterations phase;
+    !ordered val Activity[+]#iteration activities;
+  }
+
+  class Activity extends WorkDefinition {
+    !ordered ref Iteration[1]#activities iteration;
+    !ordered val Step[*] steps;
+  }
+
+  class Step {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+}
+

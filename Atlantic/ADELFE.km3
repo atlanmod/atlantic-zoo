@@ -1,0 +1,78 @@
+-- @name		ADELFE
+-- @version		1.0
+-- @domains		Multi-Agent
+-- @authors		SIMON Eric(simon.eric3@gmail.com)
+-- @date		2006/07/13
+-- @description	ADELFE (Atelier de Développement de Logiciels à Fonctionnalité Emergente) is a methodology devoted to software engineering of adaptive multi-agent systems.
+-- @see			A Study of some Multi-Agent Meta-Models
+-- @see 		Authors: Carole Bernon, Massimo Cossentino, Marie-Pierre Gleizes, Paola Turci, Franco Zambonelli
+-- @see 		http://www.jamesodell.com/AOSE04-proceedings/AOSE04-08.pdf, p4
+
+package ADELFE {
+
+ class Classifier {}
+
+ class Environnement extends Classifier {
+ 	reference element container : Element oppositeOf environnement;
+ }
+
+ class Element extends Classifier {
+ 	reference environnement 	: Environnement 	oppositeOf element;
+ 	reference action 			: CooperativeAgent	oppositeOf elementA;
+ 	reference perception		: CooperativeAgent	oppositeOf elementP;
+ }
+
+ class CooperativeAgent {
+ 	reference elementA							: Element			oppositeOf action;
+	reference elementP							: Element			oppositeOf perception;
+ 	reference representation[1-*]	container	: Representation	oppositeOf cooperativeAgentR;
+ 	reference skill[1-*]			container	: Skill				oppositeOf cooperativeAgentS;
+ 	reference aptitude[*]			container	: Aptitude			oppositeOf cooperativeAgentA;
+ 	reference characteristic[*]		container	: Characteristic	oppositeOf cooperativeAgentCha;
+ 	reference communication[*]		container	: Communication		oppositeOf cooperativeAgentCom;
+ 	reference observes[1-*]						: CooperationRules;
+ }
+
+ class Representation {
+ 	reference cooperativeAgentR		: CooperativeAgent 	oppositeOf representation;
+ 	reference element				: Element;
+ }
+
+ class Skill {
+ 	reference cooperativeAgentS 	: CooperativeAgent 	oppositeOf skill;
+ }
+
+ class Aptitude {
+ 	reference cooperativeAgentA 	: CooperativeAgent 	oppositeOf aptitude;
+ }
+ 
+ class Characteristic {
+ 	reference cooperativeAgentCha 	: CooperativeAgent 	oppositeOf characteristic;
+ }
+ 
+ class Communication {
+ 	reference cooperativeAgentCom 	: CooperativeAgent 	oppositeOf communication;
+ 	reference aip[*] 				: AIP;
+ }
+
+ class AIP {}
+ 
+ class CooperationRules {
+ 	reference detects[1-*] 			: NCS 				oppositeOf cooperationRules;
+ }
+ 
+ -- Non Cooperative Situations 
+ class NCS {
+ 	reference cooperationRules 		: CooperationRules	oppositeOf detects;
+ }
+
+ class Incomprehension 	extends NCS {}
+ class Ambiguity 		extends NCS {}
+ class Incompetence		extends NCS {}
+ class Unproductiveness extends NCS {}
+ class Concurrency		extends NCS {}
+ class Conflict			extends NCS {}
+ class Uselessness		extends NCS {}
+ 
+}
+

@@ -1,0 +1,37 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'SimpleRDBMS'>
+    <Class name = 'RModelElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'kind' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Schema' isAbstract = 'false' supertypes = 'SimpleRDBMS::RModelElement'>
+      <Reference name = 'tables' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SimpleRDBMS::Table' opposite = 'SimpleRDBMS::Table::schema'/>
+    </Class>
+    <Class name = 'Table' isAbstract = 'false' supertypes = 'SimpleRDBMS::RModelElement'>
+      <Reference name = 'schema' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimpleRDBMS::Schema' opposite = 'SimpleRDBMS::Schema::tables'/>
+      <Reference name = 'column' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SimpleRDBMS::Column' opposite = 'SimpleRDBMS::Column::owner'/>
+      <Reference name = 'key' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SimpleRDBMS::Key' opposite = 'SimpleRDBMS::Key::owner'/>
+      <Reference name = 'foreignKey' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'SimpleRDBMS::ForeignKey' opposite = 'SimpleRDBMS::ForeignKey::owner'/>
+    </Class>
+    <Class name = 'Column' isAbstract = 'false' supertypes = 'SimpleRDBMS::RModelElement'>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimpleRDBMS::Table' opposite = 'SimpleRDBMS::Table::column'/>
+      <Reference name = 'key' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SimpleRDBMS::Key' opposite = 'SimpleRDBMS::Key::column'/>
+      <Reference name = 'foreignKey' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SimpleRDBMS::ForeignKey' opposite = 'SimpleRDBMS::ForeignKey::column'/>
+    </Class>
+    <Class name = 'Key' isAbstract = 'false' supertypes = 'SimpleRDBMS::RModelElement'>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimpleRDBMS::Table' opposite = 'SimpleRDBMS::Table::key'/>
+      <Reference name = 'column' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SimpleRDBMS::Column' opposite = 'SimpleRDBMS::Column::key'/>
+      <Reference name = 'refersToOpposite' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SimpleRDBMS::ForeignKey' opposite = 'SimpleRDBMS::ForeignKey::refersTo'/>
+    </Class>
+    <Class name = 'ForeignKey' isAbstract = 'false' supertypes = 'SimpleRDBMS::RModelElement'>
+      <Reference name = 'column' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'SimpleRDBMS::Column' opposite = 'SimpleRDBMS::Column::foreignKey'/>
+      <Reference name = 'owner' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimpleRDBMS::Table' opposite = 'SimpleRDBMS::Table::foreignKey'/>
+      <Reference name = 'refersTo' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'SimpleRDBMS::Key' opposite = 'SimpleRDBMS::Key::refersToOpposite'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

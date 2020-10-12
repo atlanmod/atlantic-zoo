@@ -1,0 +1,82 @@
+package Metamodel;
+
+package UMLForOOClassModeling {
+  enum VisibilityKind {
+    vk_public_vis = 0;
+    vk_private_vis = 0;
+    vk_protected_vis = 0;
+  }
+
+  enum ScopeKind {
+    sk_instance_level = 0;
+    sk_classifier_level = 0;
+  }
+
+  class MultiplicityType {
+    !unique !ordered attr Integer[1] lower;
+    !unique !ordered attr Integer[1] upper;
+    !unique !ordered attr Boolean[1] isOrdered;
+    !unique !ordered attr Boolean[1] isUnique;
+  }
+
+  class ModelElement {
+    !unique !ordered attr String[1] name;
+  }
+
+  class Feature extends ModelElement {
+    !unique !ordered attr ScopeKind[1] ownerScope;
+    !unique !ordered attr VisibilityKind[1] visibility;
+    !ordered ref Classifier#feature owner;
+  }
+
+  class NameSpace extends ModelElement {
+  }
+
+  class GeneralizableElement extends ModelElement {
+    !unique !ordered attr Boolean[1] isRoot;
+    !unique !ordered attr Boolean[1] isLeaf;
+    !unique !ordered attr Boolean[1] isAbstract;
+  }
+
+  class Classifier extends NameSpace, GeneralizableElement {
+    val Feature[*]#owner feature;
+  }
+
+  class Class extends Classifier {
+    !unique !ordered attr Boolean[1] isActive;
+  }
+
+  class StructuralFeature extends Feature {
+    !ordered ref MultiplicityType[1] multiplicity;
+    !unique !ordered attr Boolean[1] isChangeable;
+    !unique !ordered attr ScopeKind[1] targetScope;
+  }
+
+  class Attribute extends StructuralFeature {
+    !unique !ordered attr String[1] initialValue;
+  }
+
+  class BehavioralFeature extends Feature {
+    !unique !ordered attr Boolean[1] isQuery;
+  }
+
+  class Operation extends BehavioralFeature {
+    !unique !ordered attr Boolean[1] isRoot;
+    !unique !ordered attr Boolean[1] isLeaf;
+    !unique !ordered attr Boolean[1] isAbstract;
+    !unique !ordered attr String[1] specification;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

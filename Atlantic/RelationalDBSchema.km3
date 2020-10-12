@@ -1,0 +1,42 @@
+-- @name		RelationalDBSchema
+-- @version		1.0
+-- @domains		Relational Databases
+-- @authors		Hugo Bruneliere (Hugo.Bruneliere <at> univ-nantes.fr | hugo.bruneliere <at> gmail.com)
+-- @date		2006/10/31
+-- @description	This metamodel describes a simple way of representing the schema of a relational database by modeling the definition of its tables and columns.
+-- @see			The "Relational.km3" metamodel (http://www.eclipse.org/gmt/am3/zoos/atlanticZoo/), the "MySQL.km3" metamodel in the "MySQL to KM3" transformation (http://www.eclipse.org/gmt/atl/atlTransformations/)
+
+package RelationalDBSchema {
+
+	abstract class NamedElement {
+		attribute name : String;
+	}
+
+	class DataBase extends NamedElement {
+		attribute SGBDname: String; -- Oracle, MySQL, etc
+		reference tables[*] container : Table oppositeOf database;
+	}
+	
+	class Table extends NamedElement {
+		reference database: DataBase oppositeOf tables;
+		reference columns[*] ordered container : Column oppositeOf owner;
+		reference key[*] : Column oppositeOf keyOf;
+	}
+
+	class Column extends NamedElement {
+		attribute dataType: String;
+		attribute null : Boolean;
+		attribute defaultValue[0-1] : String;
+		reference owner  : Table oppositeOf columns;
+		reference keyOf[0-1] : Table oppositeOf key;
+	}
+
+}
+
+
+package PrimitiveTypes {	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+}

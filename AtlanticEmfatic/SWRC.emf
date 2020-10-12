@@ -1,0 +1,328 @@
+package Metamodel;
+
+package SWRC {
+  class Bibliography {
+    !ordered val Publication[*] publications;
+  }
+
+  abstract class Publication {
+    !unique !ordered attr String[1] title;
+    !unique !ordered attr String[1] ~abstract;
+    !unique !ordered attr String[1] keywords;
+    !unique !ordered attr String[1] note;
+    !unique !ordered attr Integer[1] year;
+  }
+
+  class Article extends Publication {
+    !ordered ref Person[+] author;
+    !unique !ordered attr String[1] journal;
+    !unique !ordered attr String[1] month;
+    !unique !ordered attr Integer[1] number;
+    !unique !ordered attr String[1] pages;
+    !unique !ordered attr Integer[1] volume;
+  }
+
+  class Book extends Publication {
+    !unique !ordered attr String[1] month;
+    !unique !ordered attr Integer[1] number;
+    !unique !ordered attr Integer[1] volume;
+    !unique !ordered attr String[1] series;
+    !unique !ordered attr String[1] source;
+    !unique !ordered attr String[1] address;
+    !unique !ordered attr String[1] edition;
+    !unique !ordered attr String[1] isbn;
+    !unique !ordered attr String[1] price;
+    !ordered ref Person[1] editor;
+    !ordered ref Organization[1] publisher;
+    !ordered ref Person[+] author;
+  }
+
+  class InBook extends Publication {
+    !ordered ref Person[+] author;
+    !ordered ref Organization[1] publisher;
+    !ordered ref Person[1] editor;
+    !unique !ordered attr String[1] month;
+    !unique !ordered attr Integer[1] number;
+    !unique !ordered attr String[1] pages;
+    !unique !ordered attr Integer[1] volume;
+    !unique !ordered attr String[1] series;
+    !unique !ordered attr String[1] chapter;
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr String[1] address;
+  }
+
+  class Booklet extends Publication {
+    !ordered ref Person[+] author;
+    !unique !ordered attr String[1] month;
+    !unique !ordered attr String[1] address;
+    !unique !ordered attr String[1] edition;
+    !unique !ordered attr String[1] howpublished;
+  }
+
+  class InCollection extends Publication {
+    !ordered ref Person[1] editor;
+    !ordered ref Person[+] author;
+    !ordered ref Organization[1] publisher;
+    !unique !ordered attr String[1] month;
+    !unique !ordered attr Integer[1] number;
+    !unique !ordered attr String[1] pages;
+    !unique !ordered attr String[1] address;
+    !unique !ordered attr String[1] edition;
+    !unique !ordered attr Integer[1] volume;
+    !unique !ordered attr String[1] series;
+    !unique !ordered attr String[1] chapter;
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr String[1] booktitle;
+  }
+
+  class InProceedings extends Publication {
+    !ordered ref Person[1] editor;
+    !ordered ref Person[+] author;
+    !unique !ordered attr String[1] month;
+    !unique !ordered attr Integer[1] number;
+    !unique !ordered attr String[1] pages;
+    !unique !ordered attr String[1] address;
+    !unique !ordered attr Integer[1] volume;
+    !unique !ordered attr String[1] series;
+    !unique !ordered attr String[1] booktitle;
+    !ordered ref Organization[1] organization;
+    !ordered ref Organization[1] publisher;
+  }
+
+  class Proceedings extends Publication {
+    !ordered ref Person[1] editor;
+    !ordered ref Organization[1] publisher;
+    !ordered ref Organization[1] organization;
+    !unique !ordered attr String[1] month;
+    !unique !ordered attr String[1] number;
+    !unique !ordered attr String[1] volume;
+    !unique !ordered attr String[1] address;
+    !unique !ordered attr String[1] series;
+  }
+
+  class Manual extends Publication {
+    !ordered ref Person[+] author;
+    !ordered ref Organization[1] organization;
+    !unique !ordered attr String[1] month;
+    !unique !ordered attr String[1] address;
+    !unique !ordered attr String[1] edition;
+  }
+
+  class Misc extends Publication {
+    !unique !ordered attr String[1] month;
+    !unique !ordered attr String[1] howpublished;
+  }
+
+  class Unpublished extends Publication {
+    !ordered ref Person[+] author;
+    !unique !ordered attr String[1] month;
+  }
+
+  abstract class Thesis extends Publication {
+    !ordered ref Person[+] author;
+    !ordered ref University[1] school;
+    !unique !ordered attr String[1] month;
+    !unique !ordered attr String[1] address;
+    !unique !ordered attr String[1] type;
+  }
+
+  class MasterThesis extends Thesis {
+  }
+
+  class PhDThesis extends Thesis {
+  }
+
+  abstract class Report extends Publication {
+    !ordered ref Person[*] author;
+  }
+
+  class ProjectReport extends Report {
+    !ordered ref Project[1]#projectInfo describesProject;
+  }
+
+  class TechnicalReport extends Report {
+    !unique !ordered attr String[1] series;
+    !ordered ref Organization[1] organization;
+  }
+
+  class Event {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] date;
+    !unique !ordered attr String[1] eventTitle;
+    !unique !ordered attr String[1] location;
+    !ordered ref Event[1]#hasPartEvent atEvent;
+    !ordered ref Event[1]#atEvent hasPartEvent;
+  }
+
+  class Conference extends Event {
+    !unique !ordered attr String[1] series;
+  }
+
+  class Workshop extends Event {
+    !unique !ordered attr String[1] series;
+  }
+
+  class Exhibition extends Event {
+  }
+
+  class Lecture extends Event {
+    !ordered ref Person[1] givenBy;
+  }
+
+  class Meeting extends Event {
+    !unique !ordered attr String[1] title;
+    !ordered ref Person[*] participant;
+  }
+
+  class ProjectMeeting extends Meeting {
+  }
+
+  class Person {
+    !unique !ordered attr String[1] address;
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] email;
+    !unique !ordered attr String[1] fax;
+    !unique !ordered attr String[1] homepage;
+    !unique !ordered attr String[1] phone;
+    !unique !ordered attr String[1] photo;
+  }
+
+  class Employee extends Person {
+    !ordered ref Organization[1]#employs affiliation;
+  }
+
+  class Manager extends Employee {
+  }
+
+  class AdministrativeStaff extends Employee {
+  }
+
+  class TechnicalStaff extends Employee {
+  }
+
+  class AcademicStaff extends Person {
+    !ordered ref AcademicStaff[*] cooperateWith;
+    !ordered ref Publication[1] editor;
+    !ordered ref Project[1]#head headOf;
+    !ordered ref ResearchGroup[1]#head headOfGroup;
+    !ordered ref Event[1] memberOfPC;
+    !ordered ref Event[1] organizerOrChairOf;
+    !ordered ref Publication[*] publication;
+    !ordered ref PhDStudent[*]#supervisor supervises;
+    !ordered ref ResearchTopic[1]#isWorkedOnBy worksAtProject;
+  }
+
+  class Lecturer extends AcademicStaff {
+  }
+
+  class FacultyMember extends AcademicStaff {
+  }
+
+  class FullProfessor extends FacultyMember {
+  }
+
+  class AssistantProfessor extends FacultyMember {
+  }
+
+  class AssociateProfessor extends FacultyMember {
+  }
+
+  class Student extends Person {
+    !ordered ref University[1] studiesAt;
+  }
+
+  class Undergraduate extends Student {
+  }
+
+  class Graduate extends Student {
+  }
+
+  class PhDStudent extends Graduate {
+    !ordered ref Publication[*] publication;
+    !ordered ref Project[1] worksAtProject;
+    !ordered ref AcademicStaff[1]#supervises supervisor;
+  }
+
+  class Organization {
+    !unique !ordered attr String[1] location;
+    !unique !ordered attr String[1] name;
+    !ordered ref Project[*]#carriedOutBy carriesOut;
+    !ordered ref Product[*]#developedBy develops;
+    !ordered ref Employee[*]#affiliation employs;
+    !ordered ref Project[*]#financedBy finances;
+    !ordered ref Publication[*] publishes;
+    !ordered ref TechnicalReport[*] technicalReport;
+  }
+
+  class ResearchGroup extends Organization {
+    !ordered ref AcademicStaff[1]#headOfGroup head;
+    !ordered ref Employee[*] member;
+  }
+
+  class Association extends Organization {
+  }
+
+  class Department extends Organization {
+    !ordered ref Institute[1] hasParts;
+  }
+
+  class Institute extends Organization {
+    !ordered ref Institute[1] cooperateWith;
+    !ordered ref ResearchGroup[*] hasParts;
+  }
+
+  class Enterprise extends Organization {
+  }
+
+  class University extends Organization {
+    !ordered ref Department[*] hasParts;
+    !ordered val Student[*] student;
+  }
+
+  abstract class Project {
+    !unique !ordered attr String[1] name;
+    !ordered ref Organization[1]#carriesOut carriedOutBy;
+    !ordered ref Organization[1]#finances financedBy;
+    !ordered ref AcademicStaff[1]#headOf head;
+    !ordered ref ResearchTopic[+]#dealWithIn isAbout;
+    !ordered ref Person[*] member;
+    !ordered ref ProjectReport[*]#describesProject projectInfo;
+  }
+
+  class ResearchProject extends Project {
+  }
+
+  class DevelopmentProject extends Project {
+  }
+
+  class SoftwareProject extends Project {
+    !ordered ref Product[1] product;
+  }
+
+  class Product {
+    !unique !ordered attr String[1] name;
+    !ordered ref Organization[1]#develops developedBy;
+  }
+
+  class SoftwareComponent extends Product {
+    !unique !ordered attr Integer[1] hasPrice;
+  }
+
+  class Topic {
+    !unique !ordered attr String[1] name;
+  }
+
+  class ResearchTopic extends Topic {
+    !ordered ref Project[1]#isAbout dealWithIn;
+    !ordered ref AcademicStaff[*]#worksAtProject isWorkedOnBy;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+}
+

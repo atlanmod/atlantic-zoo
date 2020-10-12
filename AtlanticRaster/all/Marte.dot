@@ -1,0 +1,511 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_MARTE"{
+labelloc=t
+color=black
+label=MARTE
+ node[shape=record];
+TimeBase[label="{/TimeBase/|name : String| }"]
+;
+ node[shape=record];
+Instant[label="{/Instant/|isBefore : Boolean| }"]
+ Instant->TimeBase[arrowhead=diamond,arrowtail=none,headlabel="owner",taillabel="instants[*]{ordered}",group=TimeBase,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TimeValue[label="{/TimeValue/| | }"]
+ TimeValue->Instant[arrowhead=none,arrowtail=none,headlabel="denotedInstant[*]",taillabel="timeValue",group=Instant,minlen=2,constraint=false,]
+ TimeValue->TimeBase[arrowhead=vee,arrowtail=none,headlabel="ref",group=TimeBase,minlen=2,constraint=false,]
+;
+ node[shape=record];
+TimeInterval[label="{/TimeInterval/| | }"]
+ TimeInterval->TimeValue[arrowhead=vee,arrowtail=none,headlabel="endValues[2-*]",group=TimeValue,minlen=2,constraint=false,]
+ TimeInterval->Interval[arrowhead=none,arrowtail=none,headlabel="denotedInterval[*]",taillabel="timeInterval",group=Interval,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Interval[label="{/Interval/|includingMin : Boolean\nincludingMax : Boolean| }"]
+ Interval->TimeBase[arrowhead=vee,arrowtail=none,headlabel="base",group=TimeBase,minlen=2,constraint=false,]
+ Interval->Instant[arrowhead=vee,arrowtail=none,headlabel="instants[*]",group=Instant,minlen=2,constraint=false,]
+;
+ node[shape=record];
+SingleTimeBase[label="{SingleTimeBase| | }"]
+ SingleTimeBase->SingleTimeValue[arrowhead=vee,arrowtail=none,headlabel="currentValue",group=SingleTimeValue,minlen=2,constraint=false,]
+ SingleTimeBase->SingleTimeValue[arrowhead=vee,arrowtail=none,headlabel="maximumValue[0-1]",group=SingleTimeValue,minlen=2,constraint=false,]
+ SingleTimeBase->SingleInstant[arrowhead=vee,arrowtail=none,headlabel="currentInstant",group=SingleInstant,minlen=2,constraint=false,]
+ SingleTimeBase->TimeBase[arrowhead=onormal,group=TimeBase,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SingleInstant[label="{SingleInstant| | }"]
+ SingleInstant->CoincidencePoint[arrowhead=none,arrowtail=none,headlabel="coPoint",taillabel="coincidenceInstants[1-*]",group=CoincidencePoint,minlen=2,constraint=false,]
+ SingleInstant->Instant[arrowhead=onormal,group=Instant,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SingleInterval[label="{SingleInterval| | }"]
+ SingleInterval->SingleInstant[arrowhead=vee,arrowtail=none,headlabel="first",group=SingleInstant,minlen=2,constraint=false,]
+ SingleInterval->SingleInstant[arrowhead=vee,arrowtail=none,headlabel="last",group=SingleInstant,minlen=2,constraint=false,]
+ SingleInterval->SingleInstant[arrowhead=vee,arrowtail=none,headlabel="members[*]{ordered}",group=SingleInstant,minlen=2,constraint=false,]
+ SingleInterval->Interval[arrowhead=onormal,group=Interval,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SingleTimeValue[label="{SingleTimeValue| | }"]
+ SingleTimeValue->TimeValue[arrowhead=onormal,group=TimeValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SingleTimeInterval[label="{SingleTimeInterval| | }"]
+ SingleTimeInterval->SingleTimeValue[arrowhead=vee,arrowtail=none,headlabel="start",group=SingleTimeValue,minlen=2,constraint=false,]
+ SingleTimeInterval->SingleTimeValue[arrowhead=vee,arrowtail=none,headlabel="end",group=SingleTimeValue,minlen=2,constraint=false,]
+ SingleTimeInterval->TimeInterval[arrowhead=onormal,group=TimeInterval,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DiscreteTimeBase[label="{DiscreteTimeBase| | }"]
+ DiscreteTimeBase->Event[arrowhead=vee,arrowtail=none,headlabel="refEvent",group=Event,minlen=2,constraint=false,]
+ DiscreteTimeBase->TimeBase[arrowhead=onormal,group=TimeBase,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DiscreteInstant[label="{DiscreteInstant| | }"]
+ DiscreteInstant->DiscreteInstant[arrowhead=none,arrowtail=none,headlabel="next[0-1]",taillabel="previous[0-1]",group=DiscreteInstant,minlen=2,constraint=false,]
+ DiscreteInstant->EventOccurence[arrowhead=vee,arrowtail=none,headlabel="refOcc",group=EventOccurence,minlen=2,constraint=false,]
+ DiscreteInstant->Instant[arrowhead=onormal,group=Instant,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Event[label="{/Event/| | }"]
+ Event->EventOccurence[arrowhead=vee,arrowtail=diamond,headlabel="occ[*]{ordered}",group=EventOccurence,minlen=2,constraint=true,]
+;
+ node[shape=record];
+EventOccurence[label="{/EventOccurence/| | }"]
+;
+ node[shape=record];
+PhysicalTime[label="{/PhysicalTime/| | }"]
+ PhysicalTime->PhysicalInstant[arrowhead=vee,arrowtail=diamond,headlabel="physicalInstants[*]{ordered}",group=PhysicalInstant,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PhysicalInstant[label="{/PhysicalInstant/| | }"]
+ PhysicalInstant->MetricTimeValue[arrowhead=vee,arrowtail=none,headlabel="measurement[*]",group=MetricTimeValue,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Duration[label="{/Duration/| | }"]
+ Duration->PhysicalInstant[arrowhead=vee,arrowtail=none,headlabel="start",group=PhysicalInstant,minlen=2,constraint=false,]
+ Duration->PhysicalInstant[arrowhead=vee,arrowtail=none,headlabel="end",group=PhysicalInstant,minlen=2,constraint=false,]
+ Duration->MetricTimeInterval[arrowhead=vee,arrowtail=none,headlabel="measurement[*]",group=MetricTimeInterval,minlen=2,constraint=false,]
+;
+ node[shape=record];
+MultipleTimeBase[label="{MultipleTimeBase| | }"]
+ MultipleTimeBase->SingleTimeBase[arrowhead=vee,arrowtail=diamond,headlabel="bases[1-*]",group=SingleTimeBase,minlen=2,constraint=true,]
+ MultipleTimeBase->TimeBase[arrowhead=onormal,group=TimeBase,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CoincidencePoint[label="{CoincidencePoint| | }"]
+ CoincidencePoint->Instant[arrowhead=onormal,group=Instant,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MultipleInterval[label="{MultipleInterval| | }"]
+ MultipleInterval->CoincidencePoint[arrowhead=vee,arrowtail=none,headlabel="first[1-*]",group=CoincidencePoint,minlen=2,constraint=false,]
+ MultipleInterval->CoincidencePoint[arrowhead=vee,arrowtail=none,headlabel="last[1-*]",group=CoincidencePoint,minlen=2,constraint=false,]
+ MultipleInterval->Interval[arrowhead=onormal,group=Interval,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MultipleTimeValue[label="{MultipleTimeValue| | }"]
+ MultipleTimeValue->SingleTimeValue[arrowhead=vee,arrowtail=none,headlabel="values[1-*]",group=SingleTimeValue,minlen=2,constraint=false,]
+ MultipleTimeValue->TimeValue[arrowhead=onormal,group=TimeValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MetricTimeValue[label="{MetricTimeValue| | }"]
+ MetricTimeValue->DiscreteTimeValue[arrowhead=onormal,group=DiscreteTimeValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DiscreteTimeValue[label="{DiscreteTimeValue| | }"]
+ DiscreteTimeValue->TimeValue[arrowhead=onormal,group=TimeValue,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MetricTimeInterval[label="{MetricTimeInterval| | }"]
+ MetricTimeInterval->DiscreteTimeInterval[arrowhead=onormal,group=DiscreteTimeInterval,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DiscreteTimeInterval[label="{DiscreteTimeInterval| | }"]
+ DiscreteTimeInterval->TimeInterval[arrowhead=onormal,group=TimeInterval,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SimultaneousEventOccurrence[label="{SimultaneousEventOccurrence| | }"]
+ SimultaneousEventOccurrence->Instant[arrowhead=vee,arrowtail=none,headlabel="at",group=Instant,minlen=2,constraint=false,]
+ SimultaneousEventOccurrence->TimedEventOccurence[arrowhead=vee,arrowtail=none,headlabel="occurence[2-*]",group=TimedEventOccurence,minlen=2,constraint=false,]
+;
+ node[shape=record];
+TimedEvent[label="{TimedEvent| | }"]
+ TimedEvent->MetricTimeValue[arrowhead=vee,arrowtail=none,headlabel="timestamp[1-*]",group=MetricTimeValue,minlen=2,constraint=false,]
+;
+ node[shape=record];
+TimedEventOccurence[label="{TimedEventOccurence| | }"]
+ TimedEventOccurence->Instant[arrowhead=vee,arrowtail=none,headlabel="at",group=Instant,minlen=2,constraint=false,]
+ TimedEventOccurence->TimeValue[arrowhead=vee,arrowtail=none,headlabel="timestamp",group=TimeValue,minlen=2,constraint=false,]
+ TimedEventOccurence->EventOccurence[arrowhead=onormal,group=EventOccurence,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TimedAction[label="{TimedAction| | }"]
+ TimedAction->TimeInterval[arrowhead=vee,arrowtail=none,headlabel="duration[*]",group=TimeInterval,minlen=2,constraint=false,]
+ TimedAction->TimeValue[arrowhead=vee,arrowtail=none,headlabel="start[*]",group=TimeValue,minlen=2,constraint=false,]
+ TimedAction->TimeValue[arrowhead=vee,arrowtail=none,headlabel="end[*]",group=TimeValue,minlen=2,constraint=false,]
+ TimedAction->Scenario[arrowhead=onormal,group=Scenario,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Delay[label="{Delay| | }"]
+ Delay->TimedAction[arrowhead=onormal,group=TimedAction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TimingMechanism[label="{TimingMechanism|stability : String\ndrift : String\nskew : String\nstate : String| }"]
+ TimingMechanism->TimedEvent[arrowhead=vee,arrowtail=none,headlabel="origin",group=TimedEvent,minlen=2,constraint=false,]
+ TimingMechanism->MetricTimeInterval[arrowhead=vee,arrowtail=none,headlabel="resolution",group=MetricTimeInterval,minlen=2,constraint=false,]
+ TimingMechanism->Clock[arrowhead=vee,arrowtail=none,headlabel="refClock",group=Clock,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Clock[label="{Clock| | }"]
+ Clock->MetricTimeInterval[arrowhead=vee,arrowtail=none,headlabel="accuracy",group=MetricTimeInterval,minlen=2,constraint=false,]
+ Clock->MetricTimeInterval[arrowhead=vee,arrowtail=none,headlabel="offset",group=MetricTimeInterval,minlen=2,constraint=false,]
+ Clock->ClockInterrupt[arrowhead=vee,arrowtail=none,headlabel="generatedInterrupt[*]",group=ClockInterrupt,minlen=2,constraint=false,]
+ Clock->DiscreteTimeBase[arrowhead=onormal,group=DiscreteTimeBase,minlen=2,constraint=true,]
+ Clock->TimingMechanism[arrowhead=onormal,group=TimingMechanism,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Timer[label="{Timer|isPeriodic : Boolean| }"]
+ Timer->MetricTimeValue[arrowhead=vee,arrowtail=none,headlabel="duration",group=MetricTimeValue,minlen=2,constraint=false,]
+ Timer->TimeOut[arrowhead=vee,arrowtail=none,headlabel="genratedTimeOuts[*]",group=TimeOut,minlen=2,constraint=false,]
+ Timer->TimingMechanism[arrowhead=onormal,group=TimingMechanism,minlen=2,constraint=true,]
+;
+ node[shape=record];
+TimeOut[label="{TimeOut| | }"]
+;
+ node[shape=record];
+ClockInterrupt[label="{ClockInterrupt| | }"]
+;
+ node[shape=record];
+System[label="{System| | }"]
+ System->Quantity[arrowhead=vee,arrowtail=none,headlabel="dimension[*]",group=Quantity,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Model[label="{Model| | }"]
+ Model->ModelElement[arrowhead=none,arrowtail=none,headlabel="ownes[*]",taillabel="owner",group=ModelElement,minlen=2,constraint=false,]
+;
+ node[shape=record];
+AnnotatedModel[label="{AnnotatedModel| | }"]
+ AnnotatedModel->NFPLibrary[arrowhead=vee,arrowtail=none,headlabel="import[*]",group=NFPLibrary,minlen=2,constraint=false,]
+ AnnotatedModel->Model[arrowhead=onormal,group=Model,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ModelElement[label="{ModelElement| | }"]
+;
+ node[shape=record];
+AnnotatedModelElement[label="{AnnotatedModelElement| | }"]
+ AnnotatedModelElement->NFP[arrowhead=vee,arrowtail=none,headlabel="annotation[*]",group=NFP,minlen=2,constraint=false,]
+ AnnotatedModelElement->ModelElement[arrowhead=onormal,group=ModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NFP[label="{NFP| | }"]
+ NFP->Quantity[arrowhead=vee,arrowtail=none,headlabel="measurementQuantity",group=Quantity,minlen=2,constraint=false,]
+ NFP->NFPCategory[arrowhead=diamond,arrowtail=none,headlabel="groupedBy",taillabel="setOf[1-*]",group=NFPCategory,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NFPLibrary[label="{NFPLibrary| | }"]
+ NFPLibrary->NFPLibrary[arrowhead=vee,arrowtail=none,headlabel="refersTo[*]",group=NFPLibrary,minlen=2,constraint=false,]
+ NFPLibrary->NFP[arrowhead=none,arrowtail=none,headlabel="usedNFP[*]",taillabel="storedBy[*]",group=NFP,minlen=2,constraint=false,]
+;
+ node[shape=record];
+NFPCategory[label="{NFPCategory| | }"]
+ NFPCategory->NFPCategory[arrowhead=none,arrowtail=none,headlabel="owner[0-1]",taillabel="ownes[*]",group=NFPCategory,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ModelingConcern[label="{ModelingConcern| | }"]
+ ModelingConcern->Quantity[arrowhead=vee,arrowtail=none,headlabel="relevantQuantity[*]",group=Quantity,minlen=2,constraint=false,]
+ ModelingConcern->AnnotatedModel[arrowhead=none,arrowtail=none,headlabel="annotedModel",taillabel="conformsTo[1-*]",group=AnnotatedModel,minlen=2,constraint=false,]
+;
+ node[shape=record];
+AnalysisConcern[label="{AnalysisConcern| | }"]
+ AnalysisConcern->ModelingConcern[arrowhead=onormal,group=ModelingConcern,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DesignConcern[label="{DesignConcern| | }"]
+ DesignConcern->ModelingConcern[arrowhead=onormal,group=ModelingConcern,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Quantity[label="{Quantity| | }"]
+;
+ node[shape=record];
+BasicQuantity[label="{BasicQuantity| | }"]
+;
+ node[shape=record];
+DerivedQuantity[label="{DerivedQuantity| | }"]
+;
+ node[shape=record];
+QualitativeNFP[label="{QualitativeNFP| | }"]
+ QualitativeNFP->NFP[arrowhead=vee,arrowtail=none,headlabel="parameter[*]",group=NFP,minlen=2,constraint=false,]
+ QualitativeNFP->NFP[arrowhead=onormal,group=NFP,minlen=2,constraint=true,]
+;
+ node[shape=record];
+QuantitativeNFP[label="{QuantitativeNFP| | }"]
+ QuantitativeNFP->NFP[arrowhead=onormal,group=NFP,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Realization[label="{Realization| | }"]
+ Realization->Measure[arrowhead=none,arrowtail=none,headlabel="function[*]",taillabel="appliesTo[1-*]",group=Measure,minlen=2,constraint=false,]
+ Realization->QuantitativeNFP[arrowhead=diamond,arrowtail=none,headlabel="owner",taillabel="sampleSet[*]",group=QuantitativeNFP,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Measure[label="{Measure| | }"]
+ Measure->QuantitativeNFP[arrowhead=diamond,arrowtail=none,headlabel="owner",taillabel="measure[*]",group=QuantitativeNFP,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ComplexNFP[label="{ComplexNFP| | }"]
+ ComplexNFP->ComplexNFP[arrowhead=none,arrowtail=none,headlabel="parent[*]",taillabel="child[*]",group=ComplexNFP,minlen=2,constraint=false,]
+ ComplexNFP->BasicNFP[arrowhead=diamond,arrowtail=diamond,headlabel="ownes[1-*]",taillabel="dimensionOf[*]",group=BasicNFP,minlen=2,constraint=true,]
+ ComplexNFP->NFP[arrowhead=onormal,group=NFP,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BasicNFP[label="{BasicNFP|statisticalQualifier : StatisticalQualifierKinds\ndirecton : DirectionKinds| }"]
+ BasicNFP->NFPType[arrowhead=vee,arrowtail=none,headlabel="typedBy",group=NFPType,minlen=2,constraint=false,]
+ BasicNFP->NFPValueSpecification[arrowhead=vee,arrowtail=none,headlabel="valuedBy[*]",group=NFPValueSpecification,minlen=2,constraint=false,]
+;
+ node[shape=record];
+NFPType[label="{NFPType|valueSpecificationLanguage : String\nsource[0-1] : SourceKinds| }"]
+ NFPType->NFPValueSpecification[arrowhead=none,arrowtail=none,headlabel="constrainedSpec[*]",taillabel="constrainedBy[*]",group=NFPValueSpecification,minlen=2,constraint=false,]
+;
+ node[shape=record];
+NFPInstantType[label="{NFPInstantType|value : String\nunit[0-1] : InstantUnitKinds| }"]
+ NFPInstantType->NFPType[arrowhead=onormal,group=NFPType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NFPurationType[label="{NFPurationType|value : String\nunit[0-1] : DurationUnitKinds| }"]
+ NFPurationType->NFPType[arrowhead=onormal,group=NFPType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NFPRateType[label="{NFPRateType|value : String\nunit[0-1] : RateUnitKinds| }"]
+ NFPRateType->NFPType[arrowhead=onormal,group=NFPType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NFPProbabilityType[label="{NFPProbabilityType|value : String\nunit[0-1] : ProbabilityUnitKinds| }"]
+ NFPProbabilityType->NFPType[arrowhead=onormal,group=NFPType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NFPSizeType[label="{NFPSizeType|value : String\nunit[0-1] : SizeUnitKinds| }"]
+ NFPSizeType->NFPType[arrowhead=onormal,group=NFPType,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NFPValueSpecification[label="{NFPValueSpecification| | }"]
+ NFPValueSpecification->NFPExpression[arrowhead=diamond,arrowtail=none,headlabel="expression[0-1]",taillabel="operand[*]",group=NFPExpression,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NFPConstant[label="{NFPConstant| | }"]
+ NFPConstant->NFPValueSpecification[arrowhead=onormal,group=NFPValueSpecification,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NFPListConstant[label="{NFPListConstant| | }"]
+ NFPListConstant->NFPConstant[arrowhead=none,arrowtail=none,headlabel="listElements[*]{ordered}",taillabel="ownerList[0-1]",group=NFPConstant,minlen=2,constraint=false,]
+ NFPListConstant->NFPConstant[arrowhead=onormal,group=NFPConstant,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NFPStringConstant[label="{NFPStringConstant|body : String| }"]
+ NFPStringConstant->NFPConstant[arrowhead=onormal,group=NFPConstant,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NFPIntegerConstant[label="{NFPIntegerConstant|body : Integer| }"]
+ NFPIntegerConstant->NFPConstant[arrowhead=onormal,group=NFPConstant,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NFPRealConstant[label="{NFPRealConstant|bodyBeforeComa : Integer\nbodyAfterComa : Integer| }"]
+ NFPRealConstant->NFPConstant[arrowhead=onormal,group=NFPConstant,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NFPBooleanConstant[label="{NFPBooleanConstant|body : Boolean| }"]
+ NFPBooleanConstant->NFPConstant[arrowhead=onormal,group=NFPConstant,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NFPVariable[label="{NFPVariable|varName : String| }"]
+ NFPVariable->NFPValueSpecification[arrowhead=onormal,group=NFPValueSpecification,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NFPExpression[label="{NFPExpression|body[1-*] : String| }"]
+ NFPExpression->NFPValueSpecification[arrowhead=onormal,group=NFPValueSpecification,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Classifier[label="{/Classifier/| | }"]
+ Classifier->InstanceSpecification[arrowhead=none,arrowtail=none,headlabel="instances[*]",taillabel="type[1-*]",group=InstanceSpecification,minlen=2,constraint=false,]
+ Classifier->AnnotatedModelElement[arrowhead=onormal,group=AnnotatedModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ResourceClassifier[label="{/ResourceClassifier/| | }"]
+ ResourceClassifier->ResourceServiceClassifier[arrowhead=none,arrowtail=none,headlabel="offeredService[1-*]",taillabel="resType",group=ResourceServiceClassifier,minlen=2,constraint=false,]
+ ResourceClassifier->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ResourceServiceClassifier[label="{/ResourceServiceClassifier/| | }"]
+ ResourceServiceClassifier->Classifier[arrowhead=onormal,group=Classifier,minlen=2,constraint=true,]
+;
+ node[shape=record];
+InstanceSpecification[label="{/InstanceSpecification/| | }"]
+ InstanceSpecification->AnnotatedModelElement[arrowhead=onormal,group=AnnotatedModelElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ResourceInstanceSpecification[label="{/ResourceInstanceSpecification/| | }"]
+ ResourceInstanceSpecification->InstanceSpecification[arrowhead=onormal,group=InstanceSpecification,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ResourceServiceInstanceSpecification[label="{/ResourceServiceInstanceSpecification/| | }"]
+ ResourceServiceInstanceSpecification->ResourceInstanceSpecification[arrowhead=none,arrowtail=none,headlabel="resintSpec",taillabel="offeredServiceInstance[1-*]",group=ResourceInstanceSpecification,minlen=2,constraint=false,]
+ ResourceServiceInstanceSpecification->InstanceSpecification[arrowhead=onormal,group=InstanceSpecification,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Hardware[label="{Hardware| | }"]
+ Hardware->Hardware[arrowhead=none,arrowtail=none,headlabel="containH[*]",taillabel="owner",group=Hardware,minlen=2,constraint=false,]
+ Hardware->HardwareEntity[arrowhead=none,arrowtail=none,headlabel="containHE[*]",taillabel="owner",group=HardwareEntity,minlen=2,constraint=false,]
+;
+ node[shape=record];
+HardwareLibrary[label="{HardwareLibrary| | }"]
+ HardwareLibrary->Hardware[arrowhead=none,arrowtail=none,headlabel="owner",taillabel="containHL[*]",group=Hardware,minlen=2,constraint=false,]
+;
+ node[shape=record];
+HardwareEntity[label="{HardwareEntity| | }"]
+;
+ node[shape=record];
+HardwareDeployment[label="{HardwareDeployment| | }"]
+ HardwareDeployment->Hardware[arrowhead=none,arrowtail=none,headlabel="owner",taillabel="deploymentConfiguration[*]",group=Hardware,minlen=2,constraint=false,]
+ HardwareDeployment->HardwareEntityInstance[arrowhead=none,arrowtail=none,headlabel="contain[1-*]",taillabel="owner",group=HardwareEntityInstance,minlen=2,constraint=false,]
+;
+ node[shape=record];
+HardwareEntityInstance[label="{HardwareEntityInstance| | }"]
+;
+ node[shape=record];
+ECUInstance[label="{ECUInstance| | }"]
+ ECUInstance->ECUGateInstance[arrowhead=vee,arrowtail=diamond,headlabel="composedOf[*]",group=ECUGateInstance,minlen=2,constraint=true,]
+ ECUInstance->HardwareEntityInstance[arrowhead=onormal,group=HardwareEntityInstance,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ChannelInstance[label="{ChannelInstance| | }"]
+ ChannelInstance->HardwareEntityInstance[arrowhead=onormal,group=HardwareEntityInstance,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ECUGateInstance[label="{ECUGateInstance| | }"]
+ ECUGateInstance->ChannelInstance[arrowhead=none,arrowtail=none,headlabel="channel",taillabel="gateInstances[2-*]",group=ChannelInstance,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ECU[label="{ECU| | }"]
+ ECU->HardwareEntity[arrowhead=onormal,group=HardwareEntity,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ECUGate[label="{ECUGate| | }"]
+ ECUGate->ECU[arrowhead=diamond,arrowtail=none,headlabel="owner",taillabel="contain[1-*]",group=ECU,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Channel[label="{Channel| | }"]
+ Channel->ECUGate[arrowhead=none,arrowtail=none,headlabel="specify[0-1]",taillabel="kindOf",group=ECUGate,minlen=2,constraint=false,]
+;
+ node[shape=record];
+AnalysisContext[label="{AnalysisContext| | }"]
+ AnalysisContext->ComplexNFP[arrowhead=vee,arrowtail=none,headlabel="global[*]",group=ComplexNFP,minlen=2,constraint=false,]
+ AnalysisContext->Workload[arrowhead=vee,arrowtail=diamond,headlabel="workload[0-1]",group=Workload,minlen=2,constraint=true,]
+ AnalysisContext->Behavior[arrowhead=vee,arrowtail=diamond,headlabel="behavior[0-1]",group=Behavior,minlen=2,constraint=true,]
+ AnalysisContext->Resource[arrowhead=vee,arrowtail=diamond,headlabel="usedResources[1-*]",group=Resource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Workload[label="{Workload| | }"]
+;
+ node[shape=record];
+Transaction[label="{Transaction| | }"]
+ Transaction->Workload[arrowhead=none,arrowtail=none,headlabel="workload[1-*]",taillabel="transaction[1-*]",group=Workload,minlen=2,constraint=false,]
+ Transaction->Trigger[arrowhead=vee,arrowtail=diamond,headlabel="trigger[1-*]",group=Trigger,minlen=2,constraint=true,]
+ Transaction->Response[arrowhead=vee,arrowtail=diamond,headlabel="response",group=Response,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Trigger[label="{Trigger| | }"]
+ Trigger->ComplexNFP[arrowhead=vee,arrowtail=none,headlabel="arrivalPattern",group=ComplexNFP,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Response[label="{Response| | }"]
+ Response->ComplexNFP[arrowhead=vee,arrowtail=none,headlabel="efficiency",group=ComplexNFP,minlen=2,constraint=false,]
+ Response->ComplexNFP[arrowhead=vee,arrowtail=none,headlabel="endToEndLatency",group=ComplexNFP,minlen=2,constraint=false,]
+ Response->Trigger[arrowhead=none,arrowtail=none,headlabel="cause[1-*]",taillabel="effect[1-*]",group=Trigger,minlen=2,constraint=false,]
+ Response->Scenario[arrowhead=none,arrowtail=none,headlabel="behavior[1-*]",taillabel="endToEndResponse",group=Scenario,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Behavior[label="{Behavior| | }"]
+;
+ node[shape=record];
+Scenario[label="{Scenario| | }"]
+ Scenario->Behavior[arrowhead=diamond,arrowtail=none,headlabel="behavior[1-*]",taillabel="scenario[1-*]",group=Behavior,minlen=2,constraint=true,]
+ Scenario->ComplexNFP[arrowhead=vee,arrowtail=none,headlabel="scenarionLatency[*]",group=ComplexNFP,minlen=2,constraint=false,]
+ Scenario->Step[arrowhead=vee,arrowtail=diamond,headlabel="steps[1-*]{ordered}",group=Step,minlen=2,constraint=true,]
+ Scenario->Step[arrowhead=vee,arrowtail=none,headlabel="root",group=Step,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Step[label="{Step| | }"]
+ Step->Step[arrowhead=none,arrowtail=none,headlabel="predecessor[*]",taillabel="successor[*]",group=Step,minlen=2,constraint=false,]
+ Step->ComplexNFP[arrowhead=vee,arrowtail=none,headlabel="stepLatency[*]",group=ComplexNFP,minlen=2,constraint=false,]
+ Step->Service[arrowhead=vee,arrowtail=none,headlabel="usedResourceService[*]",group=Service,minlen=2,constraint=false,]
+ Step->Scenario[arrowhead=onormal,group=Scenario,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Resource[label="{Resource| | }"]
+;
+ node[shape=record];
+BasicResource[label="{BasicResource| | }"]
+ BasicResource->Resource[arrowhead=onormal,group=Resource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+StructuredResource[label="{StructuredResource| | }"]
+ StructuredResource->BasicResource[arrowhead=vee,arrowtail=diamond,headlabel="basicResource",group=BasicResource,minlen=2,constraint=true,]
+ StructuredResource->Resource[arrowhead=onormal,group=Resource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ProcessingResource[label="{ProcessingResource| | }"]
+ ProcessingResource->Link[arrowhead=vee,arrowtail=none,headlabel="links[*]",group=Link,minlen=2,constraint=false,]
+ ProcessingResource->Component[arrowhead=vee,arrowtail=none,headlabel="components[1-*]",group=Component,minlen=2,constraint=false,]
+ ProcessingResource->StructuredResource[arrowhead=onormal,group=StructuredResource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Link[label="{Link| | }"]
+;
+ node[shape=record];
+ProcessResource[label="{ProcessResource| | }"]
+ ProcessResource->StructuredResource[arrowhead=onormal,group=StructuredResource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Component[label="{Component| | }"]
+ Component->ProcessResource[arrowhead=none,arrowtail=none,headlabel="process[1-*]",taillabel="components[1-*]",group=ProcessResource,minlen=2,constraint=false,]
+ Component->Interface[arrowhead=vee,arrowtail=none,headlabel="interfaces[1-*]",group=Interface,minlen=2,constraint=false,]
+;
+ node[shape=record];
+StructuredComponent[label="{StructuredComponent| | }"]
+ StructuredComponent->Component[arrowhead=onormal,group=Component,minlen=2,constraint=true,]
+;
+ node[shape=record];
+BasicComponent[label="{BasicComponent| | }"]
+ BasicComponent->Component[arrowhead=onormal,group=Component,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LogicalResource[label="{LogicalResource| | }"]
+ LogicalResource->StructuredResource[arrowhead=onormal,group=StructuredResource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ServerResource[label="{ServerResource| | }"]
+ ServerResource->Service[arrowhead=none,arrowtail=none,headlabel="services[1-*]",taillabel="resource",group=Service,minlen=2,constraint=false,]
+ ServerResource->StructuredResource[arrowhead=onormal,group=StructuredResource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Service[label="{Service| | }"]
+ Service->Interface[arrowhead=none,arrowtail=none,headlabel="interface",taillabel="service",group=Interface,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Interface[label="{Interface| | }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+
+}
+}

@@ -1,0 +1,559 @@
+package Metamodel;
+
+package Bossa {
+  class BossaProgramm {
+    !ordered val Scheduler[1] scheduler;
+  }
+
+  abstract class Scheduler {
+    !unique !ordered attr Boolean[1] defaultAtt;
+    !unique !ordered attr Boolean[1] high_Res;
+    !unique !ordered attr Boolean[1] low_Res;
+    !unique !ordered attr String[1] ~id;
+    !ordered val HandlerDef[1]#scheduler handlerDef;
+    !ordered val InterfaceDef[1]#scheduler interfaceDef;
+    !ordered val FunctionDef[1]#scheduler functionDef;
+  }
+
+  class NormalScheduler extends Scheduler {
+    !ordered val SchedulerDecl[1] schedulerDecl;
+  }
+
+  class VirtualScheduler extends Scheduler {
+    !ordered val VSchdulerDecl[1] vschedulerDecl;
+  }
+
+  abstract class AbstractSchedulerDecl {
+    !ordered val ConstDef[*] constDef;
+    !ordered val TypeDef[*] typeDef;
+    !ordered val FunDecl[*]#abstractSchedulerDecl funDecl;
+    !ordered val ValDecl[*]#abstractSchedulerDecl valDecl;
+    !ordered val StateDef[1]#abstractSchedulerDecl stateDef;
+    !ordered val OrderDef#abstractSchedulerDecl orderDef;
+    !ordered val AdmissionDef#abstractSchedulerDecl admissionDef;
+    !ordered val TraceDef#abstractSchedulerDecl traceDef;
+  }
+
+  class SchedulerDecl extends AbstractSchedulerDecl {
+    !ordered val ProcessDef[1] processDef;
+  }
+
+  class VSchdulerDecl extends AbstractSchedulerDecl {
+    !ordered val SchedulerDef[1] schedulerDef;
+  }
+
+  class ConstDef {
+    !unique !ordered attr String[1] ~id;
+    !ordered val Expression[1] expr;
+    !ordered val BossaTypeExpr[1] bossaTypeExpr;
+  }
+
+  class TypeDef {
+    !ordered val EnumRange[1] enumRang;
+  }
+
+  class EnumRange {
+    !ordered val EnumDef enumDef;
+    !ordered val RangeDef rangeDef;
+  }
+
+  class EnumDef {
+    !unique !ordered attr String[+] theIds;
+  }
+
+  class BagId {
+    !unique !ordered attr String[1] theValue;
+  }
+
+  class RangeDef {
+    !ordered val Expression[2] expr;
+  }
+
+  class ProcessDef {
+    !ordered val ProcessVarDecl[+]#processDef processVarDecl;
+  }
+
+  class SchedulerDef {
+    !ordered val ProcessVarDecl[+]#schedulerDef processVarDecl;
+  }
+
+  class ProcessVarDecl {
+    !unique !ordered attr String[1] ~id;
+    !ordered ref ProcessDef[1]#processVarDecl processDef;
+    !ordered ref SchedulerDef[1]#processVarDecl schedulerDef;
+  }
+
+  class Timer_ProcessVarDecl extends ProcessVarDecl {
+  }
+
+  class System_ProcessVarDecl extends ProcessVarDecl {
+    !unique !ordered attr Boolean[1] system;
+    !ordered val TypeExpr[1] typeExpr;
+  }
+
+  class Normal_ProcessVarDecl extends ProcessVarDecl {
+    !ordered val TypeExpr[1] typeExpr;
+  }
+
+  class HandlerDef {
+    !unique !ordered attr String[1] ~id;
+    !ordered ref Scheduler[1]#handlerDef scheduler;
+    !ordered val OnHandlerDef[+] onHandlerDef;
+  }
+
+  class InterfaceDef {
+    !ordered val ComposantOfInterFunc[+] composantOfInterFunc;
+    !ordered ref Scheduler[1]#interfaceDef scheduler;
+  }
+
+  class FunctionDef {
+    !ordered val ComposantOfInterFunc[+] composantOfInterFunc;
+    !ordered ref Scheduler[1]#functionDef scheduler;
+  }
+
+  abstract class Expression {
+  }
+
+  class Integer_Expression extends Expression {
+    !unique !ordered attr Integer[1] theValue;
+  }
+
+  class Id_Expression extends Expression {
+    !unique !ordered attr String[1] ~id;
+  }
+
+  class State_Expression extends Expression {
+    !unique !ordered attr String[1] theValue;
+  }
+
+  class True_Expression extends Expression {
+  }
+
+  class False_Expression extends Expression {
+  }
+
+  class Unop_Expression extends Expression {
+    !ordered val Unop[1] unop;
+    !ordered val Expression[1] expr;
+  }
+
+  class Etoile_Expression extends Expression {
+    !ordered val Expression[1] expr;
+  }
+
+  class ExpId_Expression extends Expression {
+    !unique !ordered attr String[1] ~id;
+    !ordered val Expression[1] expr;
+  }
+
+  class Select_Expression extends Expression {
+  }
+
+  class FnName_Expression extends Expression {
+    !ordered val Expression[*] expr;
+  }
+
+  class Empty_Expression extends Expression {
+    !ordered val ClassState[1] classState;
+  }
+
+  class SRCOnSched_Expression extends Expression {
+  }
+
+  class SchedulerOf_Expression extends Expression {
+    !ordered val Expression[1] expr;
+  }
+
+  class In_Expression extends Expression {
+    !unique !ordered attr Boolean[1] in;
+    !ordered val Expression[1] expr;
+    !ordered val ClassState[1] classState;
+  }
+
+  class Parenthese_Expression extends Expression {
+    !ordered val Expression[1] expr;
+  }
+
+  class Binop_Expression extends Expression {
+    !ordered val Id_Expression[1] id_Expression;
+    !ordered val Compo_Binop_Expression[1] compo_Binop_Expression;
+  }
+
+  class Compo_Binop_Expression {
+    !ordered val Binop[1] binop;
+    !ordered val Id_Expression[1] id_Expression;
+  }
+
+  class ValDecl {
+    !unique !ordered attr String[1] ~id;
+    !ordered ref AbstractSchedulerDecl[1]#valDecl abstractSchedulerDecl;
+  }
+
+  class Normal_ValDecl extends ValDecl {
+    !ordered val NonProcType nonProcType;
+  }
+
+  class System_ValDecl extends ValDecl {
+    !ordered val NonProcType nonProcType;
+  }
+
+  class Timer_ValDecl extends ValDecl {
+  }
+
+  class FunDecl {
+    !ordered val ParameterType parameterTypes;
+    !ordered val NonProcType nonProcType;
+    !ordered ref AbstractSchedulerDecl[1]#funDecl abstractSchedulerDecl;
+  }
+
+  class StateDef {
+    !ordered val ClassNameStorage[+] classNameStorage;
+    !ordered ref AbstractSchedulerDecl[1]#stateDef abstractSchedulerDecl;
+  }
+
+  class ClassNameStorage {
+    !unique !ordered attr String[1] ~id;
+    !ordered val ClassName[1] className;
+    !ordered val Storage storage;
+  }
+
+  class OrderDef {
+    !ordered val KeyCritDecls[1] keyCritDecl;
+    !ordered val CritDecls[1] critDecls;
+    !ordered ref AbstractSchedulerDecl[1]#orderDef abstractSchedulerDecl;
+  }
+
+  class AdmissionDef {
+    !ordered val ValDef[*] valDef;
+    !ordered val AdmCrit[1] admCrit;
+    !ordered val AttachDetach attachDetach;
+    !ordered ref AbstractSchedulerDecl[1]#admissionDef abstractSchedulerDecl;
+  }
+
+  class TraceDef {
+    !ordered val TraceEvent traceEvent;
+    !ordered val TraceExpr traceExpr;
+    !ordered val TraceTest traceTest;
+    !ordered ref AbstractSchedulerDecl[1]#traceDef abstractSchedulerDecl;
+  }
+
+  class TypeExpr {
+    !unique !ordered attr String ~id;
+    !ordered val BossaTypeExpr bossaTypeExpr;
+  }
+
+  class TypeOrVoid {
+    !unique !ordered attr Boolean[1] isVoid;
+    !ordered val TypeExpr typeExpr;
+  }
+
+  class ParameterType {
+    !ordered val TypeExpr[+] typeExpr;
+  }
+
+  abstract class Storage {
+  }
+
+  class Process_Storage extends Storage {
+  }
+
+  class Scheduler_Storage extends Storage {
+    !ordered val StateVisibility stateVisibility;
+  }
+
+  class Queue_Storage extends Storage {
+    !ordered val StateVisibility stateVisibility;
+    !ordered val QueueType queueType;
+  }
+
+  class KeyCritDecls {
+    !ordered val CompoKeyCritDecls[+] compoKeyCritDecls;
+  }
+
+  class CompoKeyCritDecls {
+    !ordered val CritDecl[1] critDecl;
+  }
+
+  class CritDecls {
+    !ordered val CritDecl[+] critDecl;
+  }
+
+  abstract class CritDecl {
+    !ordered val Critop[1] critop;
+  }
+
+  class CritDeclWhithId extends CritDecl {
+    !unique !ordered attr String[1] ~id;
+  }
+
+  class CritDeclWhithoutId extends CritDecl {
+    !ordered val Expression[2..3] expr;
+  }
+
+  class ValDef {
+    !unique !ordered attr String[1] ~id;
+    !ordered val TypeExpr[1] typeExpr;
+    !ordered val Expression[1] expr;
+  }
+
+  class AdmCrit {
+    !ordered val ParamVarDecl[*] paramVarDecl;
+    !ordered val Expression[1] expr;
+  }
+
+  class AttachDetach {
+    !ordered val ProcParam[1] procParam1;
+    !ordered val ProcParam[1] procParam2;
+    !ordered val SeqStmt[1] seqStmt1;
+    !ordered val SeqStmt[1] seqStmt2;
+  }
+
+  class ParamVarDecl {
+    !unique !ordered attr String[1] ~id;
+    !ordered val TypeExpr[1] typeExpr;
+  }
+
+  class SeqStmt {
+    !ordered val ValDef[*] valDef;
+    !ordered val Statment[*] stmt;
+  }
+
+  class TraceEvent {
+    !ordered val EventName[+] eventName;
+  }
+
+  class TraceExpr {
+    !unique !ordered attr String[+] ~id;
+  }
+
+  class TraceTest {
+    !ordered val Expression[1] expr;
+  }
+
+  class ProcParam {
+    !unique !ordered attr String[1] ~id;
+    !unique !ordered attr Boolean[1] process;
+    !unique !ordered attr Boolean[1] scheduler;
+  }
+
+  abstract class Statment {
+  }
+
+  class IfStmt extends Statment {
+    !ordered val Expression[1] expr;
+    !ordered val SeqStmt[1..2] seqStmt;
+  }
+
+  abstract class ForStmt extends Statment {
+  }
+
+  class ForeachForStmt extends ForStmt {
+    !unique !ordered attr String[1] ~id;
+    !unique !ordered attr Boolean[1] isIn;
+    !ordered val ClassState[*] classState;
+    !ordered val SeqStmt[1] seqStmt;
+  }
+
+  class ForEachIncreasingForStmt extends ForStmt {
+    !unique !ordered attr String[1] ~id;
+    !ordered val SeqStmt[1] seqStmt;
+  }
+
+  class ForEachDecreasingForStmt extends ForStmt {
+    !unique !ordered attr String[1] ~id;
+    !ordered val SeqStmt[1] seqStmt;
+  }
+
+  class ReturnStmt extends Statment {
+    !ordered val Expression expr;
+  }
+
+  class SwitchStmt extends Statment {
+    !ordered val LocExpr[1] locExpr;
+    !ordered val ComposantOfSwitchStmt[*] composantOfSwitchStmt;
+  }
+
+  class AssignStmt extends Statment {
+    !ordered val LocExpr[1] locExpr;
+    !ordered val AssignUnop assignUnop;
+    !ordered val AssignBinop assignBinop;
+    !ordered val Expression expr;
+  }
+
+  abstract class MoveStmt extends Statment {
+    !unique !ordered attr Boolean[1] isHead;
+    !unique !ordered attr Boolean[1] isTail;
+    !ordered val MoveExpr[1] moveExpr;
+  }
+
+  class NormalMoveStmt extends MoveStmt {
+    !ordered val StateRef[1] stateRef;
+  }
+
+  class ForwardMoveStmt extends MoveStmt {
+  }
+
+  class StateRef {
+    !unique !ordered attr String[1] stateRef;
+  }
+
+  class DeferStmt extends Statment {
+    !unique !ordered attr String[1] deferStmt;
+  }
+
+  class PrimStmt extends Statment {
+    !ordered val Expression[*] expr;
+  }
+
+  class ErrorStmt extends Statment {
+    !unique !ordered attr String[1] errorType;
+  }
+
+  class BreakStmt extends Statment {
+  }
+
+  class LocExpr {
+    !unique !ordered attr String[1] stateName;
+    !unique !ordered attr String[*] ~id;
+  }
+
+  abstract class MoveExpr {
+  }
+
+  class Select_MoveExpr extends MoveExpr {
+  }
+
+  class SatateName_MoveExpr extends MoveExpr {
+  }
+
+  class ID_MoveExpr extends MoveExpr {
+    !unique !ordered attr String[1] ~id;
+  }
+
+  class IDSource_MoveExpr extends MoveExpr {
+    !unique !ordered attr String[1] ~id;
+  }
+
+  class IDTarget_MoveExpr extends MoveExpr {
+    !unique !ordered attr String[1] ~id;
+  }
+
+  class ClassState {
+    !unique !ordered attr Boolean[1] state;
+    !ordered val ClassName className;
+  }
+
+  class OnHandlerDef {
+    !ordered val EventName[*] eventName;
+    !ordered val SeqStmt[1] seqStmt;
+  }
+
+  class EventName {
+    !unique !ordered attr String[1] eventNameLeft;
+    !unique !ordered attr String[1] eventNameRight;
+  }
+
+  class ComposantOfSwitchStmt {
+    !ordered val ClassState[+] classState;
+    !ordered val SeqStmt[1] seqStmt;
+  }
+
+  class ComposantOfInterFunc {
+    !unique !ordered attr String[1] ~id;
+    !ordered val TypeOrVoid[1] typeOrVoid;
+    !ordered val ParamVarDecl[*] paramVarDecl;
+    !ordered val SeqStmt[1] seqStmt;
+  }
+
+  class BossaTypeExpr {
+    !unique !ordered attr String[1] bossaTypeExpr;
+  }
+
+  abstract class QueueType {
+  }
+
+  class Normal_QueueType extends QueueType {
+  }
+
+  class Fifo_QueueType extends QueueType {
+  }
+
+  class Lifo_QueueType extends QueueType {
+  }
+
+  class Critop {
+    !unique !ordered attr Boolean[1] lowest;
+    !unique !ordered attr Boolean[1] highest;
+  }
+
+  class StateVisibility {
+    !unique !ordered attr Boolean public;
+    !unique !ordered attr Boolean private;
+  }
+
+  class ClassName {
+    !unique !ordered attr String[1] className;
+  }
+
+  class NonProcType {
+    !unique !ordered attr Boolean[1] system;
+    !unique !ordered attr Boolean[1] struct;
+    !unique !ordered attr Boolean[1] ~id;
+    !unique !ordered attr String[1] nonProcType;
+  }
+
+  class Unop {
+    !unique !ordered attr Boolean[1] plus;
+    !unique !ordered attr Boolean[1] minus;
+    !unique !ordered attr Boolean[1] excl;
+    !unique !ordered attr Boolean[1] tild;
+  }
+
+  class Binop {
+    !unique !ordered attr Boolean[1] plus;
+    !unique !ordered attr Boolean[1] minus;
+    !unique !ordered attr Boolean[1] star;
+    !unique !ordered attr Boolean[1] slash;
+    !unique !ordered attr Boolean[1] percentage;
+    !unique !ordered attr Boolean[1] doubleAnd;
+    !unique !ordered attr Boolean[1] doubleVerticalBar;
+    !unique !ordered attr Boolean[1] and;
+    !unique !ordered attr Boolean[1] eq;
+    !unique !ordered attr Boolean[1] ne;
+    !unique !ordered attr Boolean[1] lt;
+    !unique !ordered attr Boolean[1] gt;
+    !unique !ordered attr Boolean[1] le;
+    !unique !ordered attr Boolean[1] ge;
+    !unique !ordered attr Boolean[1] doubleLt;
+    !unique !ordered attr Boolean[1] doubleGt;
+  }
+
+  class AssignUnop {
+    !unique !ordered attr Boolean[1] doublePlus;
+    !unique !ordered attr Boolean[1] doubleMoins;
+  }
+
+  class AssignBinop {
+    !unique !ordered attr Boolean[1] affect;
+    !unique !ordered attr Boolean[1] plusEqual;
+    !unique !ordered attr Boolean[1] moinsEqual;
+    !unique !ordered attr Boolean[1] starEqual;
+    !unique !ordered attr Boolean[1] slashEqual;
+    !unique !ordered attr Boolean[1] percentageEqual;
+    !unique !ordered attr Boolean[1] andEqual;
+    !unique !ordered attr Boolean[1] orEqual;
+    !unique !ordered attr Boolean[1] doubleLtEqual;
+    !unique !ordered attr Boolean[1] doubleGtEqual;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+}
+

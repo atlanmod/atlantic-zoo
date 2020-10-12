@@ -1,0 +1,68 @@
+package Metamodel;
+
+package KM3 {
+  abstract class LocatedElement {
+    !unique !ordered attr String[1] location;
+  }
+
+  abstract class ModelElement extends LocatedElement {
+    !unique !ordered attr String[1] name;
+    !ordered ref Package[1]#contents ~package;
+  }
+
+  class Classifier extends ModelElement {
+  }
+
+  class DataType extends Classifier {
+  }
+
+  class Enumeration extends Classifier {
+    val EnumLiteral[*] literals;
+  }
+
+  class EnumLiteral extends ModelElement {
+  }
+
+  class Class extends Classifier {
+    !unique !ordered attr Boolean[1] isAbstract;
+    !ordered ref Class[*] supertypes;
+    val StructuralFeature[*]#owner structuralFeatures;
+  }
+
+  class StructuralFeature extends ModelElement {
+    !unique !ordered attr Integer[1] lower;
+    !unique !ordered attr Integer[1] upper;
+    !unique !ordered attr Boolean[1] isOrdered;
+    !unique !ordered attr Boolean[1] isUnique;
+    !ordered ref Class[1]#structuralFeatures owner;
+    !ordered ref Classifier[1] type;
+  }
+
+  class Attribute extends StructuralFeature {
+  }
+
+  class Reference extends StructuralFeature {
+    !unique !ordered attr Boolean[1] isContainer;
+    !ordered ref Reference opposite;
+  }
+
+  class Package extends ModelElement {
+    val ModelElement[*]#~package contents;
+    !ordered ref Metamodel[1]#contents metamodel;
+  }
+
+  class Metamodel extends LocatedElement {
+    val Package[*]#metamodel contents;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

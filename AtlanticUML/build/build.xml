@@ -1,0 +1,105 @@
+<!-- How to configure this ant script:
+	Run as->Ant Build...
+		Set:
+			- Base directory
+			- Run in same JRE
+			- Refresh
+
+			- ANTLR jar (?)
+			- ant contrib jar
+-->
+<project name="atlanticUML" default="transformAll">
+<!--
+	Does not work with loadModel
+	<property name="sourcePath" value="${basedir}/../org.eclipse.am3.zoos.atlantMOF_MDR/"/>
+	<property name="targetPath" value="${basedir}/"/>
+-->
+	<property name="sourcePath" value="../../org.eclipse.am3.zoos.atlantMOF_MDR/"/>
+	<property name="targetPath" value="../../org.eclipse.am3.zoos.atlanticUML/"/>
+	<property name="projectPath" value="" />
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+<!--
+	  <classpath>
+	    <pathelement location="${sourcePath}ant-contrib.jar"/>
+	  </classpath>
+-->
+	</taskdef>
+	
+	<target name="transformAll" depends="loadModels">
+<!--
+		<antcall target="transformOne" inheritall="true" inheritrefs="true">
+			<param name="sample" value="Amble"/>
+		</antcall>
+		<for list="Ant,ATOM,AWKPrograms,BibTeX,Book" param="e">
+		  <sequential>
+			<antcall target="transformOne" inheritall="true" inheritrefs="true">
+				<param name="sample" value="@{e}"/>
+			</antcall>
+		  </sequential>
+		</for>
+-->
+		<for param="e">
+		  <path>
+		    <fileset dir="${projectPath}../../org.eclipse.am3.zoos.atlantMOF_MDR" includes="*.xmi"/>
+<!--
+			Does not work with workspace paths
+		    <fileset dir="${sourcePath}" includes="*.xmi"/>
+-->
+		  </path>
+		  <sequential>
+			<antcall target="condition" inheritall="true" inheritrefs="true">
+				<param name="sample" value="@{e}"/>
+			</antcall>
+		  </sequential>
+		</for>
+	</target>
+
+	<target name="condition">
+	  	<basename property="name" file="${sample}" suffix=".xmi"/>
+		<property name="sourceModel" value="${sourcePath}${name}.xmi"/>
+		<property name="targetModel" value="${targetPath}${name}.xmi"/>
+		
+		<uptodate property="isUpToDate" srcfile="${sourceModel}" targetfile="${targetModel}"/>
+		
+	  	<if>
+	  	 <not>
+			 <equals arg1="${isUpToDate}" arg2="true" />
+		 </not>
+		 <then>
+			<antcall target="transformOne" inheritall="true" inheritrefs="true">
+				<param name="name" value="${name}"/>
+				<param name="sourceModel" value="${sourceModel}"/>
+				<param name="targetModel" value="${targetModel}"/>
+			</antcall>
+		 </then>
+		</if>
+	</target>
+	
+	<!-- parameters: sample -->
+	<target name="transformOne">
+
+		<echo message="Transforming ${name}"/>
+		
+		<!-- Load source model -->
+		<am3.loadModel modelHandler="MDR" name="source" metamodel="MOF" path="${sourceModel}"/>
+
+		<!-- Transform MOF metamodel into UML model -->
+		<am3.atl path="${targetPath}build/MOF2UML.asm">
+			<inModel name="IN" model="source"/>
+			<inModel name="MOF" model="%MDR"/>
+			<inModel name="UML" model="UML"/>
+			<outModel name="OUT" model="target" metamodel="UML"/>
+		</am3.atl>
+
+		<!-- Serialize UML model -->
+		<am3.saveModel model="target" path="${targetModel}"/>
+	</target>
+
+	<target name="loadModels">
+		<!-- Load UML metamodel -->
+		<am3.loadModel modelHandler="MDR" name="UML" metamodel="MOF" path="${targetPath}build/UMLDI.xmi" />
+<!--
+-->
+	</target>	
+</project>

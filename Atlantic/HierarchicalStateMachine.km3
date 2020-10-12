@@ -1,0 +1,123 @@
+-- @name		Hierarchical State Machine
+-- @version		1.0
+-- @authors		Youssef Srour (Srour.youssef@gmail.com)
+-- @date		2006/07/14
+-- @description	This metamodel describes hierarchical state machine concepts.
+-- @see 		http://repository.escherinstitute.org/Plone/tools/suites/mic/great/
+
+package HSM{
+	
+-- Begin Class MgaObject
+	class MgaObject{
+		attribute name[0-1] : String;
+		attribute position[0-1] : String;
+	}-- End class MgaObject
+
+-- Begin Class StateBase
+	class StateBase extends MgaObject{
+		attribute defaultTransition : String;
+		attribute marked : Boolean;--"false"
+		
+		reference associationStateStatedst[1-*] : AssociationStateState oppositeOf dstTransition;
+		reference associationStateStatesrc[1-*] : AssociationStateState oppositeOf srcTransition;
+		reference data[*] : DataVar oppositeOf stateBase;
+		reference associationDataStateBase : AssociationDataStateBase oppositeOf stateBase;
+	}-- End class StateBase
+	
+-- Begin Class DataVar
+	class DataVar extends MgaObject{
+		reference stateBase[*] : StateBase oppositeOf data;
+		reference orState : OrState oppositeOf dataVar;
+		reference associationDataStateBase : AssociationDataStateBase oppositeOf dataVar;
+	}-- End class DataVar
+	
+-- Begin Class Transition
+	class Transition extends MgaObject{
+		attribute guard : String;
+		attribute trigger : String;
+		attribute action : String;
+		attribute isSync : Boolean;--"false"
+		reference orState : OrState oppositeOf transition;
+		reference associationStateState : AssociationStateState oppositeOf transition;
+	}-- End class Transition
+
+-- Begin Class StateDateRelation
+	class StateDateRelation extends MgaObject{
+		attribute value : String;
+		attribute color : String;--"black"
+	}-- End class StateDateRelation
+
+-- Begin Class RootFolder
+	class RootFolder{
+		attribute name[0-1] : String;
+		reference rootFolders[*] container: RootFolder;
+		reference orState[*] container: OrState oppositeOf rootFolder;
+	}-- End class RootFolder
+
+-- Begin Class OrState
+	class OrState extends CompoundState{
+		reference rootFolder : RootFolder oppositeOf orState;
+		reference state[0-*] container: State oppositeOf orState;
+		reference init container: Init oppositeOf orState;
+		reference dataVar[0-*] container : DataVar oppositeOf orState;
+		reference stateDataRelation[0-*] container: StateDataRelation oppositeOf orState;
+		reference transition[0-*] container: Transition oppositeOf orState;
+		reference compoundState[0-*] container: CompoundState oppositeOf orState;
+	}-- End class OrState
+
+-- Begin Class AndState
+	class AndState extends CompoundState{
+		reference compoundState[*] container : CompoundState oppositeOf andState;
+		
+	}-- End class AndState
+
+-- Begin Class CompoundState
+	class CompoundState extends StateBase{
+		reference andState : AndState oppositeOf compoundState;
+		reference orState : OrState oppositeOf compoundState;
+	}-- End class CompoundState
+	
+-- Begin Class PrimitiveState
+	class PrimitiveState extends StateBase{
+		
+	}-- End class PrimitiveState
+
+-- Begin Class Init
+	class Init extends PrimitiveState{
+		reference orState : OrState oppositeOf init;
+	}-- End class Init
+	
+-- Begin Class State
+	class State extends PrimitiveState{
+		reference orState : OrState oppositeOf state;
+	}-- End class State
+
+-- Begin Class StateDataRelation
+	class StateDataRelation extends PrimitiveState{
+		attribute value : String;
+		attribute color : String;--"black"
+		
+		reference orState : OrState oppositeOf stateDataRelation;
+		reference associationDataStateBase1 : AssociationDataStateBase oppositeOf stateDataRelation;
+	}-- End class StateDataRelation
+
+-- Begin Class-Association StateState
+	class AssociationStateState{
+		reference transition : Transition oppositeOf associationStateState;
+		reference dstTransition[1-*] : StateBase oppositeOf associationStateStatedst;
+		reference srcTransition[1-*] : StateBase oppositeOf associationStateStatesrc;
+	}-- End Class-Association StateState
+	
+-- Begin class AssociationDataStateBase
+	class AssociationDataStateBase{
+		reference stateDataRelation : StateDataRelation oppositeOf associationDataStateBase1;
+		reference dataVar[1-*] : DataVar oppositeOf associationDataStateBase;
+		reference stateBase[1-*] : StateBase oppositeOf associationDataStateBase;
+	}-- End class AssociationDataStateBase
+}
+
+package PrimitiveTypes {
+	datatype String;
+	datatype Boolean;
+	datatype Integer;
+}

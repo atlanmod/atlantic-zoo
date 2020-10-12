@@ -1,0 +1,278 @@
+package Metamodel;
+
+package DoDAF {
+  abstract class Element {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] content;
+  }
+
+  class System extends Element {
+    !ordered val System[*] decomposes;
+    !ordered ref SystemRole[*] fulfills;
+  }
+
+  class SystemRole extends Element {
+    !ordered val SystemRole[*] decomposes;
+    !ordered ref SystemFunction[*] performs;
+    !ordered ref SystemRoleInterface[1]#originatesFrom terminatesAt;
+  }
+
+  class SystemFunction extends Element {
+    !ordered val SystemFunction[*] decomposes;
+    !ordered ref Product[*] consumes;
+    !ordered ref Product[*] produces;
+    !ordered ref SystemProductFlow[1]#originatesFrom terminatesAt;
+    !ordered ref ConstraintOrRequirement[*] mesuredBy;
+  }
+
+  class Service extends SystemFunction {
+  }
+
+  class SystemRoleInterface extends Element {
+    !ordered ref SystemRole[1]#terminatesAt originatesFrom;
+  }
+
+  class ServiceDependency extends SystemRoleInterface {
+  }
+
+  class ServiceProvider extends SystemRole {
+  }
+
+  class ServiceMediator extends ServiceProvider {
+  }
+
+  class ServiceRegistry extends ServiceMediator {
+  }
+
+  class ServiceLocator extends ServiceMediator {
+  }
+
+  class ServiceBroker extends ServiceMediator {
+  }
+
+  class SystemAtNode extends Element {
+    !ordered ref System[1] references;
+    !ordered ref SystemAtNodeInterface[1]#originatesFrom terminatesAt;
+  }
+
+  class SystemAtNodeInterface extends Element {
+    !ordered ref SystemAtNode[1]#terminatesAt originatesFrom;
+  }
+
+  class SystemsNode extends Element {
+    !ordered ref SystemAtNode[*] groups;
+  }
+
+  class COI extends Element {
+    !ordered val Performer[*] comprises;
+    !ordered ref Vocabulary[1] defines;
+  }
+
+  class Vocabulary extends Element {
+    !ordered val DataReference[*] comprises;
+  }
+
+  class DataReference extends Element {
+    !ordered ref Data[1] defineBy;
+  }
+
+  class Performer extends Element {
+    !ordered val Performer[*] decomposes;
+    !ordered ref OperationalRole[*] fulfills;
+  }
+
+  class OperationalRole extends Element {
+    !ordered val OperationalRole[*] decomposes;
+    !ordered ref OperationalActivity[*] accomplishes;
+  }
+
+  class OperationalActivity extends Element {
+    !ordered val OperationalRole[*] decomposes;
+    !ordered ref SystemFunction[*] supports;
+  }
+
+  class Product extends Element {
+  }
+
+  class Material extends Product {
+  }
+
+  class Data extends Product {
+  }
+
+  class SystemProductFlow extends Element {
+    !ordered ref Product[*] transports;
+    !ordered ref SystemFunction[1]#terminatesAt originatesFrom;
+  }
+
+  abstract class ConstraintOrRequirement extends Element {
+  }
+
+  class Constraint extends ConstraintOrRequirement {
+  }
+
+  class QualityRequirement extends ConstraintOrRequirement {
+  }
+
+  class DIA extends Element {
+    !ordered ref NMJIC[1]#dia nmjic;
+    !ordered ref HigherEchelon[1]#dia higherEchelon;
+  }
+
+  class NMJIC extends Element {
+    !ordered ref DIA[1]#nmjic dia;
+  }
+
+  class HigherEchelon extends Element {
+    !ordered ref DIA[1]#higherEchelon dia;
+    !ordered ref JFC[1]#higherEchelon jfc;
+  }
+
+  class JFC extends Element {
+    !ordered ref HigherEchelon[1]#jfc higherEchelon;
+    !ordered ref F2C2[1]#jfc f2c2;
+    !ordered ref ComponentCommand[1]#jfc componentComand;
+  }
+
+  class F2C2 extends Element {
+    !ordered ref JFC[1]#f2c2 jfc;
+  }
+
+  class ComponentCommand extends Element {
+    !ordered ref JFC[1]#componentComand jfc;
+  }
+
+  class DJFLCC extends ComponentCommand {
+  }
+
+  class JFACC extends ComponentCommand {
+    !ordered ref SubordinateAirCommand[1]#jfacc subordinateAirCommand;
+    !ordered val AOCCID[*] aoccid;
+    !ordered val AOCCombatPlanStrategyCells[*] aoccpsc;
+  }
+
+  class JFMCC extends ComponentCommand {
+  }
+
+  class JFSOCC extends ComponentCommand {
+  }
+
+  class SubordinateAirCommand extends Element {
+    !ordered ref JFACC[1]#subordinateAirCommand jfacc;
+  }
+
+  class MAW extends SubordinateAirCommand {
+  }
+
+  class WOC extends SubordinateAirCommand {
+  }
+
+  class AOCCID extends Element {
+  }
+
+  class AOCCombatPlanStrategyCells extends Element {
+  }
+
+  class ResultData {
+    !unique !ordered attr String[1] sourceID;
+    !unique !ordered attr String[1] timeStamp;
+    !ordered ref CollectionRequirement[*]#rd cr;
+    !ordered ref BDAReport[*]#rd bdaReport;
+  }
+
+  class CombatReport extends ResultData {
+    !unique !ordered attr String[1] friendlyUnitsInvolved;
+    !unique !ordered attr String[1] combatLocation;
+    !unique !ordered attr String[1] resultsAssessment;
+    !unique !ordered attr String[1] duration;
+  }
+
+  class WSV extends ResultData {
+    !unique !ordered attr String[1] missionID;
+    !unique !ordered attr String[1] weaponfSystemID;
+    !unique !ordered attr String[1] videoType;
+  }
+
+  class MISREP extends ResultData {
+    !unique !ordered attr String[1] missionID;
+    !unique !ordered attr String[1] missionObjectives;
+    !unique !ordered attr String[1] missionAssesments;
+  }
+
+  class Imagery extends ResultData {
+    !unique !ordered attr String[1] imageType;
+    !unique !ordered attr String[1] spectralData;
+    !unique !ordered attr String[1] geospacialLocation;
+    !unique !ordered attr Integer[1] imageSize;
+  }
+
+  class CollectionRequirement {
+    !unique !ordered attr String[1] sourceID;
+    !unique !ordered attr String[1] collectionTargetID;
+    !unique !ordered attr String[1] toBeDoneByTime;
+    !unique !ordered attr String[1] specialNeeds;
+    !ordered ref ResultData[*]#cr rd;
+    !ordered ref ATO[*]#cr ato;
+    !ordered ref Target[*]#cr isContainedIn;
+  }
+
+  class BDAReport {
+    !unique !ordered attr String[1] targetID;
+    !unique !ordered attr String[1] reportSourceID;
+    !unique !ordered attr String[1] assesmentSumart;
+    !unique !ordered attr String[1] validityDuration;
+    !ordered ref ResultData[+]#bdaReport rd;
+    !ordered ref MunitionsEffectsAssesment#bdaReport mea;
+  }
+
+  class MunitionsEffectsAssesment {
+    !ordered ref BDAReport#mea bdaReport;
+    !ordered ref ATO[1]#mea ato;
+    !ordered ref TargetNomination[1]#mea tn;
+  }
+
+  class ATO {
+    !unique !ordered attr String[1] timePeriod;
+    !ordered ref CollectionRequirement[*]#ato cr;
+    !ordered ref MunitionsEffectsAssesment[1]#ato mea;
+    !ordered ref TargetNomination[*]#ato tn;
+    !ordered ref RestrikeRecommendation#ato rr;
+  }
+
+  class RestrikeRecommendation {
+    !ordered ref ATO#rr ato;
+    !ordered ref TargetNomination[1]#rr tn;
+  }
+
+  class TargetNomination {
+    !ordered ref ATO[*]#tn ato;
+    !ordered ref MunitionsEffectsAssesment[*]#tn mea;
+    !ordered ref RestrikeRecommendation#tn rr;
+    !ordered ref Target[1]#tn target;
+  }
+
+  class TargetMaterialsAnalysis {
+    !unique !ordered attr String[1] targetID;
+    !ordered ref Target[1]#describes target;
+  }
+
+  class Target {
+    !ordered ref CollectionRequirement[*]#isContainedIn cr;
+    !ordered ref TargetNomination#target tn;
+    !ordered ref MIDB#target holds;
+    !ordered ref TargetMaterialsAnalysis[*]#target describes;
+  }
+
+  class MIDB {
+    !ordered ref Target[*]#holds target;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+}
+

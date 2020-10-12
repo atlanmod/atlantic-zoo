@@ -1,0 +1,215 @@
+package Maude{
+
+	class MaudeSpec {
+		reference els [*] ordered container : MaudeTopEl;
+		-- For TCS, not to print, e.g., predefined modules
+		reference printableEls [*] ordered : MaudeTopEl ;
+	}
+
+	abstract class MaudeTopEl {
+		attribute name : String;		
+	}
+
+	abstract class ModExpression{
+	}
+	
+	class InstModExp extends ModExpression{
+		reference modExp container : ModExpression;
+		reference views [1-*] ordered : View;
+	}
+	
+	class RenModExp extends ModExpression{
+		reference modExp container : ModExpression;
+		reference renamings [1-*] container : RenMapping;
+	}
+	
+	class CompModExp extends ModExpression{
+		reference modExps [2-*] container : ModExpression;
+	}
+	
+	class ModuleIdModExp extends ModExpression{
+		reference module : Module;
+	}
+	
+	class TheoryIdModExp extends ModExpression{
+		reference theory : Theory;
+	}
+	
+	class Parameter extends ModExpression{
+		attribute label : String;
+		reference modExp container : ModExpression;
+	}
+	
+	abstract class Theory extends MaudeTopEl{
+		reference els [0-*] container : ModElement oppositeOf theory;
+	}
+
+	class FTheory extends Theory{
+	}
+	
+	class STheory extends Theory{	
+	}
+	
+	abstract class Module extends MaudeTopEl{
+		reference els [0-*] container : ModElement oppositeOf module;
+		reference params [0-*] ordered container : Parameter;
+	}
+
+	class FModule extends Module{
+	}
+	
+	class SModule extends Module{	
+	}
+	
+	abstract class ModElement {
+		reference module [0-1] : Module oppositeOf els;
+		reference theory [0-1] : Theory oppositeOf els;
+	}
+	
+	class ModImportation extends ModElement{
+		reference imports container : ModExpression;
+		attribute mode :  ImportationMode;
+	}
+	
+	enumeration ImportationMode {
+		literal protecting;
+		literal including;
+		literal extending;
+	}
+
+	abstract class Type{
+		attribute name : String;
+	}
+	
+	class Sort extends Type, ModElement {
+		reference subsortRels [0-*] : SubsortRel oppositeOf supersorts ;
+		reference supersortRels [0-*] : SubsortRel oppositeOf subsorts ;
+		reference kind : Kind oppositeOf sorts ;
+	}
+	
+	class Kind extends Type {	
+		reference sorts [1-*] : Sort oppositeOf kind ;
+	}
+	
+	class SubsortRel extends ModElement{
+		reference subsorts [1-*] : Sort oppositeOf supersortRels;
+		reference supersorts [1-*] : Sort oppositeOf subsortRels;
+	}
+	
+	class Operation extends ModElement {
+		attribute name : String;
+		reference coarity : Type;  
+		reference arity [0-*] ordered : Type;
+		attribute atts [0-*] : String;
+	}
+	
+	abstract class Statement extends ModElement{
+		attribute label [0-1] : String;
+		attribute atts [0-*] : String;
+		reference conds [0-*] ordered container : Condition;
+	}
+	
+	class Membership extends Statement{
+		reference term container : Term ;
+		reference sort : Sort ;
+	}
+	
+	class Equation extends Statement{
+		reference lhs container : Term ; 
+		reference rhs container : Term ; 
+	}
+	
+	class Rule extends Statement{
+		reference lhs [0-1] container : Term;
+		reference rhs [0-1] container : Term;
+	}
+	
+	abstract class Condition {
+		reference lhs container : Term ;
+	}
+	
+	abstract class EquationalCond extends Condition{
+	}
+	
+	class RewriteCond extends Condition{
+		reference rhs container : Term ;
+	}
+	
+	class MembershipCond extends EquationalCond{
+		reference rhs : Sort ;
+	}
+	
+	class BooleanCond extends EquationalCond{
+	}
+	
+	class MatchingCond extends EquationalCond{
+		reference rhs container : Term ;
+	}
+	
+	class EqualCond extends EquationalCond{
+		reference rhs container : Term ;
+	}
+	
+	abstract class Term {
+		reference type : Type ;
+	}
+	
+	class Constant extends Term{
+		-- named "op" for consistency with RecTerm
+		attribute op : String;
+	}
+
+	class RecTerm extends Term{
+		attribute op : String;
+		reference args [1-*] ordered container : Term; 
+	}
+	
+	--Variable On the fly
+	--Variable declaration are not useful for us due to we can not 
+	-- obtain in a transformation the module an object belongs to
+	-- (we can only obtain where its class is declared)
+	class Variable extends Term{	
+		attribute name : String;
+	}
+
+	class View extends MaudeTopEl{
+		reference from container : ModExpression;
+		reference to container : ModExpression;
+		reference els [0-*] container : ViewMapping;
+	}
+	
+	abstract class ViewMapping{
+	}
+	
+	abstract class RenMapping extends ViewMapping{
+	}
+
+	class TermMapping extends ViewMapping{
+		reference from container : Term;
+		reference to container : Term;
+	}
+
+	class SortMapping extends RenMapping{
+		reference from : Sort;
+		attribute to : String;
+	} 
+	class OpTypedMapping extends RenMapping{
+		reference from : Operation;
+		attribute to : String;
+		attribute atts [*] : String;
+	} 
+	class OpMapping extends RenMapping{
+		reference from : Operation;
+		attribute to : String;
+	} 
+	class LabelMapping extends RenMapping{
+		attribute from : String;
+		attribute to : String;
+	} 
+
+}
+
+package PrimitiveTypes {
+	datatype String;
+	
+}

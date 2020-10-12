@@ -1,0 +1,64 @@
+-- @name 		SEE Design
+-- @domains 	Software engineering environment
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/07/10
+-- @description This metamodel fragment describes a simple software engineering environment
+-- @see 		This metamodel fragment has been extracted from information available in the following article:
+-- @see 		Article "Composing Design Models : An Extension to the UML"
+-- @see 		by Siobhan Clarke
+-- @see 		Page 340, Section 2, Fig. 1. SEE Design in UML
+-- @see 		Lecture Notes in Computer Science 1939
+-- @see 		Andy Evans, Stuart Kent, Bran Selic
+-- @see 		UML 2000 - The Unified Modeling Language
+
+package SEEDesign {
+	class LogFile {
+		attribute file : String;
+		reference instance : LogFile;
+		reference logger : Logger oppositeOf logFile;
+	}
+	
+	class Logger {
+		reference instance : Logger;
+		reference expression : Expression oppositeOf logger;
+		reference logFile : LogFile oppositeOf logger;
+	}
+	
+	class Expression {
+		attribute loggingOn : Boolean;
+		reference logger : Logger oppositeOf expression;
+	}
+	
+	class Literal extends Expression {
+		attribute value : Integer;
+	}
+		
+	class VariableExpression extends Literal {
+		attribute name:  String;
+	}
+	
+	class NumberExpression extends Literal {}
+	
+	class UnaryOperator extends Expression {
+		reference operand container : Expression;
+	}
+	
+	class UnaryPlusOp extends UnaryOperator {}
+	
+	class UnaryMinusOp extends UnaryOperator {}
+	
+	class BinaryOperator extends Expression {
+		reference operand1 container : Expression;
+		reference operand2 container : Expression;
+	}
+	
+	class PlusOperator extends BinaryOperator {}
+	
+	class MinusOperator extends BinaryOperator {}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

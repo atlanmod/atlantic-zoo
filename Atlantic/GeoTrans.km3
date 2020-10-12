@@ -1,0 +1,36 @@
+-- @name		GeoTrans 
+-- @version		1.1
+-- @domains		DataBase
+-- @authors		Peter Rosenthal (peter.rosenthal@univ-nantes.fr)
+-- @date		2005/02/01
+-- @description	This metamodel describes basic geometrical operations (rotate, move, explode) that can be executed in sequence or parallel. The GeoTrans metamodel has an aggregation hierarchy. GeoTransfo can be put in a tree structure through subGeoTransfos and superGeoTransfos. GeoTransfo may have Params (parameters). GeoTransfo represents a geometrical operation. The actual operation is determined from its name attribute. Freeze means that the output of the operation has to be captured. A Param has a name, a Double value param and a back reference to the operation it belongs to.
+-- @see			
+
+package GeoTrans {
+
+	class GeoTransfos {
+		attribute name : String;
+		reference transfos[*] ordered container : GeoTransfo;
+	}
+	
+	class GeoTransfo {
+		attribute name : String;
+		attribute freeze : Boolean;
+		reference subGeoTransfos[*] ordered container : GeoTransfo oppositeOf superGeoTransfo;		
+		reference superGeoTransfo : GeoTransfo oppositeOf subGeoTransfos;
+		reference params[*] ordered container : Param oppositeOf geoTransfo;
+	}
+	
+	class Param {
+		attribute name : String;
+		attribute param : Double;
+		reference geoTransfo : GeoTransfo oppositeOf params;
+	}	
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Double;
+	datatype Integer;
+	datatype String;
+}

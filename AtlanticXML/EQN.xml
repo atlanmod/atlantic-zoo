@@ -1,0 +1,40 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'EQN'>
+    <Class name = 'RoutingChain' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'queuingNetwork' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'EQN::QueuingNetwork' opposite = 'EQN::QueuingNetwork::workLoad'/>
+    </Class>
+    <Class name = 'QueuingNetwork' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'center' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'EQN::Center' opposite = 'EQN::Center::queuingNetwork'/>
+      <Reference name = 'workLoad' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'EQN::RoutingChain' opposite = 'EQN::RoutingChain::queuingNetwork'/>
+    </Class>
+    <Class name = 'ExecutionGraph' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'nodeNested' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'EQN::Node' opposite = 'EQN::Node::nested'/>
+      <Reference name = 'node' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'EQN::Node' opposite = 'EQN::Node::executionGraph'/>
+    </Class>
+    <Class name = 'Center' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'node' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'EQN::Node' opposite = 'EQN::Node::demand'/>
+      <Reference name = 'queuingNetwork' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'EQN::QueuingNetwork' opposite = 'EQN::QueuingNetwork::center'/>
+    </Class>
+    <Class name = 'Node' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'nested' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'EQN::ExecutionGraph' opposite = 'EQN::ExecutionGraph::nodeNested'/>
+      <Reference name = 'executionGraph' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'EQN::ExecutionGraph' opposite = 'EQN::ExecutionGraph::node'/>
+      <Reference name = 'demand' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'EQN::Center' opposite = 'EQN::Center::node'/>
+    </Class>
+    <Class name = 'Special' isAbstract = 'false' supertypes = 'EQN::Center'/>
+    <Class name = 'ActiveCenter' isAbstract = 'false' supertypes = 'EQN::Center'/>
+    <Class name = 'PassiveCenter' isAbstract = 'false' supertypes = 'EQN::Center'/>
+    <Class name = 'Source' isAbstract = 'false' supertypes = 'EQN::Special'/>
+    <Class name = 'Sink' isAbstract = 'false' supertypes = 'EQN::Special'/>
+    <Class name = 'Fork' isAbstract = 'false' supertypes = 'EQN::Special'/>
+    <Class name = 'Join' isAbstract = 'false' supertypes = 'EQN::Special'/>
+    <Class name = 'Split' isAbstract = 'false' supertypes = 'EQN::Special'/>
+    <Class name = 'Allocate' isAbstract = 'false' supertypes = 'EQN::Special'/>
+    <Class name = 'Release' isAbstract = 'false' supertypes = 'EQN::Special'/>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+  </Package>
+</Metamodel>

@@ -1,0 +1,84 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_SPEM"{
+labelloc=t
+color=black
+label=SPEM
+ node[shape=record];
+ArtifactUsageName[label="{ArtifactUsageName|isInput : Boolean\nisOutput : Boolean\nhasWorkPerArtifact : Boolean| }"]
+ ArtifactUsageName->ArtifactKind[arrowhead=none,arrowtail=none,headlabel="artifactKind",taillabel="artifactUsageNames[*]",group=ArtifactKind,minlen=2,constraint=false,]
+ ArtifactUsageName->WorkDefinition[arrowhead=diamond,arrowtail=none,headlabel="workDefinition",taillabel="artifactUsageNames[*]",group=WorkDefinition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ProcessDefinitionElement[label="{ProcessDefinitionElement| | }"]
+ ProcessDefinitionElement->Guidance[arrowhead=none,arrowtail=none,headlabel="guidances[*]",taillabel="processDefinitionElements[1-*]",group=Guidance,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Guidance[label="{Guidance| | }"]
+ Guidance->ProcessDefinitionElement[arrowhead=onormal,group=ProcessDefinitionElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ArtifactKind[label="{ArtifactKind| | }"]
+ ArtifactKind->RoleKind[arrowhead=none,arrowtail=none,headlabel="responsible[0-1]",taillabel="artifactKinds[*]",group=RoleKind,minlen=2,constraint=false,]
+ ArtifactKind->ProcessDefinitionElement[arrowhead=onormal,group=ProcessDefinitionElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+WorkItem[label="{WorkItem| | }"]
+ WorkItem->ProcessDefinitionElement[arrowhead=onormal,group=ProcessDefinitionElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+RoleKind[label="{RoleKind| | }"]
+ RoleKind->ProcessDefinitionElement[arrowhead=onormal,group=ProcessDefinitionElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Condition[label="{Condition| | }"]
+ Condition->ProcessDefinitionElement[arrowhead=onormal,group=ProcessDefinitionElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ProcessComponent[label="{ProcessComponent| | }"]
+ ProcessComponent->ProcessDefinitionElement[arrowhead=none,arrowtail=none,headlabel="processDefinitionElements[*]",taillabel="processComponents[*]",group=ProcessDefinitionElement,minlen=2,constraint=false,]
+ ProcessComponent->ProcessDefinitionElement[arrowhead=onormal,group=ProcessDefinitionElement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Goal[label="{Goal| | }"]
+ Goal->WorkDefinition[arrowhead=diamond,arrowtail=none,headlabel="workDefinition",taillabel="goal[0-1]",group=WorkDefinition,minlen=2,constraint=true,]
+ Goal->Condition[arrowhead=onormal,group=Condition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Precondition[label="{Precondition| | }"]
+ Precondition->WorkDefinition[arrowhead=diamond,arrowtail=none,headlabel="workDefinition",taillabel="precondition[0-1]",group=WorkDefinition,minlen=2,constraint=true,]
+ Precondition->Condition[arrowhead=onormal,group=Condition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+WorkDefinition[label="{WorkDefinition| | }"]
+ WorkDefinition->WorkItem[arrowhead=onormal,group=WorkItem,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActivityKind[label="{ActivityKind| | }"]
+ ActivityKind->RoleKind[arrowhead=vee,arrowtail=none,headlabel="performer[1-*]",group=RoleKind,minlen=2,constraint=false,]
+ ActivityKind->RoleKind[arrowhead=vee,arrowtail=none,headlabel="assistant[*]",group=RoleKind,minlen=2,constraint=false,]
+ ActivityKind->WorkDefinition[arrowhead=onormal,group=WorkDefinition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Iteration[label="{Iteration| | }"]
+ Iteration->WorkDefinition[arrowhead=onormal,group=WorkDefinition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Phase[label="{Phase| | }"]
+ Phase->WorkDefinition[arrowhead=onormal,group=WorkDefinition,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Lifecycle[label="{Lifecycle| | }"]
+ Lifecycle->WorkDefinition[arrowhead=onormal,group=WorkDefinition,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+
+}
+}

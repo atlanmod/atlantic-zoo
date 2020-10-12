@@ -1,0 +1,39 @@
+package Metamodel;
+
+package RelationalDBSchema {
+  abstract class NamedElement {
+    !unique !ordered attr String[1] name;
+  }
+
+  class DataBase extends NamedElement {
+    !unique !ordered attr String[1] SGBDname;
+    !ordered val Table[*]#database tables;
+  }
+
+  class Table extends NamedElement {
+    !ordered ref DataBase[1]#tables database;
+    val Column[*]#owner columns;
+    !ordered ref Column[*]#keyOf key;
+  }
+
+  class Column extends NamedElement {
+    !unique !ordered attr String[1] dataType;
+    !unique !ordered attr Boolean[1] null;
+    !unique !ordered attr String defaultValue;
+    !ordered ref Table[1]#columns owner;
+    !ordered ref Table#key keyOf;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

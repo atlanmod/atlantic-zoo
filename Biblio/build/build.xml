@@ -1,0 +1,158 @@
+<!--
+ How to configure this ant script:
+	Run as->Ant Build...
+		Set:
+			- Run in same JRE
+			- ant contrib jar
+-->
+<project name="BiblioZoo" default="BiblioZoo">
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml"/>
+	
+	<!-- Execute ATL Transformation from BQL Querys -->
+	<target name="BiblioZoo" depends="createBibtexModel">
+		<for param="e">
+			<path>
+				<fileset dir="Querys/ATL/" includes="*.atl"/>
+			</path>
+			<sequential>
+			<!-- executes the transformations -->
+				<antcall target="transformOne" inheritall="true" inheritrefs="true">
+					<param name="atlsample" value="@{e}"/>
+				</antcall>
+			</sequential>
+		</for>
+		<for param="e">
+			<path>
+				<fileset dir="Querys/ATL/" includes="*.atl"/>
+			</path>
+			<sequential>
+				<delete file="@{e}" />
+			</sequential>
+		</for>
+		<for param="e">
+			<path>
+				<fileset dir="Querys/BQL/" includes="*.ecore"/>
+			</path>
+			<sequential>
+				<delete file="@{e}" />
+			</sequential>
+		</for>
+	</target>
+	
+	<target name="transformOne">
+		<echo message="execute transformation ${atlsample}"/>
+		<basename property="atlname" file="${atlsample}" suffix=".atl"/>		
+		 <property name="transfo" value="/org.eclipse.am3.zoos.biblio/build/Querys/ATL/${atlname}.atl"/>
+				
+		<am3.atl path="${transfo}">
+			<inModel name="IN" model="biblioModel"/>
+			<inModel name="BIBTEXML" model="BIBTEXML"/>
+			<inModel name="BIBTEXML" model="BIBTEXML"/>
+			<outModel name="OUT" model="output" metamodel="BIBTEXML"/>
+		</am3.atl>	
+		<am3.saveModel model="output" path="/org.eclipse.am3.zoos.biblio/${atlname}.ecore"/>
+	</target>
+	
+	<!-- Transform BQL into ATL -->
+	<target name="createATL" depends="injectAll">
+		<for param="e">
+			<path>
+				<fileset dir="Querys/BQL/" includes="*.ecore"/>
+			</path>
+			<sequential>
+				<antcall target="createATLOne" inheritall="true" inheritrefs="true">
+					<param name="bqlSample" value="@{e}"/>
+				</antcall>
+			</sequential>
+		</for>		
+	</target>
+		
+	<target name="createATLOne">
+		<basename property="name" file="${bqlSample}" suffix=".ecore"/>
+		<property name="source" value="/org.eclipse.am3.zoos.biblio/build/Querys/BQL/${name}.ecore"/>
+		<property name="target" value="/org.eclipse.am3.zoos.biblio/build/Querys/ATL/${name}.atl"/>
+
+		<am3.loadModel modelHandler="EMF" name="BQLModel" metamodel="BQL" path="${source}"/>
+		
+		<am3.atl path="/org.eclipse.am3.zoos.biblio/build/BQL2ATL.asm">
+			<inModel name="IN" model="BQLModel"/>
+			<inModel name="BQL" model="BQL"/>
+			<inModel name="ATL" model="ATL"/>
+			<outModel name="OUT" model="targetModel" metamodel="ATL"/>
+		</am3.atl>
+
+		<am3.saveModel model="targetModel" path="${target}">
+			<extractor name="ebnf">
+				<param name="format" value="ATL.tcs"/>
+			</extractor>
+		</am3.saveModel>
+	</target>
+				
+	<!-- inject all bql files into BQL models-->
+	<target name="injectAll" depends="loadModels">
+		<for param="e">
+		  <path>
+		    <fileset dir="Querys/BQL/" includes="*.bql"/>		    
+		  </path>
+		  <sequential>
+			<antcall target="injector" inheritall="true" inheritrefs="true">
+				<param name="sample" value="@{e}"/>
+			</antcall>
+		  </sequential>
+		</for>
+	</target>
+	
+	<target name="injector" >
+		<basename property="bqlname" file="${sample}" suffix=".bql"/>
+		<property name="bqlSource" value="/org.eclipse.am3.zoos.biblio/build/Querys/BQL/${bqlname}.bql"/>
+		<property name="bqlTarget" value="/org.eclipse.am3.zoos.biblio/build/Querys/BQL/${bqlname}.ecore"/>
+
+		<am3.loadModel name="bqlSourceModel" metamodel="BQL" path="${bqlSource}">
+			<injector name="ebnf">
+				<param name="name" value="BQL"/>
+					<classpath>
+						<pathelement location="BQL-importer.jar"/>
+					</classpath>
+			</injector>
+		</am3.loadModel>
+		<am3.saveModel model="bqlSourceModel" path="${bqlTarget}"/>
+	</target>
+
+	<!-- Inject Bibtex and execute BIBTEX2BIBTEXML Transformation -->			
+	<target name="createBibtexModel" depends="createATL">
+		<property name="bibSource" value="/org.eclipse.am3.zoos.biblio/build/BIBFile/biblio-GDD.bib"/>
+		<basename property="name" file="${bibSource}" suffix=".bib"/>
+
+		<am3.loadModel name="bibSourceModel" metamodel="BIBTEX" path="${bibSource}">
+			<injector name="ebnf">
+				<param name="name" value="BIBTEX"/>
+					<classpath>
+						<pathelement location="BIBTEX-importer.jar"/>
+					</classpath>
+			</injector>
+		</am3.loadModel>
+
+		<am3.atl path="/org.eclipse.am3.zoos.biblio/build/BIBTEX2BIBTEXML.asm">
+			<inModel name="IN" model="bibSourceModel"/>
+			<inModel name="BIBTEX" model="BIBTEX"/>
+			<inModel name="BIBTEXML" model="BIBTEXML"/>
+			<outModel name="OUT" model="biblioModel" metamodel="BIBTEXML"/>
+		</am3.atl>
+	</target>
+	
+	<!-- load Metamodels -->
+	<target name="loadModels">
+		<am3.loadModel modelHandler="EMF" name="BQL" metamodel="MOF" path="/org.eclipse.am3.zoos.biblio/build/Metamodels/BQL.ecore"/>
+		<am3.loadModel modelHandler="EMF" name="ATL" metamodel="MOF" nsUri="http://www.eclipse.org/gmt/2005/ATL"/>
+		<am3.loadModel modelHandler="EMF" name="TCS" metamodel="MOF" path="/org.eclipse.am3.zoos.biblio/build/Metamodels/TCS.ecore"/>
+		<am3.loadModel modelHandler="EMF" name="BIBTEXML" metamodel="MOF" path="/org.eclipse.am3.zoos.biblio/build/Metamodels/BIBTEXML.ecore"/>
+		<am3.loadModel modelHandler="EMF" name="BIBTEX" metamodel="MOF" path="/org.eclipse.am3.zoos.biblio/build/Metamodels/BIBTEX.ecore"/>
+		<am3.loadModel modelHandler="EMF" name="ATL.tcs" metamodel="TCS" path="/org.eclipse.am3.zoos.biblio/build/ATL.tcs">
+			<injector name="ebnf">
+				<param name="name" value="TCS"/>
+			</injector>
+		</am3.loadModel>	
+	</target>
+		
+</project>

@@ -1,0 +1,72 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'KDMSimplified'>
+    <Class name = 'Element' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'annotation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'KDMSimplified::Annotation' opposite = ''/>
+      <Reference name = 'attribute' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'KDMSimplified::Attribute' opposite = ''/>
+    </Class>
+    <Class name = 'ModelElement' isAbstract = 'true' supertypes = 'KDMSimplified::Element'>
+      <Reference name = 'taggedValue' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'KDMSimplified::TaggedValue' opposite = ''/>
+      <Reference name = 'stereotype' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'KDMSimplified::Stereotype' opposite = 'KDMSimplified::Stereotype::extendedElement'/>
+    </Class>
+    <Class name = 'KDMEntity' isAbstract = 'true' supertypes = 'KDMSimplified::ModelElement'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'inbound' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'KDMSimplified::KDMRelationship' opposite = 'KDMSimplified::KDMRelationship::to'/>
+      <Reference name = 'outbound' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'KDMSimplified::KDMRelationship' opposite = 'KDMSimplified::KDMRelationship::from'/>
+      <Reference name = 'owner' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'KDMSimplified::KDMContainer' opposite = 'KDMSimplified::KDMContainer::ownedElement'/>
+      <Reference name = 'group' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'KDMSimplified::KDMGroup' opposite = 'KDMSimplified::KDMGroup::groupedElement'/>
+      <Reference name = 'model' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'KDMSimplified::KDMModel' opposite = 'KDMSimplified::KDMModel::ownedElement'/>
+    </Class>
+    <Class name = 'KDMContainer' isAbstract = 'true' supertypes = 'KDMSimplified::KDMEntity'>
+      <Reference name = 'ownedElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'KDMSimplified::KDMEntity' opposite = 'KDMSimplified::KDMEntity::owner'/>
+    </Class>
+    <Class name = 'KDMGroup' isAbstract = 'true' supertypes = 'KDMSimplified::KDMEntity'>
+      <Reference name = 'groupedElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'KDMSimplified::KDMEntity' opposite = 'KDMSimplified::KDMEntity::group'/>
+    </Class>
+    <Class name = 'KDMRelationship' isAbstract = 'true' supertypes = 'KDMSimplified::ModelElement'>
+      <Reference name = 'to' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'KDMSimplified::KDMEntity' opposite = 'KDMSimplified::KDMEntity::inbound'/>
+      <Reference name = 'from' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'KDMSimplified::KDMEntity' opposite = 'KDMSimplified::KDMEntity::outbound'/>
+      <Reference name = 'model' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'KDMSimplified::KDMModel' opposite = 'KDMSimplified::KDMModel::ownedRelation'/>
+    </Class>
+    <Class name = 'Annotation' isAbstract = 'false' supertypes = 'KDMSimplified::Element'>
+      <Attribute name = 'note' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Attribute' isAbstract = 'false' supertypes = 'KDMSimplified::Element'>
+      <Attribute name = 'tag' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'KDMExtensionFamily' isAbstract = 'false' supertypes = 'KDMSimplified::Element'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'stereotype' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'KDMSimplified::Stereotype' opposite = 'KDMSimplified::Stereotype::family'/>
+    </Class>
+    <Class name = 'Stereotype' isAbstract = 'false' supertypes = 'KDMSimplified::Element'>
+      <Attribute name = 'baseClass' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'family' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'KDMSimplified::KDMExtensionFamily' opposite = 'KDMSimplified::KDMExtensionFamily::stereotype'/>
+      <Reference name = 'extendedElement' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'KDMSimplified::ModelElement' opposite = 'KDMSimplified::ModelElement::stereotype'/>
+      <Reference name = 'tag' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'KDMSimplified::TagDefinition' opposite = ''/>
+    </Class>
+    <Class name = 'TagDefinition' isAbstract = 'false' supertypes = 'KDMSimplified::Element'>
+      <Attribute name = 'tag' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'type' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'TaggedValue' isAbstract = 'false' supertypes = 'KDMSimplified::Element'>
+      <Attribute name = 'value' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'tag' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'KDMSimplified::TagDefinition' opposite = ''/>
+    </Class>
+    <Class name = 'KDMFramework' isAbstract = 'true' supertypes = 'KDMSimplified::Element'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'extension' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'KDMSimplified::KDMExtensionFamily' opposite = ''/>
+    </Class>
+    <Class name = 'KDMModel' isAbstract = 'true' supertypes = 'KDMSimplified::KDMFramework'>
+      <Reference name = 'ownedElement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'KDMSimplified::KDMEntity' opposite = 'KDMSimplified::KDMEntity::model'/>
+      <Reference name = 'ownedRelation' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'KDMSimplified::KDMRelationship' opposite = 'KDMSimplified::KDMRelationship::model'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Double'/>
+  </Package>
+</Metamodel>

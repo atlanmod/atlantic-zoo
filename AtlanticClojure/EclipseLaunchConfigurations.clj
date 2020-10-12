@@ -1,0 +1,8 @@
+( defstruct LaunchConfiguration :type )
+( defstruct Attribute :key )
+( defstruct StringAttribute :value :key )
+( defstruct BooleanAttribute :value :key )
+( defstruct MapAttribute :key )
+( defstruct MapEntry :mapAttribute :value :key )
+( defstruct ListAttribute :key )
+( defstruct ListEntry :listAttribute :value )

@@ -1,0 +1,121 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'ODPCV'>
+    <Class name = 'EnvironmentContract' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'ec_to_a' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::Action' opposite = 'ODPCV::Action::constrainer_ec'/>
+      <Reference name = 'specifier_ec' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::ComputationalTemplate' opposite = 'ODPCV::ComputationalTemplate::ct_to_ec'/>
+    </Class>
+    <Class name = 'ComputationalTemplate' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'ct_to_ec' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::EnvironmentContract' opposite = 'ODPCV::EnvironmentContract::specifier_ec'/>
+      <Reference name = 'ct_to_bh' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::Behaviour' opposite = 'ODPCV::Behaviour::specifier_bh'/>
+    </Class>
+    <Class name = 'ComputationalObject' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'co_to_i' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::Interface' opposite = 'ODPCV::Interface::owner_i'/>
+      <Reference name = 'co_to_bh' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::Behaviour' opposite = 'ODPCV::Behaviour::owner_bh'/>
+      <Reference name = 'specifier_co' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::ComputationalObjectTemplate' opposite = 'ODPCV::ComputationalObjectTemplate::cot_to_co'/>
+      <Reference name = 'co_to_st' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ODPCV::State' opposite = 'ODPCV::State::st_to_co'/>
+    </Class>
+    <Class name = 'BindingObject' isAbstract = 'false' supertypes = 'ODPCV::ComputationalObject'/>
+    <Class name = 'ComputationalObjectTemplate' isAbstract = 'false' supertypes = 'ODPCV::ComputationalTemplate'>
+      <Reference name = 'cot_to_co' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::ComputationalObject' opposite = 'ODPCV::ComputationalObject::specifier_co'/>
+      <Reference name = 'part_provide' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::ComputationalInterfaceTemplate' opposite = 'ODPCV::ComputationalInterfaceTemplate::aggregate_provide'/>
+      <Reference name = 'part_request' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::ComputationalInterfaceTemplate' opposite = 'ODPCV::ComputationalInterfaceTemplate::aggregate_request'/>
+    </Class>
+    <Class name = 'ComputationalInterfaceTemplate' isAbstract = 'false' supertypes = 'ODPCV::ComputationalTemplate'>
+      <Reference name = 'cit_to_i' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::Interface' opposite = 'ODPCV::Interface::specifier_i'/>
+      <Reference name = 'aggregate_provide' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::ComputationalObjectTemplate' opposite = 'ODPCV::ComputationalObjectTemplate::part_provide'/>
+      <Reference name = 'aggregate_request' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::ComputationalObjectTemplate' opposite = 'ODPCV::ComputationalObjectTemplate::part_request'/>
+      <Reference name = 'cit_to_intsig' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ODPCV::InterfaceSignature' opposite = 'ODPCV::InterfaceSignature::intsig_to_cit'/>
+    </Class>
+    <Class name = 'Interface' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'owner_i' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::ComputationalObject' opposite = 'ODPCV::ComputationalObject::co_to_i'/>
+      <Reference name = 'i_to_bd' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::Binding' opposite = 'ODPCV::Binding::bd_to_i'/>
+      <Reference name = 'specifier_i' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::ComputationalInterfaceTemplate' opposite = 'ODPCV::ComputationalInterfaceTemplate::cit_to_i'/>
+      <Reference name = 'i_to_ina' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'ODPCV::Interaction' opposite = 'ODPCV::Interaction::ina_to_i'/>
+    </Class>
+    <Class name = 'Binding' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'bd_to_i' lower = '2' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::Interface' opposite = 'ODPCV::Interface::i_to_bd'/>
+    </Class>
+    <Class name = 'SignalInterface' isAbstract = 'false' supertypes = 'ODPCV::Interface'/>
+    <Class name = 'OperationInterface' isAbstract = 'false' supertypes = 'ODPCV::Interface'/>
+    <Class name = 'StreamInterface' isAbstract = 'false' supertypes = 'ODPCV::Interface'/>
+    <Class name = 'InterfaceSignature' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'intsig_to_cit' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::ComputationalInterfaceTemplate' opposite = 'ODPCV::ComputationalInterfaceTemplate::cit_to_intsig'/>
+    </Class>
+    <Class name = 'SignalInterfaceSignature' isAbstract = 'false' supertypes = 'ODPCV::InterfaceSignature'>
+      <Reference name = 'sgisig_to_ssig' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ODPCV::SignalSignature' opposite = 'ODPCV::SignalSignature::ssig_to_sgisig'/>
+    </Class>
+    <Class name = 'OperationInterfaceSignature' isAbstract = 'false' supertypes = 'ODPCV::InterfaceSignature'>
+      <Reference name = 'optisig_to_ansig' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ODPCV::AnnouncementSignature' opposite = 'ODPCV::AnnouncementSignature::ansig_to_optisig'/>
+      <Reference name = 'optisig_to_intsig' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ODPCV::InterrogationSignature' opposite = 'ODPCV::InterrogationSignature::intsig_to_optisig'/>
+    </Class>
+    <Class name = 'StreamInterfaceSignature' isAbstract = 'false' supertypes = 'ODPCV::InterfaceSignature'>
+      <Reference name = 'strisig_to_fsig' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ODPCV::FlowSignature' opposite = 'ODPCV::FlowSignature::fsig_to_strisig'/>
+    </Class>
+    <Class name = 'InteractionSignature' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'isig_to_at' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::ActionTemplate' opposite = 'ODPCV::ActionTemplate::at_to_isig'/>
+      <Reference name = 'isig_to_param' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ODPCV::Parameter' opposite = 'ODPCV::Parameter::param_to_isig'/>
+    </Class>
+    <Class name = 'Parameter' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'param_to_isig' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::InteractionSignature' opposite = 'ODPCV::InteractionSignature::isig_to_param'/>
+    </Class>
+    <Class name = 'AnnouncementSignature' isAbstract = 'false' supertypes = 'ODPCV::InteractionSignature'>
+      <Reference name = 'ansig_to_optisig' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::OperationInterfaceSignature' opposite = 'ODPCV::OperationInterfaceSignature::optisig_to_ansig'/>
+    </Class>
+    <Class name = 'InterrogationSignature' isAbstract = 'false' supertypes = 'ODPCV::InteractionSignature'>
+      <Reference name = 'intsig_to_optisig' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::OperationInterfaceSignature' opposite = 'ODPCV::OperationInterfaceSignature::optisig_to_intsig'/>
+      <Reference name = 'intsig_to_tersig' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ODPCV::TerminationSignature' opposite = 'ODPCV::TerminationSignature::tersig_to_intsig'/>
+    </Class>
+    <Class name = 'TerminationSignature' isAbstract = 'false' supertypes = 'ODPCV::InteractionSignature'>
+      <Reference name = 'tersig_to_intsig' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::InterrogationSignature' opposite = 'ODPCV::InterrogationSignature::intsig_to_tersig'/>
+    </Class>
+    <Class name = 'SignalSignature' isAbstract = 'false' supertypes = 'ODPCV::InteractionSignature'>
+      <Reference name = 'ssig_to_sgisig' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::SignalInterfaceSignature' opposite = 'ODPCV::SignalInterfaceSignature::sgisig_to_ssig'/>
+    </Class>
+    <Class name = 'FlowSignature' isAbstract = 'false' supertypes = 'ODPCV::InteractionSignature'>
+      <Reference name = 'fsig_to_strisig' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::StreamInterfaceSignature' opposite = 'ODPCV::StreamInterfaceSignature::strisig_to_fsig'/>
+    </Class>
+    <Class name = 'ActionTemplate' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'at_to_a' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::Action' opposite = 'ODPCV::Action::specifier_a'/>
+      <Reference name = 'at_to_isig' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ODPCV::InteractionSignature' opposite = 'ODPCV::InteractionSignature::isig_to_at'/>
+    </Class>
+    <Class name = 'Behaviour' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'specifier_bh' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::ComputationalTemplate' opposite = 'ODPCV::ComputationalTemplate::ct_to_bh'/>
+      <Reference name = 'owner_bh' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::ComputationalObject' opposite = 'ODPCV::ComputationalObject::co_to_bh'/>
+      <Reference name = 'bh_to_a' lower = '1' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'ODPCV::Action' opposite = 'ODPCV::Action::a_to_bh'/>
+    </Class>
+    <Class name = 'Action' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'constrainer_ec' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::EnvironmentContract' opposite = 'ODPCV::EnvironmentContract::ec_to_a'/>
+      <Reference name = 'changedState' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::State' opposite = 'ODPCV::State::changer'/>
+      <Reference name = 'specifier_a' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::ActionTemplate' opposite = 'ODPCV::ActionTemplate::at_to_a'/>
+      <Reference name = 'a_to_bh' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::Behaviour' opposite = 'ODPCV::Behaviour::bh_to_a'/>
+    </Class>
+    <Class name = 'State' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'startState' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::State' opposite = 'ODPCV::State::endState'/>
+      <Reference name = 'endState' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::State' opposite = 'ODPCV::State::startState'/>
+      <Reference name = 'changer' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::Action' opposite = 'ODPCV::Action::changedState'/>
+      <Reference name = 'st_to_co' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::ComputationalObject' opposite = 'ODPCV::ComputationalObject::co_to_st'/>
+    </Class>
+    <Class name = 'InternalAction' isAbstract = 'false' supertypes = 'ODPCV::Action'/>
+    <Class name = 'Interaction' isAbstract = 'true' supertypes = 'ODPCV::Action'>
+      <Reference name = 'ina_to_i' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::Interface' opposite = 'ODPCV::Interface::i_to_ina'/>
+    </Class>
+    <Class name = 'Flow' isAbstract = 'false' supertypes = 'ODPCV::Interaction'/>
+    <Class name = 'Signal' isAbstract = 'false' supertypes = 'ODPCV::Interaction'/>
+    <Class name = 'Operation' isAbstract = 'true' supertypes = 'ODPCV::Interaction'>
+      <Reference name = 'opt_to_inv' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'ODPCV::Invocation' opposite = 'ODPCV::Invocation::inv_to_opt'/>
+    </Class>
+    <Class name = 'Announcement' isAbstract = 'false' supertypes = 'ODPCV::Operation'/>
+    <Class name = 'Interrogation' isAbstract = 'false' supertypes = 'ODPCV::Operation'>
+      <Reference name = 'int_to_ter' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::Termination' opposite = 'ODPCV::Termination::owner_ter'/>
+    </Class>
+    <Class name = 'Invocation' isAbstract = 'false' supertypes = 'ODPCV::Interaction'>
+      <Reference name = 'inv_to_ter' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::Termination' opposite = 'ODPCV::Termination::ter_to_inv'/>
+      <Reference name = 'inv_to_opt' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::Operation' opposite = 'ODPCV::Operation::opt_to_inv'/>
+    </Class>
+    <Class name = 'Termination' isAbstract = 'false' supertypes = 'ODPCV::Interaction'>
+      <Reference name = 'owner_ter' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::Interrogation' opposite = 'ODPCV::Interrogation::int_to_ter'/>
+      <Reference name = 'ter_to_inv' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'ODPCV::Invocation' opposite = 'ODPCV::Invocation::inv_to_ter'/>
+    </Class>
+  </Package>
+</Metamodel>

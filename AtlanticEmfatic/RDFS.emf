@@ -1,0 +1,118 @@
+package Metamodel;
+
+package RDFS {
+  class Resource {
+    !ordered ref Graph[1]#resources graph;
+    !ordered val URIReference[*]#resource uriRef;
+    !ordered ref Statement[*]#subject subjectStatement;
+    !ordered ref Statement[*]#object objectStatement;
+    !ordered val PlainLiteral[*]#labeledResource label;
+    !ordered ref Class[+]#typedResource type;
+    !ordered ref Resource[*]#referringResource seeAlso;
+    !ordered ref Resource[*]#seeAlso referringResource;
+    !ordered ref Resource[*]#container member;
+    !ordered ref Resource[*]#member container;
+    !ordered ref List[*]#first list;
+  }
+
+  class Graph extends Resource {
+    !ordered val URIReference#namedGraph graphName;
+    !ordered val Resource[*]#graph resources;
+  }
+
+  class List extends Resource {
+    !ordered ref Resource#list first;
+    !ordered ref List#originalList rest;
+    !ordered ref List[*]#rest originalList;
+  }
+
+  class Container extends Resource {
+  }
+
+  class Alt extends Container {
+  }
+
+  class Bag extends Container {
+  }
+
+  class Seq extends Container {
+  }
+
+  class Property extends Resource {
+    !ordered ref Statement[*]#predicate predicateStatement;
+    !ordered ref Property[*]#superProperty subPropertyOf;
+    !ordered ref Property[*]#subPropertyOf superProperty;
+    !ordered ref Class[*]#propertyForDomain domain;
+    !ordered ref Class[*]#propertyForRange range;
+  }
+
+  class ContainerMembershipProperty {
+  }
+
+  class Statement extends Resource {
+    !ordered ref Property#predicateStatement predicate;
+    !ordered ref Resource[1]#objectStatement object;
+    !ordered ref Resource[1]#subjectStatement subject;
+    !unique !ordered attr Boolean[1] isReifiedOnly;
+    !unique !ordered attr Boolean[1] isReified;
+    !ordered ref URIReference[*]#reifiedStatement nameForReification;
+  }
+
+  class URIReferenceNode extends Resource {
+  }
+
+  class BlankNode extends Resource {
+    !unique !ordered attr String nodeId;
+  }
+
+  class Class extends Resource {
+    !ordered ref Class[*]#superClass subClassOf;
+    !ordered ref Class[*]#subClassOf superClass;
+    !ordered ref Resource[*]#type typedResource;
+    !ordered ref Property[*]#domain propertyForDomain;
+    !ordered ref Property[*]#range propertyForRange;
+  }
+
+  class Datatype extends Class {
+  }
+
+  class Literal extends Resource {
+    !unique !ordered attr String[1] lexicalForm;
+  }
+
+  class PlainLiteral extends Literal {
+    !unique !ordered attr String language;
+    !ordered ref Resource[1]#label labeledResource;
+  }
+
+  class TypedLiteral extends Literal {
+    !ordered ref URIReference[1]#literal datatypeURI;
+  }
+
+  class RDFXMLLiteral extends TypedLiteral {
+  }
+
+  class URIReference {
+    !ordered ref UniformResourceIdentifier#uriRef uri;
+    !ordered ref Resource#uriRef resource;
+    !ordered ref TypedLiteral#datatypeURI literal;
+    !ordered ref Graph#graphName namedGraph;
+    !ordered ref Statement[*]#nameForReification reifiedStatement;
+  }
+
+  class UniformResourceIdentifier extends URIReference {
+    !unique !ordered attr String[1] name;
+    !ordered ref URIReference[*]#uri uriRef;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

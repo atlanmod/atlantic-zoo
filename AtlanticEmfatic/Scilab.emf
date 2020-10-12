@@ -1,0 +1,220 @@
+package Metamodel;
+
+package Scilab {
+  class Man {
+    !unique !ordered attr String[1] language;
+    !unique !ordered attr String[1] title;
+    !unique !ordered attr String[1] type;
+    !unique !ordered attr String[1] date;
+    !unique !ordered attr String name;
+    !unique !ordered attr String keyword;
+    !unique !ordered attr String exemple;
+    !ordered val Meta[*]#man meta;
+  }
+
+  class Meta {
+    !unique !ordered attr String[1] meta;
+    !unique !ordered attr String[1] path;
+    !unique !ordered attr String[1] category;
+    !unique !ordered attr String[1] version_CSI;
+    !unique !ordered attr String[1] version_DOC;
+    !unique !ordered attr String[1] author;
+    !ordered ref Man[1]#meta man;
+  }
+
+  class Short_Description extends Biblio {
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[*] verb;
+  }
+
+  class Calling_Sequence {
+    !ordered val Calling_Sequence_Item[*]#calling_Sequence calling_Sequence_Item;
+  }
+
+  class Calling_Sequence_Item {
+    !unique !ordered attr String[*] calling_Sequence_Item;
+    !ordered ref Calling_Sequence[1]#calling_Sequence_Item calling_Sequence;
+  }
+
+  class Param {
+    !unique !ordered attr InOut target;
+    !ordered val Param_Indent[*]#param param_Indent;
+  }
+
+  class Param_Indent {
+    !ordered ref Param[1]#param_Indent param;
+    !ordered ref Param_Description[1]#param_Indent param_Description;
+    !ordered val Param_Item[+]#param_Indent param_Item;
+  }
+
+  class Param_Item {
+    !unique !ordered attr String label;
+    !ordered ref Param_Indent[1]#param_Item param_Indent;
+    !ordered val Param_Name[1]#param_Item param_Name;
+    !ordered val Param_Description[1]#param_Item param_Description;
+  }
+
+  class Param_Name {
+    !unique !ordered attr String[*] verb;
+    !ordered ref Param_Item[1]#param_Name param_Item;
+  }
+
+  class Param_Description extends Used_Functions {
+    !ordered val Param_Indent[*]#param_Description param_Indent;
+    !ordered ref Param_Item[1]#param_Description param_Item;
+  }
+
+  class Description extends Used_Functions {
+    !ordered val Itemize[*]#description itemize;
+    !ordered val Description_Indent[*]#description description_Indent;
+  }
+
+  class Description_Indent {
+    !ordered ref Description[1]#description_Indent description;
+    !ordered val Description_Item[+]#description_Indent description_Item;
+  }
+
+  class Description_Item {
+    !unique !ordered attr String label;
+    !ordered ref Description_Indent[1]#description_Item description_Indent;
+  }
+
+  class AIMG {
+    !unique !ordered attr String[*] verb;
+  }
+
+  class See_Also {
+    !ordered val See_Also_Item[*]#see_Also see_Also_Item;
+  }
+
+  class Exemple {
+    !unique !ordered attr String[1] exemple;
+    !unique !ordered attr PreDef[1] xml_space;
+  }
+
+  class See_Also_Item {
+    !ordered ref See_Also[1]#see_Also_Item see_Also;
+    !ordered val Link[*]#see_Also_Item link;
+  }
+
+  class A extends AIMG {
+    !unique !ordered attr String href;
+    !ordered ref PSPPP[1]#a psppp;
+    !ordered ref Authors_Item[1]#a authors_Item;
+  }
+
+  class Img extends AIMG {
+    !unique !ordered attr String src;
+    !ordered ref PSPPP[1]#img psppp;
+  }
+
+  class Biblio {
+    !ordered val P[*]#biblio p;
+    !ordered val SP[*]#biblio sp;
+    !ordered val PP[*]#biblio pp;
+  }
+
+  class Used_Functions extends Biblio {
+    !unique !ordered attr String[*] verbatim;
+    !ordered val Table[*]#used_Functions table;
+  }
+
+  class PSPPP {
+    !unique !ordered attr String[*] verb;
+    !unique !ordered attr String[*] em;
+    !unique !ordered attr String[*] bd;
+    !unique !ordered attr String[*] tt;
+    !ordered val A[*]#psppp a;
+    !ordered val Link[*]#psppp link;
+    !ordered val Img[*]#psppp img;
+  }
+
+  class P extends PSPPP {
+    !ordered ref Biblio[1]#p biblio;
+  }
+
+  class SP extends PSPPP {
+    !ordered ref Biblio[1]#sp biblio;
+  }
+
+  class PP extends PSPPP {
+    !ordered ref Biblio[1]#pp biblio;
+  }
+
+  class Itemize extends Used_Functions {
+    !unique !ordered attr String[1] label;
+    !ordered ref Item[1]#itemize item;
+    !ordered ref Section[1]#itemize section;
+    !ordered ref Authors_Item[1]#itemize authors_Item;
+    !ordered ref Description[1]#itemize description;
+  }
+
+  class Item extends Used_Functions, Itemize {
+    !ordered val Itemize[*]#item itemize;
+  }
+
+  class Table {
+    !ordered val Table_New_Row[+]#table table_New_Row;
+    !ordered ref Used_Functions[1]#table used_Functions;
+  }
+
+  class Table_New_Row {
+    !ordered val Table_New_Column[+]#table_New_Row table_New_Column;
+    !ordered ref Table[1]#table_New_Row table;
+  }
+
+  class Table_New_Column {
+    !unique !ordered attr String[*] Verb;
+    !unique !ordered attr String[*] em;
+    !unique !ordered attr String[*] bd;
+    !unique !ordered attr String[*] tt;
+    !ordered ref Table_New_Row[1]#table_New_Column table_New_Row;
+  }
+
+  class Link {
+    !unique !ordered attr String[1] link;
+    !ordered ref PSPPP[1]#link psppp;
+    !ordered ref See_Also_Item[1]#link see_Also_Item;
+    !ordered ref Authors_Item[1]#link authors_Item;
+  }
+
+  class Authors {
+    !ordered val Authors_Item[+]#authors authors_Item;
+  }
+
+  class Authors_Item extends Biblio {
+    !unique !ordered attr String[*] Verb;
+    !unique !ordered attr String[*] em;
+    !unique !ordered attr String[*] bd;
+    !unique !ordered attr String[*] tt;
+    !unique !ordered attr String[*] verbatim;
+    !unique !ordered attr String label;
+    !ordered val A[*]#authors_Item a;
+    !ordered val Link[*]#authors_Item link;
+    !ordered ref Authors[1]#authors_Item authors;
+    !ordered val Itemize[+]#authors_Item itemize;
+  }
+
+  class Section extends Used_Functions, Itemize {
+    !ordered val Itemize[*]#section itemize;
+  }
+
+  enum InOut {
+    in = 0;
+    out = 0;
+  }
+
+  enum PreDef {
+    Preserve = 0;
+    Default = 0;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+}
+

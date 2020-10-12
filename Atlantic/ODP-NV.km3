@@ -1,0 +1,201 @@
+-- @name		ODP Engineering Viewpoint
+-- @version		0.1
+-- @domains		
+-- @authors		José Raúl Romero Salguero (jrromero@uco.es)
+-- @date		2005/12/01
+-- @description	The Reference Model of Open Distributed Processing (RM-ODP) provides a general framework for the standardization of open distributed processing. RM-ODP defines five generic and complementary viewpoints on the system and its environment: enterprise, information, computational, engineering and technology. They divide the system design according to several areas of concerns, each one focusing on a specific aspect of the system, and allow different stakeholders to observe the system from different perspectives. In particular, the ODP engineering viewpoint is concerned with the architecture required to support the distribution of the system and its constituent components. The Engineering Viewpoint Metamodel defines the ODP Engineering Language, and conforms to ITU-T Rec. X.906 | ISO/IEC Committee Draft 19793 ("Use of UML for ODP systems specifications") a standard that defines how to use UML to represent the ODP viewpoint languages and concepts.
+-- @see			http://www.rm-odp.net/resources/UML4ODP_CD_v2.0/BAR-022_UML4ODP_CD_v2.0.pdf
+
+package ODPNV {
+ 	class Node {
+ 		attribute location : String;   --- String means "URI" in metamodel
+ 		
+		--- Node aggregates one Nucleus
+ 		reference manager container : Nucleus;
+		--- Node aggregates Capsules
+ 		reference capsules[0-*] container : Capsule;
+ 	}
+
+ 	class Nucleus extends EngineeringObject {
+		--- Nucleus can reference to EngineeringObjects
+ 		reference otherEngObjects [0-*] : EngineeringObject oppositeOf nodeManager;
+		--- Nucleus can reference to BEOs
+		reference beos [0-*] : BEO oppositeOf beoNodeManager;
+ 	}
+ 	 	
+ 	class Capsule {
+		--- Capsule can reference to EngineeringObjects
+ 		reference otherEngObjects [0-*] container : EngineeringObject;
+		--- Capsule aggregates one CapsuleManager
+ 		reference capsuleManager container : CapsuleManager;
+		--- Capsule can aggregate ClusterManagers
+ 		reference clusterManagers [0-*] container : ClusterManager;
+		--- Capsule can aggregate Clusters
+ 		reference clusters [0-*] container : Cluster; --- "derived" according to metamodel
+ 	}
+ 	
+ 	class EngineeringObject {
+		--- EngineeringObject references to one Nucleus
+ 		reference nodeManager : Nucleus oppositeOf otherEngObjects;
+ 	}
+ 	
+ 	class CapsuleManager extends EngineeringObject {
+ 		--- Operations:
+ 		---		createCluster()
+ 		---		cloneCluster()
+ 		---		deactivateCluster()
+		--- CapsuleManager can reference to ClusterManagers
+ 		reference cmClusterManagers [0-*] : ClusterManager oppositeOf capsuleManager;
+ 	}
+ 	
+ 	class Cluster {
+ 		--- Cluster references to one ClusterManager
+ 		reference clusterManager : ClusterManager oppositeOf clusters;
+ 		--- Cluster can aggregate BEOs
+ 		reference clusterBeos [0-*] container : BEO;
+ 	}
+ 	
+ 	class ClusterManager extends EngineeringObject {
+ 		--- ClusterManager references to Clusters
+ 		reference clusters [1-*] : Cluster oppositeOf clusterManager;
+ 		--- ClusterManager can reference to BEOs
+ 		reference clustermanagerBeos [0-*] : BEO oppositeOf beoManager;
+		--- ClusterManager references to CapsuleManager
+ 		reference capsuleManager : CapsuleManager oppositeOf cmClusterManagers;
+ 	}
+ 	
+ 	class BEO extends EngineeringObject {
+		--- BEO references to one Nucleus
+ 		reference beoNodeManager : Nucleus oppositeOf beos;
+		--- BEO can reference to BEOs
+ 		reference locallyBoundObjects [0-*] : BEO oppositeOf localbinds;
+		--- BEO can reference to BEOs
+ 		reference localbinds [0-*] : BEO oppositeOf locallyBoundObjects;
+		--- BEO references to one ClusterManager
+ 		reference beoManager : ClusterManager oppositeOf clustermanagerBeos;
+ 		--- BEO can reference to Channels
+ 		reference beoChannel [0-*] : Channel oppositeOf chEndPoint;
+ 		--- BEO can reference to Stubs
+ 		reference beoStub [0-*] : Stub oppositeOf stBeo;
+ 	}
+ 	
+ 	class Stub extends EngineeringObject {
+ 		--- ST references to one Channel
+ 		reference stChannel : Channel oppositeOf chStub;
+ 		--- ST references to one Binder
+ 		reference stBinder : Binder oppositeOf chBinder;
+ 		--- ST references to one BEO
+ 		reference stBeo : BEO oppositeOf beoStub;
+ 	}
+ 	
+ 	class Binder extends EngineeringObject {
+ 		--- BD references to one Channel
+ 		reference bdChannel : Channel oppositeOf chBinder;
+ 		--- BD references to one Stub
+ 		reference chBinder : Stub oppositeOf stBinder;
+ 		--- BD references to ProtocolObjects
+		reference bdProtocolObject [1-*] : ProtocolObject oppositeOf poBinder ;
+ 	}
+ 	
+ 	class ProtocolObject extends EngineeringObject {
+ 		attribute type : String;
+
+		--- PO references to one Channel
+ 		reference poChannel : Channel oppositeOf chPObject;
+ 		--- PO references to one Binder
+		reference poBinder : Binder oppositeOf bdProtocolObject;
+		--- PO canreference to Interceptors
+		reference poInterceptor [0-*] : Interceptor oppositeOf intProtocolObject;
+		--- PO can reference to ProtocolObjects
+		reference poBoundProtocolObject [0-*] : ProtocolObject;
+ 	}
+
+ 	class Interceptor extends EngineeringObject {
+ 		--- INT references to Channels
+ 		reference intChannel : Channel oppositeOf chInterceptor;
+ 		--- INT references to two ProtocolObjects
+ 		reference intProtocolObject [2-2] : ProtocolObject oppositeOf poInterceptor;
+ 	}
+
+ 	class Channel {
+ 		--- CH aggregates Stubs
+ 		reference chStub [2-*] container : Stub oppositeOf stChannel;
+ 		--- CH aggregates Binders
+ 		reference chBinder [2-*] container : Binder oppositeOf bdChannel;
+ 		--- CH aggregates ProtocolObjects
+ 		reference chPObject [2-*] container : ProtocolObject oppositeOf poChannel;
+ 		--- CH can aggregate Interceptors
+ 		reference chInterceptor [0-*] container : Interceptor oppositeOf intChannel;
+ 		--- CH references to BEOs
+ 		reference chEndPoint [2-*] : BEO oppositeOf beoChannel;
+ 	}
+ 	
+ 	class ClientServerChannel extends Channel {
+ 	}
+ 	
+ 	class ControllingObject extends EngineeringObject {
+		--- CO can reference to Domains
+ 		reference coDomain [0-*] : Domain oppositeOf domControllingObject;
+ 	}
+ 	
+ 	class SecurityAuthority extends ControllingObject {
+ 	}
+ 	
+ 	class ManagementAuthority extends ControllingObject {
+ 	}
+
+ 	class AddressingAuthority extends ControllingObject {
+ 	}
+
+ 	class NamingAuthority extends ControllingObject {
+ 	}
+ 	
+ 	class ControlledObject extends EngineeringObject {
+ 		--- CDO can reference to Domains
+ 		reference cdoDomain [0-*] : Domain oppositeOf domMember; 
+ 	}
+ 	
+ 	class Domain {
+ 		--- Domain references to one Domain
+ 		reference parentDomain : Domain oppositeOf subDomain;
+ 		--- Domain can reference to Domains
+ 		reference subDomain [0-*] : Domain oppositeOf parentDomain;
+ 		--- Domain references to one ControllingObject
+ 		reference domControllingObject : ControllingObject oppositeOf coDomain;
+ 		--- Domain can reference to ControlledObjects
+ 		reference domMember [0-*] : ControlledObject oppositeOf cdoDomain;
+ 	}
+ 	
+ 	class SecurityDomain extends Domain {
+ 	}
+ 	
+ 	class ManagementDomain extends Domain {
+ 	}
+
+ 	class AddressingDomain extends Domain {
+ 	}
+
+ 	class NamingDomain extends Domain {
+ 	} 	
+ 	
+ 	class EngineeringInterfaceReferenceManagementDomain extends NamingDomain {
+ 		--- EIRMD can reference to EngineeringInterfaceReferences
+ 		reference eirmdReference [0-*] : EngineeringInterfaceReference oppositeOf eirManagementDomain;
+ 		--- EIRMD references to one EngineeringInterfaceReferenceManagementPolicy
+ 		reference eirmdManagementPolicy : EngineeringInterfaceReferenceManagementPolicy oppositeOf eirmpManagementDomain;
+ 	}
+ 	
+ 	class EngineeringInterfaceReferenceManagementPolicy {
+ 		--- EIRMP can reference to EngineeringInterfaceReferenceManagementDomains
+ 		reference eirmpManagementDomain [0-*] : EngineeringInterfaceReferenceManagementDomain oppositeOf eirmdManagementPolicy;
+	}
+	
+	class EngineeringInterfaceReference {
+		--- EIR references to one EngineeringInterfaceReferenceManagementDomain
+		reference eirManagementDomain : EngineeringInterfaceReferenceManagementDomain oppositeOf eirmdReference;
+	} 	 	
+ }
+ 
+ package datatypes {
+ 	datatype String;
+ }

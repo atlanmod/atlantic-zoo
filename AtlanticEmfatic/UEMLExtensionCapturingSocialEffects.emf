@@ -1,0 +1,131 @@
+package Metamodel;
+
+package UEML {
+  class UEMLObject {
+    !ordered ref Geometry#object has;
+    !ordered ref UEMLModel#contains model;
+  }
+
+  class UEMLModel extends UEMLObject {
+    !ordered val UEMLObject[*]#model contains;
+  }
+
+  class Geometry {
+    !ordered ref UEMLObject[1]#has object;
+  }
+
+  class Port extends UEMLObject {
+  }
+
+  class Flow extends UEMLObject {
+    !ordered ref AssociationConnector[1]#classAssociation associationConnector;
+  }
+
+  class Activity extends UEMLObject {
+    !ordered ref ResourceRole[*]#in resourceRole;
+    !ordered ref Process#child parent;
+    !ordered ref OutputPort[1]#activity hasOutput;
+  }
+
+  class Object extends UEMLObject {
+    !ordered ref IOFlow#carries ioFlow;
+  }
+
+  class InformationObject extends Object {
+    !ordered ref ControlFlow#carries controlFlow;
+  }
+
+  class Resource extends Object {
+    !ordered ref ResourceFlow#resourceCarries carries;
+    !ordered ref ResourceRole[*]#resourcePlays plays;
+  }
+
+  class MaterialResource extends Resource {
+  }
+
+  class HumanResource extends Resource {
+  }
+
+  class ResourceFlow extends Flow {
+    !ordered ref Resource[*]#carries resourceCarries;
+  }
+
+  class IOFlow extends Flow {
+    !ordered ref Object[*]#ioFlow carries;
+  }
+
+  class ControlFlow extends Flow {
+    !ordered ref InformationObject[*]#controlFlow carries;
+  }
+
+  class TriggerFlow extends ControlFlow {
+  }
+
+  class ConstraintFlow extends ControlFlow {
+  }
+
+  class ResourceRole extends Port {
+    !ordered ref Resource[*]#plays resourcePlays;
+    !ordered ref RoleType roleQualifier;
+    !ordered ref Activity[1]#resourceRole in;
+  }
+
+  class RoleType {
+  }
+
+  class Anchor extends Port {
+    !ordered ref AssociationConnector[1]#origin target;
+    !ordered ref AssociationConnector[1]#target origin;
+  }
+
+  class OutputPort extends Anchor {
+    !ordered ref Activity[1]#hasOutput activity;
+  }
+
+  class InputPort extends Anchor {
+  }
+
+  class ConnectionOperator extends Anchor {
+  }
+
+  class AssociationConnector {
+    !ordered ref Anchor[*]#target origin;
+    !ordered ref Anchor[*]#origin target;
+    !ordered ref Flow[1]#associationConnector classAssociation;
+  }
+
+  class Process extends Activity {
+    !ordered val Activity[1]#parent child;
+    !ordered ref Contract[*]#process fulfills;
+    !ordered ref Service[1]#process realises;
+  }
+
+  class Service extends Resource {
+    !ordered ref Process[1]#realises process;
+  }
+
+  class Agent extends Resource {
+    !ordered ref Commitment[1]#agentO obliger;
+    !ordered ref Commitment[1]#agentC claimer;
+    !ordered ref Contract[1]#agent has_parties;
+  }
+
+  class Contract {
+    !ordered ref Process[+]#fulfills process;
+    !ordered ref Agent[2..*]#has_parties agent;
+    !ordered val Commitment[+]#contract collection_of;
+  }
+
+  class Task extends Activity {
+    !ordered ref Commitment[*]#task fulfills;
+  }
+
+  class Commitment {
+    !ordered ref Task[1]#fulfills task;
+    !ordered ref Agent[1]#obliger agentO;
+    !ordered ref Agent[1]#claimer agentC;
+    !ordered ref Contract[1]#collection_of contract;
+  }
+
+}
+

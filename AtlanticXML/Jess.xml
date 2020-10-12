@@ -1,0 +1,169 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'Jess'>
+    <Class name = 'LocatedElement' isAbstract = 'true' supertypes = ''>
+      <Attribute name = 'location' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsBefore' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Attribute name = 'commentsAfter' lower = '0' upper = '-1' isOrdered = 'true' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Root' isAbstract = 'false' supertypes = 'Jess::LocatedElement'>
+      <Reference name = 'expressions' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'Expression' isAbstract = 'true' supertypes = 'Jess::LocatedElement'/>
+    <Class name = 'Integ' isAbstract = 'false' supertypes = 'Jess::Expression'>
+      <Attribute name = 'val' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+    </Class>
+    <Class name = 'Floa' isAbstract = 'false' supertypes = 'Jess::Expression'>
+      <Attribute name = 'val' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Double'/>
+    </Class>
+    <Class name = 'Str' isAbstract = 'false' supertypes = 'Jess::Expression'>
+      <Attribute name = 'val' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Ident' isAbstract = 'true' supertypes = 'Jess::Expression'/>
+    <Class name = 'ValidIdentifier' isAbstract = 'false' supertypes = 'Jess::Ident'>
+      <Attribute name = 'val' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'SlotName' isAbstract = 'false' supertypes = 'Jess::Ident'>
+      <Attribute name = 'val' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'JessVariable' isAbstract = 'false' supertypes = 'Jess::Ident'>
+      <Attribute name = 'val' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'TemplateExpression' isAbstract = 'false' supertypes = 'Jess::Expression'>
+      <Reference name = 'templateName' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ValidIdentifier' opposite = ''/>
+      <Reference name = 'firstSlot' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::SlotOp' opposite = ''/>
+      <Reference name = 'slotOp' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Jess::SlotOp' opposite = ''/>
+    </Class>
+    <Class name = 'SlotOp' isAbstract = 'false' supertypes = 'Jess::LocatedElement'>
+      <Reference name = 'slotIdent' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::SlotName' opposite = ''/>
+      <Reference name = 'operator' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ValidIdentifier' opposite = ''/>
+      <Reference name = 'exp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'DefinitionExp' isAbstract = 'true' supertypes = 'Jess::Expression'/>
+    <Class name = 'GlobalDefinition' isAbstract = 'false' supertypes = 'Jess::DefinitionExp'>
+      <Reference name = 'varDef' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Jess::VarDefinition' opposite = ''/>
+    </Class>
+    <Class name = 'VarDefinition' isAbstract = 'false' supertypes = 'Jess::LocatedElement'>
+      <Reference name = 'jessVar' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::JessVariable' opposite = ''/>
+      <Reference name = 'eq' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ValidIdentifier' opposite = ''/>
+      <Reference name = 'expression' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'FunctionDefinition' isAbstract = 'false' supertypes = 'Jess::DefinitionExp'>
+      <Reference name = 'funcName' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ValidIdentifier' opposite = ''/>
+      <Reference name = 'parameters' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Jess::JessVariable' opposite = ''/>
+      <Reference name = 'expressions' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'AdviceDefinition' isAbstract = 'false' supertypes = 'Jess::DefinitionExp'>
+      <Attribute name = 'direction' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'Jess::Advice'/>
+      <Reference name = 'op' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Ident' opposite = ''/>
+      <Reference name = 'advice' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'UnDefAdvice' isAbstract = 'false' supertypes = 'Jess::DefinitionExp'>
+      <Reference name = 'op' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'FactDefinition' isAbstract = 'false' supertypes = 'Jess::DefinitionExp'>
+      <Reference name = 'factName' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ValidIdentifier' opposite = ''/>
+      <Reference name = 'documentation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Str' opposite = ''/>
+      <Reference name = 'fact' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'RuleDefinition' isAbstract = 'false' supertypes = 'Jess::DefinitionExp'>
+      <Reference name = 'ruleName' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ValidIdentifier' opposite = ''/>
+      <Reference name = 'documentation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Str' opposite = ''/>
+      <Reference name = 'declare' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::DeclareRule' opposite = ''/>
+      <Reference name = 'conditions' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+      <Reference name = 'functionCall' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Jess::UseFuncExp' opposite = ''/>
+    </Class>
+    <Class name = 'DeclareRule' isAbstract = 'false' supertypes = 'Jess::LocatedElement'>
+      <Reference name = 'salience' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+      <Reference name = 'nodeIndexHash' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+      <Reference name = 'autoFocus' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ValidIdentifier' opposite = ''/>
+      <Reference name = 'noLoop' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ValidIdentifier' opposite = ''/>
+    </Class>
+    <Class name = 'ModuleDefinition' isAbstract = 'false' supertypes = 'Jess::DefinitionExp'>
+      <Reference name = 'moduleName' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ValidIdentifier' opposite = ''/>
+      <Reference name = 'documentation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Str' opposite = ''/>
+    </Class>
+    <Class name = 'QueryDefinition' isAbstract = 'false' supertypes = 'Jess::DefinitionExp'>
+      <Reference name = 'queryName' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ValidIdentifier' opposite = ''/>
+      <Reference name = 'documentation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Str' opposite = ''/>
+      <Reference name = 'declare' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::DeclareVar' opposite = ''/>
+      <Reference name = 'expressions' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'DeclareVar' isAbstract = 'false' supertypes = 'Jess::LocatedElement'>
+      <Reference name = 'var' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Jess::JessVariable' opposite = ''/>
+      <Reference name = 'node' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+      <Reference name = 'max' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'TemplateDefinition' isAbstract = 'false' supertypes = 'Jess::DefinitionExp'>
+      <Reference name = 'templateName' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ValidIdentifier' opposite = ''/>
+      <Reference name = 'inherits' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Jess::ValidIdentifier' opposite = ''/>
+      <Reference name = 'documentation' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Str' opposite = ''/>
+      <Reference name = 'declareBloc' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::DeclareBloc' opposite = ''/>
+      <Reference name = 'slotDef' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ASlotDef' opposite = ''/>
+    </Class>
+    <Class name = 'DeclareBloc' isAbstract = 'false' supertypes = 'Jess::LocatedElement'>
+      <Reference name = 'slotSpecific' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ValidIdentifier' opposite = ''/>
+      <Reference name = 'backchainReaction' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ValidIdentifier' opposite = ''/>
+      <Reference name = 'fromClass' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ValidIdentifier' opposite = ''/>
+      <Reference name = 'includeVariable' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ValidIdentifier' opposite = ''/>
+      <Reference name = 'order' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ValidIdentifier' opposite = ''/>
+    </Class>
+    <Class name = 'ASlotDef' isAbstract = 'false' supertypes = 'Jess::LocatedElement'>
+      <Reference name = 'slotName' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::SlotName' opposite = ''/>
+      <Reference name = 'optionals' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Jess::SlotOptions' opposite = ''/>
+    </Class>
+    <Class name = 'SlotDef' isAbstract = 'false' supertypes = 'Jess::ASlotDef'/>
+    <Class name = 'MultiSlotDef' isAbstract = 'false' supertypes = 'Jess::ASlotDef'/>
+    <Class name = 'SlotOptions' isAbstract = 'false' supertypes = 'Jess::LocatedElement'>
+      <Reference name = 'type' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ValidIdentifier' opposite = ''/>
+      <Reference name = 'def' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+      <Reference name = 'defaultDyn' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+      <Reference name = 'allowedValues' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'UseFuncExp' isAbstract = 'true' supertypes = 'Jess::Expression'/>
+    <Class name = 'WhileExp' isAbstract = 'false' supertypes = 'Jess::UseFuncExp'>
+      <Attribute name = 'hasDo' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'boolExp' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+      <Reference name = 'actions' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'ForExp' isAbstract = 'false' supertypes = 'Jess::UseFuncExp'>
+      <Reference name = 'initializer' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+      <Reference name = 'condition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+      <Reference name = 'increment' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+      <Reference name = 'expressions' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'ForeachExp' isAbstract = 'false' supertypes = 'Jess::UseFuncExp'>
+      <Reference name = 'var' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::JessVariable' opposite = ''/>
+      <Reference name = 'list' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+      <Reference name = 'expressions' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'FuncCall' isAbstract = 'false' supertypes = 'Jess::UseFuncExp'>
+      <Reference name = 'funcName' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ValidIdentifier' opposite = ''/>
+      <Reference name = 'funcParam' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'EngineExp' isAbstract = 'false' supertypes = 'Jess::UseFuncExp'/>
+    <Class name = 'ExitExp' isAbstract = 'false' supertypes = 'Jess::UseFuncExp'/>
+    <Class name = 'IfExpression' isAbstract = 'false' supertypes = 'Jess::UseFuncExp'>
+      <Reference name = 'ifthen' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ConditionAction' opposite = ''/>
+      <Reference name = 'elifthen' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Jess::ElifConditionAction' opposite = ''/>
+      <Reference name = 'else' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'ConditionAction' isAbstract = 'false' supertypes = 'Jess::LocatedElement'>
+      <Reference name = 'condition' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+      <Reference name = 'actions' lower = '0' upper = '-1' isOrdered = 'true' isContainer = 'true' type = 'Jess::Expression' opposite = ''/>
+    </Class>
+    <Class name = 'ElifConditionAction' isAbstract = 'false' supertypes = 'Jess::LocatedElement'>
+      <Reference name = 'condAct' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'Jess::ConditionAction' opposite = ''/>
+    </Class>
+    <Enumeration name = 'Advice'>
+      <EnumLiteral name = 'before'/>
+      <EnumLiteral name = 'after'/>
+    </Enumeration>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+    <DataType name = 'Double'/>
+  </Package>
+</Metamodel>

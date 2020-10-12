@@ -1,0 +1,109 @@
+package Metamodel;
+
+package BusinessProcessModel {
+  abstract class Namespace {
+  }
+
+  abstract class Task extends Namespace {
+    !ordered val DataSet[3..*] containsDataSet;
+    !ordered val ControlPoint[*] containsControlPoint;
+    !ordered ref InvokerTask[*]#invokes invoker;
+    !ordered ref TerminatorTask[*]#terminates terminator;
+  }
+
+  abstract class DataSet extends Namespace {
+    !ordered val DataElement[*] contains;
+    !ordered ref ControlFlow[*] source;
+    !ordered ref ControlPoint[*] triggers;
+  }
+
+  class Parameter {
+  }
+
+  abstract class DataElement extends Parameter {
+    !ordered ref DataFlow[1] sink;
+    !ordered ref DataFlow[1] source;
+  }
+
+  abstract class ModelElement {
+  }
+
+  class Flow extends ModelElement {
+  }
+
+  class DataFlow extends Flow {
+  }
+
+  class ControlFlow extends Flow {
+  }
+
+  class ControlPoint extends ModelElement {
+    !ordered ref ControlFlow[*] sink;
+  }
+
+  class Input extends DataElement {
+  }
+
+  class Output extends DataElement {
+  }
+
+  class OutputSet extends DataSet {
+    !ordered val Output[*] containsOutput;
+  }
+
+  class InputSet extends DataSet {
+    !ordered val Input[*] containsInput;
+  }
+
+  class Exception extends Output {
+  }
+
+  class SimpleTask extends Task {
+  }
+
+  class CoumpoundTask extends Task {
+    !ordered val Task[*] containsTask;
+    !ordered val Flow[*] containsFlow;
+    !ordered ref BusinessProcess[1] realizes;
+  }
+
+  class MutliTask extends CoumpoundTask {
+  }
+
+  class InvokerTask extends SimpleTask {
+    !ordered ref Task[*]#invoker invokes;
+  }
+
+  class TerminatorTask extends SimpleTask {
+    !ordered ref Task[*]#terminator terminates;
+  }
+
+  class ApplicationTask extends SimpleTask {
+  }
+
+  class Decision extends ApplicationTask {
+  }
+
+  class Clock extends ApplicationTask {
+  }
+
+  class SendCommunication extends ApplicationTask {
+  }
+
+  class ReceiveCommunication extends ApplicationTask {
+  }
+
+  class BusinessProcess extends ApplicationTask {
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+  datatype String : "";
+
+}
+

@@ -1,0 +1,392 @@
+module MGA2XML; -- Module Template
+create OUT : XML  from IN : MGA ;
+
+rule Project {
+	from
+		p_mga : MGA!Project 
+	to
+		r_xml : XML!Root (
+			name <- 'project',
+			children <- 	Sequence{
+									metaname,
+									name,
+									p_mga.root_folder
+								}
+		),
+		--//////////////////////////
+		metaname : XML!Attribute (
+			name <- 'metaname',
+			value <- 'MetaGME'
+		),
+		--//////////////////////////
+		name : XML!Element (
+			name <- 'name',
+			children <- Sequence{content}
+		),
+		content : XML!Text (
+			value <- p_mga.name
+		)
+}
+
+
+rule RootFolder {
+	from
+		f_mga : MGA!Folder
+	to
+		folder : XML!Element (
+			name <- 'folder',
+			children <- Sequence{fold_id, fold_kind, fold_name}->union(f_mga.models)
+		),
+		fold_id : XML!Attribute (
+			name <- 'id',
+			value <- f_mga.obj_id
+		),
+		fold_kind : XML!Attribute (
+			name <- 'kind',
+			value <- 'RootFolder'
+		),
+		fold_name : XML!Element (
+			name <- 'name',
+			children <- Sequence{content}
+		),
+		content : XML!Text (
+			value <- f_mga.name
+		)
+}
+
+rule Model {
+	from
+		m_mga : MGA!Model
+	to
+		model : XML!Element (
+			name <- 'model',
+			children <- Sequence{model_id, model_kind, model_name, m_mga.fcos, m_mga.aspects}
+		),
+		model_id : XML!Attribute (
+			name <- 'id',
+			value <- m_mga.obj_id
+		),
+		model_kind : XML!Attribute (
+			name <- 'kind',
+			value <- 'ParadigmSheet'
+		), 
+		model_name : XML!Element (
+			name <- 'name',
+			children <- Sequence{content}
+		),
+		content : XML!Text (
+			value <- m_mga.name
+		)
+}
+
+rule Atom {
+	from
+		a_mga : MGA!Atom
+	to
+		atom : XML!Element (
+			name <- 'atom',
+			children <- if a_mga.type = 'Atom' or a_mga.type = 'Model'
+						 then Sequence{atom_id, atom_kind, atom_name, thisModule.IsAbstract(a_mga.isAbstract.toString())}
+						 else if a_mga.type = 'EnumAttribute' 
+						 		then Sequence{atom_id, atom_kind, atom_name, thisModule.Literals(a_mga.menu_items)}
+								else if a_mga.type= 'FieldAttribute'
+										then Sequence{atom_id, atom_kind, atom_name, thisModule.DataType(a_mga.data_type)}
+										else Sequence{atom_id, atom_kind, atom_name}
+									endif
+								endif 
+						endif
+		),
+		atom_id : XML!Attribute (
+			name <- 'id',
+			value <- a_mga.obj_id
+		),
+		atom_kind : XML!Attribute (
+			name <- 'kind',
+			value <- a_mga.type
+		),
+		atom_name : XML!Element (
+			name <- 'name',
+			children <- Sequence{content_name}
+		),
+		content_name : XML!Text (
+			value <- a_mga.name
+		)
+}
+
+rule DataType(datatype : String) {
+	to
+		data_type : XML!Element (
+			name <- 'attribute',
+			children <- Sequence{dt_kind, dt_value}
+		),
+		dt_kind : XML!Attribute (
+			name <- 'kind',
+			value <- 'DataType'
+		),
+		dt_value : XML!Element (
+			name <- 'value',
+			children <- Sequence{content}
+		),
+		content : XML!Text (
+			value <- datatype
+		)
+	do {
+		data_type;
+	}	
+}
+
+rule Literals(literals : Sequence(MGA!Literal)) {
+	to
+		menu_items : XML!Element (
+			name <- 'attribute',
+			children <- Sequence{mi_kind,mi_value}
+		),
+		mi_kind : XML!Attribute (
+			name <- 'kind',
+			value <- 'MenuItems'
+		),
+		mi_value : XML!Element (
+			name <- 'value',
+			children <- Sequence{content}
+		),
+		content : XML!Text (
+			value <- literals->iterate(lit ; acc : String = '' |
+					if acc = ''
+						then lit.content
+						else acc + '\n' + lit.content
+					endif
+				)
+		)
+	do {
+		menu_items;
+	}
+}
+
+
+rule IsAbstract(isAbstract : String) {
+	to
+		atom_isAbstract : XML!Element (
+			name <- 'attribute',
+			children <- Sequence{attr_kind, attr_value}
+		),
+		attr_kind : XML!Attribute (
+			name <- 'kind',
+			value <- 'IsAbstract'
+		),
+		attr_value : XML!Element (
+			name <- 'value',
+			children <- Sequence{content_attr}
+		),
+		content_attr : XML!Text (
+			value <- isAbstract
+		)
+	do {
+		atom_isAbstract;
+	}
+}
+
+rule Connection {
+	from
+		c_mga : MGA!Connection (
+			not c_mga.oclIsTypeOf(MGA!Composition) and not c_mga.oclIsTypeOf(MGA!Association)
+		)
+	to
+		connection : XML!Element (
+			name <- 'connection',
+			children <- Sequence{connection_id, connection_kind, connection_name, c_mga.conn_points}
+		),
+		connection_id : XML!Attribute (
+			name <- 'id',
+			value <- c_mga.obj_id
+		),
+		connection_kind : XML!Attribute (
+			name <- 'kind',
+			value <- c_mga.type
+		),
+		connection_name : XML!Element (
+			name <- 'name',
+			children <- Sequence{content}
+		),
+		content : XML!Text (
+			value <- c_mga.name
+		)
+}
+
+
+rule Composition {
+	from
+		c_mga : MGA!Composition
+	to
+		connection : XML!Element (
+			name <- 'connection',
+			children <- Sequence{composition_id, composition_kind, composition_name, composition_card, composition_role_name, c_mga.conn_points}
+		),
+		----
+		composition_id : XML!Attribute (
+			name <- 'id',
+			value <- c_mga.obj_id
+		),
+		----
+		composition_kind : XML!Attribute (
+			name <- 'kind',
+			value <- c_mga.type
+		),
+		----
+		composition_name : XML!Element (
+			name <- 'name',
+			children <- Sequence{content}
+		),
+		content : XML!Text (
+			value <- c_mga.name
+		),
+		----
+		composition_card : XML!Element (
+			name <- 'attribute',
+			children <- Sequence{card_type, card_card}
+		),
+		card_type : XML!Attribute  (
+			name <- 'kind',
+			value <- 'Cardinality'
+		),
+		card_card : XML!Element (
+			name <- 'value',
+			children <- Sequence{content1}
+		),
+		content1 : XML!Text (
+			value <- c_mga.cardinality
+		),
+		----
+		composition_role_name : XML!Element (
+			name <- 'attribute',
+			children <- Sequence{role_type, role_name}
+		),
+		role_type : XML!Attribute  (
+			name <- 'kind',
+			value <- 'Rolename'
+		),
+		role_name : XML!Element (
+			name <- 'value',
+			children <- Sequence{content2}
+		),
+		content2 : XML!Text (
+			value <- c_mga.role_name
+		)
+		----
+}
+
+rule Association {
+	from
+		a_mga : MGA!Association
+	to
+		connection : XML!Element (
+			name <- 'connection',
+			children <- Sequence{association_id, association_kind, association_name, association_card, association_role_name, a_mga.conn_points}
+		),
+		----
+		association_id : XML!Attribute (
+			name <- 'id',
+			value <- a_mga.obj_id
+		),
+		----
+		association_kind : XML!Attribute (
+			name <- 'kind',
+			value <- a_mga.type
+		),
+		----
+		association_name : XML!Element (
+			name <- 'name',
+			children <- Sequence{content}
+		),
+		content : XML!Text (
+			value <- a_mga.name
+		),
+		----
+		association_card : XML!Element (
+			name <- 'attribute',
+			children <- Sequence{card_type, card_card}
+		),
+		card_type : XML!Attribute  (
+			name <- 'kind',
+			value <- 'Cardinality'
+		),
+		card_card : XML!Element (
+			name <- 'value',
+			children <- Sequence{content1}
+		),
+		content1 : XML!Text (
+			value <- a_mga.cardinality
+		),
+		----
+		association_role_name : XML!Element (
+			name <- 'attribute',
+			children <- Sequence{role_type, role_name}
+		),
+		role_type : XML!Attribute  (
+			name <- 'kind',
+			value <- if a_mga.type = 'SourceToConnector'
+						then 'srcRolename'
+						else 'dstRolename'
+					endif
+		),
+		role_name : XML!Element (
+			name <- 'value',
+			children <- Sequence{content2}
+		),
+		content2 : XML!Text (
+			value <- a_mga.card_name
+		)
+		----
+}
+
+rule ConnPoint {
+	from
+		c_mga : MGA!ConnPoint
+	to
+		connpoint : XML!Element (
+			name <- 'connpoint',
+			children <- Sequence{c_role, c_target}
+		),
+		c_role : XML!Attribute (
+			name <- 'role',
+			value <- c_mga.role
+		),
+		c_target : XML!Attribute (
+			name <- 'target',
+			value <- c_mga.target
+		)
+}
+
+rule Aspect {
+	from
+		asp_mga : MGA!Aspect
+	to
+		set_xml : XML!Element (
+			name <- 'set',
+			children <- Sequence{id, kind, name, members}
+		),
+		id : XML!Attribute (
+			name <- 'id',
+			value <- asp_mga.obj_id
+		),
+		----
+		kind : XML!Attribute (
+			name <- 'kind',
+			value <- asp_mga.type
+		),
+		name : XML!Element (
+			name <- 'name',
+			children <- Sequence{content}
+		),
+		content : XML!Text (
+			value <- asp_mga.name
+		),
+		members : XML!Attribute (
+			name <- 'members',
+			value <- MGA!Atom.allInstances()->select(a | a.type = 'Model')->iterate(at ; acc : String = '' |
+				if acc = ''
+				then at.obj_id
+				else acc + ' ' + at.obj_id
+				endif
+			)
+		)
+}

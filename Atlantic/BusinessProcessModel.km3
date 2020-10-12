@@ -1,0 +1,98 @@
+-- @name 		Business Process Model
+-- @domains 	Business
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/07/20
+-- @description This metamodel fragment describes a Business Process Model
+-- @see 		This metamodel has been extracted from information available in the following article:
+-- @see 		Article "Processes, Roles, and Events : UML Concepts for Entreprise Architecture"
+-- @see 		by Alistair Barros, Keith Duddy, Michael lawley, Zoran Milosevic, Kerry Raymond, Andrew Wood
+-- @see 		Page 66, Section 2.4, Fig. 1. Business Process Model
+-- @see 		Lecture Notes in Computer Science 1939
+-- @see 		Andy Evans, Stuart Kent, Bran Selic
+-- @see 		UML 2000 - The Unified Modeling Language
+
+package BusinessProcessModel {
+	abstract class Namespace {}
+	
+	abstract class Task extends Namespace {
+		reference containsDataSet [3-*] container : DataSet;
+		reference containsControlPoint [*] container : ControlPoint;
+		reference invoker [*] : InvokerTask oppositeOf invokes; 
+		reference terminator [*] : TerminatorTask oppositeOf terminates; 
+	}
+	
+	abstract class DataSet extends Namespace {
+		reference contains [*] container : DataElement;
+		reference source [*] : ControlFlow;
+		reference triggers [*] : ControlPoint;
+	}
+	
+	class Parameter {}
+	
+	abstract class DataElement extends Parameter {
+		reference sink : DataFlow;
+		reference source : DataFlow;
+	}
+	
+	abstract class ModelElement {}
+	
+	class Flow extends ModelElement {}
+	
+	class DataFlow extends Flow{}
+	
+	class ControlFlow extends Flow {}
+	
+	class ControlPoint extends ModelElement {
+		reference sink [*] : ControlFlow;
+	}
+	
+	class Input extends DataElement {}
+	
+	class Output extends DataElement {}
+	
+	class OutputSet extends DataSet {
+		reference containsOutput [*] container : Output;
+	}	
+	
+	class InputSet extends DataSet {
+		reference containsInput [*] container : Input;
+	}
+	
+	class Exception extends Output {}
+	
+	class SimpleTask extends Task {}
+	
+	class CoumpoundTask extends Task {
+		reference containsTask [*] container : Task;
+		reference containsFlow [*] container : Flow;
+		reference realizes : BusinessProcess;
+	}
+
+	class MutliTask extends CoumpoundTask {}
+	
+	class InvokerTask extends SimpleTask {
+		reference invokes [*] : Task oppositeOf invoker; 
+	}
+	
+	class TerminatorTask extends SimpleTask {
+		reference terminates [*] : Task oppositeOf terminator; 
+	}
+	
+	class ApplicationTask extends SimpleTask {}
+	
+	class Decision extends ApplicationTask {}
+	
+	class Clock extends ApplicationTask {}
+	
+	class SendCommunication extends ApplicationTask {}
+	
+	class ReceiveCommunication extends ApplicationTask {}
+	
+	class BusinessProcess extends ApplicationTask {}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

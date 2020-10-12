@@ -1,0 +1,114 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'cmt'>
+    <Class name = 'Thing' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Meta-Reviewer' isAbstract = 'false' supertypes = 'cmt::Reviewer'/>
+    <Class name = 'Reviewer' isAbstract = 'false' supertypes = 'cmt::ConferenceMember, cmt::User'>
+      <Reference name = 'assignedByAdministrator' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Administrator' opposite = 'cmt::Administrator::assignReviewer'/>
+      <Reference name = 'adjustBid' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Bid' opposite = 'cmt::Bid::adjustedBy'/>
+      <Reference name = 'readPaper' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Paper' opposite = 'cmt::Paper::readByReviewer'/>
+      <Reference name = 'hasBeenAssigned' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Paper' opposite = 'cmt::Paper::assignedTo'/>
+      <Reference name = 'writeReview' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Review' opposite = 'cmt::Review::writtenBy'/>
+      <Reference name = 'assignExternalReviewer' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::ExternalReviewer' opposite = 'cmt::ExternalReviewer::assignedByReviewer'/>
+    </Class>
+    <Class name = 'Decision' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Person' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'hasConflictOfInterest' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Document' opposite = ''/>
+      <Attribute name = 'email' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Document' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Preference' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'ProgramCommittee' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'hasProgramCommitteeMember' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::ProgramCommitteeMember' opposite = 'cmt::ProgramCommitteeMember::memberOfProgramCommittee'/>
+    </Class>
+    <Class name = 'Bid' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'adjustedBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Reviewer' opposite = 'cmt::Reviewer::adjustBid'/>
+    </Class>
+    <Class name = 'Conference' isAbstract = 'false' supertypes = 'cmt::Thing'>
+      <Reference name = 'hasConferenceMember' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::ConferenceMember' opposite = 'cmt::ConferenceMember::memberOfConference'/>
+      <Reference name = 'paperAssignmentFinalizedBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Administrator' opposite = 'cmt::Administrator::finalizePaperAssignment'/>
+      <Reference name = 'reviewCriteriaEnteredBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Administrator' opposite = 'cmt::Administrator::enterReviewCriteria'/>
+      <Reference name = 'paperAssignmentToolsRunBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Administrator' opposite = 'cmt::Administrator::runPaperAssignmentTools'/>
+      <Reference name = 'virtualMeetingEnabledBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Administrator' opposite = 'cmt::Administrator::enableVirtualMeeting'/>
+      <Reference name = 'hardcopyMailingManifestsPrintedBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Administrator' opposite = 'cmt::Administrator::printHardcopyMailingManifests'/>
+      <Reference name = 'detailsEnteredBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Administrator' opposite = 'cmt::Administrator::enterConferenceDetails'/>
+      <Reference name = 'reviewerBiddingStartedBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Administrator' opposite = 'cmt::Administrator::startReviewerBidding'/>
+      <Attribute name = 'date' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'cmt::date'/>
+      <Attribute name = 'reviewsPerPaper' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Attribute name = 'logoURL' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'cmt::anyURI'/>
+      <Attribute name = 'acceptsHardcopySubmissions' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'siteURL' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'cmt::anyURI'/>
+    </Class>
+    <Class name = 'ConferenceChair' isAbstract = 'false' supertypes = 'cmt::ConferenceMember, cmt::Chairman'/>
+    <Class name = 'ConferenceMember' isAbstract = 'false' supertypes = 'cmt::Person'>
+      <Reference name = 'memberOfConference' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Conference' opposite = 'cmt::Conference::hasConferenceMember'/>
+    </Class>
+    <Class name = 'AssociatedChair' isAbstract = 'false' supertypes = 'cmt::ConferenceMember, cmt::Chairman'/>
+    <Class name = 'ProgramCommitteeMember' isAbstract = 'false' supertypes = 'cmt::Person, cmt::ConferenceMember'>
+      <Reference name = 'memberOfProgramCommittee' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::ProgramCommittee' opposite = 'cmt::ProgramCommittee::hasProgramCommitteeMember'/>
+      <Attribute name = 'maxPapers' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'addedBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Administrator' opposite = 'cmt::Administrator::addProgramCommitteeMember'/>
+    </Class>
+    <Class name = 'AuthorNotReviewer' isAbstract = 'false' supertypes = 'cmt::Author'/>
+    <Class name = 'SubjectArea' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'ExternalReviewer' isAbstract = 'false' supertypes = 'cmt::Person'>
+      <Reference name = 'assignedByReviewer' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Reviewer' opposite = 'cmt::Reviewer::assignExternalReviewer'/>
+    </Class>
+    <Class name = 'Chairman' isAbstract = 'false' supertypes = 'cmt::Person, cmt::ConferenceMember'/>
+    <Class name = 'ProgramCommitteeChair' isAbstract = 'false' supertypes = 'cmt::ProgramCommitteeMember, cmt::Chairman'>
+      <Reference name = 'endReview' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Review' opposite = ''/>
+    </Class>
+    <Class name = 'Acceptance' isAbstract = 'false' supertypes = 'cmt::Decision'/>
+    <Class name = 'Rejection' isAbstract = 'false' supertypes = 'cmt::Decision'/>
+    <Class name = 'Review' isAbstract = 'false' supertypes = 'cmt::Document'>
+      <Reference name = 'writtenBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Reviewer' opposite = 'cmt::Reviewer::writeReview'/>
+    </Class>
+    <Class name = 'Paper' isAbstract = 'false' supertypes = 'cmt::Document'>
+      <Reference name = 'hasCo-author' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Co-author' opposite = 'cmt::Co-author::co-writePaper'/>
+      <Reference name = 'hasBid' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Bid' opposite = ''/>
+      <Reference name = 'hasDecision' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Decision' opposite = ''/>
+      <Reference name = 'assignedTo' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Reviewer' opposite = 'cmt::Reviewer::hasBeenAssigned'/>
+      <Reference name = 'hasSubjectArea' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::SubjectArea' opposite = ''/>
+      <Reference name = 'readByReviewer' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Reviewer' opposite = 'cmt::Reviewer::readPaper'/>
+      <Attribute name = 'paperID' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'cmt::unsignedLong'/>
+      <Attribute name = 'title' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'hasAuthor' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Author' opposite = 'cmt::Author::writePaper'/>
+      <Reference name = 'acceptedBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Administrator' opposite = 'cmt::Administrator::acceptPaper'/>
+      <Reference name = 'rejectedBy' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Administrator' opposite = 'cmt::Administrator::rejectPaper'/>
+      <Reference name = 'readByMeta-Reviewer' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Meta-Reviewer' opposite = ''/>
+    </Class>
+    <Class name = 'Author' isAbstract = 'false' supertypes = 'cmt::ConferenceMember, cmt::User'>
+      <Reference name = 'submitPaper' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Paper' opposite = ''/>
+      <Reference name = 'writePaper' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Paper' opposite = 'cmt::Paper::hasAuthor'/>
+    </Class>
+    <Class name = 'User' isAbstract = 'false' supertypes = 'cmt::Person'/>
+    <Class name = 'Co-author' isAbstract = 'false' supertypes = 'cmt::Author'>
+      <Reference name = 'co-writePaper' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Paper' opposite = 'cmt::Paper::hasCo-author'/>
+    </Class>
+    <Class name = 'PaperAbstract' isAbstract = 'false' supertypes = 'cmt::Paper'/>
+    <Class name = 'PaperFullVersion' isAbstract = 'false' supertypes = 'cmt::Paper'/>
+    <Class name = 'Administrator' isAbstract = 'false' supertypes = 'cmt::User'>
+      <Reference name = 'finalizePaperAssignment' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Conference' opposite = 'cmt::Conference::paperAssignmentFinalizedBy'/>
+      <Reference name = 'runPaperAssignmentTools' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Conference' opposite = 'cmt::Conference::paperAssignmentToolsRunBy'/>
+      <Reference name = 'enableVirtualMeeting' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Conference' opposite = 'cmt::Conference::virtualMeetingEnabledBy'/>
+      <Reference name = 'startReviewerBidding' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Conference' opposite = 'cmt::Conference::reviewerBiddingStartedBy'/>
+      <Reference name = 'assignReviewer' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Reviewer' opposite = 'cmt::Reviewer::assignedByAdministrator'/>
+      <Reference name = 'rejectPaper' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Paper' opposite = 'cmt::Paper::rejectedBy'/>
+      <Reference name = 'enterConferenceDetails' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Conference' opposite = 'cmt::Conference::detailsEnteredBy'/>
+      <Reference name = 'printHardcopyMailingManifests' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Conference' opposite = 'cmt::Conference::hardcopyMailingManifestsPrintedBy'/>
+      <Reference name = 'setMaxPapers' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::ProgramCommitteeMember' opposite = ''/>
+      <Reference name = 'enterReviewCriteria' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Conference' opposite = 'cmt::Conference::reviewCriteriaEnteredBy'/>
+      <Reference name = 'acceptPaper' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::Paper' opposite = 'cmt::Paper::acceptedBy'/>
+      <Reference name = 'addProgramCommitteeMember' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'cmt::ProgramCommitteeMember' opposite = 'cmt::ProgramCommitteeMember::addedBy'/>
+    </Class>
+    <Class name = 'Meta-Review' isAbstract = 'false' supertypes = 'cmt::Review'/>
+    <DataType name = 'date'/>
+    <DataType name = 'unsignedLong'/>
+    <DataType name = 'anyURI'/>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

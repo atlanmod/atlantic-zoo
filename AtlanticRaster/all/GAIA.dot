@@ -1,0 +1,95 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_GAIA"{
+labelloc=t
+color=black
+label=GAIA
+ node[shape=record];
+OrganizationalStructure[label="{OrganizationalStructure| | }"]
+ OrganizationalStructure->Organization[arrowhead=vee,arrowtail=diamond,headlabel="organization[*]",group=Organization,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Organization[label="{Organization| | }"]
+ Organization->Organization[arrowhead=none,arrowtail=none,headlabel="interacts",taillabel="collaborates",group=Organization,minlen=2,constraint=false,]
+ Organization->AgentType[arrowhead=vee,arrowtail=diamond,headlabel="member[*]",group=AgentType,minlen=2,constraint=true,]
+ Organization->OrganizationalRule[arrowhead=vee,arrowtail=none,headlabel="observes[*]",group=OrganizationalRule,minlen=2,constraint=false,]
+;
+ node[shape=record];
+OrganizationalRule[label="{OrganizationalRule| | }"]
+;
+ node[shape=record];
+SafetyRule[label="{SafetyRule| | }"]
+ SafetyRule->OrganizationalRule[arrowhead=onormal,group=OrganizationalRule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+LivenessRule[label="{LivenessRule| | }"]
+ LivenessRule->OrganizationalRule[arrowhead=onormal,group=OrganizationalRule,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AgentType[label="{AgentType| | }"]
+ AgentType->Service[arrowhead=vee,arrowtail=none,headlabel="provides[1-*]",group=Service,minlen=2,constraint=false,]
+ AgentType->AgentType[arrowhead=none,arrowtail=none,headlabel="collaborates",taillabel="agentType",group=AgentType,minlen=2,constraint=false,]
+ AgentType->Role[arrowhead=vee,arrowtail=none,headlabel="plays[*]",group=Role,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Service[label="{Service|inputs : String\noutputs : String\npre-conditions : String\npost-conditions : String| }"]
+;
+ node[shape=record];
+Role[label="{Role| | }"]
+ Role->Activity[arrowhead=vee,arrowtail=none,headlabel="activity[1-*]",group=Activity,minlen=2,constraint=false,]
+ Role->Communication[arrowhead=vee,arrowtail=none,headlabel="communication[*]",group=Communication,minlen=2,constraint=false,]
+ Role->Responsibility[arrowhead=vee,arrowtail=none,headlabel="responsibility[1-*]",group=Responsibility,minlen=2,constraint=false,]
+ Role->AssociationConnector[arrowhead=none,arrowtail=none,headlabel="actsOn[0-1]",taillabel="role",group=AssociationConnector,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Activity[label="{Activity| | }"]
+;
+ node[shape=record];
+Responsibility[label="{Responsibility| | }"]
+;
+ node[shape=record];
+LivenessProperty[label="{LivenessProperty| | }"]
+ LivenessProperty->Responsibility[arrowhead=onormal,group=Responsibility,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SafetyProperty[label="{SafetyProperty| | }"]
+ SafetyProperty->Responsibility[arrowhead=onormal,group=Responsibility,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AssociationConnector[label="{AssociationConnector| | }"]
+ AssociationConnector->Resource[arrowhead=vee,arrowtail=none,headlabel="actsOn[*]",group=Resource,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Permission[label="{Permission| | }"]
+ Permission->AssociationConnector[arrowhead=none,arrowtail=none,headlabel="association",taillabel="permission[*]",group=AssociationConnector,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Resource[label="{Resource|name : String\ndescription : String| }"]
+ Resource->Action[arrowhead=vee,arrowtail=none,headlabel="permitted_action[*]",group=Action,minlen=2,constraint=false,]
+ Resource->Environnement[arrowhead=diamond,arrowtail=none,headlabel="environnement",taillabel="resource[*]",group=Environnement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Environnement[label="{Environnement| | }"]
+;
+ node[shape=record];
+Action[label="{Action|type : String| }"]
+;
+ node[shape=record];
+Communication[label="{Communication| | }"]
+ Communication->OrganizationalRule[arrowhead=vee,arrowtail=none,headlabel="observes[*]",group=OrganizationalRule,minlen=2,constraint=false,]
+ Communication->Protocol[arrowhead=vee,arrowtail=none,headlabel="protocol",group=Protocol,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Protocol[label="{Protocol|name : String\ninitiator : String\npartner : String\ninputs : String\noutputs : String\ndescription : String| }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

@@ -1,0 +1,112 @@
+package Metamodel;
+
+package ClassicModels {
+  abstract class AddressInfo {
+    !unique !ordered attr String[1] phone;
+    !unique !ordered attr String[1] addressLine1;
+    !unique !ordered attr String[1] addressLine2;
+    !unique !ordered attr String[1] city;
+    !unique !ordered attr String[1] state;
+    !unique !ordered attr String[1] postalCode;
+    !unique !ordered attr String[1] country;
+  }
+
+  class Date {
+    !unique !ordered attr Integer[1] year;
+    !unique !ordered attr Integer[1] month;
+    !unique !ordered attr Integer[1] day;
+  }
+
+  class ClassicModels {
+    !ordered val Office[*]#officeOwner offices;
+    !ordered val ProductLine[*]#productLineOwner productLines;
+    !ordered val Customer[*]#customerOwner customers;
+  }
+
+  class ProductLine {
+    !ordered ref ClassicModels[1]#productLines productLineOwner;
+    !ordered val Product[*]#productLine products;
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] textDescription;
+    !unique !ordered attr String[1] htmlDescription;
+  }
+
+  class Product {
+    !ordered ref ProductLine[1]#products productLine;
+    !unique !ordered attr String[1] code;
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] scale;
+    !unique !ordered attr String[1] vendor;
+    !unique !ordered attr String[1] description;
+    !unique !ordered attr Integer[1] quantityInStock;
+    !unique !ordered attr PrimitiveTypes.Double[1] buyPrice;
+    !unique !ordered attr PrimitiveTypes.Double[1] MSRP;
+  }
+
+  class Office extends AddressInfo {
+    !ordered ref ClassicModels[1]#offices officeOwner;
+    !unique !ordered attr String[1] code;
+    !ordered val Employee[*]#office employees;
+    !unique !ordered attr String[1] territory;
+  }
+
+  class Employee {
+    !ordered ref Office[1]#employees office;
+    !unique !ordered attr Integer[1] number;
+    !ordered ref Customer[*]#salesRepEmployee employeeCustomers;
+    !unique !ordered attr String[1] lastName;
+    !unique !ordered attr String[1] firstName;
+    !unique !ordered attr String[1] extension;
+    !unique !ordered attr String[1] email;
+    !ordered ref Employee[1] reportsTo;
+    !unique !ordered attr String[1] jobTitle;
+  }
+
+  class Customer extends AddressInfo {
+    !ordered ref ClassicModels[1]#customers customerOwner;
+    !unique !ordered attr Integer[1] number;
+    val Order[*]#customer orders;
+    val Payment[*]#customer payments;
+    !ordered ref Employee[1]#employeeCustomers salesRepEmployee;
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] contactLastName;
+    !unique !ordered attr String[1] contactFirstName;
+    !unique !ordered attr PrimitiveTypes.Double[1] creditLimit;
+  }
+
+  class Payment {
+    !ordered ref Customer[1]#payments customer;
+    !unique !ordered attr String[1] checkNumber;
+    !ordered val Date[1] date;
+    !unique !ordered attr PrimitiveTypes.Double[1] amount;
+  }
+
+  class Order {
+    !ordered ref Customer[1]#orders customer;
+    val OrderDetail[*]#order orderDetails;
+    !unique !ordered attr Integer[1] number;
+    !ordered val Date[1] date;
+    !ordered val Date[1] requiredDate;
+    !ordered val Date shippedDate;
+    !unique !ordered attr String[1] status;
+    !unique !ordered attr String[1] comments;
+  }
+
+  class OrderDetail {
+    !ordered ref Order[1]#orderDetails order;
+    !ordered ref Product[1] product;
+    !unique !ordered attr Integer[1] quantityOrdered;
+    !unique !ordered attr PrimitiveTypes.Double[1] priceEach;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Integer : "";
+
+  datatype Double : "";
+
+}
+

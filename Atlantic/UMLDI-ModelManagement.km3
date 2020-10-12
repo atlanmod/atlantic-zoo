@@ -1,0 +1,94 @@
+-- @name		UMLDI ModelManagement
+-- @version		0.1
+-- @domains		UML
+-- @authors		David Touzet
+-- @date		2006/02/21	
+-- @description	This is a simplified metamodel of UML Model Management diagram according to the UML Diagram Interchange standard. The source metamodel of UML is well described by the OMG. It has been voluntarily simplified to be used more easily.
+-- @see			UML Diagram Interchange 2.0 Adopted specification, OMG, http://www.omg.org/cgibin/doc?ptc/20030901, Unified Modeling Language (UML), version 1.5. http://www.omg.org/technology/documents/formal/uml.htm.
+
+package Model_Management {
+	class Package extends GeneralizableElement, Namespace {
+		reference elementImport[*] container : ElementImport oppositeOf "package";
+	}
+
+	class Model extends Package {
+	}
+
+	class Subsystem extends Package, Classifier {
+		attribute isInstantiable : Boolean;
+	}
+
+	class ElementImport {
+		reference "package" : Package oppositeOf elementImport;
+		reference importedElement : ModelElement;
+		attribute visibility[0-1] : VisibilityKind;
+		attribute alias[0-1] : String;
+		attribute isSpecification : Boolean;
+	}
+}
+
+package Core {
+	abstract class Element {
+	}
+
+	abstract class ModelElement extends Element {
+		reference namespace[0-1] : Namespace oppositeOf ownedElement;
+		attribute name[0-1] : String;
+		attribute visibility[0-1] : VisibilityKind;
+		attribute isSpecification : Boolean;
+	}
+
+	abstract class GeneralizableElement extends ModelElement {
+		reference generalization[*] : Generalization oppositeOf child;
+		attribute isRoot : Boolean;
+		attribute isLeaf : Boolean;
+		attribute isAbstract : Boolean;
+	}
+
+	abstract class Namespace extends ModelElement {
+		reference ownedElement[*] container : ModelElement oppositeOf namespace;
+	}
+
+	abstract class Classifier extends GeneralizableElement, Namespace {
+		reference powertypeRange[*] : Generalization oppositeOf powertype;
+		reference feature[*] ordered container : Feature oppositeOf owner;
+	}
+
+	abstract class Feature extends ModelElement {
+		reference owner[0-1] : Classifier oppositeOf feature;
+		attribute ownerScope : ScopeKind;
+	}
+
+	abstract class Relationship extends ModelElement { }
+
+	class Generalization extends Relationship {
+		reference parent : GeneralizableElement;
+		reference powertype[0-1] : Classifier oppositeOf powertypeRange;
+		reference child : GeneralizableElement oppositeOf generalization;
+		attribute discriminator[0-1] : String;
+	}
+
+}
+
+package Data_Types {
+	enumeration ScopeKind {
+		literal sk_instance;
+		literal sk_classifier;
+	}
+
+	enumeration VisibilityKind {
+		literal vk_public;
+		literal vk_protected;
+		literal vk_private;
+		literal vk_package;
+	}
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Float;
+	datatype Integer;
+	datatype Long;
+	datatype String;
+	datatype Double;
+}

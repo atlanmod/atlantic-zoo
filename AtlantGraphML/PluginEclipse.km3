@@ -1,0 +1,127 @@
+-- ******************************************************************************
+-- Copyright (c) 2009 INRIA. 
+-- All rights reserved. This program and the accompanying materials 
+-- are made available under the terms of the Eclipse Public License v1.0 
+-- which accompanies this distribution, and is available at
+-- http://www.eclipse.org/legal/epl-v10.html
+-- 
+-- Contributors: 
+-- 	INRIA - Initial implementation
+--  
+-- ******************************************************************************
+
+--@authors Mathieu Vénisse
+
+-- @name		PluginEclipse
+-- @version		1.0
+-- @date		2008/06/24
+-- @description	${description}
+package PluginEclipse {
+
+abstract class LocatedElement {
+		attribute location[0-1] : String;
+		attribute commentsBefore[*] ordered : String;
+		attribute commentsAfter[*] ordered : String;
+	}
+
+-- BEGIN DSL-specific classes (replace sample contents)
+	
+enumeration Resolution {
+	literal Mandatory;
+	literal Optional;
+}
+
+enumeration Visibility {
+	literal Private;
+	literal Reexport;
+}
+
+class Eclipse extends LocatedElement {
+	reference bundles[1-*] container : Bundle;
+	reference packages[*] container : Package;
+}
+
+class Bundle extends LocatedElement {
+	attribute symbolicName : String;
+	attribute singleton : Boolean;
+	attribute manifestVersion : Integer;
+	
+	reference require[*] container : RequiredBundle;
+	reference version container : Version;
+	reference export[*] container : ExportedPackage;
+	reference import[*] container : ImportedPackage;
+	reference packages[*] container : Package; 
+}
+
+abstract class RequireBundleAttribute extends LocatedElement {
+}
+
+class AttResolution extends RequireBundleAttribute {
+	attribute value : Resolution;
+}
+
+class AttVisibility extends RequireBundleAttribute {
+	attribute value : Visibility;
+}
+
+class Range extends RequireBundleAttribute {
+	attribute isLeftInclusive : Boolean;
+	attribute isRightInclusive : Boolean;
+	
+	reference lowerBound container : Version;
+	reference upperBound container : Version;
+}
+
+
+class Version extends LocatedElement {
+	attribute major : Integer;
+	attribute minor : Integer;
+	attribute micro : Integer;
+	attribute qualification : String;
+}
+
+
+class RequiredBundle extends LocatedElement {
+	reference requireBundleAttribute[*] container : RequireBundleAttribute;
+	reference bundle : Bundle;
+}
+
+class ImportedPackage extends LocatedElement {
+	attribute resolution : Resolution;
+
+	reference "package" : Package oppositeOf importedBy;
+	reference range[0-1] container : Range;
+}
+
+class ExportedPackage extends LocatedElement {
+	reference "package" : Package oppositeOf exportedBy;
+	reference version container : Version;
+	reference xFriends container : Xfriends;
+}
+
+class Package extends LocatedElement {
+	attribute fqn : String;
+	reference importedBy [*] : ImportedPackage oppositeOf "package";
+	reference exportedBy [0-1] : ExportedPackage oppositeOf "package"; -- mettre * si package fragmentes
+}
+
+-- END DSL-specific classes
+}
+
+package PluginsEclipse {
+
+class Xfriends extends LocatedElement {
+	reference bundles[1-*] : Bundle;
+}
+
+class Xinternal extends ExportedPackage {
+	attribute value : Boolean;
+}
+
+}
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+}

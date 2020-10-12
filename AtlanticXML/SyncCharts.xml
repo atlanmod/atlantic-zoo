@@ -1,0 +1,59 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'OCLExpression'>
+    <Class name = 'ModelElement' isAbstract = 'true' supertypes = ''>
+      <Reference name = 'behavior' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'OCLExpression::SyncChart' opposite = 'OCLExpression::SyncChart::context'/>
+    </Class>
+    <Class name = 'SyncChart' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'context' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCLExpression::ModelElement' opposite = 'OCLExpression::ModelElement::behavior'/>
+      <Reference name = 'referenceState' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'OCLExpression::ReferenceState' opposite = 'OCLExpression::ReferenceState::subSyncChart'/>
+    </Class>
+    <Class name = 'ReferenceState' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'subSyncChart' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCLExpression::SyncChart' opposite = 'OCLExpression::SyncChart::referenceState'/>
+      <Reference name = 'containers' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCLExpression::Stg' opposite = 'OCLExpression::Stg::referenceState'/>
+    </Class>
+    <Class name = 'Arc' isAbstract = 'true' supertypes = 'OCLExpression::ModelElement'>
+      <Attribute name = 'isImmediate' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'priority' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Integer'/>
+      <Reference name = 'target' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCLExpression::Vertex' opposite = 'OCLExpression::Vertex::incoming'/>
+      <Reference name = 'source' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCLExpression::Vertex' opposite = 'OCLExpression::Vertex::outcoming'/>
+      <Reference name = 'stg' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCLExpression::Stg' opposite = 'OCLExpression::Stg::arc'/>
+    </Class>
+    <Class name = 'Vertex' isAbstract = 'true' supertypes = 'OCLExpression::ModelElement'>
+      <Reference name = 'incoming' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'OCLExpression::Arc' opposite = 'OCLExpression::Arc::target'/>
+      <Reference name = 'outcoming' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'OCLExpression::Arc' opposite = 'OCLExpression::Arc::source'/>
+    </Class>
+    <Class name = 'PseudoState' isAbstract = 'false' supertypes = 'OCLExpression::Vertex'>
+      <Reference name = 'kind' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCLExpression::PseudoStateKind' opposite = ''/>
+    </Class>
+    <Class name = 'PseudoStateKind' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'State' isAbstract = 'false' supertypes = 'OCLExpression::Vertex'>
+      <Attribute name = 'isFinal' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+    </Class>
+    <Class name = 'SimpleState' isAbstract = 'false' supertypes = 'OCLExpression::State'/>
+    <Class name = 'CompositeState' isAbstract = 'false' supertypes = 'OCLExpression::State, OCLExpression::ReferenceState'>
+      <Attribute name = 'canTerminate' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isSuspendable' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'stg' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'OCLExpression::Stg' opposite = 'OCLExpression::Stg::compositeState'/>
+    </Class>
+    <Class name = 'Stg' isAbstract = 'false' supertypes = ''>
+      <Attribute name = 'withFinal' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'compositeState' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCLExpression::CompositeState' opposite = 'OCLExpression::CompositeState::stg'/>
+      <Reference name = 'arc' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'OCLExpression::Arc' opposite = 'OCLExpression::Arc::stg'/>
+      <Reference name = 'referenceState' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'OCLExpression::ReferenceState' opposite = 'OCLExpression::ReferenceState::containers'/>
+    </Class>
+    <Class name = 'Transition' isAbstract = 'false' supertypes = 'OCLExpression::Arc'>
+      <Reference name = 'kind' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCLExpression::TransitionKind' opposite = ''/>
+    </Class>
+    <Class name = 'TransitionKind' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'PseudoTransition' isAbstract = 'false' supertypes = 'OCLExpression::Arc'>
+      <Reference name = 'kind' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'OCLExpression::PseudoTransitionKind' opposite = ''/>
+    </Class>
+    <Class name = 'PseudoTransitionKind' isAbstract = 'false' supertypes = ''/>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>

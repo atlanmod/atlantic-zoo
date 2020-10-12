@@ -1,0 +1,102 @@
+-- @name		C++
+-- @version		1.0
+-- @domains		Programming language
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com), Pierrick Guyard (pierrick.guyard <at> gmail.com)
+-- @date		2005/08/05
+-- @description	This metamodel simply describes C++ which is a general-purpose computer programming language. This is a statically typed language supporting procedural programming, data abstraction, object-oriented programming, and generic programming. During the 1990s, C++ became one of the most popular commercial programming languages. The C++ programming language standard was ratified in 1998 as ISO/IEC 14882:1998, the current version of which is the 2003 version, ISO/IEC 14882:2003. 
+-- @see			http://www.cplusplus.com/
+
+package CPP {
+
+	-- @begin classes from C metamodel
+
+	class CDerived {}
+	
+	class CStructured {}
+	
+	class CBehavorialFeature {}
+	
+	class CFunction extends CBehavorialFeature {
+		attribute isVsrArg : Boolean;
+	}
+	
+	class CStructureContents {}
+	
+	class CField {}
+	
+	class CDerivableType {}
+	
+	-- @end classes from C metamodel
+	
+	
+	-- @begin CPP classes 
+
+	enumeration VisibilityKind {
+		literal vk_public;
+		literal vk_private;
+		literal vk_protected;
+	}
+	
+	class CPPReference extends CDerived {}
+	
+	class CPPExtern extends CDerived {
+		attribute linkage : String;
+	} 
+	
+	class CPPConst extends CDerived {}
+	
+	class CPPTemplate extends CDerived {
+		reference classes[*] : CPPClass oppositeOf templates;
+	}
+	
+	class CPPClass extends CStructured {
+		attribute isAbstract : Boolean;
+		attribute isVolatile : Boolean;
+		attribute visibility : VisibilityKind;
+		reference templates[*] : CPPTemplate oppositeOf classes;
+		reference generalizations[*] : CPPGeneralization;
+	}
+	
+	class CPPGeneralization {
+		attribute visibility : VisibilityKind;
+		attribute isVirtual : Boolean;
+		reference supertype : CPPClass;
+	}
+	
+	class CPPOperation extends CFunction, CStructureContents {
+		attribute isStatic : Boolean;
+		attribute isExtern : Boolean;
+		attribute isInline : Boolean;
+		attribute isVirtual : Boolean;
+		attribute isPure : Boolean;
+		attribute visibility : VisibilityKind;
+		attribute isCtor : Boolean;
+		attribute isDtor : Boolean;
+		reference throws[*] : CPPClass;
+	}
+	
+	class CPPOperator extends CStructureContents {
+		attribute isInline : Boolean;
+		attribute visibility : VisibilityKind;
+	}
+	
+	class CPPMember {
+		attribute isStatic : Boolean;
+		attribute isVolatile : Boolean;
+		attribute isRegister : Boolean;
+		attribute visibility : VisibilityKind;
+	}
+	
+	-- @end CPP classes 
+	
+}
+
+
+package PrimitiveTypes {
+	
+	datatype Integer;
+	datatype String;
+	datatype Boolean;
+	datatype Double;
+
+}

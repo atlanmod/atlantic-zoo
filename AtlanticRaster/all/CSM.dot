@@ -1,0 +1,113 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_CSM"{
+labelloc=t
+color=black
+label=CSM
+ node[shape=record];
+CSM[label="{CSM| | }"]
+ CSM->Step[arrowhead=vee,arrowtail=diamond,headlabel="step[1-*]",group=Step,minlen=2,constraint=true,]
+ CSM->GeneralResource[arrowhead=vee,arrowtail=diamond,headlabel="generalResource[1-*]",group=GeneralResource,minlen=2,constraint=true,]
+ CSM->Scenarion[arrowhead=vee,arrowtail=diamond,headlabel="scenarion[1-*]",group=Scenarion,minlen=2,constraint=true,]
+;
+ node[shape=record];
+GeneralResource[label="{GeneralResource| | }"]
+ GeneralResource->ResourceAcquire[arrowhead=none,arrowtail=none,headlabel="resourceAcquire[*]",taillabel="generalResource",group=ResourceAcquire,minlen=2,constraint=false,]
+ GeneralResource->ResourceRelease[arrowhead=none,arrowtail=none,headlabel="resourceRelease[*]",taillabel="generalResource",group=ResourceRelease,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Step[label="{Step| | }"]
+ Step->PathConnection[arrowhead=none,arrowtail=none,headlabel="prePath[0-1]",taillabel="pre[*]",group=PathConnection,minlen=2,constraint=false,]
+ Step->ActiveResource[arrowhead=none,arrowtail=none,headlabel="activeResource",taillabel="step[*]",group=ActiveResource,minlen=2,constraint=false,]
+ Step->Scenarion[arrowhead=onormal,group=Scenarion,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Scenarion[label="{Scenarion| | }"]
+ Scenarion->Step[arrowhead=vee,arrowtail=diamond,headlabel="step[1-*]",group=Step,minlen=2,constraint=true,]
+ Scenarion->Start[arrowhead=vee,arrowtail=none,headlabel="root[1-*]",group=Start,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Start[label="{Start| | }"]
+ Start->Step[arrowhead=onormal,group=Step,minlen=2,constraint=true,]
+;
+ node[shape=record];
+End[label="{End| | }"]
+ End->Step[arrowhead=onormal,group=Step,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ResourceAcquire[label="{ResourceAcquire| | }"]
+ ResourceAcquire->Step[arrowhead=onormal,group=Step,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ResourceRelease[label="{ResourceRelease| | }"]
+ ResourceRelease->Step[arrowhead=onormal,group=Step,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Workload[label="{Workload| | }"]
+ Workload->Start[arrowhead=none,arrowtail=none,headlabel="start",taillabel="workload[0-1]",group=Start,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Component[label="{Component| | }"]
+ Component->PassiveResource[arrowhead=onormal,group=PassiveResource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ProcessingResource[label="{ProcessingResource| | }"]
+ ProcessingResource->ActiveResource[arrowhead=onormal,group=ActiveResource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ExternalService[label="{ExternalService| | }"]
+ ExternalService->ActiveResource[arrowhead=onormal,group=ActiveResource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ActiveResource[label="{ActiveResource| | }"]
+ ActiveResource->GeneralResource[arrowhead=onormal,group=GeneralResource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+PassiveResource[label="{PassiveResource| | }"]
+ PassiveResource->GeneralResource[arrowhead=onormal,group=GeneralResource,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Message[label="{Message| | }"]
+;
+ node[shape=record];
+PathConnection[label="{PathConnection| | }"]
+ PathConnection->Message[arrowhead=vee,arrowtail=none,headlabel="message[0-1]",group=Message,minlen=2,constraint=false,]
+ PathConnection->Step[arrowhead=none,arrowtail=none,headlabel="post[*]",taillabel="postPath[0-1]",group=Step,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Join[label="{Join| | }"]
+ Join->PathConnection[arrowhead=onormal,group=PathConnection,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Fork[label="{Fork| | }"]
+ Fork->PathConnection[arrowhead=onormal,group=PathConnection,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Merge[label="{Merge| | }"]
+ Merge->PathConnection[arrowhead=onormal,group=PathConnection,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Branch[label="{Branch| | }"]
+ Branch->PathConnection[arrowhead=onormal,group=PathConnection,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Seqence[label="{Seqence| | }"]
+ Seqence->PathConnection[arrowhead=onormal,group=PathConnection,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Boolean[label="{&#171;DataType&#187;\nBoolean|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

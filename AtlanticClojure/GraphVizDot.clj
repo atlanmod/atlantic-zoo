@@ -1,0 +1,8 @@
+( defstruct LocatedElement )
+( defstruct NamedElement :name )
+( defstruct Graph :name )
+( defstruct GraphElement :graph :name )
+( defstruct Node :shape :style :graph :name :name )
+( defstruct DirectedArc :sourceNode :targetNode :graph :name )
+( defstruct Constraint :graph :name )
+( defstruct SubGraph :name :graph :name )

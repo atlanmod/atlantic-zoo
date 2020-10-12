@@ -1,0 +1,55 @@
+-- @name		Actor Concept
+-- @version		1.0
+-- @domains		Tropos
+-- @authors		SIMON Eric(simon.eric3<at>gmail.com)
+-- @date		2006/07/18
+-- @description This metamodel specifies the actor concept in the Tropos metamodel.
+-- @see			The Tropos visual modeling language. A MOF 1.4 compliant meta-model
+-- @see 		Authors: David Bertolini, Anna Perini, Angelo Susi and Haralambos Mouratidis
+-- @see 		http://www.pa.icar.cnr.it/cossentino/al3tf2/docs/tropos.pdf, p4
+
+package ActorConcept {
+
+ class Actor {
+ 	reference dependencyE[*] : Dependency oppositeOf dependee;
+ 	reference dependencyR[*] : Dependency oppositeOf depender;
+ 	reference goal[*] : Goal oppositeOf wanter;
+ 	reference plan[*] : Plan oppositeOf capableOf;
+ 	reference resource[*] : Resource oppositeOf use;
+ }
+ 
+ class Goal {
+ 	reference wanter : Actor oppositeOf goal;
+ 	reference plan[1-*] : Plan 	oppositeOf isFulfilled;
+ 	reference dependencyWG[*] : Dependency oppositeOf WhyG;
+ 	reference dependencyG[*] : Dependency oppositeOf goal;
+ }
+
+ class SoftGoal extends Goal {}
+ class HardGoal extends Goal {}
+ 
+ class Dependency {
+ 	reference dependee : Actor oppositeOf dependencyE;
+ 	reference depender : Actor oppositeOf dependencyR;
+ 	reference goal[0-1] : Goal oppositeOf dependencyG; 
+ 	reference WhyG[0-1] : Goal oppositeOf dependencyWG;
+ 	reference WhyR[0-1] : Resource oppositeOf dependencyWR;
+ 	reference resourceD[0-1] : Resource oppositeOf dependencyR;
+ 	reference WhyP[0-1] : Plan oppositeOf dependencyWP;
+ 	reference plan[0-1] : Plan oppositeOf dependencyP; 
+ }
+
+ class Plan {
+ 	reference isFulfilled : Goal oppositeOf plan;
+ 	reference capableOf : Actor oppositeOf plan;
+ 	reference dependencyWP[*] : Dependency oppositeOf WhyP;
+ 	reference dependencyP[*] : Dependency oppositeOf plan;
+ }
+
+ class Resource {
+ 	reference use : Actor oppositeOf resource;
+ 	reference dependencyWR : Dependency oppositeOf WhyR;
+ 	reference dependencyR : Dependency oppositeOf resourceD;
+ }
+
+}

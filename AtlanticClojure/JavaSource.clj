@@ -1,0 +1,5 @@
+( defstruct JavaSource :classes )
+( defstruct NamedElement :name )
+( defstruct ClassDeclaration :name )
+( defstruct MethodDefinition :class :name )
+( defstruct MethodInvocation :method )

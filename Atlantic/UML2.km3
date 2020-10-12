@@ -1,0 +1,1373 @@
+-- @name 		UML2
+-- @version 	1.0
+-- @domains 	UML, EMF
+-- @authors 	Julien Baudry (jul.baudry@gmail.com)
+-- @date 		2006/05/21
+-- @description This metamodel has been extracted from the project UML2 (http://www.eclipse.org/uml2/). UML2 is an EMF-based implementation of the UML(TM) 2.x metamodel for the Eclipse platform. The objectives of this project are to provide a useable implementation of the metamodel to support the development of modeling tools, a common XMI schema to facilitate interchange of semantic models, test cases as a means of validating the specification, and validation rules as a means of defining and enforcing levels of compliance.
+-- @see 		http://www.eclipse.org/uml2/
+
+package PrimitiveTypes {
+	datatype Boolean;
+	datatype Integer;
+	datatype String;
+	datatype UnlimitedNatural;
+	datatype Sequence;
+	datatype Set;
+}
+
+package uml2 {
+	abstract class Element {
+		reference ownedElement[*] : Element oppositeOf owner;
+		reference owner[0-1] : Element oppositeOf ownedElement;
+		reference ownedComment[*] container : Comment;
+	}
+
+	abstract class MultiplicityElement extends Element {
+		attribute isOrdered[0-1] : Boolean;
+		attribute isUnique[0-1] : Boolean;
+		attribute lower[0-1] : Integer;
+		attribute upper[0-1] : UnlimitedNatural;
+		reference upperValue[0-1] container : ValueSpecification;
+		reference lowerValue[0-1] container : ValueSpecification;
+	}
+
+	abstract class NamedElement extends TemplateableElement {
+		attribute name[0-1] : String;
+		attribute qualifiedName[0-1] : String;
+		attribute visibility[0-1] : VisibilityKind;
+		reference clientDependency[*] : Dependency oppositeOf client;
+		reference nameExpression[0-1] container : StringExpression;
+	}
+
+	abstract class Namespace extends NamedElement {
+		reference member[*] : NamedElement;
+		reference ownedRule[*] container : Constraint oppositeOf namespace;
+		reference importedMember[*] : PackageableElement;
+		reference elementImport[*] container : ElementImport oppositeOf importingNamespace;
+		reference packageImport[*] container : PackageImport oppositeOf importingNamespace;
+	}
+
+	class OpaqueExpression extends ValueSpecification {
+		attribute body[0-1] : String;
+		attribute language[0-1] : String;
+		reference result[0-1] : Parameter;
+		reference behavior[0-1] : Behavior;
+	}
+
+	abstract class ValueSpecification extends TypedElement, ParameterableElement {
+	}
+
+	class Expression extends OpaqueExpression {
+		attribute symbol[0-1] : String;
+		reference operand[*] ordered container : ValueSpecification;
+	}
+
+	class Comment extends TemplateableElement {
+		attribute body[0-1] : String;
+		reference annotatedElement[*] : Element;
+		reference bodyExpression[0-1] container : StringExpression;
+	}
+
+	abstract class DirectedRelationship extends Relationship {
+		reference source[1-*] : Element;
+		reference target[1-*] : Element;
+	}
+
+	abstract class Relationship extends Element {
+		reference relatedElement[1-*] : Element;
+	}
+
+	class Class extends BehavioredClassifier, EncapsulatedClassifier {
+		reference ownedOperation[*] ordered container : Operation oppositeOf class_;
+		reference superClass[*] : Class;
+		reference extension[*] : Extension oppositeOf metaclass;
+		reference nestedClassifier[*] ordered container : Classifier;
+		attribute isActive[0-1] : Boolean;
+		reference ownedReception[*] container : Reception;
+	}
+
+	abstract class Type extends PackageableElement {
+		reference "package"[0-1] : Package oppositeOf ownedType;
+	}
+
+	class Property extends StructuralFeature, ConnectableElement, DeploymentTarget {
+		attribute default[0-1] : String;
+		attribute isComposite[0-1] : Boolean;
+		attribute isDerived[0-1] : Boolean;
+		reference class_[0-1] : Class;
+		reference opposite[0-1] : Property;
+		attribute isDerivedUnion[0-1] : Boolean;
+		reference owningAssociation[0-1] : Association oppositeOf ownedEnd;
+		reference redefinedProperty[*] : Property;
+		reference subsettedProperty[*] : Property;
+		reference "datatype"[0-1] : DataType oppositeOf ownedAttribute;
+		reference association[0-1] : Association oppositeOf memberEnd;
+		attribute aggregation[0-1]  : AggregationKind;
+		reference defaultValue[0-1] container : ValueSpecification;
+		reference qualifier[*] ordered container : Property oppositeOf associationEnd;
+		reference associationEnd[0-1] : Property oppositeOf qualifier;
+	}
+
+	class Operation extends BehavioralFeature, TypedElement, MultiplicityElement, ParameterableElement {
+		reference ownedParameter[*] ordered container : Parameter oppositeOf "operation";
+		reference class_[0-1] : Class oppositeOf ownedOperation;
+		attribute isQuery[0-1] : Boolean;
+		reference "datatype"[0-1] : DataType oppositeOf ownedOperation;
+		reference precondition[*] : Constraint;
+		reference postcondition[*] : Constraint;
+		reference redefinedOperation[*] : Operation;
+		reference bodyCondition[0-1] : Constraint;
+	}
+
+	abstract class TypedElement extends NamedElement {
+		reference type[0-1] : Type;
+	}
+
+	class Parameter extends ConnectableElement, TypedElement, MultiplicityElement {
+		reference "operation"[0-1] : Operation oppositeOf ownedParameter;
+		attribute default[0-1] : String;
+		attribute direction[0-1] : ParameterDirectionKind;
+		reference defaultValue[0-1] container : ValueSpecification;
+		attribute isException[0-1] : Boolean;
+		attribute isStream[0-1] : Boolean;
+		attribute effect[0-1] : ParameterEffectKind;
+		reference parameterSet[*] : ParameterSet oppositeOf parameter;
+	}
+
+	class Package extends Namespace, PackageableElement {
+		reference nestedPackage[*] : Package oppositeOf nestingPackage;
+		reference nestingPackage[0-1] : Package oppositeOf nestedPackage;
+		reference ownedType[*] : Type oppositeOf "package";
+		reference ownedMember[*] container : PackageableElement;
+		reference packageMerge[*] container : PackageMerge oppositeOf mergingPackage;
+		reference appliedProfile[*] : ProfileApplication;
+		reference packageExtension[*] container : PackageMerge;
+	}
+
+	class Enumeration extends DataType {
+		reference ownedLiteral[*] ordered container : EnumerationLiteral oppositeOf "enumeration";
+	}
+
+	class DataType extends Classifier {
+		reference ownedAttribute[*] ordered container : Property oppositeOf "datatype";
+		reference ownedOperation[*] ordered container : Operation oppositeOf "datatype";
+	}
+
+	class EnumerationLiteral extends InstanceSpecification {
+		reference "enumeration"[0-1] : Enumeration oppositeOf ownedLiteral;
+	}
+
+	class PrimitiveType extends DataType {
+	}
+
+	abstract class Classifier extends Namespace, Type, RedefinableElement {
+		reference feature[*] : Feature oppositeOf featuringClassifier;
+		attribute isAbstract[0-1] : Boolean;
+		reference inheritedMember[*] : NamedElement;
+		reference general[*] : Classifier;
+		reference generalization[*] container : Generalization oppositeOf specific;
+		reference "attribute"[*] : Property;
+		reference redefinedClassifier[*] : Classifier;
+		reference substitution[*] container : Substitution oppositeOf substitutingClassifier;
+		reference powertypeExtent[*] : GeneralizationSet oppositeOf powertype;
+		reference ownedUseCase[*] container : UseCase;
+		reference useCase[*] : UseCase oppositeOf subject;
+		reference representation[0-1] : CollaborationOccurrence;
+		reference occurrence[*] container : CollaborationOccurrence;
+	}
+
+	abstract class Feature extends RedefinableElement {
+		reference featuringClassifier[*] : Classifier oppositeOf feature;
+		attribute isStatic[0-1] : Boolean;
+	}
+
+	class Constraint extends PackageableElement {
+		reference context[0-1] : Namespace;
+		reference namespace[0-1] : Namespace oppositeOf ownedRule;
+		reference specification container : ValueSpecification;
+		reference constrainedElement[*] ordered : Element;
+	}
+
+	enumeration VisibilityKind {
+		literal "package";
+		literal private;
+		literal protected;
+		literal public;
+	}
+
+	class LiteralBoolean extends LiteralSpecification {
+		attribute value[0-1] : Boolean;
+	}
+
+	abstract class LiteralSpecification extends ValueSpecification {
+		
+	}
+
+	class LiteralString extends LiteralSpecification {
+		attribute value[0-1] : String;
+	}
+
+	class LiteralNull extends LiteralSpecification {
+		
+	}
+
+	class LiteralInteger extends LiteralSpecification {
+		attribute value[0-1] : Integer;
+	}
+
+	class LiteralUnlimitedNatural extends LiteralSpecification {
+		attribute value[0-1] : UnlimitedNatural;
+	}
+
+	abstract class BehavioralFeature extends Namespace, Feature {
+		reference parameter[*] ordered : Parameter;
+		reference formalParameter[*] container : Parameter;
+		reference returnResult[*] ordered container : Parameter;
+		reference raisedException[*] : Type;
+		attribute isAbstract[0-1] : Boolean;
+		reference method[*] : Behavior oppositeOf specification;
+		attribute concurrency[0-1] : CallConcurrencyKind;
+	}
+
+	abstract class StructuralFeature extends Feature, TypedElement, MultiplicityElement {
+		attribute isReadOnly[0-1] : Boolean;
+	}
+
+	class InstanceSpecification extends PackageableElement, DeploymentTarget, DeployedArtifact {
+		reference slot[*] container : Slot oppositeOf owningInstance;
+		reference classifier[*] : Classifier;
+		reference specification[0-1] container : ValueSpecification;
+	}
+
+	class Slot extends Element {
+		reference owningInstance  : InstanceSpecification oppositeOf slot;
+		reference value[*] ordered container : ValueSpecification;
+		reference definingFeature  : StructuralFeature;
+	}
+
+	class InstanceValue extends ValueSpecification {
+		reference instance  : InstanceSpecification;
+	}
+
+	abstract class RedefinableElement extends NamedElement {
+		reference redefinitionContext[*] ordered : Classifier;
+		attribute isLeaf[0-1]  : Boolean;
+	}
+
+	class Generalization extends DirectedRelationship {
+		reference specific : Classifier oppositeOf generalization;
+		reference general : Classifier;
+		attribute isSubstitutable[0-1] : Boolean;
+		reference generalizationSet[*] : GeneralizationSet oppositeOf generalization;
+	}
+
+	abstract class PackageableElement extends NamedElement, ParameterableElement {
+		attribute packageableElement_visibility[0-1]  : VisibilityKind;
+	}
+
+	class ElementImport extends DirectedRelationship {
+		attribute visibility[0-1] : VisibilityKind;
+		attribute alias[0-1] : String;
+		reference importedElement  : PackageableElement;
+		reference importingNamespace  : Namespace oppositeOf elementImport;
+	}
+
+	class PackageImport extends DirectedRelationship {
+		attribute visibility[0-1] : VisibilityKind;
+		reference importedPackage  : Package;
+		reference importingNamespace  : Namespace oppositeOf packageImport;
+	}
+
+	class Association extends Classifier, Relationship {
+		attribute isDerived[0-1] : Boolean;
+		reference ownedEnd[*] ordered container : Property oppositeOf owningAssociation;
+		reference endType[1-*] : Type;
+		reference memberEnd[2-*] ordered : Property oppositeOf association;
+	}
+
+	class PackageMerge extends DirectedRelationship {
+		reference mergingPackage  : Package oppositeOf packageMerge;
+		reference mergedPackage  : Package;
+	}
+
+	class Stereotype extends Class {
+		
+	}
+
+	class Profile extends Package {
+		reference ownedStereotype[*] : Stereotype;
+		reference metaclassReference[*] : ElementImport;
+		reference metamodelReference[*] : PackageImport;
+	}
+
+	class ProfileApplication extends PackageImport {
+		reference importedProfile  : Profile;
+	}
+
+	class Extension extends Association {
+		attribute isRequired[0-1] : Boolean;
+		reference metaclass  : Class oppositeOf extension;
+	}
+
+	class ExtensionEnd extends Property {
+		
+	}
+
+	enumeration ParameterDirectionKind {
+		literal in;
+		literal inout;
+		literal out;
+		literal return;
+	}
+
+	enumeration AggregationKind {
+		literal composite;
+		literal none;
+		literal shared;
+	}
+
+	abstract class Behavior extends Class {
+		attribute isReentrant[0-1] : Boolean;
+		reference context[0-1] : BehavioredClassifier oppositeOf ownedBehavior;
+		reference redefinedBehavior[*] : Behavior;
+		reference specification[0-1] : BehavioralFeature oppositeOf method;
+		reference parameter[*] ordered container : Parameter;
+		reference formalParameter[*] ordered : Parameter;
+		reference returnResult[*] ordered : Parameter;
+		reference precondition[*] : Constraint;
+		reference postcondition[*] : Constraint;
+		reference ownedParameterSet[*] container : ParameterSet;
+	}
+
+	abstract class BehavioredClassifier extends Classifier {
+		reference ownedBehavior[*] container : Behavior oppositeOf context;
+		reference classifierBehavior[0-1] : Behavior;
+		reference implementation[*] container : Implementation oppositeOf implementingClassifier;
+		reference ownedTrigger[*] container : Trigger;
+		reference ownedStateMachine[*] container : StateMachine oppositeOf stateMachine_redefinitionContext;
+	}
+
+	class Activity extends Behavior {
+		attribute body[0-1] : String;
+		attribute language[0-1] : String;
+		reference edge[*] container : ActivityEdge oppositeOf activity;
+		reference group[*] container : ActivityGroup oppositeOf activityGroup_activity;
+		reference node[*] container : ActivityNode oppositeOf activity;
+		reference action[*] ordered : Action;
+		reference structuredNode[*] : StructuredActivityNode;
+		attribute isSingleExecution[0-1] : Boolean;
+		attribute isReadOnly[0-1] : Boolean;
+	}
+
+	class Permission extends Dependency {
+		
+	}
+
+	class Dependency extends PackageableElement, DirectedRelationship {
+		reference client[1-*] : NamedElement oppositeOf clientDependency;
+		reference supplier[1-*] : NamedElement;
+	}
+
+	class Usage extends Dependency {
+		
+	}
+
+	class Abstraction extends Dependency {
+		reference mapping[0-1] container : OpaqueExpression;
+	}
+
+	class Realization extends Abstraction {
+		reference abstraction[0-1] : Component oppositeOf realization;
+		reference realizingClassifier  : Classifier;
+	}
+
+	class Substitution extends Realization {
+		reference contract  : Classifier;
+		reference substitutingClassifier  : Classifier oppositeOf substitution;
+	}
+
+	class GeneralizationSet extends PackageableElement {
+		attribute isCovering[0-1] : Boolean;
+		attribute isDisjoint[0-1] : Boolean;
+		reference powertype[0-1] : Classifier oppositeOf powertypeExtent;
+		reference generalization[*] : Generalization oppositeOf generalizationSet;
+	}
+
+	class AssociationClass extends Class, Association {
+		
+	}
+
+	class InformationItem extends Classifier {
+		reference represented[*] : Classifier;
+	}
+
+	class InformationFlow extends PackageableElement, DirectedRelationship {
+		reference realization[*] : Relationship;
+		reference conveyed[1-*] : Classifier;
+	}
+
+	class Model extends Package {
+		attribute viewpoint[0-1] : String;
+	}
+
+	class ConnectorEnd extends MultiplicityElement {
+		reference definingEnd[0-1] : Property;
+		reference role[0-1] : ConnectableElement oppositeOf end;
+		reference partWithPort[0-1] : Property;
+	}
+
+	abstract class ConnectableElement extends NamedElement, ParameterableElement {
+		reference end[*] : ConnectorEnd oppositeOf role;
+	}
+
+	class Connector extends Feature {
+		reference type[0-1] : Association;
+		reference redefinedConnector[*] : Connector;
+		reference end[2-*] ordered container : ConnectorEnd;
+		attribute kind[0-1] : ConnectorKind;
+		reference contract[*] : Behavior;
+	}
+
+	abstract class StructuredClassifier extends Classifier {
+		reference ownedAttribute[*] ordered container : Property;
+		reference part[*] : Property;
+		reference role[*] : ConnectableElement;
+		reference ownedConnector[*] container : Connector;
+	}
+
+	abstract class ActivityEdge extends RedefinableElement {
+		reference activity[0-1] : Activity oppositeOf edge;
+		reference source  : ActivityNode oppositeOf outgoing;
+		reference target  : ActivityNode oppositeOf incoming;
+		reference inGroup[*] : ActivityGroup;
+		reference guard  container : ValueSpecification;
+		reference redefinedElement[*] : ActivityEdge;
+		reference inStructuredNode[0-1] : StructuredActivityNode oppositeOf containedEdge;
+		reference inPartition[*] : ActivityPartition oppositeOf containedEdge;
+		reference weight  container : ValueSpecification;
+		reference interrupts[0-1] : InterruptibleActivityRegion oppositeOf interruptingEdge;
+	}
+
+	abstract class ActivityGroup extends Element {
+		reference superGroup[0-1] : ActivityGroup;
+		reference activityGroup_activity[0-1] : Activity oppositeOf group;
+	}
+
+	abstract class ActivityNode extends RedefinableElement {
+		reference outgoing[*] : ActivityEdge oppositeOf source;
+		reference incoming[*] : ActivityEdge oppositeOf target;
+		reference inGroup[*] : ActivityGroup;
+		reference activity[0-1] : Activity oppositeOf node;
+		reference redefinedElement[*] : ActivityNode;
+		reference inStructuredNode[0-1] : StructuredActivityNode oppositeOf containedNode;
+		reference inPartition[*] : ActivityPartition oppositeOf containedNode;
+		reference inInterruptibleRegion[*] : InterruptibleActivityRegion oppositeOf containedNode;
+	}
+
+	class Action extends ExecutableNode {
+		attribute effect[0-1] : String;
+		reference output[*] ordered : OutputPin;
+		reference input[*] ordered : InputPin;
+		reference context[0-1] : Classifier;
+		reference localPrecondition[*] container : Constraint;
+		reference localPostcondition[*] container : Constraint;
+	}
+
+	abstract class ObjectNode extends ActivityNode, TypedElement {
+		attribute ordering[0-1] : ObjectNodeOrderingKind;
+		reference upperBound  container : ValueSpecification;
+		reference inState[*] : State;
+		reference selection[0-1] : Behavior;
+	}
+
+	abstract class ControlNode extends ActivityNode {
+		
+	}
+
+	class ControlFlow extends ActivityEdge {
+		
+	}
+
+	class ObjectFlow extends ActivityEdge {
+		attribute isMulticast[0-1] : Boolean;
+		attribute isMultireceive[0-1] : Boolean;
+		reference transformation[0-1] : Behavior;
+		reference selection[0-1] : Behavior;
+	}
+
+	class InitialNode extends ControlNode {
+		
+	}
+
+	abstract class FinalNode extends ControlNode {
+		
+	}
+
+	class ActivityFinalNode extends FinalNode {
+		
+	}
+
+	class DecisionNode extends ControlNode {
+		reference decisionInput[0-1] : Behavior;
+	}
+
+	class MergeNode extends ControlNode {
+		
+	}
+
+	abstract class ExecutableNode extends ActivityNode {
+		reference handler[*] container : ExceptionHandler oppositeOf protectedNode;
+	}
+
+	class OutputPin extends Pin {
+		
+	}
+
+	class InputPin extends Pin {
+		
+	}
+
+	abstract class Pin extends ObjectNode, MultiplicityElement {
+		
+	}
+
+	class ActivityParameterNode extends ObjectNode {
+		reference parameter  : Parameter;
+	}
+
+	class ValuePin extends InputPin {
+		reference value  container : ValueSpecification;
+	}
+
+	class Interface extends Classifier {
+		reference ownedAttribute[*] ordered container : Property;
+		reference ownedOperation[*] ordered container : Operation;
+		reference redefinedInterface[*] : Interface;
+		reference nestedClassifier[*] ordered container : Classifier;
+		reference ownedReception[*] container : Reception;
+		reference protocol[0-1] container : ProtocolStateMachine;
+	}
+
+	class Implementation extends Realization {
+		reference contract  : Interface;
+		reference implementingClassifier  : BehavioredClassifier oppositeOf implementation;
+	}
+
+	class Artifact extends Classifier, DeployedArtifact {
+		attribute fileName[0-1] : String;
+		reference nestedArtifact[*] container : Artifact;
+		reference manifestation[*] container : Manifestation;
+		reference ownedOperation[*] ordered container : Operation;
+		reference ownedAttribute[*] ordered container : Property;
+	}
+
+	class Manifestation extends Abstraction {
+		reference utilizedElement  : PackageableElement;
+	}
+
+	class Actor extends Classifier {
+		
+	}
+
+	class Extend extends NamedElement, DirectedRelationship {
+		reference extendedCase  : UseCase;
+		reference extension : UseCase oppositeOf extend;
+		reference condition[0-1] container : Constraint;
+		reference extensionLocation[1-*] ordered : ExtensionPoint;
+	}
+
+	class UseCase extends BehavioredClassifier {
+		reference include[*] container : Include oppositeOf includingCase;
+		reference extend[*] container : Extend oppositeOf extension;
+		reference extensionPoint[*] container : ExtensionPoint oppositeOf useCase;
+		reference subject[*] : Classifier oppositeOf useCase;
+	}
+
+	class ExtensionPoint extends RedefinableElement {
+		reference useCase  : UseCase oppositeOf extensionPoint;
+	}
+
+	class Include extends NamedElement, DirectedRelationship {
+		reference includingCase  : UseCase oppositeOf include;
+		reference addition  : UseCase;
+	}
+
+	class CollaborationOccurrence extends NamedElement {
+		reference type  : Collaboration;
+		reference roleBinding[*] container : Dependency;
+	}
+
+	class Collaboration extends BehavioredClassifier, StructuredClassifier {
+		reference collaborationRole[*] : ConnectableElement;
+	}
+
+	class Port extends Property {
+		attribute isBehavior[0-1] : Boolean;
+		attribute isService[0-1] : Boolean;
+		reference required[*] : Interface;
+		reference redefinedPort[*] : Port;
+		reference provided[*] : Interface;
+		reference protocol[0-1] : ProtocolStateMachine;
+	}
+
+	abstract class EncapsulatedClassifier extends StructuredClassifier {
+		reference ownedPort[*] container : Port;
+	}
+
+	enumeration CallConcurrencyKind {
+		literal guarded;
+		literal concurrent;
+		literal sequential;
+	}
+
+	class CallTrigger extends MessageTrigger {
+		reference "operation"  : Operation;
+	}
+
+	abstract class MessageTrigger extends Trigger {
+		
+	}
+
+	class ChangeTrigger extends Trigger {
+		reference changeExpression  container : ValueSpecification;
+	}
+
+	abstract class Trigger extends NamedElement {
+		reference port[*] : Port;
+	}
+
+	class Reception extends BehavioralFeature {
+		reference signal[0-1] : Signal;
+	}
+
+	class Signal extends Classifier {
+		reference ownedAttribute[*] ordered container : Property;
+	}
+
+	class SignalTrigger extends MessageTrigger {
+		reference signal[*] ordered : Signal;
+	}
+
+	class TimeTrigger extends Trigger {
+		attribute isRelative[0-1] : Boolean;
+		reference when  container : ValueSpecification;
+	}
+
+	class AnyTrigger extends MessageTrigger {
+		
+	}
+
+	class Variable extends ConnectableElement, TypedElement, MultiplicityElement {
+		reference scope  : StructuredActivityNode oppositeOf variable;
+	}
+
+	class StructuredActivityNode extends Action, Namespace, ActivityGroup {
+		reference variable[*] container : Variable oppositeOf scope;
+		reference containedNode[*] ordered container : ActivityNode oppositeOf inStructuredNode;
+		reference containedEdge[*] ordered container : ActivityEdge oppositeOf inStructuredNode;
+		attribute mustIsolate[0-1] : Boolean;
+	}
+
+	class ConditionalNode extends StructuredActivityNode {
+		attribute isDeterminate[0-1] : Boolean;
+		attribute isAssured[0-1] : Boolean;
+		reference clause[1-*] container : Clause;
+		reference result[*] ordered container : OutputPin;
+	}
+
+	class Clause extends Element {
+		reference test[*] : ActivityNode;
+		reference body[*] : ActivityNode;
+		reference predecessorClause[*] : Clause oppositeOf successorClause;
+		reference successorClause[*] : Clause oppositeOf predecessorClause;
+		reference decider : OutputPin;
+		reference bodyOutput[*] : OutputPin;
+	}
+
+	class LoopNode extends StructuredActivityNode {
+		attribute isTestedFirst[0-1] : Boolean;
+		reference bodyPart[*] : ActivityNode;
+		reference setupPart[*] : ActivityNode;
+		reference decider : OutputPin;
+		reference test[*] : ActivityNode;
+		reference result[*] ordered container : OutputPin;
+		reference loopVariable[*] ordered container : OutputPin;
+		reference bodyOutput[*] : OutputPin;
+		reference loopVariableInput[*] ordered container : InputPin;
+	}
+
+	class Interaction extends Behavior, InteractionFragment {
+		reference lifeline[*] container : Lifeline oppositeOf interaction;
+		reference message[*] container : Message oppositeOf interaction;
+		reference fragment[*] ordered container : InteractionFragment oppositeOf enclosingInteraction;
+		reference formalGate[*] container : Gate;
+	}
+
+	abstract class InteractionFragment extends NamedElement {
+		reference covered[*] ordered : Lifeline oppositeOf coveredBy;
+		reference generalOrdering[*] container : GeneralOrdering;
+		reference enclosingInteraction[0-1] : Interaction oppositeOf fragment;
+		reference enclosingOperand[0-1] : InteractionOperand oppositeOf fragment;
+	}
+
+	class Lifeline extends NamedElement {
+		reference coveredBy[*] : InteractionFragment oppositeOf covered;
+		reference represents : ConnectableElement;
+		reference interaction : Interaction oppositeOf lifeline;
+		reference selector[0-1] container : OpaqueExpression;
+		reference decomposedAs[0-1] : PartDecomposition;
+	}
+
+	class Message extends NamedElement {
+		attribute messageKind[0-1] : MessageKind;
+		attribute messageSort[0-1] : MessageSort;
+		reference receiveEvent[0-1] : MessageEnd oppositeOf receiveMessage;
+		reference sendEvent[0-1] : MessageEnd oppositeOf sendMessage;
+		reference connector[0-1] : Connector;
+		reference interaction : Interaction oppositeOf message;
+		reference signature[0-1] : NamedElement;
+		reference argument[*] container : ValueSpecification;
+	}
+
+	class GeneralOrdering extends NamedElement {
+		reference before : EventOccurrence oppositeOf toAfter;
+		reference after : EventOccurrence oppositeOf toBefore;
+	}
+
+	enumeration MessageKind {
+		literal found;
+		literal lost;
+		literal unknown;
+		literal complete;
+	}
+
+	enumeration MessageSort {
+		literal synchSignal;
+		literal synchCall;
+		literal asynchCall;
+		literal asynchSignal;
+	}
+
+	abstract class MessageEnd extends NamedElement {
+		reference receiveMessage[0-1] : Message oppositeOf receiveEvent;
+		reference sendMessage[0-1] : Message oppositeOf sendEvent;
+	}
+
+	class EventOccurrence extends InteractionFragment, MessageEnd {
+		reference startExec[*] : ExecutionOccurrence oppositeOf start;
+		reference finishExec[*] : ExecutionOccurrence oppositeOf finish;
+		reference toAfter[*] : GeneralOrdering oppositeOf before;
+		reference toBefore[*] : GeneralOrdering oppositeOf after;
+	}
+
+	class ExecutionOccurrence extends InteractionFragment {
+		reference start : EventOccurrence oppositeOf startExec;
+		reference finish : EventOccurrence oppositeOf finishExec;
+		reference behavior[*] ordered : Behavior;
+	}
+
+	class StateInvariant extends InteractionFragment {
+		reference invariant container : Constraint;
+	}
+
+	class Stop extends EventOccurrence {
+		
+	}
+
+	class TemplateSignature extends Element {
+		reference parameter[1-*] : TemplateParameter;
+		reference ownedParameter[*] container : TemplateParameter oppositeOf signature;
+		reference nestedSignature[*] : TemplateSignature oppositeOf nestingSignature;
+		reference nestingSignature[0-1] : TemplateSignature oppositeOf nestedSignature;
+		reference template : TemplateableElement oppositeOf ownedTemplateSignature;
+	}
+
+	class TemplateParameter extends Element {
+		reference signature : TemplateSignature oppositeOf ownedParameter;
+		reference parameteredElement : ParameterableElement oppositeOf templateParameter;
+		reference ownedParameteredElement[0-1] container : ParameterableElement oppositeOf owningParameter;
+		reference default[0-1] : ParameterableElement;
+		reference ownedDefault[0-1] container : ParameterableElement;
+	}
+
+	abstract class TemplateableElement extends Element {
+		reference templateBinding[*] container : TemplateBinding oppositeOf boundElement;
+		reference ownedTemplateSignature[0-1] container : TemplateSignature oppositeOf template;
+	}
+
+	class StringExpression extends TemplateableElement {
+		reference subExpression[*] container : StringExpression oppositeOf owningExpression;
+		reference owningExpression[0-1] : StringExpression oppositeOf subExpression;
+	}
+
+	abstract class ParameterableElement extends Element {
+		reference templateParameter[0-1] : TemplateParameter oppositeOf parameteredElement;
+		reference owningParameter[0-1] : TemplateParameter oppositeOf ownedParameteredElement;
+	}
+
+	class TemplateBinding extends DirectedRelationship {
+		reference boundElement : TemplateableElement oppositeOf templateBinding;
+		reference signature : TemplateSignature;
+		reference parameterSubstitution[*] container : TemplateParameterSubstitution oppositeOf templateBinding;
+	}
+
+	class TemplateParameterSubstitution extends Element {
+		reference formal : TemplateParameter;
+		reference templateBinding : TemplateBinding oppositeOf parameterSubstitution;
+		reference actual[1-*] : ParameterableElement;
+		reference ownedActual[*] container : ParameterableElement;
+	}
+
+	class OperationTemplateParameter extends TemplateParameter {
+		
+	}
+
+	class ClassifierTemplateParameter extends TemplateParameter {
+		attribute allowSubstitutable[0-1] : Boolean;
+	}
+
+	abstract class ParameterableClassifier extends Classifier {
+	}
+
+	class RedefinableTemplateSignature extends RedefinableElement, TemplateSignature {
+		
+	}
+
+	abstract class TemplateableClassifier extends Classifier {
+		
+	}
+
+	class ConnectableElementTemplateParameter extends TemplateParameter {
+		
+	}
+
+	class ForkNode extends ControlNode {
+		
+	}
+
+	class JoinNode extends ControlNode {
+		attribute isCombineDuplicate[0-1] : Boolean;
+		reference joinSpec container : ValueSpecification;
+	}
+
+	class FlowFinalNode extends FinalNode {
+		
+	}
+
+	class CentralBufferNode extends ObjectNode {
+		
+	}
+
+	class ActivityPartition extends NamedElement, ActivityGroup {
+		attribute isDimension[0-1] : Boolean;
+		attribute isExternal[0-1] : Boolean;
+		reference containedEdge[*] ordered : ActivityEdge oppositeOf inPartition;
+		reference containedNode[*] ordered : ActivityNode oppositeOf inPartition;
+		reference subgroup[*] container : ActivityPartition oppositeOf superPartition;
+		reference superPartition[0-1] : ActivityPartition oppositeOf subgroup;
+		reference represents[0-1] : Element;
+	}
+
+	class ExpansionNode extends ObjectNode {
+		reference regionAsOutput[0-1] : ExpansionRegion oppositeOf outputElement;
+		reference regionAsInput[0-1] : ExpansionRegion oppositeOf inputElement;
+	}
+
+	class ExpansionRegion extends StructuredActivityNode {
+		attribute mode[0-1] : ExpansionKind;
+		reference outputElement[*] : ExpansionNode oppositeOf regionAsOutput;
+		reference inputElement[1-*] : ExpansionNode oppositeOf regionAsInput;
+	}
+
+	enumeration ExpansionKind {
+		literal parallel;
+		literal iterative;
+		literal stream;
+	}
+
+	class ExceptionHandler extends Element {
+		reference protectedNode : ExecutableNode oppositeOf handler;
+		reference handlerBody : ExecutableNode;
+		reference exceptionInput : ObjectNode;
+		reference exceptionType[1-*] : Classifier;
+	}
+
+	class InteractionOccurrence extends InteractionFragment {
+		reference refersTo : Interaction;
+		reference actualGate[*] container : Gate;
+		reference argument[*] container : InputPin;
+	}
+
+	class Gate extends MessageEnd {
+		
+	}
+
+	class PartDecomposition extends InteractionOccurrence {
+		
+	}
+
+	class InteractionOperand extends Namespace, InteractionFragment {
+		reference guard[0-1] container : InteractionConstraint;
+		reference fragment[*] container : InteractionFragment oppositeOf enclosingOperand;
+	}
+
+	class InteractionConstraint extends Constraint {
+		reference minint[0-1] container : ValueSpecification;
+		reference maxint[0-1] container : ValueSpecification;
+	}
+
+	enumeration InteractionOperator {
+		literal consider;
+		literal par;
+		literal opt;
+		literal loop;
+		literal alt;
+		literal break;
+		literal assert;
+		literal strict;
+		literal seq;
+		literal ignore;
+		literal neg;
+		literal critical;
+	}
+
+	class CombinedFragment extends InteractionFragment {
+		attribute interactionOperator[0-1] : InteractionOperator;
+		reference operand[1-*] container : InteractionOperand;
+		reference cfragmentGate[*] container : Gate;
+	}
+
+	class Continuation extends InteractionFragment {
+		attribute setting[0-1] : Boolean;
+	}
+
+	class StateMachine extends Behavior {
+		reference region[1-*] container : Region oppositeOf stateMachine;
+		reference connectionPoint[*] container : Pseudostate;
+		reference extendedStateMachine[0-1] : StateMachine;
+		reference stateMachine_redefinitionContext[0-1] : BehavioredClassifier oppositeOf ownedStateMachine;
+	}
+
+	class Region extends Namespace, RedefinableElement {
+		reference subvertex[*] container : Vertex oppositeOf "container";
+		reference transition[*] container : Transition oppositeOf "container";
+		reference stateMachine[0-1] : StateMachine oppositeOf region;
+		reference state[0-1] : State oppositeOf region;
+		reference extendedRegion[0-1] : Region;
+	}
+
+	class Pseudostate extends Vertex {
+		attribute kind[0-1] : PseudostateKind;
+	}
+
+	class State extends Namespace, RedefinableElement, Vertex {
+		attribute isComposite[0-1] : Boolean;
+		attribute isOrthogonal[0-1] : Boolean;
+		attribute isSimple[0-1] : Boolean;
+		attribute isSubmachineState[0-1] : Boolean;
+		reference submachine[0-1] : StateMachine;
+		reference connection[*] container : ConnectionPointReference;
+		reference redefinedState[0-1] : State;
+		reference deferrableTrigger[*] : Trigger;
+		reference region[*] container : Region oppositeOf state;
+		reference entry[0-1] container : Activity;
+		reference exit[0-1] container : Activity;
+		reference doActivity[0-1] container : Activity;
+		reference stateInvariant[0-1] container : Constraint;
+	}
+
+	abstract class Vertex extends NamedElement {
+		reference "container"[0-1] : Region oppositeOf subvertex;
+		reference outgoing[*] : Transition oppositeOf source;
+		reference incoming[*] : Transition oppositeOf target;
+	}
+
+	class ConnectionPointReference extends Vertex {
+		reference entry[*] : Pseudostate;
+		reference exit[*] : Pseudostate;
+	}
+
+	class Transition extends RedefinableElement {
+		attribute kind[0-1] : TransitionKind;
+		reference "container" : Region oppositeOf transition;
+		reference source : Vertex oppositeOf outgoing;
+		reference target : Vertex oppositeOf incoming;
+		reference redefinedTransition[0-1] : Transition;
+		reference trigger[*] : Trigger;
+		reference guard[0-1] container : Constraint;
+		reference effect[0-1] container : Activity;
+	}
+
+	enumeration TransitionKind {
+		literal internal;
+		literal local;
+		literal external;
+	}
+
+	enumeration PseudostateKind {
+		literal deepHistory;
+		literal shallowHistory;
+		literal choice;
+		literal join;
+		literal exitPoint;
+		literal terminate;
+		literal fork;
+		literal junction;
+		literal initial;
+		literal entryPoint;
+	}
+
+	class FinalState extends State {
+		
+	}
+
+	class CreateObjectAction extends Action {
+		reference classifier : Classifier;
+		reference result container : OutputPin;
+	}
+
+	class DestroyObjectAction extends Action {
+		attribute isDestroyLinks[0-1] : Boolean;
+		attribute isDestroyOwnedObjects[0-1] : Boolean;
+		reference target container : InputPin;
+	}
+
+	class TestIdentityAction extends Action {
+		reference first container : InputPin;
+		reference second container : InputPin;
+		reference result container : OutputPin;
+	}
+
+	class ReadSelfAction extends Action {
+		reference result container : OutputPin;
+	}
+
+	abstract class StructuralFeatureAction extends Action {
+		reference structuralFeature : StructuralFeature;
+		reference object container : InputPin;
+	}
+
+	class ReadStructuralFeatureAction extends StructuralFeatureAction {
+		reference result container : OutputPin;
+	}
+
+	abstract class WriteStructuralFeatureAction extends StructuralFeatureAction {
+		reference value container : InputPin;
+	}
+
+	class ClearStructuralFeatureAction extends StructuralFeatureAction {
+		
+	}
+
+	class RemoveStructuralFeatureValueAction extends WriteStructuralFeatureAction {
+		
+	}
+
+	class AddStructuralFeatureValueAction extends WriteStructuralFeatureAction {
+		attribute isReplaceAll[0-1] : Boolean;
+		reference insertAt[0-1] container : InputPin;
+	}
+
+	abstract class LinkAction extends Action {
+		reference endData[2-*] container : LinkEndData;
+	}
+
+	class LinkEndData extends Element {
+		reference value[0-1] : InputPin;
+		reference end : Property;
+		reference qualifier[*] ordered container : QualifierValue;
+	}
+
+	class ReadLinkAction extends LinkAction {
+		reference result container : OutputPin;
+	}
+
+	class LinkEndCreationData extends LinkEndData {
+		attribute isReplaceAll[0-1] : Boolean;
+		reference insertAt[0-1] : InputPin;
+	}
+
+	class CreateLinkAction extends WriteLinkAction {
+		
+	}
+
+	abstract class WriteLinkAction extends LinkAction {
+		
+	}
+
+	class DestroyLinkAction extends WriteLinkAction {
+		
+	}
+
+	class ClearAssociationAction extends Action {
+		reference object container : InputPin;
+		reference association : Association;
+	}
+
+	abstract class VariableAction extends Action {
+		reference variable : Variable;
+	}
+
+	class ReadVariableAction extends VariableAction {
+		reference result container : OutputPin;
+	}
+
+	abstract class WriteVariableAction extends VariableAction {
+		reference value container : InputPin;
+	}
+
+	class ClearVariableAction extends VariableAction {
+		
+	}
+
+	class AddVariableValueAction extends WriteVariableAction {
+		attribute isReplaceAll[0-1] : Boolean;
+		reference insertAt[0-1] container : InputPin;
+	}
+
+	class RemoveVariableValueAction extends WriteVariableAction {
+		
+	}
+
+	class ApplyFunctionAction extends Action {
+		reference function : PrimitiveFunction;
+		reference argument[*] container : InputPin;
+		reference result[*] ordered container : OutputPin;
+	}
+
+	class PrimitiveFunction extends PackageableElement {
+		attribute body[0-1] : String;
+		attribute language[0-1] : String;
+	}
+
+	abstract class CallAction extends InvocationAction {
+		attribute isSynchronous[0-1] : Boolean;
+		reference result[*] ordered container : OutputPin;
+	}
+
+	abstract class InvocationAction extends Action {
+		reference argument[*] ordered container : InputPin;
+		reference onPort[0-1] : Port;
+	}
+
+	class SendSignalAction extends InvocationAction {
+		reference target container : InputPin;
+		reference signal : Signal;
+	}
+
+	class BroadcastSignalAction extends InvocationAction {
+		reference signal : Signal;
+	}
+
+	class SendObjectAction extends InvocationAction {
+		reference target container : InputPin;
+		reference request container : InputPin;
+	}
+
+	class CallOperationAction extends CallAction {
+		reference "operation" : Operation;
+		reference target container : InputPin;
+	}
+
+	class CallBehaviorAction extends CallAction {
+		reference behavior : Behavior;
+	}
+
+	class TimeExpression extends ValueSpecification {
+		attribute firstTime[0-1] : Boolean;
+		reference event[0-1] : NamedElement;
+	}
+
+	class Duration extends ValueSpecification {
+		attribute firstTime[0-1] : Boolean;
+		reference event[0-2] : NamedElement;
+	}
+
+	class TimeObservationAction extends WriteStructuralFeatureAction {
+		reference now[*] ordered container : TimeExpression;
+	}
+
+	class DurationInterval extends Interval {
+		
+	}
+
+	class Interval extends ValueSpecification {
+		reference min[*] ordered : ValueSpecification;
+		reference max[*] ordered : ValueSpecification;
+	}
+
+	class TimeConstraint extends IntervalConstraint {
+		
+	}
+
+	class IntervalConstraint extends Constraint {
+		
+	}
+
+	class TimeInterval extends Interval {
+		
+	}
+
+	class DurationObservationAction extends WriteStructuralFeatureAction {
+		reference duration[*] ordered container : Duration;
+	}
+
+	class DurationConstraint extends IntervalConstraint {
+		
+	}
+
+	class DataStoreNode extends CentralBufferNode {
+		
+	}
+
+	enumeration ParameterEffectKind {
+		literal update;
+		literal read;
+		literal delete;
+		literal create;
+	}
+
+	class InterruptibleActivityRegion extends ActivityGroup {
+		reference interruptingEdge[*] : ActivityEdge oppositeOf interrupts;
+		reference containedNode[*] ordered : ActivityNode oppositeOf inInterruptibleRegion;
+	}
+
+	enumeration ObjectNodeOrderingKind {
+		literal FIFO;
+		literal unordered;
+		literal "ordered";
+		literal LIFO;
+	}
+
+	class ParameterSet extends NamedElement {
+		reference parameter[1-*] : Parameter oppositeOf parameterSet;
+		reference condition[*] container : Constraint;
+	}
+
+	class Component extends Class {
+		attribute isIndirectlyInstantiated[0-1] : Boolean;
+		reference required[*] : Interface;
+		reference provided[*] : Interface;
+		reference realization[*] container : Realization oppositeOf abstraction;
+		reference ownedMember[*] container : PackageableElement;
+	}
+
+	enumeration ConnectorKind {
+		literal delegation;
+		literal assembly;
+	}
+
+	class Deployment extends Dependency {
+		reference deployedArtifact[*] : DeployedArtifact;
+		reference location : DeploymentTarget oppositeOf deployment;
+		reference configuration[*] container : DeploymentSpecification;
+	}
+
+	abstract class DeployedArtifact extends NamedElement {
+		
+	}
+
+	abstract class DeploymentTarget extends NamedElement {
+		reference deployment[*] container : Deployment oppositeOf location;
+		reference deployedElement[*] : PackageableElement;
+	}
+
+	class Node extends Class, DeploymentTarget {
+		reference nestedNode[*] container : Node;
+	}
+
+	class Device extends Node {
+		
+	}
+
+	class ExecutionEnvironment extends Node {
+		
+	}
+
+	class CommunicationPath extends Association {
+		
+	}
+
+	class ProtocolConformance extends DirectedRelationship {
+		reference specificMachine : ProtocolStateMachine oppositeOf conformance;
+		reference generalMachine : ProtocolStateMachine;
+	}
+
+	class ProtocolStateMachine extends StateMachine {
+		reference conformance[*] container : ProtocolConformance oppositeOf specificMachine;
+	}
+
+	class ProtocolTransition extends Transition {
+		reference postCondition[0-1] container : Constraint;
+		reference referred[*] : Operation;
+		reference preCondition[0-1] : Constraint;
+	}
+
+	class ReadExtentAction extends Action {
+		reference result container : OutputPin;
+		reference classifier : Classifier;
+	}
+
+	class ReclassifyObjectAction extends Action {
+		attribute isReplaceAll[0-1] : Boolean;
+		reference oldClassifier[*] : Classifier;
+		reference newClassifier[*] : Classifier;
+		reference object container : InputPin;
+	}
+
+	class ReadIsClassifiedObjectAction extends Action {
+		attribute isDirect[0-1] : Boolean;
+		reference classifier : Classifier;
+		reference result container : OutputPin;
+		reference object container : InputPin;
+	}
+
+	class StartOwnedBehaviorAction extends Action {
+		reference object container : InputPin;
+	}
+
+	class QualifierValue extends Element {
+		reference qualifier : Property;
+		reference value : InputPin;
+	}
+
+	class ReadLinkObjectEndAction extends Action {
+		reference object container : InputPin;
+		reference end : Property;
+		reference result container : OutputPin;
+	}
+
+	class ReadLinkObjectEndQualifierAction extends Action {
+		reference object container : InputPin;
+		reference result container : OutputPin;
+		reference qualifier : Property;
+	}
+
+	class CreateLinkObjectAction extends CreateLinkAction {
+		reference result container : OutputPin;
+	}
+
+	class AcceptEventAction extends Action {
+		reference trigger[*] ordered : Trigger;
+		reference result[*] : OutputPin;
+	}
+
+	class AcceptCallAction extends AcceptEventAction {
+		reference returnInformation : OutputPin;
+	}
+
+	class ReplyAction extends Action {
+		reference replyToCall : CallTrigger;
+		reference replyValue[*] : InputPin;
+		reference returnInformation : InputPin;
+	}
+
+	class RaiseExceptionAction extends Action {
+		reference exception : InputPin;
+	}
+
+	class DeploymentSpecification extends Artifact {
+		attribute deploymentLocation[0-1] : String;
+		attribute executionLocation[0-1] : String;
+	}
+}

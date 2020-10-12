@@ -1,0 +1,282 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_DoDAF"{
+labelloc=t
+color=black
+label=DoDAF
+ node[shape=record];
+Element[label="{/Element/|name : String\ncontent : String| }"]
+;
+ node[shape=record];
+System[label="{System| | }"]
+ System->System[arrowhead=vee,arrowtail=diamond,headlabel="decomposes[*]",group=System,minlen=2,constraint=true,]
+ System->SystemRole[arrowhead=vee,arrowtail=none,headlabel="fulfills[*]",group=SystemRole,minlen=2,constraint=false,]
+ System->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SystemRole[label="{SystemRole| | }"]
+ SystemRole->SystemRole[arrowhead=vee,arrowtail=diamond,headlabel="decomposes[*]",group=SystemRole,minlen=2,constraint=true,]
+ SystemRole->SystemFunction[arrowhead=vee,arrowtail=none,headlabel="performs[*]",group=SystemFunction,minlen=2,constraint=false,]
+ SystemRole->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SystemFunction[label="{SystemFunction| | }"]
+ SystemFunction->SystemFunction[arrowhead=vee,arrowtail=diamond,headlabel="decomposes[*]",group=SystemFunction,minlen=2,constraint=true,]
+ SystemFunction->Product[arrowhead=vee,arrowtail=none,headlabel="consumes[*]",group=Product,minlen=2,constraint=false,]
+ SystemFunction->Product[arrowhead=vee,arrowtail=none,headlabel="produces[*]",group=Product,minlen=2,constraint=false,]
+ SystemFunction->ConstraintOrRequirement[arrowhead=vee,arrowtail=none,headlabel="mesuredBy[*]",group=ConstraintOrRequirement,minlen=2,constraint=false,]
+ SystemFunction->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Service[label="{Service| | }"]
+ Service->SystemFunction[arrowhead=onormal,group=SystemFunction,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SystemRoleInterface[label="{SystemRoleInterface| | }"]
+ SystemRoleInterface->SystemRole[arrowhead=none,arrowtail=none,headlabel="originatesFrom",taillabel="terminatesAt",group=SystemRole,minlen=2,constraint=false,]
+ SystemRoleInterface->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ServiceDependency[label="{ServiceDependency| | }"]
+ ServiceDependency->SystemRoleInterface[arrowhead=onormal,group=SystemRoleInterface,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ServiceProvider[label="{ServiceProvider| | }"]
+ ServiceProvider->SystemRole[arrowhead=onormal,group=SystemRole,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ServiceMediator[label="{ServiceMediator| | }"]
+ ServiceMediator->ServiceProvider[arrowhead=onormal,group=ServiceProvider,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ServiceRegistry[label="{ServiceRegistry| | }"]
+ ServiceRegistry->ServiceMediator[arrowhead=onormal,group=ServiceMediator,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ServiceLocator[label="{ServiceLocator| | }"]
+ ServiceLocator->ServiceMediator[arrowhead=onormal,group=ServiceMediator,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ServiceBroker[label="{ServiceBroker| | }"]
+ ServiceBroker->ServiceMediator[arrowhead=onormal,group=ServiceMediator,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SystemAtNode[label="{SystemAtNode| | }"]
+ SystemAtNode->System[arrowhead=vee,arrowtail=none,headlabel="references",group=System,minlen=2,constraint=false,]
+ SystemAtNode->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SystemAtNodeInterface[label="{SystemAtNodeInterface| | }"]
+ SystemAtNodeInterface->SystemAtNode[arrowhead=none,arrowtail=none,headlabel="originatesFrom",taillabel="terminatesAt",group=SystemAtNode,minlen=2,constraint=false,]
+ SystemAtNodeInterface->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SystemsNode[label="{SystemsNode| | }"]
+ SystemsNode->SystemAtNode[arrowhead=vee,arrowtail=none,headlabel="groups[*]",group=SystemAtNode,minlen=2,constraint=false,]
+ SystemsNode->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+COI[label="{COI| | }"]
+ COI->Performer[arrowhead=vee,arrowtail=diamond,headlabel="comprises[*]",group=Performer,minlen=2,constraint=true,]
+ COI->Vocabulary[arrowhead=vee,arrowtail=none,headlabel="defines",group=Vocabulary,minlen=2,constraint=false,]
+ COI->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Vocabulary[label="{Vocabulary| | }"]
+ Vocabulary->DataReference[arrowhead=vee,arrowtail=diamond,headlabel="comprises[*]",group=DataReference,minlen=2,constraint=true,]
+ Vocabulary->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DataReference[label="{DataReference| | }"]
+ DataReference->Data[arrowhead=vee,arrowtail=none,headlabel="defineBy",group=Data,minlen=2,constraint=false,]
+ DataReference->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Performer[label="{Performer| | }"]
+ Performer->Performer[arrowhead=vee,arrowtail=diamond,headlabel="decomposes[*]",group=Performer,minlen=2,constraint=true,]
+ Performer->OperationalRole[arrowhead=vee,arrowtail=none,headlabel="fulfills[*]",group=OperationalRole,minlen=2,constraint=false,]
+ Performer->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperationalRole[label="{OperationalRole| | }"]
+ OperationalRole->OperationalRole[arrowhead=vee,arrowtail=diamond,headlabel="decomposes[*]",group=OperationalRole,minlen=2,constraint=true,]
+ OperationalRole->OperationalActivity[arrowhead=vee,arrowtail=none,headlabel="accomplishes[*]",group=OperationalActivity,minlen=2,constraint=false,]
+ OperationalRole->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+OperationalActivity[label="{OperationalActivity| | }"]
+ OperationalActivity->OperationalRole[arrowhead=vee,arrowtail=diamond,headlabel="decomposes[*]",group=OperationalRole,minlen=2,constraint=true,]
+ OperationalActivity->SystemFunction[arrowhead=vee,arrowtail=none,headlabel="supports[*]",group=SystemFunction,minlen=2,constraint=false,]
+ OperationalActivity->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Product[label="{Product| | }"]
+ Product->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Material[label="{Material| | }"]
+ Material->Product[arrowhead=onormal,group=Product,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Data[label="{Data| | }"]
+ Data->Product[arrowhead=onormal,group=Product,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SystemProductFlow[label="{SystemProductFlow| | }"]
+ SystemProductFlow->Product[arrowhead=vee,arrowtail=none,headlabel="transports[*]",group=Product,minlen=2,constraint=false,]
+ SystemProductFlow->SystemFunction[arrowhead=none,arrowtail=none,headlabel="originatesFrom",taillabel="terminatesAt",group=SystemFunction,minlen=2,constraint=false,]
+ SystemProductFlow->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ConstraintOrRequirement[label="{/ConstraintOrRequirement/| | }"]
+ ConstraintOrRequirement->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Constraint[label="{Constraint| | }"]
+ Constraint->ConstraintOrRequirement[arrowhead=onormal,group=ConstraintOrRequirement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+QualityRequirement[label="{QualityRequirement| | }"]
+ QualityRequirement->ConstraintOrRequirement[arrowhead=onormal,group=ConstraintOrRequirement,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DIA[label="{DIA| | }"]
+ DIA->NMJIC[arrowhead=none,arrowtail=none,headlabel="nmjic",taillabel="dia",group=NMJIC,minlen=2,constraint=false,]
+ DIA->HigherEchelon[arrowhead=none,arrowtail=none,headlabel="higherEchelon",taillabel="dia",group=HigherEchelon,minlen=2,constraint=false,]
+ DIA->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+NMJIC[label="{NMJIC| | }"]
+ NMJIC->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+HigherEchelon[label="{HigherEchelon| | }"]
+ HigherEchelon->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+JFC[label="{JFC| | }"]
+ JFC->HigherEchelon[arrowhead=none,arrowtail=none,headlabel="higherEchelon",taillabel="jfc",group=HigherEchelon,minlen=2,constraint=false,]
+ JFC->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+F2C2[label="{F2C2| | }"]
+ F2C2->JFC[arrowhead=none,arrowtail=none,headlabel="jfc",taillabel="f2c2",group=JFC,minlen=2,constraint=false,]
+ F2C2->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ComponentCommand[label="{ComponentCommand| | }"]
+ ComponentCommand->JFC[arrowhead=none,arrowtail=none,headlabel="jfc",taillabel="componentComand",group=JFC,minlen=2,constraint=false,]
+ ComponentCommand->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+DJFLCC[label="{DJFLCC| | }"]
+ DJFLCC->ComponentCommand[arrowhead=onormal,group=ComponentCommand,minlen=2,constraint=true,]
+;
+ node[shape=record];
+JFACC[label="{JFACC| | }"]
+ JFACC->AOCCID[arrowhead=vee,arrowtail=diamond,headlabel="aoccid[*]",group=AOCCID,minlen=2,constraint=true,]
+ JFACC->AOCCombatPlanStrategyCells[arrowhead=vee,arrowtail=diamond,headlabel="aoccpsc[*]",group=AOCCombatPlanStrategyCells,minlen=2,constraint=true,]
+ JFACC->ComponentCommand[arrowhead=onormal,group=ComponentCommand,minlen=2,constraint=true,]
+;
+ node[shape=record];
+JFMCC[label="{JFMCC| | }"]
+ JFMCC->ComponentCommand[arrowhead=onormal,group=ComponentCommand,minlen=2,constraint=true,]
+;
+ node[shape=record];
+JFSOCC[label="{JFSOCC| | }"]
+ JFSOCC->ComponentCommand[arrowhead=onormal,group=ComponentCommand,minlen=2,constraint=true,]
+;
+ node[shape=record];
+SubordinateAirCommand[label="{SubordinateAirCommand| | }"]
+ SubordinateAirCommand->JFACC[arrowhead=none,arrowtail=none,headlabel="jfacc",taillabel="subordinateAirCommand",group=JFACC,minlen=2,constraint=false,]
+ SubordinateAirCommand->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MAW[label="{MAW| | }"]
+ MAW->SubordinateAirCommand[arrowhead=onormal,group=SubordinateAirCommand,minlen=2,constraint=true,]
+;
+ node[shape=record];
+WOC[label="{WOC| | }"]
+ WOC->SubordinateAirCommand[arrowhead=onormal,group=SubordinateAirCommand,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AOCCID[label="{AOCCID| | }"]
+ AOCCID->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+AOCCombatPlanStrategyCells[label="{AOCCombatPlanStrategyCells| | }"]
+ AOCCombatPlanStrategyCells->Element[arrowhead=onormal,group=Element,minlen=2,constraint=true,]
+;
+ node[shape=record];
+ResultData[label="{ResultData|sourceID : String\ntimeStamp : String| }"]
+ ResultData->CollectionRequirement[arrowhead=none,arrowtail=none,headlabel="cr[*]",taillabel="rd[*]",group=CollectionRequirement,minlen=2,constraint=false,]
+ ResultData->BDAReport[arrowhead=none,arrowtail=none,headlabel="bdaReport[*]",taillabel="rd[1-*]",group=BDAReport,minlen=2,constraint=false,]
+;
+ node[shape=record];
+CombatReport[label="{CombatReport|friendlyUnitsInvolved : String\ncombatLocation : String\nresultsAssessment : String\nduration : String| }"]
+ CombatReport->ResultData[arrowhead=onormal,group=ResultData,minlen=2,constraint=true,]
+;
+ node[shape=record];
+WSV[label="{WSV|missionID : String\nweaponfSystemID : String\nvideoType : String| }"]
+ WSV->ResultData[arrowhead=onormal,group=ResultData,minlen=2,constraint=true,]
+;
+ node[shape=record];
+MISREP[label="{MISREP|missionID : String\nmissionObjectives : String\nmissionAssesments : String| }"]
+ MISREP->ResultData[arrowhead=onormal,group=ResultData,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Imagery[label="{Imagery|imageType : String\nspectralData : String\ngeospacialLocation : String\nimageSize : Integer| }"]
+ Imagery->ResultData[arrowhead=onormal,group=ResultData,minlen=2,constraint=true,]
+;
+ node[shape=record];
+CollectionRequirement[label="{CollectionRequirement|sourceID : String\ncollectionTargetID : String\ntoBeDoneByTime : String\nspecialNeeds : String| }"]
+ CollectionRequirement->ATO[arrowhead=none,arrowtail=none,headlabel="ato[*]",taillabel="cr[*]",group=ATO,minlen=2,constraint=false,]
+ CollectionRequirement->Target[arrowhead=none,arrowtail=none,headlabel="isContainedIn[*]",taillabel="cr[*]",group=Target,minlen=2,constraint=false,]
+;
+ node[shape=record];
+BDAReport[label="{BDAReport|targetID : String\nreportSourceID : String\nassesmentSumart : String\nvalidityDuration : String| }"]
+;
+ node[shape=record];
+MunitionsEffectsAssesment[label="{MunitionsEffectsAssesment| | }"]
+ MunitionsEffectsAssesment->BDAReport[arrowhead=none,arrowtail=none,headlabel="bdaReport[0-1]",taillabel="mea[0-1]",group=BDAReport,minlen=2,constraint=false,]
+ MunitionsEffectsAssesment->ATO[arrowhead=none,arrowtail=none,headlabel="ato",taillabel="mea",group=ATO,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ATO[label="{ATO|timePeriod : String| }"]
+;
+ node[shape=record];
+RestrikeRecommendation[label="{RestrikeRecommendation| | }"]
+ RestrikeRecommendation->ATO[arrowhead=none,arrowtail=none,headlabel="ato[0-1]",taillabel="rr[0-1]",group=ATO,minlen=2,constraint=false,]
+ RestrikeRecommendation->TargetNomination[arrowhead=none,arrowtail=none,headlabel="tn",taillabel="rr[0-1]",group=TargetNomination,minlen=2,constraint=false,]
+;
+ node[shape=record];
+TargetNomination[label="{TargetNomination| | }"]
+ TargetNomination->ATO[arrowhead=none,arrowtail=none,headlabel="ato[*]",taillabel="tn[*]",group=ATO,minlen=2,constraint=false,]
+ TargetNomination->MunitionsEffectsAssesment[arrowhead=none,arrowtail=none,headlabel="mea[*]",taillabel="tn",group=MunitionsEffectsAssesment,minlen=2,constraint=false,]
+ TargetNomination->Target[arrowhead=none,arrowtail=none,headlabel="target",taillabel="tn[0-1]",group=Target,minlen=2,constraint=false,]
+;
+ node[shape=record];
+TargetMaterialsAnalysis[label="{TargetMaterialsAnalysis|targetID : String| }"]
+;
+ node[shape=record];
+Target[label="{Target| | }"]
+ Target->MIDB[arrowhead=none,arrowtail=none,headlabel="holds[0-1]",taillabel="target[*]",group=MIDB,minlen=2,constraint=false,]
+ Target->TargetMaterialsAnalysis[arrowhead=none,arrowtail=none,headlabel="describes[*]",taillabel="target",group=TargetMaterialsAnalysis,minlen=2,constraint=false,]
+;
+ node[shape=record];
+MIDB[label="{MIDB| | }"]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+
+}
+}

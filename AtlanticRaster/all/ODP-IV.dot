@@ -1,0 +1,67 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_ODPIV"{
+labelloc=t
+color=black
+label=ODPIV
+ node[shape=record];
+InvariantSchema[label="{InvariantSchema| | }"]
+ InvariantSchema->ActionType[arrowhead=none,arrowtail=none,headlabel="constrainer_ATy[*]",taillabel="ATy_constrainer[*]",group=ActionType,minlen=2,constraint=false,]
+ InvariantSchema->State[arrowhead=none,arrowtail=none,headlabel="constrainer_S[*]",taillabel="S_constrainer[*]",group=State,minlen=2,constraint=false,]
+;
+ node[shape=record];
+InformationObjectTemplate[label="{InformationObjectTemplate| | }"]
+ InformationObjectTemplate->InvariantSchema[arrowhead=none,arrowtail=none,headlabel="IOT_constrainer[*]",taillabel="constrainer_IOT[*]",group=InvariantSchema,minlen=2,constraint=false,]
+;
+ node[shape=record];
+InformationObjectType[label="{InformationObjectType| | }"]
+ InformationObjectType->InformationObject[arrowhead=none,arrowtail=none,headlabel="IOTy_IO[*]",taillabel="IO_IOTy[*]",group=InformationObject,minlen=2,constraint=false,]
+ InformationObjectType->InvariantSchema[arrowhead=none,arrowtail=none,headlabel="IOTy_constrainer[*]",taillabel="constrainer_IOTy[*]",group=InvariantSchema,minlen=2,constraint=false,]
+;
+ node[shape=record];
+InformationObject[label="{InformationObject| | }"]
+ InformationObject->StaticSchema[arrowhead=none,arrowtail=none,headlabel="describer[*]",taillabel="SS_IO[1-*]",group=StaticSchema,minlen=2,constraint=false,]
+ InformationObject->InformationObjectTemplate[arrowhead=none,arrowtail=none,headlabel="IO_IOT[*]",taillabel="IOT_IO[*]",group=InformationObjectTemplate,minlen=2,constraint=false,]
+ InformationObject->State[arrowhead=diamond,arrowtail=none,headlabel="IO_S",taillabel="S_IO",group=State,minlen=2,constraint=true,]
+;
+ node[shape=record];
+State[label="{State| | }"]
+ State->StateChange[arrowhead=none,arrowtail=none,headlabel="change",taillabel="startState",group=StateChange,minlen=2,constraint=false,]
+ State->StateChange[arrowhead=none,arrowtail=none,headlabel="causeSC",taillabel="endState",group=StateChange,minlen=2,constraint=false,]
+;
+ node[shape=record];
+StateChange[label="{StateChange| | }"]
+ StateChange->DynamicSchema[arrowhead=none,arrowtail=none,headlabel="specifier[1-*]",taillabel="dsStateChange[*]",group=DynamicSchema,minlen=2,constraint=false,]
+ StateChange->Action[arrowhead=none,arrowtail=none,headlabel="cause[*]",taillabel="effect[*]",group=Action,minlen=2,constraint=false,]
+ StateChange->InvariantSchema[arrowhead=none,arrowtail=none,headlabel="SC_constrainer[*]",taillabel="constrainer_SC[*]",group=InvariantSchema,minlen=2,constraint=false,]
+;
+ node[shape=record];
+DynamicSchema[label="{DynamicSchema| | }"]
+;
+ node[shape=record];
+StaticSchema[label="{StaticSchema|locationTime : Double| }"]
+;
+ node[shape=record];
+Action[label="{Action| | }"]
+ Action->ActionTemplate[arrowhead=none,arrowtail=none,headlabel="A_AT[*]",taillabel="AT_A[*]",group=ActionTemplate,minlen=2,constraint=false,]
+ Action->InformationObject[arrowhead=none,arrowtail=none,headlabel="participant[*]",taillabel="IO_A[*]",group=InformationObject,minlen=2,constraint=false,]
+ Action->ActionType[arrowhead=none,arrowtail=none,headlabel="A_ATy[*]",taillabel="ATy_A[*]",group=ActionType,minlen=2,constraint=false,]
+;
+ node[shape=record];
+ActionType[label="{ActionType| | }"]
+;
+ node[shape=record];
+ActionTemplate[label="{ActionTemplate| | }"]
+ ActionTemplate->InvariantSchema[arrowhead=none,arrowtail=none,headlabel="AT_constrainer[*]",taillabel="constrainer_AT[*]",group=InvariantSchema,minlen=2,constraint=false,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Double[label="{&#171;DataType&#187;\nDouble|}"]
+;
+
+}
+}

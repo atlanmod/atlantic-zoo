@@ -1,0 +1,83 @@
+-- @name		AntScripts
+-- @version		1.0
+-- @domains		Apache Ant 
+-- @authors		Hugo Bruneliere (hugo.bruneliere <at> gmail.com)
+-- @date		2007/11/08
+-- @description	This generic metamodel simply describes Ant scripts structure and content independently of the tasks which may be called in. 
+-- @see			http://ant.apache.org/manual/index.html
+
+package AntScripts {
+
+	-- @begin Abstract concepts
+	
+	abstract class NamedElement {
+		attribute name: String;
+	}
+
+	abstract class DescribableElement {
+		attribute description[0-1]: String;
+	}
+
+	abstract class CommentableElement {
+		attribute comment[0-1]: String;
+	}
+	
+	-- @end Abstract concepts
+	
+	
+	-- @begin Ant script elements
+	
+	class Project extends NamedElement, DescribableElement, CommentableElement {
+		reference properties[0-*] ordered container : Property;
+		reference targets[0-*] ordered container : Target;
+		reference defaultTarget[0-1] : Target;
+	}
+	
+	class Property {
+		attribute name[0-1]: String;	
+		-- @comment One of the three following attributes must be set, when using the 'name' attribute
+		attribute value[0-1]: String;
+		attribute location[0-1]: String;
+		attribute refid[0-1]: String;	
+		-- @comment One of the four following attributes must be set, when not using the 'name' attribute
+		attribute resource[0-1]: String;
+		attribute file[0-1]: String;
+		attribute url[0-1]: String;
+		attribute environment[0-1]: String;
+		
+		attribute classpath[0-1]: String;
+		attribute classpathref[0-1]: String;
+		attribute prefix[0-1]: String;
+	}
+	
+	class Target extends NamedElement, DescribableElement, CommentableElement {
+		attribute if[0-1]: String;
+		attribute unless[0-1]: String;
+		reference tasks[0-*] ordered container : Task;
+		reference depends[0-*] ordered : Target;
+	}
+	
+	abstract class TaskElement extends NamedElement, CommentableElement {
+		reference attributes[0-*] ordered container : Attribute;
+		reference elements[0-*] ordered container : TaskElement;
+	}
+	
+	class Attribute extends NamedElement {
+		attribute value: String;
+	}
+	
+	class Task extends TaskElement {
+	
+	}
+	
+	class TaskParameter extends TaskElement {
+	
+	}
+
+	-- @end Ant script elements
+	
+}
+
+package PrimitiveTypes {
+	datatype String;
+}

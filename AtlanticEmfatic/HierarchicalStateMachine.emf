@@ -1,0 +1,103 @@
+package Metamodel;
+
+package HSM {
+  class MgaObject {
+    !unique !ordered attr String name;
+    !unique !ordered attr String position;
+  }
+
+  class StateBase extends MgaObject {
+    !unique !ordered attr String[1] defaultTransition;
+    !unique !ordered attr Boolean[1] marked;
+    !ordered ref AssociationStateState[+]#dstTransition associationStateStatedst;
+    !ordered ref AssociationStateState[+]#srcTransition associationStateStatesrc;
+    !ordered ref DataVar[*]#stateBase data;
+    !ordered ref AssociationDataStateBase[1]#stateBase associationDataStateBase;
+  }
+
+  class DataVar extends MgaObject {
+    !ordered ref StateBase[*]#data stateBase;
+    !ordered ref OrState[1]#dataVar orState;
+    !ordered ref AssociationDataStateBase[1]#dataVar associationDataStateBase;
+  }
+
+  class Transition extends MgaObject {
+    !unique !ordered attr String[1] guard;
+    !unique !ordered attr String[1] trigger;
+    !unique !ordered attr String[1] action;
+    !unique !ordered attr Boolean[1] isSync;
+    !ordered ref OrState[1]#transition orState;
+    !ordered ref AssociationStateState[1]#transition associationStateState;
+  }
+
+  class StateDateRelation extends MgaObject {
+    !unique !ordered attr String[1] value;
+    !unique !ordered attr String[1] color;
+  }
+
+  class RootFolder {
+    !unique !ordered attr String name;
+    !ordered val RootFolder[*] rootFolders;
+    !ordered val OrState[*]#rootFolder orState;
+  }
+
+  class OrState extends CompoundState {
+    !ordered ref RootFolder[1]#orState rootFolder;
+    !ordered val State[*]#orState state;
+    !ordered val Init[1]#orState init;
+    !ordered val DataVar[*]#orState dataVar;
+    !ordered val StateDataRelation[*]#orState stateDataRelation;
+    !ordered val Transition[*]#orState transition;
+    !ordered val CompoundState[*]#orState compoundState;
+  }
+
+  class AndState extends CompoundState {
+    !ordered val CompoundState[*]#andState compoundState;
+  }
+
+  class CompoundState extends StateBase {
+    !ordered ref AndState[1]#compoundState andState;
+    !ordered ref OrState[1]#compoundState orState;
+  }
+
+  class PrimitiveState extends StateBase {
+  }
+
+  class Init extends PrimitiveState {
+    !ordered ref OrState[1]#init orState;
+  }
+
+  class State extends PrimitiveState {
+    !ordered ref OrState[1]#state orState;
+  }
+
+  class StateDataRelation extends PrimitiveState {
+    !unique !ordered attr String[1] value;
+    !unique !ordered attr String[1] color;
+    !ordered ref OrState[1]#stateDataRelation orState;
+    !ordered ref AssociationDataStateBase[1]#stateDataRelation associationDataStateBase1;
+  }
+
+  class AssociationStateState {
+    !ordered ref Transition[1]#associationStateState transition;
+    !ordered ref StateBase[+]#associationStateStatedst dstTransition;
+    !ordered ref StateBase[+]#associationStateStatesrc srcTransition;
+  }
+
+  class AssociationDataStateBase {
+    !ordered ref StateDataRelation[1]#associationDataStateBase1 stateDataRelation;
+    !ordered ref DataVar[+]#associationDataStateBase dataVar;
+    !ordered ref StateBase[+]#associationDataStateBase stateBase;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Integer : "";
+
+}
+

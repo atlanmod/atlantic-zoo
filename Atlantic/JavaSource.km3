@@ -1,0 +1,36 @@
+-- @name		JavaSource
+-- @version		1.1
+-- @domains		Object-oriented programming, Java
+-- @authors		David Touzet (david.touzet@univ-nantes.fr)
+-- @date		2005/04/12
+-- @description	This basic metamodel represent Java source code. Java sources are modelized by a JavaSource element. This element is composed of ClassDeclarations. Each ClassDeclaration is composed of MethodDefinitions. Both ClassDeclaration and MethodDefinition inherit from the abstract NamedElement class (which provides a name). A MethodDefinition is composed of MethodInvocations (a call to a method). Each MethodInvocation is, in its turn, associated with a one and only MethodDeclaration (the called method).
+-- @see			http://www.cs.washington.edu/research/constraints/web/badros-javaml-www9/
+
+package JavaSource {
+
+	class JavaSource {
+		reference classes[1-*] container : ClassDeclaration;
+	}
+	
+	abstract class NamedElement {
+		attribute name : String;
+	}
+	
+	class ClassDeclaration extends NamedElement {
+		reference superclass[0-1] : ClassDeclaration;
+		reference methods[*] container : MethodDefinition oppositeOf "class";
+	}
+	
+	class MethodDefinition extends NamedElement {
+		reference "class"[1-1] : ClassDeclaration oppositeOf methods;
+		reference invocations[*] container : MethodInvocation;
+	}
+	
+	class MethodInvocation {
+		reference method[1-1] : MethodDefinition;
+	}
+}
+
+package PrimitiveTypes {
+  datatype String;
+}

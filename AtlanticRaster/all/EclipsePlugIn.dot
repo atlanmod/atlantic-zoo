@@ -1,0 +1,49 @@
+digraph "KM3 Model in DOT" {
+graph[rankdir=BT,labeljust=l,labelloc=t,nodeSep=0.75,compound=true];
+ subgraph "cluster_EclipsePlugIn"{
+labelloc=t
+color=black
+label=EclipsePlugIn
+ node[shape=record];
+Application[label="{Application|name : String\nversion : String\nauthor : String| }"]
+;
+ node[shape=record];
+ExtensionPoint[label="{ExtensionPoint|name : String\nid : String| }"]
+ ExtensionPoint->Application[arrowhead=diamond,arrowtail=none,headlabel="application",taillabel="extensionPoints[1-*]",group=Application,minlen=2,constraint=true,]
+ ExtensionPoint->PlugIn[arrowhead=diamond,arrowtail=none,headlabel="plugIn",taillabel="extensionPoints[*]",group=PlugIn,minlen=2,constraint=true,]
+;
+ node[shape=record];
+Description[label="{Description|xmlSchema : String| }"]
+ Description->ExtensionPoint[arrowhead=none,arrowtail=none,headlabel="extensionPoints[*]",taillabel="descriptions[*]",group=ExtensionPoint,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Extension[label="{Extension|name : String\nid : String| }"]
+ Extension->ExtensionPoint[arrowhead=vee,arrowtail=none,headlabel="isConfiguredInto",group=ExtensionPoint,minlen=2,constraint=false,]
+;
+ node[shape=record];
+PlugIn[label="{PlugIn|id : String\ndisplayableName : String\nversion : String\nsupplier : String| }"]
+ PlugIn->Extension[arrowhead=vee,arrowtail=none,headlabel="configures[1-*]",group=Extension,minlen=2,constraint=false,]
+ PlugIn->PlugIn[arrowhead=vee,arrowtail=none,headlabel="requires[*]",group=PlugIn,minlen=2,constraint=false,]
+ PlugIn->Librairy[arrowhead=none,arrowtail=none,headlabel="uses[*]",taillabel="plugIn",group=Librairy,minlen=2,constraint=false,]
+;
+ node[shape=record];
+Librairy[label="{Librairy|name : String| }"]
+;
+ node[shape=record];
+Class[label="{Class|name : String| }"]
+ Class->Librairy[arrowhead=diamond,arrowtail=none,headlabel="librairy",taillabel="classes[1-*]",group=Librairy,minlen=2,constraint=true,]
+;
+
+} subgraph "cluster_PrimitiveTypes"{
+labelloc=t
+color=black
+label=PrimitiveTypes
+ node[shape=record];
+Integer[label="{&#171;DataType&#187;\nInteger|}"]
+;
+ node[shape=record];
+String[label="{&#171;DataType&#187;\nString|}"]
+;
+
+}
+}

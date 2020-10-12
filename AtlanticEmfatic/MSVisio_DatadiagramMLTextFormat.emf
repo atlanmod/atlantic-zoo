@@ -1,0 +1,457 @@
+package Metamodel;
+
+package DatadiagramMLTextFormat {
+  class DateTimeType {
+    !unique !ordered attr Integer[1] year;
+    !unique !ordered attr Integer[1] month;
+    !unique !ordered attr Integer[1] day;
+    !unique !ordered attr Integer[1] hour;
+    !unique !ordered attr Integer[1] minute;
+    !unique !ordered attr Integer[1] second;
+  }
+
+  class CellType {
+    !unique !ordered attr String unit;
+    !unique !ordered attr String formula;
+    !unique !ordered attr String err;
+    !unique !ordered attr String value;
+  }
+
+  class VisioDocument {
+    !unique !ordered attr Integer start;
+    !unique !ordered attr String key;
+    !unique !ordered attr Boolean metric;
+    !unique !ordered attr Integer buildnum;
+    !unique !ordered attr String version;
+    !unique !ordered attr Integer docLangId;
+    !ordered val DocumentPropertiesCollection#dps_visioDocument docProps;
+    !ordered val DocumentSettingsElt#dss_visioDocument docSettings;
+    !ordered val ColorsTable#cs_visioDocument docColors;
+    !ordered val PrintSetup#ps_visioDocument docPrintSetup;
+    !ordered val FontsTable#fs_visioDocument docFonts;
+    !ordered val FaceNamesTable#fns_visioDocument docFaceNames;
+    !ordered val StyleSheetsCollection#sss_visioDocument docStyleSheets;
+    !ordered val DocumentSheet#ds_visioDocument docDocumentSheet;
+    !ordered val MastersCollection#ms_visioDocument docMasters;
+    !ordered val PagesCollection#ps_visioDocument docPages;
+    !ordered val WindowsInfo#ws_visioDocument docWindows;
+    !ordered val EventList#el_visioDocument docEventList;
+    !ordered val HeaderFooter#ef_visioDocument docHeaderFooter;
+    !ordered val VBProjectData#vpd_visioDocument docVBProjectData;
+    !ordered val EmailRoutingData#erd_visioDocument docEmailRoutingData;
+    val SolutionXML[*]#sx_visioDocument docSolutionXML;
+  }
+
+  class DocumentPropertiesCollection {
+    !ordered ref VisioDocument[1]#docProps dps_visioDocument;
+    !unique !ordered attr String title;
+    !unique !ordered attr String subject;
+    !unique !ordered attr String creator;
+    !unique !ordered attr String manager;
+    !unique !ordered attr String company;
+    !unique !ordered attr String category;
+    !unique !ordered attr String keywords;
+    !unique !ordered attr String description;
+    !unique !ordered attr String hyperlinkBase_href;
+    !unique !ordered attr String alternateNames;
+    !unique !ordered attr String template;
+    !unique !ordered attr String buildNumberCreated;
+    !unique !ordered attr String buildNumberEdited;
+    !ordered val CustomPropertiesCollection#cps_docProp customProps;
+    !ordered val DateTimeType timeCreated;
+    !ordered val DateTimeType timeSaved;
+    !ordered val DateTimeType timeEdited;
+    !ordered val DateTimeType timePrinted;
+  }
+
+  class CustomPropertiesCollection {
+    !ordered ref DocumentPropertiesCollection[1]#customProps cps_docProp;
+    val CustomProperty[*]#cp_customProps cps_customProps;
+  }
+
+  class CustomProperty {
+    !ordered ref CustomPropertiesCollection[1]#cps_customProps cp_customProps;
+    !unique !ordered attr String name;
+    !unique !ordered attr String dataType;
+  }
+
+  class ColorsTable {
+    !ordered ref VisioDocument[1]#docColors cs_visioDocument;
+    val ColorEntry[*]#ce_colors colorEntries;
+  }
+
+  class ColorEntry extends IXrequiredElt {
+    !ordered ref ColorsTable[1]#colorEntries ce_colors;
+    !unique !ordered attr String[1] rgb;
+  }
+
+  class FontsTable {
+    !ordered ref VisioDocument[1]#docFonts fs_visioDocument;
+    val FontEntry[*]#fe_fonts fontEntries;
+  }
+
+  class FontEntry extends IdentifiedElt {
+    !ordered ref FontsTable[1]#fontEntries fe_fonts;
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] charSet;
+    !unique !ordered attr String[1] pitchAndFamily;
+    !unique !ordered attr Integer[1] attributes;
+    !unique !ordered attr Integer[1] weight;
+    !unique !ordered attr Boolean[1] unicode;
+  }
+
+  class FaceNamesTable {
+    !ordered ref VisioDocument[1]#docFaceNames fns_visioDocument;
+    val FaceName[*]#fn_faceNames faceNameEntries;
+  }
+
+  class FaceName extends IdentifiedElt {
+    !ordered ref FaceNamesTable[1]#faceNameEntries fn_faceNames;
+    !unique !ordered attr String[1] name;
+    !unique !ordered attr String[1] unicodeRanges;
+    !unique !ordered attr String[1] charSet;
+    !unique !ordered attr String[1] panos;
+    !unique !ordered attr Integer[1] flags;
+  }
+
+  class VBProjectData {
+    !ordered ref VisioDocument[1]#docVBProjectData vpd_visioDocument;
+    !unique !ordered attr String[1] data;
+  }
+
+  class EmailRoutingData {
+    !ordered ref VisioDocument[1]#docEmailRoutingData erd_visioDocument;
+    !unique !ordered attr String[1] data;
+    !unique !ordered attr Integer size;
+  }
+
+  class StyleSheetsCollection {
+    !ordered ref VisioDocument[1]#docStyleSheets sss_visioDocument;
+    val StyleSheet[*]#ss_stylesSheets stylesSheets;
+  }
+
+  class StyleSheet extends Shape, IdentifiedElt, NamedElt {
+    !ordered ref StyleSheetsCollection[1]#stylesSheets ss_stylesSheets;
+  }
+
+  class DocumentSheet extends PageSheet, NamedElt {
+    !ordered ref VisioDocument[1]#docDocumentSheet ds_visioDocument;
+  }
+
+  class PageSheet extends Shape, UniqueIdElt, MasterElt, PageElt {
+  }
+
+  abstract class NamedElt {
+    !unique !ordered attr String name;
+    !unique !ordered attr String nameU;
+  }
+
+  abstract class IdentifiedElt {
+    !unique !ordered attr Integer[1] ID;
+  }
+
+  abstract class UniqueIdElt {
+    !unique !ordered attr String UniqueID;
+  }
+
+  class Shape {
+    !ordered ref ShapesCollection[1]#shapes ss_shapes;
+    !unique !ordered attr Integer lineStyle;
+    !unique !ordered attr Integer fillStyle;
+    !unique !ordered attr Integer textStyle;
+    val ShapeElt[*]#sse_shapeSheet shapeElts;
+  }
+
+  abstract class ShapeElt {
+    !ordered ref Shape[1]#shapeElts sse_shapeSheet;
+  }
+
+  abstract class IXElt {
+    !unique !ordered attr Integer iX;
+  }
+
+  abstract class DelElt {
+    !unique !ordered attr Boolean del;
+  }
+
+  class Geom extends ShapeElt, IXElt, DelElt {
+    !ordered val CellType noFill;
+    !ordered val CellType noLine;
+    !ordered val CellType noShow;
+    !ordered val CellType noSnap;
+    val LineTo[*]#lt_geom linesTo;
+    val MoveTo[*]#mt_geom movesTo;
+    val ArcTo[*]#ac_geom arcsTo;
+    val SplineKnot[*]#sk_geom splineKnots;
+    val PolylineTo[*]#pt_geom polylinesTo;
+    val InfiniteLine[*]#il_geom infiniteLines;
+    val Ellipse[*]#e_geom ellipses;
+    val EllipticalArcTo[*]#eat_geom ellipticalArcsTo;
+    val SplineStart[*]#ss_geom splineStarts;
+    val NURBSTo[*]#nt_geom nurbsTo;
+  }
+
+  abstract class XYElt extends IXElt, DelElt {
+    !ordered val CellType x;
+    !ordered val CellType y;
+  }
+
+  class LineTo extends XYElt {
+    !ordered ref Geom[1]#linesTo lt_geom;
+  }
+
+  class MoveTo extends XYElt {
+    !ordered ref Geom[1]#movesTo mt_geom;
+  }
+
+  abstract class XYAElt extends XYElt {
+    !ordered val CellType a;
+  }
+
+  class ArcTo extends XYAElt {
+    !ordered ref Geom[1]#arcsTo ac_geom;
+  }
+
+  class SplineKnot extends XYAElt {
+    !ordered ref Geom[1]#splineKnots sk_geom;
+  }
+
+  class PolylineTo extends XYAElt {
+    !ordered ref Geom[1]#polylinesTo pt_geom;
+  }
+
+  abstract class XYABElt extends XYAElt {
+    !ordered val CellType b;
+  }
+
+  class InfiniteLine extends XYABElt {
+    !ordered ref Geom[1]#infiniteLines il_geom;
+  }
+
+  abstract class XYABCDElt extends XYABElt {
+    !ordered val CellType c;
+    !ordered val CellType d;
+  }
+
+  class Ellipse extends XYABCDElt {
+    !ordered ref Geom[1]#ellipses e_geom;
+  }
+
+  class EllipticalArcTo extends XYABCDElt {
+    !ordered ref Geom[1]#ellipticalArcsTo eat_geom;
+  }
+
+  class SplineStart extends XYABCDElt {
+    !ordered ref Geom[1]#splineStarts ss_geom;
+  }
+
+  abstract class XYABCDEElt extends XYABCDElt {
+    !ordered val CellType e;
+  }
+
+  class NURBSTo extends XYABCDEElt {
+    !ordered ref Geom[1]#nurbsTo nt_geom;
+  }
+
+  class Text extends ShapeElt {
+    val TextElt[*]#te_text textElts;
+  }
+
+  abstract class TextElt {
+    !ordered ref Text[1]#textElts te_text;
+  }
+
+  abstract class IXrequiredElt {
+    !unique !ordered attr Integer[1] iX;
+  }
+
+  class Cp extends IXrequiredElt, TextElt {
+  }
+
+  class Pp extends IXrequiredElt, TextElt {
+  }
+
+  class Tp extends IXrequiredElt, TextElt {
+  }
+
+  class Fld extends IXrequiredElt, TextElt {
+  }
+
+  class StringElt extends TextElt {
+    !unique !ordered attr String[1] value;
+  }
+
+  class Char extends ShapeElt, IXElt, DelElt {
+    !ordered val CellType font;
+    !ordered val CellType color;
+    !ordered val CellType style;
+    !ordered val CellType case;
+    !ordered val CellType pos;
+    !ordered val CellType fontScale;
+    !ordered val CellType size;
+    !ordered val CellType dblUnderline;
+    !ordered val CellType overline;
+    !ordered val CellType strikethru;
+    !ordered val CellType doubleStrikethrough;
+    !ordered val CellType rtlText;
+    !ordered val CellType runVertical;
+    !ordered val CellType letterspace;
+    !ordered val CellType colorTrans;
+    !ordered val CellType localizeFont;
+    !ordered val CellType langID;
+  }
+
+  class Para extends ShapeElt, IXElt, DelElt {
+    !ordered val CellType indFirst;
+    !ordered val CellType indLeft;
+    !ordered val CellType indRight;
+    !ordered val CellType spLine;
+    !ordered val CellType spBefore;
+    !ordered val CellType spAfter;
+    !ordered val CellType horzAlign;
+    !ordered val CellType bullet;
+    !ordered val CellType bulletStr;
+    !ordered val CellType bulletFont;
+    !ordered val CellType localizeBulletFont;
+    !ordered val CellType bulletFontSize;
+    !ordered val CellType textPosAfterBullet;
+    !ordered val CellType flags;
+  }
+
+  class TabsCollection extends ShapeElt, IXElt, DelElt {
+    val Tab[*]#t_tabs tabs;
+  }
+
+  class Tab extends IXElt {
+    !ordered ref TabsCollection[1]#tabs t_tabs;
+    !ordered val CellType position;
+    !ordered val CellType alignment;
+  }
+
+  class Field extends ShapeElt, IXElt, DelElt {
+    !ordered val CellType value;
+    !ordered val CellType editMode;
+    !ordered val CellType format;
+    !ordered val CellType type;
+    !ordered val CellType uiCat;
+    !ordered val CellType uiCode;
+    !ordered val CellType uiFmt;
+    !ordered val CellType calendar;
+    !ordered val CellType objectKind;
+  }
+
+  class MastersCollection {
+    !ordered ref VisioDocument[1]#docMasters ms_visioDocument;
+    val Master[*]#m_masters masters;
+    val MasterShortCut[*]#m_masterShortCuts masterShortCuts;
+  }
+
+  class MasterShortCut extends IdentifiedElt, NamedElt {
+    !ordered ref MastersCollection[1]#masterShortCuts m_masterShortCuts;
+    !unique !ordered attr Integer iconSize;
+    !unique !ordered attr Integer patternFlags;
+    !unique !ordered attr String prompt;
+    !unique !ordered attr String shortcutURL;
+    !unique !ordered attr String shortcutHelp;
+    !unique !ordered attr Integer alignName;
+    val Icon[*]#i_masterShortCut icons;
+  }
+
+  class Icon extends MasterElt {
+    !ordered ref MasterShortCut[1]#icons i_masterShortCut;
+    !unique !ordered attr String[1] value;
+  }
+
+  class Master extends IdentifiedElt, UniqueIdElt, NamedElt {
+    !ordered ref MastersCollection[1]#masters m_masters;
+    !unique !ordered attr String baseID;
+    !unique !ordered attr Boolean matchByName;
+    !unique !ordered attr Integer iconSize;
+    !unique !ordered attr Integer patternFlags;
+    !unique !ordered attr String prompt;
+    !unique !ordered attr Boolean hidden;
+    !unique !ordered attr Boolean iconUpdate;
+    !unique !ordered attr Integer alignName;
+    val MasterElt[*]#me_master masterElts;
+  }
+
+  class ShapesCollection extends MasterElt, PageElt {
+    val Shape[*]#ss_shapes shapes;
+  }
+
+  class ConnectsCollection extends MasterElt, PageElt {
+    val Connect[*]#c_connects connections;
+  }
+
+  class Connect {
+    !ordered ref ConnectsCollection[1]#connections c_connects;
+    !unique !ordered attr Integer[1] fromSheet;
+    !unique !ordered attr Integer[1] toSheet;
+    !unique !ordered attr String fromCell;
+    !unique !ordered attr String toCell;
+    !unique !ordered attr Integer fromPart;
+    !unique !ordered attr Integer toPart;
+  }
+
+  abstract class MasterElt {
+    !ordered ref Master[1]#masterElts me_master;
+  }
+
+  class PagesCollection {
+    !ordered ref VisioDocument[1]#docPages ps_visioDocument;
+    val Page[*]#p_pages pages;
+  }
+
+  class Page extends IdentifiedElt, NamedElt {
+    !ordered ref PagesCollection[1]#pages p_pages;
+    !unique !ordered attr Boolean background;
+    !unique !ordered attr Integer backPage;
+    !unique !ordered attr PrimitiveTypes.Double viewScale;
+    !unique !ordered attr PrimitiveTypes.Double viewCenterX;
+    !unique !ordered attr PrimitiveTypes.Double ViewCenterY;
+    !unique !ordered attr Integer reviewerID;
+    !unique !ordered attr Integer associatedPage;
+    val PageElt[*]#pe_page pageElts;
+  }
+
+  abstract class PageElt {
+    !ordered ref Page[1]#pageElts pe_page;
+  }
+
+  class DocumentSettingsElt {
+    !ordered ref VisioDocument[1]#docSettings dss_visioDocument;
+  }
+
+  class PrintSetup {
+    !ordered ref VisioDocument[1]#docPrintSetup ps_visioDocument;
+  }
+
+  class WindowsInfo {
+    !ordered ref VisioDocument[1]#docWindows ws_visioDocument;
+  }
+
+  class EventList {
+    !ordered ref VisioDocument[1]#docEventList el_visioDocument;
+  }
+
+  class HeaderFooter {
+    !ordered ref VisioDocument[1]#docHeaderFooter ef_visioDocument;
+  }
+
+  class SolutionXML {
+    !ordered ref VisioDocument[1]#docSolutionXML sx_visioDocument;
+  }
+
+}
+
+package PrimitiveTypes {
+  datatype Integer : "";
+
+  datatype String : "";
+
+  datatype Boolean : "";
+
+  datatype Double : "";
+
+}
+

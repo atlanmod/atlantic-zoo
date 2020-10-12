@@ -1,0 +1,86 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+<Metamodel>
+  <Package name = 'RDFS'>
+    <Class name = 'Resource' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'graph' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Graph' opposite = 'RDFS::Graph::resources'/>
+      <Reference name = 'uriRef' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'RDFS::URIReference' opposite = 'RDFS::URIReference::resource'/>
+      <Reference name = 'subjectStatement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Statement' opposite = 'RDFS::Statement::subject'/>
+      <Reference name = 'objectStatement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Statement' opposite = 'RDFS::Statement::object'/>
+      <Reference name = 'label' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'RDFS::PlainLiteral' opposite = 'RDFS::PlainLiteral::labeledResource'/>
+      <Reference name = 'type' lower = '1' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Class' opposite = 'RDFS::Class::typedResource'/>
+      <Reference name = 'seeAlso' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Resource' opposite = 'RDFS::Resource::referringResource'/>
+      <Reference name = 'referringResource' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Resource' opposite = 'RDFS::Resource::seeAlso'/>
+      <Reference name = 'member' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Resource' opposite = 'RDFS::Resource::container'/>
+      <Reference name = 'container' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Resource' opposite = 'RDFS::Resource::member'/>
+      <Reference name = 'list' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::List' opposite = 'RDFS::List::first'/>
+    </Class>
+    <Class name = 'Graph' isAbstract = 'false' supertypes = 'RDFS::Resource'>
+      <Reference name = 'graphName' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'true' type = 'RDFS::URIReference' opposite = 'RDFS::URIReference::namedGraph'/>
+      <Reference name = 'resources' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'true' type = 'RDFS::Resource' opposite = 'RDFS::Resource::graph'/>
+    </Class>
+    <Class name = 'List' isAbstract = 'false' supertypes = 'RDFS::Resource'>
+      <Reference name = 'first' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Resource' opposite = 'RDFS::Resource::list'/>
+      <Reference name = 'rest' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::List' opposite = 'RDFS::List::originalList'/>
+      <Reference name = 'originalList' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::List' opposite = 'RDFS::List::rest'/>
+    </Class>
+    <Class name = 'Container' isAbstract = 'false' supertypes = 'RDFS::Resource'/>
+    <Class name = 'Alt' isAbstract = 'false' supertypes = 'RDFS::Container'/>
+    <Class name = 'Bag' isAbstract = 'false' supertypes = 'RDFS::Container'/>
+    <Class name = 'Seq' isAbstract = 'false' supertypes = 'RDFS::Container'/>
+    <Class name = 'Property' isAbstract = 'false' supertypes = 'RDFS::Resource'>
+      <Reference name = 'predicateStatement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Statement' opposite = 'RDFS::Statement::predicate'/>
+      <Reference name = 'subPropertyOf' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Property' opposite = 'RDFS::Property::superProperty'/>
+      <Reference name = 'superProperty' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Property' opposite = 'RDFS::Property::subPropertyOf'/>
+      <Reference name = 'domain' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Class' opposite = 'RDFS::Class::propertyForDomain'/>
+      <Reference name = 'range' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Class' opposite = 'RDFS::Class::propertyForRange'/>
+    </Class>
+    <Class name = 'ContainerMembershipProperty' isAbstract = 'false' supertypes = ''/>
+    <Class name = 'Statement' isAbstract = 'false' supertypes = 'RDFS::Resource'>
+      <Reference name = 'predicate' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Property' opposite = 'RDFS::Property::predicateStatement'/>
+      <Reference name = 'object' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Resource' opposite = 'RDFS::Resource::objectStatement'/>
+      <Reference name = 'subject' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Resource' opposite = 'RDFS::Resource::subjectStatement'/>
+      <Attribute name = 'isReifiedOnly' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Attribute name = 'isReified' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::Boolean'/>
+      <Reference name = 'nameForReification' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::URIReference' opposite = 'RDFS::URIReference::reifiedStatement'/>
+    </Class>
+    <Class name = 'URIReferenceNode' isAbstract = 'false' supertypes = 'RDFS::Resource'/>
+    <Class name = 'BlankNode' isAbstract = 'false' supertypes = 'RDFS::Resource'>
+      <Attribute name = 'nodeId' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'Class' isAbstract = 'false' supertypes = 'RDFS::Resource'>
+      <Reference name = 'subClassOf' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Class' opposite = 'RDFS::Class::superClass'/>
+      <Reference name = 'superClass' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Class' opposite = 'RDFS::Class::subClassOf'/>
+      <Reference name = 'typedResource' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Resource' opposite = 'RDFS::Resource::type'/>
+      <Reference name = 'propertyForDomain' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Property' opposite = 'RDFS::Property::domain'/>
+      <Reference name = 'propertyForRange' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Property' opposite = 'RDFS::Property::range'/>
+    </Class>
+    <Class name = 'Datatype' isAbstract = 'false' supertypes = 'RDFS::Class'/>
+    <Class name = 'Literal' isAbstract = 'false' supertypes = 'RDFS::Resource'>
+      <Attribute name = 'lexicalForm' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+    </Class>
+    <Class name = 'PlainLiteral' isAbstract = 'false' supertypes = 'RDFS::Literal'>
+      <Attribute name = 'language' lower = '0' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'labeledResource' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Resource' opposite = 'RDFS::Resource::label'/>
+    </Class>
+    <Class name = 'TypedLiteral' isAbstract = 'false' supertypes = 'RDFS::Literal'>
+      <Reference name = 'datatypeURI' lower = '1' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::URIReference' opposite = 'RDFS::URIReference::literal'/>
+    </Class>
+    <Class name = 'RDFXMLLiteral' isAbstract = 'false' supertypes = 'RDFS::TypedLiteral'/>
+    <Class name = 'URIReference' isAbstract = 'false' supertypes = ''>
+      <Reference name = 'uri' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::UniformResourceIdentifier' opposite = 'RDFS::UniformResourceIdentifier::uriRef'/>
+      <Reference name = 'resource' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Resource' opposite = 'RDFS::Resource::uriRef'/>
+      <Reference name = 'literal' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::TypedLiteral' opposite = 'RDFS::TypedLiteral::datatypeURI'/>
+      <Reference name = 'namedGraph' lower = '0' upper = '1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Graph' opposite = 'RDFS::Graph::graphName'/>
+      <Reference name = 'reifiedStatement' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::Statement' opposite = 'RDFS::Statement::nameForReification'/>
+    </Class>
+    <Class name = 'UniformResourceIdentifier' isAbstract = 'false' supertypes = 'RDFS::URIReference'>
+      <Attribute name = 'name' lower = '1' upper = '1' isOrdered = 'false' isUnique = 'false' type = 'PrimitiveTypes::String'/>
+      <Reference name = 'uriRef' lower = '0' upper = '-1' isOrdered = 'false' isContainer = 'false' type = 'RDFS::URIReference' opposite = 'RDFS::URIReference::uri'/>
+    </Class>
+  </Package>
+  <Package name = 'PrimitiveTypes'>
+    <DataType name = 'Boolean'/>
+    <DataType name = 'Integer'/>
+    <DataType name = 'String'/>
+  </Package>
+</Metamodel>
